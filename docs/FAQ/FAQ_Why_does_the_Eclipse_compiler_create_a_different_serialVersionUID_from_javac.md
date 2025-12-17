@@ -7,16 +7,17 @@ You may discover that serializable classes compiled with Eclipse are not compati
 
 If you need object serialization, the _only_ way to be safe is to explicitly define the serialVersionUID in your code:
 
+```java
         class MyClass implements Serializable {
             public static final long serialVersionUID = 1;
         }
+```
 
-  
 
 Then, whenever your class changes shape in a way that will be incompatible with previously serialized versions, simply increment this number.
 
-  
 
-  
+
+
 If you don't explicitly define a serialVersionUID, the language requires that the VM generate one, using some function of all field and method names in the class. The problem is, the compiler generates some _synthetic_ methods that you never see in your source file, and there is no clear specification for how these synthetic method names are generated. Any two compilers are likely to generate different method names, and so the serialVersionUID will be different. Bottom line: Always define the serialVersionUID explicitly in your source files.
 

@@ -5,6 +5,7 @@ The Java model is a hierarchical representation of the Java projects in your wor
 
 Using a utility method provided by JavaCore, a Java model is obtained for the workspace. Using the IJavaModel, the Java projects can be inspected. Each project contains a classpath, consisting of multiple package fragment roots, such as source directories in the project or referenced JARs from required plug-ins. Each fragment contains a number of class files. An example of its use is given in the following piece of code:
 
+```java
       IWorkspace workspace = ResourcesPlugin.getWorkspace();
       IJavaModel javaModel = JavaCore.create(workspace.getRoot());
       IJavaProject projects[] = javaModel.getJavaProjects();
@@ -29,6 +30,7 @@ Using a utility method provided by JavaCore, a Java model is obtained for the wo
          String projectName = projects[n].getElementName();
          System.out.println("Classpath for project "+ projectName +" contains "+nClasses+" classes.");
       }
+```
 
 The output of this code for a workspace with a single empty Java project is
 

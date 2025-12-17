@@ -7,23 +7,26 @@ The JFace source viewer has infrastructure for supporting content formatters. A 
 
 The following snippet from the Java source configuration installs a master strategy (JavaFormattingStrategy) that is used to format Java code and a slave formatting strategy for formatting comments:
 
-      MultiPassContentFormatter formatter= 
+```java
+      MultiPassContentFormatter formatter=
          new MultiPassContentFormatter(
-         getConfiguredDocumentPartitioning(viewer), 
+         getConfiguredDocumentPartitioning(viewer),
          IDocument.DEFAULT_CONTENT_TYPE);
       formatter.setMasterStrategy(
          new JavaFormattingStrategy());
       formatter.setSlaveStrategy(
-         new CommentFormattingStrategy(...), 
+         new CommentFormattingStrategy(...),
          IJavaPartitions.JAVA_DOC);
+```
 
-  
 The work of formatting the characters in the document is performed by the formatting-strategy classes that are installed on the formatter. JFace doesn't provide much common infrastructure for doing this formatting as it is based largely on the syntax of the language you are formatting.
 
-  
+
 Finally, you will need to create an action that invokes the formatter. No generic formatting action is defined by the text infrastructure, but it is quite easy to create one of your own. The action's run method can simply call the following on the source viewer to invoke the formatter:
 
+```java
    sourceViewer.doOperation(ISourceViewer.FORMAT);
+```
 
 See Also:
 ---------

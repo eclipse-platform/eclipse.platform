@@ -7,12 +7,14 @@ The purpose of a viewer is to simplify the interaction between an underlying mod
 
 A viewer is created by first creating an SWT widget, constructing the viewer on that widget, and then setting its content provider, label provider, and input. This snippet is from the BooksView class in the FAQ Examples plug-in, which creates a table viewer to display a library of books:
 
+```java
       int style = SWT.MULTI | SWT.H\_SCROLL | SWT.V\_SCROLL;
       Table table = new Table(parent, style);
       TableViewer viewer = new TableViewer(table);
       viewer.setContentProvider(new BookshelfContentProvider());
       viewer.setLabelProvider(new BookshelfLabelProvider());
       viewer.setInput(createBookshelf());
+```
 
 In general, JFace viewers allow you to create a model-view-controller (MVC) architecture. The view is the underlying SWT widget, the model is specified by the framework user, and the JFace viewer and its associated components form the controller. The viewer input is a model element that seeds the population of the viewer.
 

@@ -5,6 +5,7 @@ FAQ How do I prevent two jobs from running at the same time?
 
 The platform job mechanism uses a pool of threads, allowing it to run several jobs at the same time. If you have many jobs that you want to run in the background, you may want to prevent more than one from running at once. For example, if the jobs are accessing an exclusive resource, such as a file or a socket, you won't want them to run simultaneously. This is accomplished by using job-scheduling rules. A scheduling rule contains logic for determining whether it conflicts with another rule. If two rules conflict, two jobs using those rules will not be run at the same time. The following scheduling rule will act as a mutex, not allowing two jobs with the same rule instance to run concurrently:
 
+```java
       public class MutexRule implements ISchedulingRule {
          public boolean isConflicting(ISchedulingRule rule) {
             return rule == this;
@@ -13,9 +14,11 @@ The platform job mechanism uses a pool of threads, allowing it to run several jo
             return rule == this;
          }
       }
+```
 
 The rule is then used as follows:
 
+```java
       Job job1 = new SampleJob();
       Job job2 = new SampleJob();
       MutexRule rule = new MutexRule();
@@ -23,6 +26,7 @@ The rule is then used as follows:
       job2.setRule(rule);
       job1.schedule();
       job2.schedule();
+```
 
 When this example is executed, job1 will start running immediately, and job2 will be blocked until job1 finishes. Once job1 is finished, job2 will be run automatically.
 

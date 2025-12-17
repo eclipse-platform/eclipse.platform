@@ -5,13 +5,14 @@ FAQ How to create a context menu and add actions to the same?
 
 **To create a Context Menu for your View or Editor do the following :**
 
-  
+
 Step 1. Use popupMenus Extension point as explained in the Help of Eclipse. [Creating Popup Menus](https://help.eclipse.org/help30/topic/org.eclipse.platform.doc.isv/guide/workbench_basicext_popupMenus.htm)
 
 Step 2. You need to also register the context menu to the ViewSite or to the EditorSite which will contain the context menu. This is done using the registerContextMenu function available with ISite.
 
 The following code snippet explains how to register the context menu to your View.
 
+```java
       private void hookContextMenu() {
 		MenuManager menuMgr = new MenuManager("#PopupMenu");
 		menuMgr.setRemoveAllWhenShown(true);
@@ -19,7 +20,7 @@ The following code snippet explains how to register the context menu to your Vie
 		<Your Viewer>.getControl().setMenu(menu);
 		getSite().registerContextMenu(menuMgr, <Your Viewer>);
 	}
- 
+```
 
 This function needs to be implemented and then called from createPartControl().
 

@@ -7,17 +7,19 @@ Certain standard toolbar and menu entries can be shared among several views and 
 
 A view typically registers its global action handlers in the createPartControl method:
 
+```java
       IActionBars actionBars= getViewSite().getActionBars();
       actionBars.setGlobalActionHandler(
          ActionFactory.COPY.getId(),
-         copyAction);	
+         copyAction);
+```
 
 You have to do this only once for each view that is created. The platform remembers your action handler and retargets the action each time the view becomes active. To unregister from a global action, simply invoke setGlobalActionHandler again and pass in a null value for the handler.
 
-  
+
 The IWorkbenchActionConstants interface in the org.eclipse.ui package contains a complete list of global actions. Look for constants in this interface with a comment saying Global action. In Eclipse 3.0, you can also look at the ActionFactory and IDEActionFactory classes, which define factory objects for creating a variety of common actions.
 
-  
+
 
 See Also
 --------

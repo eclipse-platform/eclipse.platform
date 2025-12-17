@@ -5,11 +5,13 @@ FAQ How do I add menus to the main menu?
 
 Menus and submenus are added to the main menu by using the org.eclipse.ui.actionSets extension point. Here is an example of a top-level menu defined by the FAQ Examples plug-in:
 
+```xml
       <menu
          label="FA&Q Examples"
          id="exampleMenu">
          <separator name="exampleGroup"/>
       </menu>
+```
 
 Each menu contains one or more separator elements that define _groups_ within that menu. The menu ID, along with the separator name, is used by actions contributing to that menu. If you want to create a submenu, you also need to define a path attribute that specifies what menu and group your menu should appear under. This path attribute has the same syntax as the menubarPath attribute on action definitions. To add a submenu to the menu defined earlier, you would add the following attribute:
 
@@ -21,7 +23,7 @@ To add a submenu to the **File** menu after the **New** submenu, the path would 
 
 The syntax of menu paths is described in more detail in FAQ 223.
 
-  
+
 
 See Also:
 ---------

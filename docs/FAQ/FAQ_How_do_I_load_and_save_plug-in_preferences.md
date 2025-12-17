@@ -8,6 +8,7 @@ Current Practice
 
 As of 3.1 the technique to modify preference values goes something like this:
 
+```java
   private void savePluginSettings() {
     // saves plugin preferences at the workspace level
     Preferences prefs =
@@ -31,6 +32,7 @@ As of 3.1 the technique to modify preference values goes something like this:
     this.someStr = prefs.get(KEY1);
     this.someBool= prefs.getBoolean(KEY2);
   }
+```
 
 See Also:
 ---------

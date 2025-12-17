@@ -11,6 +11,7 @@ Once you have a settings instance, you simply store the data values you want to 
 
 Finally, the settings must be saved to disk at some point. If you're using the AbstractUIPlugin settings instance, it is saved automatically when the plug-in is shut down. If you created the settings yourself, you have to save the settings manually when you're finished changing them by calling the save method. Note that each plug-in has a state location allotted to it, and you can find out the location by calling getStateLocation on your plug-in instance. The following example loads a settings file from disk, changes some values, and then saves it again:
 
+```java
       IPath path = ExamplesPlugin.getDefault().getStateLocation();
       String filename = path.append("settings.txt").toOSString();
       DialogSettings settings = new DialogSettings("Top");
@@ -18,6 +19,7 @@ Finally, the settings must be saved to disk at some point. If you're using the A
       settings.put("Name", "Joe");
       settings.put("Age", 35);
       settings.save(filename);
+```
 
 See Also:
 ---------

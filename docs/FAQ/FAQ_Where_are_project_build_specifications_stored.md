@@ -5,6 +5,7 @@ FAQ Where are project build specifications stored?
 
 A project is built according to the specifications defined in its .project file. To see the .project file for a given project, click on the **Menu** toggle in the Package Explorer's toolbar, select **Filters...**, and deselect **.\* files**. Open the .project file. The .project file for a plug-in should look similar to this:
 
+```xml
     <?xml version="1.0" encoding="UTF-8"?>
     <projectDescription>
         <name>org.eclipse.escript.builder</name>
@@ -13,15 +14,15 @@ A project is built according to the specifications defined in its .project file.
         </projects>
         <buildSpec>
             <buildCommand>
-                <name>org.eclipse.jdt.core.javabuilder</name> 
+                <name>org.eclipse.jdt.core.javabuilder</name>
                 <arguments> </arguments>
             </buildCommand>
             <buildCommand>
-                <name>org.eclipse.pde.ManifestBuilder</name> 
+                <name>org.eclipse.pde.ManifestBuilder</name>
                 <arguments> </arguments>
             </buildCommand>
             <buildCommand>
-                <name>org.eclipse.pde.SchemaBuilder</name> 
+                <name>org.eclipse.pde.SchemaBuilder</name>
                 <arguments> </arguments>
             </buildCommand>
         </buildSpec>
@@ -30,8 +31,8 @@ A project is built according to the specifications defined in its .project file.
             <nature>org.eclipse.jdt.core.javanature</nature>
         </natures>
     </projectDescription>
+```
 
-  
 
 See Also:
 ---------

@@ -7,8 +7,8 @@ Document is currently split in 3 parts:
 *   [Part 2: Achieving API Binary Compatibility](Evolving-Java-based-APIs-2.md)
 *   [Part 3: Other Notes](Evolving-Java-based-APIs-3.md)
 
-This document is about how to evolve Java-based APIs while maintaining compatibility with existing client code. 
-Without loss of generality, we'll assume that there is a generic **Component** with a **Component API**, with one party providing the Component and controlling its API. 
+This document is about how to evolve Java-based APIs while maintaining compatibility with existing client code.
+Without loss of generality, we'll assume that there is a generic **Component** with a **Component API**, with one party providing the Component and controlling its API.
 The other party, or parties, write **Client** code that use the Component's services through its API. This is a very typical arrangement.
 
 
@@ -43,7 +43,7 @@ Changing an API in a way that is incompatible with existing Clients would mean t
 
 As the Component API evolves, all pre-existing Clients are expected to continue to work, both in principle and in practice.
 
-Suppose a Client was written to a given release of the Component and abided by the contracts spelled out in the Component API specification.  
+Suppose a Client was written to a given release of the Component and abided by the contracts spelled out in the Component API specification.
 The first requirement is that when the Component API evolves to follow-on releases, all pre-existing Client must still be legal according to the contracts spelled out in the revised Component API specification, without having to change the Clients source code. This is what is meant by continuing to work in principle.
 
 > **API Contract Compatibility:** _API changes must not invalidate formerly legal Client code._
@@ -79,11 +79,11 @@ Note that in some cases, the contractual roles are reversed. The party responsib
 
 When contemplating changing an existing API contract, the key questions to ask are:
 
-*   What roles does the API contract involve?  
+*   What roles does the API contract involve?
     For a method contract, there is the caller and the implementor. In the case of frameworks, there is also an additional contract between superclass and subclass regarding default behavior, extending, and overriding.
-*   Which role or roles will each party play?  
+*   Which role or roles will each party play?
     For many Component API methods, the Component plays the role of exclusive implementor and the Client plays the role of caller. In the case of Component callbacks, the Component plays the caller role and the Client plays the implementor role. In some cases, the Client might play more than one role.
-*   Is a role played exclusively by the Component?  
+*   Is a role played exclusively by the Component?
     Component API changes coincide with Component releases, making it feasible to change Component code to accommodate the changed APIs.
 *   For roles played by Clients, would the contemplated API change render invalid a hypothetical Client making legal usage of the existing API?
 
@@ -95,24 +95,30 @@ Standard method contracts have two roles: caller and implementor. Method postcon
 
 Consider the following API method specification:
 
+```java
     /** Returns the list of children of this widget.
      * @return a non-empty list of widgets
      */
     Widget[] getChildren();
+```
 
 The contemplated API change is to allow the empty list of widgets to be returned as well, as captured by this revised specification:
 
+```java
     /** Returns the list of children of this widget.
      * @return a list of widgets
      */
     Widget[] getChildren();
+```
 
 Would this change break compatibility with existing Clients? It depends on the role played by the Client.
 
 Looking at the caller role, this change would break a hypothetical pre-existing caller that legitimately counts on the result being non-empty. The relevant snippet from this hypothetical caller might read:
 
+```java
     Widget[] children = widget.getChildren();
     Widget firstChild = children[0];
+```
 
 Under the revised contract, this code would be seen to be in error because it assumes that the result of invoking `getChildren` is non-empty; under the previous contract, this assumption was just fine. This API change weakens a postcondition for the caller, and is not contract compatible for the caller role. The contemplated change would break Clients playing the caller role.
 
@@ -128,17 +134,21 @@ Method preconditions are those things that a caller must arrange to be true befo
 
 Consider the following API method specification:
 
+```java
     /** Removes the given widgets from this widget's list of children.
      * @param widgets a non-empty list of widgets
      */
     void remove(Widget[] widgets);
-    
+```
+
 The contemplated API change is to allow empty lists of widgets to be passed in as well:
 
+```java
     /** Removes the given widgets from this widget's list of children.
      * @param widgets a list of widgets
      */
     void remove(Widget[] widgets);
+```
 
 Would this change break compatibility with existing Clients? Again, it hinges on the role played by the Client.
 
@@ -146,7 +156,9 @@ Looking at the caller role, this change would not break hypothetical pre-existin
 
 The relevant snippet from this hypothetical implementor might read:
 
+```java
     Widget firstChild = widgets[0];
+```
 
 Under the revised contract, this code would be seen to be in error because it assumes that the argument is non-empty; under the previous contract, this assumption was just fine. This API change weakens a method precondition, and is not contract compatible for the implementor role. The contemplated change would break Clients that implement this method.
 
@@ -156,15 +168,19 @@ Fields can be analyzed as having two roles: a getter and a setter. The Java lang
 
 Consider the following API field specification:
 
+```java
     /** This widget's list of children, or <code>null</code>.
      */
     Widget[] children;
-    
+```
+
 The contemplated API change is to get rid of the possibility of the `null` value:
 
+```java
     /** This widget's list of children.
      */
     Widget[] children;
+```
 
 Would this change break compatibility with existing Clients?
 
@@ -182,7 +198,7 @@ However, if the method is added to a class which Clients may subclass, then the 
 
 ### General Rules for Contract Compatibility
 
-Whether a particular Component API change breaks or maintains contract compatibility with hypothetical pre-existing Clients hinges on which role, or roles, the Client plays in the API contract(s) being changed. The following table summarizes the pattern seen in the above examples:  
+Whether a particular Component API change breaks or maintains contract compatibility with hypothetical pre-existing Clients hinges on which role, or roles, the Client plays in the API contract(s) being changed. The following table summarizes the pattern seen in the above examples:
  
 |   |   |   |   |
 | --- | --- | --- | --- |

@@ -10,7 +10,7 @@ Other notes
 Data Compatibility
 ------------------
 
-The Component implementation may need to store and retrieve its internal data from a file. For example, Microsoft Word stores a document in a file. When one of these files may live from release to release, clients would break if the format or interpretation of that data changed in an incompatible way.  
+The Component implementation may need to store and retrieve its internal data from a file. For example, Microsoft Word stores a document in a file. When one of these files may live from release to release, clients would break if the format or interpretation of that data changed in an incompatible way.
 **Data compatibility** is an additional issue for components with persistent data.
 
 The standard technique is to tag all stored data with its format version number. The format version number is increased when the format is changed from one release to the next. The Component implementation contains readers for the current format version and for all past versions, but usually only the writer for the current format version (unless for some reason there is an ongoing need to write older versions).
@@ -34,9 +34,11 @@ Even simpler than Deprecate and Forward, the Component API and implementation ca
 
 Here is a simple technique for adding an argument to a method that is intended to be overridden by subclasses. For example the `Viewer.inputChanged(Object input)` method should get an additional argument `Object oldInput`. Adding the argument results in pre-existing clients overridding the wrong method. The workaround is to call the old method as the default implementation of the new method:
 
+```java
     public void inputChanged(Object input, Object oldInput) {
        inputChanged(input);
     }
+```
 
 Pre-existing clients which override the old method continue to work; and all calls to the old method continue to work. New or upgraded clients will override the new method; and all calls to the new method will work, even if they happen to invoke an old implementation.
 
@@ -48,29 +50,36 @@ Since Java 8, this technique also works for interface methods (new method is a d
 
 The first release of an API callback-style interface didn't work as well as hoped. For example, the first release contained:
 
+```java
     public interface IProgressMonitor {
        void start();
        void stop();
     }
-    
+```
+
 You now wish you had something like:
 
+```java
     public interface IProgressMonitor {
        void start(int total);
        void worked(int units);
        void stop();
     }
-    
+```
+
 But it's too late to change `IProgressMonitor` to be that API. So you mark `IProgressMonitor` as deprecated and introduce the new and improved one under the name `IProgressMonitor2` (a name everyone recognizes as the second attempt):
 
+```java
     public interface IProgressMonitor2 extends IProgressMonitor {
        void start(int total);
        void worked(int units);
        void stop();
     }
-    
+```
+
 By declaring the new interface to extend the old one, any object of type `IProgressMonitor2` can be passed to a method expecting an old `IProgressMonitor`. Don't forget to mention `IProgressMonitor2` in the API of `IProgressMonitor`, even if you don't deprecate it, e.g.:
 
+```java
     /**
      * [...]
      * @see IProgressMonitor2
@@ -78,7 +87,8 @@ By declaring the new interface to extend the old one, any object of type `IProgr
     public interface IProgressMonitor {
        [...]
     }
-    
+```
+
 ### COM Style
 
 The "COM style" is to not implement interfaces directly but to ask for an interface by using `getAdapter(someInterfaceID)`. This allows adding new interfaces in the implementation without breaking existing classes.
@@ -168,5 +178,5 @@ On the other hand, clients should avoid all `Class.getDeclared_XXX_` methods as 
 Versioning
 ----------
 
-It should be easy for API clients to know whether a new version of your components broke APIs or not. 
+It should be easy for API clients to know whether a new version of your components broke APIs or not.
 Eclipse projects implement semantic versioning according to the [Version Numbering](VersionNumbering.md) specification.

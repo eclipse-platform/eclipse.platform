@@ -7,18 +7,21 @@ Dynamic awareness requires extra steps that were not required prior to the intro
 
 The following is an example of a simple class that maintains its own cache of the set of extensions installed for a given extension point. This example is a bit contrived as simply caching the extension objects has no value. Typically, your plug-in will process the extensions to extract useful information and possibly load one or more classes associated with that extension. The basic structure of this cache example is as follows:
 
+```java
       public class ExtCache implements IRegistryChangeListener {
          private static final String PID = "my.plugin";
-         private static final String PT_ID = 
+         private static final String PT_ID =
             PID + "." + "extension.point";
          private final HashSet extensions = new HashSet();
          ...
       }
+```
 
 The extensions field stores the set of installed extensions for a particular extension point.
 
 The cache has a startup method that loads the initial set of extensions and then adds an extension registry listener in order to be notified of future changes:
 
+```java
       public void startup() {
          IExtensionRegistry reg = Platform.getExtensionRegistry();
          IExtensionPoint pt = reg.getExtensionPoint(PT_ID);
@@ -27,11 +30,13 @@ The cache has a startup method that loads the initial set of extensions and then
             extensions.add(ext[i]);
          reg.addRegistryChangeListener(this);
       }
+```
 
 The class implements the IRegistryChangeListener interface, which has a single method that is called whenever the registry changes:
 
+```java
       public void registryChanged(IRegistryChangeEvent event) {
-         IExtensionDelta[] deltas = 
+         IExtensionDelta[] deltas =
                            event.getExtensionDeltas(PID, PT_ID);
          for (int i = 0; i < deltas.length; i++) {
             if (deltas[i].getKind() == IExtensionDelta.ADDED)
@@ -40,14 +45,17 @@ The class implements the IRegistryChangeListener interface, which has a single m
                extensions.remove(deltas[i].getExtension());
          }
       }
+```
 
 This class is now dynamic aware but is not yet dynamic enabled; that is, the class does not yet support itself being dynamically removed. The final step is to implement a shutdown method that clears all values from the cache and removes the listener from the extension registry:
 
+```java
       public void shutdown() {
          extensions.clear();
          IExtensionRegistry reg = Platform.getExtensionRegistry();
          reg.removeRegistryChangeListener(this);
       }
+```
 
 This shutdown method must be called from the shutdown method of the plug-in that defines the cache. For the complete source code of this example, see the ExtCache class in the FAQ Examples plug-in.
 

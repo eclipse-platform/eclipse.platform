@@ -7,14 +7,16 @@ You should generally avoid making assumptions about the location of a plug-in at
 
 The following snippet opens an input stream on a file called sample.gif located in a subdirectory, called icons, of a plug-in's install directory:
 
+```java
    Bundle bundle = Platform.getBundle(yourPluginId);
    Path path = new Path("icons/sample.gif");
    URL fileURL = FileLocator.find(bundle, path, null);
    InputStream in = fileURL.openStream();
+```
 
 If you need to know the file system location of a plug-in, you need to use FileLocator.resolve(URL). This method converts a platform URL to a standard URL protocol, such as HyperText Transfer Protocol (HTTP), or file. Note that the Eclipse Platform does not specify that plug-ins must exist in the local file system, so you cannot rely on this method's returning a file system URL under all circumstances in the future.
 
-  
+
 
 See Also:
 ---------

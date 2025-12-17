@@ -7,13 +7,14 @@ New APIs in Eclipse 3.0 allow perspectives more control over how their views are
 
 A _stand-alone view_, created with the method addStandaloneView, cannot be stacked together with other views and can optionally hide its title bar. A view with its title bar hidden cannot be closed, minimized, or moved. For further control over whether views can be closed or moved, you can obtain an IViewLayout instance for any view in the perspective. Following is an example of a fixed perspective that creates a stand-alone view above the editor area that cannot be moved or closed.
 
+```java
       class RecipePerspective implements IPerspectiveFactory {
          public void createInitialLayout(IPageLayout page) {
             page.setEditorAreaVisible(true);
             page.setFixed(true);
             page.addStandaloneView(
-               RecipePlugin.VIEW_CATEGORIES, 
-               false, IPageLayout.TOP, 0.2f, 
+               RecipePlugin.VIEW_CATEGORIES,
+               false, IPageLayout.TOP, 0.2f,
                IPageLayout.ID\_EDITOR\_AREA);
             IViewLayout view = page.getViewLayout(
                RecipePlugin.VIEW_CATEGORIES);
@@ -21,10 +22,11 @@ A _stand-alone view_, created with the method addStandaloneView, cannot be stack
             view.setMoveable(false);
          }
       }
+```
 
 You can add fixed and stand-alone views to perspectives from other plug-ins using the perspectiveExtensions extension point. See the extension point documentation for more details.
 
-  
+
 
 See Also:
 ---------

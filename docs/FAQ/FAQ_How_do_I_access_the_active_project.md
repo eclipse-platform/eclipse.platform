@@ -9,6 +9,7 @@ Often people are really asking for the currently selected project, folder, or fi
 
 Once you have the selection, you can extract the selected resource as follows:
 
+```java
       IResource extractSelection(ISelection sel) {
          if (!(sel instanceof IStructuredSelection))
             return null;
@@ -22,22 +23,25 @@ Once you have the selection, you can extract the selected resource as follows:
          Object adapter = adaptable.getAdapter(IResource.class);
          return (IResource) adapter;
       }
+```
 
 If you are looking for the active editor, you can determine that from the IPartService. If an editor is active, you can extract the resource, if available, like this:
 
+```java
       IResource extractResource(IEditorPart editor) {
          IEditorInput input = editor.getEditorInput();
          if (!(input instanceof IFileEditorInput))
             return null;
          return ((IFileEditorInput)input).getFile();
       }
+```
 
 The code above has a minor error:
-
+```java
       IEditorInput input = editor.getEditorInput();
-
+```
 To obtain the project from the resource use IResource.getProject(). Beware that while Eclipse uses "selected" rather than "active" for the active project, it uses "active" rather than "selected" for the active editor. Or is that "selected editor" ;-). For example,
-
+```java
       IWorkbench iworkbench = PlatformUI.getWorkbench();
       if (iworkbench == null)...
       IWorkbenchWindow iworkbenchwindow = iworkbench.getActiveWorkbenchWindow();
@@ -45,7 +49,7 @@ To obtain the project from the resource use IResource.getProject(). Beware that 
       IWorkbenchPage iworkbenchpage = iworkbenchwindow.getActivePage();
       if (iworkbenchpage == null) ...
       IEditorPart ieditorpart = iworkbenchpage.getActiveEditor();
-
+```
 See Also:
 ---------
 

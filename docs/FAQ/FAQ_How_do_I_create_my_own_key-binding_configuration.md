@@ -9,12 +9,14 @@ To see the current key configuration and its keyboard shortcuts, choose the **Wi
 
 There are no APIs for defining key-binding configurations programmatically, but you can create them in a plug-in by using the org.eclipse.ui.commands extension point. First, you need to define your new configuration:
 
+```xml
       <keyConfiguration
          name="My Configuration"
          parent="org.eclipse.ui.defaultAcceleratorConfiguration"
          description="This is a simple configuration"
          id="org.eclipse.faq.sampleConfiguration">
       </keyConfiguration>
+```
 
 By specifying a parent, you are saying that your configuration should inherit key bindings from the parent unless they are explicitly set in your configuration. When key bindings are defined, they will refer to the configuration they belong to. If you write your own configuration, you'll also need to define new key bindings for all the commands that you want to belong to your configuration.
 

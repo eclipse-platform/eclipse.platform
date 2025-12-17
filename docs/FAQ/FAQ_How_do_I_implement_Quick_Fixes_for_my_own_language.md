@@ -5,16 +5,18 @@ FAQ How do I implement Quick Fixes for my own language?
 
 The JDT has support for so-called Quick Fixes. Whenever a marker is generated, a set of resolutions is associated with it for users to click on and choose an automatic fix of the problem as shown in Figure 19.5. Quick Fixes are implemented through the org.eclipse.ui.ide.markerResolution extension point:
 
+```xml
       <extension point="org.eclipse.ui.ide.markerResolution">
          <markerResolutionGenerator
             markerType="org.eclipse.core.resources.problemmarker"
             class="org.eclipse.escript.quickfix.QuickFixer"/>
       </extension>
+```
 
-  
 
 The implementation class implements the IMarkerResolutionGenerator interface. Use the IMarkerResolutionGenerator2 when resolutions are expensive to implement. See the javadoc for the interface for an explanation. Here is what the implementation class may look like:
 
+```java
       public class QuickFixer implements IMarkerResolutionGenerator {
          public IMarkerResolution[] getResolutions(IMarker mk) {
             try {
@@ -29,11 +31,13 @@ The implementation class implements the IMarkerResolutionGenerator interface. Us
             }
          }
       }
+```
 
 An array of Quick Fixes has to be returned for the problem associated with the current marker.
 
 Each marker resolution, or Quick Fix, implements IMarkerResolution or, when a description and an image are available, IMarkerResolution2. Here is what the implementation may look like:
 
+```java
       public class QuickFix implements IMarkerResolution {
          String label;
          QuickFix(String label) {
@@ -47,6 +51,7 @@ Each marker resolution, or Quick Fix, implements IMarkerResolution or, when a de
                "This quick-fix is not yet implemented");
          }
       }
+```
 
 The problem indicator-in our sample, the WhatsUp attribute- is associated with the marker by the parser. Typically, the Quick Fix handler that resolves the problem, as shown in this example, lives somewhere in the UI. Following this paradigm is advisable as it separates the problem detection in the compiler/parser from how it is presented to the user.
 

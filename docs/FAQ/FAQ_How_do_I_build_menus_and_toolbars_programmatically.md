@@ -7,6 +7,7 @@ Menus and toolbars in JFace are based on two key interfaces: IContributionItem a
 
 So, for each toolbar or menu, you need to create a contribution manager. For menus, including drop-down menus, context menus, and submenus, create an instance of MenuManager. For toolbars or cool bars, create an instance of ToolBarManager or CoolBarManager, respectively. The following snippet creates a top-level menu and a submenu, each with one action:
 
+```java
       IMenuManager mainMenu = ...;//get ref to main menu manager
       MenuManager menu1 = new MenuManager("Menu &1", "1");
       menu1.add(new Action("Action 1") {});
@@ -14,6 +15,7 @@ So, for each toolbar or menu, you need to create a contribution manager. For men
       MenuManager menu2 = new MenuManager("Menu &2", "2");
       menu2.add(new Action("Action 2") {});
       menu1.add(menu2);
+```
 
 See Also:
 ---------

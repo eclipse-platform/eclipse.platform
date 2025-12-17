@@ -7,8 +7,10 @@ If you have a reference to a job instance, you can use the method Job.getState t
 
 The job infrastructure makes things easier for you by generally being very tolerant of methods called at the wrong time. For example, if you call wakeUp on a job that is not sleeping or cancel on a job that is already finished, the request is silently ignored. Thus, you can generally forgo the state check and simply try the method you want to call. For example, you do not need to do this:
 
+```java
         if (job.getState() == Job.NONE)
             job.schedule();
+```
 
 Instead, you can invoke job.schedule() immediately. If the job is already scheduled or sleeping, the schedule request will be ignored. If the job is currently running, it will be rescheduled as soon as it completes
 
@@ -16,10 +18,12 @@ If you need to be certain of when a job enters a particular state, register a jo
 
 If you do not have a job reference, you can search for it by using the method IJobManager.find. This method will find only job instances that are running, waiting, or sleeping. To give a concrete example, the Eclipse IDE uses this method when the user launches an application. The method searches for the autobuild job and, if it is running, waits for autobuild to complete before launching the application. Here is a snippet that illustrates this behavior; the actual code is more complex because it first consults a preference setting and might decide to prompt the user:
 
+```java
         IJobManager jobMan = Job.getJobManager();
-        Job[] build = jobMan.find(ResourcesPlugin.FAMILY_AUTO_BUILD); 
+        Job[] build = jobMan.find(ResourcesPlugin.FAMILY_AUTO_BUILD);
         if (build.length == 1)
             build[0].join();
+```
 
 Again, it is safe to call join here without checking whether the job is still running. The join method will return immediately in this case.
 

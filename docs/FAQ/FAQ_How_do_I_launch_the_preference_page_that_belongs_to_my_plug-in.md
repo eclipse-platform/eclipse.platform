@@ -7,10 +7,12 @@ Sometimes, you want to allow the user to edit preferences for a plug-in quickly,
 
 The `org.eclipse.ui.dialogs.PreferencesUtil` in bundle `org.eclipse.ui.workbench` can be used for this:
 
+```java
         PreferenceDialog dialog = PreferencesUtil.createPreferenceDialogOn(
-            shell, "org.eclipse.licensing.ui.licensesPreferencePage",  
+            shell, "org.eclipse.licensing.ui.licensesPreferencePage",
             new String[] {"org.eclipse.licensing.ui.licensesPreferencePage"}, null);
         dialog.open();
+```
 
 Alternative solution
 --------------------
@@ -21,6 +23,7 @@ This solution works by launching the Preference dialog yourself with a customize
 
 For each preference page you want to display, create a PreferenceNode instance that contains a reference to your page and some unique page ID. Pages are then added to a preference manager. If you want to create a hierarchy of pages, use the PreferenceManager method addTo, where the path is a period-delimited series of page IDs above the page being added. Finally, create an instance of PreferenceDialog, passing in the preference manager you have created. Here is sample code for opening the Preference dialog on a single preference page called MyPreferencePage:
 
+```java
             IPreferencePage page = new MyPreferencePage();
             PreferenceManager mgr = new PreferenceManager();
             IPreferenceNode node = new PreferenceNode("1", page);
@@ -29,6 +32,7 @@ For each preference page you want to display, create a PreferenceNode instance t
             dialog.create();
             dialog.setMessage(page.getTitle());
             dialog.open();
+```
 
 See Also:
 ---------

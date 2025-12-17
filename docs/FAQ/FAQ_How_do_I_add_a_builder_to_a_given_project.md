@@ -5,6 +5,7 @@ FAQ How do I add a builder to a given project?
 
 To register the eScript builder for a given project, add the builder to the project's build specification as follows:
 
+```java
       private void addBuilder(IProject project, String id) {
          IProjectDescription desc = project.getDescription();
          ICommand[] commands = desc.getBuildSpec();
@@ -21,17 +22,20 @@ To register the eScript builder for a given project, add the builder to the proj
          desc.setBuildSpec(nc);
          project.setDescription(desc, null);
       }
+```
 
 Alternatively, you could edit the project description directly on disk by modifying the .project file:
 
+```xml
       <buildCommand>
-         <name>org.eclipse.escript.builder.Builder</name> 
+         <name>org.eclipse.escript.builder.Builder</name>
          <arguments> </arguments>
       </buildCommand>
+```
 
 A builder is normally added to a project in the project creation wizard but can be added later on.
 
-  
+
 
 See Also:
 ---------

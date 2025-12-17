@@ -15,8 +15,8 @@ If it's your own editor
 
 In [FAQ How do I write an editor for my own language?](./FAQ_How_do_I_write_an_editor_for_my_own_language.md "FAQ How do I write an editor for my own language?") we describe how Content Assist is installed through our configuration class, as follows:
 
- 
 
+```java
        class Configuration extends SourceViewerConfiguration {
           public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
              ContentAssistant ca = new ContentAssistant();
@@ -25,15 +25,16 @@ In [FAQ How do I write an editor for my own language?](./FAQ_How_do_I_write_an_e
              ca.setInformationControlCreator(getInformationControlCreator(sourceViewer));
              return ca;
        }
+```
 
 Example of IContentAssistProcessor
 ----------------------------------
 
 A completion processor takes the current insertion point in the editor and figures out a list of continuation proposals for the user to choose from. Our completion processor looks something like this:
 
- 
 
-       class EScriptCompletionProcessor implements IContentAssistProcessor { 
+```java
+       class EScriptCompletionProcessor implements IContentAssistProcessor {
           private final IContextInformation[] NO_CONTEXTS = { };
           private final char[] PROPOSAL_ACTIVATION_CHARS = { 's','f','p','n','m', };
           private ICompletionProposal[] NO_COMPLETIONS = { };
@@ -66,7 +67,7 @@ A completion processor takes the current insertion point in the editor and figur
           }
           private String lastIndent(IDocument doc, int offset) {
              try {
-                int start = offset-1; 
+                int start = offset-1;
                 while (start &gt;= 0 &amp;&amp; doc.getChar(start)!= '\n') start--;
                 int end = start;
                 while (end &lt; offset &amp;&amp; Character.isSpaceChar(doc.getChar(end))) end++;
@@ -76,7 +77,7 @@ A completion processor takes the current insertion point in the editor and figur
              }
              return "";
           }
-          public IContextInformation[] computeContextInformation(ITextViewer viewer, int offset) { 
+          public IContextInformation[] computeContextInformation(ITextViewer viewer, int offset) {
              return NO_CONTEXTS;
           }
           char[] getCompletionProposalAutoActivationCharacters() {
@@ -84,6 +85,7 @@ A completion processor takes the current insertion point in the editor and figur
           }
           // ... remaining methods are optional ...
        }
+```
 
 Basically, Content Assist completion has three steps. First, we have to figure out what string has already been started by the user (see lastWord). Second, we have to find appropriate completions. Third, we have to return strings so that when they are inserted, they lay out acceptably (see the use of lastIndent).
 

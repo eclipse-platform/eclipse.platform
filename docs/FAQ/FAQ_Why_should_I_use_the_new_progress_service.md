@@ -7,6 +7,7 @@ Eclipse 3.0 introduced a central new workbench _progress service_. This service 
 
 The service is used much like the SWT BusyIndicator. Simply pass an IRunnableWithProgress instance to the busyCursorWhile method. The UI will prevent further user input and report progress feedback until the runnable completes. Note that the runnable executes in a non-UI thread, so you will have to use asyncExec or syncExec to execute any code within the runnable that requires access to UI widgets:
 
+```java
          IWorkbench wb = PlatformUI.getWorkbench();
          IProgressService ps = wb.getProgressService();
          ps.busyCursorWhile(new IRunnableWithProgress() {
@@ -14,6 +15,7 @@ The service is used much like the SWT BusyIndicator. Simply pass an IRunnableWit
                ... do some long running task
             }
          });
+```
 
 This progress service was introduced to unify a number of progress-reporting mechanisms in Eclipse 2.1. JFace provides a Progress Monitor dialog, SWT provides a busy indicator, and the workbench provides a progress indicator on the status line. Each of these mechanisms has its own advantages and disadvantages. The busy cursor is the least obtrusive and works well for tasks that typically take a second or less. The Progress dialog provides much more information and allows the user to cancel but is visually distracting, especially on short tasks as it pops up over the user's work. The status line progress monitor is a bit less obtrusive but doesn't give an obvious indication that the UI is not accepting further input, and the space for presenting progress indication is very constrained. The new progress service tries to achieve a balance by automatically adapting between a busy cursor and a dialog, depending on the situation.
 

@@ -18,15 +18,15 @@ Each segment captures a different intent:
 
 ### When to change the major segment
 
-The major segment number must be increased when a plug-in makes breaking changes to its API. 
-When the major segment is changed the minor and service segments are reset to 0. 
+The major segment number must be increased when a plug-in makes breaking changes to its API.
+When the major segment is changed the minor and service segments are reset to 0.
 See [Evolving Java-based APIs](Evolving-Java-based-APIs.md) for details on what constitutes a breaking change.
 
 **Example**: From the version 2.2.7, an incompatible change would lead to 3.0.0. By definition, such changes should not be made when working in a maintenance stream.
 
 ### When to change the minor segment
 
-The minor segment number must be incremented when a plug-in changes in an "externally visible" way. 
+The minor segment number must be incremented when a plug-in changes in an "externally visible" way.
 Examples of externally visible changes include [binary compatible API changes](Evolving-Java-based-APIs-2.md) or an increased minimum Java version via the Bundle-RequiredExecutionEnvironment header in the MANIFEST.MF, significant performance changes, major code rework, adding a new extension point, changing files with a somewhat unclear API status (e.g. changing icons from gif to png), etc. Another way to know when this version number should be changed is by exclusion: it should indicate changes that are neither bug fixes (indicated by the service segment) nor breaking API changes (indicated by the major segment). When the minor segment is changed, the service segment is reset to 0.
 
 **Example**: From the version 2.2.7, a minor change would lead to 2.3.0.
@@ -45,17 +45,17 @@ This example shows how the version of a plug-in reacts to changes (indicated in 
 
     First development stream
      - 1.0.0
-    
+
     Second development stream
      - 1.0.100 (indicates a bug fix)
      - 1.1.0 (a new API has been introduced)
      The plug-in ships as 1.1.0
-    
+
     Third development stream
      - 1.1.100 (indicates a bug fix)
      - 2.0.0 (indicates a breaking change)
      The plug-in ships as 2.0.0
-    
+
     Maintenance stream after 1.1.0
      - 1.1.1
      The plug-in ships as 1.1.1
@@ -127,16 +127,17 @@ Exported packages being used as service APIs must have a version number. The gui
 
 In the Javadoc, @since tags are used to indicate the version of a **plug-in** in which a specific API has been added. Because Javadoc describes API, only the first two segment of the plug-in version number should be used. This represents a change from the previous practice where @since indicated the development stream. In addition to using the plug-in version, we recommend to prefix the version number by the plug-in id. This allows tracking of APIs moving from one plug-in to another (this can happen when a plug-in is split into multiple plug-ins but the package names are kept). **Example**: In the 3.2 development stream, the API of the new plug-in org.eclipse.core.filesystem should be tagged as follows:
 
-
+```java
     /**
      * This class is the main entry point for clients of the Eclipse file system API.  This
      * class has factory methods for obtaining instances of file systems and file
      * stores, and provides constants for option values and error codes.
-     * 
+     *
      * @noextend This class is not intended to be subclassed by clients.
      * @noinstantiate This class is not intended to be instantiated by clients.
      * @since org.eclipse.core.filesystem 1.0
      */
+```
 
 Versioning features
 -------------------
@@ -153,8 +154,8 @@ A branding plug-in should keep its version in sync with its feature.
 
 ### To require features or to require bundles
 
-A feature can express its external dependencies as required features, required plug-ins, or a combination of the two. 
-How dependencies are expressed has consequences on the install-time behavior of your feature, so it is important to understand the different approaches. 
+A feature can express its external dependencies as required features, required plug-ins, or a combination of the two.
+How dependencies are expressed has consequences on the install-time behavior of your feature, so it is important to understand the different approaches.
 These approaches are described below along with a discussion of their effect.
 Feature dependencies do not have to express dependencies that are already expressed at the plug-in level.
 Such duplication or further refinement of dependency information between features and plug-ins may unnecessarily restrict the ability to install the feature. With the classic Eclipse Update Manager that was the default install/update technology prior to Eclipse 3.4, dependency information was required at the feature level because the provisioning technology only reasoned at the level of features.
@@ -173,21 +174,21 @@ Expressing dependencies directly at the plug-in level has the benefit of isolati
         contains plugins:
           org.eclipse.draw2d		3.1.0
           org.eclipse.gef			3.1.0
-     
+
      Case 2: It is better to express this as:
          contains plugins:
            org.eclipse.draw2d		3.1.0
-           org.eclipse.gef			3.1.0  
+           org.eclipse.gef			3.1.0
          requires plugins:
            org.eclipse.core.runtime	3.1.0 match="compatible"
            org.eclipse.ui.views		3.1.0 match="compatible"
            org.eclipse.ui.workbench	3.1.0 match="compatible"
            org.eclipse.jface		3.1.0 match="compatible"
            org.eclipse.swt			3.1.0 match="compatible"
-    
-    
 
- 
+
+
+
 
 In case 1, if the version of the org.eclipse.platform feature changes to 4.0.0 (because org.eclipse.core.resources changes its major version number), org.eclipse.gef is required to deliver a new version of its features. In case 2, such changes are transparent to the author of GEF.
 
@@ -198,7 +199,7 @@ In case 1, if the version of the org.eclipse.platform feature changes to 4.0.0 (
 #### Require features
 
 Use required features when you want another entire feature to be present when your feature is installed. This typically results in a user-level awareness of the required feature, rather than a hidden implementation detail of your feature.
-For example, users installing Java EE tools from the [Web Tools Platform](http://www.eclipse.org/webtools/) project also require [Java development tools](https://github.com/eclipse-jdt). 
+For example, users installing Java EE tools from the [Web Tools Platform](http://www.eclipse.org/webtools/) project also require [Java development tools](https://github.com/eclipse-jdt).
 This is not just because their plug-ins depend on plug-ins in JDT, but because users of the Java EE tools really expect the full JDT to be there, including documentation, help content, and possibly source. In this case the dependency should be expressed at the feature level to ensure the entire required feature is installed. Feature-level dependencies are also required if you are targeting a platform using the classic Eclipse Update Manager, which operated purely at the level of feature dependencies.
 
 ### Feature includes

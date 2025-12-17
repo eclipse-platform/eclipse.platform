@@ -5,33 +5,41 @@ FAQ How do I create a Java project?
 
 Several steps are required to create and properly initialize a Java project. Start by creating and opening an IProject:
 
+```java
       String name = "MyProject";
       IWorkspace workspace = ResourcesPlugin.getWorkspace();
       IWorkspaceRoot root= workspace.getRoot();
       IProject project= root.getProject(name);
       project.create(null);
       project.open(null);
+```
 
 Next, you need to add the Java nature to the project. This in turn will cause the Java builder to be added to the project:
 
+```java
       IProjectDescription desc = project.getDescription();
       desc.setNatureIds(new String[] {
          JavaCore.NATURE_ID});
       project.setDescription(desc);
+```
 
 Next, you must set the Java builder's output folder, typically called bin. This is where the Java builder will place all compiled *.class files:
 
+```java
       IJavaProject javaProj = JavaCore.create(project);
       IFolder binDir = project.getFolder("bin");
       IPath binPath = binDir.getFullPath();
       javaProj.setOutputLocation(binPath, null);
+```
 
 Finally, you need to set the project's classpath, also known as the build path. You will need to minimally create a classpath entry that points to the Java runtime library, rt.jar, and additional entries for any other libraries and projects that the project requires:
 
+```java
       String path = "c:\\jre\\lib\\rt.jar";
       IClasspathEntry cpe= JavaCore.newLibraryEntry(
          path, null, null);
       javaProj.setRawClasspath(new IClasspathEntry[] {cpe});
+```
 
 See Also:
 ---------

@@ -7,6 +7,7 @@ In Eclipse 3.0, infrastructure was added to support running application code con
 
 The basic unit of concurrent activity in Eclipse is provided by the Job class. Jobs are a cross between the interface java.lang.Runnable and the class java.lang.Thread. Jobs are similar to runnables because they encapsulate behavior inside a run method and are similar to threads because they are not executed in the calling thread. This example illustrates how a job is used:
 
+```java
    Job myJob = new Job("Sample Job") {
       public IStatus run(IProgressMonitor monitor) {
          System.out.println("This is running in a job");
@@ -14,6 +15,7 @@ The basic unit of concurrent activity in Eclipse is provided by the Job class. J
       }
    };
    myJob.schedule();
+```
 
 When schedule is called, the job is added to a queue of jobs waiting to be run. Worker threads then remove them from the queue and invoke their run method. This system has a number of advantages over creating and starting a Java thread:
 

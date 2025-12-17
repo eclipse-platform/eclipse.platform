@@ -17,7 +17,9 @@ All HTML tags must be explicitly terminated
 
 All HTML tags appearing in Javadoc comments must be explicitly terminated, even the ones that are considered optional in older versions of HTML such as
 
+```html
 		<p>...</p>
+```
 
 Various internal tools that post-process the extracted HTML documentation into other forms (e.g., Windows help file) need these tags.
 

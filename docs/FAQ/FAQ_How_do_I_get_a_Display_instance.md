@@ -7,13 +7,15 @@ Most users deploy Eclipse as one top-level window and manage their code in persp
 
 If you call Display.getCurrent, it returns the display that was created in that thread, if any. Here is an example:
 
+```java
       public static Display getDisplay() {
          Display display = Display.getCurrent();
          //may be null if outside the UI thread
          if (display == null)
             display = Display.getDefault();
-         return display;		
+         return display;
       }
+```
 
 A calling thread that does not have an active display will return null. Therefore, this method is useful only when you are absolutely certain that you are in the thread that created the display. This brings us to the second way you can obtain a display instance: Display.getDefault(). It will return the first display that was created. If your application has only one display, this is an acceptable way of obtaining the display.
 

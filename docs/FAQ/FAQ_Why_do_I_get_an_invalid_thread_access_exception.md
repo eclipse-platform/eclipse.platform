@@ -9,6 +9,7 @@ When the end user of your application activates a menu or clicks a button, the O
 
 Therefore, when an application decides that it needs to live a life on its own, one option is for it to create another Java thread. A typical sample is the following:
 
+```java
       new Thread(new Runnable() {
          public void run() {
             while (true) {
@@ -21,6 +22,7 @@ Therefore, when an application decides that it needs to live a life on its own, 
             }
          }
       }).start();
+```
 
 This starts a timer that goes off every second and does some work. Because the work will be done in an unsafe thread, we need to request that SWT performs the task in a safe manner. We do this by requesting that the default SWT display runs our runnable when it can using asyncExec. In practice, this request is served as soon as possible. Execution is performed asynchronously. In other words, the request is placed in a queue with all other asyncExec requests and dealt with in a first-come first-served manner.
 

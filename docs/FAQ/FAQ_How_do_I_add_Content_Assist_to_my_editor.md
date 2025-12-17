@@ -5,6 +5,7 @@ FAQ How do I add Content Assist to my editor?
 
 As with most editor features, Content Assist is added to a text editor from your editor's SourceViewerConfiguration. In this case, you need to override the getContentAssistant method. Here is the implementation of this method in our HTML editor example:
 
+```java
         public IContentAssistant getContentAssistant(ISourceViewer sv) {
             ContentAssistant ca = new ContentAssistant();
             IContentAssistProcessor pr = new TagCompletionProcessor();
@@ -13,6 +14,7 @@ As with most editor features, Content Assist is added to a text editor from your
             ca.setInformationControlCreator(getInformationControlCreator(sv));
             return ca;
         }
+```
 
 Although IContentAssistant is the top-level type that provides Content Assist, most of the work is done by an IContentAssistProcessor. Documents are divided into _partitions_ to represent different logical segments of the text, such as comments, keywords, and identifiers. The IContentAssistant's main role is to provide the appropriate processor for each partition of your document. In our HTML editor example, the document is divided into three partitions: comments, tags, and everything else, represented by the default content type.
 
@@ -28,17 +30,20 @@ Context information, if applicable, is displayed in a pop-up after the user has 
 
 The final step in implementing Content Assist in your editor is to add an action that will allow the user to invoke Content Assist. The text framework provides an action for this purpose, but it is not installed in the abstract text editor because it isn't applicable to all flavors of text editors. The action is installed by overriding your editor's createActions method. The action class is ContentAssistAction. Here is a snippet from the createActions method in our example HTML editor:
 
-        Action action = new ContentAssistAction(resourceBundle, "ContentAssistProposal.", this); 
+```java
+        Action action = new ContentAssistAction(resourceBundle, "ContentAssistProposal.", this);
         String id = ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS
         action.setActionDefinitionId(id);
-        setAction("ContentAssistProposal", action); 
+        setAction("ContentAssistProposal", action);
         markAsStateDependentAction("ContentAssistProposal", true);
+```
 
 Line 1 creates the Action instance, supplying a resource bundle where the display strings should be taken from, along with a prefix for that action. The message bundle on disk would look something like this:
-
+```java
         ContentAssistProposal.label=Content assist
         ContentAssistProposal.tooltip=Content assist
         ContentAssistProposal.description=Provides Content Assistance
+```
 
 Line 3 associates a well-known ID with the action that will tell the UI's command framework that this is the action for Content Assist. This allows the user to change the key binding for Content Assist generically and have it apply automatically to all editors that provide Content Assist.
 

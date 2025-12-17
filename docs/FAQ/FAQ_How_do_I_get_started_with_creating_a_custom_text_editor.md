@@ -22,6 +22,7 @@ The FAQs in this chapter will use a running example of a simple HTML editor. We 
 
 Here is the skeleton of the HTMLEditor class, showing the customization entry points:
 
+```java
    public class HTMLEditor extends AbstractTextEditor {
       public HTMLEditor() {
          //install the source configuration
@@ -34,6 +35,7 @@ Here is the skeleton of the HTMLEditor class, showing the customization entry po
          //... add other editor actions here
       }
    }
+```
 
 See Also:
 ---------

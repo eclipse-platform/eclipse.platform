@@ -7,9 +7,10 @@ Eclipse does not support decorating TableViewers and TreeViewers with TreeColumn
 
 This can be achieved by extending the DecoratingLabelProvider class and creating your own class called as <Your Class Name> for e.g.TableDecoratingLabelProvider and implement ITableLabelProvider in that class.
 
-  
+
 It would look something like this
 
+```java
     /**
      *  Class that supports Decoration of TableViewer and TreeViewer with TreeColumns
      */
@@ -67,18 +68,23 @@ It would look something like this
       }
       return text;
     }
+```
 
 This class can now handle Trees which have Columns and TableViewers. How you use it is specified below
 
 While attaching the LabelProvider to your viewer use this Code
 
+```java
     ILabelDecorator decorator = PlatformUI.getWorkbench().getDecoratorManager().getLabelDecorator();
     <Your Viewer>.setLabelProvider(new TableDecoratingLabelProvider(<Your LabelProvider>, decorator));
+```
 
 instead of
 
+```java
     ILabelDecorator decorator = PlatformUI.getWorkbench().getDecoratorManager().getLabelDecorator();
     <Your Viewer>.setLabelProvider(new DecoratingLabelProvider(<Your LabelProvider>, decorator));
+```
 
 See Also:
 ---------

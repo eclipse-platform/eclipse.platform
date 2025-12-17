@@ -11,16 +11,18 @@ Follow three simple steps to make use of an ISelectionService in your views. Fir
 
 Second, register the view-selection provider with the selection service. The view that wants to broadcast selection changes simply has to register itself with the ISelectionService by supplying an implementation of org.eclipse.jface.viewers ISelectionProvider. In most cases, your view will contain a JFace viewer, all of which implement ISelectionProvider directly. If your view does not contain a viewer, you will have to implement the ISelectionProvider interface directly. Here is a sample of a view's createPartControl method, which creates a viewer and then registers it with the page-selection service:
 
+```java
       public void createPartControl(Composite parent) {
          int style = SWT.SINGLE | SWT.H\_SCROLL | SWT.V\_SCROLL;
          viewer = new TableViewer(parent, style);
          getSite().setSelectionProvider(viewer);
          ...
       }
+```
 
-  
 The final step is to register a selection listener with the selection service. The view that wants to respond to selection changes must register an implementation of org.eclipse.ui ISelectionListener with the selection service. The following example defines the Chapters view described earlier. This view responds to selection changes where the selection is a book and displays the chapters of that book. It is important for your selection listener to ignore selections that it does not understand. The selection service will be broadcasting all kinds of selection changes that are not relevant to your view, so you need to listen selectively.
 
+```java
       public class ChaptersView extends ViewPart {
          private TableViewer viewer;
          ISelectionListener listener = new ISelectionListener() {
@@ -40,10 +42,11 @@ The final step is to register a selection listener with the selection service. T
             getSite().getPage().removeSelectionListener(listener);
          }
       }
+```
 
 Again, note how this example completely ignores selections that don't contain books. If the selection contains a single book, the view will display its chapters. If the selection contains several books, it will display nothing. Also note in this example that the view is responsible for removing the selection listener when it closes. As a general rule with listeners, the code for adding a listener should never be very far from the code for removing the listener. If you forget to remove your listener when the view is closed, your selection listener will cause errors later on.
 
-  
+
 
 See Also:
 ---------

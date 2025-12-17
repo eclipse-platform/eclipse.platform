@@ -1,7 +1,7 @@
 FAQ: How do I create a Rich Client Application?
 ===============================================
 
-An Eclipse RCP application in Eclipse 4 (e4) leverages the application model for defining the user interface and behavior. 
+An Eclipse RCP application in Eclipse 4 (e4) leverages the application model for defining the user interface and behavior.
 Unlike Eclipse 3.x, where WorkbenchAdvisor played a central role, Eclipse 4 RCP applications are more declarative, using application models and dependency injection.
 
 ## Step 1: Set Up Your Project
@@ -21,16 +21,18 @@ In Eclipse 4, you implement your application's business logic in classes annotat
 
 Example of an Eclipse 4 RCP Application Entry Point for a handler called via a menu.
 
+```java
       import org.eclipse.e4.core.di.annotations.Execute;
       import org.eclipse.swt.widgets.Shell;
 
       public class Application {
-         
+
          @Execute
          public void run(Shell shell) {
             // Your application logic here
          }
       }
+```
 
 The @Execute annotation marks the method to be run once the menu entry connnected with this handler is called.
 
@@ -38,6 +40,7 @@ The @Execute annotation marks the method to be run once the menu entry connnecte
 
 Unlike Eclipse 3.x, most of the configuration in Eclipse 4 is done through the application model (Application.e4xmi). However, you still need to define your application's ID and point to the application model in your plugin.xml:
 
+```xml
       <extension
          id="application"
          point="org.eclipse.core.runtime.applications">
@@ -50,11 +53,12 @@ Unlike Eclipse 3.x, most of the configuration in Eclipse 4 is done through the a
             </run>
       </application>
       </extension>
+```
 
 Make sure to replace "path/to/your/Application.e4xmi" with the actual path to your application model file.
 
 ## Conclusion
-Eclipse 4 RCP development focuses on the application model and dependency injection, providing a more flexible and modular approach to building rich client applications compared to the traditional Eclipse 3.x RCP. The rest of your RCP application development involves creating and populating perspectives, views, and other UI components using the Eclipse 4 application model.  
+Eclipse 4 RCP development focuses on the application model and dependency injection, providing a more flexible and modular approach to building rich client applications compared to the traditional Eclipse 3.x RCP. The rest of your RCP application development involves creating and populating perspectives, views, and other UI components using the Eclipse 4 application model.
 
 See Also:
 ---------
