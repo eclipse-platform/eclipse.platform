@@ -179,8 +179,6 @@ public class LocalFile extends FileStore {
 				Policy.error(EFS.ERROR_EXISTS, NLS.bind(Messages.fileExists, target.filePath), e);
 			} catch (IOException e) {
 				Policy.error(EFS.ERROR_WRITE, NLS.bind(Messages.failedCopy, this.filePath, target.filePath), e);
-			} finally {
-				subMonitor.done();
 			}
 		} else {
 			super.copyFile(sourceInfo, destination, options, monitor);
@@ -457,55 +455,51 @@ public class LocalFile extends FileStore {
 		File destination = destinationFile.file;
 		boolean overwrite = (options & EFS.OVERWRITE) != 0;
 		SubMonitor subMonitor = SubMonitor.convert(monitor, NLS.bind(Messages.moving, source.getAbsolutePath()), 1);
+		//this flag captures case renaming on a case-insensitive OS, or moving
+		//two equivalent files in an environment that supports symbolic links.
+		//in these cases we NEVER want to delete anything
+		boolean sourceEqualsDest = false;
 		try {
-			//this flag captures case renaming on a case-insensitive OS, or moving
-			//two equivalent files in an environment that supports symbolic links.
-			//in these cases we NEVER want to delete anything
-			boolean sourceEqualsDest = false;
-			try {
-				sourceEqualsDest = isSameFile(source, destination);
-			} catch (IOException e) {
-				String message = NLS.bind(Messages.couldNotMove, source.getAbsolutePath());
-				Policy.error(EFS.ERROR_WRITE, message, e);
-			}
-			if (!sourceEqualsDest && !overwrite && destination.exists()) {
-				String message = NLS.bind(Messages.fileExists, destination.getAbsolutePath());
-				Policy.error(EFS.ERROR_EXISTS, message);
-			}
-			if (source.renameTo(destination)) {
-				// double-check to ensure we really did move
-				// since java.io.File#renameTo sometimes lies
-				if (!sourceEqualsDest && source.exists()) {
-					// XXX: document when this occurs
-					if (destination.exists()) {
-						// couldn't delete the source so remove the destination and throw an error
-						// XXX: if we fail deleting the destination, the destination (root) may still exist
-						new LocalFile(destination).delete(EFS.NONE, null);
-						String message = NLS.bind(Messages.couldnotDelete, source.getAbsolutePath());
-						Policy.error(EFS.ERROR_DELETE, message);
-					}
-					// source exists but destination doesn't so try to copy below
-				} else {
-					// destination.exists() returns false for broken links, this has to be handled explicitly
-					if (!destination.exists() && !destFile.fetchInfo().getAttribute(EFS.ATTRIBUTE_SYMLINK)) {
-						// neither the source nor the destination exist. this is REALLY bad
-						String message = NLS.bind(Messages.failedMove, source.getAbsolutePath(), destination.getAbsolutePath());
-						Policy.error(EFS.ERROR_WRITE, message);
-					}
-					// the move was successful
-					return;
-				}
-			}
-			// for some reason renameTo didn't work
-			if (sourceEqualsDest) {
-				String message = NLS.bind(Messages.couldNotMove, source.getAbsolutePath());
-				Policy.error(EFS.ERROR_WRITE, message, null);
-			}
-			// fall back to default implementation
-			super.move(destFile, options, subMonitor.newChild(1));
-		} finally {
-			subMonitor.done();
+			sourceEqualsDest = isSameFile(source, destination);
+		} catch (IOException e) {
+			String message = NLS.bind(Messages.couldNotMove, source.getAbsolutePath());
+			Policy.error(EFS.ERROR_WRITE, message, e);
 		}
+		if (!sourceEqualsDest && !overwrite && destination.exists()) {
+			String message = NLS.bind(Messages.fileExists, destination.getAbsolutePath());
+			Policy.error(EFS.ERROR_EXISTS, message);
+		}
+		if (source.renameTo(destination)) {
+			// double-check to ensure we really did move
+			// since java.io.File#renameTo sometimes lies
+			if (!sourceEqualsDest && source.exists()) {
+				// XXX: document when this occurs
+				if (destination.exists()) {
+					// couldn't delete the source so remove the destination and throw an error
+					// XXX: if we fail deleting the destination, the destination (root) may still exist
+					new LocalFile(destination).delete(EFS.NONE, null);
+					String message = NLS.bind(Messages.couldnotDelete, source.getAbsolutePath());
+					Policy.error(EFS.ERROR_DELETE, message);
+				}
+				// source exists but destination doesn't so try to copy below
+			} else {
+				// destination.exists() returns false for broken links, this has to be handled explicitly
+				if (!destination.exists() && !destFile.fetchInfo().getAttribute(EFS.ATTRIBUTE_SYMLINK)) {
+					// neither the source nor the destination exist. this is REALLY bad
+					String message = NLS.bind(Messages.failedMove, source.getAbsolutePath(), destination.getAbsolutePath());
+					Policy.error(EFS.ERROR_WRITE, message);
+				}
+				// the move was successful
+				return;
+			}
+		}
+		// for some reason renameTo didn't work
+		if (sourceEqualsDest) {
+			String message = NLS.bind(Messages.couldNotMove, source.getAbsolutePath());
+			Policy.error(EFS.ERROR_WRITE, message, null);
+		}
+		// fall back to default implementation
+		super.move(destFile, options, subMonitor.newChild(1));
 	}
 
 	private boolean isSameFile(File source, File destination) throws IOException {
