@@ -74,8 +74,8 @@ public class ResourceExtender extends PropertyTester {
 			if (PROPERTY_MATCHES_PATTERN.equals(method)) {
 				String fileName = resource.getName();
 				String expected = (String) expectedValue;
-				expected = expected.replaceAll("\\.", "\\\\.");  //$NON-NLS-1$//$NON-NLS-2$
-				expected = expected.replaceAll("\\*", "\\.\\*");  //$NON-NLS-1$//$NON-NLS-2$
+				expected = expected.replace(".", "\\.");  //$NON-NLS-1$//$NON-NLS-2$
+				expected = expected.replace("*", ".*");  //$NON-NLS-1$//$NON-NLS-2$
 				Pattern pattern = Pattern.compile(expected);
 				boolean retVal = pattern.matcher(fileName).find();
 				return retVal;
