@@ -12,6 +12,15 @@
 
 <plugin>
 
+<!-- E4 model fragment -->
+   <extension
+         id="fragment"
+         point="org.eclipse.e4.workbench.model">
+      <fragment
+            uri="fragment.e4xmi">
+      </fragment>
+   </extension>
+
 <!-- Extension points -->
    <extension-point id="launcherDelegates" name="%ExtensionPoint.launcherDelegates.name" schema="schema/launcherDelegates.exsd"/>
 
@@ -309,103 +318,12 @@
       </menuContribution>
             
    </extension>
-   <extension point="org.eclipse.ui.commands">
-      <category
-            id="org.eclipse.terminal.view.ui.commands.category"
-            name="%command.category.name">
-      </category>
-   
-      <command
-            categoryId="org.eclipse.terminal.view.ui.commands.category"
-            helpContextId="org.eclipse.terminal.view.ui.command_Launch"
-            id="org.eclipse.terminal.view.ui.command.launch"
-            name="%command.launch.selection.name">
-      </command>
-    <command
-            categoryId="org.eclipse.terminal.view.ui.commands.category"
-            helpContextId="org.eclipse.terminal.view.ui.command_Launch"
-            id="org.eclipse.terminal.view.ui.command.launchConsole"
-            name="%command.launch.selection.name">
-      </command>
-      <command
-            categoryId="org.eclipse.terminal.view.ui.commands.category"
-            helpContextId="org.eclipse.terminal.view.ui.command_Launch"
-            id="org.eclipse.terminal.view.ui.command.launchToolbar"
-            name="%command.launch.name">
-      </command>
-      <command
-            categoryId="org.eclipse.terminal.view.ui.commands.category"
-            helpContextId="org.eclipse.terminal.view.ui.command_Disconnect"
-            id="org.eclipse.terminal.view.ui.command.disconnect"
-            name="%command.disconnect.name">
-      </command>
-      <command
-            categoryId="org.eclipse.terminal.view.ui.commands.category"
-            helpContextId="org.eclipse.terminal.view.ui.command_NewView"
-            id="org.eclipse.terminal.view.ui.command.newview"
-            name="%command.newview.name">
-      </command>
-   </extension>
    <extension point="org.eclipse.ui.bindings">
       <key
             commandId="org.eclipse.terminal.view.ui.command.launchToolbar"
             contextId="org.eclipse.ui.contexts.window"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="CTRL+SHIFT+M3+T"/> <!-- Bug 435111: Don't use M1 since COMMAND+Option T already taken on Mac -->
-   </extension>
-   <extension point="org.eclipse.ui.handlers">
-      <handler
-            class="org.eclipse.terminal.view.ui.internal.handler.LaunchTerminalCommandHandler"
-            commandId="org.eclipse.terminal.view.ui.command.launch">
-      </handler>
-      <handler
-            class="org.eclipse.terminal.view.ui.internal.handler.LaunchTerminalCommandHandler"
-            commandId="org.eclipse.terminal.view.ui.command.launchToolbar">
-      </handler>
-      <handler
-            class="org.eclipse.terminal.view.ui.internal.handler.LaunchTerminalCommandHandler"
-            commandId="org.eclipse.terminal.view.ui.command.launchConsole">
-      </handler>
-      <handler
-            class="org.eclipse.terminal.view.ui.internal.handler.DisconnectTerminalCommandHandler"
-            commandId="org.eclipse.terminal.view.ui.command.disconnect">
-            <enabledWhen>
-               <with variable="activePart">
-                  <instanceof value="org.eclipse.terminal.view.ui.ITerminalsView"/>
-                  <test property="org.eclipse.terminal.view.ui.canDisconnect" value="true"/>
-               </with>
-            </enabledWhen>
-      </handler>
-      
-      <handler
-            class="org.eclipse.terminal.view.ui.internal.handler.MaximizeViewHandler"
-            commandId="org.eclipse.terminal.maximize">
-            <activeWhen>
-               <with variable="activePartId">
-                  <equals value="org.eclipse.terminal.view.ui.TerminalsView"/>
-               </with>
-            </activeWhen>
-      </handler>
-      
-      <handler
-            class="org.eclipse.terminal.view.ui.internal.handler.QuickAccessHandler"
-            commandId="org.eclipse.terminal.quickaccess">
-            <activeWhen>
-               <with variable="activePartId">
-                  <equals value="org.eclipse.terminal.view.ui.TerminalsView"/>
-               </with>
-            </activeWhen>
-      </handler>
-
-      <handler
-            class="org.eclipse.terminal.view.ui.internal.handler.NewTerminalViewHandler"
-            commandId="org.eclipse.terminal.view.ui.command.newview">
-            <activeWhen>
-               <with variable="activePartId">
-                  <equals value="org.eclipse.terminal.view.ui.TerminalsView"/>
-               </with>
-            </activeWhen>
-      </handler>
    </extension>
    <extension point="org.eclipse.help.contexts">
       <contexts

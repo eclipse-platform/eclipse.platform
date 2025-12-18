@@ -40,6 +40,16 @@ public abstract class AbstractTriggerCommandHandler extends AbstractHandler {
 	 * @param selection The selection to pass on to the command or <code>null</code>.
 	 */
 	protected void triggerCommand(String commandId, ISelection selection) {
+		triggerCommandStatic(commandId, selection);
+	}
+
+	/**
+	 * Static method to trigger a command to be executed. Can be used from E4 handlers.
+	 *
+	 * @param commandId The command id. Must not be <code>null</code>.
+	 * @param selection The selection to pass on to the command or <code>null</code>.
+	 */
+	protected static void triggerCommandStatic(String commandId, ISelection selection) {
 		Assert.isNotNull(commandId);
 
 		ICommandService service = PlatformUI.getWorkbench().getService(ICommandService.class);

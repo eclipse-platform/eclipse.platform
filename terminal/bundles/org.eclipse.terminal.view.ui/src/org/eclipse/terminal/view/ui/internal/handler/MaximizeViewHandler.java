@@ -11,18 +11,30 @@
  *******************************************************************************/
 package org.eclipse.terminal.view.ui.internal.handler;
 
-import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
+import jakarta.inject.Inject;
+
+import org.eclipse.core.commands.ParameterizedCommand;
+import org.eclipse.e4.core.commands.ECommandService;
+import org.eclipse.e4.core.commands.EHandlerService;
+import org.eclipse.e4.core.di.annotations.Execute;
 
 /**
  * Maximize view handler implementation.
  */
-public class MaximizeViewHandler extends AbstractTriggerCommandHandler {
+public class MaximizeViewHandler {
 
-	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		triggerCommand("org.eclipse.ui.window.maximizePart", null); //$NON-NLS-1$
-		return null;
+	@Inject
+	private ECommandService commandService;
+
+	@Inject
+	private EHandlerService handlerService;
+
+	@Execute
+	public void execute() {
+		ParameterizedCommand command = commandService.createCommand("org.eclipse.ui.window.maximizePart", null); //$NON-NLS-1$
+		if (command != null) {
+			handlerService.executeHandler(command);
+		}
 	}
 
 }

@@ -12,26 +12,39 @@
  *******************************************************************************/
 package org.eclipse.terminal.view.ui.internal.handler;
 
-import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
+import jakarta.inject.Inject;
+
+import org.eclipse.core.commands.ParameterizedCommand;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
+import org.eclipse.e4.core.commands.ECommandService;
+import org.eclipse.e4.core.commands.EHandlerService;
+import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.terminal.view.ui.TerminalViewId;
 import org.eclipse.terminal.view.ui.internal.UIPlugin;
 
 /**
  * New Terminal View handler implementation
  */
-public class NewTerminalViewHandler extends AbstractTriggerCommandHandler {
+public class NewTerminalViewHandler {
 
-	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
+	@Inject
+	private ECommandService commandService;
+
+	@Inject
+	private EHandlerService handlerService;
+
+	@Execute
+	public void execute() {
 		try {
 			UIPlugin.getConsoleManager().showConsoleView(new TerminalViewId().next());
-			triggerCommand("org.eclipse.terminal.view.ui.command.launchToolbar", null); //$NON-NLS-1$
+			ParameterizedCommand command = commandService.createCommand("org.eclipse.terminal.view.ui.command.launchToolbar", null); //$NON-NLS-1$
+			if (command != null) {
+				handlerService.executeHandler(command);
+			}
 		} catch (CoreException e) {
-			throw new ExecutionException(e.getStatus().getMessage(), e);
+			ILog.get().error("Error creating new terminal view", e); //$NON-NLS-1$
 		}
-		return null;
 	}
 
 }
