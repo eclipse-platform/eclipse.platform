@@ -2,13 +2,13 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tip of the Day Tests
 Bundle-SymbolicName: org.eclipse.tips.tests
-Bundle-Version: 1.2.300.qualifier
+Bundle-Version: 1.3.0.qualifier
 Bundle-Vendor: Eclipse
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Require-Bundle: org.eclipse.tips.ide;bundle-version="0.1.0",
  org.eclipse.core.runtime;bundle-version="3.29.0",
  org.eclipse.swt,
- org.eclipse.jface;bundle-version="3.12.0",
+ org.eclipse.jface;bundle-version="3.39.0",
  org.eclipse.tips.core;bundle-version="0.1.0",
  org.eclipse.tips.ui;bundle-version="0.1.0",
  org.eclipse.tips.json;bundle-version="0.1.0"

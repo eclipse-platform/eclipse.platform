@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.debug.examples.memory;singleton:=true
-Bundle-Version: 1.104.0.qualifier
+Bundle-Version: 1.105.0.qualifier
 Bundle-Activator: org.eclipse.debug.examples.internal.memory.MemoryViewSamplePlugin
 Bundle-Vendor: %Bundle-Vendor
 Bundle-Localization: plugin
@@ -18,5 +18,5 @@ Require-Bundle: org.eclipse.core.expressions,
  org.eclipse.core.resources,
  org.eclipse.jface.text
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Automatic-Module-Name: org.eclipse.debug.examples.memory

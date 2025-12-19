@@ -2,13 +2,13 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.compare.tests;singleton:=true
-Bundle-Version: 3.8.900.qualifier
+Bundle-Version: 3.9.0.qualifier
 Require-Bundle: org.eclipse.compare,
  org.eclipse.jface.text,
  org.eclipse.jface,
  org.eclipse.core.runtime;bundle-version="[3.29.0,4.0.0)",
  org.eclipse.test.performance,
- org.eclipse.ui,
+ org.eclipse.ui;bundle-version="3.208.0",
  org.eclipse.core.resources,
  org.eclipse.core.tests.resources,
  org.eclipse.core.tests.harness,
@@ -22,7 +22,7 @@ Import-Package: org.assertj.core.api,
 Bundle-Activator: org.eclipse.compare.tests.CompareTestPlugin
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: %providerName
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Bundle-Localization: plugin
 Export-Package: org.eclipse.compare.tests,
  org.eclipse.compare.tests.performance

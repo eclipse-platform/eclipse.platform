@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.team.tests.core; singleton:=true
-Bundle-Version: 3.10.600.qualifier
+Bundle-Version: 3.11.0.qualifier
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Export-Package: org.eclipse.team.tests.core,
@@ -33,5 +33,5 @@ Import-Package: org.assertj.core.api,
  org.junit.platform.suite.api;version="[1.14.0,2.0.0)"
 Bundle-ActivationPolicy: lazy
 Eclipse-BundleShape: dir
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Automatic-Module-Name: org.eclipse.team.tests.core
