@@ -2,15 +2,15 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.terminal.test;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.1.0.qualifier
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Require-Bundle: org.junit;bundle-version="[4.13.2,5)",
  org.eclipse.core.runtime;bundle-version="[3.33.0,4)",
- org.eclipse.ui;bundle-version="[3.207.200,4)",
+ org.eclipse.ui;bundle-version="[3.208.0,4)",
  org.opentest4j;bundle-version="[1.3.0,2)",
  org.eclipse.terminal.control;bundle-version="1.0.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Export-Package: org.eclipse.terminal.internal.connector;x-internal:=true,
  org.eclipse.terminal.internal.emulator;x-internal:=true,
  org.eclipse.terminal.internal.model;x-internal:=true,

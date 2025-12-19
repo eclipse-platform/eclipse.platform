@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.terminal.view.ui;singleton:=true
-Bundle-Version: 1.0.100.qualifier
+Bundle-Version: 1.1.0.qualifier
 Bundle-Activator: org.eclipse.terminal.view.ui.internal.UIPlugin
 Bundle-Vendor: %providerName
 Require-Bundle: org.eclipse.core.expressions;bundle-version="[3.9.0,4.0.0)",
@@ -10,12 +10,12 @@ Require-Bundle: org.eclipse.core.expressions;bundle-version="[3.9.0,4.0.0)",
  org.eclipse.core.resources;bundle-version="[3.22.0,4.0.0)";resolution:=optional,
  org.eclipse.core.variables;bundle-version="[3.6.0,4.0.0)",
  org.eclipse.debug.ui;bundle-version="[3.18.0,4.0.0)";resolution:=optional,
- org.eclipse.ui;bundle-version="[3.207.0,4.0.0)",
+ org.eclipse.ui;bundle-version="[3.208.0,4.0.0)",
  org.eclipse.ui.ide;bundle-version="[3.22.0,4.0.0)";resolution:=optional,
  org.eclipse.ui.editors;bundle-version="[3.20.0,4.0.0)";resolution:=optional,
  org.eclipse.text;bundle-version="[3.14.0,4.0.0)";resolution:=optional,
  org.eclipse.terminal.view.core;bundle-version="[1.0.0,2.0.0)"
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Bundle-ActivationPolicy: lazy
 Bundle-Localization: plugin
 Export-Package: org.eclipse.terminal.view.ui;version="1.0.100",

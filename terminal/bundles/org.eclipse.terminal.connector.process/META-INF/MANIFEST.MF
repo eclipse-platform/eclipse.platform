@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.terminal.connector.process;singleton:=true
-Bundle-Version: 1.0.100.qualifier
+Bundle-Version: 1.1.0.qualifier
 Bundle-Activator: org.eclipse.terminal.connector.process.internal.UIPlugin
 Bundle-Vendor: %providerName
 Import-Package: org.eclipse.cdt.utils.pty;mandatory:=native,
@@ -16,8 +16,8 @@ Import-Package: org.eclipse.cdt.utils.pty;mandatory:=native,
 Require-Bundle: org.eclipse.core.expressions;bundle-version="[3.9.400,4)",
  org.eclipse.core.resources;bundle-version="[3.22.200,4)";resolution:=optional,
  org.eclipse.core.runtime;bundle-version="[3.33.0,4)",
- org.eclipse.ui;bundle-version="[3.207.200,4)"
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+ org.eclipse.ui;bundle-version="[3.208.0,4)"
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Bundle-ActivationPolicy: lazy
 Bundle-Localization: plugin
 Export-Package: org.eclipse.terminal.connector.process;version="1.0.100",
