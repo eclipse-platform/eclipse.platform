@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2016 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -22,6 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.eclipse.ant.core.AntCorePlugin;
@@ -270,15 +272,16 @@ public class FrameworkTests extends AbstractAntTest {
 	}
 
 	/**
-	 * Tests bug 389564 for a class path entry as a url representing a remote file system location
+	 * Tests bug 389564 for a class path entry as a url representing a remote file
+	 * system location
 	 */
 	@Test
-	public void testAntClasspathEntryFromUrl() throws MalformedURLException {
+	public void testAntClasspathEntryFromUrl() throws MalformedURLException, URISyntaxException {
 
 		AntCorePreferences prefs = AntCorePlugin.getPlugin().getPreferences();
 
 		String path = "//hub/home/tom/.eclipse/3.8/configuration/org.eclipse.osgi/bundles/21/2/.cp/lib/remote.jar"; //$NON-NLS-1$
-		URL url = new URL(IAntCoreConstants.FILE_PROTOCOL + path);
+		URL url = new URI(IAntCoreConstants.FILE_PROTOCOL + path).toURL();
 		IAntClasspathEntry entry = new AntClasspathEntry(url);
 
 		IAntClasspathEntry[] entries = prefs.getAntHomeClasspathEntries();

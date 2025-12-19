@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2018 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -243,7 +243,7 @@ public class PatchTest {
 
 	@Test
 	public void testPatchdataSubfolders() throws IOException, CoreException {
-		URL patchdataUrl = new URL(PatchUtils.getBundle().getEntry("/"), IPath.fromOSString(PatchUtils.PATCHDATA).toString());
+		URL patchdataUrl = PatchUtils.getBundle().getEntry("/" + IPath.fromOSString(PatchUtils.PATCHDATA).toString());
 		patchdataUrl = FileLocator.resolve(patchdataUrl);
 
 		Map<String, PatchTestConfiguration> map = null;
