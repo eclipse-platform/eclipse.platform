@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2018 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -292,11 +292,11 @@ public class SelectedResourceManager  {
 		MultiStatus main = new MultiStatus(DebugUIPlugin.getUniqueIdentifier(), IStatus.ERROR, msg, null);
 
 		ThreadInfo[] threads = ManagementFactory.getThreadMXBean().getThreadInfo(
-				new long[] { nonUiThread.getId(), Display.getDefault().getThread().getId() }, true, true);
+				new long[] { nonUiThread.threadId(), Display.getDefault().getThread().threadId() }, true, true);
 
 		for (ThreadInfo info : threads) {
 			String childMsg;
-			if (info.getThreadId() == nonUiThread.getId()) {
+			if (info.getThreadId() == nonUiThread.threadId()) {
 				childMsg = nonUiThread.getName() + " thread probably holding a lock and trying to acquire UI lock"; //$NON-NLS-1$
 			} else {
 				childMsg = "UI thread waiting on a job or lock."; //$NON-NLS-1$

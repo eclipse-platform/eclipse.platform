@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2018 IBM Corporation and others.
+ * Copyright (c) 2005, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -70,7 +70,7 @@ public class LineReaderTest  {
 
 	private BufferedReader getReader(String name) throws IOException {
 		IPath path = IPath.fromOSString("linereaderdata/" + name);
-		URL url = new URL(CompareTestPlugin.getDefault().getBundle().getEntry("/"), path.toString());
+		URL url = CompareTestPlugin.getDefault().getBundle().getEntry("/" + path.toString());
 		InputStream resourceAsStream = url.openStream();
 		InputStreamReader reader2 = new InputStreamReader(resourceAsStream);
 		return new BufferedReader(reader2);

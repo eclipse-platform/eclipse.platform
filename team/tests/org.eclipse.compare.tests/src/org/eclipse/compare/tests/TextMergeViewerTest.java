@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2023 IBM Corporation and others.
+ * Copyright (c) 2006, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -571,10 +571,10 @@ public class TextMergeViewerTest  {
 	public void testToolbarLabelContribution() throws Exception {
 
 		IPath path = IPath.fromOSString("labelContributionData/" + "file1.java");
-		URL url = new URL(CompareTestPlugin.getDefault().getBundle().getEntry("/"), path.toString());
+		URL url = CompareTestPlugin.getDefault().getBundle().getEntry("/" + path.toString());
 
 		IPath path1= IPath.fromOSString("labelContributionData/" + "file2.java");
-		 URL url1 = new URL(CompareTestPlugin.getDefault().getBundle().getEntry("/"), path1.toString());
+		URL url1 = CompareTestPlugin.getDefault().getBundle().getEntry("/" + path1.toString());
 
 		DiffNode parentNode = new DiffNode(new ParentTestElement(), new ParentTestElement());
 		DiffNode testNode = new DiffNode(parentNode, Differencer.CHANGE, null, new EditableTestElement(url.openStream().readAllBytes()), new EditableTestElement(url1.openStream().readAllBytes()));
