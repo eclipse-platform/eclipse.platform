@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2016 IBM Corporation and others.
+ * Copyright (c) 2007, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -262,20 +262,6 @@ public final class ContextRunner {
 	}
 
 	/**
-	 * Presents the user with a dialog to pick the launch configuration to launch
-	 * and launches that configuration.
-	 *
-	 * @param configurations the listing of applicable configurations to present
-	 * @param mode           the mode
-	 * @deprecated use the 3 argument variant of showConfigurationSelectionDialog()
-	 * @see #showConfigurationSelectionDialog(List, String, boolean)
-	 */
-	@Deprecated(forRemoval = true, since = "2023-12")
-	protected void showConfigurationSelectionDialog(List<ILaunchConfiguration> configurations, String mode) {
-		showConfigurationSelectionDialog(configurations, mode, false);
-	}
-
-	/**
 	 * Presents the user with a dialog to pick the launch configuration to
 	 * launch and launches that configuration.
 	 *
@@ -290,22 +276,6 @@ public final class ContextRunner {
 			ILaunchConfiguration config = (ILaunchConfiguration) lsd.getResult()[0];
 			launch(config, mode, isShift);
 		}
-	}
-
-	/**
-	 * Presents a selection dialog to the user to pick a launch shortcut and
-	 * launch using that shortcut.
-	 *
-	 * @param resource the resource context
-	 * @param shortcuts the list of applicable shortcuts
-	 * @param mode the mode
-	 * @param selection the current selection
-	 * @deprecated use the 3 argument variant of showShortcutSelectionDialog()
-	 * @see #showShortcutSelectionDialog(IResource, List, String, IStructuredSelection, boolean)
-	 */
-	@Deprecated(forRemoval = true, since = "2023-12")
-	protected void showShortcutSelectionDialog(IResource resource, List<LaunchShortcutExtension> shortcuts, String mode, IStructuredSelection selection) {
-		showShortcutSelectionDialog(resource, shortcuts, mode, selection, false);
 	}
 
 	/**
