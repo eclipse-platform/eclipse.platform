@@ -22,6 +22,7 @@ import java.nio.charset.Charset;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.MissingResourceException;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import org.eclipse.core.internal.runtime.AuthorizationHandler;
 import org.eclipse.core.internal.runtime.InternalPlatform;
@@ -79,7 +80,7 @@ public final class Platform {
 		 * @since 3.30
 		 */
 		public static boolean is(String osString) {
-			return Platform.getOS().equals(osString);
+			return Objects.equals(Platform.getOS(), osString);
 		}
 
 		/**
