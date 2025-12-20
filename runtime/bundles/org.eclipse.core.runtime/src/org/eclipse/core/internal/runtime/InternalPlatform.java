@@ -471,7 +471,11 @@ public final class InternalPlatform {
 	}
 
 	public String getOS() {
-		return getContextProperty(PROP_OS);
+		String property = getContextProperty(PROP_OS);
+		if (property == null) {
+			return Platform.OS_UNKNOWN;
+		}
+		return property;
 	}
 
 	public String getWS() {
