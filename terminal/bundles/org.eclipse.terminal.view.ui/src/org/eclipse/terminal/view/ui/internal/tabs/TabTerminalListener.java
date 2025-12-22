@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Wind River Systems, Inc. and others. All rights reserved.
+ * Copyright (c) 2011, 2025 Wind River Systems, Inc. and others. All rights reserved.
  * This program and the accompanying materials are made available under the terms
  * of the Eclipse Public License 2.0 which accompanies this distribution, and is
  * available at https://www.eclipse.org/legal/epl-2.0/
@@ -201,10 +201,6 @@ public class TabTerminalListener implements ITerminalListener {
 		updateTitle(title, requestor);
 	}
 
-	/**
-	 * @see org.eclipse.internal.terminal.control.ITerminalListener2#setTerminalSelectionChanged()
-	 * @since 4.1
-	 */
 	@Override
 	public void setTerminalSelectionChanged() {
 		tabFolderManager.fireTerminalSelectionChanged();

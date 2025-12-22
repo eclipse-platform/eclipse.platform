@@ -31,6 +31,7 @@ public interface ITerminalConsoleViewManager {
 	 * Returns the console view if available within the active workbench window page.
 	 * <p>
 	 * <b>Note:</b> The method must be called within the UI thread.
+	 * </p>
 	 *
 	 * @param tvid The terminals console view id. To specify reuse of most recent terminal view use special value of
 	 *        {@link ITerminalsConnectorConstants#LAST_ACTIVE_SECONDARY_ID} for its secondary part.
@@ -79,7 +80,7 @@ public interface ITerminalConsoleViewManager {
 	 * @param connector The terminal connector. Must not be <code>null</code>.
 	 * @param data The custom terminal data node or <code>null</code>.
 	 *
-	 * @return An {@link Optional} describing the corresponding console tab item or <an empty optional if not found.
+	 * @return An {@link Optional} describing the corresponding console tab item or an empty optional if not found.
 	 */
 	Optional<Widget> findConsole(TerminalViewId tvid, String title, ITerminalConnector connector, Object data);
 
@@ -89,7 +90,7 @@ public interface ITerminalConsoleViewManager {
 	 * <b>Note:</b> The method must be called within the UI thread.
 	 *
 	 * @param control The terminal control. Must not be <code>null</code>.
-	 * @return An {@link Optional} describing the corresponding console tab item or <an empty optional if not found.
+	 * @return An {@link Optional} describing the corresponding console tab item or an empty optional if not found.
 	 */
 	Optional<Widget> findConsole(ITerminalControl control);
 
