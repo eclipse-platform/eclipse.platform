@@ -28,6 +28,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -136,11 +138,13 @@ public class IFileTest {
 	 * Do not throw RuntimeException when accessing a deleted file
 	 */
 	@Test
-	public void testIssue2290() throws CoreException, InterruptedException {
+	public void testIssue2290() throws CoreException, InterruptedException, BrokenBarrierException {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFile subject = project.getFile("subject.txt");
+		CyclicBarrier jobStart = new CyclicBarrier(2);
 		Job createDelete = Job.create("Create/delete", monitor -> {
 			try {
+				jobStart.await();
 				while (!monitor.isCanceled()) {
 					createInWorkspace(subject);
 					while (!monitor.isCanceled()) {
@@ -157,14 +161,17 @@ public class IFileTest {
 				}
 			} catch (CoreException e) {
 				return e.getStatus();
+			} catch (BrokenBarrierException | InterruptedException e1) {
+				return Status.error("Job has failed to start", e1);
 			}
 			return Status.OK_STATUS;
 		});
 		createDelete.setPriority(Job.INTERACTIVE);
 
-		long stop = currentTimeMillis() + 1000;
 		try {
 			createDelete.schedule();
+			jobStart.await();
+			long stop = currentTimeMillis() + 1000;
 			while (currentTimeMillis() < stop) {
 				assertContentAccessibleOrNotFound(subject); // should not throw
 			}
@@ -173,7 +180,7 @@ public class IFileTest {
 			createDelete.join();
 			IStatus result = createDelete.getResult();
 			if (!result.isOK()) {
-				throw new CoreException(result);
+				throw new AssertionError(result.toString(), new CoreException(result));
 			}
 		}
 	}
