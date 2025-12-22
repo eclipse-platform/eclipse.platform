@@ -31,7 +31,6 @@ import org.eclipse.core.internal.runtime.InternalPlatform;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.harness.session.CustomSessionConfiguration;
-import org.eclipse.core.tests.session.ConfigurationSessionTestSuite;
 import org.eclipse.core.tests.session.Setup;
 import org.junit.Assert;
 import org.osgi.framework.Bundle;
@@ -101,7 +100,7 @@ public class CustomSessionConfigurationImpl implements CustomSessionConfiguratio
 		if ("org.hamcrest".equals(FrameworkUtil.getBundle(org.hamcrest.CoreMatchers.class).getSymbolicName())) {
 			Bundle maxHamcrestCoreBundle = null;
 			Version maxHamcrestCoreVersion = null;
-			for (Bundle bundle : FrameworkUtil.getBundle(ConfigurationSessionTestSuite.class).getBundleContext()
+			for (Bundle bundle : FrameworkUtil.getBundle(CustomSessionConfigurationImpl.class).getBundleContext()
 					.getBundles()) {
 				if ("org.hamcrest.core".equals(bundle.getSymbolicName())) {
 					Version version = bundle.getVersion();
