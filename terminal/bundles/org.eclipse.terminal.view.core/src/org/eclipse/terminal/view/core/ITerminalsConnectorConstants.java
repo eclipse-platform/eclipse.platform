@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Wind River Systems, Inc. and others. All rights reserved.
+ * Copyright (c) 2011, 2025 Wind River Systems, Inc. and others. All rights reserved.
  * This program and the accompanying materials are made available under the terms
  * of the Eclipse Public License 2.0 which accompanies this distribution, and is
  * available at https://www.eclipse.org/legal/epl-2.0/
@@ -27,6 +27,7 @@ public interface ITerminalsConnectorConstants {
 	 * Property: The unique id of the terminals view to open.
 	 * <p>
 	 * Property Type: {@link String}
+	 * </p>
 	 */
 	public static final String PROP_ID = "id"; //$NON-NLS-1$
 
@@ -34,6 +35,7 @@ public interface ITerminalsConnectorConstants {
 	 * Property: The unique secondary id of the terminals view to open.
 	 * <p>
 	 * Special values:
+	 * </p>
 	 * <ul>
 	 * <li>
 	 * not present in properties table or {@link #LAST_ACTIVE_SECONDARY_ID} means open on most recent terminal view
@@ -44,9 +46,10 @@ public interface ITerminalsConnectorConstants {
 	 * <li>
 	 * <code>null</code> means open on the first primary terminal (the one with no secondary id)
 	 * </li>
-	 * <ul>
+	 * </ul>
 	 * <p>
 	 * Property Type: {@link String}
+	 * </p>
 	 */
 	public static final String PROP_SECONDARY_ID = "secondaryId"; //$NON-NLS-1$
 
@@ -94,7 +97,7 @@ public interface ITerminalsConnectorConstants {
 	/**
 	 * Property: External selection to associate with the terminal tab.
 	 * <p>
-	 * Property Type: {@link org.eclipse.jface.viewers.ISelection}
+	 * Property Type: org.eclipse.jface.viewers.ISelection
 	 */
 	public static final String PROP_SELECTION = "selection"; //$NON-NLS-1$
 
@@ -261,7 +264,7 @@ public interface ITerminalsConnectorConstants {
 	 * Property: Runtime process PTY instance.
 	 *           <p>Typical for process terminals.
 	 * <p>
-	 * Property Type: {@link org.eclipse.cdt.utils.pty.PTY}
+	 * Property Type: org.eclipse.cdt.utils.pty.PTY
 	 */
 	public static final String PROP_PTY_OBJ = "pty"; //$NON-NLS-1$
 

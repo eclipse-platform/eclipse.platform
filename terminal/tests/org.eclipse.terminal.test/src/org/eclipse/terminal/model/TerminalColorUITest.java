@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Kichwa Coders Canada Inc. and others.
+ * Copyright (c) 2020, 2025 Kichwa Coders Canada Inc. and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * This is a UI test because {@link TerminalColor#convertColor(boolean, boolean)
+ * This is a UI test because {@link TerminalColor#convertColor(boolean, boolean)}
  * requires a Display to operate the ColorRegistry.
  */
 public class TerminalColorUITest {

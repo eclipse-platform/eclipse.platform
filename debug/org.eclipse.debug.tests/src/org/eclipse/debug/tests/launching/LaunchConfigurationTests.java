@@ -953,9 +953,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	}
 
 
-	/**
-	 * @see org.eclipse.debug.core.ILaunchConfigurationListener#launchConfigurationAdded(org.eclipse.debug.core.ILaunchConfiguration)
-	 */
 	@Override
 	public void launchConfigurationAdded(ILaunchConfiguration configuration) {
 		fFrom = getLaunchManager().getMovedFrom(configuration);
@@ -965,16 +962,10 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 		}
 	}
 
-	/**
-	 * @see org.eclipse.debug.core.ILaunchConfigurationListener#launchConfigurationChanged(org.eclipse.debug.core.ILaunchConfiguration)
-	 */
 	@Override
 	public void launchConfigurationChanged(ILaunchConfiguration configuration) {
 	}
 
-	/**
-	 * @see org.eclipse.debug.core.ILaunchConfigurationListener#launchConfigurationRemoved(org.eclipse.debug.core.ILaunchConfiguration)
-	 */
 	@Override
 	public void launchConfigurationRemoved(ILaunchConfiguration configuration) {
 		fTo = getLaunchManager().getMovedTo(configuration);
@@ -1337,7 +1328,9 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	/**
 	 * Do not return null or throw on cancel
 	 *
-	 * @see https://github.com/eclipse-platform/eclipse.platform/issues/2009
+	 * @see <a href=
+	 *      "https://github.com/eclipse-platform/eclipse.platform/issues/2009">Issue
+	 *      2009</a>
 	 * @see org.eclipse.debug.core.ILaunchConfiguration#launch(String,
 	 *      IProgressMonitor)
 	 */
