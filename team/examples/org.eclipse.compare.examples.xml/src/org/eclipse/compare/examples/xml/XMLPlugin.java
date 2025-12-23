@@ -24,10 +24,8 @@ import org.eclipse.compare.CompareUI;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Control;
@@ -375,14 +373,6 @@ public final class XMLPlugin extends AbstractUIPlugin {
 				return;
 			}
 		}
-	}
-
-	public static void log(Throwable e) {
-		log(new Status(IStatus.ERROR, getPluginId(), IStatus.ERROR, "Internal Error", e)); //$NON-NLS-1$
-	}
-
-	public static void log(IStatus status) {
-		getDefault().getLog().log(status);
 	}
 
 	public static String getPluginId() {
