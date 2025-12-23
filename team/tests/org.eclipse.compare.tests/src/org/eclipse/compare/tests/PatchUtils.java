@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2018 IBM Corporation and others.
+ * Copyright (c) 2009, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -163,7 +163,7 @@ public class PatchUtils {
 	public static InputStream asInputStream(String name) {
 		IPath path = IPath.fromOSString(PATCHDATA).append(name);
 		try {
-			URL url = new URL(getBundle().getEntry("/"), path.toString());
+			URL url = getBundle().getEntry("/" + path.toString());
 			return url.openStream();
 		} catch (IOException e) {
 			throw new IllegalStateException("failed while reading " + name, e);

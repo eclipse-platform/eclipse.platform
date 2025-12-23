@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -54,7 +54,7 @@ public class AntTestPlugin extends AbstractUIPlugin {
 	public File getFileInPlugin(IPath path) {
 		try {
 			Bundle bundle = getDefault().getBundle();
-			URL installURL = new URL(bundle.getEntry("/"), path.toString()); //$NON-NLS-1$
+			URL installURL = bundle.getEntry("/" + path.toString()); //$NON-NLS-1$
 			URL localURL = FileLocator.toFileURL(installURL);
 			return new File(localURL.getFile());
 		}
