@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -13,7 +13,6 @@
  *******************************************************************************/
 package org.eclipse.compare.examples.xml;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -114,12 +113,8 @@ public final class XMLPlugin extends AbstractUIPlugin {
 
 		URL installURL= fgXMLPlugin.getBundle().getEntry("/"); //$NON-NLS-1$
 		if (installURL != null) {
-			try {
-				URL url= new URL(installURL, "icons/full/" + relativePath); //$NON-NLS-1$
-				return ImageDescriptor.createFromURL(url);
-			} catch (MalformedURLException e) {
-				Assert.isTrue(false);
-			}
+			URL url = fgXMLPlugin.getBundle().getEntry("/icons/full/" + relativePath); //$NON-NLS-1$
+			return ImageDescriptor.createFromURL(url);
 		}
 		return null;
 	}
@@ -252,8 +247,8 @@ public final class XMLPlugin extends AbstractUIPlugin {
 
 		if (refresh) {
 			Object[] viewers = fViewers.getListeners();
-			for (int i = 0; i < viewers.length; ++i) {
-				XMLStructureViewer viewer = (XMLStructureViewer) viewers[i];
+			for (Object viewer2 : viewers) {
+				XMLStructureViewer viewer = (XMLStructureViewer) viewer2;
 				viewer.updateIdMaps();
 				viewer.contentChanged();
 			}
