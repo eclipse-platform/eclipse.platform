@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -12,6 +12,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.compare.structuremergeviewer;
+
+import static java.nio.charset.StandardCharsets.UTF_16;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -65,7 +67,6 @@ import org.eclipse.swt.widgets.Shell;
 public class DocumentRangeNode
 		implements IDocumentRange, IStructureComparator, IEditableContent,
 		IEncodedStreamContentAccessor, IAdaptable, IEditableContentExtension {
-	private static final String UTF_16= "UTF-16"; //$NON-NLS-1$
 
 	private final IDocument fBaseDocument;
 	private Position fRange; // the range in the base document
@@ -347,7 +348,7 @@ public class DocumentRangeNode
 		} catch (BadLocationException ex) {
 			s= ""; //$NON-NLS-1$
 		}
-		return new ByteArrayInputStream(Utilities.getBytes(s, UTF_16));
+		return new ByteArrayInputStream(s.getBytes(UTF_16));
 	}
 
 
@@ -419,7 +420,7 @@ public class DocumentRangeNode
 
 	@Override
 	public String getCharset() {
-		return UTF_16;
+		return UTF_16.name();
 	}
 
 	/**

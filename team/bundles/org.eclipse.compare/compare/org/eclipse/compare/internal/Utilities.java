@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2017 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -358,19 +358,11 @@ public class Utilities {
 		}
 	}
 
-	public static String getFormattedString(String key, String arg) {
+	public static String getFormattedString(String key, Object... arg) {
 		try {
 			return MessageFormat.format(CompareUI.getResourceBundle().getString(key), arg);
 		} catch (MissingResourceException e) {
 			return "!" + key + "!";	//$NON-NLS-2$ //$NON-NLS-1$
-		}
-	}
-
-	public static String getFormattedString(String key, String arg0, String arg1) {
-		try {
-			return MessageFormat.format(CompareUI.getResourceBundle().getString(key), arg0, arg1);
-		} catch (MissingResourceException e) {
-			return "!" + key + "!";//$NON-NLS-2$ //$NON-NLS-1$
 		}
 	}
 
@@ -652,18 +644,6 @@ public class Utilities {
 		return ResourcesPlugin.getEncoding();
 	}
 
-	public static byte[] getBytes(String s, String encoding) {
-		byte[] bytes= null;
-		if (s != null) {
-			try {
-				bytes= s.getBytes(encoding);
-			} catch (UnsupportedEncodingException e) {
-				bytes= s.getBytes();
-			}
-		}
-		return bytes;
-	}
-
 	public static String readString(IStreamContentAccessor sa) throws CoreException {
 		String encoding= null;
 		if (sa instanceof IEncodedStreamContentAccessor) {
@@ -673,16 +653,6 @@ public class Utilities {
 			encoding= ResourcesPlugin.getEncoding();
 		}
 		return Utilities.readString(sa, encoding);
-	}
-
-	public static void close(InputStream is) {
-		if (is != null) {
-			try {
-				is.close();
-			} catch (IOException ex) {
-				// silently ignored
-			}
-		}
 	}
 
 	public static IResource getFirstResource(ISelection selection) {

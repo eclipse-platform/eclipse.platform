@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -12,6 +12,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.compare.internal;
+
+import static java.nio.charset.StandardCharsets.UTF_16;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -57,7 +59,6 @@ public class EditionAction extends BaseCompareAction {
 	 * for a Document.
 	 */
 	static class DocumentBufferNode implements ITypedElement, IEncodedStreamContentAccessor {
-		private static final String UTF_16= "UTF-16"; //$NON-NLS-1$
 		private final IDocument fDocument;
 		private final IFile fFile;
 
@@ -83,12 +84,12 @@ public class EditionAction extends BaseCompareAction {
 
 		@Override
 		public InputStream getContents() {
-			return new ByteArrayInputStream(Utilities.getBytes(fDocument.get(), UTF_16));
+			return new ByteArrayInputStream(fDocument.get().getBytes(UTF_16));
 		}
 
 		@Override
 		public String getCharset() {
-			return UTF_16;
+			return UTF_16.name();
 		}
 	}
 
