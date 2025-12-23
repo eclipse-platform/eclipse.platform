@@ -82,13 +82,9 @@ public class BinaryCompareViewer extends AbstractViewer {
 		if (fComposite != null && input instanceof ICompareInput) {
 			fInput= (ICompareInput) input;
 
-			InputStream left= null;
-			InputStream right= null;
 
 			String message= null;
-			try {
-				left= getStream(fInput.getLeft());
-				right= getStream(fInput.getRight());
+			try (InputStream left = getStream(fInput.getLeft()); InputStream right = getStream(fInput.getRight())) {
 
 				if (left != null && right != null) {
 					int pos= 0;
@@ -117,9 +113,6 @@ public class BinaryCompareViewer extends AbstractViewer {
 			} catch (CoreException | IOException ex) {
 				message = Utilities.getString(fBundle, "errorMessage"); //$NON-NLS-1$
 				CompareUIPlugin.log(ex);
-			} finally {
-				Utilities.close(left);
-				Utilities.close(right);
 			}
 			if (message != null) {
 				fMessage.setText(message);

@@ -15,6 +15,8 @@
  *******************************************************************************/
 package org.eclipse.compare.internal;
 
+import static java.nio.charset.StandardCharsets.UTF_16;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -60,7 +62,6 @@ import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 public class ComparePreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
 	private static class FakeInput implements ITypedElement, IEncodedStreamContentAccessor {
-		static final String UTF_16= "UTF-16"; //$NON-NLS-1$
 		String fContent;
 
 		FakeInput(String name) {
@@ -80,11 +81,11 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		}
 		@Override
 		public InputStream getContents() {
-			return new ByteArrayInputStream(Utilities.getBytes(fContent, UTF_16));
+			return new ByteArrayInputStream(fContent.getBytes(UTF_16));
 		}
 		@Override
 		public String getCharset() {
-			return UTF_16;
+			return UTF_16.name();
 		}
 
 		private String loadPreviewContentFromFile(String key) {
