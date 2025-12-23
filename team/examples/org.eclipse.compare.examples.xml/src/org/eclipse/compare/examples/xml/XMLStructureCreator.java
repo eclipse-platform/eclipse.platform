@@ -31,6 +31,7 @@ import org.eclipse.compare.structuremergeviewer.IDiffContainer;
 import org.eclipse.compare.structuremergeviewer.IStructureComparator;
 import org.eclipse.compare.structuremergeviewer.IStructureCreator;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
@@ -595,15 +596,15 @@ public class XMLStructureCreator implements IStructureCreator {
 				if (XMLStructureCreator.DEBUG_MODE)
 					System.out.println("End of parse"); //$NON-NLS-1$
 			} catch (SAXParseException e) {
-				XMLPlugin.log(e);
+				ILog.get().error(e.getMessage(), e);
 				return null;
 			} catch (Exception e) {
-				XMLPlugin.log(e);
+				ILog.get().error(e.getMessage(), e);
 				return null;
 			}
 			return root;
 		} catch (CoreException ex) {
-			XMLPlugin.log(ex);
+			ILog.get().error(ex.getMessage(), ex);
 		}
 		return null;
 	}
