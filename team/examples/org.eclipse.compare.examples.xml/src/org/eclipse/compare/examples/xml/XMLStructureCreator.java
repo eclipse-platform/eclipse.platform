@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -17,29 +17,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
-
 import java.text.MessageFormat;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.xml.parsers.SAXParser;
-
-import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
-import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.helpers.LocatorImpl;
-
-import org.eclipse.core.runtime.CoreException;
-
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.Document;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IRegion;
-import org.eclipse.jface.text.Position;
 
 import org.eclipse.compare.IEditableContent;
 import org.eclipse.compare.IEncodedStreamContentAccessor;
@@ -48,6 +30,19 @@ import org.eclipse.compare.structuremergeviewer.Differencer;
 import org.eclipse.compare.structuremergeviewer.IDiffContainer;
 import org.eclipse.compare.structuremergeviewer.IStructureComparator;
 import org.eclipse.compare.structuremergeviewer.IStructureCreator;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.Position;
+import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.helpers.DefaultHandler;
+import org.xml.sax.helpers.LocatorImpl;
 
 /**
  * This structure analyzer builds a parse tree of an XML document found in a
@@ -83,13 +78,13 @@ public class XMLStructureCreator implements IStructureCreator {
 	private String fsignature;
 	private Document fdoc;
 	private final boolean ignoreBodies= false;
-	private HashMap fIdMapsInternal;
-	private HashMap fIdMaps;
-	private HashMap fIdExtensionToName;
-	private HashMap fOrderedElementsInternal;
-	private HashMap fOrderedElements;
-	private HashMap idMap;
-	private ArrayList fOrdered;
+	private HashMap<String, HashMap<String, String>> fIdMapsInternal;
+	private HashMap<String, HashMap<String, String>> fIdMaps;
+	private HashMap<String, String> fIdExtensionToName;
+	private HashMap<String, ArrayList<String>> fOrderedElementsInternal;
+	private HashMap<String, ArrayList<String>> fOrderedElements;
+	private HashMap<String, String> idMap;
+	private ArrayList<String> fOrdered;
 	private String fIdMapToUse;
 	private boolean fUseIdMap;
 	private String fFileExt;
@@ -158,7 +153,7 @@ public class XMLStructureCreator implements IStructureCreator {
 				fsignature= fsignature + raw + SIGN_SEPARATOR;
 
 				if (isUseIdMap() && idMap.containsKey(fsignature)) {
-					String attrName= (String) idMap.get(fsignature);
+					String attrName= idMap.get(fsignature);
 					elementId= raw + Character.valueOf(ID_SEPARATOR) + attrs.getValue(attrName);
 					elementName= raw + " [" + attrName + "=" + attrs.getValue(attrName) + "]"; //$NON-NLS-3$ //$NON-NLS-2$ //$NON-NLS-1$
 				} else {
@@ -353,7 +348,7 @@ public class XMLStructureCreator implements IStructureCreator {
 						if (isUseIdMap() && fcurrentParent.bodies == 1 && idMap.containsKey(popsig)) {
 							String pid= fcurrentParent.getId();//id of parent
 							String pelementname= pid.substring(0, pid.indexOf("<")); //name of parent element //$NON-NLS-1$
-							if (((String) idMap.get(popsig)).equals(ID_TYPE_BODY + pelementname)) {
+							if (idMap.get(popsig).equals(ID_TYPE_BODY + pelementname)) {
 								XMLNode pop= fcurrentParent.getParent();
 								String popid= pop.getId();
 								String popelementname= popid.substring(0, popid.indexOf("<")); //$NON-NLS-1$
@@ -546,7 +541,7 @@ public class XMLStructureCreator implements IStructureCreator {
 			fFirstCall= false;
 			String fileExtLower= fFileExt.toLowerCase();
 			if (fIdExtensionToName.containsKey(fileExtLower))
-				setIdMap((String) fIdExtensionToName.get(fileExtLower));
+				setIdMap(fIdExtensionToName.get(fileExtLower));
 		}
 
 		setUseIdMap();
@@ -554,15 +549,15 @@ public class XMLStructureCreator implements IStructureCreator {
 		if (!isUseIdMap())
 			idMap= null;
 		else if (fIdMaps.containsKey(fIdMapToUse)) {
-			idMap= (HashMap) fIdMaps.get(fIdMapToUse);
+			idMap= fIdMaps.get(fIdMapToUse);
 		} else if (fIdMapsInternal.containsKey(fIdMapToUse)) {
-			idMap= (HashMap) fIdMapsInternal.get(fIdMapToUse);
+			idMap= fIdMapsInternal.get(fIdMapToUse);
 		}
 
 		if (fOrderedElements != null)
-			fOrdered= (ArrayList) fOrderedElements.get(fIdMapToUse);
+			fOrdered= fOrderedElements.get(fIdMapToUse);
 		if (fOrdered == null && fOrderedElementsInternal != null)
-			fOrdered= (ArrayList) fOrderedElementsInternal.get(fIdMapToUse);
+			fOrdered= fOrderedElementsInternal.get(fIdMapToUse);
 	}
 
 	/*

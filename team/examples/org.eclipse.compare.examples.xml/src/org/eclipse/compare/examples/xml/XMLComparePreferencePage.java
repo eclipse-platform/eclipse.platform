@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -13,19 +13,37 @@
  *******************************************************************************/
 package org.eclipse.compare.examples.xml;
 
-import java.util.*;
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.layout.*;
-import org.eclipse.swt.widgets.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.Vector;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.preference.PreferencePage;
-import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.viewers.ColumnLayoutData;
+import org.eclipse.jface.viewers.ColumnPixelData;
+import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.window.Window;
-
-import org.eclipse.ui.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPreferencePage;
 
 /**
  * The XMLComparePreferencePage is the page used to set ID Mappings for XML Compare
@@ -48,13 +66,14 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 	private Button fEditOrderedButton;
 	private Button fRemoveOrderedButton;
 
-	private final HashMap fIdMapsInternal;
-	private HashMap fIdMaps;// HashMap ( idname -> HashMap (signature -> id) )
-	private final HashMap fIdExtensionToName;
+	private final HashMap<String, HashMap<String, String>> fIdMapsInternal;
+	private HashMap<String, HashMap<String, String>> fIdMaps;// HashMap ( idname -> HashMap (signature -> id) )
+	private final HashMap<String, String> fIdExtensionToName;
 
 	//fOrderedElements contains signature of xml element whose children must be compared in ordered fashion
-	private final HashMap fOrderedElements;// HashMap ( idname -> ArrayList (signature) )
-	private final HashMap fOrderedElementsInternal;
+	private final HashMap<String, ArrayList<String>> fOrderedElements;// HashMap ( idname -> ArrayList
+																				// (signature) )
+	private final HashMap<String, ArrayList<String>> fOrderedElementsInternal;
 
 	protected static char[] invalidCharacters;
 	protected static final char SIGN_SEPARATOR = XMLStructureCreator.SIGN_SEPARATOR;
@@ -71,30 +90,27 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 	public XMLComparePreferencePage() {
 		super();
 
-		fIdMaps = new HashMap();
+		fIdMaps = new HashMap<>();
 		XMLPlugin plugin= XMLPlugin.getDefault();
-		HashMap PluginIdMaps = plugin.getIdMaps();
-		Set keySet = PluginIdMaps.keySet();
-		for (Iterator iter = keySet.iterator(); iter.hasNext(); ) {
-			String key = (String) iter.next();
-			fIdMaps.put(key, ((HashMap)PluginIdMaps.get(key)).clone() );
+		HashMap<String, HashMap<String, String>> PluginIdMaps = plugin.getIdMaps();
+		Set<String> keySet = PluginIdMaps.keySet();
+		for (String key : keySet) {
+			fIdMaps.put(key, new HashMap<>(PluginIdMaps.get(key)));
 		}
 		fIdMapsInternal = plugin.getIdMapsInternal();
 
-		fIdExtensionToName= new HashMap();
-		HashMap PluginIdExtensionToName= plugin.getIdExtensionToName();
+		fIdExtensionToName = new HashMap<>();
+		HashMap<String, String> PluginIdExtensionToName = plugin.getIdExtensionToName();
 		keySet= PluginIdExtensionToName.keySet();
-		for (Iterator iter= keySet.iterator(); iter.hasNext(); ) {
-			String key= (String) iter.next();
+		for (String key : keySet) {
 			fIdExtensionToName.put(key, PluginIdExtensionToName.get(key));
 		}
 
-		fOrderedElements= new HashMap();
-		HashMap PluginOrderedElements= plugin.getOrderedElements();
+		fOrderedElements = new HashMap<>();
+		HashMap<String, ArrayList<String>> PluginOrderedElements = plugin.getOrderedElements();
 		keySet= PluginOrderedElements.keySet();
-		for (Iterator iter= keySet.iterator(); iter.hasNext();) {
-			String key= (String) iter.next();
-			fOrderedElements.put(key, ((ArrayList)PluginOrderedElements.get(key)).clone());
+		for (String key : keySet) {
+			fOrderedElements.put(key, new ArrayList<>(PluginOrderedElements.get(key)));
 		}
 
 		fOrderedElementsInternal= plugin.getOrderedElementsInternal();
@@ -404,7 +420,7 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 		XMLCompareAddIdMapDialog dialog= new XMLCompareAddIdMapDialog(shell,idmap,fIdMaps,fIdMapsInternal,fIdExtensionToName,false);
 		if (dialog.open() == Window.OK) {
 			if (!fIdMaps.containsKey(idmap.getName())) {
-				fIdMaps.put(idmap.getName(),new HashMap());
+				fIdMaps.put(idmap.getName(), new HashMap<>());
 				if (!idmap.getExtension().isEmpty())
 					fIdExtensionToName.put(idmap.getExtension(),idmap.getName());
 				newIdMapsTableItem(idmap,true);
@@ -418,7 +434,7 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 			IdMap idmap = (IdMap) itemsIdMaps[0].getData();
 			String old_name = idmap.getName();
 			String old_extension= idmap.getExtension();
-			HashMap idmapHS = (HashMap) fIdMaps.get(old_name);
+			HashMap<String, String> idmapHS = fIdMaps.get(old_name);
 			XMLCompareAddIdMapDialog dialog= new XMLCompareAddIdMapDialog(shell,idmap,fIdMaps,fIdMapsInternal,fIdExtensionToName,true);
 			if (dialog.open() == Window.OK) {
 				fIdMaps.remove(old_name);
@@ -466,26 +482,24 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 				String new_idmapName = dialog.getResult();
 				if (!fIdMaps.containsKey(new_idmapName)) {
 					//copy over id mappings
-					Vector newMappings = new Vector();
+					Vector<Mapping> newMappings = new Vector<>();
 					IdMap newIdMap = new IdMap(new_idmapName, false, newMappings);
-					HashMap newIdmapHM = new HashMap();
+					HashMap<String, String> newIdmapHM = new HashMap<>();
 					fIdMaps.put(newIdMap.getName(),newIdmapHM);
-					Vector Mappings = idmap.getMappings();
-					for (Enumeration enumeration= Mappings.elements(); enumeration.hasMoreElements(); ) {
-						Mapping mapping = (Mapping) enumeration.nextElement();
+					Vector<Mapping> Mappings = idmap.getMappings();
+					for (Mapping mapping : Mappings) {
 						Mapping newMapping = new Mapping(mapping.getElement(), mapping.getSignature(), mapping.getIdAttribute());
 						newMappings.add(newMapping);
 						newIdmapHM.put(newMapping.getKey(), newMapping.getIdAttribute());
 					}
 					//copy over ordered entries
-					ArrayList orderedAL= idmap.getOrdered();
+					ArrayList<Mapping> orderedAL = idmap.getOrdered();
 					if (orderedAL != null && orderedAL.size() > 0) {
-						ArrayList newOrderedAL= new ArrayList();
+						ArrayList<Mapping> newOrderedAL = new ArrayList<>();
 						newIdMap.setOrdered(newOrderedAL);
-						ArrayList idmapOrdered= new ArrayList();
+						ArrayList<String> idmapOrdered = new ArrayList<>();
 						fOrderedElements.put(newIdMap.getName(),idmapOrdered);
-						for (Iterator iter= orderedAL.iterator(); iter.hasNext();) {
-							Mapping ordered= (Mapping) iter.next();
+						for (Mapping ordered : orderedAL) {
 							Mapping newOrdered= new Mapping(ordered.getElement(), ordered.getSignature());
 							newOrderedAL.add(newOrdered);
 							idmapOrdered.add(newOrdered.getKey());
@@ -504,16 +518,16 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 		if (items.length > 0) {
 			IdMap idmap = (IdMap) items[0].getData();
 			Mapping mapping = new Mapping();
-			HashMap idmapHM = (HashMap) fIdMaps.get(idmap.getName());
+			HashMap<String, String> idmapHM = fIdMaps.get(idmap.getName());
 			XMLCompareEditMappingDialog dialog= new XMLCompareEditMappingDialog(shell,mapping,idmapHM,false);
 			if (dialog.open() == Window.OK) {
 				String idmapHMKey = mapping.getKey();
 				if (idmapHM == null)
-					idmapHM= new HashMap();
+					idmapHM = new HashMap<>();
 				if (!idmapHM.containsKey(idmapHMKey)) {
 					idmapHM.put(idmapHMKey, mapping.getIdAttribute());
 					newMappingsTableItem(mapping, true);
-					Vector mappings = idmap.getMappings();
+					Vector<Mapping> mappings = idmap.getMappings();
 					mappings.add(mapping);
 				}
 			}
@@ -525,7 +539,7 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 		TableItem[] itemsMappings = fMappingsTable.getSelection();
 		if (itemsMappings.length > 0) {
 			IdMap idmap = (IdMap) itemsIdMaps[0].getData();
-			HashMap idmapHM = (HashMap) fIdMaps.get(idmap.getName());
+			HashMap<String, String> idmapHM = fIdMaps.get(idmap.getName());
 			Mapping mapping = (Mapping)itemsMappings[0].getData();
 			String idmapHMKey = mapping.getKey();
 			idmapHM.remove(idmapHMKey);
@@ -546,9 +560,9 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 		if (itemsMappings.length > 0 && itemsIdMaps.length > 0) {
 			Mapping mapping = (Mapping)itemsMappings[0].getData();
 			IdMap idmap = (IdMap) itemsIdMaps[0].getData();
-			HashMap idmapHS = (HashMap) fIdMaps.get( idmap.getName() );
+			HashMap<String, String> idmapHS = fIdMaps.get(idmap.getName());
 			idmapHS.remove(mapping.getKey());
-			Vector mappings= idmap.getMappings();
+			Vector<Mapping> mappings = idmap.getMappings();
 			mappings.remove(mapping);
 			itemsMappings[0].dispose();  //Table is single selection
 		}
@@ -567,18 +581,18 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 //			}
 			IdMap idmap = (IdMap) items[0].getData();
 			Mapping mapping = new Mapping();
-			ArrayList idmapAL= (ArrayList) fOrderedElements.get(idmap.getName());
+			ArrayList<String> idmapAL = fOrderedElements.get(idmap.getName());
 			if (idmapAL == null)
-				idmapAL= new ArrayList();
+				idmapAL = new ArrayList<>();
 			XMLCompareEditOrderedDialog dialog= new XMLCompareEditOrderedDialog(shell,mapping,idmapAL,false);
 			if (dialog.open() == Window.OK) {
 				String idmapALKey = mapping.getKey();
 				if (!idmapAL.contains(idmapALKey)) {
 					idmapAL.add(idmapALKey);
 					newOrderedTableItem(mapping, true);
-					ArrayList ordered= idmap.getOrdered();
+					ArrayList<Mapping> ordered = idmap.getOrdered();
 					if (ordered == null) {
-						ordered= new ArrayList();
+						ordered = new ArrayList<>();
 						ordered.add(mapping);
 						idmap.setOrdered(ordered);
 					} else {
@@ -596,7 +610,7 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 		TableItem[] itemsOrdered = fOrderedTable.getSelection();
 		if (itemsOrdered.length > 0) {
 			IdMap idmap = (IdMap) itemsIdMaps[0].getData();
-			ArrayList idmapAL = (ArrayList) fOrderedElements.get(idmap.getName());
+			ArrayList<String> idmapAL = fOrderedElements.get(idmap.getName());
 			Mapping mapping = (Mapping)itemsOrdered[0].getData();
 			String idmapALKey = mapping.getKey();
 			idmapAL.remove(idmapALKey);
@@ -617,11 +631,11 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 		if (itemsOrdered.length > 0 && itemsIdMaps.length > 0) {
 			Mapping mapping = (Mapping)itemsOrdered[0].getData();
 			IdMap idmap = (IdMap) itemsIdMaps[0].getData();
-			ArrayList idmapAL = (ArrayList) fOrderedElements.get( idmap.getName() );
+			ArrayList<?> idmapAL = fOrderedElements.get(idmap.getName());
 			idmapAL.remove(mapping.getKey());
 			if (idmapAL.size() <= 0)
 				fOrderedElements.remove(idmap.getName());
-			ArrayList ordered= idmap.getOrdered();
+			ArrayList<?> ordered = idmap.getOrdered();
 			ordered.remove(mapping);
 			if (ordered.size() <= 0)
 				idmap.setOrdered(null);
@@ -697,13 +711,12 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 
 		//add user idmaps that have ordered entries but no id mappings
 		//they do not appear in the preference store with name IDMAP_PREFERENCE_NAME
-		Set OrderedKeys= fOrderedElements.keySet();
-		Set IdMapKeys= fIdMaps.keySet();
-		for (Iterator iter_orderedElements= OrderedKeys.iterator(); iter_orderedElements.hasNext();) {
-			String IdMapName= (String) iter_orderedElements.next();
+		Set<String> OrderedKeys = fOrderedElements.keySet();
+		Set<String> IdMapKeys = fIdMaps.keySet();
+		for (String IdMapName : OrderedKeys) {
 			if (!IdMapKeys.contains(IdMapName)) {
 				IdMap idmap= new IdMap(IdMapName, false);
-				ArrayList idmapOrdered= (ArrayList) fOrderedElements.get(IdMapName);
+				ArrayList<?> idmapOrdered = fOrderedElements.get(IdMapName);
 				setOrdered(idmap, idmapOrdered);
 				newIdMapsTableItem(idmap, false);
 			}
@@ -711,17 +724,17 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 	}
 
 	private void fillIdMaps(boolean internal) {
-		HashMap IdMaps= (internal)?fIdMapsInternal:fIdMaps;
-		HashMap OrderedElements= (internal)?fOrderedElementsInternal:fOrderedElements;
-		Set IdMapKeys = IdMaps.keySet();
-		for (Iterator iter_internal = IdMapKeys.iterator(); iter_internal.hasNext(); ) {
+		HashMap<?, ?> IdMaps = (internal) ? fIdMapsInternal : fIdMaps;
+		HashMap<?, ?> OrderedElements = (internal) ? fOrderedElementsInternal : fOrderedElements;
+		Set<?> IdMapKeys = IdMaps.keySet();
+		for (Iterator<?> iter_internal = IdMapKeys.iterator(); iter_internal.hasNext();) {
 			String IdMapName = (String) iter_internal.next();
-			Vector Mappings = new Vector();
+			Vector<Mapping> Mappings = new Vector<>();
 			IdMap idmap = new IdMap(IdMapName, internal, Mappings);
 			//create mappings of internal idmaps
-			HashMap idmapHM = (HashMap) IdMaps.get(IdMapName);
-			Set idmapKeys = idmapHM.keySet();
-			for (Iterator iter_idmap = idmapKeys.iterator(); iter_idmap.hasNext(); ) {
+			HashMap<?, ?> idmapHM = (HashMap<?, ?>) IdMaps.get(IdMapName);
+			Set<?> idmapKeys = idmapHM.keySet();
+			for (Iterator<?> iter_idmap = idmapKeys.iterator(); iter_idmap.hasNext();) {
 				Mapping mapping = new Mapping();
 				String signature = (String) iter_idmap.next();
 				int end_of_signature = signature.lastIndexOf(SIGN_SEPARATOR,signature.length()-2);
@@ -734,17 +747,17 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 				Mappings.add(mapping);
 			}
 			//create ordered mappings
-			ArrayList idmapOrdered= (ArrayList) OrderedElements.get(IdMapName);
+			ArrayList<?> idmapOrdered = (ArrayList<?>) OrderedElements.get(IdMapName);
 			if (idmapOrdered != null) {
 				setOrdered(idmap, idmapOrdered);
 			}
 			//set extension
 			if (fIdExtensionToName.containsValue(IdMapName)) {
-				Set keySet= fIdExtensionToName.keySet();
+				Set<String> keySet = fIdExtensionToName.keySet();
 				String extension= new String();
-				for (Iterator iter= keySet.iterator(); iter.hasNext(); ) {
-					extension= (String)iter.next();
-					if ( ((String)fIdExtensionToName.get(extension)).equals(IdMapName) )
+				for (Iterator<String> iter = keySet.iterator(); iter.hasNext();) {
+					extension= iter.next();
+					if ( fIdExtensionToName.get(extension).equals(IdMapName) )
 						break;
 				}
 				idmap.setExtension(extension);
@@ -753,9 +766,9 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 		}
 	}
 
-	protected static void setOrdered(IdMap idmap, ArrayList idmapOrdered) {
-		ArrayList Ordered= new ArrayList();
-		for (Iterator iter_ordered= idmapOrdered.iterator(); iter_ordered.hasNext();) {
+	protected static void setOrdered(IdMap idmap, ArrayList<?> idmapOrdered) {
+		ArrayList<Mapping> Ordered = new ArrayList<>();
+		for (Iterator<?> iter_ordered = idmapOrdered.iterator(); iter_ordered.hasNext();) {
 			Mapping mapping= new Mapping();
 			String signature= (String) iter_ordered.next();
 			int end_of_signature = signature.lastIndexOf(SIGN_SEPARATOR,signature.length()-2);
@@ -782,7 +795,7 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 
 	@Override
 	public boolean performCancel() {
-		fIdMaps = (HashMap) XMLPlugin.getDefault().getIdMaps().clone();
+		fIdMaps = new HashMap<>(XMLPlugin.getDefault().getIdMaps());
 		return super.performCancel();
 	}
 
@@ -791,15 +804,15 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 		if (items.length > 0) {
 			//Refresh Mappings Table
 			fMappingsTable.removeAll();
-			Vector Mappings = ((IdMap)items[0].getData()).getMappings();
-			for (Enumeration enumeration = Mappings.elements(); enumeration.hasMoreElements(); ) {
+			Vector<?> Mappings = ((IdMap) items[0].getData()).getMappings();
+			for (Enumeration<?> enumeration = Mappings.elements(); enumeration.hasMoreElements();) {
 				newMappingsTableItem((Mapping)enumeration.nextElement(), false);
 			}
 			//Refresh Ordered Table
 			fOrderedTable.removeAll();
-			ArrayList Ordered= ((IdMap)items[0].getData()).getOrdered();
+			ArrayList<?> Ordered = ((IdMap) items[0].getData()).getOrdered();
 			if (Ordered != null) {
-				for (Iterator iter_ordered= Ordered.iterator(); iter_ordered.hasNext();) {
+				for (Iterator<?> iter_ordered = Ordered.iterator(); iter_ordered.hasNext();) {
 					newOrderedTableItem((Mapping)iter_ordered.next(), false);
 				}
 			}
@@ -843,8 +856,8 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 	}
 
 	static protected boolean containsInvalidCharacters(String text) {
-		for (int i=0; i<invalidCharacters.length; i++) {
-			if (text.indexOf(invalidCharacters[i]) > -1)
+		for (char invalidCharacter : invalidCharacters) {
+			if (text.indexOf(invalidCharacter) > -1)
 				return true;
 		}
 		return false;

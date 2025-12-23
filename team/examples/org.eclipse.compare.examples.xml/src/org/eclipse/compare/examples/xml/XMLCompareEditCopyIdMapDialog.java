@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -15,21 +15,24 @@ package org.eclipse.compare.examples.xml;
 
 import java.util.HashMap;
 
+import org.eclipse.compare.examples.xml.ui.StatusDialog;
+import org.eclipse.compare.examples.xml.ui.StatusInfo;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.*;
-
-import org.eclipse.compare.examples.xml.ui.StatusDialog;
-import org.eclipse.compare.examples.xml.ui.StatusInfo;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 
 /**
  * This class is used to create an editable ID Mapping Scheme from an internal ID Mappping Scheme
  */
 public class XMLCompareEditCopyIdMapDialog extends StatusDialog {
 
-	private final HashMap fIdMaps;
-	private final HashMap fIdMapsInternal;
+	private final HashMap<String, HashMap<String, String>> fIdMaps;
+	private final HashMap<String, HashMap<String, String>> fIdMapsInternal;
 
 	private Text fIdMapText;
 	private String fResult;
@@ -37,7 +40,8 @@ public class XMLCompareEditCopyIdMapDialog extends StatusDialog {
 	/*
 	 * Constructs a new edit copy mapping dialog.
 	 */
-	public XMLCompareEditCopyIdMapDialog(Shell parent, IdMap idmap, HashMap idmaps, HashMap idmapsInternal) {
+	public XMLCompareEditCopyIdMapDialog(Shell parent, IdMap idmap, HashMap<String, HashMap<String, String>> idmaps,
+			HashMap<String, HashMap<String, String>> idmapsInternal) {
 		super(parent);
 
 		setTitle(XMLCompareMessages.XMLCompareEditCopyIdMapDialog_title);

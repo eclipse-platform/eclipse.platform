@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -22,9 +22,10 @@ public class IdMap {
 
 	private String fName;
 	private boolean fInternal;
-	private Vector fMappings;
+	private Vector<Mapping> fMappings;
 	private String fExtension;
-	private ArrayList fOrdered;//contains Mapping elements for list of ordered entries (the children of these elements will be compared in ordered fashion)
+	private ArrayList<Mapping> fOrdered;// contains Mapping elements for list of ordered entries (the children of these
+										// elements will be compared in ordered fashion)
 
 	/**
 	 * Creates an IdMap which represents an Id Mapping Scheme
@@ -40,7 +41,7 @@ public class IdMap {
 	 * @param internal true if the IdMap is internal
 	 */
 	public IdMap(String name, boolean internal) {
-		this(name, internal, new Vector());
+		this(name, internal, new Vector<>());
 	}
 
 	/**
@@ -49,7 +50,7 @@ public class IdMap {
 	 * @param internal true if the IdMap is internal
 	 * @param mappings Vector of Mapping elements which represent the id mappings of this id mapping scheme
 	 */
-	public IdMap(String name, boolean internal, Vector mappings) {
+	public IdMap(String name, boolean internal, Vector<Mapping> mappings) {
 		this(name, internal, mappings, ""); //$NON-NLS-1$
 	}
 
@@ -60,7 +61,7 @@ public class IdMap {
 	 * @param mappings Vector of Mapping elements which represent the id mappings of this id mapping scheme.
 	 * @param extension Optional extension to be associated with this id mapping scheme.
 	 */
-	public IdMap(String name, boolean internal, Vector mappings, String extension) {
+	public IdMap(String name, boolean internal, Vector<Mapping> mappings, String extension) {
 		this(name, internal, mappings, extension, null);
 	}
 
@@ -72,7 +73,8 @@ public class IdMap {
 	 * @param extension Optional extension to be associated with this id mapping scheme.
 	 * @param ordered Optional ArrayList of Mapping elements representing ordered entries.
 	 */
-	public IdMap(String name, boolean internal, Vector mappings, String extension, ArrayList ordered) {
+	public IdMap(String name, boolean internal, Vector<Mapping> mappings, String extension,
+			ArrayList<Mapping> ordered) {
 		fName = name;
 		fInternal = internal;
 		fMappings = mappings;
@@ -108,11 +110,11 @@ public class IdMap {
 		return fName;
 	}
 
-	public void setMappings(Vector mappings) {
+	public void setMappings(Vector<Mapping> mappings) {
 		fMappings = mappings;
 	}
 
-	public Vector getMappings() {
+	public Vector<Mapping> getMappings() {
 		return fMappings;
 	}
 
@@ -131,10 +133,12 @@ public class IdMap {
 	public String getExtension() {
 		return fExtension;
 	}
-	public void setOrdered(ArrayList ordered) {
+
+	public void setOrdered(ArrayList<Mapping> ordered) {
 		fOrdered= ordered;
 	}
-	public ArrayList getOrdered() {
+
+	public ArrayList<Mapping> getOrdered() {
 		return fOrdered;
 	}
 

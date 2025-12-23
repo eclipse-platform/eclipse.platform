@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2024 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -17,6 +17,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.CompareViewerSwitchingPane;
@@ -55,17 +56,17 @@ public class XMLStructureViewer extends StructureDiffViewer {
 
 	private CompareViewerSwitchingPane fParent;
 
-	private HashMap fIdMapsInternal;
-	private HashMap fIdMaps;
-	private HashMap fOrderedElementsInternal;
-	private HashMap fOrderedElements;
+	private HashMap<String, HashMap<String, String>> fIdMapsInternal;
+	private HashMap<String, HashMap<String, String>> fIdMaps;
+	private HashMap<String, ArrayList<String>> fOrderedElementsInternal;
+	private HashMap<String, ArrayList<String>> fOrderedElements;
 
 	protected static final char SIGN_SEPARATOR=
 		XMLStructureCreator.SIGN_SEPARATOR;
 
 	class XMLSorter extends ViewerComparator {
 
-		ArrayList fOrdered;
+		ArrayList<String> fOrdered;
 		boolean fAlwaysOrderSort;
 
 		public XMLSorter() {
@@ -73,7 +74,7 @@ public class XMLStructureViewer extends StructureDiffViewer {
 			fAlwaysOrderSort= false;
 		}
 
-		public void setOrdered(ArrayList ordered) {
+		public void setOrdered(ArrayList<String> ordered) {
 			fOrdered= ordered;
 		}
 
@@ -113,9 +114,9 @@ public class XMLStructureViewer extends StructureDiffViewer {
 								sig.length()
 									- XMLStructureCreator.SIGN_ELEMENT.length());
 						if (fAlwaysOrderSort || fOrdered.contains(newSig)) {
-							final ArrayList originalTree=
-								new ArrayList(
-									Arrays.asList(parent.getChildren()));
+							final ArrayList<DiffNode> originalTree =
+									new ArrayList<>(
+											List.of((DiffNode[]) parent.getChildren()));
 							Arrays.sort(elements, (a, b) -> XMLSorter.this.compare(
 								(DiffNode) a,
 								(DiffNode) b,
@@ -128,7 +129,7 @@ public class XMLStructureViewer extends StructureDiffViewer {
 			super.sort(viewer, elements);
 		}
 
-		private int compare(DiffNode a, DiffNode b, ArrayList originalTree) {
+		private int compare(DiffNode a, DiffNode b, ArrayList<DiffNode> originalTree) {
 
 			int index_a= originalTree.indexOf(a.getId());
 			int index_b= originalTree.indexOf(b.getId());
@@ -270,22 +271,19 @@ public class XMLStructureViewer extends StructureDiffViewer {
 	protected void fillContextMenu(IMenuManager manager) {
 		super.fillContextMenu(manager);
 		ISelection s= getSelection();
-		if (s instanceof StructuredSelection
-				&& ((StructuredSelection) s).getFirstElement() instanceof DiffNode
-				&& ((DiffNode) ((StructuredSelection) s).getFirstElement()).getId()
-				instanceof XMLNode) {
-			DiffNode diffnode=
-				(DiffNode) ((StructuredSelection) s).getFirstElement();
-			String diffnodeIdSig= ((XMLNode) diffnode.getId()).getSignature();
+		if (s instanceof StructuredSelection ss
+				&& ss.getFirstElement() instanceof DiffNode diffnode && diffnode.getId() instanceof XMLNode xmlNode) {
+			String diffnodeIdSig = xmlNode.getSignature();
 			fIdMaps= XMLPlugin.getDefault().getIdMaps();
 			String idmap_name= getXMLStructureCreator().getIdMap();
-			if (diffnodeIdSig.endsWith(XMLStructureCreator.SIGN_ATTRIBUTE) || (diffnodeIdSig.endsWith(XMLStructureCreator.SIGN_TEXT) && ((XMLNode) diffnode.getId()).getOrigId().endsWith("(1)"))) { //$NON-NLS-1$
+			if (diffnodeIdSig.endsWith(XMLStructureCreator.SIGN_ATTRIBUTE)
+					|| (diffnodeIdSig.endsWith(XMLStructureCreator.SIGN_TEXT) && xmlNode.getOrigId().endsWith("(1)"))) { //$NON-NLS-1$
 				Action action= new SetAsIdAction(diffnode);
 				if (!fIdMaps.containsKey(idmap_name)) {
 					action.setText(XMLCompareMessages.XMLStructureViewer_action_notUserIdMap);
 					action.setEnabled(false);
 				} else {
-					HashMap idmapHM= (HashMap) fIdMaps.get(idmap_name);
+					HashMap<String, String> idmapHM = fIdMaps.get(idmap_name);
 					XMLNode idNode= (XMLNode) diffnode.getId();
 					String signature= idNode.getSignature();
 					String idname= ""; //$NON-NLS-1$
@@ -332,7 +330,7 @@ public class XMLStructureViewer extends StructureDiffViewer {
 							action.setText(XMLCompareMessages.XMLStructureViewer_action_setId_text1);
 							action.setEnabled(false);
 						} else {
-							String oldId= (String) idmapHM.get(signature);
+							String oldId= idmapHM.get(signature);
 							if (oldId.startsWith((Character.valueOf(XMLStructureCreator.ID_TYPE_BODY)).toString()))
 								oldId= oldId.substring(1);
 							action.setText(MessageFormat.format("{0} {1}", XMLCompareMessages.XMLStructureViewer_action_setId_text2, oldId));  //$NON-NLS-1$
@@ -351,8 +349,8 @@ public class XMLStructureViewer extends StructureDiffViewer {
 					action.setText(XMLCompareMessages.XMLStructureViewer_action_notUserIdMap);
 					action.setEnabled(false);
 				} else {
-					ArrayList idmapOrdered=
-						(ArrayList) fOrderedElements.get(idmap_name);
+					ArrayList<String> idmapOrdered =
+						fOrderedElements.get(idmap_name);
 					XMLNode idNode= (XMLNode) diffnode.getId();
 					String signature= idNode.getSignature();
 					//					String idname= "";
@@ -411,7 +409,7 @@ public class XMLStructureViewer extends StructureDiffViewer {
 			//			DiffNode diffnode = (DiffNode) ((StructuredSelection) getSelection()).getFirstElement();
 			String idmap_name= sc.getIdMap();
 			if (fIdMaps.containsKey(idmap_name)) {
-				HashMap idmapHM= (HashMap) fIdMaps.get(idmap_name);
+				HashMap<String, String> idmapHM = fIdMaps.get(idmap_name);
 				if (((XMLNode) fDiffNode.getId())
 					.getSignature()
 					.endsWith(XMLStructureCreator.SIGN_ATTRIBUTE)) {
@@ -474,10 +472,10 @@ public class XMLStructureViewer extends StructureDiffViewer {
 		public void run() {
 			//String idmap_name= getXMLStructureCreator().getIdMap();
 			if (fSignature != null) {
-				ArrayList idmapOrdered=
-					(ArrayList) fOrderedElements.get(fIdMapName);
+				ArrayList<String> idmapOrdered =
+					fOrderedElements.get(fIdMapName);
 				if (idmapOrdered == null) {
-					idmapOrdered= new ArrayList();
+					idmapOrdered = new ArrayList<>();
 					fOrderedElements.put(fIdMapName, idmapOrdered);
 				}
 				idmapOrdered.add(fSignature);
@@ -520,18 +518,18 @@ public class XMLStructureViewer extends StructureDiffViewer {
 		else
 			totalWork= 3;
 		monitor.beginTask(XMLCompareMessages.XMLStructureViewer_matching_beginTask, totalWork);
-		ArrayList ordered= null;
+		ArrayList<String> ordered = null;
 		if (!getXMLStructureCreator()
 			.getIdMap()
 			.equals(XMLStructureCreator.USE_UNORDERED)
 			&& !getXMLStructureCreator().getIdMap().equals(
 				XMLStructureCreator.USE_ORDERED)) {
 			ordered=
-				(ArrayList) fOrderedElements.get(
+				fOrderedElements.get(
 					getXMLStructureCreator().getIdMap());
 			if (ordered == null)
 				ordered=
-					(ArrayList) fOrderedElementsInternal.get(
+					fOrderedElementsInternal.get(
 						getXMLStructureCreator().getIdMap());
 		}
 		if (getComparator() instanceof XMLSorter)

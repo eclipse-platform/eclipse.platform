@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -14,15 +14,18 @@
 package org.eclipse.compare.examples.xml;
 
 import java.text.MessageFormat;
-import java.util.*;
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.*;
+import java.util.HashMap;
 
 import org.eclipse.compare.examples.xml.ui.StatusDialog;
 import org.eclipse.compare.examples.xml.ui.StatusInfo;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 
 /**
  * This class is used to add or edit an ID Mapping Scheme
@@ -30,15 +33,17 @@ import org.eclipse.compare.examples.xml.ui.StatusInfo;
 public class XMLCompareAddIdMapDialog extends StatusDialog {
 
 	private final IdMap fIdMap;
-	private final HashMap fIdMaps;
-	private final HashMap fIdMapsInternal;
-	private final HashMap fIdExtensionToName;
+	private final HashMap<String, HashMap<String, String>> fIdMaps;
+	private final HashMap<String, HashMap<String, String>> fIdMapsInternal;
+	private final HashMap<String, String> fIdExtensionToName;
 	private final boolean fEdit;
 
 	private Text fIdMapText;
 	private Text fIdMapExtText;
 
-	public XMLCompareAddIdMapDialog(Shell parent, IdMap idmap, HashMap idmaps, HashMap idmapsInternal, HashMap idextensiontoname, boolean edit) {
+	public XMLCompareAddIdMapDialog(Shell parent, IdMap idmap, HashMap<String, HashMap<String, String>> idmaps,
+			HashMap<String, HashMap<String, String>> idmapsInternal, HashMap<String, String> idextensiontoname,
+			boolean edit) {
 		super(parent);
 
 		fEdit= edit;

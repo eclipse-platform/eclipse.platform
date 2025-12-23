@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -61,7 +61,7 @@ public class OrderedMatching extends AbstractMatching {
 		Object[] xc_elements= xc_elementsAL.toArray();
 		Object[] yc_elements= yc_elementsAL.toArray();
 
-		ArrayList DTMatching= new ArrayList();
+		ArrayList<Match> DTMatching = new ArrayList<>();
 		// Matching to be added to Entry in fDT_Matchings
 		int distance= 0; //distance to be added to entry in fDT
 
@@ -115,6 +115,7 @@ public class OrderedMatching extends AbstractMatching {
 	}
 
 	/* matches two trees according to paper "X-Diff", p. 16 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void match(
 		XMLNode LeftTree,
@@ -122,14 +123,14 @@ public class OrderedMatching extends AbstractMatching {
 		boolean rightTreeIsAncestor,
 		IProgressMonitor monitor) {
 
-		fNLeft= new Vector<XMLNode>();
+		fNLeft= new Vector<>();
 		//numbering LeftTree: Mapping nodes in LeftTree to numbers to be used as array indexes
-		fNRight= new Vector<XMLNode>();
+		fNRight= new Vector<>();
 		//numbering RightTree: Mapping nodes in RightTree to numbers to be used as array indexes
 		numberNodes(LeftTree, fNLeft);
 		numberNodes(RightTree, fNRight);
 		fDT= new int[fNLeft.size()][fNRight.size()];
-		fDT_Matchings= new ArrayList[fNLeft.size()][fNRight.size()];
+		fDT_Matchings = new ArrayList[fNLeft.size()][fNRight.size()];
 		for (int i= 0; i < fDT.length; i++) {
 			fDT[i]= new int[fNRight.size()];
 			for (int j= 0; j < fDT[0].length; j++) {
@@ -139,13 +140,13 @@ public class OrderedMatching extends AbstractMatching {
 
 		dist(LeftTree, RightTree);
 		//		/* mark matchings on LeftTree and RightTree */
-		fMatches= new Vector();
+		fMatches = new Vector<>();
 		if (!LeftTree.getSignature().equals(RightTree.getSignature())) {
 			//matching is empty
 		} else {
 			fMatches.add(new Match(LeftTree, RightTree));
 			for (int i_M= 0; i_M < fMatches.size(); i_M++) {
-				Match m= (Match) fMatches.elementAt(i_M);
+				Match m = fMatches.elementAt(i_M);
 				if (!isLeaf(m.fx) && !isLeaf(m.fy)) {
 					//					if (fDT_Matchings[ indexOfLN(m.fx) ][ indexOfRN(m.fy) ] == null)
 					//						System.out.println("Error: ID not unique for " + m.fx.getId());
@@ -161,17 +162,15 @@ public class OrderedMatching extends AbstractMatching {
 		//end of Step2
 		/* Renumber Id of Nodes to follow Matches. Or for ancestor, copy over Id to ancestor */
 		if (rightTreeIsAncestor) {
-			for (ListIterator it_M= fMatches.listIterator(); it_M.hasNext();) {
-				Match m= (Match) it_M.next();
+			for (ListIterator<Match> it_M = fMatches.listIterator(); it_M.hasNext();) {
+				Match m= it_M.next();
 				if (m.fx != null && m.fy != null)
 					m.fy.setId(m.fx.getId());
 			}
 		} else {
 			int newId= 0;
-			for (ListIterator it_M= fMatches.listIterator();
-				it_M.hasNext();
-				newId++) {
-				Match m= (Match) it_M.next();
+			for (ListIterator<Match> it_M = fMatches.listIterator(); it_M.hasNext(); newId++) {
+				Match m= it_M.next();
 				if (m.fx != null)
 					m.fx.setId(Integer.toString(newId));
 				if (m.fy != null)

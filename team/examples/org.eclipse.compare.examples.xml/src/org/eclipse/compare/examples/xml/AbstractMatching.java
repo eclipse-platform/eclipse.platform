@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -30,10 +30,11 @@ public abstract class AbstractMatching {
 	protected static final int NO_ENTRY = -1;//value with which fDT elements are initialized
 	protected static final String SIGN_ELEMENT= XMLStructureCreator.SIGN_ELEMENT;
 	int[][] fDT;//Distance Table; 1st index from fNLeft, 2nd index from fNRight
-	ArrayList[][] fDT_Matchings;//Mathing entries of children for a match. 1st index from fNLeft, 2nd index from fNRight
-	Vector fNLeft;
-	Vector fNRight;
-	Vector fMatches;
+	ArrayList<Match>[][] fDT_Matchings;// Mathing entries of children for a match. 1st index from fNLeft, 2nd index
+										// from fNRight
+	Vector<XMLNode> fNLeft;
+	Vector<XMLNode> fNRight;
+	Vector<Match> fMatches;
 
 	/* methods used for match */
 
@@ -97,7 +98,7 @@ public abstract class AbstractMatching {
 	}
 
 /* for testing */
-	public Vector getMatches() {
+public Vector<Match> getMatches() {
 		return fMatches;
 	}
 
