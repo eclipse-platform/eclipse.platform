@@ -160,6 +160,9 @@ public class IFileTest {
 					}
 				}
 			} catch (CoreException e) {
+				if (e.getStatus().matches(IStatus.CANCEL)) {
+					return Status.OK_STATUS;
+				}
 				return e.getStatus();
 			} catch (BrokenBarrierException | InterruptedException e1) {
 				return Status.error("Job has failed to start", e1);
