@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -13,12 +13,18 @@
  *******************************************************************************/
 package org.eclipse.compare.examples.xml;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Set;
 
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.ActionContributionItem;
+import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.*;
-
-import org.eclipse.jface.action.*;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 
 
 /**
@@ -53,14 +59,13 @@ class ChooseMatcherDropDownAction extends Action implements IMenuCreator {
 		addActionToMenu(menu, new SelectMatcherAction(XMLStructureCreator.USE_UNORDERED, fViewer));
 		addActionToMenu(menu, new SelectMatcherAction(XMLStructureCreator.USE_ORDERED, fViewer));
 		new MenuItem(menu, SWT.SEPARATOR);
-		HashMap IdMaps = plugin.getIdMaps();
-		HashMap IdMapsInternal = plugin.getIdMapsInternal();
+		HashMap<String, HashMap<String, String>> IdMaps = plugin.getIdMaps();
+		HashMap<String, HashMap<String, String>> IdMapsInternal = plugin.getIdMapsInternal();
 
-		Set keySetIdMaps = IdMaps.keySet();
-		Set keySetIdMapsInternal = IdMapsInternal.keySet();
+		Set<String> keySetIdMaps = IdMaps.keySet();
+		Set<String> keySetIdMapsInternal = IdMapsInternal.keySet();
 		ArrayList<String> internalIdMapsAL= new ArrayList<>();
-		for (Iterator iter_internal = keySetIdMapsInternal.iterator(); iter_internal.hasNext(); ) {
-			String idmap_name = (String)iter_internal.next();
+		for (String idmap_name : keySetIdMapsInternal) {
 			internalIdMapsAL.add(idmap_name);
 		}
 		Object[] internalIdMapsA= internalIdMapsAL.toArray();
@@ -71,15 +76,13 @@ class ChooseMatcherDropDownAction extends Action implements IMenuCreator {
 		new MenuItem(menu, SWT.SEPARATOR);
 
 		ArrayList<String> userIdMapsAL= new ArrayList<>();
-		for (Iterator iter_idmaps = keySetIdMaps.iterator(); iter_idmaps.hasNext(); ) {
-			String idmap_name = (String)iter_idmaps.next();
+		for (String idmap_name : keySetIdMaps) {
 			userIdMapsAL.add(idmap_name);
 		}
 
-		HashMap OrderedElements= plugin.getOrderedElements();
-		Set keySetOrdered= OrderedElements.keySet();
-		for (Iterator iter_orderedElements= keySetOrdered.iterator(); iter_orderedElements.hasNext();) {
-			String idmap_name= (String) iter_orderedElements.next();
+		HashMap<String, ArrayList<String>> OrderedElements = plugin.getOrderedElements();
+		Set<String> keySetOrdered = OrderedElements.keySet();
+		for (String idmap_name : keySetOrdered) {
 			if (!keySetIdMaps.contains(idmap_name)) {
 				userIdMapsAL.add(idmap_name);
 			}
