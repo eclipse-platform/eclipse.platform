@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<component id="org.eclipse.help" version="2">
+    <resource path="META-INF/MANIFEST.MF">
+        <filter comment="https://github.com/eclipse-platform/eclipse.platform/pull/2329" id="926941240">
+            <message_arguments>
+                <message_argument value="3.11.0"/>
+                <message_argument value="3.10.600"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="META-INF/MANIFEST.MF" type="org.eclipse.help.IHelp">
+        <filter comment="https://github.com/eclipse-platform/eclipse.platform/pull/2329" id="305324134">
+            <message_arguments>
+                <message_argument value="org.eclipse.help.IHelp"/>
+                <message_argument value="org.eclipse.help_3.11.0"/>
+            </message_arguments>
+        </filter>
+    </resource>
+</component>
