@@ -23,7 +23,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -96,8 +95,8 @@ public class ResourceLocator {
 	static {
 		Platform.getExtensionRegistry().addRegistryChangeListener(event -> {
 			IExtensionDelta[] deltas = event.getExtensionDeltas(HelpPlugin.PLUGIN_ID, CONTENTPRODUCER_XP_NAME);
-			for (int i = 0; i < deltas.length; i++) {
-				IExtension extension = deltas[i].getExtension();
+			for (IExtensionDelta element : deltas) {
+				IExtension extension = element.getExtension();
 				String affectedPlugin = extension.getContributor().getName();
 				// reset producer for the affected plugin,
 				// it will be recreated on demand
@@ -154,9 +153,8 @@ public class ResourceLocator {
 
 		checkForDuplicateExtensionElements(elements);
 
-		for (int i = 0; i < elements.length; i++) {
-			IConfigurationElement element = elements[i];
-			if (!elements[i].getContributor().getName().equals(pluginId)) {
+		for (IConfigurationElement element : elements) {
+			if (!element.getContributor().getName().equals(pluginId)) {
 				continue;
 			}
 			if (BINDING.equals(element.getName())) {
@@ -182,8 +180,7 @@ public class ResourceLocator {
 		isCheckedForDuplicates = true;
 		Set<String> logged = new HashSet<>();
 		Set<String> keys = new HashSet<>();
-		for (int i = 0; i < elements.length; i++) {
-			IConfigurationElement element = elements[i];
+		for (IConfigurationElement element : elements) {
 			String pluginName = element.getContributor().getName();
 			String key = pluginName;
 			if (logged.contains(key)) {
@@ -204,8 +201,7 @@ public class ResourceLocator {
 
 	private static ProducerDescriptor findContentProducer(IConfigurationElement [] elements, String refId) {
 		// try existing ones
-		for (Iterator<Object> iter = contentProducers.values().iterator(); iter.hasNext();) {
-			Object obj = iter.next();
+		for (Object obj : contentProducers.values()) {
 			if (obj instanceof ProducerDescriptor desc) {
 				if (desc.matches(refId)) {
 					return desc;
@@ -215,11 +211,11 @@ public class ResourceLocator {
 		// not created yet. Find the matching configuration element,
 		// take its contributing pluginId and get the descriptor
 		// for that plug-in
-		for (int i=0; i<elements.length; i++) {
-			if (CONTENTPRODUCER_XP_NAME.equals(elements[i].getName())) {
-				String id = elements[i].getDeclaringExtension().getUniqueIdentifier();
+		for (IConfigurationElement element : elements) {
+			if (CONTENTPRODUCER_XP_NAME.equals(element.getName())) {
+				String id = element.getDeclaringExtension().getUniqueIdentifier();
 				if (refId.equals(id)) {
-					Object obj = getProducerDescriptor(elements[i].getContributor().getName());
+					Object obj = getProducerDescriptor(element.getContributor().getName());
 					if (obj instanceof ProducerDescriptor) {
 						return (ProducerDescriptor)obj;
 					}
@@ -242,9 +238,9 @@ public class ResourceLocator {
 		}
 		Locale l;
 		if (locale.length() >= 5) {
-			l = new Locale(locale.substring(0, 2), locale.substring(3, 5));
+			l = Locale.of(locale.substring(0, 2), locale.substring(3, 5));
 		} else if (locale.length() >= 2) {
-			l = new Locale(locale.substring(0, 2), ""); //$NON-NLS-1$
+			l = Locale.of(locale.substring(0, 2), ""); //$NON-NLS-1$
 		} else {
 			l = Locale.getDefault();
 		}
@@ -291,14 +287,14 @@ public class ResourceLocator {
 		Map<String, Object> cache = zipCache;
 		ArrayList<String> pathPrefix = getPathPrefix(locale);
 
-		for (int i = 0; i < pathPrefix.size(); i++) {
+		for (String element : pathPrefix) {
 
 			// finds the zip file by either using a cached location, or
 			// calling Platform.find - the result is cached for future use.
-			Object cached = cache.get(pluginID + '/' + pathPrefix.get(i) + zip);
+			Object cached = cache.get(pluginID + '/' + element + zip);
 			if (cached == null) {
 				try {
-					URL url = FileLocator.find(pluginDesc, IPath.fromOSString(pathPrefix.get(i) + zip), null);
+					URL url = FileLocator.find(pluginDesc, IPath.fromOSString(element + zip), null);
 					if (url != null) {
 						URL realZipURL = FileLocator.toFileURL(FileLocator.resolve(url));
 						cached = realZipURL.toExternalForm();
@@ -309,7 +305,7 @@ public class ResourceLocator {
 					cached = ZIP_NOT_FOUND;
 				}
 				// cache it
-				cache.put(pluginID + '/' + pathPrefix.get(i) + zip, cached);
+				cache.put(pluginID + '/' + element + zip, cached);
 			}
 
 			if (cached == ZIP_NOT_FOUND || cached.toString().startsWith("jar:")) { //$NON-NLS-1$
@@ -371,8 +367,8 @@ public class ResourceLocator {
 	public static URL find(Bundle pluginDesc, IPath flatFilePath, ArrayList<String> pathPrefix) {
 
 		// try to find the actual file.
-		for (int i = 0; i < pathPrefix.size(); i++) {
-			URL url = FileLocator.find(pluginDesc, IPath.fromOSString(pathPrefix.get(i) + flatFilePath), null);
+		for (String element : pathPrefix) {
+			URL url = FileLocator.find(pluginDesc, IPath.fromOSString(element + flatFilePath), null);
 			if (url != null) {
 				return url;
 			}
@@ -447,8 +443,8 @@ public class ResourceLocator {
 			directory = directory.substring(0, directory.length() - 1);
 		}
 		ArrayList<String> pathPrefix = getPathPrefix(locale);
-		for (int i = 0; i < pathPrefix.size(); i++) {
-			String path = pathPrefix.get(i) + directory;
+		for (String element : pathPrefix) {
+			String path = element + directory;
 			if (path.length() == 0) {
 				path = "/"; //$NON-NLS-1$
 			}
