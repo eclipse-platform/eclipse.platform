@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2005, 2019 IBM Corporation and others.
+ *  Copyright (c) 2005, 2025 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -19,7 +19,7 @@ import static org.eclipse.core.tests.filesystem.FileSystemTestUtil.getMonitor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -57,9 +57,9 @@ public class OpenOutputStreamTest {
 		}
 		//file should contain two bytes
 		try (InputStream in = file.openInputStream(EFS.NONE, getMonitor())) {
-			assertEquals("1.0", BYTE_ONE, in.read());
-			assertEquals("1.1", BYTE_TWO, in.read());
-			assertEquals("1.2", EOF, in.read());
+			assertEquals(BYTE_ONE, in.read());
+			assertEquals(BYTE_TWO, in.read());
+			assertEquals(EOF, in.read());
 		}
 	}
 
@@ -74,8 +74,8 @@ public class OpenOutputStreamTest {
 		}
 		final IFileInfo info = file.fetchInfo();
 		assertExists(file);
-		assertTrue("1.1", !info.isDirectory());
-		assertEquals("1.2", file.getName(), info.getName());
+		assertFalse(info.isDirectory());
+		assertEquals(file.getName(), info.getName());
 	}
 
 	private static void assertExists(IFileStore store) throws CoreException {
@@ -96,10 +96,9 @@ public class OpenOutputStreamTest {
 
 		assertThrows(CoreException.class, () -> {
 			file.openOutputStream(EFS.NONE, getMonitor());
-			fail("1.0");
 		});
 		final IFileInfo info = file.fetchInfo();
-		assertTrue("1.1", !info.exists());
-		assertTrue("1.2", !info.isDirectory());
+		assertFalse(info.exists());
+		assertFalse(info.isDirectory());
 	}
 }

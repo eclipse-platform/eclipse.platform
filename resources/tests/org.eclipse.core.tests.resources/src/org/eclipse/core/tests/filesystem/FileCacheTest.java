@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2005, 2015 IBM Corporation and others.
+ *  Copyright (c) 2005, 2025 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -17,6 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.tests.filesystem.FileSystemTestUtil.getMonitor;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.io.File;
 import java.io.OutputStream;
@@ -53,8 +54,8 @@ public class FileCacheTest {
 			out.write(contents);
 		}
 		File cachedFile = store.toLocalFile(EFS.CACHE, getMonitor());
-		assertTrue("1.0", cachedFile.exists());
-		assertTrue("1.1", !cachedFile.isDirectory());
+		assertTrue(cachedFile.exists());
+		assertFalse(cachedFile.isDirectory());
 		assertThat(Files.readAllBytes(cachedFile.toPath())).containsExactly(contents);
 
 		// write out new file contents
@@ -68,8 +69,8 @@ public class FileCacheTest {
 
 		// fetching the cache again should return up to date file
 		cachedFile = store.toLocalFile(EFS.CACHE, getMonitor());
-		assertTrue("3.0", cachedFile.exists());
-		assertTrue("3.1", !cachedFile.isDirectory());
+		assertTrue(cachedFile.exists());
+		assertFalse(cachedFile.isDirectory());
 		assertThat(Files.readAllBytes(cachedFile.toPath())).containsExactly(newContents);
 	}
 
@@ -78,8 +79,8 @@ public class FileCacheTest {
 		IFileStore store = new MemoryFileStore(IPath.fromOSString("testCacheFolder"));
 		store.mkdir(EFS.NONE, getMonitor());
 		File cachedFile = store.toLocalFile(EFS.CACHE, getMonitor());
-		assertTrue("1.0", cachedFile.exists());
-		assertTrue("1.1", cachedFile.isDirectory());
+		assertTrue(cachedFile.exists());
+		assertTrue(cachedFile.isDirectory());
 	}
 
 	/**
@@ -90,7 +91,7 @@ public class FileCacheTest {
 		IFileStore store = new MemoryFileStore(IPath.fromOSString("testNoCacheFlag"));
 		store.mkdir(EFS.NONE, getMonitor());
 		File cachedFile = store.toLocalFile(EFS.NONE, getMonitor());
-		assertNull("1.0", cachedFile);
+		assertNull(cachedFile);
 	}
 
 	/**
@@ -100,6 +101,6 @@ public class FileCacheTest {
 	public void testNonExisting() throws Exception {
 		IFileStore store = new MemoryFileStore(IPath.fromOSString("testNonExisting"));
 		File cachedFile = store.toLocalFile(EFS.CACHE, getMonitor());
-		assertTrue("1.0", !cachedFile.exists());
+		assertFalse(cachedFile.exists());
 	}
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2017 IBM Corporation and others.
+ *  Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -131,9 +131,9 @@ public class UnifiedTreeTest {
 			final IResource resource = node.getResource();
 			final IFileStore store = ((Resource) resource).getStore();
 			if (node.existsInFileSystem()) {
-				assertEquals("1.0", store.fetchInfo().getName(), node.getLocalName());
+				assertEquals(store.fetchInfo().getName(), node.getLocalName());
 			}
-			assertEquals("1.1", store, node.getStore());
+			assertEquals(store, node.getStore());
 
 			/* remove from the hash table the resource we're visiting */
 			set.remove(resource.getLocation().toOSString());
@@ -145,7 +145,7 @@ public class UnifiedTreeTest {
 		tree.accept(visitor);
 
 		/* if the hash table is empty, we walked through all resources */
-		assertTrue("2.0", set.isEmpty());
+		assertTrue(set.isEmpty());
 	}
 
 	/**
@@ -280,11 +280,11 @@ public class UnifiedTreeTest {
 
 		IFile rf = link.getFile("fileTest342968.txt");
 		rf.create(new ByteArrayInputStream("test342968".getBytes()), false, null);
-		assertTrue("1.0", rf.exists());
+		assertTrue(rf.exists());
 
 		project.refreshLocal(IResource.DEPTH_INFINITE, null);
 
-		assertTrue("2.0", rf.exists());
+		assertTrue(rf.exists());
 	}
 
 	@Test
