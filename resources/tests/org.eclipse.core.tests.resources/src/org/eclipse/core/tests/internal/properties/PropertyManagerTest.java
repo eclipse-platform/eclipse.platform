@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2024 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -242,9 +242,9 @@ public class PropertyManagerTest {
 
 		String hint = "Property cache returned another instance. Same instance is not required but expected. Eiter the Garbage Collector deleted the cache or the cache is not working.";
 		assertSame(hint + "1.2", propValue, manager.getProperty(source, propName));
-		assertNotNull("1.3", manager.getProperty(sourceFolder, propName));
+		assertNotNull(manager.getProperty(sourceFolder, propName));
 		assertSame(hint + "1.4", propValue, manager.getProperty(sourceFolder, propName));
-		assertNotNull("1.5", manager.getProperty(sourceFile, propName));
+		assertNotNull(manager.getProperty(sourceFile, propName));
 		assertSame(hint + "1.6", propValue, manager.getProperty(sourceFile, propName));
 
 		List<byte[]> wastedMemory = new LinkedList<>();
@@ -268,20 +268,20 @@ public class PropertyManagerTest {
 		}
 
 		// the cache is guaranteed to be emptied before OutOfMemoryError:
-		assertNotNull("2.1", manager.getProperty(source, propName));
-		assertEquals("2.2", propValue, manager.getProperty(source, propName));
-		assertNotSame("2.3", propValue, manager.getProperty(source, propName));
+		assertNotNull(manager.getProperty(source, propName));
+		assertEquals(propValue, manager.getProperty(source, propName));
+		assertNotSame(propValue, manager.getProperty(source, propName));
 
-		assertNotNull("3.1", manager.getProperty(sourceFolder, propName));
-		assertEquals("3.2", propValue, manager.getProperty(sourceFolder, propName));
-		assertNotSame("3.3", propValue, manager.getProperty(sourceFolder, propName));
+		assertNotNull(manager.getProperty(sourceFolder, propName));
+		assertEquals(propValue, manager.getProperty(sourceFolder, propName));
+		assertNotSame(propValue, manager.getProperty(sourceFolder, propName));
 
-		assertNotNull("4.1", manager.getProperty(sourceFile, propName));
-		assertEquals("4.2", propValue, manager.getProperty(sourceFile, propName));
+		assertNotNull(manager.getProperty(sourceFile, propName));
+		assertEquals(propValue, manager.getProperty(sourceFile, propName));
 
 		// We can not squeeze the active working set.
 		// The cache was emptied but the active Bucket.entries map did survive:
-		assertSame("4.3", propValue, manager.getProperty(sourceFile, propName));
+		assertSame(propValue, manager.getProperty(sourceFile, propName));
 	}
 
 	@Test
@@ -306,53 +306,53 @@ public class PropertyManagerTest {
 		manager.setProperty(sourceFolder, propName, propValue);
 		manager.setProperty(sourceFile, propName, propValue);
 
-		assertNotNull("1.1", manager.getProperty(source, propName));
-		assertTrue("1.2", manager.getProperty(source, propName).equals(propValue));
-		assertNotNull("1.3", manager.getProperty(sourceFolder, propName));
-		assertTrue("1.4", manager.getProperty(sourceFolder, propName).equals(propValue));
-		assertNotNull("1.5", manager.getProperty(sourceFile, propName));
-		assertTrue("1.6", manager.getProperty(sourceFile, propName).equals(propValue));
+		assertNotNull(manager.getProperty(source, propName));
+		assertTrue(manager.getProperty(source, propName).equals(propValue));
+		assertNotNull(manager.getProperty(sourceFolder, propName));
+		assertTrue(manager.getProperty(sourceFolder, propName).equals(propValue));
+		assertNotNull(manager.getProperty(sourceFile, propName));
+		assertTrue(manager.getProperty(sourceFile, propName).equals(propValue));
 
 		// do the copy at the project level
 		manager.copy(source, destination, IResource.DEPTH_INFINITE);
 
-		assertNotNull("1.7", manager.getProperty(destination, propName));
-		assertTrue("1.8", manager.getProperty(destination, propName).equals(propValue));
+		assertNotNull(manager.getProperty(destination, propName));
+		assertTrue(manager.getProperty(destination, propName).equals(propValue));
 
-		assertNotNull("1.9", manager.getProperty(destFolder, propName));
-		assertTrue("1.10", manager.getProperty(destFolder, propName).equals(propValue));
-		assertNotNull("1.11", manager.getProperty(destFile, propName));
-		assertTrue("1.12", manager.getProperty(destFile, propName).equals(propValue));
+		assertNotNull(manager.getProperty(destFolder, propName));
+		assertTrue(manager.getProperty(destFolder, propName).equals(propValue));
+		assertNotNull(manager.getProperty(destFile, propName));
+		assertTrue(manager.getProperty(destFile, propName).equals(propValue));
 
 		// do the same thing but copy at the folder level
 		manager.deleteProperties(source, IResource.DEPTH_INFINITE);
 		manager.deleteProperties(destination, IResource.DEPTH_INFINITE);
-		assertNull("2.0", manager.getProperty(source, propName));
-		assertNull("2.1", manager.getProperty(sourceFolder, propName));
-		assertNull("2.2", manager.getProperty(sourceFile, propName));
-		assertNull("2.3", manager.getProperty(destination, propName));
-		assertNull("2.4", manager.getProperty(destFolder, propName));
-		assertNull("2.5", manager.getProperty(destFile, propName));
+		assertNull(manager.getProperty(source, propName));
+		assertNull(manager.getProperty(sourceFolder, propName));
+		assertNull(manager.getProperty(sourceFile, propName));
+		assertNull(manager.getProperty(destination, propName));
+		assertNull(manager.getProperty(destFolder, propName));
+		assertNull(manager.getProperty(destFile, propName));
 		manager.setProperty(sourceFolder, propName, propValue);
 		manager.setProperty(sourceFile, propName, propValue);
-		assertNotNull("2.6", manager.getProperty(sourceFolder, propName));
-		assertTrue("2.7", manager.getProperty(sourceFolder, propName).equals(propValue));
-		assertNotNull("2.8", manager.getProperty(sourceFile, propName));
-		assertTrue("2.9", manager.getProperty(sourceFile, propName).equals(propValue));
+		assertNotNull(manager.getProperty(sourceFolder, propName));
+		assertTrue(manager.getProperty(sourceFolder, propName).equals(propValue));
+		assertNotNull(manager.getProperty(sourceFile, propName));
+		assertTrue(manager.getProperty(sourceFile, propName).equals(propValue));
 
 		manager.copy(sourceFolder, destFolder, IResource.DEPTH_INFINITE);
 
-		assertNotNull("2.10", manager.getProperty(destFolder, propName));
-		assertTrue("2.11", manager.getProperty(destFolder, propName).equals(propValue));
-		assertNotNull("2.12", manager.getProperty(destFile, propName));
-		assertTrue("2.13", manager.getProperty(destFile, propName).equals(propValue));
+		assertNotNull(manager.getProperty(destFolder, propName));
+		assertTrue(manager.getProperty(destFolder, propName).equals(propValue));
+		assertNotNull(manager.getProperty(destFile, propName));
+		assertTrue(manager.getProperty(destFile, propName).equals(propValue));
 
 		/* test overwrite */
 		String newPropValue = "change property value";
 		manager.setProperty(source, propName, newPropValue);
-		assertTrue("2.0", manager.getProperty(source, propName).equals(newPropValue));
+		assertTrue(manager.getProperty(source, propName).equals(newPropValue));
 		manager.copy(source, destination, IResource.DEPTH_INFINITE);
-		assertTrue("2.1", manager.getProperty(destination, propName).equals(newPropValue));
+		assertTrue(manager.getProperty(destination, propName).equals(newPropValue));
 	}
 
 	@Test
@@ -366,10 +366,10 @@ public class PropertyManagerTest {
 		QualifiedName propName = new QualifiedName("eclipse", "prop");
 		String propValue = "this is the property value";
 		manager.setProperty(target, propName, propValue);
-		assertTrue("1.1", manager.getProperty(target, propName).equals(propValue));
+		assertTrue(manager.getProperty(target, propName).equals(propValue));
 		/* delete */
 		manager.deleteProperties(target, IResource.DEPTH_INFINITE);
-		assertTrue("1.3", manager.getProperty(target, propName) == null);
+		assertTrue(manager.getProperty(target, propName) == null);
 
 		//test deep deletion of project properties
 		IProject source = project;
@@ -386,18 +386,18 @@ public class PropertyManagerTest {
 		manager.setProperty(sourceFolder, propName, propValue);
 		manager.setProperty(sourceFile, propName, propValue);
 
-		assertNotNull("2.1", manager.getProperty(source, propName));
-		assertTrue("2.2", manager.getProperty(source, propName).equals(propValue));
-		assertNotNull("2.3", manager.getProperty(sourceFolder, propName));
-		assertTrue("2.4", manager.getProperty(sourceFolder, propName).equals(propValue));
-		assertNotNull("2.5", manager.getProperty(sourceFile, propName));
-		assertTrue("2.6", manager.getProperty(sourceFile, propName).equals(propValue));
+		assertNotNull(manager.getProperty(source, propName));
+		assertTrue(manager.getProperty(source, propName).equals(propValue));
+		assertNotNull(manager.getProperty(sourceFolder, propName));
+		assertTrue(manager.getProperty(sourceFolder, propName).equals(propValue));
+		assertNotNull(manager.getProperty(sourceFile, propName));
+		assertTrue(manager.getProperty(sourceFile, propName).equals(propValue));
 
 		//delete properties
 		manager.deleteProperties(source, IResource.DEPTH_INFINITE);
-		assertNull("3.1", manager.getProperty(source, propName));
-		assertNull("3.2", manager.getProperty(sourceFolder, propName));
-		assertNull("3.3", manager.getProperty(sourceFile, propName));
+		assertNull(manager.getProperty(source, propName));
+		assertNull(manager.getProperty(sourceFolder, propName));
+		assertNull(manager.getProperty(sourceFile, propName));
 	}
 
 	/**
@@ -415,10 +415,10 @@ public class PropertyManagerTest {
 		createInWorkspace(file1b);
 		String value = null;
 		value = file1b.getPersistentProperty(key);
-		assertNull("1.0", value);
+		assertNull(value);
 		file1a = folder.getFile("file2");
 		value = file1a.getPersistentProperty(key);
-		assertEquals("2.0", "value", value);
+		assertEquals("value", value);
 	}
 
 	/**
@@ -435,10 +435,10 @@ public class PropertyManagerTest {
 		createInWorkspace(folder1b);
 		String value = null;
 		value = folder1b.getPersistentProperty(key);
-		assertNull("1.0", value);
+		assertNull(value);
 		folder1a = project.getFolder("folder2");
 		value = folder1a.getPersistentProperty(key);
-		assertEquals("2.0", "value", value);
+		assertEquals("value", value);
 	}
 
 	/**
@@ -474,11 +474,11 @@ public class PropertyManagerTest {
 		IProject project1b = root.getProject("proj1");
 		createInWorkspace(project1b);
 		String value = project1b.getPersistentProperty(key);
-		assertNull("1.0", value);
+		assertNull(value);
 
 		project1a = root.getProject("proj2");
 		value = project1a.getPersistentProperty(key);
-		assertEquals("2.0", "value", value);
+		assertEquals("value", value);
 	}
 
 	@Test
@@ -536,7 +536,7 @@ public class PropertyManagerTest {
 
 		// verify
 		for (int i = 0; i < N; i++) {
-			assertTrue("2.0", target.getPersistentProperty(names[i]).equals(values[i]));
+			assertTrue(target.getPersistentProperty(names[i]).equals(values[i]));
 		}
 
 		for (int j = 0; j < 20; j++) {
@@ -548,7 +548,7 @@ public class PropertyManagerTest {
 
 			// verify
 			for (int i = 0; i < N; i++) {
-				assertTrue("5.0", target.getPersistentProperty(names[i]).equals(values[i]));
+				assertTrue(target.getPersistentProperty(names[i]).equals(values[i]));
 			}
 
 		}

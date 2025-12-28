@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2005, 2012 IBM Corporation and others.
+ *  Copyright (c) 2005, 2025 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -41,9 +41,9 @@ public class DeleteTest {
 		IFileStore file = baseStore.getChild("child");
 		ensureExists(file, false);
 
-		assertTrue("1.0", file.fetchInfo().exists());
+		assertTrue(file.fetchInfo().exists());
 		file.delete(EFS.NONE, getMonitor());
-		assertTrue("1.1", !file.fetchInfo().exists());
+		assertFalse(file.fetchInfo().exists());
 	}
 
 	@Test
@@ -52,9 +52,9 @@ public class DeleteTest {
 		IFileStore dir = baseStore.getChild("child");
 		ensureExists(dir, true);
 
-		assertTrue("1.0", dir.fetchInfo().exists());
+		assertTrue(dir.fetchInfo().exists());
 		dir.delete(EFS.NONE, getMonitor());
-		assertTrue("1.1", !dir.fetchInfo().exists());
+		assertFalse(dir.fetchInfo().exists());
 	}
 
 	@Test
@@ -63,11 +63,11 @@ public class DeleteTest {
 		ensureExists(localFileBaseStore, true);
 		IFileStore file = localFileBaseStore.getChild("child");
 		ensureExists(file, false);
-		assertTrue("1.0", file.fetchInfo().exists());
+		assertTrue(file.fetchInfo().exists());
 		ensureReadOnlyLocal(file);
 		file.delete(EFS.NONE, getMonitor());
 		// success: we expect that read-only files can be removed
-		assertTrue("1.1", !file.fetchInfo().exists());
+		assertFalse(file.fetchInfo().exists());
 	}
 
 	/**
@@ -76,7 +76,7 @@ public class DeleteTest {
 	protected void ensureReadOnlyLocal(IFileStore store) throws Exception {
 		File localFile = store.toLocalFile(0, getMonitor());
 		boolean readOnly = localFile.setReadOnly();
-		assertTrue("1.0", readOnly);
-		assertFalse("1.1", localFile.canWrite());
+		assertTrue(readOnly);
+		assertFalse(localFile.canWrite());
 	}
 }

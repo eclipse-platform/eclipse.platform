@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2015 IBM Corporation and others.
+ * Copyright (c) 2004, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -27,6 +27,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -111,7 +112,7 @@ public class ProjectPreferencesTest {
 			if (value instanceof String) {
 				return "S";
 			}
-			assertTrue("0.0", false);
+			fail();
 			return null;
 		}
 
@@ -156,56 +157,56 @@ public class ProjectPreferencesTest {
 		Preferences node = instanceContext.getNode(qualifier);
 		node.put(key, instanceValue);
 		String actual = node.get(key, null);
-		assertNotNull("1.0", actual);
-		assertEquals("1.1", instanceValue, actual);
+		assertNotNull(actual);
+		assertEquals(instanceValue, actual);
 
 		// get the value through service searching
 		for (int i = 0; i < contextsWithoutScope.length; i++) {
 			actual = service.getString(qualifier, key, null, contextsWithoutScope[i]);
-			assertNotNull("2.0." + i, actual);
-			assertEquals("2.1." + i, instanceValue, actual);
+			assertNotNull("Null Index:" + i, actual);
+			assertEquals("Not Equal Index:" + i, instanceValue, actual);
 		}
 		for (int i = 0; i < contextsWithScope.length; i++) {
 			actual = service.getString(qualifier, key, null, contextsWithScope[i]);
-			assertNotNull("2.2." + i, actual);
-			assertEquals("2.3." + i, instanceValue, actual);
+			assertNotNull("Null Index:" + i, actual);
+			assertEquals("Not Equal Index:" + i, instanceValue, actual);
 		}
 
 		// set a preference value in the project scope
 		node = projectContext.getNode(qualifier);
 		node.put(key, projectValue);
 		actual = node.get(key, null);
-		assertNotNull("3.0", actual);
-		assertEquals("3.1", projectValue, actual);
+		assertNotNull(actual);
+		assertEquals(projectValue, actual);
 
 		// get the value through service searching
 		for (int i = 0; i < contextsWithoutScope.length; i++) {
 			actual = service.getString(qualifier, key, null, contextsWithoutScope[i]);
-			assertNotNull("4.0." + i, actual);
-			assertEquals("4.1." + i, instanceValue, actual);
+			assertNotNull("Null Index:" + i, actual);
+			assertEquals("Not Equal Index:" + i, instanceValue, actual);
 		}
 		for (int i = 0; i < contextsWithScope.length; i++) {
 			actual = service.getString(qualifier, key, null, contextsWithScope[i]);
-			assertNotNull("4.2." + i, actual);
-			assertEquals("4.3." + i, projectValue, actual);
+			assertNotNull("Null Index:" + i, actual);
+			assertEquals("Not Equal Index:" + i, projectValue, actual);
 		}
 
 		// remove the project scope value
 		node = projectContext.getNode(qualifier);
 		node.remove(key);
 		actual = node.get(key, null);
-		assertNull("5.0", actual);
+		assertNull(actual);
 
 		// get the value through service searching
 		for (int i = 0; i < contextsWithoutScope.length; i++) {
 			actual = service.getString(qualifier, key, null, contextsWithoutScope[i]);
-			assertNotNull("6.0." + i, actual);
-			assertEquals("6.1." + i, instanceValue, actual);
+			assertNotNull("Null Index:" + i, actual);
+			assertEquals("Not Equal Index:" + i, instanceValue, actual);
 		}
 		for (int i = 0; i < contextsWithScope.length; i++) {
 			actual = service.getString(qualifier, key, null, contextsWithScope[i]);
-			assertNotNull("6.2." + i, actual);
-			assertEquals("6.3." + i, instanceValue, actual);
+			assertNotNull("Null Index:" + i, actual);
+			assertEquals("Not Equal Index:" + i, instanceValue, actual);
 		}
 
 		// remove the instance value so there is nothing
@@ -214,11 +215,11 @@ public class ProjectPreferencesTest {
 		actual = node.get(key, null);
 		for (int i = 0; i < contextsWithoutScope.length; i++) {
 			actual = service.getString(qualifier, key, null, contextsWithoutScope[i]);
-			assertNull("7.0." + i, actual);
+			assertNull("Not Null Index:" + i, actual);
 		}
 		for (int i = 0; i < contextsWithScope.length; i++) {
 			actual = service.getString(qualifier, key, null, contextsWithScope[i]);
-			assertNull("7.1." + i, actual);
+			assertNull("Not Null Index:" + i, actual);
 		}
 	}
 
@@ -236,8 +237,8 @@ public class ProjectPreferencesTest {
 		Preferences node = projectContext.getNode(qualifier);
 		node.put(key, value);
 		String actual = node.get(key, null);
-		assertNotNull("1.0", actual);
-		assertEquals("1.1", value, actual);
+		assertNotNull(actual);
+		assertEquals(value, actual);
 		// flush
 		node.flush();
 
@@ -271,9 +272,9 @@ public class ProjectPreferencesTest {
 
 		// validate new settings
 		actual = node.get(key, null);
-		assertEquals("4.1", value, actual);
+		assertEquals(value, actual);
 		actual = node.get(newKey, null);
-		assertEquals("4.2", newValue, actual);
+		assertEquals(newValue, actual);
 	}
 
 	/**
@@ -292,19 +293,19 @@ public class ProjectPreferencesTest {
 		Preferences node = context.getNode(qualifier);
 		Preferences parent = node.parent().parent();
 		node.put(key, value);
-		assertEquals("1.0", value, node.get(key, null));
+		assertEquals(value, node.get(key, null));
 
 		// delete the project
 		project.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, createTestMonitor());
 
 		// project pref should not exist
-		assertTrue("3.0", !parent.nodeExists(project.getName()));
+		assertFalse(parent.nodeExists(project.getName()));
 
 		// create a project with the same name
 		createInWorkspace(project);
 
 		// ensure that the preference value is not set
-		assertNull("4.0", context.getNode(qualifier).get(key, null));
+		assertNull(context.getNode(qualifier).get(key, null));
 	}
 
 	/** See bug 91244, bug 93398 and bug 211006. */
@@ -325,19 +326,19 @@ public class ProjectPreferencesTest {
 
 		// ensure that preferences for the old project are removed
 		node = Platform.getPreferencesService().getRootNode().node(ProjectScope.SCOPE);
-		assertNotNull("2.1", node);
-		assertTrue("2.2", !node.nodeExists(project1.getName()));
+		assertNotNull(node);
+		assertFalse(node.nodeExists(project1.getName()));
 
 		// ensure preferences are preserved
 		node = Platform.getPreferencesService().getRootNode().node(ProjectScope.SCOPE);
-		assertNotNull("2.3", node);
-		assertTrue("2.4", node.nodeExists(project2.getName()));
+		assertNotNull(node);
+		assertTrue(node.nodeExists(project2.getName()));
 		node = node.node(project2.getName());
-		assertNotNull("3.1", node);
-		assertTrue("3.2", node.nodeExists(qualifier));
+		assertNotNull(node);
+		assertTrue(node.nodeExists(qualifier));
 		node = node.node(qualifier);
-		assertNotNull("4.1", node);
-		assertEquals("4.2", value, node.get(key, null));
+		assertNotNull(node);
+		assertEquals(value, node.get(key, null));
 	}
 
 	/**
@@ -356,8 +357,8 @@ public class ProjectPreferencesTest {
 		IFile file = getFileInWorkspace(project, qualifier);
 
 		// should be nothing in the file system
-		assertTrue("0.0", !file.exists());
-		assertTrue("0.1", !file.getLocation().toFile().exists());
+		assertFalse(file.exists());
+		assertFalse(file.getLocation().toFile().exists());
 
 		// store a preference key/value pair
 		IScopeContext context = new ProjectScope(project);
@@ -370,8 +371,8 @@ public class ProjectPreferencesTest {
 		node.flush();
 
 		// changes should appear in the workspace
-		assertTrue("2.0", file.exists());
-		assertTrue("2.1", file.isSynchronized(IResource.DEPTH_ZERO));
+		assertTrue(file.exists());
+		assertTrue(file.isSynchronized(IResource.DEPTH_ZERO));
 	}
 
 	/**
@@ -390,18 +391,18 @@ public class ProjectPreferencesTest {
 		String value2 = createUniqueString();
 		node.put(key1, value1);
 		node.put(key2, value2);
-		assertEquals("0.8", value1, node.get(key1, null));
-		assertEquals("0.9", value2, node.get(key2, null));
+		assertEquals(value1, node.get(key1, null));
+		assertEquals(value2, node.get(key2, null));
 		IFile prefsFile = getFileInWorkspace(project1, ResourcesPlugin.PI_RESOURCES);
-		assertTrue("1.0", prefsFile.exists());
+		assertTrue(prefsFile.exists());
 		node.flush();
-		assertTrue("1.1", prefsFile.exists());
+		assertTrue(prefsFile.exists());
 		Properties props = new Properties();
 		try (InputStream contents = prefsFile.getContents()) {
 			props.load(contents);
 		}
-		assertEquals("2.0", value2, props.getProperty("subnode/" + key2));
-		assertEquals("2.1", value1, props.getProperty("subnode/" + key1));
+		assertEquals(value2, props.getProperty("subnode/" + key2));
+		assertEquals(value1, props.getProperty("subnode/" + key1));
 	}
 
 	/**
@@ -422,7 +423,7 @@ public class ProjectPreferencesTest {
 		String key = createUniqueString();
 		String value = createUniqueString();
 		node.put(key, value);
-		assertEquals("1.0", value, node.get(key, null));
+		assertEquals(value, node.get(key, null));
 
 		// save the prefs
 		node.flush();
@@ -432,7 +433,7 @@ public class ProjectPreferencesTest {
 
 		context = new ProjectScope(destProject);
 		node = context.getNode(qualifier);
-		assertEquals("3.0", value, node.get(key, null));
+		assertEquals(value, node.get(key, null));
 	}
 
 	/**
@@ -447,15 +448,15 @@ public class ProjectPreferencesTest {
 		IProject project2 = getProject(createUniqueString());
 		createInWorkspace(project1);
 		Preferences node = new ProjectScope(project1).getNode(ResourcesPlugin.PI_RESOURCES);
-		assertTrue("1.0", getFileInWorkspace(project1, ResourcesPlugin.PI_RESOURCES).exists());
+		assertTrue(getFileInWorkspace(project1, ResourcesPlugin.PI_RESOURCES).exists());
 		node.put("key", "value");
 		node.flush();
-		assertTrue("1.1", getFileInWorkspace(project1, ResourcesPlugin.PI_RESOURCES).exists());
+		assertTrue(getFileInWorkspace(project1, ResourcesPlugin.PI_RESOURCES).exists());
 		// move project and ensures charsets settings are preserved
 		project1.move(project2.getFullPath(), false, null);
-		assertTrue("2.0", getFileInWorkspace(project2, ResourcesPlugin.PI_RESOURCES).exists());
+		assertTrue(getFileInWorkspace(project2, ResourcesPlugin.PI_RESOURCES).exists());
 		node = new ProjectScope(project2).getNode(ResourcesPlugin.PI_RESOURCES);
-		assertEquals("2.1", "value", node.get("key", null));
+		assertEquals("value", node.get("key", null));
 	}
 
 	/**
@@ -470,7 +471,7 @@ public class ProjectPreferencesTest {
 	public void test_61277c() throws Exception {
 		IProject project1 = getProject(createUniqueString());
 		createInWorkspace(project1);
-		assertTrue("1.0", getFileInWorkspace(project1, ResourcesPlugin.PI_RESOURCES).exists());
+		assertTrue(getFileInWorkspace(project1, ResourcesPlugin.PI_RESOURCES).exists());
 		Preferences node = new ProjectScope(project1).getNode(ResourcesPlugin.PI_RESOURCES);
 		String key1 = "key";
 		String emptyKey = "";
@@ -479,16 +480,16 @@ public class ProjectPreferencesTest {
 		node.put(key1, value1);
 		node.put(emptyKey, value2);
 		node.flush();
-		assertTrue("1.2", getFileInWorkspace(project1, ResourcesPlugin.PI_RESOURCES).exists());
+		assertTrue(getFileInWorkspace(project1, ResourcesPlugin.PI_RESOURCES).exists());
 
 		// move project and ensures charsets settings are preserved
 		IProject project2 = getProject(createUniqueString());
 		project1.move(project2.getFullPath(), false, null);
-		assertTrue("2.0", getFileInWorkspace(project2, ResourcesPlugin.PI_RESOURCES).exists());
+		assertTrue(getFileInWorkspace(project2, ResourcesPlugin.PI_RESOURCES).exists());
 
 		node = new ProjectScope(project2).getNode(ResourcesPlugin.PI_RESOURCES);
-		assertEquals("2.1", value1, node.get(key1, null));
-		assertEquals("2.2", value2, node.get(emptyKey, null));
+		assertEquals(value1, node.get(key1, null));
+		assertEquals(value2, node.get(emptyKey, null));
 	}
 
 	/*
@@ -552,12 +553,12 @@ public class ProjectPreferencesTest {
 		String value = createUniqueString();
 		node.put(key, value);
 		node.flush();
-		assertTrue("1.2", getFileInWorkspace(project, ResourcesPlugin.PI_RESOURCES).exists());
+		assertTrue(getFileInWorkspace(project, ResourcesPlugin.PI_RESOURCES).exists());
 		node = new ProjectScope(project).getNode(ResourcesPlugin.PI_RESOURCES);
-		assertEquals("1.3", value, node.get(key, null));
+		assertEquals(value, node.get(key, null));
 		removeFromWorkspace(project.getFolder(DIR_NAME));
 		node = new ProjectScope(project).getNode(ResourcesPlugin.PI_RESOURCES);
-		assertNull("2.0", node.get(key, null));
+		assertNull(node.get(key, null));
 	}
 
 	/*
@@ -573,14 +574,14 @@ public class ProjectPreferencesTest {
 		node.put("key3", "value3");
 		node.flush();
 		IFile prefFile = getFileInWorkspace(project, ResourcesPlugin.PI_RESOURCES);
-		assertTrue("1.2", prefFile.exists());
+		assertTrue(prefFile.exists());
 		Properties properties = new Properties();
 		try (InputStream contents = prefFile.getContents()) {
 			properties.load(contents);
 		}
-		assertEquals("2.0", "value1", properties.get("key1"));
-		assertEquals("2.1", "value2", properties.get("key2"));
-		assertEquals("2.2", "value3", properties.get("key3"));
+		assertEquals("value1", properties.get("key1"));
+		assertEquals("value2", properties.get("key2"));
+		assertEquals("value3", properties.get("key3"));
 		// add a new property
 		properties.put("key0", "value0");
 		// change an existing property
@@ -594,13 +595,13 @@ public class ProjectPreferencesTest {
 		// here, project preferences should have caught up with the changes
 		node = new ProjectScope(project).getNode(ResourcesPlugin.PI_RESOURCES);
 		// property was added
-		assertEquals("3.0", "value0", node.get("key0", null));
+		assertEquals("value0", node.get("key0", null));
 		// property value was not changed
-		assertEquals("3.1", "value1", node.get("key1", null));
+		assertEquals("value1", node.get("key1", null));
 		// property value was changed to upper case
-		assertEquals("3.2", "value2".toUpperCase(), node.get("key2", null));
+		assertEquals("value2".toUpperCase(), node.get("key2", null));
 		// property was deleted
-		assertNull("3.3", node.get("key3", null));
+		assertNull(node.get("key3", null));
 	}
 
 	/*
@@ -691,17 +692,17 @@ public class ProjectPreferencesTest {
 		node.flush();
 
 		IFile prefFile = getFileInWorkspace(project, ResourcesPlugin.PI_RESOURCES);
-		assertTrue("2.0", prefFile.exists());
+		assertTrue(prefFile.exists());
 
 		// get the pref node for the destination project
 		Preferences project2Node = new ProjectScope(project2).getNode(ResourcesPlugin.PI_RESOURCES);
-		assertNull("3.0", project2Node.get(key, null));
+		assertNull(project2Node.get(key, null));
 
 		// copy the pref file to the destination project
 		getFileInWorkspace(project2, ResourcesPlugin.PI_RESOURCES).delete(true, null);
 		prefFile.copy(getFileInWorkspace(project2, ResourcesPlugin.PI_RESOURCES).getFullPath(), true, null);
 
-		assertEquals("5.0", value, project2Node.get(key, null));
+		assertEquals(value, project2Node.get(key, null));
 	}
 
 	/**
@@ -856,7 +857,7 @@ public class ProjectPreferencesTest {
 			node.put(key, createUniqueString());
 			node.flush();
 			// if there is no preference, OS default line separator should be used
-			assertEquals("1.0", systemValue, getLineSeparatorFromFile(file));
+			assertEquals(systemValue, getLineSeparatorFromFile(file));
 			file.delete(true, createTestMonitor());
 
 			instanceNode.put(Platform.PREF_LINE_SEPARATOR, newInstanceValue);
@@ -864,7 +865,7 @@ public class ProjectPreferencesTest {
 			node.put(key, createUniqueString());
 			node.flush();
 			// if there is instance preference then it should be used
-			assertEquals("2.0", newInstanceValue, getLineSeparatorFromFile(file));
+			assertEquals(newInstanceValue, getLineSeparatorFromFile(file));
 			file.delete(true, createTestMonitor());
 
 			projectNode.put(Platform.PREF_LINE_SEPARATOR, newProjectValue);
@@ -873,7 +874,7 @@ public class ProjectPreferencesTest {
 			node.flush();
 			// if there is project preference then it should be used
 			String recentlyUsedLineSeparator = getLineSeparatorFromFile(file);
-			assertEquals("3.0", newProjectValue, recentlyUsedLineSeparator);
+			assertEquals(newProjectValue, recentlyUsedLineSeparator);
 			// don't delete the prefs file, it will be used in the next step
 
 			// remove preferences for the next step
@@ -892,7 +893,7 @@ public class ProjectPreferencesTest {
 			node.put(key, createUniqueString());
 			node.flush();
 			// if the prefs file exists, line delimiter from the existing file should be used
-			assertEquals("4.0", recentlyUsedLineSeparator, getLineSeparatorFromFile(file));
+			assertEquals(recentlyUsedLineSeparator, getLineSeparatorFromFile(file));
 		} finally {
 			// revert instance preference to original value
 			if (oldInstanceValue == null) {
@@ -931,7 +932,7 @@ public class ProjectPreferencesTest {
 		project.open(createTestMonitor());
 
 		//loading preferences from a file must not remove nodes that were previously created
-		assertTrue(node == projectNode.node(nodeName));
+		assertSame(node, projectNode.node(nodeName));
 		assertEquals("VALUE", node.get("KEY", null));
 	}
 
@@ -950,15 +951,15 @@ public class ProjectPreferencesTest {
 		// now reopen the project and ensure the settings were not forgotten
 		project.open(createTestMonitor());
 		node = new ProjectScope(project).getNode(qualifier);
-		assertEquals("2.1", value, node.get(key, null));
+		assertEquals(value, node.get(key, null));
 	}
 
 	@Test
 	public void testContentType() {
 		IContentType prefsType = Platform.getContentTypeManager().getContentType(ResourcesPlugin.PI_RESOURCES + ".preferences");
-		assertNotNull("1.0", prefsType);
+		assertNotNull(prefsType);
 		IContentType associatedType = Platform.getContentTypeManager().findContentTypeFor("some.qualifier." + EclipsePreferences.PREFS_FILE_EXTENSION);
-		assertEquals("1.1", prefsType, associatedType);
+		assertEquals(prefsType, associatedType);
 	}
 
 	@Test
@@ -977,8 +978,8 @@ public class ProjectPreferencesTest {
 		Tracer tracer = new Tracer();
 		((IEclipsePreferences) node).addPreferenceChangeListener(tracer);
 		String actual = node.get(key, null);
-		assertNotNull("1.0", actual);
-		assertEquals("1.1", value, actual);
+		assertNotNull(actual);
+		assertEquals(value, actual);
 		// flush
 		node.flush();
 
@@ -1006,12 +1007,12 @@ public class ProjectPreferencesTest {
 
 		// validate new settings
 		actual = node.get(key, null);
-		assertEquals("4.1", value, actual);
+		assertEquals(value, actual);
 		actual = node.get(newKey, null);
-		assertEquals("4.2", newValue, actual);
+		assertEquals(newValue, actual);
 
 		// validate the change events
-		assertEquals("4.3", "[" + newKey + ":null->S" + newValue + "]", tracer.log.toString());
+		assertEquals("[" + newKey + ":null->S" + newValue + "]", tracer.log.toString());
 	}
 
 	private static IProject getProject(String name) {
@@ -1046,7 +1047,7 @@ public class ProjectPreferencesTest {
 		// set the values in the nodes and flush the values to the file system
 		node.put(key, oldValue);
 		node.flush();
-		assertEquals("1.00", oldValue, node.get(key, null));
+		assertEquals(oldValue, node.get(key, null));
 
 		// copy the data into a buffer for later use
 		File fileInFS = getFileInFilesystem(project, qualifier);
@@ -1055,11 +1056,11 @@ public class ProjectPreferencesTest {
 		// remove the file from the project
 		IFile fileInWS = getFileInWorkspace(project, qualifier);
 		fileInWS.delete(IResource.NONE, createTestMonitor());
-		assertTrue("3.0", !fileInWS.exists());
-		assertTrue("3.1", !fileInFS.exists());
+		assertFalse(fileInWS.exists());
+		assertFalse(fileInFS.exists());
 		IEclipsePreferences projectNode = (IEclipsePreferences) service.getRootNode().node(ProjectScope.SCOPE).node(project.getName());
 		// when the pref file is deleted, the node will be cleared, but not removed
-		assertTrue("3.2", isNodeCleared(projectNode, new String[] { qualifier }));
+		assertTrue(isNodeCleared(projectNode, new String[] { qualifier }));
 		//		assertNull("3.3", projectNode.node(qualifier).get(oldKey, null));
 
 		// create the file in the project and discover it via a refresh local
@@ -1077,7 +1078,7 @@ public class ProjectPreferencesTest {
 		// verification - note that the preference modify listener gets called
 		// here so that's why we are checking for "new value" and not the original one
 		node = context.getNode(qualifier);
-		assertEquals("5.0", newValue, node.get(key, null));
+		assertEquals(newValue, node.get(key, null));
 	}
 
 	/**
