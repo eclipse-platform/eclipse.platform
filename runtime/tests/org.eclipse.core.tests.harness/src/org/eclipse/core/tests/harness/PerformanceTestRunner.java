@@ -46,21 +46,6 @@ public abstract class PerformanceTestRunner {
 	 * tests that typically take more than a second to execute.
 	 *
 	 * @param testCase The test that is running (used to obtain an appropriate meter)
-	 * @param outer The number of repetitions of the test.
-	 * @param inner The number of repetitions within the performance timer.
-	 */
-	public final void run(TestCase testCase, int outer, int inner) {
-		run(testCase, null, outer, inner);
-	}
-
-	/**
-	 * Executes the performance test the given number of times. Use the outer time
-	 * to execute the test several times in order to obtain a normalized average. Use
-	 * the inner loop for very fast tests that would otherwise be difficult to measure
-	 * due to Java's poor timer granularity.  The inner loop is not needed for long
-	 * tests that typically take more than a second to execute.
-	 *
-	 * @param testCase The test that is running (used to obtain an appropriate meter)
 	 * @param localName the short name used to tag the local test
 	 * @param outer The number of repetitions of the test.
 	 * @param inner The number of repetitions within the performance timer.

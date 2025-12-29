@@ -18,6 +18,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.tests.harness.FileSystemHelper.clear;
 import static org.eclipse.core.tests.harness.FileSystemHelper.getTempDir;
 import static org.eclipse.core.tests.runtime.RuntimeTestsPlugin.PI_RUNTIME_TESTS;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
@@ -25,9 +28,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.URL;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import org.eclipse.core.internal.content.ContentTypeBuilder;
 import org.eclipse.core.internal.content.ContentTypeHandler;
 import org.eclipse.core.internal.content.Util;
@@ -40,14 +40,26 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.tests.harness.BundleTestingHelper;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
 import org.eclipse.core.tests.harness.TestRegistryChangeListener;
+import org.eclipse.core.tests.harness.session.PerformanceSessionTest;
+import org.eclipse.core.tests.harness.session.SessionTestExtension;
 import org.eclipse.core.tests.runtime.RuntimeTestsPlugin;
-import org.eclipse.core.tests.session.PerformanceSessionTestSuite;
-import org.eclipse.core.tests.session.SessionTestSuite;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
 @SuppressWarnings("restriction")
-public class ContentTypePerformanceTest extends TestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class ContentTypePerformanceTest {
+
+	@RegisterExtension
+	static final SessionTestExtension sessionTestExtension = SessionTestExtension
+			.forPlugin(RuntimeTestsPlugin.PI_RUNTIME_TESTS).create();
 
 	private final static String CONTENT_TYPE_PREF_NODE = Platform.PI_RUNTIME + IPath.SEPARATOR + "content-types"; //$NON-NLS-1$
 	private static final String DEFAULT_NAME = "file_" + ContentTypePerformanceTest.class.getName();
@@ -139,39 +151,6 @@ public class ContentTypePerformanceTest extends TestCase {
 		return result.toString();
 	}
 
-	public static Test suite() {
-		TestSuite suite = new TestSuite(ContentTypePerformanceTest.class.getName());
-
-		//		suite.addTest(new ContentTypePerformanceTest("testDoSetUp"));
-		//		suite.addTest(new ContentTypePerformanceTest("testContentMatching"));
-		//		suite.addTest(new ContentTypePerformanceTest("testContentTXTMatching"));
-		//		suite.addTest(new ContentTypePerformanceTest("testContentXMLMatching"));
-		//		suite.addTest(new ContentTypePerformanceTest("testDoTearDown"));
-
-		SessionTestSuite setUp = new SessionTestSuite(PI_RUNTIME_TESTS, "testDoSetUp");
-		setUp.addTest(new ContentTypePerformanceTest("testDoSetUp"));
-		suite.addTest(setUp);
-
-		TestSuite singleRun = new PerformanceSessionTestSuite(PI_RUNTIME_TESTS, 1, "singleSessionTests");
-		singleRun.addTest(new ContentTypePerformanceTest("testContentMatching"));
-		singleRun.addTest(new ContentTypePerformanceTest("testNameMatching"));
-		singleRun.addTest(new ContentTypePerformanceTest("testIsKindOf"));
-		suite.addTest(singleRun);
-
-		TestSuite loadCatalog = new PerformanceSessionTestSuite(PI_RUNTIME_TESTS, 10, "multipleSessionTests");
-		loadCatalog.addTest(new ContentTypePerformanceTest("testLoadCatalog"));
-		suite.addTest(loadCatalog);
-
-		TestSuite tearDown = new SessionTestSuite(PI_RUNTIME_TESTS, "testDoTearDown");
-		tearDown.addTest(new ContentTypePerformanceTest("testDoTearDown"));
-		suite.addTest(tearDown);
-		return suite;
-	}
-
-	public ContentTypePerformanceTest(String name) {
-		super(name);
-	}
-
 	private int countTestContentTypes(IContentType[] all) {
 		String namespace = TEST_DATA_ID + '.';
 		int count = 0;
@@ -183,11 +162,11 @@ public class ContentTypePerformanceTest extends TestCase {
 		return count;
 	}
 
-	public IPath getExtraPluginLocation() {
+	public static IPath getExtraPluginLocation() {
 		return getTempDir().append(TEST_DATA_ID);
 	}
 
-	private Bundle installContentTypes(String tag, int numberOfLevels, int nodesPerLevel)
+	private static Bundle installContentTypes(int numberOfLevels, int nodesPerLevel)
 			throws IOException, BundleException {
 		TestRegistryChangeListener listener = new TestRegistryChangeListener(Platform.PI_RUNTIME, ContentTypeBuilder.PT_CONTENTTYPES, null, null);
 		Bundle installed = null;
@@ -225,7 +204,7 @@ public class ContentTypePerformanceTest extends TestCase {
 			}
 			installed = RuntimeTestsPlugin.getContext().installBundle(installURL.toExternalForm());
 			BundleTestingHelper.refreshPackages(RuntimeTestsPlugin.getContext(), new Bundle[] {installed});
-			assertTrue(tag + ".4.0", listener.eventReceived(10000));
+			assertTrue(listener.eventReceived(10000));
 		} finally {
 			listener.unregister();
 		}
@@ -273,8 +252,13 @@ public class ContentTypePerformanceTest extends TestCase {
 		InstanceScope.INSTANCE.getNode(CONTENT_TYPE_PREF_NODE);
 	}
 
-	/** Tests how much the size of the catalog affects the performance of content type matching by content analysis */
-	public void testContentMatching() {
+	/**
+	 * Tests how much the size of the catalog affects the performance of content
+	 * type matching by content analysis
+	 */
+	@PerformanceSessionTest
+	@Order(0)
+	public void testContentMatching() throws Exception {
 		loadPreferences();
 		// warm up content type registry
 		final IContentTypeManager manager = loadContentTypeManager();
@@ -295,52 +279,54 @@ public class ContentTypePerformanceTest extends TestCase {
 							.satisfies(it -> assertThat(it.getId()).as("id").isEqualTo(id));
 				}
 			}
-		}.run(this, 10, 2);
+		}.run(getClass(), "testContentMatching", 10, 2);
 	}
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		if (getName().equals("testDoSetUp") || getName().equals("testDoTearDown")) {
-			return;
-		}
+	@BeforeEach
+	void setUp() throws Exception {
 		Bundle installed = RuntimeTestsPlugin.getContext()
 					.installBundle(getExtraPluginLocation().toFile().toURI().toURL().toExternalForm());
 		BundleTestingHelper.refreshPackages(RuntimeTestsPlugin.getContext(), new Bundle[] { installed });
 	}
 
-	public void testDoSetUp() throws IOException, BundleException {
-		installContentTypes("1.0", NUMBER_OF_LEVELS, ELEMENTS_PER_LEVEL);
+	@BeforeAll
+	static void doSetUp() throws IOException, BundleException {
+		installContentTypes(NUMBER_OF_LEVELS, ELEMENTS_PER_LEVEL);
 	}
 
-	public void testDoTearDown() {
+	@AfterAll
+	static void doTearDown() {
 		clear(getExtraPluginLocation().toFile());
 	}
 
-	public void testIsKindOf() {
+	@PerformanceSessionTest
+	@Order(2)
+	public void testIsKindOf() throws Exception {
 		// warm up preference service
 		loadPreferences();
 		// warm up content type registry
 		final IContentTypeManager manager = loadContentTypeManager();
 		loadChildren();
 		final IContentType root = manager.getContentType(getContentTypeId(0));
-		assertNotNull("2.0", root);
+		assertNotNull(root);
 		new PerformanceTestRunner() {
 			@Override
 			protected void test() {
 				for (int i = 0; i < TOTAL_NUMBER_OF_ELEMENTS; i++) {
 					IContentType type = manager.getContentType(getContentTypeId(i));
-					assertNotNull("3.0." + i, type);
-					assertTrue("3.1." + i, type.isKindOf(root));
+					assertNotNull(type, "element is null: " + i);
+					assertTrue(type.isKindOf(root), "element is of wrong type: " + i);
 				}
 			}
-		}.run(this, 10, 500);
+		}.run(getClass(), "testIsKindOf", 10, 500);
 	}
 
 	/**
 	 * This test is intended for running as a session test.
 	 */
-	public void testLoadCatalog() {
+	@PerformanceSessionTest(repetitions = 10)
+	@Order(3)
+	public void testLoadCatalog() throws Exception {
 		// warm up preference service
 		loadPreferences();
 		PerformanceTestRunner runner = new PerformanceTestRunner() {
@@ -350,13 +336,22 @@ public class ContentTypePerformanceTest extends TestCase {
 				Platform.getContentTypeManager().getContentType(IContentTypeManager.CT_TEXT);
 			}
 		};
-		runner.run(this, 1, /* must run only once - the suite controls how many sessions are run */1);
+		runner.run(getClass(), "testLoadCatalog", 1,
+				/* must run only once - the suite controls how many sessions are run */1);
 		// sanity check to make sure we are running with good data
-		assertEquals("missing content types", TOTAL_NUMBER_OF_ELEMENTS, countTestContentTypes(Platform.getContentTypeManager().getAllContentTypes()));
+		assertEquals(TOTAL_NUMBER_OF_ELEMENTS,
+				countTestContentTypes(Platform.getContentTypeManager().getAllContentTypes()), "missing content types");
 	}
 
-	/** Tests how much the size of the catalog affects the performance of content type matching by name */
-	public void testNameMatching() {
+	/**
+	 * Tests how much the size of the catalog affects the performance of content
+	 * type matching by name
+	 *
+	 * @throws Exception
+	 */
+	@PerformanceSessionTest
+	@Order(1)
+	public void testNameMatching() throws Exception {
 		// warm up preference service
 		loadPreferences();
 		// warm up content type registry
@@ -368,10 +363,10 @@ public class ContentTypePerformanceTest extends TestCase {
 			protected void test() {
 				IContentType[] associated = manager.findContentTypesFor("foo.txt");
 				// we know at least the etxt content type should be here
-				assertTrue("2.0", associated.length >= 1);
+				assertTrue(associated.length >= 1);
 				// and it is supposed to be the first one (since it is at the root)
-				assertEquals("2.1", IContentTypeManager.CT_TEXT, associated[0].getId());
+				assertEquals(IContentTypeManager.CT_TEXT, associated[0].getId());
 			}
-		}.run(this, 10, 200000);
+		}.run(getClass(), "testNameMatching", 10, 200000);
 	}
 }

@@ -85,6 +85,35 @@ class SessionTestExtensionHost implements SessionTestExtension {
 		Method testMethod = extensionContext.getTestMethod().get();
 
 		boolean shouldFail = extensionContext.getTestMethod().get().getAnnotation(SessionShouldError.class) != null;
+		PerformanceSessionTest performanceSessionTestAnnotation = extensionContext.getTestMethod().get()
+				.getAnnotation(PerformanceSessionTest.class);
+		if (performanceSessionTestAnnotation != null) {
+			executePerformanceSessionTest(testClass, testMethod, shouldFail,
+					performanceSessionTestAnnotation.repetitions());
+		} else {
+			exeuteSession(testClass, testMethod, shouldFail);
+		}
+
+	}
+
+	private void executePerformanceSessionTest(Class<?> testClass, Method testMethod, boolean shouldFail,
+			int repetitions) throws Exception, Throwable {
+		try {
+			setSystemProperty("eclipse.perf.dbloc", System.getProperty("eclipse.perf.dbloc"));
+			setSystemProperty("eclipse.perf.config", System.getProperty("eclipse.perf.config"));
+			for (int i = 0; i < repetitions - 1; i++) {
+				exeuteSession(testClass, testMethod, shouldFail);
+			}
+			setSystemProperty("eclipse.perf.assertAgainst", System.getProperty("eclipse.perf.assertAgainst"));
+			exeuteSession(testClass, testMethod, shouldFail);
+		} finally {
+			setSystemProperty("eclipse.perf.assertAgainst", null);
+			setSystemProperty("eclipse.perf.dbloc", null);
+			setSystemProperty("eclipse.perf.config", null);
+		}
+	}
+
+	private void exeuteSession(Class<?> testClass, Method testMethod, boolean shouldFail) throws Exception, Throwable {
 		try {
 			prepareSession();
 			testExecutor.executeRemotely(testClass.getName(), testMethod.getName(), shouldFail);

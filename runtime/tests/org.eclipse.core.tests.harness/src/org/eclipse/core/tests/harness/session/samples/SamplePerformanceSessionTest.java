@@ -1,21 +1,19 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2018 IBM Corporation and others.
+ * Copyright (c) 2025 Vector Informatik GmbH and others.
  *
  * This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License 2.0
+ * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.core.tests.runtime.perf;
+package org.eclipse.core.tests.harness.session.samples;
+
+import static org.eclipse.core.tests.harness.TestHarnessPlugin.PI_HARNESS;
 
 import org.eclipse.core.tests.harness.session.PerformanceSessionTest;
 import org.eclipse.core.tests.harness.session.SessionTestExtension;
-import org.eclipse.core.tests.runtime.RuntimeTestsPlugin;
 import org.eclipse.test.performance.Dimension;
 import org.eclipse.test.performance.Performance;
 import org.eclipse.test.performance.PerformanceMeter;
@@ -25,39 +23,39 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
+/**
+ * Examples demonstrating the behavior of performance session tests using the
+ * JUnit 5 platform. When executed, a warmup session is performed and five
+ * subsequent actual sessions with startup measurements will be performed.
+ */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class UIStartupTest {
-
+public class SamplePerformanceSessionTest {
 	@RegisterExtension
-	static final SessionTestExtension sessionTestExtension = SessionTestExtension
-			.forPlugin(RuntimeTestsPlugin.PI_RUNTIME_TESTS)
-				.withApplicationId(SessionTestExtension.UI_TEST_APPLICATION).create();
+	SessionTestExtension sessionTestExtension = SessionTestExtension.forPlugin(PI_HARNESS).create();
 
 	@Test
 	@Order(0)
 	public void warmup() {
-		testUIApplicationStartup(true);
+		actualTest(true);
 	}
 
 	@PerformanceSessionTest(repetitions = 5)
 	@Order(1)
 	public void runMeasurements() {
-		testUIApplicationStartup(false);
+		actualTest(false);
 	}
 
-	public void testUIApplicationStartup(boolean warmup) {
-		PerformanceMeter meter = Performance.getDefault()
-				.createPerformanceMeter(getClass().getName() + '.' + UIStartupTest.class.getName());
+	private void actualTest(boolean warmup) {
+		PerformanceMeter meter = Performance.getDefault().createPerformanceMeter(getClass().getName() + ".startup");
 		try {
 			meter.stop();
-			Performance performance = Performance.getDefault();
-			performance.tagAsGlobalSummary(meter, "Core UI Startup", Dimension.ELAPSED_PROCESS);
 			if (!warmup) {
 				meter.commit();
 			}
-			performance.assertPerformanceInRelativeBand(meter, Dimension.ELAPSED_PROCESS, -50, 5);
+			Performance.getDefault().assertPerformanceInRelativeBand(meter, Dimension.ELAPSED_PROCESS, -50, 5);
 		} finally {
 			meter.dispose();
 		}
 	}
+
 }

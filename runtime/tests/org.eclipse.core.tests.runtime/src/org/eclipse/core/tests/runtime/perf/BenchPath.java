@@ -14,25 +14,19 @@
 package org.eclipse.core.tests.runtime.perf;
 
 import java.util.HashMap;
-import junit.framework.TestCase;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
-public class BenchPath extends TestCase {
-	
-	public BenchPath() {
-		super();
-	}
-
-	public BenchPath(String testName) {
-		super(testName);
-	}
+public class BenchPath {
 
 	/**
-	 * Tests performance of equals and hashCode by using paths
-	 * as keys in a hash map.
+	 * Tests performance of equals and hashCode by using paths as keys in a hash
+	 * map.
 	 */
-	public void testHash() {
+	@Test
+	public void testHash(TestInfo testInfo) throws Exception {
 		final int REPEAT = 500000;
 		final IPath[] paths = generateVariousPaths();
 		final HashMap<IPath, String> map = new HashMap<>(32);
@@ -47,13 +41,14 @@ public class BenchPath extends TestCase {
 					map.get(paths[p]);
 				}
 			}
-		}.run(this, 10, REPEAT);
+		}.run(getClass(), testInfo.getDisplayName(), 10, REPEAT);
 	}
 
 	/**
 	 * Tests the performance of path creation
 	 */
-	public void testPathCreation() {
+	@Test
+	public void testPathCreation(TestInfo testInfo) throws Exception {
 		final int REPEAT = 50000;
 		new PerformanceTestRunner() {
 			@Override
@@ -82,13 +77,14 @@ public class BenchPath extends TestCase {
 				IPath.fromOSString("/Foo/bar/baz/blap/blam/abc.txt");
 				IPath.fromOSString("/Foo/bar/baz/blap/blam/blip/boop/abc.txt");
 			}
-		}.run(this, 20, REPEAT);
+		}.run(getClass(), testInfo.getDisplayName(), 20, REPEAT);
 	}
 
 	/**
 	 * Tests the performance of Path.toOSString
 	 */
-	public void testToOSString() {
+	@Test
+	public void testToOSString(TestInfo testInfo) throws Exception {
 		final int REPEAT = 50000;
 		final IPath[] paths = generateVariousPaths();
 		new PerformanceTestRunner() {
@@ -98,13 +94,14 @@ public class BenchPath extends TestCase {
 					paths[p].toOSString();
 				}
 			}
-		}.run(this, 10, REPEAT);
+		}.run(getClass(), testInfo.getDisplayName(), 10, REPEAT);
 	}
 
 	/**
 	 * Tests the performance of Path.toOSString
 	 */
-	public void testToString() {
+	@Test
+	public void testToString(TestInfo testInfo) throws Exception {
 		final int REPEAT = 50000;
 		final IPath[] paths = generateVariousPaths();
 		new PerformanceTestRunner() {
@@ -114,7 +111,7 @@ public class BenchPath extends TestCase {
 					paths[p].toString();
 				}
 			}
-		}.run(this, 10, REPEAT);
+		}.run(getClass(), testInfo.getDisplayName(), 10, REPEAT);
 	}
 
 	/**
