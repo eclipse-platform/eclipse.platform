@@ -3,8 +3,9 @@
       id="org.eclipse.terminal.feature"
       label="%featureName"
       version="1.0.200.qualifier"
-      provider-name="%providerName">
-
+      provider-name="%providerName"
+      license-feature="org.eclipse.license"
+      license-feature-version="0.0.0">
    <description>
       %description
    </description>
