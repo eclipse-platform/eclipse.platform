@@ -15,25 +15,18 @@ package org.eclipse.core.tests.runtime.perf;
 
 import java.util.ArrayList;
 import java.util.UUID;
-import junit.framework.TestCase;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
 import org.eclipse.core.tests.internal.preferences.TestScope;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
-public class PreferencePerformanceTest extends TestCase {
+public class PreferencePerformanceTest {
 	private static final int INNER_LOOP = 10000;
 	private static final int KEYS_PER_NODE = 1000;
-
-	public PreferencePerformanceTest() {
-		super();
-	}
-
-	public PreferencePerformanceTest(String testName) {
-		super(testName);
-	}
 
 	/*
 	 * Return a 2 dimensional String array with the first element being the keys
@@ -95,7 +88,8 @@ public class PreferencePerformanceTest extends TestCase {
 	 * This is a good finger print test because preference keys typically have a common
 	 * prefix (org.eclipse.component.keyName).
 	 */
-	public void testGetStringCommonPrefixKeys() {
+	@Test
+	public void testGetStringCommonPrefixKeys(TestInfo testInfo) throws Exception {
 		// setup
 		final String qualifier = getUniqueString();
 		String[][] kvp = getCommonPrefixKeys(KEYS_PER_NODE, qualifier);
@@ -130,14 +124,15 @@ public class PreferencePerformanceTest extends TestCase {
 			}
 		};
 		runner.setFingerprintName("Retrieve preference values");
-		runner.run(this, 10, INNER_LOOP);
+		runner.run(getClass(), testInfo.getDisplayName(), 10, INNER_LOOP);
 	}
 
 	/*
 	 * Time how long it takes to get KEYS_PER_NODE keys that aren't there.
 	 * Fill the node up with KEYS_PER_NODE key/value pairs so it has some data
 	 */
-	public void testGetStringMisses() {
+	@Test
+	public void testGetStringMisses(TestInfo testInfo) throws Exception {
 		// setup
 		final String qualifier = getUniqueString();
 		String[][] kvp = getUniqueKeys(KEYS_PER_NODE);
@@ -171,14 +166,15 @@ public class PreferencePerformanceTest extends TestCase {
 					prefs.get(missingKeys[i], null);
 				}
 			}
-		}.run(this, 10, INNER_LOOP);
+		}.run(getClass(), testInfo.getDisplayName(), 10, INNER_LOOP);
 	}
 
 	/*
 	 * Time how long it takes to retrieve KEYS_PER_NODE keys which are constructed
 	 * from sequential integers.
 	 */
-	public void testGetStringSequentialKeys() {
+	@Test
+	public void testGetStringSequentialKeys(TestInfo testInfo) throws Exception {
 		// setup
 		final String qualifier = getUniqueString();
 		String[][] kvp = getSequentialKeys(KEYS_PER_NODE);
@@ -211,13 +207,14 @@ public class PreferencePerformanceTest extends TestCase {
 					prefs.get(key, null);
 				}
 			}
-		}.run(this, 10, INNER_LOOP);
+		}.run(getClass(), testInfo.getDisplayName(), 10, INNER_LOOP);
 	}
 
 	/*
 	 * Time how long it takes to get KEYS_PER_NODE keys that are unique.
 	 */
-	public void testGetStringUniqueKeys() {
+	@Test
+	public void testGetStringUniqueKeys(TestInfo testInfo) throws Exception {
 		// setup
 		final String qualifier = getUniqueString();
 		String[][] kvp = getUniqueKeys(KEYS_PER_NODE);
@@ -250,13 +247,14 @@ public class PreferencePerformanceTest extends TestCase {
 					prefs.get(key, null);
 				}
 			}
-		}.run(this, 10, INNER_LOOP);
+		}.run(getClass(), testInfo.getDisplayName(), 10, INNER_LOOP);
 	}
 
 	/*
 	 * Time how long it takes to put KEYS_PER_NODE keys into a preference node.
 	 */
-	public void testPutStringKeys() {
+	@Test
+	public void testPutStringKeys(TestInfo testInfo) throws Exception {
 
 		// setup outside the timed block
 		final String qualifier = getUniqueString();
@@ -291,13 +289,14 @@ public class PreferencePerformanceTest extends TestCase {
 					prefs.put(keys[i], values[i]);
 				}
 			}
-		}.run(this, 10, INNER_LOOP);
+		}.run(getClass(), testInfo.getDisplayName(), 10, INNER_LOOP);
 	}
 
 	/*
 	 * Add KEYS_PER_NODE keys to a preference node and then remove them one at a time.
 	 */
-	public void testRemoveStringKeys() {
+	@Test
+	public void testRemoveStringKeys(TestInfo testInfo) throws Exception {
 
 		// gather the key/value pairs before so we don't time it
 		final String qualifier = getUniqueString();
@@ -338,7 +337,7 @@ public class PreferencePerformanceTest extends TestCase {
 					prefs.remove(key);
 				}
 			}
-		}.run(this, 50, 1);
+		}.run(getClass(), testInfo.getDisplayName(), 50, 1);
 	}
 
 	private String getUniqueString() {
