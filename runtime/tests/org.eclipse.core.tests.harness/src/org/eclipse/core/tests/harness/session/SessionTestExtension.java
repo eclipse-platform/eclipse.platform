@@ -55,6 +55,7 @@ import org.junit.jupiter.api.extension.InvocationInterceptor;
  */
 public interface SessionTestExtension extends InvocationInterceptor {
 	public static final String CORE_TEST_APPLICATION = "org.eclipse.pde.junit.runtime.coretestapplication"; //$NON-NLS-1$
+	public static final String UI_TEST_APPLICATION = "org.eclipse.pde.junit.runtime.uitestapplication"; //$NON-NLS-1$
 
 	/**
 	 * Creates a builder for the session test extension. Make sure to finally call
