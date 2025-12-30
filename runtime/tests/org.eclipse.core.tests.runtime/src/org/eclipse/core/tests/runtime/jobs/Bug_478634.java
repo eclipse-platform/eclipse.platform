@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -39,7 +39,7 @@ public class Bug_478634 extends AbstractJobTest {
 		j.setRule(rootRule);
 		j.schedule();
 		waitForCompletion(j);
-		assertFalse("Job was blocked", j.wasBlocked());
+		assertFalse(j.wasBlocked(), "Job was blocked");
 	}
 
 	class ShouldNotBeBlockedJob extends Job {

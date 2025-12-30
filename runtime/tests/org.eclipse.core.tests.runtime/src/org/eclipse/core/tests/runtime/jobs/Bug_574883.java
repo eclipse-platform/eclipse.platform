@@ -13,9 +13,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -109,8 +109,8 @@ public class Bug_574883 extends AbstractJobTest {
 							+ executions.get() + ", cpu: " + processors);
 				}
 			}
-			assertEquals("Job still running after first join, executed: " + firstState + ", cpu: " + processors, 0,
-					length);
+			assertEquals(0, length,
+					"Job still running after first join, executed: " + firstState + ", cpu: " + processors);
 			assertEquals(RUNS, executions.get());
 		} catch (Throwable t) {
 			Job.getJobManager().cancel(this);
@@ -143,10 +143,9 @@ public class Bug_574883 extends AbstractJobTest {
 				if (executions.get() != INNER_RUNS) {
 					System.out.println("error");
 				}
-				assertEquals("after " + l + " tries: Job still running after join, executed: " + firstState
-						+ ", cpu: " + processors, 0,
-						length);
-				assertEquals("after " + l + " tries", INNER_RUNS, executions.get());
+				assertEquals(0, length, "after " + l + " tries: Job still running after join, executed: " + firstState
+						+ ", cpu: " + processors);
+				assertEquals(INNER_RUNS, executions.get(), "after " + l + " tries");
 			} catch (Throwable t) {
 				Job.getJobManager().cancel(this);
 				Thread.sleep(1000);
@@ -178,8 +177,8 @@ public class Bug_574883 extends AbstractJobTest {
 							+ executions.get() + ", cpu: " + processors);
 				}
 			}
-			assertEquals("Job still running after first join, executed: " + firstState + ", cpu: " + processors, 0,
-					length);
+			assertEquals(0, length,
+					"Job still running after first join, executed: " + firstState + ", cpu: " + processors);
 			assertEquals(RUNS, executions.get());
 		} catch (Throwable t) {
 			Job.getJobManager().cancel(this);
@@ -220,8 +219,8 @@ public class Bug_574883 extends AbstractJobTest {
 							+ executions.get() + ", cpu: " + processors);
 				}
 			}
-			assertEquals("Job still running after first join, executed: " + firstState + ", cpu: " + processors, 0,
-					length);
+			assertEquals(0, length,
+					"Job still running after first join, executed: " + firstState + ", cpu: " + processors);
 			assertEquals(RUNS, executions.get());
 		} catch (Throwable t) {
 			Job.getJobManager().cancel(this);
@@ -239,7 +238,7 @@ public class Bug_574883 extends AbstractJobTest {
 			((Runnable) () -> executions.incrementAndGet()).run();
 			long t2 = now();
 			long diff = t2 - t1;
-			assertTrue("Time should not go back: " + diff + " at: " + i, diff >= 0);
+			assertTrue(diff >= 0, "Time should not go back: " + diff + " at: " + i);
 		}
 		assertEquals(RUNS, executions.get());
 	}

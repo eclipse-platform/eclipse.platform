@@ -13,8 +13,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -118,10 +119,10 @@ public class DeadlockDetectionTest {
 			} catch (InterruptedException e1) {
 				//ignore
 			}
-			assertTrue("1." + i, !allRunnables.get(i).isAlive());
+			assertFalse(allRunnables.get(i).isAlive(), i + "");
 		}
 		//the underlying array has to be empty
-		assertTrue("Locks not removed from graph.", lockManager.isEmpty());
+		assertTrue(lockManager.isEmpty(), "Locks not removed from graph.");
 	}
 
 	/**
@@ -177,10 +178,10 @@ public class DeadlockDetectionTest {
 			public void run() {
 				lock.acquire();
 				status.set(0, TestBarrier2.STATUS_START);
-				assertTrue("1.0", getLockManager().isLockOwner());
+				assertTrue(getLockManager().isLockOwner());
 				TestBarrier2.waitForStatus(status, 0, TestBarrier2.STATUS_RUNNING);
 				manager.beginRule(rule, null);
-				assertTrue("2.0", getLockManager().isLockOwner());
+				assertTrue(getLockManager().isLockOwner());
 				manager.endRule(rule);
 				lock.release();
 				status.set(0, TestBarrier2.STATUS_DONE);
@@ -192,10 +193,10 @@ public class DeadlockDetectionTest {
 			public void run() {
 				manager.beginRule(rule, null);
 				status.set(1, TestBarrier2.STATUS_START);
-				assertTrue("1.0", getLockManager().isLockOwner());
+				assertTrue(getLockManager().isLockOwner());
 				TestBarrier2.waitForStatus(status, 1, TestBarrier2.STATUS_RUNNING);
 				lock.acquire();
-				assertTrue("2.0", getLockManager().isLockOwner());
+				assertTrue(getLockManager().isLockOwner());
 				lock.release();
 				manager.endRule(rule);
 				status.set(1, TestBarrier2.STATUS_DONE);
@@ -215,11 +216,11 @@ public class DeadlockDetectionTest {
 		TestBarrier2.waitForStatus(status, 1, TestBarrier2.STATUS_DONE);
 		waitForThreadDeath(first);
 		waitForThreadDeath(second);
-		assertTrue("3.0", !first.isAlive());
-		assertTrue("4.0", !second.isAlive());
+		assertFalse(first.isAlive());
+		assertFalse(second.isAlive());
 		//the underlying array has to be empty
 		if (!getLockManager().isEmpty()) {
-			assertTrue("Jobs not removed from graph.", getLockManager().isEmpty());
+			assertTrue(getLockManager().isEmpty(), "Jobs not removed from graph.");
 		}
 	}
 
@@ -238,12 +239,12 @@ public class DeadlockDetectionTest {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				try {
-					assertTrue("1.0", getLockManager().isLockOwner());
+					assertTrue(getLockManager().isLockOwner());
 					monitor.beginTask("Testing", 1);
 					status.set(0, TestBarrier2.STATUS_START);
 					lock.acquire();
 					TestBarrier2.waitForStatus(status, 0, TestBarrier2.STATUS_RUNNING);
-					assertTrue("2.0", getLockManager().isLockOwner());
+					assertTrue(getLockManager().isLockOwner());
 					lock.release();
 					monitor.worked(1);
 					status.set(0, TestBarrier2.STATUS_DONE);
@@ -258,12 +259,12 @@ public class DeadlockDetectionTest {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				try {
-					assertTrue("1.0", getLockManager().isLockOwner());
+					assertTrue(getLockManager().isLockOwner());
 					monitor.beginTask("Testing", 1);
 					status.set(1, TestBarrier2.STATUS_START);
 					lock.acquire();
 					TestBarrier2.waitForStatus(status, 1, TestBarrier2.STATUS_RUNNING);
-					assertTrue("2.0", getLockManager().isLockOwner());
+					assertTrue(getLockManager().isLockOwner());
 					lock.release();
 					monitor.worked(1);
 					status.set(1, TestBarrier2.STATUS_DONE);
@@ -290,12 +291,12 @@ public class DeadlockDetectionTest {
 		waitForCompletion(first);
 		waitForCompletion(second);
 
-		assertEquals("3.0", Job.NONE, first.getState());
-		assertEquals("3.1", Status.OK_STATUS, first.getResult());
-		assertEquals("4.0", Job.NONE, second.getState());
-		assertEquals("4.1", Status.OK_STATUS, second.getResult());
+		assertEquals(Job.NONE, first.getState());
+		assertEquals(Status.OK_STATUS, first.getResult());
+		assertEquals(Job.NONE, second.getState());
+		assertEquals(Status.OK_STATUS, second.getResult());
 		//the underlying array has to be empty
-		assertTrue("Jobs not removed from graph.", getLockManager().isEmpty());
+		assertTrue(getLockManager().isEmpty(), "Jobs not removed from graph.");
 	}
 
 	public static void fill(AtomicIntegerArray a, int val) {
@@ -408,11 +409,11 @@ public class DeadlockDetectionTest {
 		}
 
 		for (int i = 0; i < jobs.length; i++) {
-			assertEquals("10." + i, Job.NONE, jobs[i].getState());
-			assertEquals("10." + i, Status.OK_STATUS, jobs[i].getResult());
+			assertEquals(Job.NONE, jobs[i].getState(), i);
+			assertEquals(Status.OK_STATUS, jobs[i].getResult(), i + "");
 		}
 		//the underlying graph has to be empty
-		assertTrue("Jobs not removed from graph.", getLockManager().isEmpty());
+		assertTrue(getLockManager().isEmpty(), "Jobs not removed from graph.");
 	}
 
 	/**
@@ -515,11 +516,11 @@ public class DeadlockDetectionTest {
 		}
 
 		for (int i = 0; i < jobs.length; i++) {
-			assertEquals("10." + i, Job.NONE, jobs[i].getState());
-			assertEquals("10." + i, Status.OK_STATUS, jobs[i].getResult());
+			assertEquals(Job.NONE, jobs[i].getState(), i);
+			assertEquals(Status.OK_STATUS, jobs[i].getResult(), i + "");
 		}
-		//the underlying graph has to be empty
-		assertTrue("Jobs not removed from graph.", getLockManager().isEmpty());
+		// the underlying graph has to be empty
+		assertTrue(getLockManager().isEmpty(), "Jobs not removed from graph.");
 		});
 	}
 
@@ -615,7 +616,7 @@ public class DeadlockDetectionTest {
 		}
 
 		//the underlying graph has to be empty
-		assertTrue("Jobs not removed from graph.", getLockManager().isEmpty());
+		assertTrue(getLockManager().isEmpty(), "Jobs not removed from graph.");
 	}
 
 	/**
@@ -683,7 +684,7 @@ public class DeadlockDetectionTest {
 		TestBarrier2.waitForStatus(status, TestBarrier2.STATUS_DONE);
 		waitForCompletion(ruleOwner);
 		//the underlying graph should now be empty
-		assertTrue("Canceled rule not removed from graph.", getLockManager().isEmpty());
+		assertTrue(getLockManager().isEmpty(), "Canceled rule not removed from graph.");
 	}
 
 	/**
@@ -803,7 +804,7 @@ public class DeadlockDetectionTest {
 			}
 			//timeout if the two jobs don't start within a reasonable time
 			long elapsed = AbstractJobTest.now() - waitStart;
-			assertTrue("Timeout waiting for job to end: " + elapsed, elapsed < 30000);
+			assertTrue(elapsed < 30000, "Timeout waiting for job to end: " + elapsed);
 		}
 		//wait until all jobs are done
 		for (Job job : jobs) {
@@ -811,11 +812,11 @@ public class DeadlockDetectionTest {
 		}
 
 		for (int i = 0; i < jobs.length; i++) {
-			assertEquals("10." + i, Job.NONE, jobs[i].getState());
-			assertEquals("10." + i, Status.OK_STATUS, jobs[i].getResult());
+			assertEquals(Job.NONE, jobs[i].getState(), i);
+			assertEquals(Status.OK_STATUS, jobs[i].getResult(), i + "");
 		}
 		//the underlying graph has to be empty
-		assertTrue("Jobs not removed from graph.", getLockManager().isEmpty());
+		assertTrue(getLockManager().isEmpty(), "Jobs not removed from graph.");
 	}
 
 	/**
@@ -965,11 +966,11 @@ public class DeadlockDetectionTest {
 		}
 
 		for (int i = 0; i < jobs.length; i++) {
-			assertEquals("10." + i, Job.NONE, jobs[i].getState());
-			assertEquals("10." + i, Status.OK_STATUS, jobs[i].getResult());
+			assertEquals(Job.NONE, jobs[i].getState(), i);
+			assertEquals(Status.OK_STATUS, jobs[i].getResult(), i + "");
 		}
 		//the underlying graph has to be empty
-		assertTrue("Jobs not removed from graph.", getLockManager().isEmpty());
+		assertTrue(getLockManager().isEmpty(), "Jobs not removed from graph.");
 	}
 
 	/**
@@ -1008,7 +1009,7 @@ public class DeadlockDetectionTest {
 			} catch (InterruptedException e) {
 				//ignore
 			}
-			assertTrue("Timeout waiting for job to end:" + job, ++i < 100);
+			assertTrue(++i < 100, "Timeout waiting for job to end:" + job);
 		}
 	}
 
@@ -1023,7 +1024,7 @@ public class DeadlockDetectionTest {
 			} catch (InterruptedException e) {
 				//ignore
 			}
-			assertTrue("Timeout waiting for job to end.", ++i < 100);
+			assertTrue(++i < 100, "Timeout waiting for job to end.");
 		}
 	}
 
@@ -1054,7 +1055,7 @@ public class DeadlockDetectionTest {
 								manager.beginRule(rules[indexRule], null);
 								locks[indexLock].acquire();
 								locks[secondIndex].acquire();
-								assertTrue(indexRule + ".0", getLockManager().isLockOwner());
+								assertTrue(getLockManager().isLockOwner(), indexRule + "");
 								locks[secondIndex].release();
 								locks[indexLock].release();
 								manager.endRule(rules[indexRule]);
@@ -1062,7 +1063,7 @@ public class DeadlockDetectionTest {
 								locks[indexLock].acquire();
 								manager.beginRule(rules[indexRule], null);
 								locks[secondIndex].acquire();
-								assertTrue(indexLock + ".0", getLockManager().isLockOwner());
+								assertTrue(getLockManager().isLockOwner(), indexLock + "");
 								locks[secondIndex].release();
 								manager.endRule(rules[indexRule]);
 								locks[indexLock].release();
@@ -1097,16 +1098,16 @@ public class DeadlockDetectionTest {
 					//ignore
 				}
 				//sanity check to avoid hanging tests
-				assertTrue("Timeout waiting for jobs to finish.", ++j < 1000);
+				assertTrue(++j < 1000, "Timeout waiting for jobs to finish.");
 			}
 		}
 
 		for (int i = 0; i < jobs.length; i++) {
-			assertEquals("10." + i, Job.NONE, jobs[i].getState());
-			assertEquals("10." + i, Status.OK_STATUS, jobs[i].getResult());
+			assertEquals(Job.NONE, jobs[i].getState(), i);
+			assertEquals(Status.OK_STATUS, jobs[i].getResult(), i + "");
 		}
 		//the underlying array has to be empty
-		assertTrue("Jobs not removed from graph.", getLockManager().isEmpty());
+		assertTrue(getLockManager().isEmpty(), "Jobs not removed from graph.");
 	}
 
 	/**
@@ -1120,7 +1121,7 @@ public class DeadlockDetectionTest {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				try {
-					assertTrue("1.0", getLockManager().isLockOwner());
+					assertTrue(getLockManager().isLockOwner());
 					status.set(0, TestBarrier2.STATUS_START);
 					TestBarrier2.waitForStatus(status, 0, TestBarrier2.STATUS_RUNNING);
 					monitor.worked(1);
@@ -1136,7 +1137,7 @@ public class DeadlockDetectionTest {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				try {
-					assertTrue("2.0", getLockManager().isLockOwner());
+					assertTrue(getLockManager().isLockOwner());
 					monitor.worked(1);
 				} finally {
 					monitor.done();
@@ -1163,7 +1164,7 @@ public class DeadlockDetectionTest {
 		TestBarrier2.waitForStatus(status, TestBarrier2.STATUS_DONE);
 		waitForCompletion(first);
 		//the underlying graph should now be empty
-		assertTrue("Canceled job not removed from graph.", getLockManager().isEmpty());
+		assertTrue(getLockManager().isEmpty(), "Canceled job not removed from graph.");
 	}
 
 	/**
@@ -1234,14 +1235,14 @@ public class DeadlockDetectionTest {
 		TestBarrier2.waitForStatus(status, 1, TestBarrier2.STATUS_WAIT_FOR_RUN);
 
 		//the underlying graph should not be empty yet
-		assertTrue("Held lock removed from graph.", !getLockManager().isEmpty());
+		assertFalse(getLockManager().isEmpty(), "Held lock removed from graph.");
 
 		//wait until the jobs are done
 		status.set(1, TestBarrier2.STATUS_RUNNING);
 		waitForCompletion(first);
 		waitForCompletion(second);
 		//the underlying graph should now be empty
-		assertTrue("Jobs not removed from graph.", getLockManager().isEmpty());
+		assertTrue(getLockManager().isEmpty(), "Jobs not removed from graph.");
 	}
 
 	private void start(ArrayList<RandomTestRunnable> allRunnables) {

@@ -15,7 +15,7 @@
 package org.eclipse.core.tests.runtime.jobs;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.Duration;
 import org.eclipse.core.internal.jobs.JobListeners;
@@ -100,6 +100,6 @@ public class AbstractJobTest  {
 		int jobListenerTimeout = JobListeners.getJobListenerTimeout();
 		JobListeners.resetJobListenerTimeout();
 		int defaultTimeout = JobListeners.getJobListenerTimeout();
-		assertEquals("See logfile for TimeoutException to get details.", defaultTimeout, jobListenerTimeout);
+		assertEquals(defaultTimeout, jobListenerTimeout, "See logfile for TimeoutException to get details.");
 	}
 }

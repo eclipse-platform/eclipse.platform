@@ -14,7 +14,7 @@
 package org.eclipse.core.tests.runtime.jobs;
 
 import static org.eclipse.core.tests.runtime.RuntimeTestsPlugin.PI_RUNTIME_TESTS;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -23,7 +23,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.util.concurrent.atomic.AtomicIntegerArray;
-import junit.framework.AssertionFailedError;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -93,7 +92,7 @@ public class Bug_412138 {
 			fakeBuild.join();
 			assertTrue(job.getResult() != null && job.getResult().isOK());
 			assertTrue(fakeBuild.getResult() != null && fakeBuild.getResult().isOK());
-		} catch (AssertionFailedError e) {
+		} catch (AssertionError e) {
 			// the test failed so there is a deadlock, but this deadlock would prevent us
 			// from reporting test results; serialize the error to a helper file and
 			// exit JVM to "resolve" deadlock
@@ -119,9 +118,9 @@ public class Bug_412138 {
 		// if the file does not exist, there was no deadlock so the whole test pass
 		if (file.exists()) {
 			try {
-				AssertionFailedError e;
+				AssertionError e;
 				try (ObjectInputStream stream = new ObjectInputStream(Files.newInputStream(file.toPath()))) {
-					e = (AssertionFailedError) stream.readObject();
+					e = (AssertionError) stream.readObject();
 				}
 				throw e;
 			} finally {

@@ -14,9 +14,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.function.Function;
 import org.eclipse.core.runtime.jobs.LockListener;
-import org.junit.Assert;
 
 /**
  * A lock listener used for testing that ensures wait/release calls are correctly paired.
@@ -58,7 +59,7 @@ public class TestLockListener extends LockListener {
 	 * @param message The assertion message
 	 */
 	public synchronized void assertNotWaiting(String message) {
-		Assert.assertTrue(message, !waiting);
+		assertTrue(!waiting, message);
 	}
 
 	/**
@@ -68,7 +69,7 @@ public class TestLockListener extends LockListener {
 	 * @param message The assertion message
 	 */
 	public synchronized void assertHasBeenWaiting(String message) {
-		Assert.assertTrue(message, hasBeenWaiting);
+		assertTrue(hasBeenWaiting, message);
 	}
 
 }

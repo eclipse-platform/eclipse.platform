@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Collection;
 import java.util.Map;
@@ -73,7 +73,7 @@ public class OrderAsserter {
 		}
 		try {
 			int currentProgress = progress.incrementAndGet();
-			assertNotNull("Should not happen but was event number " + getEventString(currentProgress), event);
+			assertNotNull(event, "Should not happen but was event number " + getEventString(currentProgress));
 
 			// two locks at the same time => race condition happend
 			if (!lock.tryLock()) {
@@ -89,10 +89,10 @@ public class OrderAsserter {
 				lock.unlock();
 			}
 
-			assertFalse("Too late. Expected to happen as " + event + " but was " + getEventString(currentProgress),
-					currentProgress > event.eventNumber);
-			assertFalse("Too early. Expected to happen as " + event + " but was " + getEventString(currentProgress),
-					currentProgress < event.eventNumber);
+			assertFalse(currentProgress > event.eventNumber,
+					"Too late. Expected to happen as " + event + " but was " + getEventString(currentProgress));
+			assertFalse(currentProgress < event.eventNumber,
+					"Too early. Expected to happen as " + event + " but was " + getEventString(currentProgress));
 		} catch (Throwable e) {
 			addError(e);
 		}

@@ -13,10 +13,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.core.internal.jobs.InternalJob;
 import org.eclipse.core.internal.jobs.JobQueue;
@@ -56,32 +56,32 @@ public class JobQueueTest {
 		for (int i = 0; i < entries.length; i++) {
 			entries[i] = new Entry(Job.LONG);
 			queue.enqueue(entries[i]);
-			assertEquals("1.0." + i, entries[0], queue.peek());
+			assertEquals(entries[0], queue.peek(), i + "");
 		}
 		for (int i = 0; i < entries.length; i++) {
-			assertEquals("2.0." + i, entries[i], queue.dequeue());
+			assertEquals(entries[i], queue.dequeue(), i + "");
 		}
 	}
 
 	@Test
 	public void testBasic() {
 		Entry[] entries = createEntries();
-		assertTrue("1.0", queue.isEmpty());
-		assertNull("1.1", queue.dequeue());
-		assertNull("1.2", queue.peek());
+		assertTrue(queue.isEmpty());
+		assertNull(queue.dequeue());
+		assertNull(queue.peek());
 		for (Entry entry : entries) {
 			queue.enqueue(entry);
-			assertNotNull("1.3", queue.peek());
+			assertNotNull(queue.peek());
 		}
 		for (int i = 0; i < entries.length; i++) {
 			queue.remove(entries[i]);
 			if (i + 1 < entries.length) {
-				assertNotNull("1.4." + i, queue.peek());
+				assertNotNull(queue.peek(), i + "");
 			}
 		}
-		assertTrue("2.0", queue.isEmpty());
-		assertNull("2.1", queue.dequeue());
-		assertNull("2.2", queue.peek());
+		assertTrue(queue.isEmpty());
+		assertNull(queue.dequeue());
+		assertNull(queue.peek());
 		for (Entry entry : entries) {
 			queue.enqueue(entry);
 		}
@@ -89,10 +89,10 @@ public class JobQueueTest {
 		while (!queue.isEmpty()) {
 			InternalJob peek = queue.peek();
 			InternalJob removed = queue.dequeue();
-			assertEquals("3.0." + count, peek, removed);
+			assertEquals(peek, removed, count + "");
 			count--;
 		}
-		assertEquals("3.1", 0, count);
+		assertEquals(0, count);
 	}
 
 	private Entry[] createEntries() {

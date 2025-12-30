@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -88,7 +88,7 @@ public class Bug_550738 extends AbstractJobTest {
 				job.cancel();
 				job.schedule();
 
-				assertTrue("Job should start after schedule. Iteration " + i, startedLatch.await(5, TimeUnit.SECONDS));
+				assertTrue(startedLatch.await(5, TimeUnit.SECONDS), "Job should start after schedule. Iteration " + i);
 
 				// A sequence of cancellations and rescheduling that is not expected to affect
 				// further operations.
@@ -97,7 +97,7 @@ public class Bug_550738 extends AbstractJobTest {
 				job.schedule();
 
 				job.cancel();
-				assertTrue("Job should stop after cancellation. Iteration " + i, job.join(5000, null));
+				assertTrue(job.join(5000, null), "Job should stop after cancellation. Iteration " + i);
 
 			}
 		} finally {
@@ -126,8 +126,8 @@ public class Bug_550738 extends AbstractJobTest {
 			// Job post-processing may happen after it is switched to NONE state
 			// join() alone is not enough
 			Thread.sleep(200);
-			assertEquals("Job should be completed once per schedule.", eventCount.scheduledCount.get(),
-					eventCount.doneCount.get());
+			assertEquals(eventCount.scheduledCount.get(), eventCount.doneCount.get(),
+					"Job should be completed once per schedule.");
 
 		} finally {
 			job.cancelWithoutRelyingOnFramework = true;

@@ -16,6 +16,7 @@
 package org.eclipse.core.tests.runtime.jobs;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
@@ -25,7 +26,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("restriction")
@@ -89,7 +89,7 @@ public class WorkerPoolTest {
 		int workerThreadCount = getWorkerThreadCount();
 		while (workerThreadCount > MAX_ALLOWED_IDLE_WORKER_THREADS) {
 			if (System.currentTimeMillis() - startTimeInMSec > WORKER_TIMEOUT_IN_MSEC) {
-				Assert.fail("Timeout reached! Too many worker threads active: " + workerThreadCount
+				fail("Timeout reached! Too many worker threads active: " + workerThreadCount
 						+ ", expected <= "
 						+ MAX_ALLOWED_IDLE_WORKER_THREADS);
 			}

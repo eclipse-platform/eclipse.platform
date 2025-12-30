@@ -14,10 +14,11 @@
 package org.eclipse.core.tests.runtime.jobs;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -94,7 +95,7 @@ public class BeginEndRuleTest extends AbstractJobTest {
 			passedMonitor.set(monitor);
 			manager.beginRule(rule, monitor);
 			try {
-				assertTrue("Monitor not created for " + monitor, createdMonitor.get());
+				assertTrue(createdMonitor.get(), "Monitor not created for " + monitor);
 			} finally {
 				manager.endRule(rule);
 			}
@@ -129,8 +130,8 @@ public class BeginEndRuleTest extends AbstractJobTest {
 		//all jobs should be running
 		//the status flag should be set to START
 		for (int i = 0; i < status.length(); i++) {
-			assertEquals("1." + i, Job.RUNNING, jobs[i].getState());
-			assertEquals("2." + i, TestBarrier2.STATUS_START, status.get(i));
+			assertEquals(Job.RUNNING, jobs[i].getState(), i);
+			assertEquals(TestBarrier2.STATUS_START, status.get(i), i);
 		}
 
 		//the order that the jobs will be executed
@@ -150,9 +151,9 @@ public class BeginEndRuleTest extends AbstractJobTest {
 			}
 
 			//the first job should be running, the remaining jobs should be waiting
-			assertEquals("3.0", TestBarrier2.STATUS_RUNNING, status.get(order[0]));
-			assertEquals("3.0", TestBarrier2.STATUS_BLOCKED, status.get(order[1]));
-			assertEquals("3.0", TestBarrier2.STATUS_BLOCKED, status.get(order[2]));
+			assertEquals(TestBarrier2.STATUS_RUNNING, status.get(order[0]));
+			assertEquals(TestBarrier2.STATUS_BLOCKED, status.get(order[1]));
+			assertEquals(TestBarrier2.STATUS_BLOCKED, status.get(order[2]));
 
 			//let the first job finish
 			status.set(order[0], TestBarrier2.STATUS_WAIT_FOR_DONE);
@@ -187,9 +188,9 @@ public class BeginEndRuleTest extends AbstractJobTest {
 
 		for (int i = 0; i < jobs.length; i++) {
 			//check that the final status of all jobs is correct
-			assertEquals("9." + i, TestBarrier2.STATUS_DONE, status.get(i));
-			assertEquals("10." + i, Job.NONE, jobs[i].getState());
-			assertEquals("11." + i, IStatus.OK, jobs[i].getResult().getSeverity());
+			assertEquals(TestBarrier2.STATUS_DONE, status.get(i), i);
+			assertEquals(Job.NONE, jobs[i].getState(), i);
+			assertEquals(IStatus.OK, jobs[i].getResult().getSeverity(), i);
 		}
 	}
 
@@ -215,10 +216,10 @@ public class BeginEndRuleTest extends AbstractJobTest {
 		TestBarrier2.waitForStatus(status, 0, TestBarrier2.STATUS_START);
 		TestBarrier2.waitForStatus(status, 1, TestBarrier2.STATUS_START);
 
-		assertEquals("2.0", Job.RUNNING, jobs[0].getState());
-		assertEquals("2.1", Job.RUNNING, jobs[1].getState());
-		assertEquals("2.2", TestBarrier2.STATUS_START, status.get(0));
-		assertEquals("2.3", TestBarrier2.STATUS_START, status.get(1));
+		assertEquals(Job.RUNNING, jobs[0].getState());
+		assertEquals(Job.RUNNING, jobs[1].getState());
+		assertEquals(TestBarrier2.STATUS_START, status.get(0));
+		assertEquals(TestBarrier2.STATUS_START, status.get(1));
 
 		//the order of execution of the jobs (by their index in the status array)
 		int first = 0;
@@ -237,8 +238,8 @@ public class BeginEndRuleTest extends AbstractJobTest {
 
 			//only the first job should be running
 			//the other job should be blocked by the beginRule method
-			assertEquals("3.1", TestBarrier2.STATUS_RUNNING, status.get(first));
-			assertEquals("3.2", TestBarrier2.STATUS_WAIT_FOR_RUN, status.get(second));
+			assertEquals(TestBarrier2.STATUS_RUNNING, status.get(first));
+			assertEquals(TestBarrier2.STATUS_WAIT_FOR_RUN, status.get(second));
 
 			//let the first job finish execution and call endRule
 			//the second thread will then become unblocked
@@ -251,8 +252,8 @@ public class BeginEndRuleTest extends AbstractJobTest {
 			TestBarrier2.waitForStatus(status, second, TestBarrier2.STATUS_RUNNING);
 
 			//the first job is done, the second job is executing
-			assertEquals("4.1", TestBarrier2.STATUS_DONE, status.get(first));
-			assertEquals("4.2", TestBarrier2.STATUS_RUNNING, status.get(second));
+			assertEquals(TestBarrier2.STATUS_DONE, status.get(first));
+			assertEquals(TestBarrier2.STATUS_RUNNING, status.get(second));
 
 			//let the second job finish execution
 			status.set(second,  TestBarrier2.STATUS_WAIT_FOR_DONE);
@@ -261,8 +262,8 @@ public class BeginEndRuleTest extends AbstractJobTest {
 			TestBarrier2.waitForStatus(status, second, TestBarrier2.STATUS_DONE);
 
 			//both jobs are done now
-			assertEquals("5.1", TestBarrier2.STATUS_DONE, status.get(first));
-			assertEquals("5.2", TestBarrier2.STATUS_DONE, status.get(second));
+			assertEquals(TestBarrier2.STATUS_DONE, status.get(first));
+			assertEquals(TestBarrier2.STATUS_DONE, status.get(second));
 
 			//flip the order of execution of the jobs
 			int temp = first;
@@ -275,12 +276,12 @@ public class BeginEndRuleTest extends AbstractJobTest {
 		waitForEnd(jobs[first]);
 
 		//check that the final status of both jobs is correct
-		assertEquals("6.1", TestBarrier2.STATUS_DONE, status.get(0));
-		assertEquals("6.2", TestBarrier2.STATUS_DONE, status.get(1));
-		assertEquals("6.3", Job.NONE, jobs[0].getState());
-		assertEquals("6.4", Job.NONE, jobs[1].getState());
-		assertEquals("6.5", IStatus.OK, jobs[0].getResult().getSeverity());
-		assertEquals("6.6", IStatus.OK, jobs[1].getResult().getSeverity());
+		assertEquals(TestBarrier2.STATUS_DONE, status.get(0));
+		assertEquals(TestBarrier2.STATUS_DONE, status.get(1));
+		assertEquals(Job.NONE, jobs[0].getState());
+		assertEquals(Job.NONE, jobs[1].getState());
+		assertEquals(IStatus.OK, jobs[0].getResult().getSeverity());
+		assertEquals(IStatus.OK, jobs[1].getResult().getSeverity());
 	}
 
 	@Test
@@ -374,8 +375,8 @@ public class BeginEndRuleTest extends AbstractJobTest {
 		job.setRule(rule1);
 		job.schedule();
 		waitForEnd(job);
-		assertNotNull("1.0", exception[0]);
-		assertTrue("1.1", exception[0].getMessage().indexOf("does not match outer scope rule") > 0);
+		assertNotNull(exception[0]);
+		assertTrue(exception[0].getMessage().indexOf("does not match outer scope rule") > 0);
 	}
 
 	@Test
@@ -501,7 +502,7 @@ public class BeginEndRuleTest extends AbstractJobTest {
 			//ignore
 		}
 		//the thread should be dead now
-		assertTrue("1.0", !endingThread.isAlive());
+		assertFalse(endingThread.isAlive());
 
 		//should be able to end the rule from this thread
 		manager.endRule(rule1);
@@ -526,7 +527,7 @@ public class BeginEndRuleTest extends AbstractJobTest {
 				//ignore
 			}
 			//the thread should be dead now
-			assertTrue("2." + i, !t.isAlive());
+			assertFalse(t.isAlive(), i + "");
 		}
 
 		//try to end the rules when they are all started
@@ -541,7 +542,7 @@ public class BeginEndRuleTest extends AbstractJobTest {
 				//ignore
 			}
 			//the thread should be dead now
-			assertTrue("3." + i, !t.isAlive());
+			assertFalse(t.isAlive(), i + "");
 		}
 
 		//try to end the rules after manager.endRule() has been called
@@ -557,7 +558,7 @@ public class BeginEndRuleTest extends AbstractJobTest {
 				//ignore
 			}
 			//the thread should be dead now
-			assertTrue("4." + i, !t.isAlive());
+			assertFalse(t.isAlive(), i + "");
 		}
 	}
 
@@ -575,7 +576,7 @@ public class BeginEndRuleTest extends AbstractJobTest {
 			}
 			Thread.yield();
 			//sanity test to avoid hanging tests
-			assertTrue("Timeout waiting for job to end", i++ < 100);
+			assertTrue(i++ < 100, "Timeout waiting for job to end");
 		}
 	}
 
