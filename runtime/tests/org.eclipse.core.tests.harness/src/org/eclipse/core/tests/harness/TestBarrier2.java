@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.harness;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.Date;
@@ -20,7 +22,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 import java.util.stream.Collectors;
-import org.junit.Assert;
 
 /**
  * This class acts as an implementation of a barrier that is appropriate for
@@ -92,10 +93,10 @@ public class TestBarrier2 {
 			if (!condition) {
 				String dump = getThreadDump();
 				if (statuses.get(index) > status) {
-					Assert.fail("Timeout after " + elapsed + "ms - Status already in state "
+					fail("Timeout after " + elapsed + "ms - Status already in state "
 							+ getStatus(statuses.get(index)) + " - waiting for " + getStatus(status) + "\n" + dump);
 				} else {
-					Assert.fail("Timeout after " + elapsed + "ms waiting for status to change from "
+					fail("Timeout after " + elapsed + "ms waiting for status to change from "
 						+ getStatus(statuses.get(index)) + " to " + getStatus(status) + "\n" + dump);
 				}
 			}

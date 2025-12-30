@@ -427,6 +427,7 @@ public class BasicAliasTest {
 			link2TempFolder.createLink(tempStore.toURI(), IResource.NONE, createTestMonitor());
 			// change the location of p2 project to the temp folder
 			replaceProject(p2, tempStore.toURI());
+			return null;
 		});
 
 		// now p2 and link2TempFolder should be aliases

@@ -14,6 +14,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.harness;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -24,7 +27,6 @@ import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.Assert;
 
 /**
  * A utility class that compares file system states. It is able to take snapshot of the file system and save it into a
@@ -90,9 +92,11 @@ public class FileSystemComparator {
 		for (Object element : newSnapshot.values()) {
 			FileSummary newElement = (FileSummary) element;
 			FileSummary oldElement = (FileSummary) oldSnapshot.get(newElement.getPath());
-			Assert.assertNotNull(tag + " - " + newElement.getPath() + " was added", oldElement);
-			Assert.assertEquals(tag + " - " + newElement.getPath() + " changed timestamp ", oldElement.getTimestamp(), newElement.getTimestamp());
-			Assert.assertEquals(tag + " - " + newElement.getPath() + " changed size ", oldElement.getSize(), newElement.getSize());
+			assertNotNull(oldElement, tag + " - " + newElement.getPath() + " was added");
+			assertEquals(oldElement.getTimestamp(), newElement.getTimestamp(),
+					tag + " - " + newElement.getPath() + " changed timestamp ");
+			assertEquals(oldElement.getSize(), newElement.getSize(),
+					tag + " - " + newElement.getPath() + " changed size ");
 		}
 		// one or more entries were removed
 		// need to do the reverse (take the old snapshot as basis) to figure out what are the missing entries
@@ -100,7 +104,7 @@ public class FileSystemComparator {
 			for (Object element : oldSnapshot.values()) {
 				FileSummary oldElement = (FileSummary) element;
 				FileSummary newElement = (FileSummary) newSnapshot.get(oldElement.getPath());
-				Assert.assertNotNull(tag + " - " + oldElement.getPath() + " was removed", newElement);
+				assertNotNull(newElement, tag + " - " + oldElement.getPath() + " was removed");
 			}
 		}
 	}
