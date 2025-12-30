@@ -12,7 +12,8 @@ package org.eclipse.core.tests.harness.session.customization;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.tests.harness.FileSystemHelper.deleteOnShutdownRecursively;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,7 +33,6 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.harness.session.CustomSessionConfiguration;
 import org.eclipse.core.tests.session.Setup;
-import org.junit.Assert;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
@@ -255,7 +255,7 @@ public class CustomSessionConfigurationImpl implements CustomSessionConfiguratio
 
 	private void addBundle(Class<?> classFromBundle, String suffix) {
 		Bundle bundle = FrameworkUtil.getBundle(classFromBundle);
-		Assert.assertNotNull("Class is not from a bundle: " + classFromBundle, bundle);
+		assertNotNull(bundle, "Class is not from a bundle: " + classFromBundle);
 		addBundle(bundle, suffix);
 	}
 
@@ -294,7 +294,7 @@ public class CustomSessionConfigurationImpl implements CustomSessionConfiguratio
 
 		String toURL() {
 			Optional<File> location = FileLocator.getBundleFileLocation(bundle);
-			assertTrue("Unable to locate bundle with id: " + bundle.getSymbolicName(), location.isPresent());
+			assertTrue(location.isPresent(), "Unable to locate bundle with id: " + bundle.getSymbolicName());
 			String externalForm;
 			try {
 				externalForm = location.get().toURI().toURL().toExternalForm();

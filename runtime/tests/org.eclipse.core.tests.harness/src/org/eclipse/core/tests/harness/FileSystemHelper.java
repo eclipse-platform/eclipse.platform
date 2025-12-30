@@ -23,12 +23,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.Callable;
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
-import org.junit.function.ThrowingRunnable;
 
 /**
  * Home for file system-related utility methods.
@@ -243,9 +243,9 @@ public class FileSystemHelper {
 	 * @param operationToExecute the operation to execute
 	 * @throws Throwable if a throwable is thrown in the operation to execute
 	 */
-	public static void deleteAfterExecution(Path pathToDelete, ThrowingRunnable operationToExecute) throws Throwable {
+	public static <T> T deleteAfterExecution(Path pathToDelete, Callable<T> operationToExecute) throws Throwable {
 		try {
-			operationToExecute.run();
+			return operationToExecute.call();
 		} finally {
 			FileSystemHelper.deleteRecursively(pathToDelete);
 		}
