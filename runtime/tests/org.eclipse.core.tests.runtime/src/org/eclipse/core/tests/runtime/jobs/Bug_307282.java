@@ -13,7 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.core.runtime.jobs.ILock;
 import org.eclipse.core.runtime.jobs.Job;
@@ -75,7 +76,7 @@ public class Bug_307282 extends AbstractJobTest {
 
 				// Now attempt acquire lock1 with an integer delay
 				try {
-					assertTrue(!lock1.acquire(60 * 1000));
+					assertFalse(lock1.acquire(60 * 1000));
 				} catch (InterruptedException e) {
 					tb2.setStatus(INTERRUPTED);
 				}
@@ -110,7 +111,7 @@ public class Bug_307282 extends AbstractJobTest {
 		// We should now be able to acquire lock1 without difficulty
 		assertTrue(lock1.acquire(1000));
 		// T2 should still hold the lock2
-		assertTrue(!lock2.acquire(0));
+		assertFalse(lock2.acquire(0));
 
 		tb2.setStatus(RELEASE_LOCK);
 		assertTrue(lock2.acquire(1000));

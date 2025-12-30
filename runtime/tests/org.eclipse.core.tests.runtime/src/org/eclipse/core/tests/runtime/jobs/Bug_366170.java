@@ -14,7 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.concurrent.Semaphore;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -43,7 +43,7 @@ public class Bug_366170 extends AbstractJobTest {
 		Thread.sleep(2000L);
 
 		//lock should now be free if C is finished
-		assertTrue("Failed: Job C was not run", m_jobBStopHint.tryAcquire());
+		assertTrue(m_jobBStopHint.tryAcquire(), "Failed: Job C was not run");
 	}
 
 	private void scheduleJobA(long delay) throws Exception {

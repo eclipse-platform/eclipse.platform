@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.concurrent.atomic.AtomicReference;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -83,8 +83,8 @@ public class Bug_311756 extends AbstractJobTest {
 		if (exceptionInJob.get() != null) {
 			throw exceptionInJob.get();
 		}
-		assertEquals(blocked[0] == UNSET ? "setBlocked never called" : "clearBlocked never called", CLEARED,
-				blocked[0]);
+		assertEquals(CLEARED, blocked[0],
+				blocked[0] == UNSET ? "setBlocked never called" : "clearBlocked never called");
 	}
 
 	/**
@@ -147,8 +147,8 @@ public class Bug_311756 extends AbstractJobTest {
 		if (exceptionInJob.get() != null) {
 			throw exceptionInJob.get();
 		}
-		assertEquals(blocked[0] == UNSET ? "setBlocked never called" : "clearBlocked never called", CLEARED,
-				blocked[0]);
+		assertEquals(CLEARED, blocked[0],
+				blocked[0] == UNSET ? "setBlocked never called" : "clearBlocked never called");
 	}
 
 	/**
@@ -207,7 +207,8 @@ public class Bug_311756 extends AbstractJobTest {
 		if (exceptionInJob.get() != null) {
 			throw exceptionInJob.get();
 		}
-		assertEquals(blocked[0] == UNSET ? "setBlocked never called" : "clearBlocked never called", CLEARED, blocked[0]);
+		assertEquals(CLEARED, blocked[0],
+				blocked[0] == UNSET ? "setBlocked never called" : "clearBlocked never called");
 	}
 
 	/**
@@ -263,7 +264,8 @@ public class Bug_311756 extends AbstractJobTest {
 		if (exceptionInJob.get() != null) {
 			throw exceptionInJob.get();
 		}
-		assertEquals(blocked[0] == UNSET ? "setBlocked never called" : "clearBlocked never called", CLEARED, blocked[0]);
+		assertEquals(CLEARED, blocked[0],
+				blocked[0] == UNSET ? "setBlocked never called" : "clearBlocked never called");
 	}
 
 }

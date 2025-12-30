@@ -13,11 +13,12 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -173,16 +174,16 @@ public class YieldTest extends AbstractJobTest {
 		Job yieldJob = new Job(testName + " Yielding") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				assertNull("Conflicting job result is not null: " + jobs[1].getResult(), jobs[1].getResult());
+				assertNull(jobs[1].getResult(), "Conflicting job result is not null: " + jobs[1].getResult());
 				Thread before = getThread();
 				while (yieldRule(null) == null) {
 					//loop until yield succeeds
 				}
 				waitForCompletion(jobs[1]);
 				Thread after = getThread();
-				assertEquals("Thread not restored", before, after);
-				assertTrue("Conflicting job not done", jobs[1].getResult().isOK());
-				assertEquals("Conflicting job still running", Job.NONE, jobs[1].getState());
+				assertEquals(before, after, "Thread not restored");
+				assertTrue(jobs[1].getResult().isOK(), "Conflicting job not done");
+				assertEquals(Job.NONE, jobs[1].getState(), "Conflicting job still running");
 				return Status.OK_STATUS;
 			}
 		};
@@ -203,7 +204,7 @@ public class YieldTest extends AbstractJobTest {
 		yieldJob.schedule();
 		conflictingJob.schedule();
 		waitForCompletion(yieldJob);
-		assertTrue("Result is not ok: " + yieldJob.getResult(), yieldJob.getResult().isOK());
+		assertTrue(yieldJob.getResult().isOK(), "Result is not ok: " + yieldJob.getResult());
 		waitForCompletion(conflictingJob);
 		assertTrue(conflictingJob.getResult().isOK());
 	}
@@ -521,7 +522,7 @@ public class YieldTest extends AbstractJobTest {
 
 	private synchronized void waitForCompletion() {
 		int i = 0;
-		assertTrue("Jobs completed that weren't scheduled", completedJobs <= scheduledJobs);
+		assertTrue(completedJobs <= scheduledJobs, "Jobs completed that weren't scheduled");
 		while (completedJobs < scheduledJobs) {
 			try {
 				wait(500);
@@ -531,7 +532,7 @@ public class YieldTest extends AbstractJobTest {
 			//sanity test to avoid hanging tests
 			if (i++ > 1000) {
 				dumpState();
-				assertTrue("Timeout waiting for job to complete", false);
+				fail("Timeout waiting for job to complete");
 			}
 		}
 	}
@@ -680,7 +681,7 @@ public class YieldTest extends AbstractJobTest {
 			throw new CoreException(yieldResult);
 		}
 		waitForCompletion(conflictingJob);
-		assertTrue(conflictingJob.toString(), conflictingJob.getResult().isOK());
+		assertTrue(conflictingJob.getResult().isOK(), conflictingJob.toString());
 	}
 
 	@Test
@@ -736,7 +737,7 @@ public class YieldTest extends AbstractJobTest {
 		waitForJobsCompletion(jobs.toArray(new Job[jobs.size()]), 5000);
 
 		for (Job conflict : jobs) {
-			assertNotNull("Null result for " + conflict, conflict.getResult());
+			assertNotNull(conflict.getResult(), "Null result for " + conflict);
 			assertTrue(conflict.getResult().isOK());
 		}
 
@@ -858,12 +859,12 @@ public class YieldTest extends AbstractJobTest {
 		waitForJobsCompletion(jobs_B.toArray(new Job[jobs_B.size()]), 5000);
 
 		for (Job conflict : jobs_A) {
-			assertNotNull("Null result for " + conflict, conflict.getResult());
+			assertNotNull(conflict.getResult(), "Null result for " + conflict);
 			assertTrue(conflict.getResult().isOK());
 		}
 
 		for (Job conflict : jobs_B) {
-			assertNotNull("Null result for " + conflict, conflict.getResult());
+			assertNotNull(conflict.getResult(), "Null result for " + conflict);
 			assertTrue(conflict.getResult().isOK());
 		}
 	}
@@ -946,7 +947,7 @@ public class YieldTest extends AbstractJobTest {
 			assertNull(failureMessage[0], failureMessage[0]);
 		}
 
-		assertTrue("yieldRule should have thrown OperationCanceledException", operationWasCanceled[0]);
+		assertTrue(operationWasCanceled[0], "yieldRule should have thrown OperationCanceledException");
 	}
 
 	@Test
@@ -1096,7 +1097,7 @@ public class YieldTest extends AbstractJobTest {
 		try {
 			waitForCompletion(yieldA);
 			waitForCompletion(conflicting);
-			assertEquals("While resuming from yieldRule, implicit Job should only run once", 1, count[0]);
+			assertEquals(1, count[0], "While resuming from yieldRule, implicit Job should only run once");
 		} finally {
 			//clean up even if the test fails
 			yieldA.cancel();
@@ -1155,7 +1156,7 @@ public class YieldTest extends AbstractJobTest {
 			conflicting.schedule();
 			waitForCompletion(yieldA);
 			waitForCompletion(conflicting);
-			assertEquals("While resuming from yieldRule, conflicting job should only run once", 1, count[0]);
+			assertEquals(1, count[0], "While resuming from yieldRule, conflicting job should only run once");
 		} finally {
 			Job.getJobManager().removeJobChangeListener(a);
 		}
@@ -1182,7 +1183,7 @@ public class YieldTest extends AbstractJobTest {
 			// sanity test to avoid hanging tests
 			if (i++ > ticks) {
 				dumpState();
-				assertTrue("Timeout waiting for job to complete", false);
+				fail("Timeout waiting for job to complete");
 			}
 			for (Iterator<Job> iterator = jobList.iterator(); iterator.hasNext();) {
 				if (iterator.next().getState() == Job.NONE) {

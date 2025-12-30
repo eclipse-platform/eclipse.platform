@@ -15,7 +15,8 @@ package org.eclipse.core.tests.runtime.jobs;
 
 import static java.util.function.Predicate.not;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
@@ -64,7 +65,7 @@ public class OrderedLockTest {
 			createRunnables(new ILock[] { lock2, lock3, lock1 }, 5, allRunnables);
 			execute(allRunnables);
 			// the underlying array has to be empty
-			assertTrue("Locks not removed from graph.", manager.isEmpty());
+			assertTrue(manager.isEmpty(), "Locks not removed from graph.");
 		});
 	}
 
@@ -94,7 +95,7 @@ public class OrderedLockTest {
 			}
 			execute(allRunnables);
 			// the underlying array has to be empty
-			assertTrue("Locks not removed from graph.", manager.isEmpty());
+			assertTrue(manager.isEmpty(), "Locks not removed from graph.");
 		});
 	}
 
@@ -110,7 +111,7 @@ public class OrderedLockTest {
 			createRunnables(new ILock[] { lock3, lock2, lock1 }, 1, allRunnables);
 			execute(allRunnables);
 			// the underlying array has to be empty
-			assertTrue("Locks not removed from graph.", manager.isEmpty());
+			assertTrue(manager.isEmpty(), "Locks not removed from graph.");
 		});
 	}
 
@@ -143,7 +144,7 @@ public class OrderedLockTest {
 		t.interrupt();
 		lock.release();
 		t.join();
-		assertTrue("1.0", wasInterupted[0]);
+		assertTrue(wasInterupted[0]);
 	}
 
 	/**
@@ -178,8 +179,8 @@ public class OrderedLockTest {
 				success = lock.acquire(0);
 			} catch (InterruptedException e) {
 			}
-			assertTrue("1.0", !success);
-			assertTrue("1.1", !manager.isLockOwner());
+			assertFalse(success);
+			assertFalse(manager.isLockOwner());
 			status.upgradeTo(TestBarrier2.STATUS_WAIT_FOR_DONE);
 		};
 
@@ -196,7 +197,7 @@ public class OrderedLockTest {
 		alive[0] = false;
 		status.waitForStatus(TestBarrier2.STATUS_DONE);
 		//the underlying array has to be empty
-		assertTrue("Locks not removed from graph.", manager.isEmpty());
+		assertTrue(manager.isEmpty(), "Locks not removed from graph.");
 	}
 
 	/**
@@ -240,7 +241,7 @@ public class OrderedLockTest {
 					status2waitForLock.upgradeTo(TestBarrier2.STATUS_START);
 					lock.acquire(); // has to be in waiting state before manager.setLockListener(listener) should
 									// happen
-					assertTrue("1.0", manager.isLockOwner());
+					assertTrue(manager.isLockOwner());
 					// status2waitForLock.upgrade(TestBarrier2.STATUS_WAIT_FOR_DONE);// done in
 					// waitListener
 					lock.release();
@@ -310,10 +311,10 @@ public class OrderedLockTest {
 		status2waitForLock.waitForStatus(TestBarrier2.STATUS_DONE);
 
 		// the underlying array has to be empty
-		assertTrue("Locks not removed from graph.", manager.isEmpty());
+		assertTrue(manager.isEmpty(), "Locks not removed from graph.");
 		errors.forEach(Throwable::printStackTrace);
-		assertTrue("Error happend: " + errors.stream().map(e -> "" + e).collect(Collectors.joining(", ")),
-				errors.isEmpty());
+		assertTrue(errors.isEmpty(),
+				"Error happend: " + errors.stream().map(e -> "" + e).collect(Collectors.joining(", ")));
 	}
 
 	private void execute(ArrayList<LockAcquiringRunnable> allRunnables) {

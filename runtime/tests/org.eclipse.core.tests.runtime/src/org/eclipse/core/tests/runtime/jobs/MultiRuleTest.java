@@ -13,8 +13,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.MultiRule;
@@ -34,19 +35,19 @@ public class MultiRuleTest extends AbstractJobTest {
 		MultiRule multi1 = new MultiRule(new ISchedulingRule[] {child1, child2});
 
 		//add multi to its own children
-		assertEquals("1.0", multi1, MultiRule.combine(new ISchedulingRule[] {multi1}));
-		assertEquals("1.1", multi1, MultiRule.combine(new ISchedulingRule[] {multi1, child1, child2, childOfChild1}));
-		assertEquals("1.2", multi1, MultiRule.combine(multi1, child2));
-		assertEquals("1.3", multi1, MultiRule.combine(childOfChild1, multi1));
+		assertEquals(multi1, MultiRule.combine(new ISchedulingRule[] { multi1 }));
+		assertEquals(multi1, MultiRule.combine(new ISchedulingRule[] { multi1, child1, child2, childOfChild1 }));
+		assertEquals(multi1, MultiRule.combine(multi1, child2));
+		assertEquals(multi1, MultiRule.combine(childOfChild1, multi1));
 
 		//null
-		assertEquals("1.4", null, MultiRule.combine(null, null));
-		assertEquals("1.5", multi1, MultiRule.combine(null, multi1));
-		assertEquals("1.6", child1, MultiRule.combine(child1, null));
+		assertEquals(null, MultiRule.combine(null, null));
+		assertEquals(multi1, MultiRule.combine(null, multi1));
+		assertEquals(child1, MultiRule.combine(child1, null));
 
 		MultiRule result = (MultiRule) MultiRule.combine(multi1, nonChild);
-		assertTrue("2.0" + result, result.contains(multi1));
-		assertTrue("2.1", result.contains(nonChild));
+		assertTrue(result.contains(multi1));
+		assertTrue(result.contains(nonChild));
 
 	}
 
@@ -59,13 +60,13 @@ public class MultiRuleTest extends AbstractJobTest {
 		MultiRule multi1 = new MultiRule(new ISchedulingRule[] {child1, child2});
 		MultiRule multi2 = new MultiRule(new ISchedulingRule[] {childOfChild1});
 
-		assertTrue("1.0", multi1.contains(child1));
-		assertTrue("1.1", multi1.contains(child2));
-		assertTrue("1.2", !multi1.contains(nonChild));
-		assertTrue("1.3", multi1.contains(childOfChild1));
-		assertTrue("1.4", multi1.contains(multi2));
-		assertTrue("1.5", !multi2.contains(multi1));
-		assertTrue("1.6", multi1.contains(multi1));
+		assertTrue(multi1.contains(child1));
+		assertTrue(multi1.contains(child2));
+		assertFalse(multi1.contains(nonChild));
+		assertTrue(multi1.contains(childOfChild1));
+		assertTrue(multi1.contains(multi2));
+		assertFalse(multi2.contains(multi1));
+		assertTrue(multi1.contains(multi1));
 	}
 
 	@Test
@@ -77,12 +78,12 @@ public class MultiRuleTest extends AbstractJobTest {
 		MultiRule multi1 = new MultiRule(new ISchedulingRule[] {child1, child2});
 		MultiRule multi2 = new MultiRule(new ISchedulingRule[] {childOfChild1, nonChild});
 
-		assertTrue("1.0", multi1.isConflicting(child1));
-		assertTrue("1.1", multi1.isConflicting(child2));
-		assertTrue("1.2", !multi1.isConflicting(nonChild));
-		assertTrue("1.3", multi1.isConflicting(childOfChild1));
-		assertTrue("1.4", multi1.isConflicting(multi2));
-		assertTrue("1.5", multi2.isConflicting(multi1));
-		assertTrue("1.6", multi1.isConflicting(multi1));
+		assertTrue(multi1.isConflicting(child1));
+		assertTrue(multi1.isConflicting(child2));
+		assertFalse(multi1.isConflicting(nonChild));
+		assertTrue(multi1.isConflicting(childOfChild1));
+		assertTrue(multi1.isConflicting(multi2));
+		assertTrue(multi2.isConflicting(multi1));
+		assertTrue(multi1.isConflicting(multi1));
 	}
 }

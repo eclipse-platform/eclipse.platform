@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -52,13 +52,13 @@ public class GithubBug_193 {
 		JobWatcher watcher = JobWatcher.startWatchingFor(JOB_FAMILY1, JOB_FAMILY2, JOB_FAMILY3);
 		List<Job> fewJobs = startFewJobs(jobCount);
 
-		assertEquals("Unexpected number of started jobs.", jobCount, fewJobs.size());
+		assertEquals(jobCount, fewJobs.size(), "Unexpected number of started jobs.");
 
 		watcher.waitUntilJobsAreDone();
 
-		assertEquals("There are still uncompleted jobs.", Collections.emptyList(), watcher.getJobsToWaitFor());
-		assertEquals("Unexpected number of scheduled jobs.", jobCount, watcher.getScheduled());
-		assertEquals("Unexpected number of done jobs.", jobCount, watcher.getDone());
+		assertEquals(Collections.emptyList(), watcher.getJobsToWaitFor(), "There are still uncompleted jobs.");
+		assertEquals(jobCount, watcher.getScheduled(), "Unexpected number of scheduled jobs.");
+		assertEquals(jobCount, watcher.getDone(), "Unexpected number of done jobs.");
 	}
 
 	private List<Job> startFewJobs(int jobCount) {
@@ -259,7 +259,7 @@ class JobWatcher {
 			errors.forEach(e -> {
 				throw new AssertionError(e);
 			});
-			assertEquals("Jobs delivered in wrong order for " + getJobsToWaitFor(), 0, latchToWaitFor.getCount());
+			assertEquals(0, latchToWaitFor.getCount(), "Jobs delivered in wrong order for " + getJobsToWaitFor());
 		}
 	}
 
