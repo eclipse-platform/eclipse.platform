@@ -15,12 +15,12 @@ package org.eclipse.core.tests.runtime;
 
 import static java.util.Collections.emptyMap;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -98,12 +98,12 @@ public class PlatformTest {
 
 	@Test
 	public void testGetCommandLine() {
-		assertNotNull("1.0", Platform.getCommandLineArgs());
+		assertNotNull(Platform.getCommandLineArgs());
 	}
 
 	@Test
 	public void testGetLocation() {
-		assertNotNull("1.0", Platform.getLocation());
+		assertNotNull(Platform.getLocation());
 	}
 
 	/**
@@ -124,20 +124,20 @@ public class PlatformTest {
 		IPath initialLocation = Platform.getLogFileLocation();
 		Platform.getStateLocation(Platform.getBundle("org.eclipse.equinox.common"));//causes DataArea to be initialzed
 
-		assertNotNull("1.0", initialLocation);
+		assertNotNull(initialLocation);
 
 		//ensure result is same as log service
 		IPath logPath = IPath.fromOSString(logService.getFile().getAbsolutePath());
-		assertEquals("2.0", logPath, initialLocation);
+		assertEquals(logPath, initialLocation);
 
 		//changing log service location should change log location
 		File newLocation = File.createTempFile("testGetLogLocation", null);
 		logService.setFile(newLocation, true);
-		assertEquals("3.0", IPath.fromOSString(newLocation.getAbsolutePath()), Platform.getLogFileLocation());
+		assertEquals(IPath.fromOSString(newLocation.getAbsolutePath()), Platform.getLogFileLocation());
 
 		//when log is non-local, should revert to default location
 		logService.setWriter(new StringWriter(), true);
-		assertEquals("4.0", initialLocation, Platform.getLogFileLocation());
+		assertEquals(initialLocation, Platform.getLogFileLocation());
 	}
 
 	static class TestException extends Exception {
@@ -170,12 +170,12 @@ public class PlatformTest {
 
 		Platform.removeLogListener(logListener);
 
-		assertEquals("1.0", exceptions.size(), 1);
-		assertEquals("1.1", exception, exceptions.get(0));
+		assertEquals(exceptions.size(), 1);
+		assertEquals(exception, exceptions.get(0));
 
 		// ensures the status object produced has the right plug-in id (bug 83614)
-		assertEquals("2.0", collected.size(), 1);
-		assertEquals("2.1", RuntimeTestsPlugin.PI_RUNTIME_TESTS, collected.get(0).getPlugin());
+		assertEquals(collected.size(), 1);
+		assertEquals(RuntimeTestsPlugin.PI_RUNTIME_TESTS, collected.get(0).getPlugin());
 	}
 
 	/**
@@ -249,7 +249,7 @@ public class PlatformTest {
 		Map<String, Bundle> bundles = createSimpleTestBundles(bundleName, "1.0.0", "2.0.0");
 
 		Bundle bundle = Platform.getBundle(bundleName);
-		assertNull(bundleName + " bundle just installed, but not started => expect null result", bundle);
+		assertNull(bundle, bundleName + " bundle just installed, but not started => expect null result");
 		for (Bundle b : bundles.values()) {
 			b.start();
 		}
@@ -257,19 +257,19 @@ public class PlatformTest {
 		// now get it from Platform
 		// 2 versions installed, highest version should be returned
 		bundle = Platform.getBundle(bundleName);
-		assertNotNull("bundle must be available", bundle);
+		assertNotNull(bundle);
 		assertEquals("2.0.0", bundle.getVersion().toString());
 
 		// uninstall it; now lower version will be returned
 		bundle.uninstall();
 		bundle = Platform.getBundle(bundleName);
-		assertNotNull("bundle must be available", bundle);
+		assertNotNull(bundle);
 		assertEquals("1.0.0", bundle.getVersion().toString());
 
 		// uninstall it; no bundle available
 		bundle.uninstall();
 		bundle = Platform.getBundle(bundleName);
-		assertNull(bundleName + " bundle => expect null result", bundle);
+		assertNull(bundle);
 	}
 
 	@Test
@@ -314,13 +314,13 @@ public class PlatformTest {
 		Map<String, Bundle> bundles = createSimpleTestBundles(bundleName, "1.0.0", "3.0.0", "2.0.0");
 
 		Bundle bundle = Platform.getBundle(bundleName);
-		assertNull(bundleName + " bundle just installed, but not started => expect null result", bundle);
+		assertNull(bundle, bundleName + " bundle just installed, but not started => expect null result");
 		for (Bundle b : bundles.values()) {
 			b.start();
 		}
 
 		Bundle[] result = Platform.getBundles(bundleName, null); // no version constraint => get all 3
-		assertNotNull(bundleName + " bundle not available", bundles);
+		assertNotNull(bundles);
 		assertThat(result).hasSize(3);
 		assertEquals(3, result[0].getVersion().getMajor()); // 3.0.0 version first
 		assertEquals(1, result[2].getVersion().getMajor()); // 1.0.0 version last
@@ -335,7 +335,7 @@ public class PlatformTest {
 		assertEquals(1, result[0].getVersion().getMajor()); // 1.0.0 version
 
 		result = Platform.getBundles(bundleName, "[1.1.0,2.0.0)");
-		assertNull("no match => null result", result);
+		assertNull(result);
 	}
 
 	@Test
