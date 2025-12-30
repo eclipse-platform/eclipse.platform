@@ -17,7 +17,9 @@ package org.eclipse.ant.tests.ui;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collections;
 
@@ -25,6 +27,7 @@ import org.eclipse.ant.internal.ui.AntUtil;
 import org.eclipse.ant.internal.ui.preferences.FileFilter;
 import org.eclipse.ant.internal.ui.views.actions.AddBuildFilesAction;
 import org.eclipse.ant.tests.ui.testplugin.AbstractAntUITest;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IContributionItem;
@@ -108,4 +111,54 @@ public class AntViewTests extends AbstractAntUITest {
 		}
 	}
 
+	/**
+	 * This is to help in increasing the test coverage by enabling access to fields
+	 * and execution of methods irrespective of their Java language access
+	 * permissions.
+	 *
+	 * More accessor methods can be added to this on a need basis
+	 */
+	private static abstract class TypeProxy {
+
+		Object master = null;
+
+		protected TypeProxy(Object obj) {
+			master = obj;
+		}
+
+		/**
+		 * Gets the method with the given method name and argument types.
+		 *
+		 * @param methodName the method name
+		 * @param types      the argument types
+		 * @return the method
+		 */
+		protected Method get(String methodName, Class<?>[] types) {
+			Method method = null;
+			try {
+				method = master.getClass().getDeclaredMethod(methodName, types);
+			} catch (SecurityException | NoSuchMethodException e) {
+				fail();
+			}
+			Assert.isNotNull(method);
+			method.setAccessible(true);
+			return method;
+		}
+
+		/**
+		 * Invokes the given method with the given arguments.
+		 *
+		 * @param method    the given method
+		 * @param arguments the method arguments
+		 * @return the method return value
+		 */
+		protected Object invoke(Method method, Object[] arguments) {
+			try {
+				return method.invoke(master, arguments);
+			} catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
+				fail();
+			}
+			return null;
+		}
+	}
 }

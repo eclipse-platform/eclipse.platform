@@ -14,8 +14,13 @@
 
 package org.eclipse.ant.tests.ui;
 
+import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.activateLink;
+import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getBuildFile;
+import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getColorAtOffset;
+import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getHyperlink;
 import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getLaunchConfiguration;
 import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getProject;
+import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.launch;
 import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.launchAndTerminate;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

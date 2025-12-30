@@ -20,6 +20,8 @@ package org.eclipse.ant.tests.ui.editor;
 
 import static java.util.function.Function.identity;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getBuildFile;
+import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getIFile;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;

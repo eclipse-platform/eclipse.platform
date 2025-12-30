@@ -14,9 +14,13 @@
 
 package org.eclipse.ant.tests.ui.separateVM;
 
+import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.activateLink;
+import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getColorAtOffset;
+import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getHyperlink;
 import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getJavaProject;
 import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getLaunchConfiguration;
 import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getProject;
+import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.launch;
 import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.launchAndTerminate;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -36,7 +40,6 @@ import org.eclipse.ant.internal.ui.IAntUIPreferenceConstants;
 import org.eclipse.ant.launching.IAntLaunchConstants;
 import org.eclipse.ant.tests.ui.AbstractAntUIBuildTest;
 import org.eclipse.ant.tests.ui.debug.TestAgainException;
-import org.eclipse.ant.tests.ui.testplugin.AntUITestUtil;
 import org.eclipse.ant.tests.ui.testplugin.ConsoleLineTracker;
 import org.eclipse.ant.tests.ui.testplugin.ProjectHelper;
 import org.eclipse.core.resources.IFile;
@@ -311,7 +314,7 @@ public class SeparateVMTests extends AbstractAntUIBuildTest {
 		assertNotNull("Could not locate launch configuration for " + "echoingSepVM", config); //$NON-NLS-1$ //$NON-NLS-2$
 		ILaunchConfigurationWorkingCopy copy = config.getWorkingCopy();
 		copy.setAttribute(IAntUIConstants.SET_INPUTHANDLER, false);
-		AntUITestUtil.launch(copy);
+		launch(copy);
 		String message = ConsoleLineTracker.getMessage(1);
 		assertNotNull("There must be a message", message); //$NON-NLS-1$
 		assertTrue("Incorrect message. Should start with Message:. Message: " + message, message.startsWith("echo1")); //$NON-NLS-1$ //$NON-NLS-2$

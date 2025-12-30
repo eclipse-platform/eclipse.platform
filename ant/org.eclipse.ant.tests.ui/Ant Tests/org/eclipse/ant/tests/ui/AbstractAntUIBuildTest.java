@@ -15,17 +15,11 @@
 package org.eclipse.ant.tests.ui;
 
 import org.eclipse.ant.tests.ui.testplugin.AbstractAntUITest;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.console.IHyperlink;
 import org.junit.Rule;
 
 public abstract class AbstractAntUIBuildTest extends AbstractAntUITest {
 
 	@Rule
 	public RunInSeparateThreadRule runInSeparateThread = new RunInSeparateThreadRule();
-
-	protected void activateLink(final IHyperlink link) {
-		Display.getDefault().asyncExec(() -> link.linkActivated());
-	}
 
 }

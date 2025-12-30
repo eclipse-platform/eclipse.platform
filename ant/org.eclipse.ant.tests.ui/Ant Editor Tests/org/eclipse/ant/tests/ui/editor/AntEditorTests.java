@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.ant.tests.ui.editor;
 
+import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getIFile;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
