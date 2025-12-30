@@ -14,12 +14,13 @@
 package org.eclipse.core.tests.internal.preferences;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -119,7 +120,7 @@ public class EclipsePreferencesTest {
 			if (value instanceof byte[]) {
 				return "b";
 			}
-			assertTrue("0.0: " + value, false);
+			fail(value.toString());
 			return null;
 		}
 
@@ -156,14 +157,14 @@ public class EclipsePreferencesTest {
 		final String defaultValue = null;
 
 		// nothing there so expect the default
-		assertEquals("1.1", defaultValue, prefs.get(key, defaultValue));
+		assertEquals(defaultValue, prefs.get(key, defaultValue));
 		// set a value and ensure it exists
 		prefs.put(key, value);
-		assertEquals("1.2", value, prefs.get(key, defaultValue));
+		assertEquals(value, prefs.get(key, defaultValue));
 
 		// remove the node and then try to remove the key
 		prefs.removeNode();
-		assertFalse("2.5", prefs.nodeExists(""));
+		assertFalse(prefs.nodeExists(""));
 		assertThrows(IllegalStateException.class, () -> prefs.remove(key));
 	}
 
@@ -177,18 +178,18 @@ public class EclipsePreferencesTest {
 
 		try {
 			// nothing there so expect the default
-			assertEquals("1.1", defaultValue, prefs.get(key, defaultValue));
+			assertEquals(defaultValue, prefs.get(key, defaultValue));
 
 			// try for each value in the set
 			for (int i = 0; i < values.length; i++) {
 				String v1 = values[i];
 				String v2 = values[i] + "x";
 				prefs.put(key, v1);
-				assertEquals("1.2." + i, v1, prefs.get(key, defaultValue));
+				assertEquals(v1, prefs.get(key, defaultValue), i + "");
 				prefs.put(key, v2);
-				assertEquals("1.3." + i, v2, prefs.get(key, defaultValue));
+				assertEquals(v2, prefs.get(key, defaultValue), i + "");
 				prefs.remove(key);
-				assertEquals("1.4." + i, defaultValue, prefs.get(key, defaultValue));
+				assertEquals(defaultValue, prefs.get(key, defaultValue), i + "");
 			}
 
 			// spec'd to throw a NPE if key is null
@@ -216,24 +217,24 @@ public class EclipsePreferencesTest {
 
 		try {
 			// nothing there so expect the default
-			assertEquals("1.1", defaultValue, prefs.getLong(key, defaultValue));
+			assertEquals(defaultValue, prefs.getLong(key, defaultValue));
 
 			// try for each value in the set
 			for (int i = 0; i < values.length; i++) {
 				long v1 = values[i];
 				long v2 = 54L;
 				prefs.putLong(key, v1);
-				assertEquals("1.2." + i, v1, prefs.getLong(key, defaultValue));
+				assertEquals(v1, prefs.getLong(key, defaultValue), i);
 				prefs.putLong(key, v2);
-				assertEquals("1.3." + i, v2, prefs.getLong(key, defaultValue));
+				assertEquals(v2, prefs.getLong(key, defaultValue), i);
 				prefs.remove(key);
-				assertEquals("1.4." + i, defaultValue, prefs.getLong(key, defaultValue));
+				assertEquals(defaultValue, prefs.getLong(key, defaultValue), i);
 			}
 
 			String stringValue = "foo";
 			prefs.put(key, stringValue);
-			assertEquals("1.5", stringValue, prefs.get(key, null));
-			assertEquals("1.6", defaultValue, prefs.getLong(key, defaultValue));
+			assertEquals(stringValue, prefs.get(key, null));
+			assertEquals(defaultValue, prefs.getLong(key, defaultValue));
 
 			// spec'd to throw a NPE if key is null
 			assertThrows(NullPointerException.class, () -> prefs.getLong(null, defaultValue));
@@ -257,19 +258,19 @@ public class EclipsePreferencesTest {
 
 		try {
 			// nothing there so expect the default
-			assertEquals("1.1", defaultValue, prefs.getBoolean(key, defaultValue));
+			assertEquals(defaultValue, prefs.getBoolean(key, defaultValue));
 
 			prefs.putBoolean(key, true);
-			assertEquals("1.2", true, prefs.getBoolean(key, defaultValue));
+			assertEquals(true, prefs.getBoolean(key, defaultValue));
 			prefs.putBoolean(key, false);
-			assertEquals("1.3", false, prefs.getBoolean(key, defaultValue));
+			assertEquals(false, prefs.getBoolean(key, defaultValue));
 			prefs.remove(key);
-			assertEquals("1.4", defaultValue, prefs.getBoolean(key, defaultValue));
+			assertEquals(defaultValue, prefs.getBoolean(key, defaultValue));
 
 			String stringValue = "foo";
 			prefs.put(key, stringValue);
-			assertEquals("1.5", stringValue, prefs.get(key, null));
-			assertEquals("1.6", defaultValue, prefs.getBoolean(key, defaultValue));
+			assertEquals(stringValue, prefs.get(key, null));
+			assertEquals(defaultValue, prefs.getBoolean(key, defaultValue));
 
 			// spec'd to throw a NPE if key is null
 			assertThrows(NullPointerException.class, () -> prefs.getBoolean(null, defaultValue));
@@ -345,24 +346,24 @@ public class EclipsePreferencesTest {
 
 		try {
 			// nothing there so expect the default
-			assertEquals("1.1", defaultValue, prefs.getFloat(key, defaultValue), tol);
+			assertEquals(defaultValue, prefs.getFloat(key, defaultValue), tol);
 
 			// try for each value in the set
 			for (int i = 0; i < values.length; i++) {
 				float v1 = values[i];
 				float v2 = 54f;
 				prefs.putFloat(key, v1);
-				assertEquals("1.2." + i, v1, prefs.getFloat(key, defaultValue), tol);
+				assertEquals(v1, prefs.getFloat(key, defaultValue), tol, i + "");
 				prefs.putFloat(key, v2);
-				assertEquals("1.3." + i, v2, prefs.getFloat(key, defaultValue), tol);
+				assertEquals(v2, prefs.getFloat(key, defaultValue), tol, i + "");
 				prefs.remove(key);
-				assertEquals("1.4." + i, defaultValue, prefs.getFloat(key, defaultValue), tol);
+				assertEquals(defaultValue, prefs.getFloat(key, defaultValue), tol, i + "");
 			}
 
 			String stringValue = "foo";
 			prefs.put(key, stringValue);
-			assertEquals("1.5", stringValue, prefs.get(key, null));
-			assertEquals("1.6", defaultValue, prefs.getFloat(key, defaultValue), tol);
+			assertEquals(stringValue, prefs.get(key, null));
+			assertEquals(defaultValue, prefs.getFloat(key, defaultValue), tol);
 
 			// spec'd to throw a NPE if key is null
 			assertThrows(NullPointerException.class, () -> prefs.getFloat(null, defaultValue));
@@ -425,24 +426,24 @@ public class EclipsePreferencesTest {
 		try {
 
 			// nothing there so expect the default
-			assertEquals("1.1", defaultValue, prefs.getDouble(key, defaultValue), tol);
+			assertEquals(defaultValue, prefs.getDouble(key, defaultValue), tol);
 
 			// try for each value in the set
 			for (int i = 0; i < values.length; i++) {
 				double v1 = values[i];
 				double v2 = 54.0;
 				prefs.putDouble(key, v1);
-				assertEquals("1.2." + i, v1, prefs.getDouble(key, defaultValue), tol);
+				assertEquals(v1, prefs.getDouble(key, defaultValue), tol, i + "");
 				prefs.putDouble(key, v2);
-				assertEquals("1.3." + i, v2, prefs.getDouble(key, defaultValue), tol);
+				assertEquals(v2, prefs.getDouble(key, defaultValue), tol, i + "");
 				prefs.remove(key);
-				assertEquals("1.4." + i, defaultValue, prefs.getDouble(key, defaultValue), tol);
+				assertEquals(defaultValue, prefs.getDouble(key, defaultValue), tol, i + "");
 			}
 
 			String stringValue = "foo";
 			prefs.put(key, stringValue);
-			assertEquals("1.5", stringValue, prefs.get(key, null));
-			assertEquals("1.6", defaultValue, prefs.getDouble(key, defaultValue), tol);
+			assertEquals(stringValue, prefs.get(key, null));
+			assertEquals(defaultValue, prefs.getDouble(key, defaultValue), tol);
 
 			// spec'd to throw a NPE if key is null
 			assertThrows(NullPointerException.class, () -> prefs.getDouble(null, defaultValue));
@@ -467,24 +468,24 @@ public class EclipsePreferencesTest {
 
 		try {
 			// nothing there so expect the default
-			assertEquals("1.1", defaultValue, prefs.getInt(key, defaultValue));
+			assertEquals(defaultValue, prefs.getInt(key, defaultValue));
 
 			// try for each value in the set
 			for (int i = 0; i < values.length; i++) {
 				int v1 = values[i];
 				int v2 = 54;
 				prefs.putInt(key, v1);
-				assertEquals("1.2." + i, v1, prefs.getInt(key, defaultValue));
+				assertEquals(v1, prefs.getInt(key, defaultValue), i);
 				prefs.putInt(key, v2);
-				assertEquals("1.3." + i, v2, prefs.getInt(key, defaultValue));
+				assertEquals(v2, prefs.getInt(key, defaultValue), i);
 				prefs.remove(key);
-				assertEquals("1.4." + i, defaultValue, prefs.getInt(key, defaultValue));
+				assertEquals(defaultValue, prefs.getInt(key, defaultValue), i);
 			}
 
 			String stringValue = "foo";
 			prefs.put(key, stringValue);
-			assertEquals("1.5", stringValue, prefs.get(key, null));
-			assertEquals("1.6", defaultValue, prefs.getInt(key, defaultValue));
+			assertEquals(stringValue, prefs.get(key, null));
+			assertEquals(defaultValue, prefs.getInt(key, defaultValue));
 
 			// spec'd to throw a NPE if key is null
 			assertThrows(NullPointerException.class, () -> prefs.getInt(null, defaultValue));
@@ -510,14 +511,14 @@ public class EclipsePreferencesTest {
 		// all exist
 		for (Iterator<Preferences> i = list.iterator(); i.hasNext();) {
 			Preferences node = i.next();
-			assertTrue("1." + i, node.nodeExists(""));
+			assertTrue(node.nodeExists(""), i + "");
 		}
 
 		// remove each
 		for (Iterator<Preferences> i = list.iterator(); i.hasNext();) {
 			Preferences node = i.next();
 			node.removeNode();
-			assertTrue("2." + i, !node.nodeExists(""));
+			assertFalse(node.nodeExists(""), i + "");
 		}
 	}
 
@@ -534,22 +535,22 @@ public class EclipsePreferencesTest {
 		node.flush();
 		File file = TestHelper.getInstanceBaseLocation().append(".settings").append("foo.prefs").toFile();
 
-		assertTrue("1.0", file.exists());
+		assertTrue(file.exists());
 		node.removeNode();
 		parent.flush();
 		// ensure file was deleted
-		assertFalse("3.0", file.exists());
+		assertFalse(file.exists());
 	}
 
 	@Test
 	public void testName() {
 		Preferences node = Platform.getPreferencesService().getRootNode();
 
-		assertEquals("1.0", "", node.name());
+		assertEquals("", node.name());
 		node = node.node(TestScope.SCOPE);
-		assertEquals("2.0", TestScope.SCOPE, node.name());
+		assertEquals(TestScope.SCOPE, node.name());
 		node = node.node("foo");
-		assertEquals("3.0", "foo", node.name());
+		assertEquals("foo", node.name());
 	}
 
 	@Test
@@ -557,40 +558,40 @@ public class EclipsePreferencesTest {
 		Preferences node = Platform.getPreferencesService().getRootNode();
 
 		// root node
-		assertNotNull("1.0", node);
-		assertEquals("1.1", "", node.name());
-		assertEquals("1.2", "/", node.absolutePath());
+		assertNotNull(node);
+		assertEquals("", node.name());
+		assertEquals("/", node.absolutePath());
 		// Bug 57150 [runtime] prefs: root.node("/") should return root
-		assertEquals("1.3", node, node.node("/"));
+		assertEquals(node, node.node("/"));
 
 		// scope root
 		node = node.node(TestScope.SCOPE);
-		assertNotNull("2.0", node);
-		assertEquals("2.1", TestScope.SCOPE, node.name());
-		assertEquals("2.2", "/" + TestScope.SCOPE, node.absolutePath());
+		assertNotNull(node);
+		assertEquals(TestScope.SCOPE, node.name());
+		assertEquals("/" + TestScope.SCOPE, node.absolutePath());
 
 		// child
 		String name = getUniqueString();
 		node = node.node(name);
-		assertNotNull("3.0", node);
-		assertEquals("3.1", name, node.name());
-		assertEquals("3.2", "/" + TestScope.SCOPE + "/" + name, node.absolutePath());
+		assertNotNull(node);
+		assertEquals(name, node.name());
+		assertEquals("/" + TestScope.SCOPE + "/" + name, node.absolutePath());
 	}
 
 	@Test
 	public void testParent() {
 		// parent of the root is null
-		assertNull("1.0", Platform.getPreferencesService().getRootNode().parent());
+		assertNull(Platform.getPreferencesService().getRootNode().parent());
 
 		// parent of the scope root is the root
 		Preferences node = Platform.getPreferencesService().getRootNode().node(TestScope.SCOPE);
 		Preferences parent = node.parent();
-		assertEquals("2.0", "/", parent.absolutePath());
+		assertEquals("/", parent.absolutePath());
 
 		// parent of a child is the scope root
 		node = getScopeRoot().node(getUniqueString());
 		parent = node.parent();
-		assertEquals("2.0", "/" + TestScope.SCOPE, parent.absolutePath());
+		assertEquals("/" + TestScope.SCOPE, parent.absolutePath());
 	}
 
 	@Test
@@ -601,7 +602,7 @@ public class EclipsePreferencesTest {
 		// ensure nothing exists to begin with
 		for (int i = 0; i < keys.length; i++) {
 			String key = keys[i];
-			assertNull("1.0." + i, node.get(key, null));
+			assertNull(node.get(key, null), i + "");
 		}
 
 		// set all keys
@@ -640,24 +641,24 @@ public class EclipsePreferencesTest {
 		String fake = "fake";
 
 		// check the root node
-		assertTrue("1.0", node.nodeExists(""));
-		assertTrue("1.1", !node.nodeExists(fake));
+		assertTrue(node.nodeExists(""));
+		assertFalse(node.nodeExists(fake));
 
 		// check the scope root
 		parent = node;
 		node = getScopeRoot();
-		assertTrue("2.0", parent.nodeExists(node.name()));
-		assertTrue("2.1", node.nodeExists(""));
-		assertTrue("2.2", !parent.nodeExists(fake));
-		assertTrue("2.3", !node.nodeExists(fake));
+		assertTrue(parent.nodeExists(node.name()));
+		assertTrue(node.nodeExists(""));
+		assertFalse(parent.nodeExists(fake));
+		assertFalse(node.nodeExists(fake));
 
 		// check a child
 		parent = node;
 		node = parent.node(getUniqueString());
-		assertTrue("3.0", parent.nodeExists(node.name()));
-		assertTrue("3.1", node.nodeExists(""));
-		assertTrue("3.2", !parent.nodeExists(fake));
-		assertTrue("3.3", !node.nodeExists(fake));
+		assertTrue(parent.nodeExists(node.name()));
+		assertTrue(node.nodeExists(""));
+		assertFalse(parent.nodeExists(fake));
+		assertFalse(node.nodeExists(fake));
 
 		// create some more children and check
 		parent = node;
@@ -666,18 +667,18 @@ public class EclipsePreferencesTest {
 			nodes[i] = parent.node(childrenNames[i]);
 		}
 		for (String childrenName : childrenNames) {
-			assertTrue("4.0", parent.nodeExists(childrenName));
-			assertTrue("4.1", !parent.nodeExists(fake));
+			assertTrue(parent.nodeExists(childrenName));
+			assertFalse(parent.nodeExists(fake));
 		}
 		for (Preferences preferenceNode : nodes) {
-			assertTrue("4.2", preferenceNode.nodeExists(""));
+			assertTrue(preferenceNode.nodeExists(""));
 		}
 
 		// remove children and check
 		for (Preferences n : nodes) {
 			n.removeNode();
-			assertTrue("5.1", !parent.nodeExists(n.name()));
-			assertTrue("5.2", !n.nodeExists(""));
+			assertFalse(parent.nodeExists(n.name()));
+			assertFalse(n.nodeExists(""));
 		}
 	}
 
@@ -700,7 +701,7 @@ public class EclipsePreferencesTest {
 		node.clear();
 		assertThat(node.keys()).isEmpty();
 		for (int i = 0; i < keys.length; i++) {
-			assertNull("3.1." + i, node.get(keys[i], null));
+			assertNull(node.get(keys[i], null), i + "");
 		}
 	}
 
@@ -710,18 +711,18 @@ public class EclipsePreferencesTest {
 		Preferences node = Platform.getPreferencesService().getRootNode();
 
 		// root node
-		assertEquals("1.0", expected.toString(), node.absolutePath());
+		assertEquals(expected.toString(), node.absolutePath());
 
 		// scope root
 		expected = expected.append(TestScope.SCOPE);
 		node = node.node(TestScope.SCOPE);
-		assertEquals("2.0", expected.toString(), node.absolutePath());
+		assertEquals(expected.toString(), node.absolutePath());
 
 		// another child
 		String name = getUniqueString();
 		expected = expected.append(name);
 		node = node.node(name);
-		assertEquals("3.0", expected.toString(), node.absolutePath());
+		assertEquals(expected.toString(), node.absolutePath());
 	}
 
 	@Test
@@ -766,37 +767,35 @@ public class EclipsePreferencesTest {
 		String key = "foo";
 
 		// initial state
-		assertEquals("0.0", "", tracer.log.toString());
+		assertEquals("", tracer.log.toString());
 
 		// add preference (string value)
 		node.put(key, "bar");
 		String string = node.get(key, null);
-		assertNotNull("1.0", string);
-		assertEquals("1.1", "bar", string);
-		assertEquals("1.2", "[foo:null->Sbar]", tracer.log.toString());
+		assertNotNull(string);
+		assertEquals("bar", string);
+		assertEquals("[foo:null->Sbar]", tracer.log.toString());
 
 		// change its value
 		tracer.log.setLength(0);
 		node.put(key, "quux");
 		string = node.get(key, null);
-		assertNotNull("2.0", string);
-		assertEquals("2.1", "quux", string);
-		assertEquals("2.2", "[foo:Sbar->Squux]", tracer.log.toString());
+		assertNotNull(string);
+		assertEquals("quux", string);
+		assertEquals("[foo:Sbar->Squux]", tracer.log.toString());
 
 		// change its type - should have no effect (events are strings)
 		tracer.log.setLength(0);
 		node.putInt(key, 123);
 		int i = node.getInt(key, 0);
-		assertEquals("3.0", 123, i);
-		assertEquals("3.1", "[foo:Squux->S123]", tracer.log.toString());
+		assertEquals(123, i);
+		assertEquals("[foo:Squux->S123]", tracer.log.toString());
 
 		node.put(key, "aaa");
 		tracer.log.setLength(0);
 		node.remove(key);
-		assertNull("4.0", node.get(key, null));
-		assertEquals("4.1", "[foo:Saaa->null]", tracer.log.toString());
-
-		// TODO finish these
+		assertNull(node.get(key, null));
+		assertEquals("[foo:Saaa->null]", tracer.log.toString());
 	}
 
 	@Test
@@ -806,25 +805,25 @@ public class EclipsePreferencesTest {
 		root.addNodeChangeListener(tracer);
 
 		// initial state
-		assertEquals("0.0", "", tracer.log.toString());
+		assertEquals("", tracer.log.toString());
 
 		// add a child
 		String name = getUniqueString();
 		IPath parent = IPath.fromOSString(root.absolutePath());
 		IPath child = parent.append(name);
 		Preferences node = root.node(name);
-		assertEquals("1.0", "[A:" + parent + ',' + child + ']', tracer.log.toString());
+		assertEquals("[A:" + parent + ',' + child + ']', tracer.log.toString());
 
 		// remove the child
 		tracer.log.setLength(0);
 		node.removeNode();
-		assertEquals("2.0", "[R:" + parent + ',' + child + ']', tracer.log.toString());
+		assertEquals("[R:" + parent + ',' + child + ']', tracer.log.toString());
 
 		// remove the listener and make sure we don't get any changes
 		root.removeNodeChangeListener(tracer);
 		tracer.log.setLength(0);
 		root.node(name);
-		assertEquals("3.0", "", tracer.log.toString());
+		assertEquals("", tracer.log.toString());
 	}
 
 	/*
@@ -857,11 +856,11 @@ public class EclipsePreferencesTest {
 		Preferences current = node;
 		int count = 0;
 		while (current != null && current instanceof EclipsePreferences && current.parent() != null && IPath.fromOSString(current.absolutePath()).segment(0).equals(TestScope.SCOPE)) {
-			assertTrue("1.0." + current.absolutePath(), ((EclipsePreferences) current).isDirty());
+			assertTrue(((EclipsePreferences) current).isDirty(), current.absolutePath());
 			count++;
 			current = current.parent();
 		}
-		assertEquals("2.0." + count, 4, count);
+		assertEquals(4, count);
 	}
 
 	/*
@@ -882,7 +881,7 @@ public class EclipsePreferencesTest {
 		// save the prefs to disk
 		node.flush();
 
-		assertTrue("2.0", node instanceof TestScope2);
+		assertTrue(node instanceof TestScope2);
 
 		// read the file outside of the pref mechanism
 		IPath location = ((TestScope2) node).getLocation();
@@ -891,7 +890,7 @@ public class EclipsePreferencesTest {
 
 		// ensure there is no comment or timestamp in the file
 		for (String line : lines) {
-			assertFalse("3." + line, line.startsWith("#"));
+			assertFalse(line.startsWith("#"), line);
 		}
 	}
 
@@ -921,7 +920,7 @@ public class EclipsePreferencesTest {
 		for (String key : keys) {
 			String value = getUniqueString();
 			node.put(key, value);
-			assertEquals("1.0." + key, value, node.get(key, null));
+			assertEquals(value, node.get(key, null), key);
 		}
 
 		// test paths
@@ -929,7 +928,7 @@ public class EclipsePreferencesTest {
 		for (String path : paths) {
 			String expected = root + IPath.SEPARATOR + path;
 			String actual = node.node(path).absolutePath();
-			assertEquals("2.0." + path, expected, actual);
+			assertEquals(expected, actual, path);
 		}
 	}
 
@@ -963,7 +962,7 @@ public class EclipsePreferencesTest {
 			node.node(info.path).put(info.key, Integer.toString(i));
 		}
 
-		assertTrue("0.8", node instanceof EclipsePreferences);
+		assertTrue(node instanceof EclipsePreferences);
 
 		Properties properties = null;
 		properties = TestHelper.convertToProperties((EclipsePreferences) node, "");
@@ -972,8 +971,8 @@ public class EclipsePreferencesTest {
 			String key = (String) object;
 			String value = properties.getProperty(key);
 			Info info = list.get(Integer.parseInt(value));
-			assertNotNull("2.0", info);
-			assertEquals("2.1." + key, info.encoded, key);
+			assertNotNull(info);
+			assertEquals(info.encoded, key);
 		}
 	}
 
@@ -1012,10 +1011,10 @@ public class EclipsePreferencesTest {
 
 		for (Iterator<Item> i = list.iterator(); i.hasNext();) {
 			Item item = i.next();
-			assertEquals("a" + i + item.expected, item.expected, EclipsePreferences.encodePath(item.path, item.key));
+			assertEquals(item.expected, EclipsePreferences.encodePath(item.path, item.key), "a" + i + item.expected);
 			String[] result = EclipsePreferences.decodePath(item.expected);
-			assertEquals("b" + i + item.path, item.path, result[0]);
-			assertEquals("c" + i + item.key, item.key, result[1]);
+			assertEquals(item.path, result[0], "b" + i + item.path);
+			assertEquals(item.key, result[1], "c" + i + item.key);
 		}
 	}
 
@@ -1036,7 +1035,8 @@ public class EclipsePreferencesTest {
 		};
 		for (int i = 0; i < data.length; i++) {
 			String[] line = data[i];
-			assertEquals("1.0." + i + ':' + line[1] + " (" + line[2] + ')', line[0], EclipsePreferences.getSegment(line[1], Integer.parseInt(line[2])));
+			assertEquals(line[0], EclipsePreferences.getSegment(line[1], Integer.parseInt(line[2])),
+					i + ':' + line[1] + " (" + line[2] + ')');
 		}
 	}
 
@@ -1051,7 +1051,7 @@ public class EclipsePreferencesTest {
 				new String[] {"instance/", "1"}, //
 		};
 		for (String[] line : data) {
-			assertEquals("1.0:" + line[0], Integer.parseInt(line[1]), EclipsePreferences.getSegmentCount(line[0]));
+			assertEquals(Integer.parseInt(line[1]), EclipsePreferences.getSegmentCount(line[0]), line[0]);
 		}
 	}
 
@@ -1103,29 +1103,29 @@ public class EclipsePreferencesTest {
 		Collection<String> expectedChildren = Arrays.asList(file.list());
 		String[] children = node.childrenNames();
 		for (String child : children) {
-			assertTrue("1.1." + child, expectedChildren.contains(child));
+			assertTrue(expectedChildren.contains(child), child);
 		}
 
 		// check the child has the expected values
 		Preferences child = node.node("foo");
 		assertThat(child.keys()).hasSize(2);
-		assertEquals("2.1", "value1", child.get("key1", null));
-		assertEquals("2.2", "value2", child.get("key2", null));
+		assertEquals("value1", child.get("key1", null));
+		assertEquals("value2", child.get("key2", null));
 
 		// set a new value, flush (which saves the file) and check the file contents
 		child.put("key8", "value8");
 		child.flush();
 		String prop = System.getProperty("equinox.preference.test.TestNodeStorage3,root");
-		assertNotNull("3.1", prop);
+		assertNotNull(prop);
 		File rootFile = new File(prop);
 		File childFile = new File(rootFile, "foo");
-		assertTrue("3.2", childFile.exists());
+		assertTrue(childFile.exists());
 		Properties contents = loadProperties(IPath.fromOSString(childFile.getAbsolutePath()));
-		assertEquals("3.3", "value8", contents.getProperty("key8", null));
+		assertEquals("value8", contents.getProperty("key8", null));
 
 		// delete the node (which should remove the file)
 		child.removeNode();
-		assertFalse("4.1", childFile.exists());
+		assertFalse(childFile.exists());
 	}
 
 	private static String getUniqueString() {

@@ -14,10 +14,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.preferences;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
@@ -42,18 +42,18 @@ public class IScopeContextTest {
 		// valid single segment
 		String qualifier = Long.toString(System.currentTimeMillis());
 		Preferences node = context.getNode(qualifier);
-		assertNotNull("2.0", node);
+		assertNotNull(node);
 		String expected = "/instance/" + qualifier;
 		String actual = node.absolutePath();
-		assertEquals("2.1", expected, actual);
+		assertEquals(expected, actual);
 
 		// path
 		qualifier = IPath.fromOSString(Long.toString(System.currentTimeMillis())).append("a").toString();
 		node = context.getNode(qualifier);
-		assertNotNull("3.0", node);
+		assertNotNull(node);
 		expected = "/instance/" + qualifier;
 		actual = node.absolutePath();
-		assertEquals("3.1", expected, actual);
+		assertEquals(expected, actual);
 	}
 
 	@Test
@@ -61,7 +61,7 @@ public class IScopeContextTest {
 		IScopeContext context = new BadTestScope();
 		IPreferencesService service = Platform.getPreferencesService();
 		assertThrows(RuntimeException.class, () -> context.getNode("qualifier"));
-		assertNull("1.0", service.getString("qualifier", "foo", null, new IScopeContext[] {context}));
+		assertNull(service.getString("qualifier", "foo", null, new IScopeContext[] { context }));
 	}
 
 }

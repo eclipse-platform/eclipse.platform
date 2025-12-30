@@ -15,11 +15,12 @@
 package org.eclipse.core.tests.internal.preferences;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -123,12 +124,12 @@ public class PreferencesServiceTest {
 				}
 			}
 			if (properties.isEmpty()) {
-				assertTrue("2.0", expected.isEmpty());
+				assertTrue(expected.isEmpty());
 				return;
 			}
-			assertEquals("3.0", expected.size(), properties.size());
+			assertEquals(expected.size(), properties.size());
 			for (String key : expected) {
-				assertNotNull("4.0." + key, properties.get(key));
+				assertNotNull(properties.get(key), key);
 			}
 		}
 	}
@@ -151,13 +152,13 @@ public class PreferencesServiceTest {
 		String key1 = "http://eclipse.org:24";
 		String value1 = getUniqueString() + "v1";
 		String actual = test.get(key, null);
-		assertNull("1.0", actual);
+		assertNull(actual);
 		test.put(key, value);
 		test.put(key1, value1);
 		actual = test.get(key, null);
-		assertEquals("1.1", value, actual);
+		assertEquals(value, actual);
 		actual = test.get(key1, null);
-		assertEquals("1.2", value1, actual);
+		assertEquals(value1, actual);
 
 		// export it
 		byte[] bytes;
@@ -170,14 +171,14 @@ public class PreferencesServiceTest {
 		String newKey = getUniqueString() + '3';
 		String newValue = getUniqueString() + '4';
 		actual = test.get(newKey, null);
-		assertNull("3.0", actual);
+		assertNull(actual);
 		test.put(newKey, newValue);
 		actual = test.get(newKey, null);
-		assertEquals("3.1", newValue, actual);
+		assertEquals(newValue, actual);
 		String newOldValue = getUniqueString() + '5';
 		test.put(key, newOldValue);
 		actual = test.get(key, null);
-		assertEquals("3.2", newOldValue, actual);
+		assertEquals(newOldValue, actual);
 
 		// import
 		try (ByteArrayInputStream input = new ByteArrayInputStream(bytes)) {
@@ -187,23 +188,23 @@ public class PreferencesServiceTest {
 		// verify
 		test = new TestScope().getNode(qualifier);
 		actual = test.get(key, null);
-		assertEquals("5.0", value, actual);
+		assertEquals(value, actual);
 		actual = test.get(key1, null);
-		assertEquals("5.1", value1, actual);
+		assertEquals(value1, actual);
 		actual = test.get(newKey, null);
-		assertNull("5.2", actual);
+		assertNull(actual);
 		// ensure that the node isn't dirty (has been saved after the import)
-		assertTrue("5.3", test instanceof EclipsePreferences);
-		assertTrue("5.4", !((EclipsePreferences) test).isDirty());
+		assertTrue(test instanceof EclipsePreferences);
+		assertFalse(((EclipsePreferences) test).isDirty());
 
 		// clear all
 		test.clear();
 		actual = test.get(key, null);
-		assertNull("6.1", actual);
+		assertNull(actual);
 		actual = test.get(key1, null);
-		assertNull("6.2", actual);
+		assertNull(actual);
 		actual = test.get(newKey, null);
-		assertNull("6.3", actual);
+		assertNull(actual);
 
 		// import
 		try (ByteArrayInputStream input = new ByteArrayInputStream(bytes)) {
@@ -213,11 +214,11 @@ public class PreferencesServiceTest {
 		// verify
 		test = new TestScope().getNode(qualifier);
 		actual = test.get(key, null);
-		assertEquals("8.0", value, actual);
+		assertEquals(value, actual);
 		actual = test.get(key1, null);
-		assertEquals("8.1", value1, actual);
+		assertEquals(value1, actual);
 		actual = test.get(newKey, null);
-		assertNull("8.2", actual);
+		assertNull(actual);
 	}
 
 	@Test
@@ -298,58 +299,58 @@ public class PreferencesServiceTest {
 		// nothing set - navigation
 		Preferences node = service.getRootNode().node(TestScope.SCOPE).node(qualifier);
 		String actual = node.get(key, null);
-		assertNull("10", actual);
+		assertNull(actual);
 
 		// nothing set - service searching
 		actual = service.get(key, null, new Preferences[] {node});
-		assertNull("2.0", actual);
+		assertNull(actual);
 
 		// set value
 		node.put(key, expected);
 
 		// value is set - navigation
 		actual = node.get(key, null);
-		assertNotNull("3.0", actual);
-		assertEquals("3.1", expected, actual);
+		assertNotNull(actual);
+		assertEquals(expected, actual);
 
 		// value is set - service searching
 		actual = service.get(key, null, new Preferences[] {node});
-		assertNotNull("4.0", actual);
-		assertEquals("4.1", expected, actual);
+		assertNotNull(actual);
+		assertEquals(expected, actual);
 
 		// return default value if node list is null
 		actual = service.get(key, null, null);
-		assertNull("5.0", actual);
+		assertNull(actual);
 
 		// skip over null nodes
 		actual = service.get(key, null, new Preferences[] {null, node});
-		assertNotNull("6.0", actual);
-		assertEquals("6.1", expected, actual);
+		assertNotNull(actual);
+		assertEquals(expected, actual);
 
 		// set the value in the default scope as well
 		Preferences defaultNode = service.getRootNode().node(DefaultScope.SCOPE).node(qualifier);
 		String defaultValue = getUniqueString();
 		defaultNode.put(key, defaultValue);
 		actual = defaultNode.get(key, null);
-		assertNotNull("7.0", actual);
-		assertEquals("7.1", defaultValue, actual);
+		assertNotNull(actual);
+		assertEquals(defaultValue, actual);
 
 		// pass in both nodes
 		actual = service.get(key, null, new Preferences[] {node, defaultNode});
-		assertNotNull("8.0", actual);
-		assertEquals("8.1", expected, actual);
+		assertNotNull(actual);
+		assertEquals(expected, actual);
 		// skip nulls
 		actual = service.get(key, null, new Preferences[] {null, node, null, defaultNode, null});
-		assertNotNull("8.2", actual);
-		assertEquals("8.3", expected, actual);
+		assertNotNull(actual);
+		assertEquals(expected, actual);
 		// reverse the order
 		actual = service.get(key, null, new Preferences[] {defaultNode, node});
-		assertNotNull("8.4", actual);
-		assertEquals("8.5", defaultValue, actual);
+		assertNotNull(actual);
+		assertEquals(defaultValue, actual);
 		// skip nulls
 		actual = service.get(key, null, new Preferences[] {null, null, defaultNode, null, node, null});
-		assertNotNull("8.6", actual);
-		assertEquals("8.7", defaultValue, actual);
+		assertNotNull(actual);
+		assertEquals(defaultValue, actual);
 	}
 
 	@Test
@@ -376,33 +377,33 @@ public class PreferencesServiceTest {
 		// nothing is set
 		for (int i = 0; i < contexts.length; i++) {
 			actual = service.getString(qualifier, key, null, contexts[i]);
-			assertNull("1.0." + i, actual);
+			assertNull(actual, i + "");
 		}
 
 		// set a default value
 		defaultNode.put(key, defaultValue);
 		actual = defaultNode.get(key, null);
-		assertNotNull("2.0", actual);
-		assertEquals("2.1", defaultValue, actual);
+		assertNotNull(actual);
+		assertEquals(defaultValue, actual);
 
 		// should find it because "default" is in the default-default lookup order
 		for (int i = 0; i < contexts.length; i++) {
 			actual = service.getString(qualifier, key, null, contexts[i]);
-			assertNotNull("3.0." + i, actual);
-			assertEquals("3.1." + i, defaultValue, actual);
+			assertNotNull(actual, i + "");
+			assertEquals(defaultValue, actual, i + "");
 		}
 
 		// set a real value
 		node.put(key, value);
 		actual = node.get(key, null);
-		assertNotNull("4.0", actual);
-		assertEquals("4.1", value, actual);
+		assertNotNull(actual);
+		assertEquals(value, actual);
 
 		// should find the default value since the "test" scope isn't in the lookup order
 		for (int i = 0; i < contexts.length; i++) {
 			actual = service.getString(qualifier, key, null, contexts[i]);
-			assertNotNull("5.0." + i, actual);
-			assertEquals("5.1." + i, defaultValue, actual);
+			assertNotNull(actual, i + "");
+			assertEquals(defaultValue, actual, i + "");
 		}
 
 		// set the lookup order for qualifier/null
@@ -414,8 +415,8 @@ public class PreferencesServiceTest {
 		// get the value, should be the real one
 		for (int i = 0; i < contexts.length; i++) {
 			actual = service.getString(qualifier, key, null, contexts[i]);
-			assertNotNull("7.0." + i, actual);
-			assertEquals("7.1." + i, value, actual);
+			assertNotNull(actual, i + "");
+			assertEquals(value, actual, i + "");
 		}
 
 		// set the order to be the reverse for the qualifier/key
@@ -427,8 +428,8 @@ public class PreferencesServiceTest {
 		// get the value, should be the default one
 		for (int i = 0; i < contexts.length; i++) {
 			actual = service.getString(qualifier, key, null, contexts[i]);
-			assertNotNull("9.0." + i, actual);
-			assertEquals("9.1." + i, defaultValue, actual);
+			assertNotNull(actual, i + "");
+			assertEquals(defaultValue, actual, i + "");
 		}
 	}
 
@@ -443,35 +444,35 @@ public class PreferencesServiceTest {
 
 		String searchPath = "a";
 		node.put("a", searchPath);
-		assertEquals("3.0", searchPath, service.getString(qualifier, searchPath, null, null));
+		assertEquals(searchPath, service.getString(qualifier, searchPath, null, null));
 
 		searchPath = "a/b";
 		node.node("a").put("b", searchPath);
-		assertEquals("4.0", searchPath, service.getString(qualifier, searchPath, null, null));
+		assertEquals(searchPath, service.getString(qualifier, searchPath, null, null));
 
 		searchPath = "a//b";
 		node.node("a").put("b", searchPath);
-		assertEquals("5.0", searchPath, service.getString(qualifier, searchPath, null, null));
+		assertEquals(searchPath, service.getString(qualifier, searchPath, null, null));
 
 		searchPath = "a/b//c";
 		node.node("a").node("b").put("c", searchPath);
-		assertEquals("6.0", searchPath, service.getString(qualifier, searchPath, null, null));
+		assertEquals(searchPath, service.getString(qualifier, searchPath, null, null));
 
 		searchPath = "a/b//c/d";
 		node.node("a").node("b").put("c/d", searchPath);
-		assertEquals("7.0", searchPath, service.getString(qualifier, searchPath, null, null));
+		assertEquals(searchPath, service.getString(qualifier, searchPath, null, null));
 
 		searchPath = "/a";
 		node.put("a", searchPath);
-		assertEquals("8.0", searchPath, service.getString(qualifier, searchPath, null, null));
+		assertEquals(searchPath, service.getString(qualifier, searchPath, null, null));
 
 		searchPath = "/a/b";
 		node.node("a").put("b", searchPath);
-		assertEquals("9.0", searchPath, service.getString(qualifier, searchPath, null, null));
+		assertEquals(searchPath, service.getString(qualifier, searchPath, null, null));
 
 		searchPath = "///a";
 		node.put("/a", searchPath);
-		assertEquals("10.0", searchPath, service.getString(qualifier, searchPath, null, null));
+		assertEquals(searchPath, service.getString(qualifier, searchPath, null, null));
 	}
 
 	@Test
@@ -493,7 +494,7 @@ public class PreferencesServiceTest {
 
 		// nodes shouldn't exist
 		for (String qualifier : qualifiers) {
-			assertTrue("1.0", !node.nodeExists(qualifier));
+			assertFalse(node.nodeExists(qualifier));
 		}
 
 		// store some values
@@ -502,11 +503,11 @@ public class PreferencesServiceTest {
 			for (String oldKey : oldKeys) {
 				current.put(oldKey, getUniqueString());
 				actual = current.get(oldKey, null);
-				assertNotNull("2.0." + current.absolutePath() + IPath.SEPARATOR + oldKey, actual);
+				assertNotNull(actual, current.absolutePath() + IPath.SEPARATOR + oldKey);
 			}
 			for (String newKey : newKeys) {
 				actual = current.get(newKey, null);
-				assertNull("2.1." + current.absolutePath() + IPath.SEPARATOR + newKey, actual);
+				assertNull(actual, current.absolutePath() + IPath.SEPARATOR + newKey);
 			}
 		}
 
@@ -519,11 +520,11 @@ public class PreferencesServiceTest {
 		for (String qualifier : qualifiers) {
 			Preferences current = node.node(qualifier);
 			for (String oldKey : oldKeys) {
-				assertNull("4.0." + current.absolutePath() + IPath.SEPARATOR + oldKey, current.get(oldKey, null));
+				assertNull(current.get(oldKey, null), current.absolutePath() + IPath.SEPARATOR + oldKey);
 			}
 			for (String newKey : newKeys) {
 				actual = current.get(newKey, null);
-				assertNotNull("4.1." + current.absolutePath() + IPath.SEPARATOR + newKey, actual);
+				assertNotNull(actual, current.absolutePath() + IPath.SEPARATOR + newKey);
 			}
 		}
 	}
@@ -654,7 +655,7 @@ public class PreferencesServiceTest {
 	@Test
 	public void testDefaultFromInitializer() {
 		String value = Platform.getPreferencesService().getString(RuntimeTestsPlugin.PI_RUNTIME_TESTS, TestInitializer.DEFAULT_PREF_KEY, null, null);
-		assertEquals("1.0", TestInitializer.DEFAULT_PREF_VALUE, value);
+		assertEquals(TestInitializer.DEFAULT_PREF_VALUE, value);
 	}
 
 	/*
@@ -717,7 +718,7 @@ public class PreferencesServiceTest {
 		// no errors if the file doesn't exist
 		IPath path = FileSystemHelper.getRandomLocation();
 		IStatus result = org.eclipse.core.runtime.Preferences.validatePreferenceVersions(path);
-		assertTrue("1.0", result.isOK());
+		assertTrue(result.isOK());
 
 		// an empty file wasn't written by #export so its an invalid file format
 		// NOTE: this changed from "do nothing" to being an error in Eclipse 3.1
@@ -726,12 +727,12 @@ public class PreferencesServiceTest {
 			properties.store(output, null);
 		}
 		result = org.eclipse.core.runtime.Preferences.validatePreferenceVersions(path);
-		assertTrue("2.0", !result.isOK());
+		assertFalse(result.isOK());
 
 		// no errors for a file which we write out right now
 		org.eclipse.core.runtime.Preferences.exportPreferences(path);
 		result = org.eclipse.core.runtime.Preferences.validatePreferenceVersions(path);
-		assertTrue("3.1", result.isOK());
+		assertTrue(result.isOK());
 
 		// warning for old versions
 		properties = new Properties();
@@ -749,7 +750,7 @@ public class PreferencesServiceTest {
 			properties.store(output, null);
 		}
 		result = org.eclipse.core.runtime.Preferences.validatePreferenceVersions(path);
-		assertTrue("4.2", !result.isOK());
+		assertFalse(result.isOK());
 
 	}
 
@@ -1087,7 +1088,7 @@ public class PreferencesServiceTest {
 		children = node.childrenNames();
 		assertThat(children).as(debugString).isEmpty();
 
-		assertEquals(debugString, "someValue", node.get("someKey", null));
+		assertEquals("someValue", node.get("someKey", null), debugString);
 	}
 
 	@Test
