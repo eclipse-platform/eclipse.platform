@@ -13,9 +13,6 @@
  *******************************************************************************/
 package org.eclipse.core.tests.harness;
 
-import static org.junit.Assert.fail;
-
-import junit.framework.TestCase;
 import org.eclipse.test.performance.Dimension;
 import org.eclipse.test.performance.Performance;
 import org.eclipse.test.performance.PerformanceMeter;
@@ -40,28 +37,6 @@ public abstract class PerformanceTestRunner {
 
 	/**
 	 * Executes the performance test the given number of times. Use the outer time
-	 * to execute the test several times in order to obtain a normalized average. Use
-	 * the inner loop for very fast tests that would otherwise be difficult to measure
-	 * due to Java's poor timer granularity.  The inner loop is not needed for long
-	 * tests that typically take more than a second to execute.
-	 *
-	 * @param testCase The test that is running (used to obtain an appropriate meter)
-	 * @param localName the short name used to tag the local test
-	 * @param outer The number of repetitions of the test.
-	 * @param inner The number of repetitions within the performance timer.
-	 */
-	public final void run(TestCase testCase, String localName, int outer, int inner) {
-		Performance perf = Performance.getDefault();
-		PerformanceMeter meter = perf.createPerformanceMeter(perf.getDefaultScenarioId(testCase));
-		try {
-			runTest(meter, localName, outer, inner);
-		} catch (Exception e) {
-			fail("Failed performance test with exception:" + e);
-		}
-	}
-
-	/**
-	 * Executes the performance test the given number of times. Use the outer time
 	 * to execute the test several times in order to obtain a normalized average.
 	 * Use the inner loop for very fast tests that would otherwise be difficult to
 	 * measure due to Java's poor timer granularity. The inner loop is not needed
@@ -78,10 +53,10 @@ public abstract class PerformanceTestRunner {
 	public final void run(Class<?> testClass, String testMethodName, int outer, int inner) throws Exception {
 		Performance perf = Performance.getDefault();
 		PerformanceMeter meter = perf.createPerformanceMeter(perf.getDefaultScenarioId(testClass, testMethodName));
-		runTest(meter, null, outer, inner);
+		runTest(meter, outer, inner);
 	}
 
-	private void runTest(PerformanceMeter meter, String localName, int outer, int inner) throws Exception {
+	private void runTest(PerformanceMeter meter, int outer, int inner) throws Exception {
 		Performance perf = Performance.getDefault();
 		if (regressionReason != null) {
 			perf.setComment(meter, Performance.EXPLAINS_DEGRADATION_COMMENT, regressionReason);
@@ -95,9 +70,6 @@ public abstract class PerformanceTestRunner {
 				}
 				meter.stop();
 				tearDown();
-			}
-			if (localName != null) {
-				perf.tagAsSummary(meter, localName, Dimension.ELAPSED_PROCESS);
 			}
 			if (fingerprintName != null) {
 				perf.tagAsSummary(meter, fingerprintName, Dimension.ELAPSED_PROCESS);
