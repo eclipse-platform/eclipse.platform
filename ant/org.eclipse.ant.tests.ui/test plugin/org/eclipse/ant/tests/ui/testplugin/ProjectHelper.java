@@ -13,6 +13,9 @@
  *******************************************************************************/
 package org.eclipse.ant.tests.ui.testplugin;
 
+import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getJavaProject;
+import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getLaunchManager;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -158,12 +161,14 @@ public class ProjectHelper {
 	 */
 	public static void createLaunchConfigurationForSeparateVM(String launchConfigName, String buildFileName) throws Exception {
 		String bf = buildFileName;
-		ILaunchConfigurationType type = AbstractAntUITest.getLaunchManager().getLaunchConfigurationType(IAntLaunchConstants.ID_ANT_LAUNCH_CONFIGURATION_TYPE);
-		ILaunchConfigurationWorkingCopy config = type.newInstance(AbstractAntUITest.getJavaProject().getProject().getFolder("launchConfigurations"), launchConfigName); //$NON-NLS-1$
+		ILaunchConfigurationType type = getLaunchManager()
+				.getLaunchConfigurationType(IAntLaunchConstants.ID_ANT_LAUNCH_CONFIGURATION_TYPE);
+		ILaunchConfigurationWorkingCopy config = type
+				.newInstance(getJavaProject().getProject().getFolder("launchConfigurations"), launchConfigName); //$NON-NLS-1$
 
 		config.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, "org.eclipse.ant.internal.launching.remote.InternalAntRunner"); //$NON-NLS-1$
 		config.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER, "org.eclipse.ant.ui.AntClasspathProvider"); //$NON-NLS-1$
-		config.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, AbstractAntUITest.getJavaProject().getElementName());
+		config.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, getJavaProject().getElementName());
 		if (bf == null) {
 			bf = launchConfigName;
 		}
@@ -206,10 +211,12 @@ public class ProjectHelper {
 	 * @return the handle to the new launch configuration
 	 */
 	public static ILaunchConfiguration createLaunchConfiguration(String launchConfigName, String path) throws CoreException {
-		ILaunchConfigurationType type = AbstractAntUITest.getLaunchManager().getLaunchConfigurationType(IAntLaunchConstants.ID_ANT_LAUNCH_CONFIGURATION_TYPE);
-		ILaunchConfigurationWorkingCopy config = type.newInstance(AbstractAntUITest.getJavaProject().getProject().getFolder("launchConfigurations"), launchConfigName); //$NON-NLS-1$
+		ILaunchConfigurationType type = getLaunchManager()
+				.getLaunchConfigurationType(IAntLaunchConstants.ID_ANT_LAUNCH_CONFIGURATION_TYPE);
+		ILaunchConfigurationWorkingCopy config = type
+				.newInstance(getJavaProject().getProject().getFolder("launchConfigurations"), launchConfigName); //$NON-NLS-1$
 
-		config.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, AbstractAntUITest.getJavaProject().getElementName());
+		config.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, getJavaProject().getElementName());
 		config.setAttribute(IExternalToolConstants.ATTR_LOCATION, "${workspace_loc:/" + path + "}"); //$NON-NLS-1$ //$NON-NLS-2$
 		config.setAttribute(IDebugUIConstants.ATTR_LAUNCH_IN_BACKGROUND, true);
 

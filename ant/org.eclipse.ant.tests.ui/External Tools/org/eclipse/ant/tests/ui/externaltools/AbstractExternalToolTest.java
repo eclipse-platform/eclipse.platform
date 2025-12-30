@@ -13,6 +13,9 @@
  *******************************************************************************/
 package org.eclipse.ant.tests.ui.externaltools;
 
+import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getLaunchManager;
+import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getProject;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,7 +60,8 @@ public abstract class AbstractExternalToolTest extends AbstractAntUITest {
 		if (!dir.exists()) {
 			dir.create(true, true, null);
 		}
-		ILaunchConfigurationType type = AbstractAntUITest.getLaunchManager().getLaunchConfigurationType(IAntLaunchConstants.ID_ANT_BUILDER_LAUNCH_CONFIGURATION_TYPE);
+		ILaunchConfigurationType type = getLaunchManager()
+				.getLaunchConfigurationType(IAntLaunchConstants.ID_ANT_BUILDER_LAUNCH_CONFIGURATION_TYPE);
 		if (type != null) {
 			ILaunchConfigurationWorkingCopy config = type.newInstance(dir, name);
 			config.setAttributes(args);
@@ -74,7 +78,8 @@ public abstract class AbstractExternalToolTest extends AbstractAntUITest {
 		if (!dir.exists()) {
 			dir.create(true, true, null);
 		}
-		ILaunchConfigurationType type = AbstractAntUITest.getLaunchManager().getLaunchConfigurationType(IAntLaunchConstants.ID_ANT_BUILDER_LAUNCH_CONFIGURATION_TYPE);
+		ILaunchConfigurationType type = getLaunchManager()
+				.getLaunchConfigurationType(IAntLaunchConstants.ID_ANT_BUILDER_LAUNCH_CONFIGURATION_TYPE);
 		if (type != null) {
 			ILaunchConfigurationWorkingCopy config = type.newInstance(dir, name);
 			config.setAttributes(args);

@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.ant.tests.ui.debug;
 
+import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getLaunchConfiguration;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 

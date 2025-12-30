@@ -14,11 +14,12 @@
 
 package org.eclipse.ant.tests.ui.performance;
 
+import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getJavaProject;
+import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getLaunchManager;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.ant.internal.ui.IAntUIConstants;
 import org.eclipse.ant.tests.ui.editor.performance.EditorTestHelper;
-import org.eclipse.ant.tests.ui.testplugin.AbstractAntUITest;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -70,8 +71,8 @@ public class OpenLaunchConfigurationDialogTests extends PerformanceTestCaseJunit
 	}
 
 	private ILaunchConfiguration getLaunchConfiguration(String buildFileName) {
-		IFile file = AbstractAntUITest.getJavaProject().getProject().getFolder("launchConfigurations").getFile(buildFileName + ".launch"); //$NON-NLS-1$ //$NON-NLS-2$
-		ILaunchConfiguration config = AbstractAntUITest.getLaunchManager().getLaunchConfiguration(file);
+		IFile file = getJavaProject().getProject().getFolder("launchConfigurations").getFile(buildFileName + ".launch"); //$NON-NLS-1$ //$NON-NLS-2$
+		ILaunchConfiguration config = getLaunchManager().getLaunchConfiguration(file);
 		assertTrue(config.exists(), "Could not find launch configuration for " + buildFileName); //$NON-NLS-1$
 		return config;
 	}

@@ -14,19 +14,32 @@
 
 package org.eclipse.ant.tests.ui.performance;
 
-import static org.junit.Assert.assertNotNull;
+import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.assertProject;
+import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getLaunchConfiguration;
+import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.launchAndTerminate;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.eclipse.ant.tests.ui.AbstractAntUIBuildPerformanceTest;
+import org.eclipse.ant.tests.ui.testplugin.AntUITestUtil;
+import org.eclipse.ant.tests.ui.testplugin.CloseWelcomeScreenExtension;
 import org.eclipse.core.externaltools.internal.IExternalToolConstants;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.IDebugUIConstants;
-import org.junit.Test;
+import org.eclipse.test.performance.PerformanceTestCaseJunit5;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 @SuppressWarnings("restriction")
-public class SeparateVMTests extends AbstractAntUIBuildPerformanceTest {
+@ExtendWith(CloseWelcomeScreenExtension.class)
+public class SeparateVMTests extends PerformanceTestCaseJunit5 {
+
+	@BeforeEach
+	void setup() throws Exception {
+		assertProject();
+	}
 
 	/**
 	 * Performance test for launching Ant in a separate vm.
@@ -52,7 +65,7 @@ public class SeparateVMTests extends AbstractAntUIBuildPerformanceTest {
 	public void testBuildNoConsole() throws CoreException {
 		// tagAsSummary("Separate JRE Build; capture output off", Dimension.ELAPSED_PROCESS);
 		ILaunchConfiguration config = getLaunchConfiguration("echoingSepVM"); //$NON-NLS-1$
-		assertNotNull("Could not locate launch configuration for " + "echoingSepVM", config); //$NON-NLS-1$ //$NON-NLS-2$
+		assertNotNull(config, "Could not locate launch configuration for " + "echoingSepVM"); //$NON-NLS-1$ //$NON-NLS-2$
 		ILaunchConfigurationWorkingCopy copy = config.getWorkingCopy();
 		copy.setAttribute(IDebugUIConstants.ATTR_CAPTURE_IN_CONSOLE, false);
 		copy.setAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT, false);
@@ -73,7 +86,7 @@ public class SeparateVMTests extends AbstractAntUIBuildPerformanceTest {
 	public void testBuildMinusDebug() throws CoreException {
 		// tagAsSummary("Separate JRE Build; -debug", Dimension.ELAPSED_PROCESS);
 		ILaunchConfiguration config = getLaunchConfiguration("echoingSepVM"); //$NON-NLS-1$
-		assertNotNull("Could not locate launch configuration for " + "echoingSepVM", config); //$NON-NLS-1$ //$NON-NLS-2$
+		assertNotNull(config, "Could not locate launch configuration for " + "echoingSepVM"); //$NON-NLS-1$ //$NON-NLS-2$
 		ILaunchConfigurationWorkingCopy copy = config.getWorkingCopy();
 		copy.setAttribute(IExternalToolConstants.ATTR_TOOL_ARGUMENTS, "-debug"); //$NON-NLS-1$
 		// possible first time hit of the SWT pieces getting written from the JAR to the
@@ -101,5 +114,20 @@ public class SeparateVMTests extends AbstractAntUIBuildPerformanceTest {
 		}
 		commitMeasurements();
 		assertPerformance();
+	}
+
+	/**
+	 * Launches the Ant build for this config. Waits for all of the lines to be
+	 * appended to the console.
+	 *
+	 * @param config the launch configuration to execute
+	 * @param i      the number of times to perform the launch
+	 */
+	private void launch(ILaunchConfiguration config, int i) throws CoreException {
+		startMeasuring();
+		for (int j = 0; j < i; j++) {
+			AntUITestUtil.launch(config);
+		}
+		stopMeasuring();
 	}
 }
