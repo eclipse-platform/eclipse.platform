@@ -13,10 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.runtime;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.arrayContaining;
-import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.Assert.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.math.BigInteger;
 import java.security.Principal;
@@ -29,7 +27,7 @@ import java.util.List;
 import java.util.Set;
 import javax.net.ssl.X509TrustManager;
 import org.eclipse.core.internal.runtime.CollectionTrustManager;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("restriction")
 public class CollectionTrustManagerTest {
@@ -44,8 +42,8 @@ public class CollectionTrustManagerTest {
 
 		X509Certificate[] allAcceptedIssuers = collectionTrustManager.getAcceptedIssuers();
 
-		assertThat(allAcceptedIssuers,
-				arrayContaining(acceptedIssuers1[0], acceptedIssuers1[1], acceptedIssuers2[0], acceptedIssuers2[1]));
+		assertThat(allAcceptedIssuers).containsExactly(acceptedIssuers1[0], acceptedIssuers1[1], acceptedIssuers2[0],
+				acceptedIssuers2[1]);
 	}
 
 	@Test
@@ -68,8 +66,8 @@ public class CollectionTrustManagerTest {
 		CertificateException exception = assertThrows(CertificateException.class, () -> {
 			collectionTrustManager.checkClientTrusted(chainTrustedByNone, authType);
 		});
-		assertThat(exception, sameInstance(manager1.exception)); // first in the list
-		assertThat(exception.getSuppressed(), arrayContaining(sameInstance(manager2.exception))); // second, suppressed
+		assertThat(exception).isSameAs(manager1.exception); // first in the list
+		assertThat(exception.getSuppressed()).containsExactly(manager2.exception); // second, suppressed
 	}
 
 	@Test
@@ -92,8 +90,8 @@ public class CollectionTrustManagerTest {
 		CertificateException exception = assertThrows(CertificateException.class, () -> {
 			collectionTrustManager.checkServerTrusted(chainTrustedByNone, authType);
 		});
-		assertThat(exception, sameInstance(manager1.exception)); // first in the list
-		assertThat(exception.getSuppressed(), arrayContaining(sameInstance(manager2.exception))); // second, suppressed
+		assertThat(exception).isSameAs(manager1.exception); // first in the list
+		assertThat(exception.getSuppressed()).containsExactly(manager2.exception); // second, suppressed
 	}
 
 	private static class StubX509TrustManager implements X509TrustManager {

@@ -14,8 +14,8 @@
 package org.eclipse.core.tests.internal.runtime;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -41,11 +41,11 @@ public class LogSerializationTest {
 
 	private void assertStatusEqual(String msg, IStatus[] expected, IStatus[] actual) {
 		if (expected == null) {
-			assertNull(msg + " expected null but got: " + Arrays.toString(actual), actual);
+			assertNull(actual, msg + " expected null but got: " + Arrays.toString(actual));
 			return;
 		}
 		if (actual == null) {
-			assertNull(msg + " expected " + Arrays.toString(expected) + " but got null", expected);
+			assertNull(expected, msg + " expected " + Arrays.toString(expected) + " but got null");
 		}
 		assertThat(actual).as(msg + " number of statuses").hasSameSizeAs(expected);
 		for (int i = 0, imax = expected.length; i < imax; i++) {
@@ -54,24 +54,24 @@ public class LogSerializationTest {
 	}
 
 	private void assertStatusEquals(String msg, IStatus expected, IStatus actual) {
-		assertEquals(msg + " severity", expected.getSeverity(), actual.getSeverity());
-		assertEquals(msg + " plugin-id", expected.getPlugin(), actual.getPlugin());
-		assertEquals(msg + " code", expected.getCode(), actual.getCode());
-		assertEquals(msg + " message", expected.getMessage(), actual.getMessage());
+		assertEquals(expected.getSeverity(), actual.getSeverity(), msg + " severity");
+		assertEquals(expected.getPlugin(), actual.getPlugin(), msg + " plugin-id");
+		assertEquals(expected.getCode(), actual.getCode(), msg + " code");
+		assertEquals(expected.getMessage(), actual.getMessage(), msg + " message");
 		assertExceptionEquals(msg + " exception", expected.getException(), actual.getException());
 		assertStatusEqual(msg + " children", expected.getChildren(), actual.getChildren());
 	}
 
 	private void assertExceptionEquals(String msg, Throwable expected, Throwable actual) {
 		if (expected == null) {
-			assertNull(msg + " expected null but got: " + actual, actual);
+			assertNull(actual, msg + " expected null but got: " + actual);
 			return;
 		}
 		if (actual == null) {
-			assertNull(msg + " expected " + expected + " but got null", expected);
+			assertNull(expected, msg + " expected " + expected + " but got null");
 		}
-		assertEquals(msg + " stack trace", encodeStackTrace(expected), encodeStackTrace(actual));
-		assertEquals(msg + " message", expected.getMessage(), actual.getMessage());
+		assertEquals(encodeStackTrace(expected), encodeStackTrace(actual), msg + " stack trace");
+		assertEquals(expected.getMessage(), actual.getMessage(), msg + " message");
 	}
 
 	protected String encodeStackTrace(Throwable t) {
