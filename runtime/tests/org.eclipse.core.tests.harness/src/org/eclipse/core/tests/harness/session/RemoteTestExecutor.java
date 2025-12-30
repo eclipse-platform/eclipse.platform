@@ -28,7 +28,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.tests.session.RemoteAssertionFailedError;
 import org.eclipse.core.tests.session.RemoteTestException;
 import org.eclipse.core.tests.session.Setup;
-import org.eclipse.core.tests.session.TestDescriptor;
 
 class RemoteTestExecutor {
 	private static final String REMOTE_EXECUTION_INDICATION_SYSTEM_PROPERY = "org.eclipse.core.tests.session.isRemoteExecution"; //$NON-NLS-1$
@@ -54,7 +53,6 @@ class RemoteTestExecutor {
 		Setup localSetup = createSingleTestSetup(testClass, testMethod);
 		localSetup.setSystemProperty(REMOTE_EXECUTION_INDICATION_SYSTEM_PROPERY, Boolean.toString(true));
 
-		TestDescriptor descriptor = new TestDescriptor(testClass, testMethod);
 		ResultCollector collector = new ResultCollector(getTestId(testClass, testMethod));
 		localSetup.setEclipseArgument("port", Integer.toString(collector.getPort()));
 		new Thread(collector, "Test result collector").start();
@@ -66,14 +64,16 @@ class RemoteTestExecutor {
 				throw new CoreException(status);
 			}
 			if (!collector.didTestFinish()) {
-				throw new Exception("session test did not run: " + descriptor + "\n" + collector.stackTrace);
+				throw new Exception(
+						"session test did not run: " + getTestId(testClass, testMethod) + "\n" + collector.stackTrace);
 			}
 			if (!collector.wasTestSuccessful()) {
 				throw collector.getError();
 			}
 		} else {
 			if (status.isOK() && collector.wasTestSuccessful()) {
-				throw new AssertionFailedException("test should fail but did not: " + descriptor);
+				throw new AssertionFailedException(
+						"test should fail but did not: " + getTestId(testClass, testMethod));
 			}
 		}
 	}
