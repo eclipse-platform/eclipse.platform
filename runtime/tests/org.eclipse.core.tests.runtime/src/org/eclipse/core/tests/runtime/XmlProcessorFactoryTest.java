@@ -11,10 +11,10 @@
 package org.eclipse.core.tests.runtime;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -65,26 +65,18 @@ public class XmlProcessorFactoryTest {
 	@Test
 	public void testParseXmlWithExternalEntity() throws Exception {
 		SAXParser parser = XmlProcessorFactory.createSAXParserWithErrorOnDOCTYPE();
-		try {
-			testParseXmlWithExternalEntity(parser, this::createMalciousXml);
-			assertTrue("SAXParseException expected", false);
-		} catch (SAXParseException e) {
-			String message = e.getMessage();
-			assertTrue(message, message.contains("DOCTYPE"));
-			assertTrue(message, message.contains("http://apache.org/xml/features/disallow-doctype-decl"));
-		}
+		SAXParseException exception = assertThrows(SAXParseException.class,
+				() -> testParseXmlWithExternalEntity(parser, this::createMalciousXml));
+		assertThat(exception.getMessage()).contains("DOCTYPE");
+		assertThat(exception.getMessage()).contains("http://apache.org/xml/features/disallow-doctype-decl");
 	}
 	@Test
 	public void testParseXmlWithExternalEntity2() throws Exception {
 		SAXParser parser = XmlProcessorFactory.createSAXParserWithErrorOnDOCTYPE();
-		try {
-			testParseXmlWithExternalEntity(parser, this::createMalciousXml2);
-			assertTrue("SAXParseException expected", false);
-		} catch (SAXParseException e) {
-			String message = e.getMessage();
-			assertTrue(message, message.contains("DOCTYPE"));
-			assertTrue(message, message.contains("http://apache.org/xml/features/disallow-doctype-decl"));
-		}
+		SAXParseException exception = assertThrows(SAXParseException.class,
+				() -> testParseXmlWithExternalEntity(parser, this::createMalciousXml2));
+		assertThat(exception.getMessage()).contains("DOCTYPE");
+		assertThat(exception.getMessage()).contains("http://apache.org/xml/features/disallow-doctype-decl");
 	}
 
 	@Test
@@ -125,7 +117,7 @@ public class XmlProcessorFactoryTest {
 				@Override
 				public void characters(char ch[], int start, int length) {
 					String content = new String(ch, start, length);
-					assertFalse("Secret was injected into xml: " + content, content.contains("secret")); // var4
+					assertThat(content).doesNotContain("secret"); // var4
 				}
 
 				@Override
@@ -154,25 +146,17 @@ public class XmlProcessorFactoryTest {
 	@Test
 	public void testDocumentBuilderXmlWithExternalEntity() throws Exception {
 		DocumentBuilder documentBuilder = XmlProcessorFactory.createDocumentBuilderWithErrorOnDOCTYPE();
-		try {
-			testParseXmlWithExternalEntity(documentBuilder, this::createMalciousXml);
-			assertTrue("SAXParseException expected", false);
-		} catch (SAXParseException e) {
-			String message = e.getMessage();
-			assertTrue(message, message.contains("DOCTYPE"));
-		}
+		SAXParseException exception = assertThrows(SAXParseException.class,
+				() -> testParseXmlWithExternalEntity(documentBuilder, this::createMalciousXml));
+		assertThat(exception.getMessage()).contains("DOCTYPE");
 	}
 
 	@Test
 	public void testDocumentBuilderXmlWithExternalEntity2() throws Exception {
 		DocumentBuilder documentBuilder = XmlProcessorFactory.createDocumentBuilderWithErrorOnDOCTYPE();
-		try {
-			testParseXmlWithExternalEntity(documentBuilder, this::createMalciousXml2);
-			assertTrue("SAXParseException expected", false);
-		} catch (SAXParseException e) {
-			String message = e.getMessage();
-			assertTrue(message, message.contains("DOCTYPE"));
-		}
+		SAXParseException exception = assertThrows(SAXParseException.class,
+				() -> testParseXmlWithExternalEntity(documentBuilder, this::createMalciousXml2));
+		assertThat(exception.getMessage()).contains("DOCTYPE");
 	}
 
 	@Test
@@ -241,7 +225,7 @@ public class XmlProcessorFactoryTest {
 			assertEquals("Body", root.getTagName());
 			if (root.getChildNodes().getLength() > 0) {
 				String value = root.getChildNodes().item(0).getNodeValue();
-				assertFalse("Parser injected secret: " + value, value.contains("secret"));
+				assertThat(value).doesNotContain("secret");
 			}
 		}
 	}
@@ -249,25 +233,17 @@ public class XmlProcessorFactoryTest {
 	@Test
 	public void testTransformXmlWithExternalEntity() throws Exception {
 		TransformerFactory transformerFactory = XmlProcessorFactory.createTransformerFactoryWithErrorOnDOCTYPE();
-		try {
-			testParseXmlWithExternalEntity(transformerFactory, this::createMalciousXml);
-			assertTrue("TransformerException expected", false);
-		} catch (TransformerException e) {
-			String message = e.getMessage();
-			assertTrue(message, message.contains("DTD"));
-		}
+		TransformerException exception = assertThrows(TransformerException.class,
+				() -> testParseXmlWithExternalEntity(transformerFactory, this::createMalciousXml));
+		assertThat(exception.getMessage()).contains("DTD");
 	}
 
 	@Test
 	public void testTransformXmlWithExternalEntity2() throws Exception {
 		TransformerFactory transformerFactory = XmlProcessorFactory.createTransformerFactoryWithErrorOnDOCTYPE();
-		try {
-			testParseXmlWithExternalEntity(transformerFactory, this::createMalciousXml2);
-			assertTrue("TransformerException expected", false);
-		} catch (TransformerException e) {
-			String message = e.getMessage();
-			assertTrue(message, message.contains("DTD"));
-		}
+		TransformerException exception = assertThrows(TransformerException.class,
+				() -> testParseXmlWithExternalEntity(transformerFactory, this::createMalciousXml2));
+		assertThat(exception.getMessage()).contains("DTD");
 	}
 
 	@Test
@@ -290,8 +266,8 @@ public class XmlProcessorFactoryTest {
 					formatted = outputStream.toString(StandardCharsets.UTF_8);
 				}
 			}
-			assertTrue(formatted, formatted.contains("<Body>"));
-			assertFalse("Formatter injected secret: " + formatted, formatted.contains("secret"));
+			assertThat(formatted).contains("<Body>");
+			assertThat(formatted).doesNotContain("secret");
 		}
 	}
 

@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -31,6 +31,7 @@ import org.junit.jupiter.api.Test;
 @Deprecated
 public class PreferenceExportTest {
 
+	@Deprecated
 	@AfterEach
 	public void tearDown() throws Exception {
 		//remove properties modified by this test
@@ -47,6 +48,7 @@ public class PreferenceExportTest {
 	 * Tests exporting a preference that is different from the default value, but
 	 * the same as the default-default value. See bug 31458.
 	 */
+	@Deprecated
 	@Test
 	public void testExportEmptyPreference() throws CoreException {
 		final String key1 = "SomeTestKey";
@@ -74,15 +76,15 @@ public class PreferenceExportTest {
 			prefs.setToDefault(key1);
 			prefs.setToDefault(key2);
 
-			assertEquals("1.0", default1, prefs.getString(key1));
-			assertEquals("1.1", default2, prefs.getInt(key2));
+			assertEquals(default1, prefs.getString(key1));
+			assertEquals(default2, prefs.getInt(key2));
 
 			//reimport the property
 			Preferences.importPreferences(exportPath);
 
 			//ensure the imported preference is set
-			assertEquals("2.0", Preferences.STRING_DEFAULT_DEFAULT, prefs.getString(key1));
-			assertEquals("2.1", Preferences.INT_DEFAULT_DEFAULT, prefs.getInt(key2));
+			assertEquals(Preferences.STRING_DEFAULT_DEFAULT, prefs.getString(key1));
+			assertEquals(Preferences.INT_DEFAULT_DEFAULT, prefs.getInt(key2));
 
 		} finally {
 			exportPath.toFile().delete();
@@ -94,6 +96,7 @@ public class PreferenceExportTest {
 	 * work. This is to safeguard against programming errors in property change
 	 * listeners. See bug 20193.
 	 */
+	@Deprecated
 	@Test
 	public void testKeyIdentityAfterExport() throws CoreException {
 		final String key = "SomeTestKey";
@@ -103,7 +106,7 @@ public class PreferenceExportTest {
 		//add a property change listener that asserts key identity
 		Plugin testPlugin = RuntimeTestsPlugin.getPlugin();
 		Preferences prefs = testPlugin.getPluginPreferences();
-		Preferences.IPropertyChangeListener listener = event -> assertSame("1.0", event.getProperty(), key);
+		Preferences.IPropertyChangeListener listener = event -> assertSame(event.getProperty(), key);
 		prefs.addPropertyChangeListener(listener);
 		try {
 			//add a preference on the runtime plugin
