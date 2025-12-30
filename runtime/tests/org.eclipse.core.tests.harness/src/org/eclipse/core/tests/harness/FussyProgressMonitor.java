@@ -15,8 +15,8 @@ package org.eclipse.core.tests.harness;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import junit.framework.AssertionFailedError;
 import org.eclipse.core.runtime.jobs.Job;
+import org.opentest4j.AssertionFailedError;
 
 /**
  * This class can be used for testing progress monitoring.
