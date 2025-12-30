@@ -20,15 +20,10 @@ import static org.junit.Assert.fail;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.nio.file.Files;
-
-import javax.xml.parsers.SAXParser;
 
 import org.eclipse.ant.internal.ui.AntUIPlugin;
 import org.eclipse.ant.internal.ui.IAntUIPreferenceConstants;
@@ -79,9 +74,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * Abstract Ant UI test class
@@ -232,48 +224,6 @@ public abstract class AbstractAntUITest {
 	}
 
 	/**
-	 * Returns the contents of the given {@link InputStream} as a {@link String}
-	 *
-	 * @return the {@link InputStream} as a {@link String}
-	 */
-	protected String getStreamContentAsString(InputStream inputStream) {
-		InputStreamReader reader;
-		try {
-			reader = new InputStreamReader(inputStream, ResourcesPlugin.getEncoding());
-		}
-		catch (UnsupportedEncodingException e) {
-			AntUIPlugin.log(e);
-			return ""; //$NON-NLS-1$
-		}
-		BufferedReader tempBufferedReader = new BufferedReader(reader);
-
-		return getReaderContentAsString(tempBufferedReader);
-	}
-
-	/**
-	 * Returns the contents of the given {@link BufferedReader} as a {@link String}
-	 *
-	 * @return the contents of the given {@link BufferedReader} as a {@link String}
-	 */
-	protected String getReaderContentAsStringNew(BufferedReader bufferedReader) {
-		StringBuilder result = new StringBuilder();
-		try {
-			char[] readBuffer = new char[2048];
-			int n = bufferedReader.read(readBuffer);
-			while (n > 0) {
-				result.append(readBuffer, 0, n);
-				n = bufferedReader.read(readBuffer);
-			}
-		}
-		catch (IOException e) {
-			AntUIPlugin.log(e);
-			return null;
-		}
-
-		return result.toString();
-	}
-
-	/**
 	 * Returns the contents of the given {@link BufferedReader} as a {@link String}
 	 *
 	 * @return the contents of the given {@link BufferedReader} as a {@link String}
@@ -354,20 +304,6 @@ public abstract class AbstractAntUITest {
 	}
 
 	/**
-	 * Launches the Ant build in debug output mode with the build file name (no extension).
-	 *
-	 * @param buildFileName
-	 *            build file to launch
-	 */
-	protected void launchWithDebug(String buildFileName) throws CoreException {
-		ILaunchConfiguration config = getLaunchConfiguration(buildFileName);
-		assertNotNull("Could not locate launch configuration for " + buildFileName, config); //$NON-NLS-1$
-		ILaunchConfigurationWorkingCopy copy = config.getWorkingCopy();
-		copy.setAttribute(IExternalToolConstants.ATTR_TOOL_ARGUMENTS, "-debug"); //$NON-NLS-1$
-		launchAndTerminate(copy, 10000);
-	}
-
-	/**
 	 * Returns the launch configuration for the given build file
 	 *
 	 * @param buildFileName
@@ -378,18 +314,6 @@ public abstract class AbstractAntUITest {
 		ILaunchConfiguration config = getLaunchManager().getLaunchConfiguration(file);
 		assertTrue("Could not find launch configuration for " + buildFileName, config.exists()); //$NON-NLS-1$
 		return config;
-	}
-
-	/**
-	 * Parses the given input stream with the given parser using the given handler
-	 */
-	protected void parse(InputStream stream, SAXParser parser, DefaultHandler handler, File editedFile) throws SAXException, IOException {
-		InputSource inputSource = new InputSource(stream);
-		if (editedFile != null) {
-			// needed for resolving relative external entities
-			inputSource.setSystemId(editedFile.getAbsolutePath());
-		}
-		parser.parse(inputSource, handler);
 	}
 
 	/**

@@ -25,10 +25,7 @@ import org.eclipse.ant.tests.ui.AbstractAntUIBuildTest;
 import org.eclipse.ant.tests.ui.testplugin.DebugElementKindEventWaiter;
 import org.eclipse.ant.tests.ui.testplugin.DebugEventWaiter;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
@@ -38,28 +35,17 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.ILineBreakpoint;
-import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.IInternalDebugUIConstants;
 import org.eclipse.debug.internal.ui.preferences.IDebugPreferenceConstants;
-import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.IDebugUIConstants;
-import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.BadPositionCategoryException;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.Position;
 import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.console.IHyperlink;
-import org.eclipse.ui.internal.console.ConsoleHyperlinkPosition;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -75,11 +61,6 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 
 	private static boolean wasAutomatedModeEnabled;
 	private static boolean wasIgnoreErrorEnabled;
-
-	/**
-	 * The last relevant event set - for example, that caused a thread to suspend
-	 */
-	protected DebugEvent[] fEventSet;
 
 	@BeforeClass
 	public static void setupClass() {
@@ -97,63 +78,12 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	}
 
 	/**
-	 * Sets the last relevant event set
-	 *
-	 * @param set
-	 *            event set
-	 */
-	protected void setEventSet(DebugEvent[] set) {
-		fEventSet = set;
-	}
-
-	/**
-	 * Returns the last relevant event set
-	 *
-	 * @return event set
-	 */
-	protected DebugEvent[] getEventSet() {
-		return fEventSet;
-	}
-
-	/**
 	 * Returns the breakpoint manager
 	 *
 	 * @return breakpoint manager
 	 */
 	protected IBreakpointManager getBreakpointManager() {
 		return DebugPlugin.getDefault().getBreakpointManager();
-	}
-
-	/**
-	 * Returns the source folder with the given name in the given project.
-	 *
-	 * @param name
-	 *            source folder name
-	 * @return package fragment root
-	 */
-	protected IPackageFragmentRoot getPackageFragmentRoot(IJavaProject project, String name) {
-		IProject p = project.getProject();
-		return project.getPackageFragmentRoot(p.getFolder(name));
-	}
-
-	@Override
-	protected IHyperlink getHyperlink(int offset, IDocument doc) {
-		if (offset >= 0 && doc != null) {
-			Position[] positions = null;
-			try {
-				positions = doc.getPositions(ConsoleHyperlinkPosition.HYPER_LINK_CATEGORY);
-			}
-			catch (BadPositionCategoryException ex) {
-				// no links have been added
-				return null;
-			}
-			for (Position position : positions) {
-				if (offset >= position.getOffset() && offset <= (position.getOffset() + position.getLength())) {
-					return ((ConsoleHyperlinkPosition) position).getHyperLink();
-				}
-			}
-		}
-		return null;
 	}
 
 	/**
@@ -195,64 +125,10 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 				fail("Program did not suspend, and unable to terminate launch."); //$NON-NLS-1$
 			}
 		}
-		setEventSet(waiter.getEventSet());
 		if (suspendee == null) {
 			throw new TestAgainException("Retest - Program did not suspend, launch terminated"); //$NON-NLS-1$
 		}
 		return suspendee;
-	}
-
-	/**
-	 * Launches the build file with the given name, and waits for a suspend event in that program. Returns the thread in which the suspend event
-	 * occurred.
-	 *
-	 * @param buildFileName
-	 *            the build file to launch
-	 * @return thread in which the first suspend event occurred
-	 */
-	protected AntThread launchAndSuspend(String buildFileName) throws Exception {
-		ILaunchConfiguration config = getLaunchConfiguration(buildFileName);
-		assertNotNull("Could not locate launch configuration for " + buildFileName, config); //$NON-NLS-1$
-		return launchAndSuspend(config);
-	}
-
-	/**
-	 * Launches the given configuration in debug mode, and waits for a suspend event in that program. Returns the thread in which the suspend event
-	 * occurred.
-	 *
-	 * @param config
-	 *            the configuration to launch
-	 * @return thread in which the first suspend event occurred
-	 */
-	protected AntThread launchAndSuspend(ILaunchConfiguration config) throws Exception {
-		DebugEventWaiter waiter = new DebugElementKindEventWaiter(DebugEvent.SUSPEND, AntThread.class);
-		waiter.setTimeout(DEFAULT_TIMEOUT);
-		Object suspendee = launchAndWait(config, waiter);
-		return (AntThread) suspendee;
-	}
-
-	/**
-	 * Launches the build file with the given name, and waits for a breakpoint-caused suspend event in that program. Returns the thread in which the
-	 * suspend event occurred.
-	 *
-	 * @param buildFileName
-	 *            the build file to launch
-	 * @return thread in which the first suspend event occurred
-	 */
-	protected AntThread launchToBreakpoint(String buildFileName) throws Exception {
-		return launchToBreakpoint(buildFileName, true, false);
-	}
-
-	/**
-	 * Launches the build file with the given name in a separate VM, and waits for a breakpoint-caused suspend event in that program. Returns the
-	 * thread in which the suspend event occurred.
-	 *
-	 * @param buildFileName
-	 *            the build file to launch
-	 * @return thread in which the first suspend event occurred
-	 */
-	protected AntThread launchToBreakpointSepVM(String buildFileName) throws Exception {
-		return launchToBreakpoint(buildFileName, true, true);
 	}
 
 	/**
@@ -280,18 +156,6 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	 *
 	 * @param config
 	 *            the configuration to launch
-	 * @return thread in which the first suspend event occurred
-	 */
-	protected AntThread launchToBreakpoint(ILaunchConfiguration config) throws CoreException {
-		return launchToBreakpoint(config, true);
-	}
-
-	/**
-	 * Launches the given configuration in debug mode, and waits for a breakpoint-caused suspend event in that program. Returns the thread in which
-	 * the suspend event occurred.
-	 *
-	 * @param config
-	 *            the configuration to launch
 	 * @param register
 	 *            whether to register the launch
 	 * @return thread in which the first suspend event occurred
@@ -303,18 +167,6 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 		Object suspendee = launchAndWait(config, waiter, register);
 		assertTrue("suspendee was not an AntThread", suspendee instanceof AntThread); //$NON-NLS-1$
 		return (AntThread) suspendee;
-	}
-
-	/**
-	 * Launches the build file with the given name, and waits for a terminate event in that program. Returns the debug target in which the suspend
-	 * event occurred.
-	 *
-	 * @param buildFileName
-	 *            the build file to execute
-	 * @return debug target in which the terminate event occurred
-	 */
-	protected AntDebugTarget launchAndTerminate(String buildFileName) throws Exception {
-		return launchAndTerminate(buildFileName, false);
 	}
 
 	protected AntDebugTarget launchAndTerminate(String buildFileName, boolean sepVM) throws Exception {
@@ -420,7 +272,6 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 		thread.resume();
 
 		Object suspendee = waiter.waitForEvent();
-		setEventSet(waiter.getEventSet());
 		if (suspendee == null) {
 			throw new TestAgainException("Retest - Program did not suspend"); //$NON-NLS-1$
 		}
@@ -442,7 +293,6 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 		resumeThread.resume();
 
 		Object suspendee = waiter.waitForEvent();
-		setEventSet(waiter.getEventSet());
 		if (suspendee == null) {
 			throw new TestAgainException("Retest - Program did not suspend"); //$NON-NLS-1$
 		}
@@ -461,23 +311,6 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	}
 
 	/**
-	 * Resumes the given thread, and waits for the debug target to terminate (i.e. finish/exit the program).
-	 *
-	 * @param thread
-	 *            thread to resume
-	 */
-	protected void exit(AntThread thread) throws Exception {
-		DebugEventWaiter waiter = new DebugElementKindEventWaiter(DebugEvent.TERMINATE, IProcess.class);
-		waiter.setTimeout(DEFAULT_TIMEOUT);
-
-		thread.resume();
-
-		Object suspendee = waiter.waitForEvent();
-		setEventSet(waiter.getEventSet());
-		assertNotNull("Program did not terminate.", suspendee); //$NON-NLS-1$
-	}
-
-	/**
 	 * Resumes the given thread, and waits for the associated debug target to terminate.
 	 *
 	 * @param thread
@@ -491,22 +324,12 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 		thread.resume();
 
 		Object suspendee = waiter.waitForEvent();
-		setEventSet(waiter.getEventSet());
 		if (suspendee == null) {
 			throw new TestAgainException("Retest - The program did not terminate"); //$NON-NLS-1$
 		}
 		AntDebugTarget target = (AntDebugTarget) suspendee;
 		assertTrue("program should have exited", target.isTerminated() || target.isDisconnected()); //$NON-NLS-1$
 		return target;
-	}
-
-	protected IResource getBreakpointResource(String typeName) throws Exception {
-		IJavaElement element = getJavaProject().findElement(IPath.fromOSString(typeName + ".java")); //$NON-NLS-1$
-		IResource resource = element.getCorrespondingResource();
-		if (resource == null) {
-			resource = getJavaProject().getProject();
-		}
-		return resource;
 	}
 
 	/**
@@ -612,7 +435,6 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 		frame.stepOver();
 
 		Object suspendee = waiter.waitForEvent();
-		setEventSet(waiter.getEventSet());
 		if (suspendee == null) {
 			throw new TestAgainException("Retest - Program did not suspend"); //$NON-NLS-1$
 		}
@@ -632,7 +454,6 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 		frame.stepOver();
 
 		Object suspendee = waiter.waitForEvent();
-		setEventSet(waiter.getEventSet());
 		if (suspendee == null) {
 			throw new TestAgainException("Retest - Program did not suspend"); //$NON-NLS-1$
 		}
@@ -652,134 +473,10 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 		frame.stepInto();
 
 		Object suspendee = waiter.waitForEvent();
-		setEventSet(waiter.getEventSet());
 		if (suspendee == null) {
 			throw new TestAgainException("Retest - Program did not suspend"); //$NON-NLS-1$
 		}
 		return (AntThread) suspendee;
-	}
-
-	/**
-	 * Performs a step return in the given stack frame and returns when complete.
-	 *
-	 * @param frame
-	 *            stack frame to step return from
-	 */
-	protected AntThread stepReturn(AntStackFrame frame) throws DebugException {
-		DebugEventWaiter waiter = new DebugElementKindEventDetailWaiter(DebugEvent.SUSPEND, AntThread.class, DebugEvent.STEP_END);
-		waiter.setTimeout(DEFAULT_TIMEOUT);
-
-		frame.stepReturn();
-
-		Object suspendee = waiter.waitForEvent();
-		setEventSet(waiter.getEventSet());
-		if (suspendee == null) {
-			throw new TestAgainException("Retest - Program did not suspend"); //$NON-NLS-1$
-		}
-		return (AntThread) suspendee;
-	}
-
-	/**
-	 * Performs a step into with filters in the given stack frame and returns when complete.
-	 *
-	 * @param frame
-	 *            stack frame to step in
-	 */
-	protected AntThread stepIntoWithFilters(AntStackFrame frame) throws DebugException {
-		DebugEventWaiter waiter = new DebugElementKindEventWaiter(DebugEvent.SUSPEND, AntThread.class);
-		waiter.setTimeout(DEFAULT_TIMEOUT);
-
-		// turn filters on
-		try {
-			DebugUITools.setUseStepFilters(true);
-			frame.stepInto();
-		}
-		finally {
-			// turn filters off
-			DebugUITools.setUseStepFilters(false);
-		}
-
-		Object suspendee = waiter.waitForEvent();
-		setEventSet(waiter.getEventSet());
-		if (suspendee == null) {
-			throw new TestAgainException("Retest - Program did not suspend"); //$NON-NLS-1$
-		}
-		return (AntThread) suspendee;
-	}
-
-	/**
-	 * Performs a step return with filters in the given stack frame and returns when complete.
-	 *
-	 * @param frame
-	 *            stack frame to step in
-	 */
-	protected AntThread stepReturnWithFilters(AntStackFrame frame) throws DebugException {
-		DebugEventWaiter waiter = new DebugElementKindEventWaiter(DebugEvent.SUSPEND, AntThread.class);
-		waiter.setTimeout(DEFAULT_TIMEOUT);
-
-		// turn filters on
-		try {
-			DebugUITools.setUseStepFilters(true);
-			frame.stepReturn();
-		}
-		finally {
-			// turn filters off
-			DebugUITools.setUseStepFilters(false);
-		}
-
-		Object suspendee = waiter.waitForEvent();
-		setEventSet(waiter.getEventSet());
-		if (suspendee == null) {
-			throw new TestAgainException("Retest - Program did not suspend"); //$NON-NLS-1$
-		}
-		return (AntThread) suspendee;
-	}
-
-	/**
-	 * Performs a step over with filters in the given stack frame and returns when complete.
-	 *
-	 * @param frame
-	 *            stack frame to step in
-	 */
-	protected AntThread stepOverWithFilters(AntStackFrame frame) throws DebugException {
-		DebugEventWaiter waiter = new DebugElementKindEventWaiter(DebugEvent.SUSPEND, AntThread.class);
-		waiter.setTimeout(DEFAULT_TIMEOUT);
-
-		// turn filters on
-		try {
-			DebugUITools.setUseStepFilters(true);
-			frame.stepOver();
-		}
-		finally {
-			// turn filters off
-			DebugUITools.setUseStepFilters(false);
-		}
-
-		Object suspendee = waiter.waitForEvent();
-		setEventSet(waiter.getEventSet());
-		if (suspendee == null) {
-			throw new TestAgainException("Retest - Program did not suspend"); //$NON-NLS-1$
-		}
-		return (AntThread) suspendee;
-	}
-
-	/**
-	 * Returns the compilation unit with the given name.
-	 *
-	 * @param project
-	 *            the project containing the CU
-	 * @param root
-	 *            the name of the source folder in the project
-	 * @param pkg
-	 *            the name of the package (empty string for default package)
-	 * @param name
-	 *            the name of the CU (ex. Something.java)
-	 * @return compilation unit
-	 */
-	protected ICompilationUnit getCompilationUnit(IJavaProject project, String root, String pkg, String name) {
-		IProject p = project.getProject();
-		IResource r = p.getFolder(root);
-		return project.getPackageFragmentRoot(r).getPackageFragment(pkg).getCompilationUnit(name);
 	}
 
 	/**
@@ -799,9 +496,6 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 
 	@After
 	public void tearDown() throws Exception {
-		if (fEventSet != null) {
-			fEventSet = null;
-		}
 		// reset the options
 		IPreferenceStore debugUIPreferences = DebugUIPlugin.getDefault().getPreferenceStore();
 		debugUIPreferences.setToDefault(IDebugPreferenceConstants.CONSOLE_OPEN_ON_ERR);
