@@ -14,7 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.runtime;
 
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,21 +24,20 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.harness.BundleTestingHelper;
 import org.eclipse.core.tests.runtime.RuntimeTestsPlugin;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
 public class PlatformURLLocalTest {
 
-	public static void assertEquals(String tag, URL expected, URL actual, boolean external)
-			throws MalformedURLException {
+	public static void assertEquals(URL expected, URL actual, boolean external) throws MalformedURLException {
 		if (external) {
-			Assert.assertEquals(tag, expected, actual);
+			Assertions.assertEquals(expected, actual);
 		} else {
-			Assert.assertEquals(tag + ".1",
-				new URL(expected.getProtocol(), expected.getHost(), expected.getPort(), expected.getFile()),
-				new URL(actual.getProtocol(), actual.getHost(), actual.getPort(), actual.getFile()));
+			Assertions.assertEquals(
+					new URL(expected.getProtocol(), expected.getHost(), expected.getPort(), expected.getFile()),
+					new URL(actual.getProtocol(), actual.getHost(), actual.getPort(), actual.getFile()));
 		}
 	}
 
@@ -47,9 +46,9 @@ public class PlatformURLLocalTest {
 		// create a fake URL
 		URL platformURL = new URL("platform:/config/x");
 		URL resolvedURL = FileLocator.resolve(platformURL);
-		assertNotEquals("3.0", platformURL, resolvedURL);
+		assertNotEquals(platformURL, resolvedURL);
 		URL expected = new URL(Platform.getConfigurationLocation().getURL(), "x");
-		assertEquals("5.0", expected, resolvedURL, false);
+		assertEquals(expected, resolvedURL, false);
 	}
 
 	@Test
@@ -57,9 +56,9 @@ public class PlatformURLLocalTest {
 		// create a fake URL
 		URL platformURL = new URL("platform:/meta/" + RuntimeTestsPlugin.PI_RUNTIME_TESTS + "/x");
 		URL resolvedURL = FileLocator.resolve(platformURL);
-		assertNotEquals("3.0", platformURL, resolvedURL);
+		assertNotEquals(platformURL, resolvedURL);
 		URL expected = new URL(RuntimeTestsPlugin.getPlugin().getStateLocation().toFile().toURI().toURL(), "x");
-		assertEquals("5.0", expected, resolvedURL, false);
+		assertEquals(expected, resolvedURL, false);
 	}
 
 	@Test

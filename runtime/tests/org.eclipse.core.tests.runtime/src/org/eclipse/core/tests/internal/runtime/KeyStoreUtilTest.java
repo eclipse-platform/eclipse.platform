@@ -13,17 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.runtime;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.arrayWithSize;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.emptyArray;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.matchesRegex;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -45,6 +35,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509KeyManager;
 import javax.net.ssl.X509TrustManager;
 import javax.security.auth.x500.X500Principal;
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.eclipse.core.internal.runtime.CollectionTrustManager;
 import org.eclipse.core.internal.runtime.KeyStoreUtil;
 import org.eclipse.core.runtime.Platform;
@@ -103,53 +94,56 @@ public class KeyStoreUtilTest {
 
 		keyStoreUtil.setUpSslContext();
 
-		assertThat(SSLContext.getDefault(), is(keyStoreUtil.recordedSslContext));
+		assertThat(SSLContext.getDefault()).isEqualTo(keyStoreUtil.recordedSslContext);
 
-		assertThat(keyStoreUtil.recordedTrustManagers, arrayWithSize(1));
-		assertThat(keyStoreUtil.recordedTrustManagers[0], instanceOf(CollectionTrustManager.class));
-		assertThat(((CollectionTrustManager) keyStoreUtil.recordedTrustManagers[0]).getAcceptedIssuers(),
-				not(emptyArray()));
+		assertThat(keyStoreUtil.recordedTrustManagers).hasSize(1);
+		assertThat(keyStoreUtil.recordedTrustManagers[0])
+				.asInstanceOf(InstanceOfAssertFactories.type(CollectionTrustManager.class))
+				.satisfies(manager -> assertThat(manager.getAcceptedIssuers()).isNotEmpty());
 
 		CollectionTrustManager tm = (CollectionTrustManager) keyStoreUtil.recordedTrustManagers[0];
 
 		// jvm
-		assertThat(tm.getTrustManagers(), not(empty()));
-		assertThat(keyStoreUtil.createdTrustManagersAndKeyStores, not(empty()));
-		assertThat(keyStoreUtil.createdTrustManagersAndKeyStores.get(0).manager(), is(tm.getTrustManagers().get(0)));
-		assertThat(keyStoreUtil.createdTrustManagersAndKeyStores.get(0).store(), is(nullValue()));
+		assertThat(tm.getTrustManagers()).isNotEmpty();
+		assertThat(keyStoreUtil.createdTrustManagersAndKeyStores).isNotEmpty();
+		assertThat(keyStoreUtil.createdTrustManagersAndKeyStores.get(0).manager())
+				.isEqualTo(tm.getTrustManagers().get(0));
+		assertThat(keyStoreUtil.createdTrustManagersAndKeyStores.get(0).store()).isNull();
 		assertThat(
 				Arrays.stream(tm.getTrustManagers().get(0).getAcceptedIssuers())
-						.map(X509Certificate::getSubjectX500Principal).map(X500Principal::getName).toList(),
-				hasItem(matchesRegex("(?i).*digicert.*root.*")));
+						.map(X509Certificate::getSubjectX500Principal).map(X500Principal::getName))
+								.anySatisfy(name -> assertThat(name).matches("(?i).*digicert.*root.*"));
 
 		if (OS.WINDOWS.equals(OS.current())) {
-			assertThat(tm.getTrustManagers(), hasSize(2));
-			assertThat(keyStoreUtil.createdTrustManagersAndKeyStores, hasSize(2));
-			assertThat(keyStoreUtil.createdTrustManagersAndKeyStores.get(1).manager(),
-					is(tm.getTrustManagers().get(1)));
-			assertThat(keyStoreUtil.createdTrustManagersAndKeyStores.get(1).store().getType(), is("Windows-ROOT"));
+			assertThat(tm.getTrustManagers()).hasSize(2);
+			assertThat(keyStoreUtil.createdTrustManagersAndKeyStores).hasSize(2);
+			assertThat(keyStoreUtil.createdTrustManagersAndKeyStores.get(1).manager())
+					.isEqualTo(tm.getTrustManagers().get(1));
+			assertThat(keyStoreUtil.createdTrustManagersAndKeyStores.get(1).store().getType())
+					.isEqualTo("Windows-ROOT");
 			assertThat(
 					Arrays.stream(tm.getTrustManagers().get(1).getAcceptedIssuers())
-							.map(X509Certificate::getSubjectX500Principal).map(X500Principal::getName).toList(),
-					hasItem(matchesRegex("(?i).*digicert.*root.*")));
+							.map(X509Certificate::getSubjectX500Principal).map(X500Principal::getName))
+									.anySatisfy(name -> assertThat(name).matches("(?i).*digicert.*root.*"));
 		} else if (OS.MAC.equals(OS.current())) {
-			assertThat(tm.getTrustManagers(), hasSize(2));
-			assertThat(keyStoreUtil.createdTrustManagersAndKeyStores, hasSize(2));
-			assertThat(keyStoreUtil.createdTrustManagersAndKeyStores.get(1).manager(),
-					is(tm.getTrustManagers().get(1)));
-			assertThat(keyStoreUtil.createdTrustManagersAndKeyStores.get(1).store().getType(), is("KeychainStore"));
+			assertThat(tm.getTrustManagers()).hasSize(2);
+			assertThat(keyStoreUtil.createdTrustManagersAndKeyStores).hasSize(2);
+			assertThat(keyStoreUtil.createdTrustManagersAndKeyStores.get(1).manager())
+					.isEqualTo(tm.getTrustManagers().get(1));
+			assertThat(keyStoreUtil.createdTrustManagersAndKeyStores.get(1).store().getType())
+					.isEqualTo("KeychainStore");
 			// Apple KeychainStore only includes the 'System' certificates
 			// (enterprise/admin managed)
 			// but not the 'System Roots' ones (public CAs).
 			// There's nothing guaranteed / deterministic in the 'System' on CI machines
 			// that we could check for here...
 		} else {
-			assertThat(tm.getTrustManagers(), hasSize(1));
-			assertThat(keyStoreUtil.createdTrustManagersAndKeyStores, hasSize(1));
+			assertThat(tm.getTrustManagers()).hasSize(1);
+			assertThat(keyStoreUtil.createdTrustManagersAndKeyStores).hasSize(1);
 		}
 
 		// no private keys
-		assertThat(keyStoreUtil.recordedKeyManagers, emptyArray());
+		assertThat(keyStoreUtil.recordedKeyManagers).isEmpty();
 	}
 
 	@Test
@@ -162,26 +156,25 @@ public class KeyStoreUtilTest {
 
 		keyStoreUtil.setUpSslContext();
 
-		assertThat(SSLContext.getDefault(), is(keyStoreUtil.recordedSslContext));
+		assertThat(SSLContext.getDefault()).isEqualTo(keyStoreUtil.recordedSslContext);
 
-		assertThat(keyStoreUtil.recordedTrustManagers, arrayWithSize(1));
-		assertThat(((CollectionTrustManager) keyStoreUtil.recordedTrustManagers[0]).getAcceptedIssuers(),
-				not(emptyArray()));
+		assertThat(keyStoreUtil.recordedTrustManagers).hasSize(1);
+		assertThat(((CollectionTrustManager) keyStoreUtil.recordedTrustManagers[0]).getAcceptedIssuers()).isNotEmpty();
 
 		CollectionTrustManager tm = (CollectionTrustManager) keyStoreUtil.recordedTrustManagers[0];
 
-		assertThat(tm.getTrustManagers(), hasSize(1)); // only the properties-based store
+		assertThat(tm.getTrustManagers()).hasSize(1); // only the properties-based store
 
 		assertThat(
 				Arrays.stream(tm.getTrustManagers().get(0).getAcceptedIssuers())
-						.map(X509Certificate::getSubjectX500Principal).map(X500Principal::getName).toList(),
-				hasItem("CN=Test,C=DE"));
-		assertThat(keyStoreUtil.createdTrustManagersAndKeyStores, hasSize(1));
-		assertThat(keyStoreUtil.createdTrustManagersAndKeyStores.get(0).manager(), is(tm.getTrustManagers().get(0)));
+						.map(X509Certificate::getSubjectX500Principal).map(X500Principal::getName).toList())
+								.contains("CN=Test,C=DE");
+		assertThat(keyStoreUtil.createdTrustManagersAndKeyStores).hasSize(1);
+		assertThat(keyStoreUtil.createdTrustManagersAndKeyStores.get(0).manager()).isEqualTo(tm.getTrustManagers().get(0));
 		// null caused KeyManagerFactory to load default system properties
-		assertThat(keyStoreUtil.createdTrustManagersAndKeyStores.get(0).store(), is(nullValue()));
+		assertThat(keyStoreUtil.createdTrustManagersAndKeyStores.get(0).store()).isNull();
 
-		assertThat(keyStoreUtil.recordedKeyManagers, emptyArray());
+		assertThat(keyStoreUtil.recordedKeyManagers).isEmpty();
 	}
 
 	@Test
@@ -200,24 +193,25 @@ public class KeyStoreUtilTest {
 
 		keyStoreUtil.setUpSslContext();
 
-		assertThat(SSLContext.getDefault(), is(keyStoreUtil.recordedSslContext));
+		assertThat(SSLContext.getDefault()).isEqualTo(keyStoreUtil.recordedSslContext);
 
-		assertThat(keyStoreUtil.recordedTrustManagers, arrayWithSize(1));
+		assertThat(keyStoreUtil.recordedTrustManagers).hasSize(1);
 
 		CollectionTrustManager tm = (CollectionTrustManager) keyStoreUtil.recordedTrustManagers[0];
 
-		assertThat(tm.getTrustManagers(), hasSize(1)); // only the properties-based store
-		assertThat(keyStoreUtil.createdTrustManagersAndKeyStores, hasSize(1));
-		assertThat(keyStoreUtil.createdTrustManagersAndKeyStores.get(0).manager(), is(tm.getTrustManagers().get(0)));
-		assertThat(keyStoreUtil.createdTrustManagersAndKeyStores.get(0).store(), is(nullValue()));
+		assertThat(tm.getTrustManagers()).hasSize(1); // only the properties-based store
+		assertThat(keyStoreUtil.createdTrustManagersAndKeyStores).hasSize(1);
+		assertThat(keyStoreUtil.createdTrustManagersAndKeyStores.get(0).manager())
+				.isEqualTo(tm.getTrustManagers().get(0));
+		assertThat(keyStoreUtil.createdTrustManagersAndKeyStores.get(0).store()).isNull();
 
 		if (OS.WINDOWS.equals(OS.current())) {
-			assertThat(((CollectionTrustManager) keyStoreUtil.recordedTrustManagers[0]).getAcceptedIssuers(),
-					not(emptyArray()));
+			assertThat(((CollectionTrustManager) keyStoreUtil.recordedTrustManagers[0]).getAcceptedIssuers())
+					.isNotEmpty();
 			assertThat(
 					Arrays.stream(tm.getTrustManagers().get(0).getAcceptedIssuers())
-							.map(X509Certificate::getSubjectX500Principal).map(X500Principal::getName).toList(),
-					hasItem(matchesRegex("(?i).*digicert.*root.*")));
+							.map(X509Certificate::getSubjectX500Principal).map(X500Principal::getName))
+									.anySatisfy(name -> assertThat(name).matches("(?i).*digicert.*root.*"));
 		} else if (OS.MAC.equals(OS.current())) {
 			// Apple KeychainStore only includes the 'System' certificates
 			// (enterprise/admin managed)
@@ -234,10 +228,10 @@ public class KeyStoreUtilTest {
 
 		keyStoreUtil.setUpSslContext();
 
-		assertThat(SSLContext.getDefault(), is(keyStoreUtil.recordedSslContext));
+		assertThat(SSLContext.getDefault()).isEqualTo(keyStoreUtil.recordedSslContext);
 
-		assertThat(keyStoreUtil.recordedKeyManagers, emptyArray());
-		assertThat(keyStoreUtil.createdKeyManagersAndKeyStores, hasSize(0));
+		assertThat(keyStoreUtil.recordedKeyManagers).isEmpty();
+		assertThat(keyStoreUtil.createdKeyManagersAndKeyStores).isEmpty();
 	}
 
 	@Test
@@ -251,18 +245,18 @@ public class KeyStoreUtilTest {
 
 		keyStoreUtil.setUpSslContext();
 
-		assertThat(SSLContext.getDefault(), is(keyStoreUtil.recordedSslContext));
+		assertThat(SSLContext.getDefault()).isEqualTo(keyStoreUtil.recordedSslContext);
 
-		assertThat(keyStoreUtil.recordedKeyManagers, arrayWithSize(1));
-		assertThat(keyStoreUtil.recordedKeyManagers[0], instanceOf(X509KeyManager.class));
+		assertThat(keyStoreUtil.recordedKeyManagers).hasSize(1);
+		assertThat(keyStoreUtil.recordedKeyManagers[0]).isInstanceOf(X509KeyManager.class);
 
 		X509KeyManager km = (X509KeyManager) keyStoreUtil.recordedKeyManagers[0];
 
-		assertThat(keyStoreUtil.createdKeyManagersAndKeyStores, hasSize(1));
-		assertThat(keyStoreUtil.createdKeyManagersAndKeyStores.get(0).manager(), is(km));
-		assertThat(keyStoreUtil.createdKeyManagersAndKeyStores.get(0).store().getType(), is("PKCS12"));
+		assertThat(keyStoreUtil.createdKeyManagersAndKeyStores).hasSize(1);
+		assertThat(keyStoreUtil.createdKeyManagersAndKeyStores.get(0).manager()).isEqualTo(km);
+		assertThat(keyStoreUtil.createdKeyManagersAndKeyStores.get(0).store().getType()).isEqualTo("PKCS12");
 
-		assertThat(km.getPrivateKey("test.key"), not(nullValue()));
+		assertThat(km.getPrivateKey("test.key")).isNotNull();
 	}
 
 	@Test
@@ -273,7 +267,7 @@ public class KeyStoreUtilTest {
 
 		keyStoreUtil.setUpSslContext();
 
-		assertThat(SSLContext.getDefault(), is(previousSslContext));
+		assertThat(SSLContext.getDefault()).isEqualTo(previousSslContext);
 	}
 
 	private String copyResourceToTempDirAndGetPath(String resourceName) throws IOException {
