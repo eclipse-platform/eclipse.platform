@@ -14,6 +14,9 @@
 
 package org.eclipse.ant.tests.ui;
 
+import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getLaunchConfiguration;
+import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getProject;
+import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.launchAndTerminate;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;

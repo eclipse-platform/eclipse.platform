@@ -15,8 +15,6 @@
 package org.eclipse.ant.tests.ui;
 
 import org.eclipse.ant.tests.ui.testplugin.AbstractAntUITest;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.console.IHyperlink;
 import org.junit.Rule;
@@ -25,16 +23,6 @@ public abstract class AbstractAntUIBuildTest extends AbstractAntUITest {
 
 	@Rule
 	public RunInSeparateThreadRule runInSeparateThread = new RunInSeparateThreadRule();
-
-	/**
-	 * Launches the launch configuration Waits for all of the lines to be appended
-	 * to the console.
-	 *
-	 * @param config the config to execute
-	 */
-	protected void launch(ILaunchConfiguration config) throws CoreException {
-		launchAndTerminate(config, 20000);
-	}
 
 	protected void activateLink(final IHyperlink link) {
 		Display.getDefault().asyncExec(() -> link.linkActivated());

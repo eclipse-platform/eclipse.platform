@@ -33,6 +33,7 @@ import org.eclipse.ant.internal.ui.model.IAntElement;
 import org.eclipse.ant.internal.ui.model.IAntModel;
 import org.eclipse.ant.launching.IAntLaunchConstants;
 import org.eclipse.ant.tests.ui.testplugin.AbstractAntUITest;
+import org.eclipse.ant.tests.ui.testplugin.AntUITestUtil;
 import org.eclipse.core.externaltools.internal.IExternalToolConstants;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -275,7 +276,7 @@ public class AntUtilTests extends AbstractAntUITest {
 	}
 
 	protected ILaunchConfiguration getLaunchConfiguration(String buildFileName, String arguments, Map<String, String> properties, String propertyFiles) throws CoreException {
-		ILaunchConfiguration config = getLaunchConfiguration(buildFileName);
+		ILaunchConfiguration config = AntUITestUtil.getLaunchConfiguration(buildFileName);
 		assertNotNull("Could not locate launch configuration for " + buildFileName, config); //$NON-NLS-1$
 		ILaunchConfigurationWorkingCopy copy = config.getWorkingCopy();
 		if (arguments != null) {

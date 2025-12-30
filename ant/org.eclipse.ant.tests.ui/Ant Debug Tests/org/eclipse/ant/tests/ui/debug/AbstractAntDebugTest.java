@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.ant.tests.ui.debug;
 
+import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getLaunchConfiguration;
+import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getLaunchManager;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -96,8 +98,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	 *            the event waiter to use
 	 * @return Object the source of the event
 	 */
-	@Override
-	protected Object launchAndWait(ILaunchConfiguration configuration, DebugEventWaiter waiter) throws CoreException {
+	private Object launchAndWait(ILaunchConfiguration configuration, DebugEventWaiter waiter) throws CoreException {
 		return launchAndWait(configuration, waiter, true);
 	}
 

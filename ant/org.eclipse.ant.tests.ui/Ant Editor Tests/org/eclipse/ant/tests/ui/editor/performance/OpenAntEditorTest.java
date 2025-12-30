@@ -14,31 +14,33 @@
 
 package org.eclipse.ant.tests.ui.editor.performance;
 
+import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.assertProject;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 
 import org.eclipse.ant.internal.ui.AntUIPlugin;
 import org.eclipse.ant.internal.ui.preferences.AntEditorPreferenceConstants;
-import org.eclipse.ant.tests.ui.performance.AbstractAntPerformanceTest;
 import org.eclipse.ant.tests.ui.testplugin.ProjectHelper;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.test.performance.Dimension;
+import org.eclipse.test.performance.PerformanceTestCaseJunit5;
 import org.eclipse.ui.PartInitException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
 @SuppressWarnings("restriction")
-public class OpenAntEditorTest extends AbstractAntPerformanceTest {
+public class OpenAntEditorTest extends PerformanceTestCaseJunit5 {
 
 	@BeforeEach
 	@Override
 	public void setUp(TestInfo testInfo) throws Exception {
 		super.setUp(testInfo);
+		assertProject();
 		EditorTestHelper.runEventQueue();
 	}
 
