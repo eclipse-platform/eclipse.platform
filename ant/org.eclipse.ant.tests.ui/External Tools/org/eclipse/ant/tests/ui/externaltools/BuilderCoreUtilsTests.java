@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.ant.tests.ui.externaltools;
 
+import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getBuildFile;
 import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getLaunchManager;
 import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getProject;
 import static org.junit.Assert.assertFalse;
@@ -384,7 +385,8 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 */
 	@Test
 	public void testIsUnmigratedConfig1() throws Exception {
-		ILaunchConfigurationType type = getLaunchManager().getLaunchConfigurationType(IAntLaunchConstants.ID_ANT_BUILDER_LAUNCH_CONFIGURATION_TYPE);
+		ILaunchConfigurationType type = getLaunchManager()
+				.getLaunchConfigurationType(IAntLaunchConstants.ID_ANT_BUILDER_LAUNCH_CONFIGURATION_TYPE);
 		if (type != null) {
 			ILaunchConfigurationWorkingCopy config = type.newInstance(BuilderCoreUtils.getBuilderFolder(getProject(), true), "testIsUnmigratedConfig1"); //$NON-NLS-1$
 			assertTrue("should be considered 'unmigrated'", BuilderCoreUtils.isUnmigratedConfig(config)); //$NON-NLS-1$

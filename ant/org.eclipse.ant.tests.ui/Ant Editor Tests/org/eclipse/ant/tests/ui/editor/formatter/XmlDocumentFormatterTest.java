@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.ant.tests.ui.editor.formatter;
 
+import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getBuildFile;
+import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getReaderContentAsString;
 import static org.junit.Assert.assertEquals;
 
 import java.nio.file.Files;

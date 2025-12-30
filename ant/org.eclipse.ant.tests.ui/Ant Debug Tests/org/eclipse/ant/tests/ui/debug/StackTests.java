@@ -14,6 +14,7 @@
 package org.eclipse.ant.tests.ui.debug;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getIFile;
 
 import org.eclipse.ant.internal.launching.debug.model.AntThread;
 import org.eclipse.core.resources.IFile;
