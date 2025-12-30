@@ -84,15 +84,6 @@ public abstract class AbstractExternalToolTest extends AbstractAntUITest {
 	}
 
 	/**
-	 * Creates a new empty {@link ICommand}
-	 *
-	 * @return the new build {@link ICommand}
-	 */
-	protected ICommand createEmptyBuildCommand() throws Exception {
-		return getProject().getDescription().newCommand();
-	}
-
-	/**
 	 * Creates a new builder {@link ICommand}
 	 *
 	 * @return the new builder {@link ICommand}
