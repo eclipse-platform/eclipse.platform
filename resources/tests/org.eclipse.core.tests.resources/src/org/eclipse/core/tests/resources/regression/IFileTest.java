@@ -30,6 +30,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -142,14 +143,17 @@ public class IFileTest {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFile subject = project.getFile("subject.txt");
 		CyclicBarrier jobStart = new CyclicBarrier(2);
-		Job createDelete = Job.create("Create/delete", monitor -> {
+		// Can't use `Job.cancel()`, it makes `getResult()` unstable.
+		// https://github.com/eclipse-platform/eclipse.platform/issues/2339
+		AtomicBoolean keepRunning = new AtomicBoolean(true);
+		Job createDelete = Job.create("Create/delete", ignored -> {
 			try {
 				jobStart.await();
-				while (!monitor.isCanceled()) {
+				while (keepRunning.get()) {
 					createInWorkspace(subject);
-					while (!monitor.isCanceled()) {
+					while (keepRunning.get()) {
 						try {
-							subject.delete(true, monitor);
+							subject.delete(true, null);
 							break;
 						} catch (CoreException e) {
 							// On Windows, files opened for reading can't be deleted, try again
@@ -176,10 +180,12 @@ public class IFileTest {
 			jobStart.await();
 			long stop = currentTimeMillis() + 1000;
 			while (currentTimeMillis() < stop) {
-				assertContentAccessibleOrNotFound(subject); // should not throw
+				// should not throw
+				// https://github.com/eclipse-platform/eclipse.platform/issues/2290
+				assertContentAccessibleOrNotFound(subject);
 			}
 		} finally {
-			createDelete.cancel();
+			keepRunning.set(false);
 			createDelete.join();
 			IStatus result = createDelete.getResult();
 			if (!result.isOK()) {
