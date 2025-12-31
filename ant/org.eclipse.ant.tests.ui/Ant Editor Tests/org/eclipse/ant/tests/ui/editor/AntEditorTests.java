@@ -24,7 +24,7 @@ import java.io.File;
 import org.eclipse.ant.internal.ui.editor.AntEditor;
 import org.eclipse.ant.internal.ui.editor.text.XMLTextHover;
 import org.eclipse.ant.tests.ui.editor.performance.EditorTestHelper;
-import org.eclipse.ant.tests.ui.testplugin.AbstractAntUITest;
+import org.eclipse.ant.tests.ui.testplugin.AntUITest;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -36,7 +36,8 @@ import org.junit.After;
 import org.junit.Test;
 
 @SuppressWarnings("restriction")
-public class AntEditorTests extends AbstractAntUITest {
+@AntUITest
+public class AntEditorTests {
 
 	@Test
 	public void testHoverForPath() throws PartInitException, BadLocationException {

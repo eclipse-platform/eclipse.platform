@@ -14,24 +14,27 @@
 package org.eclipse.ant.tests.ui.editor;
 
 import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getIFile;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
 import org.eclipse.ant.internal.ui.editor.AntEditor;
 import org.eclipse.ant.internal.ui.editor.OccurrencesFinder;
 import org.eclipse.ant.tests.ui.editor.performance.EditorTestHelper;
-import org.eclipse.ant.tests.ui.testplugin.AbstractAntUITest;
+import org.eclipse.ant.tests.ui.testplugin.AntUITest;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.Position;
 import org.eclipse.ui.PartInitException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("restriction")
-public class OccurrencesFinderTests extends AbstractAntUITest {
+@AntUITest
+public class OccurrencesFinderTests {
 
 	@Test
 	public void testFromPropertyName() throws PartInitException, BadLocationException {
@@ -51,8 +54,8 @@ public class OccurrencesFinderTests extends AbstractAntUITest {
 	private void propertyOccurences(AntEditor editor, int offset) throws BadLocationException {
 		OccurrencesFinder finder = getOccurrencesFinder(editor, offset);
 		List<Position> positions = finder.perform();
-		assertNotNull("Expecting a position listing", positions); //$NON-NLS-1$
-		assertTrue("7 positions should have been found; found: " + positions.size(), positions.size() == 7); //$NON-NLS-1$
+		assertNotNull(positions, "Expecting a position listing"); //$NON-NLS-1$
+		assertEquals(7, positions.size());
 		assertContainsPosition(positions, offset, 8);
 		int newoffset = getOffsetWithinLine(editor, 34, 21);
 		assertContainsPosition(positions, newoffset, 8);
@@ -98,8 +101,8 @@ public class OccurrencesFinderTests extends AbstractAntUITest {
 			editor.selectAndReveal(offset, 50);
 			OccurrencesFinder finder = getOccurrencesFinder(editor, offset);
 			List<Position> positions = finder.perform();
-			assertNotNull("Expecting a position listing", positions); //$NON-NLS-1$
-			assertTrue("3 positions should have been found; found: " + positions.size(), positions.size() == 3); //$NON-NLS-1$
+			assertNotNull(positions, "Expecting a position listing"); //$NON-NLS-1$
+			assertEquals(3, positions.size());
 			assertContainsPosition(positions, offset, 15);
 			offset = getOffsetWithinLine(editor, 40, 20);
 			assertContainsPosition(positions, offset, 15);
@@ -109,8 +112,8 @@ public class OccurrencesFinderTests extends AbstractAntUITest {
 			editor.selectAndReveal(offset, 10);
 			finder = getOccurrencesFinder(editor, offset);
 			positions = finder.perform();
-			assertNotNull("Expecting a position listing", positions); //$NON-NLS-1$
-			assertTrue("3 positions should have been found; found: " + positions.size(), positions.size() == 3); //$NON-NLS-1$
+			assertNotNull(positions, "Expecting a position listing"); //$NON-NLS-1$
+			assertEquals(3, positions.size());
 			assertContainsPosition(positions, offset, 15);
 			offset = getOffsetWithinLine(editor, 39, 20);
 			assertContainsPosition(positions, offset, 15);
@@ -139,7 +142,7 @@ public class OccurrencesFinderTests extends AbstractAntUITest {
 	private void macrodefAttributeOccurences(AntEditor editor, int offset) throws BadLocationException {
 		OccurrencesFinder finder = getOccurrencesFinder(editor, offset);
 		List<Position> positions = finder.perform();
-		assertTrue("6 positions should have been found; found: " + positions.size(), positions.size() == 6); //$NON-NLS-1$
+		assertEquals(6, positions.size());
 		assertContainsPosition(positions, offset, 7);
 		int newoffset = getOffsetWithinLine(editor, 19, 32);
 		assertContainsPosition(positions, newoffset, 7);
@@ -170,7 +173,7 @@ public class OccurrencesFinderTests extends AbstractAntUITest {
 
 			OccurrencesFinder finder = getOccurrencesFinder(editor, offset);
 			List<Position> positions = finder.perform();
-			assertTrue("4 positions should have been found; found: " + positions.size(), positions.size() == 4); //$NON-NLS-1$
+			assertEquals(4, positions.size());
 			assertContainsPosition(positions, offset, 7);
 			offset = getOffsetWithinLine(editor, 10, 16);
 			assertContainsPosition(positions, offset, 7);
@@ -192,7 +195,7 @@ public class OccurrencesFinderTests extends AbstractAntUITest {
 
 			OccurrencesFinder finder = getOccurrencesFinder(editor, offset);
 			List<Position> positions = finder.perform();
-			assertTrue("4 positions should have been found; found: " + positions.size(), positions.size() == 4); //$NON-NLS-1$
+			assertEquals(4, positions.size());
 			assertContainsPosition(positions, offset, 7);
 			offset = getOffsetWithinLine(editor, 10, 16);
 			assertContainsPosition(positions, offset, 7);
@@ -217,7 +220,7 @@ public class OccurrencesFinderTests extends AbstractAntUITest {
 
 			OccurrencesFinder finder = getOccurrencesFinder(editor, offset);
 			List<Position> positions = finder.perform();
-			assertTrue("2 positions should have been found; found: " + positions.size(), positions.size() == 2); //$NON-NLS-1$
+			assertEquals(2, positions.size());
 			assertContainsPosition(positions, offset, 7);
 			offset = getOffsetWithinLine(editor, 1, 45);
 			assertContainsPosition(positions, offset, 7);
@@ -241,7 +244,7 @@ public class OccurrencesFinderTests extends AbstractAntUITest {
 			OccurrencesFinder finder = getOccurrencesFinder(editor, offset);
 			// from the declaration
 			List<Position> positions = finder.perform();
-			assertTrue("2 positions should have been found; found: " + positions.size(), positions.size() == 2); //$NON-NLS-1$
+			assertEquals(2, positions.size());
 			assertContainsPosition(positions, offset, 7);
 			offset = getOffsetWithinLine(editor, 5, 20);
 			assertContainsPosition(positions, offset, 7);
@@ -250,14 +253,14 @@ public class OccurrencesFinderTests extends AbstractAntUITest {
 			offset = getOffsetWithinLine(editor, 5, 20);
 			finder = getOccurrencesFinder(editor, offset);
 			positions = finder.perform();
-			assertTrue("2 positions should have been found; found: " + positions.size(), positions.size() == 2); //$NON-NLS-1$
+			assertEquals(2, positions.size());
 
 			// from the description
 			offset = getOffsetWithinLine(editor, 1, 30);
 			editor.selectAndReveal(offset, 0);
 			finder = getOccurrencesFinder(editor, offset);
 			positions = finder.perform();
-			assertTrue("No positions should have been found", positions == null); //$NON-NLS-1$
+			assertNull(positions);
 		}
 		finally {
 			EditorTestHelper.closeAllEditors();
@@ -292,7 +295,7 @@ public class OccurrencesFinderTests extends AbstractAntUITest {
 
 			OccurrencesFinder finder = getOccurrencesFinder(editor, offset);
 			List<Position> positions = finder.perform();
-			assertTrue("No positions should have been found", positions == null); //$NON-NLS-1$
+			assertNull(positions);
 		}
 		finally {
 			EditorTestHelper.closeAllEditors();
@@ -336,7 +339,7 @@ public class OccurrencesFinderTests extends AbstractAntUITest {
 
 			OccurrencesFinder finder = getOccurrencesFinder(editor, offset);
 			List<Position> positions = finder.perform();
-			assertTrue("2 positions should have been found; found: " + positions.size(), positions.size() == 2); //$NON-NLS-1$
+			assertEquals(2, positions.size());
 			assertContainsPosition(positions, offset, 4);
 			offset = getOffsetWithinLine(editor, 6, 17);
 			assertContainsPosition(positions, offset, 4);
@@ -346,7 +349,7 @@ public class OccurrencesFinderTests extends AbstractAntUITest {
 			editor.selectAndReveal(offset, 0);
 			finder = getOccurrencesFinder(editor, offset);
 			positions = finder.perform();
-			assertTrue("2 positions should have been found; found: " + positions.size(), positions.size() == 2); //$NON-NLS-1$
+			assertEquals(2, positions.size());
 			assertContainsPosition(positions, offset, 4);
 			offset = getOffsetWithinLine(editor, 7, 12);
 			assertContainsPosition(positions, offset, 4);
@@ -364,7 +367,7 @@ public class OccurrencesFinderTests extends AbstractAntUITest {
 				break;
 			}
 		}
-		assertTrue("Did not find position at offset: " + offset + " length: " + length, found); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(found, "Did not find position at offset: " + offset + " length: " + length); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	private OccurrencesFinder getOccurrencesFinder(AntEditor editor, int offset) {

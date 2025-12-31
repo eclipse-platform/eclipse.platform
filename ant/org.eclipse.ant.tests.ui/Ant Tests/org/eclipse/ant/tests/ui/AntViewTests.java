@@ -14,10 +14,10 @@
 
 package org.eclipse.ant.tests.ui;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -26,7 +26,7 @@ import java.util.Collections;
 import org.eclipse.ant.internal.ui.AntUtil;
 import org.eclipse.ant.internal.ui.preferences.FileFilter;
 import org.eclipse.ant.internal.ui.views.actions.AddBuildFilesAction;
-import org.eclipse.ant.tests.ui.testplugin.AbstractAntUITest;
+import org.eclipse.ant.tests.ui.testplugin.AntUITest;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.ActionContributionItem;
@@ -35,23 +35,24 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PlatformUI;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("restriction")
-public class AntViewTests extends AbstractAntUITest {
+@AntUITest
+public class AntViewTests {
 
 	@Test
 	public void testAddBuildFilesAction() throws CoreException {
 		// Ensure that AddBuildFilesAction is present!
 		String viewId = "org.eclipse.ant.ui.views.AntView"; //$NON-NLS-1$
 		IViewPart view = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(viewId);
-		assertNotNull("Failed to obtain the AntView", view); //$NON-NLS-1$
+		assertNotNull(view, "Failed to obtain the AntView"); //$NON-NLS-1$
 		IViewSite viewSite = view.getViewSite();
-		assertNotNull("Failed to obtain view site", viewSite); //$NON-NLS-1$
+		assertNotNull(viewSite, "Failed to obtain view site"); //$NON-NLS-1$
 		IToolBarManager toolBarMgr = viewSite.getActionBars().getToolBarManager();
-		assertNotNull("Failed to obtain the AntView ToolBar", toolBarMgr); //$NON-NLS-1$
+		assertNotNull(toolBarMgr, "Failed to obtain the AntView ToolBar"); //$NON-NLS-1$
 		AddBuildFilesAction action = getAddBuildFilesAction(toolBarMgr);
-		assertNotNull("Failed to obtain the AddBuildFilesAction", action); //$NON-NLS-1$
+		assertNotNull(action, "Failed to obtain the AddBuildFilesAction"); //$NON-NLS-1$
 	}
 
 	private AddBuildFilesAction getAddBuildFilesAction(IToolBarManager toolBarMgr) {
@@ -76,20 +77,20 @@ public class AntViewTests extends AbstractAntUITest {
 		{// Accept only a single extension
 			String extnFilter1 = "xml"; //$NON-NLS-1$
 			FileFilterProxy ff1 = new FileFilterProxy(extnFilter1);
-			assertTrue("xml is not accepted as a build file extension", ff1.canAccept("xml")); //$NON-NLS-1$ //$NON-NLS-2$
-			assertFalse("ent is accepted as a build file extension", ff1.canAccept("ent")); //$NON-NLS-1$ //$NON-NLS-2$
+			assertTrue(ff1.canAccept("xml"), "xml is not accepted as a build file extension"); //$NON-NLS-1$ //$NON-NLS-2$
+			assertFalse(ff1.canAccept("ent"), "ent is accepted as a build file extension"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
 		{// Accept multiple extensions
 			String extnFilter2 = AntUtil.getKnownBuildFileExtensionsAsPattern();
 			FileFilterProxy ff2 = new FileFilterProxy(extnFilter2);
-			assertTrue("xml is not accepted as a build file extension", ff2.canAccept("xml")); //$NON-NLS-1$ //$NON-NLS-2$
-			assertTrue("ant is not accepted as a build file extension", ff2.canAccept("ant")); //$NON-NLS-1$ //$NON-NLS-2$
-			assertTrue("ent is not accepted as a build file extension", ff2.canAccept("ent")); //$NON-NLS-1$ //$NON-NLS-2$
-			assertFalse("def is accepted as a build file extension", ff2.canAccept("def")); //$NON-NLS-1$ //$NON-NLS-2$
-			assertTrue("macrodef is not accepted as a build file extension", ff2.canAccept("macrodef")); //$NON-NLS-1$ //$NON-NLS-2$
-			assertTrue("XML is not accepted as a build file extension", ff2.canAccept("XML")); //$NON-NLS-1$ //$NON-NLS-2$
-			assertFalse("macro is accepted as a build file extension", ff2.canAccept("macro")); //$NON-NLS-1$ //$NON-NLS-2$
+			assertTrue(ff2.canAccept("xml"), "xml is not accepted as a build file extension\""); //$NON-NLS-1$ //$NON-NLS-2$
+			assertTrue(ff2.canAccept("ant"), "ant is not accepted as a build file extension"); //$NON-NLS-1$ //$NON-NLS-2$
+			assertTrue(ff2.canAccept("ent"), "ent is not accepted as a build file extension"); //$NON-NLS-1$ //$NON-NLS-2$
+			assertFalse(ff2.canAccept("def"), "def is accepted as a build file extension"); //$NON-NLS-1$ //$NON-NLS-2$
+			assertTrue(ff2.canAccept("macrodef"), "macrodef is not accepted as a build file extension"); //$NON-NLS-1$ //$NON-NLS-2$
+			assertTrue(ff2.canAccept("XML"), "XML is not accepted as a build file extension"); //$NON-NLS-1$ //$NON-NLS-2$
+			assertFalse(ff2.canAccept("macro"), "macro is accepted as a build file extension"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 
@@ -106,7 +107,7 @@ public class AntViewTests extends AbstractAntUITest {
 				canAcceptMethod = get("canAccept", new Class[] { String.class }); //$NON-NLS-1$
 			}
 			Object result = invoke(canAcceptMethod, new String[] { extn });
-			assertNotNull("Failed to invoke 'canAccept()'", result); //$NON-NLS-1$
+			assertNotNull(result, "Failed to invoke 'canAccept()'"); //$NON-NLS-1$
 			return ((Boolean) result).booleanValue();
 		}
 	}

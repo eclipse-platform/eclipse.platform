@@ -14,22 +14,23 @@
  *******************************************************************************/
 package org.eclipse.ant.tests.ui.editor.formatter;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
 import org.eclipse.ant.internal.ui.editor.formatter.FormattingPreferences;
 import org.eclipse.ant.internal.ui.editor.formatter.XmlTagFormatter;
 import org.eclipse.ant.internal.ui.editor.formatter.XmlTagFormatter.AttributePair;
-import org.eclipse.ant.tests.ui.testplugin.AbstractAntUITest;
-import org.junit.Test;
+import org.eclipse.ant.tests.ui.testplugin.AntUITest;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("restriction")
-public class XmlTagFormatterTest extends AbstractAntUITest {
+@AntUITest
+public class XmlTagFormatterTest {
 
 	// TODO This test is too low level and too tightly coupled to internals.
 

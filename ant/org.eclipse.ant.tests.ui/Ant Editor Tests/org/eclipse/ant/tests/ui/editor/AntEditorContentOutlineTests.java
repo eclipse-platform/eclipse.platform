@@ -17,26 +17,28 @@
 
 package org.eclipse.ant.tests.ui.editor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
 import org.eclipse.ant.internal.ui.model.AntElementNode;
 import org.eclipse.ant.internal.ui.model.AntModel;
 import org.eclipse.ant.internal.ui.model.IAntElement;
-import org.eclipse.ant.tests.ui.testplugin.AbstractAntUITest;
 import org.eclipse.ant.tests.ui.testplugin.AntModelForDocument;
+import org.eclipse.ant.tests.ui.testplugin.AntUITest;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the correct creation of the outline for an xml file.
  */
-public class AntEditorContentOutlineTests extends AbstractAntUITest {
+@AntUITest
+public class AntEditorContentOutlineTests {
 
 	/**
 	 * Tests the creation of the AntElementNode, that includes parsing a file and determining the correct location of the tags.
@@ -167,7 +169,7 @@ public class AntEditorContentOutlineTests extends AbstractAntUITest {
 	public void testWithEmptyBuildFile() {
 		AntModel model = new AntModelForDocument("empty.xml").getAntModel(); //$NON-NLS-1$
 		AntElementNode rootProject = model.getProjectNode();
-		assertTrue(rootProject == null);
+		assertNull(rootProject);
 	}
 
 	/**
@@ -207,9 +209,11 @@ public class AntEditorContentOutlineTests extends AbstractAntUITest {
 	@Test
 	public void testInternalTargets() {
 		AntModel model = new AntModelForDocument("internalTargets.xml").getAntModel(); //$NON-NLS-1$
-		assertTrue("Target without description should be internal", model.getTargetNode("internal1").isInternal()); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Target with name starting with '-' should be internal", model.getTargetNode("-internal2").isInternal()); //$NON-NLS-1$ //$NON-NLS-2$
-		assertFalse("Target with description attribute should not be internal", model.getTargetNode("non-internal").isInternal()); //$NON-NLS-1$ //$NON-NLS-2$
-		assertFalse("Default target should not be internal", model.getTargetNode("-default").isInternal()); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(model.getTargetNode("internal1").isInternal(), "Target without description should be internal"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(model.getTargetNode("-internal2").isInternal(), //$NON-NLS-1$
+				"Target with name starting with '-' should be internal\""); //$NON-NLS-1$
+		assertFalse(model.getTargetNode("non-internal").isInternal(), //$NON-NLS-1$
+				"Target with description attribute should not be internal"); //$NON-NLS-1$
+		assertFalse(model.getTargetNode("-default").isInternal(), "Default target should not be internal"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 }

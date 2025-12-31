@@ -15,17 +15,18 @@ package org.eclipse.ant.tests.ui.editor.formatter;
 
 import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getBuildFile;
 import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getReaderContentAsString;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.nio.file.Files;
 
 import org.eclipse.ant.internal.ui.editor.formatter.FormattingPreferences;
 import org.eclipse.ant.internal.ui.editor.formatter.XmlDocumentFormatter;
-import org.eclipse.ant.tests.ui.testplugin.AbstractAntUITest;
-import org.junit.Test;
+import org.eclipse.ant.tests.ui.testplugin.AntUITest;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("restriction")
-public class XmlDocumentFormatterTest extends AbstractAntUITest {
+@AntUITest
+public class XmlDocumentFormatterTest {
 
 	/**
 	 * General Test
