@@ -22,10 +22,10 @@ import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getLaunchConfigu
 import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getProject;
 import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.launch;
 import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.launchAndTerminate;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,8 +38,8 @@ import org.eclipse.ant.internal.ui.AntUIPlugin;
 import org.eclipse.ant.internal.ui.IAntUIConstants;
 import org.eclipse.ant.internal.ui.IAntUIPreferenceConstants;
 import org.eclipse.ant.launching.IAntLaunchConstants;
-import org.eclipse.ant.tests.ui.AbstractAntUIBuildTest;
 import org.eclipse.ant.tests.ui.debug.TestAgainException;
+import org.eclipse.ant.tests.ui.testplugin.AntUIBuildTest;
 import org.eclipse.ant.tests.ui.testplugin.ConsoleLineTracker;
 import org.eclipse.ant.tests.ui.testplugin.ProjectHelper;
 import org.eclipse.core.resources.IFile;
@@ -53,20 +53,25 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.ui.console.IHyperlink;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 @SuppressWarnings("restriction")
-public class SeparateVMTests extends AbstractAntUIBuildTest {
-
-	@Rule
-	public TestName testName = new TestName();
+@AntUIBuildTest
+public class SeparateVMTests {
 
 	protected static final String PLUGIN_VERSION;
 
+	private TestInfo testInfo;
+
 	static {
 		PLUGIN_VERSION = Platform.getBundle("org.apache.ant").getVersion().toString(); //$NON-NLS-1$
+	}
+
+	@BeforeEach
+	void before(TestInfo info) {
+		this.testInfo = info;
 	}
 
 	/**
@@ -79,7 +84,7 @@ public class SeparateVMTests extends AbstractAntUIBuildTest {
 		ConsoleLineTracker.waitForConsole();
 		if (ConsoleLineTracker.getNumberOfMessages() != expectedLines) {
 			List<String> lines = ConsoleLineTracker.getAllMessages();
-			System.out.println("Failed line count from " + testName.getMethodName() + ", tracked lines: "); //$NON-NLS-1$ //$NON-NLS-2$
+			System.out.println("Failed line count from " + testInfo.getDisplayName() + ", tracked lines: "); //$NON-NLS-1$ //$NON-NLS-2$
 			for (String string : lines) {
 				System.out.println('\t' + string);
 			}
@@ -97,8 +102,8 @@ public class SeparateVMTests extends AbstractAntUIBuildTest {
 	public void testBuild() throws CoreException {
 		launch("echoingSepVM"); //$NON-NLS-1$
 		assertLines(6);
-		assertTrue("Incorrect last message. Should start with Total time:. Message: " //$NON-NLS-1$
-				+ ConsoleLineTracker.getMessage(4), ConsoleLineTracker.getMessage(4).startsWith("Total time:")); //$NON-NLS-1$
+		assertTrue(ConsoleLineTracker.getMessage(4).startsWith("Total time:"), //$NON-NLS-1$
+				"Incorrect last message. Should start with Total time:. Message: " + ConsoleLineTracker.getMessage(4)); //$NON-NLS-1$
 	}
 
 	/**
@@ -109,8 +114,8 @@ public class SeparateVMTests extends AbstractAntUIBuildTest {
 	public void testExtraClasspathEntries() throws CoreException {
 		launch("extensionPointSepVM"); //$NON-NLS-1$
 		assertLines(8);
-		assertTrue("Incorrect last message. Should start with Total time:. Message: " //$NON-NLS-1$
-				+ ConsoleLineTracker.getMessage(6), ConsoleLineTracker.getMessage(6).startsWith("Total time:")); //$NON-NLS-1$
+		assertTrue(ConsoleLineTracker.getMessage(6).startsWith("Total time:"), //$NON-NLS-1$
+				"Incorrect last message. Should start with Total time:. Message: " + ConsoleLineTracker.getMessage(6)); //$NON-NLS-1$
 	}
 
 	/**
@@ -121,11 +126,11 @@ public class SeparateVMTests extends AbstractAntUIBuildTest {
 	public void testProperties() throws CoreException {
 		launch("extensionPointSepVM"); //$NON-NLS-1$
 		assertLines(8);
-		assertTrue("Incorrect last message. Should start with [echo] ${property.ui.testing. Message: " //$NON-NLS-1$
-				+ ConsoleLineTracker.getMessage(3),
-				ConsoleLineTracker.getMessage(3).trim().startsWith("[echo] ${property.ui.testing")); //$NON-NLS-1$
-		assertTrue("Incorrect last message. Should start with [echo] hey. Message: " //$NON-NLS-1$
-				+ ConsoleLineTracker.getMessage(4), ConsoleLineTracker.getMessage(4).trim().startsWith("[echo] hey")); //$NON-NLS-1$
+		assertTrue(ConsoleLineTracker.getMessage(3).trim().startsWith("[echo] ${property.ui.testing"), //$NON-NLS-1$
+				"Incorrect last message. Should start with [echo] ${property.ui.testing. Message: " //$NON-NLS-1$
+						+ ConsoleLineTracker.getMessage(3));
+		assertTrue(ConsoleLineTracker.getMessage(4).trim().startsWith("[echo] hey"), //$NON-NLS-1$
+				"Incorrect last message. Should start with [echo] hey. Message: " + ConsoleLineTracker.getMessage(4)); //$NON-NLS-1$
 	}
 
 	/**
@@ -136,14 +141,13 @@ public class SeparateVMTests extends AbstractAntUIBuildTest {
 	public void testExtensionPointTask() throws CoreException {
 		launch("extensionPointTaskSepVM"); //$NON-NLS-1$
 		assertLines(7);
-		assertTrue("Incorrect message. Should start with [null] Testing Ant in Eclipse with a custom task2. Message: " //$NON-NLS-1$
-				+ ConsoleLineTracker.getMessage(2),
-				ConsoleLineTracker.getMessage(2).trim()
-				.startsWith("[null] Testing Ant in Eclipse with a custom task2")); //$NON-NLS-1$
-		assertTrue("Incorrect message. Should start with [null] Testing Ant in Eclipse with a custom task2. Message: " //$NON-NLS-1$
-				+ ConsoleLineTracker.getMessage(3),
-				ConsoleLineTracker.getMessage(3).trim()
-				.startsWith("[null] Testing Ant in Eclipse with a custom task2")); //$NON-NLS-1$
+		assertTrue(
+				ConsoleLineTracker.getMessage(2).trim().startsWith("[null] Testing Ant in Eclipse with a custom task2"), //$NON-NLS-1$
+				"Incorrect message. Should start with [null] Testing Ant in Eclipse with a custom task2. Message: " //$NON-NLS-1$
+				+ ConsoleLineTracker.getMessage(2));
+		assertTrue(
+				ConsoleLineTracker.getMessage(3).trim().startsWith("[null] Testing Ant in Eclipse with a custom task2"), //$NON-NLS-1$
+				"Incorrect message. Should start with [null] Testing Ant in Eclipse with a custom task2. Message: " + ConsoleLineTracker.getMessage(3)); //$NON-NLS-1$
 	}
 
 	/**
@@ -154,10 +158,11 @@ public class SeparateVMTests extends AbstractAntUIBuildTest {
 	public void testExtensionPointType() throws CoreException {
 		launch("extensionPointTypeSepVM"); //$NON-NLS-1$
 		assertLines(6);
-		assertTrue("Incorrect message. Should start with [echo] Ensure that an extension point defined type. Message: " //$NON-NLS-1$
-				+ ConsoleLineTracker.getMessage(2),
+		assertTrue(
 				ConsoleLineTracker.getMessage(2).trim()
-				.startsWith("[echo] Ensure that an extension point defined type")); //$NON-NLS-1$
+						.startsWith("[echo] Ensure that an extension point defined type"), //$NON-NLS-1$
+				"Incorrect message. Should start with [echo] Ensure that an extension point defined type. Message: " //$NON-NLS-1$
+						+ ConsoleLineTracker.getMessage(2));
 	}
 
 	/**
@@ -169,10 +174,10 @@ public class SeparateVMTests extends AbstractAntUIBuildTest {
 		launch("echoingSepVM"); //$NON-NLS-1$
 		int offset = 15; // buildfile link
 		IHyperlink link = getHyperlink(offset, ConsoleLineTracker.getDocument());
-		assertNotNull("No hyperlink found at offset " + offset, link); //$NON-NLS-1$
+		assertNotNull(link, "No hyperlink found at offset " + offset); //$NON-NLS-1$
 		offset = ConsoleLineTracker.getDocument().getLineOffset(2) + 10; // echo link
 		link = getHyperlink(offset, ConsoleLineTracker.getDocument());
-		assertNotNull("No hyperlink found at offset " + offset, link); //$NON-NLS-1$
+		assertNotNull(link, "No hyperlink found at offset " + offset); //$NON-NLS-1$
 	}
 
 	/**
@@ -184,7 +189,7 @@ public class SeparateVMTests extends AbstractAntUIBuildTest {
 		IDocument document = ConsoleLineTracker.getDocument();
 		int offset = document.getLineOffset(9) + 10; // second line of build failed link
 		IHyperlink link = getHyperlink(offset, document);
-		assertNotNull("No hyperlink found at offset " + offset + "\n" + document, link); //$NON-NLS-1$ //$NON-NLS-2$
+		assertNotNull(link, "No hyperlink found at offset " + offset + "\n" + document); //$NON-NLS-1$ //$NON-NLS-2$
 		activateLink(link);
 	}
 
@@ -197,11 +202,11 @@ public class SeparateVMTests extends AbstractAntUIBuildTest {
 		launch("echoingSepVM"); //$NON-NLS-1$
 		int offset = 15; // buildfile
 		Color color = getColorAtOffset(offset, ConsoleLineTracker.getDocument());
-		assertNotNull("No color found at " + offset, color); //$NON-NLS-1$
+		assertNotNull(color, "No color found at " + offset); //$NON-NLS-1$
 		assertEquals(color, AntUIPlugin.getPreferenceColor(IAntUIPreferenceConstants.CONSOLE_INFO_COLOR));
 		offset = ConsoleLineTracker.getDocument().getLineOffset(2) + 10; // echo link
 		color = getColorAtOffset(offset, ConsoleLineTracker.getDocument());
-		assertNotNull("No color found at " + offset, color); //$NON-NLS-1$
+		assertNotNull(color, "No color found at " + offset); //$NON-NLS-1$
 		assertEquals(color, AntUIPlugin.getPreferenceColor(IAntUIPreferenceConstants.CONSOLE_WARNING_COLOR));
 	}
 
@@ -212,7 +217,7 @@ public class SeparateVMTests extends AbstractAntUIBuildTest {
 	@Test
 	public void testWorkingDirectory() throws CoreException {
 		ILaunchConfiguration config = getLaunchConfiguration("echoingSepVM"); //$NON-NLS-1$
-		assertNotNull("Could not locate launch configuration for " + "echoingSepVM", config); //$NON-NLS-1$ //$NON-NLS-2$
+		assertNotNull(config, "Could not locate launch configuration for " + "echoingSepVM"); //$NON-NLS-1$ //$NON-NLS-2$
 		ILaunchConfigurationWorkingCopy copy = config.getWorkingCopy();
 		copy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY,
 				getJavaProject().getProject().getLocation().toOSString());
@@ -220,9 +225,9 @@ public class SeparateVMTests extends AbstractAntUIBuildTest {
 		launchAndTerminate(copy, 20000);
 		ConsoleLineTracker.waitForConsole();
 		assertLines(6);
-		assertTrue("Incorrect last message. Should end with " + ProjectHelper.PROJECT_NAME + ". Message: " //$NON-NLS-1$ //$NON-NLS-2$
-				+ ConsoleLineTracker.getMessage(2),
-				ConsoleLineTracker.getMessage(2).endsWith(ProjectHelper.PROJECT_NAME));
+		assertTrue(ConsoleLineTracker.getMessage(2).endsWith(ProjectHelper.PROJECT_NAME),
+				"Incorrect last message. Should end with " + ProjectHelper.PROJECT_NAME + ". Message: " //$NON-NLS-1$ //$NON-NLS-2$
+						+ ConsoleLineTracker.getMessage(2));
 	}
 
 	/**
@@ -232,7 +237,7 @@ public class SeparateVMTests extends AbstractAntUIBuildTest {
 	@Test
 	public void testPropertySubstitution() throws CoreException {
 		ILaunchConfiguration config = getLaunchConfiguration("74840SepVM"); //$NON-NLS-1$
-		assertNotNull("Could not locate launch configuration for " + "74840SepVM", config); //$NON-NLS-1$ //$NON-NLS-2$
+		assertNotNull(config, "Could not locate launch configuration for " + "74840SepVM"); //$NON-NLS-1$ //$NON-NLS-2$
 		ILaunchConfigurationWorkingCopy copy = config.getWorkingCopy();
 		Map<String, String> properties = new HashMap<>(1);
 		properties.put("platform.location", "${workspace_loc}"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -240,8 +245,8 @@ public class SeparateVMTests extends AbstractAntUIBuildTest {
 		launchAndTerminate(copy, 20000);
 		ConsoleLineTracker.waitForConsole();
 		assertLines(6);
-		assertFalse("Incorrect echo message. Should not include unsubstituted property ", //$NON-NLS-1$
-				ConsoleLineTracker.getMessage(2).trim().startsWith("[echo] ${workspace_loc}")); //$NON-NLS-1$
+		assertFalse(ConsoleLineTracker.getMessage(2).trim().startsWith("[echo] ${workspace_loc}"), //$NON-NLS-1$
+				"Incorrect echo message. Should not include unsubstituted property "); //$NON-NLS-1$
 	}
 
 	/**
@@ -252,8 +257,8 @@ public class SeparateVMTests extends AbstractAntUIBuildTest {
 	public void testProjectHelp() throws CoreException {
 		launch("echoingSepVM", "-p"); //$NON-NLS-1$ //$NON-NLS-2$
 		assertLines(14);
-		assertTrue("Incorrect last message. Should start with echo2:. Message: " //$NON-NLS-1$
-				+ ConsoleLineTracker.getMessage(12), ConsoleLineTracker.getMessage(12).trim().startsWith("echo2")); //$NON-NLS-1$
+		assertTrue(ConsoleLineTracker.getMessage(12).trim().startsWith("echo2"), //$NON-NLS-1$
+				"Incorrect last message. Should start with echo2:. Message: " + ConsoleLineTracker.getMessage(12)); //$NON-NLS-1$
 	}
 
 	/**
@@ -263,16 +268,16 @@ public class SeparateVMTests extends AbstractAntUIBuildTest {
 	public void testXmlLoggerListener() throws CoreException, IOException {
 		launch("echoingSepVM", "-listener org.apache.tools.ant.XmlLogger"); //$NON-NLS-1$ //$NON-NLS-2$
 		assertLines(6);
-		assertTrue("Incorrect last message. Should start with Total time:. Message: " //$NON-NLS-1$
-				+ ConsoleLineTracker.getMessage(4), ConsoleLineTracker.getMessage(4).startsWith("Total time:")); //$NON-NLS-1$
+		assertTrue(ConsoleLineTracker.getMessage(4).startsWith("Total time:"), //$NON-NLS-1$
+				"Incorrect last message. Should start with Total time:. Message: " + ConsoleLineTracker.getMessage(4)); //$NON-NLS-1$
 
 		// find the log file generated by the XML logger
 		getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
 		IFile iFile = getProject().getFolder("buildfiles").getFile("log.xml"); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Could not find log file named: log.xml", iFile.exists()); //$NON-NLS-1$
+		assertTrue(iFile.exists(), "Could not find log file named: log.xml"); //$NON-NLS-1$
 		File file = iFile.getLocation().toFile();
 		String content = Files.readString(file.toPath());
-		assertTrue("XML logging file is empty", content.length() > 0); //$NON-NLS-1$
+		assertTrue(content.length() > 0, "XML logging file is empty"); //$NON-NLS-1$
 	}
 
 	/**
@@ -285,10 +290,11 @@ public class SeparateVMTests extends AbstractAntUIBuildTest {
 		launch("environmentVar"); //$NON-NLS-1$
 		assertLines(6);
 		String message = ConsoleLineTracker.getMessage(1);
-		assertTrue("Incorrect message. Should end with org.apache.ant [" + message + "]", checkAntHomeMessage(message)); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(checkAntHomeMessage(message), "Incorrect message. Should end with org.apache.ant [" + message + "]"); //$NON-NLS-1$ //$NON-NLS-2$
 		message = ConsoleLineTracker.getMessage(2);
-		assertTrue("Incorrect message. Should end with org.apache.ant. Message: " + message, //$NON-NLS-1$
-				checkAntHomeMessage(message));
+		assertTrue(checkAntHomeMessage(message),
+				"Incorrect message. Should end with org.apache.ant. Message: " + message); //$NON-NLS-1$
+
 	}
 
 	private boolean checkAntHomeMessage(String message) {
@@ -311,12 +317,12 @@ public class SeparateVMTests extends AbstractAntUIBuildTest {
 	@Test
 	public void testFailInputHandler() throws CoreException {
 		ILaunchConfiguration config = getLaunchConfiguration("echoingSepVM"); //$NON-NLS-1$
-		assertNotNull("Could not locate launch configuration for " + "echoingSepVM", config); //$NON-NLS-1$ //$NON-NLS-2$
+		assertNotNull(config, "Could not locate launch configuration for " + "echoingSepVM"); //$NON-NLS-1$ //$NON-NLS-2$
 		ILaunchConfigurationWorkingCopy copy = config.getWorkingCopy();
 		copy.setAttribute(IAntUIConstants.SET_INPUTHANDLER, false);
 		launch(copy);
 		String message = ConsoleLineTracker.getMessage(1);
-		assertNotNull("There must be a message", message); //$NON-NLS-1$
-		assertTrue("Incorrect message. Should start with Message:. Message: " + message, message.startsWith("echo1")); //$NON-NLS-1$ //$NON-NLS-2$
+		assertNotNull(message, "There must be a message"); //$NON-NLS-1$
+		assertTrue(message.startsWith("echo1"), "Incorrect message. Should start with Message:. Message: " + message); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 }
