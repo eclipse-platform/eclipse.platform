@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.ant.launching.IAntLaunchConstants;
-import org.eclipse.ant.tests.ui.testplugin.AbstractAntUITest;
 import org.eclipse.core.externaltools.internal.IExternalToolConstants;
 import org.eclipse.core.externaltools.internal.model.BuilderCoreUtils;
 import org.eclipse.core.externaltools.internal.registry.ExternalToolMigration;
@@ -40,9 +39,12 @@ import junit.framework.Test;
  * @since 3.5.100 org.eclipse.ant.tests.ui
  */
 @SuppressWarnings("restriction")
-public abstract class AbstractExternalToolTest extends AbstractAntUITest {
+public final class ExternalToolTestUtil {
 
 	static final String EXT_BUILD_FILE_NAME = "ext-builders.xml"; //$NON-NLS-1$
+
+	private ExternalToolTestUtil() {
+	}
 
 	/**
 	 * Creates a new external tool builder for the given project from the given {@link ILaunchConfiguration}
@@ -55,7 +57,8 @@ public abstract class AbstractExternalToolTest extends AbstractAntUITest {
 	 *            the argument map to set in the new configuration
 	 * @return a new Ant build {@link ILaunchConfiguration} or <code>null</code>
 	 */
-	protected ILaunchConfiguration createExternalToolBuilder(IProject project, String name, Map<String, ? extends Object> args) throws Exception {
+	public static ILaunchConfiguration createExternalToolBuilder(IProject project, String name,
+			Map<String, ? extends Object> args) throws Exception {
 		IFolder dir = project.getFolder(BuilderCoreUtils.BUILDER_FOLDER_NAME);
 		if (!dir.exists()) {
 			dir.create(true, true, null);
@@ -73,7 +76,8 @@ public abstract class AbstractExternalToolTest extends AbstractAntUITest {
 	/**
 	 * Creates a new external tool Ant build configuration that has never been saved
 	 */
-	protected ILaunchConfigurationWorkingCopy createExternalToolBuilderWorkingCopy(IProject project, String name, Map<String, Object> args) throws Exception {
+	public static ILaunchConfigurationWorkingCopy createExternalToolBuilderWorkingCopy(IProject project, String name,
+			Map<String, Object> args) throws Exception {
 		IFolder dir = project.getFolder(BuilderCoreUtils.BUILDER_FOLDER_NAME);
 		if (!dir.exists()) {
 			dir.create(true, true, null);
@@ -93,7 +97,7 @@ public abstract class AbstractExternalToolTest extends AbstractAntUITest {
 	 *
 	 * @return the new builder {@link ICommand}
 	 */
-	protected ICommand createBuildCommand(ILaunchConfiguration config) throws Exception {
+	public static ICommand createBuildCommand(ILaunchConfiguration config) throws Exception {
 		return BuilderUtils.commandFromLaunchConfig(getProject(), config);
 	}
 
@@ -102,7 +106,7 @@ public abstract class AbstractExternalToolTest extends AbstractAntUITest {
 	 *
 	 * @return a map of 2.0 arguments for an Ant buildfile.
 	 */
-	protected Map<String, String> get20AntArgumentMap() {
+	public static Map<String, String> get20AntArgumentMap() {
 		HashMap<String, String> arguments = new HashMap<>();
 		arguments.put(ExternalToolMigration.TAG_VERSION, "2.0"); //$NON-NLS-1$
 		arguments.put(ExternalToolMigration.TAG_TOOL_TYPE, "org.eclipse.ui.externaltools.type.ant"); //$NON-NLS-1$
@@ -122,7 +126,7 @@ public abstract class AbstractExternalToolTest extends AbstractAntUITest {
 	 *
 	 * @return a map of 2.0 arguments for a program
 	 */
-	protected Map<String, String> get20ProgramArgumentMap() {
+	public static Map<String, String> get20ProgramArgumentMap() {
 		HashMap<String, String> arguments = new HashMap<>();
 		arguments.put(ExternalToolMigration.TAG_VERSION, "2.0"); //$NON-NLS-1$
 		arguments.put(ExternalToolMigration.TAG_TOOL_TYPE, "org.eclipse.ui.externaltools.type.program"); //$NON-NLS-1$
@@ -142,7 +146,7 @@ public abstract class AbstractExternalToolTest extends AbstractAntUITest {
 	 *
 	 * @return a map of 2.1 arguments for an Ant buildfile
 	 */
-	protected Map<String, String> get21AntArgumentMap() {
+	public static Map<String, String> get21AntArgumentMap() {
 		HashMap<String, String> arguments = new HashMap<>();
 		arguments.put(ExternalToolMigration.TAG_VERSION, "2.1"); //$NON-NLS-1$
 		arguments.put(ExternalToolMigration.TAG_NAME, "ant config"); //$NON-NLS-1$
@@ -167,7 +171,7 @@ public abstract class AbstractExternalToolTest extends AbstractAntUITest {
 	 *
 	 * @return a map of 2.1 arguments for a program
 	 */
-	protected Map<String, String> get21ProgramArgumentMap() {
+	public static Map<String, String> get21ProgramArgumentMap() {
 		HashMap<String, String> arguments = new HashMap<>();
 		arguments.put(ExternalToolMigration.TAG_VERSION, "2.1"); //$NON-NLS-1$
 		arguments.put(ExternalToolMigration.TAG_NAME, "program config"); //$NON-NLS-1$
