@@ -39,19 +39,37 @@ import org.eclipse.ant.tests.ui.editor.formatter.XmlTagFormatterTest;
 import org.eclipse.ant.tests.ui.externaltools.BuilderCoreUtilsTests;
 import org.eclipse.ant.tests.ui.externaltools.MigrationTests;
 import org.eclipse.ant.tests.ui.separateVM.SeparateVMTests;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /**
  * Test suite for the Ant UI
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({ BuildTests.class, SeparateVMTests.class, AntEditorTests.class, CodeCompletionTest.class,
-		TaskDescriptionProviderTest.class, AntEditorContentOutlineTests.class, MigrationTests.class,
-		BuilderCoreUtilsTests.class, ModelProjectTests.class, FormattingPreferencesTest.class,
-		XmlDocumentFormatterTest.class, XmlTagFormatterTest.class, XmlFormatterTest.class, AntUtilTests.class,
-		AntViewTests.class, BreakpointTests.class, RunToLineTests.class, SteppingTests.class, PropertyTests.class,
-		OccurrencesFinderTests.class, StackTests.class, APITests.class })
+@Suite
+@SelectClasses({ //
+		BuildTests.class, //
+		SeparateVMTests.class, //
+		AntEditorTests.class, //
+		CodeCompletionTest.class, //
+		TaskDescriptionProviderTest.class, //
+		AntEditorContentOutlineTests.class, //
+		MigrationTests.class, //
+		BuilderCoreUtilsTests.class, //
+		ModelProjectTests.class, //
+		FormattingPreferencesTest.class, //
+		XmlDocumentFormatterTest.class, //
+		XmlTagFormatterTest.class, //
+		XmlFormatterTest.class, //
+		AntUtilTests.class, //
+		AntViewTests.class, //
+		BreakpointTests.class, //
+		RunToLineTests.class, //
+		SteppingTests.class, //
+		PropertyTests.class, //
+		OccurrencesFinderTests.class, //
+		StackTests.class, //
+		APITests.class, //
+})
 public class AntUITests {
-	// suite
+	//
 }
