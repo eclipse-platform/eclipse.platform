@@ -22,10 +22,10 @@ import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getLaunchConfigu
 import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getProject;
 import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.launch;
 import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.launchAndTerminate;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,6 +36,7 @@ import java.util.Map;
 import org.eclipse.ant.internal.ui.AntUIPlugin;
 import org.eclipse.ant.internal.ui.IAntUIPreferenceConstants;
 import org.eclipse.ant.launching.IAntLaunchConstants;
+import org.eclipse.ant.tests.ui.testplugin.AntUIBuildTest;
 import org.eclipse.ant.tests.ui.testplugin.ConsoleLineTracker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -47,10 +48,11 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.ui.console.IHyperlink;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("restriction")
-public class BuildTests extends AbstractAntUIBuildTest {
+@AntUIBuildTest
+public class BuildTests {
 
 	/**
 	 * Tests launching Ant and getting messages logged to the console.
@@ -58,11 +60,10 @@ public class BuildTests extends AbstractAntUIBuildTest {
 	@Test
 	public void testOutput() throws CoreException {
 		launch("echoing"); //$NON-NLS-1$
-		assertEquals("Incorrect number of messages logged for build. Should be 8. Was " //$NON-NLS-1$
-				+ ConsoleLineTracker.getNumberOfMessages(), 8, ConsoleLineTracker.getNumberOfMessages());
+		assertEquals(8, ConsoleLineTracker.getNumberOfMessages());
 		String message = ConsoleLineTracker.getMessage(6);
-		assertTrue("Incorrect last message. Should start with Total time:. Message: " + message, //$NON-NLS-1$
-				message.startsWith("Total time:")); //$NON-NLS-1$
+		assertTrue(message.startsWith("Total time:"), //$NON-NLS-1$
+				"Incorrect last message. Should start with Total time:. Message: " + message); //$NON-NLS-1$
 	}
 
 	/**
@@ -76,9 +77,9 @@ public class BuildTests extends AbstractAntUIBuildTest {
 			prefs.putBoolean("monitoring_enabled", false); //$NON-NLS-1$
 		}
 		launch("failingTarget", "-k -verbose"); //$NON-NLS-1$ //$NON-NLS-2$
-		assertEquals("Incorrect message", "BUILD FAILED", ConsoleLineTracker.getMessage(19)); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Incorrect message" + ConsoleLineTracker.getMessage(22), //$NON-NLS-1$
-				ConsoleLineTracker.getMessage(22).startsWith("\tat org.apache.tools.ant.taskdefs.Zip")); //$NON-NLS-1$
+		assertEquals("BUILD FAILED", ConsoleLineTracker.getMessage(19)); //$NON-NLS-1$
+		assertTrue(ConsoleLineTracker.getMessage(22).startsWith("\tat org.apache.tools.ant.taskdefs.Zip"), //$NON-NLS-1$
+				"Incorrect message" + ConsoleLineTracker.getMessage(22)); //$NON-NLS-1$
 	}
 
 	/**
@@ -88,16 +89,15 @@ public class BuildTests extends AbstractAntUIBuildTest {
 	@Test
 	public void testBuildFailedMessage() throws CoreException, BadLocationException {
 		launch("bad"); //$NON-NLS-1$
-		assertEquals("Incorrect number of messages logged for build. Should be 10. Was " //$NON-NLS-1$
-				+ ConsoleLineTracker.getNumberOfMessages(), 10, ConsoleLineTracker.getNumberOfMessages());
+		assertEquals(10, ConsoleLineTracker.getNumberOfMessages());
 		String message = ConsoleLineTracker.getMessage(5);
-		assertTrue("Incorrect last message. Should start with BUILD FAILED. Message: " + message, //$NON-NLS-1$
-				message.startsWith("BUILD FAILED")); //$NON-NLS-1$
+		assertTrue(message.startsWith("BUILD FAILED"), //$NON-NLS-1$
+				"Incorrect last message. Should start with BUILD FAILED. Message: " + message); //$NON-NLS-1$
 		int offset = -1;
 		IDocument document = ConsoleLineTracker.getDocument();
 		offset = document.getLineOffset(4) + 30; // link to buildfile that failed
 		IHyperlink link = getHyperlink(offset, document);
-		assertNotNull("No hyperlink found at offset " + offset + "\n" + document, link); //$NON-NLS-1$ //$NON-NLS-2$
+		assertNotNull(link, "No hyperlink found at offset " + offset + "\n" + document); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
@@ -108,12 +108,12 @@ public class BuildTests extends AbstractAntUIBuildTest {
 		launch("build"); //$NON-NLS-1$
 		int offset = 25; // buildfile link
 		IHyperlink link = getHyperlink(offset, ConsoleLineTracker.getDocument());
-		assertNotNull("No hyperlink found at offset " + offset, link); //$NON-NLS-1$
+		assertNotNull(link, "No hyperlink found at offset " + offset); //$NON-NLS-1$
 		activateLink(link);
 
 		offset = ConsoleLineTracker.getDocument().getLineOffset(4) + 10; // echo link
 		link = getHyperlink(offset, ConsoleLineTracker.getDocument());
-		assertNotNull("No hyperlink found at offset " + offset, link); //$NON-NLS-1$
+		assertNotNull(link, "No hyperlink found at offset " + offset); //$NON-NLS-1$
 		activateLink(link);
 	}
 
@@ -127,7 +127,7 @@ public class BuildTests extends AbstractAntUIBuildTest {
 		IDocument document = ConsoleLineTracker.getDocument();
 		int offset = document.getLineOffset(9) + 10; // second line of build failed link
 		IHyperlink link = getHyperlink(offset, document);
-		assertNotNull("No hyperlink found at offset " + offset + "\n" + document, link); //$NON-NLS-1$ //$NON-NLS-2$
+		assertNotNull(link, "No hyperlink found at offset " + offset + "\n" + document); //$NON-NLS-1$ //$NON-NLS-2$
 		activateLink(link);
 	}
 
@@ -140,11 +140,11 @@ public class BuildTests extends AbstractAntUIBuildTest {
 		ConsoleLineTracker.waitForConsole();
 		int offset = 15; // buildfile
 		Color color = getColorAtOffset(offset, ConsoleLineTracker.getDocument());
-		assertNotNull("No color found at " + offset, color); //$NON-NLS-1$
+		assertNotNull(color, "No color found at " + offset); //$NON-NLS-1$
 		assertEquals(AntUIPlugin.getPreferenceColor(IAntUIPreferenceConstants.CONSOLE_INFO_COLOR), color);
 		offset = ConsoleLineTracker.getDocument().getLineOffset(4) + 10; // echo
 		color = getColorAtOffset(offset, ConsoleLineTracker.getDocument());
-		assertNotNull("No color found at " + offset, color); //$NON-NLS-1$
+		assertNotNull(color, "No color found at " + offset); //$NON-NLS-1$
 		assertEquals(AntUIPlugin.getPreferenceColor(IAntUIPreferenceConstants.CONSOLE_WARNING_COLOR), color);
 	}
 
@@ -155,7 +155,7 @@ public class BuildTests extends AbstractAntUIBuildTest {
 	@Test
 	public void testPropertySubstitution() throws CoreException {
 		ILaunchConfiguration config = getLaunchConfiguration("74840"); //$NON-NLS-1$
-		assertNotNull("Could not locate launch configuration for " + "74840", config); //$NON-NLS-1$ //$NON-NLS-2$
+		assertNotNull(config, "Could not locate launch configuration for " + "74840"); //$NON-NLS-1$ //$NON-NLS-2$
 		ILaunchConfigurationWorkingCopy copy = config.getWorkingCopy();
 		Map<String, String> properties = new HashMap<>(1);
 		properties.put("platform.location", "${workspace_loc}"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -163,10 +163,9 @@ public class BuildTests extends AbstractAntUIBuildTest {
 		copy.setAttribute(IAntLaunchConstants.ATTR_ANT_PROPERTIES, properties);
 		launchAndTerminate(copy, 20000);
 		ConsoleLineTracker.waitForConsole();
-		assertEquals("Incorrect number of messages logged for build. Should be 8. Was " //$NON-NLS-1$
-				+ ConsoleLineTracker.getNumberOfMessages(), 8, ConsoleLineTracker.getNumberOfMessages());
-		assertFalse("Incorrect echo message. Should not include unsubstituted property", //$NON-NLS-1$
-				ConsoleLineTracker.getMessage(4).trim().startsWith("[echo] ${workspace_loc}")); //$NON-NLS-1$
+		assertEquals(8, ConsoleLineTracker.getNumberOfMessages());
+		assertFalse(ConsoleLineTracker.getMessage(4).trim().startsWith("[echo] ${workspace_loc}"), //$NON-NLS-1$
+				"Incorrect echo message. Should not include unsubstituted property"); //$NON-NLS-1$
 	}
 
 	/**
@@ -175,16 +174,15 @@ public class BuildTests extends AbstractAntUIBuildTest {
 	@Test
 	public void testXmlLoggerListener() throws CoreException, IOException {
 		launch("echoing", "-listener org.apache.tools.ant.XmlLogger"); //$NON-NLS-1$ //$NON-NLS-2$
-		assertEquals("Incorrect number of messages logged for build. Should be 8. Was " //$NON-NLS-1$
-				+ ConsoleLineTracker.getNumberOfMessages(), 8, ConsoleLineTracker.getNumberOfMessages());
+		assertEquals(8, ConsoleLineTracker.getNumberOfMessages());
 		String message = ConsoleLineTracker.getMessage(6);
-		assertTrue("Incorrect last message. Should start with Total time:. Message: " + message, //$NON-NLS-1$
-				message.startsWith("Total time:")); //$NON-NLS-1$
+		assertTrue(message.startsWith("Total time:"), //$NON-NLS-1$
+				"Incorrect last message. Should start with Total time:. Message: " + message); //$NON-NLS-1$
 		// find the log file generated by the xml logger
 		getProject().getFolder("buildfiles").refreshLocal(IResource.DEPTH_INFINITE, null); //$NON-NLS-1$
 		File file = getBuildFile("log.xml"); //$NON-NLS-1$
 		String content = Files.readString(file.toPath());
-		assertTrue("XML logging file is empty", content.length() > 0); //$NON-NLS-1$
+		assertTrue(content.length() > 0, "XML logging file is empty"); //$NON-NLS-1$
 	}
 
 	/**
