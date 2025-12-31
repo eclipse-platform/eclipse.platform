@@ -16,10 +16,10 @@ package org.eclipse.ant.tests.ui;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getBuildFile;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;
@@ -33,17 +33,17 @@ import org.eclipse.ant.internal.ui.model.AntTargetNode;
 import org.eclipse.ant.internal.ui.model.IAntElement;
 import org.eclipse.ant.internal.ui.model.IAntModel;
 import org.eclipse.ant.launching.IAntLaunchConstants;
-import org.eclipse.ant.tests.ui.testplugin.AbstractAntUITest;
+import org.eclipse.ant.tests.ui.testplugin.AntUITest;
 import org.eclipse.ant.tests.ui.testplugin.AntUITestUtil;
 import org.eclipse.core.externaltools.internal.IExternalToolConstants;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("restriction")
-public class AntUtilTests extends AbstractAntUITest {
+@AntUITest
+public class AntUtilTests {
 
 	private static final long EXECUTION_THRESHOLD_INCLUDE_TASK = 10000;
 	private static final long WINDOWS_EXECUTION_THRESHOLD_INCLUDE_TASK = 15000;
@@ -180,24 +180,25 @@ public class AntUtilTests extends AbstractAntUITest {
 		boolean atLeastOneExternal = false;
 		List<IAntElement> childNodes = project.getChildNodes();
 
-		Assert.assertNotNull(childNodes);
+		assertNotNull(childNodes);
 
 		int actualSize = childNodes.size();
-		Assert.assertEquals("Expecting " + childNodesExpected + " childnodes, but have: " + actualSize, childNodesExpected, actualSize); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals(childNodesExpected, actualSize,
+				"Expecting " + childNodesExpected + " childnodes, but have: " + actualSize); //$NON-NLS-1$ //$NON-NLS-2$
 
 		for (IAntElement element : childNodes) {
 			// "External" seems to be true if the element was defined within an "importNode" => check the import nodes
 			IAntElement importNode = element.getImportNode();
 
 			if (importNode != null) {
-				Assert.assertTrue(element.isExternal());
+				assertTrue(element.isExternal());
 				atLeastOneExternal = true;
 			} else {
-				Assert.assertFalse(element.isExternal());
+				assertFalse(element.isExternal());
 			}
 		}
 		// At least on external include-file was found
-		Assert.assertTrue(atLeastOneExternal);
+		assertTrue(atLeastOneExternal);
 		// Then just execute the rest of the previous test
 		AntTargetNode[] targets = getAntTargetNodesOfBuildFile(buildFileName);
 		String[] expectedTargets = { "deploy", "commonLv1.deploy", "commonLv1.commonLv2.deploySuper", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -219,7 +220,7 @@ public class AntUtilTests extends AbstractAntUITest {
 		AntProjectNode project = model.getProjectNode();
 		long endTimeInNanoseconds = ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime();
 
-		Assert.assertNotNull(project);
+		assertNotNull(project);
 		/*
 		 * Parsing the file-hierarchy should not take longer than:
 		 *
@@ -232,8 +233,9 @@ public class AntUtilTests extends AbstractAntUITest {
 		// Change this value if it does not fit the performance needs
 		long maxDuration = this.getExecutionTresholdIncludeTask();
 
-		Assert.assertTrue("Expecting a duration < " + maxDuration + ", but we have " + durationInMilliseconds + "ms", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				durationInMilliseconds < maxDuration);
+		assertTrue(durationInMilliseconds < maxDuration,
+				"Expecting a duration < " + maxDuration + ", but we have " + durationInMilliseconds + "ms");//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
 		// Test the rest
 		AntTargetNode[] targets = getAntTargetNodesOfBuildFile(buildFileName);
 
@@ -268,8 +270,9 @@ public class AntUtilTests extends AbstractAntUITest {
 	private void assertTargets(AntTargetNode[] targets, String[] expectedTargetNames) {
 		// Before the bugfix, the dependend target (defined in the included file) was not found and the dependencies-check failed
 		int expectedSize = expectedTargetNames.length;
-		assertTrue("Incorrect number of targets retrieved; should be " + expectedSize + " was: " //$NON-NLS-1$ //$NON-NLS-2$
-				+ targets.length, targets.length == expectedSize);
+		assertTrue(targets.length == expectedSize,
+				"Incorrect number of targets retrieved; should be " + expectedSize + " was: " //$NON-NLS-1$ //$NON-NLS-2$
+						+ targets.length);
 
 		for (String expectedTarget : expectedTargetNames) {
 			assertContains(expectedTarget, targets);
@@ -278,7 +281,7 @@ public class AntUtilTests extends AbstractAntUITest {
 
 	protected ILaunchConfiguration getLaunchConfiguration(String buildFileName, String arguments, Map<String, String> properties, String propertyFiles) throws CoreException {
 		ILaunchConfiguration config = AntUITestUtil.getLaunchConfiguration(buildFileName);
-		assertNotNull("Could not locate launch configuration for " + buildFileName, config); //$NON-NLS-1$
+		assertNotNull(config, "Could not locate launch configuration for " + buildFileName); //$NON-NLS-1$
 		ILaunchConfigurationWorkingCopy copy = config.getWorkingCopy();
 		if (arguments != null) {
 			copy.setAttribute(IExternalToolConstants.ATTR_TOOL_ARGUMENTS, arguments);
@@ -304,16 +307,16 @@ public class AntUtilTests extends AbstractAntUITest {
 				break;
 			}
 		}
-		assertEquals("Did not find target: " + targetName, true, found); //$NON-NLS-1$
+		assertEquals(true, found, "Did not find target: " + targetName); //$NON-NLS-1$
 	}
 
 	@Test
 	public void testIsKnownAntFileName() throws Exception {
-		assertTrue("The file name 'foo.xml' is a valid name", AntUtil.isKnownAntFileName("a/b/c/d/foo.xml")); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("The file name 'foo.ant' is a valid name", AntUtil.isKnownAntFileName("a/b/c/d/foo.ant")); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("The file name 'foo.ent' is a valid name", AntUtil.isKnownAntFileName("a/b/c/d/foo.ent")); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("The file name 'foo.macrodef' is a valid name", AntUtil.isKnownAntFileName("a/b/c/d/foo.macrodef")); //$NON-NLS-1$ //$NON-NLS-2$
-		assertFalse("The file name 'foo.xsi' is not a valid name", AntUtil.isKnownAntFileName("a/b/c/d/foo.xsi")); //$NON-NLS-1$ //$NON-NLS-2$
-		assertFalse("The file name 'foo.txt' is a valid name", AntUtil.isKnownAntFileName("a/b/c/d/foo.txt")); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(AntUtil.isKnownAntFileName("a/b/c/d/foo.xml"), "The file name 'foo.xml' is a valid name"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(AntUtil.isKnownAntFileName("a/b/c/d/foo.ant"), "The file name 'foo.ant' is a valid name"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(AntUtil.isKnownAntFileName("a/b/c/d/foo.ent"), "The file name 'foo.ent' is a valid name"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(AntUtil.isKnownAntFileName("a/b/c/d/foo.macrodef"), "The file name 'foo.macrodef' is a valid name"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertFalse(AntUtil.isKnownAntFileName("a/b/c/d/foo.xsi"), "The file name 'foo.xsi' is not a valid name"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertFalse(AntUtil.isKnownAntFileName("a/b/c/d/foo.txt"), "The file name 'foo.txt' is a valid name"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 }

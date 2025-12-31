@@ -13,14 +13,15 @@
  *******************************************************************************/
 package org.eclipse.ant.tests.ui.editor.formatter;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.eclipse.ant.internal.ui.editor.formatter.FormattingPreferences;
-import org.eclipse.ant.tests.ui.testplugin.AbstractAntUITest;
-import org.junit.Test;
+import org.eclipse.ant.tests.ui.testplugin.AntUITest;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("restriction")
-public class FormattingPreferencesTest extends AbstractAntUITest {
+@AntUITest
+public class FormattingPreferencesTest {
 
 	@Test
 	public final void testGetCanonicalIndent() {

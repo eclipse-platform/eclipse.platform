@@ -22,12 +22,12 @@ import static java.util.function.Function.identity;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getBuildFile;
 import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getIFile;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,8 +45,8 @@ import org.eclipse.ant.internal.ui.IAntUIConstants;
 import org.eclipse.ant.internal.ui.editor.AntEditor;
 import org.eclipse.ant.tests.ui.editor.performance.EditorTestHelper;
 import org.eclipse.ant.tests.ui.editor.support.TestTextCompletionProcessor;
-import org.eclipse.ant.tests.ui.testplugin.AbstractAntUITest;
 import org.eclipse.ant.tests.ui.testplugin.AntModelForDocument;
+import org.eclipse.ant.tests.ui.testplugin.AntUITest;
 import org.eclipse.core.internal.runtime.XmlProcessorFactory;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.text.BadLocationException;
@@ -54,7 +54,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.ui.PartInitException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
@@ -64,7 +64,8 @@ import org.w3c.dom.Element;
  * Tests everything about code completion and code assistance.
  */
 @SuppressWarnings("restriction")
-public class CodeCompletionTest extends AbstractAntUITest {
+@AntUITest
+public class CodeCompletionTest {
 
 	private static final String ANT_EDITOR_ID = "org.eclipse.ant.ui.internal.editor.AntEditor"; //$NON-NLS-1$
 
@@ -474,7 +475,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 				break;
 			}
 		}
-		assertTrue("Did not find displayString: " + displayString, found); //$NON-NLS-1$
+		assertTrue(found, "Did not find displayString: " + displayString); //$NON-NLS-1$
 	}
 
 	/**
@@ -489,7 +490,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 				break;
 			}
 		}
-		assertFalse("Found displayString: " + displayString, found); //$NON-NLS-1$
+		assertFalse(found, "Found displayString: " + displayString); //$NON-NLS-1$
 	}
 
 	/**
@@ -620,7 +621,8 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		assertThat(proposals).hasSize(2);
 		assertContains("v", proposals); //$NON-NLS-1$
 		assertContains("eclipse", proposals); //$NON-NLS-1$
-		assertTrue("Additional proposal information not correct", proposals[1].getAdditionalProposalInfo().startsWith("Testing Eclipse")); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(proposals[1].getAdditionalProposalInfo().startsWith("Testing Eclipse"), //$NON-NLS-1$
+				"Additional proposal information not correct"); //$NON-NLS-1$
 		processor.dispose();
 	}
 
@@ -662,8 +664,9 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		processor.setCursorPosition(lineOffset + columnNumber);
 		ICompletionProposal[] proposals = processor.getProposalsFromDocument(document, ""); //$NON-NLS-1$
 		assertThat(proposals).hasSize(1);
-		assertTrue("Proposal not correct", proposals[0].getDisplayString().equals("some-tasks")); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Additional proposal information not correct", proposals[0].getAdditionalProposalInfo().endsWith("Not required")); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(proposals[0].getDisplayString().equals("some-tasks"), "Proposal not correct"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(proposals[0].getAdditionalProposalInfo().endsWith("Not required"), //$NON-NLS-1$
+				"Additional proposal information not correct"); //$NON-NLS-1$
 		processor.dispose();
 	}
 
