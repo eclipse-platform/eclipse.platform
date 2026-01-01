@@ -19,8 +19,8 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWo
 import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,19 +33,17 @@ import org.eclipse.core.resources.mapping.ModelStatus;
 import org.eclipse.core.resources.mapping.ResourceChangeValidator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests for change validation
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class ChangeValidationTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private IResourceChangeDescriptionFactory factory;
 	private IProject project;
@@ -106,7 +104,7 @@ public class ChangeValidationTest {
 		return null;
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		TestModelProvider.enabled = true;
 		project = getWorkspace().getRoot().getProject("Project");
@@ -116,7 +114,7 @@ public class ChangeValidationTest {
 		factory = createEmptyChangeDescription();
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		TestModelProvider.enabled = false;
 	}
@@ -284,7 +282,7 @@ public class ChangeValidationTest {
 		try {
 			TestModelProvider.checkContentsDeletion = true;
 			IStatus status = validateChange(factory);
-			assertEquals(assertMessage, expectedStatus, status.getSeverity());
+			assertEquals(expectedStatus, status.getSeverity(), assertMessage);
 		} finally {
 			TestModelProvider.checkContentsDeletion = false;
 		}

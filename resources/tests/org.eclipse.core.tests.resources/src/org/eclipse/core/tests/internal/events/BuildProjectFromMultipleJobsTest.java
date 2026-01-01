@@ -19,8 +19,8 @@ import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RE
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,12 +39,12 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tests.internal.builders.ConfigurationBuilder;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
 import org.eclipse.core.tests.resources.regression.SimpleBuilder;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests that triggering a project build from multiple jobs does not cause assertion failures,
@@ -52,16 +52,14 @@ import org.junit.Test;
  *
  * @see <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=517411">Eclipse bug 517411</a>
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class BuildProjectFromMultipleJobsTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private static final String TEST_PROJECT_NAME = "ProjectForBuildCommandTest";
 
 	private final ErrorLogListener logListener = new ErrorLogListener();
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		// auto-build makes reproducing the problem harder,
 		// since it may build before we trigger parallel builds from the test
@@ -69,7 +67,7 @@ public class BuildProjectFromMultipleJobsTest {
 		Platform.addLogListener(logListener);
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		Job.getJobManager().cancel(BuildTestProject.class);
 
@@ -148,10 +146,10 @@ public class BuildProjectFromMultipleJobsTest {
 
 	private IProject createTestProject(String builderId, IProgressMonitor monitor) throws CoreException {
 		IProject project = getTestProject();
-		assertFalse("Expected test project to not exist at beginning of test", project.exists());
+		assertFalse(project.exists(), "Expected test project to not exist at beginning of test");
 
 		createInWorkspace(project);
-		assertTrue("Expected test project to be open after creation", project.isOpen());
+		assertTrue(project.isOpen(), "Expected test project to be open after creation");
 
 		// add some builder to the project, so that we can run into the concurrency problem
 		updateProjectDescription(project).addingCommand(builderId).apply();

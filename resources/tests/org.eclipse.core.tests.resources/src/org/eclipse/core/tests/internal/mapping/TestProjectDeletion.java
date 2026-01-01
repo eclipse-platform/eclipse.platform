@@ -17,25 +17,23 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.mapping.IResourceChangeDescriptionFactory;
 import org.eclipse.core.resources.mapping.ResourceChangeValidator;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test to validate project kind and flags on deletion.
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class TestProjectDeletion {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private IResourceChangeDescriptionFactory factory;
 	private IProject project;
@@ -43,7 +41,7 @@ public class TestProjectDeletion {
 	private static int KIND_MASK = 0xFF;
 	private static int FLAGS_MASK = MASK ^= KIND_MASK;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		project = getWorkspace().getRoot().getProject("Project");
 		IResource[] resources = buildResources(project, new String[] { "a/", "a/b/", "a/c/", "a/d", "a/b/e", "a/b/f" });
@@ -52,8 +50,8 @@ public class TestProjectDeletion {
 		factory = ResourceChangeValidator.getValidator().createDeltaFactory();
 		int kind = factory.getDelta().getKind();
 		int flags = factory.getDelta().getFlags();
-		assertEquals("Projects delta kind should not contain any bits before refactoring.", 0, kind &= ~KIND_MASK);
-		assertEquals("Projects delta flags should not be set before refactoring.", 0, flags &= ~FLAGS_MASK);
+		assertEquals(0, kind &= ~KIND_MASK, "Projects delta kind should not contain any bits before refactoring.");
+		assertEquals(0, flags &= ~FLAGS_MASK, "Projects delta flags should not be set before refactoring.");
 	}
 
 	@Test
@@ -73,15 +71,16 @@ public class TestProjectDeletion {
 
 	private void checkAffectedChildrenStatus(IResourceDelta[] affectedChildren, boolean deleteContents) {
 		for (IResourceDelta iResourceDelta : affectedChildren) {
-			assertEquals("IResourceDelta.REMOVED kind is expected on project deletion.", IResourceDelta.REMOVED,
-					iResourceDelta.getKind());
+			assertEquals(IResourceDelta.REMOVED, iResourceDelta.getKind(),
+					"IResourceDelta.REMOVED kind is expected on project deletion.");
 			if (deleteContents) {
-				assertEquals("IResourceDelta.DELETE_CONTENT_PROPOSED flag should be set on project contents deletion.",
+				assertEquals(
 						IResourceDelta.DELETE_CONTENT_PROPOSED,
-						iResourceDelta.getFlags());
+						iResourceDelta.getFlags(),
+						"IResourceDelta.DELETE_CONTENT_PROPOSED flag should be set on project contents deletion.");
 			} else {
-				assertEquals("No flags should be set on project deletion from workspace.", 0,
-						iResourceDelta.getFlags());
+				assertEquals(0, iResourceDelta.getFlags(),
+						"No flags should be set on project deletion from workspace.");
 			}
 			checkAffectedChildrenStatus(iResourceDelta.getAffectedChildren(), deleteContents);
 		}
