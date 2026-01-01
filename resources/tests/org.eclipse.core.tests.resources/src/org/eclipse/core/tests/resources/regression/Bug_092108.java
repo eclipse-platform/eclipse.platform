@@ -21,17 +21,15 @@ import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform.OS;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests that obtaining file info works on the root directory on windows.
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class Bug_092108 {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	@Test
 	public void testBug() throws CoreException {

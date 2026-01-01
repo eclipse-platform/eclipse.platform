@@ -18,9 +18,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,21 +34,20 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.internal.builders.CustomTriggerBuilder;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests protocol of IProjectDescription and other specified behavior
  * that relates to the project description.
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class IProjectDescriptionTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	@Test
 	public void testDescriptionConstant() {
-		assertEquals("1.0", ".project", IProjectDescription.DESCRIPTION_FILE_NAME);
+		assertEquals(".project", IProjectDescription.DESCRIPTION_FILE_NAME);
 	}
 
 	/**
@@ -60,7 +59,7 @@ public class IProjectDescriptionTest {
 		createInWorkspace(project);
 		project.refreshLocal(IResource.DEPTH_INFINITE, null);
 		IFile descriptionFile = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
-		assertTrue("1.0", descriptionFile.exists());
+		assertTrue(descriptionFile.exists());
 
 		// Add a builder to the build command.
 		IProjectDescription desc = project.getDescription();
@@ -72,7 +71,7 @@ public class IProjectDescriptionTest {
 		project.build(IncrementalProjectBuilder.FULL_BUILD, null);
 
 		// Get a non-cloned version of the project desc build spec, and check for the builder
-		assertTrue("2.0", ((BuildCommand) project.internalGetDescription().getBuildSpec(false)[0]).getBuilders() != null);
+		assertTrue(((BuildCommand) project.internalGetDescription().getBuildSpec(false)[0]).getBuilders() != null);
 
 		// Now reset the build command. The builder shouldn't disappear.
 		desc = project.getDescription();
@@ -80,7 +79,7 @@ public class IProjectDescriptionTest {
 		project.setDescription(desc, null);
 
 		// builder should still be there
-		assertTrue("3.0", ((BuildCommand) project.internalGetDescription().getBuildSpec(false)[0]).getBuilders() != null);
+		assertTrue(((BuildCommand) project.internalGetDescription().getBuildSpec(false)[0]).getBuilders() != null);
 	}
 
 	/**
@@ -94,7 +93,7 @@ public class IProjectDescriptionTest {
 		IProject target2 = getWorkspace().getRoot().getProject("target2");
 		createInWorkspace(project);
 		IFile descriptionFile = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
-		assertTrue("1.0", descriptionFile.exists());
+		assertTrue(descriptionFile.exists());
 
 		long timestamp = descriptionFile.getLocalTimeStamp();
 
@@ -113,14 +112,14 @@ public class IProjectDescriptionTest {
 		project.setDescription(description, IResource.NONE, null);
 
 		//the timestamp should be the same
-		assertEquals("2.0", timestamp, descriptionFile.getLocalTimeStamp());
+		assertEquals(timestamp, descriptionFile.getLocalTimeStamp());
 
 		//adding a dynamic reference should not dirty the file
 		description = project.getDescription();
 		description.setDynamicReferences(new IProject[] { target1, target2 });
 		project.setDescription(description, IResource.NONE, null);
 
-		assertEquals("2.1", timestamp, descriptionFile.getLocalTimeStamp());
+		assertEquals(timestamp, descriptionFile.getLocalTimeStamp());
 	}
 
 	/**
@@ -154,7 +153,7 @@ public class IProjectDescriptionTest {
 		description.setBuildSpec(new ICommand[] { command });
 		project.setDescription(description, IResource.NONE, null);
 
-		assertTrue("3.0", modificationStamp != projectDescription.getModificationStamp());
+		assertTrue(modificationStamp != projectDescription.getModificationStamp());
 	}
 
 	@Test

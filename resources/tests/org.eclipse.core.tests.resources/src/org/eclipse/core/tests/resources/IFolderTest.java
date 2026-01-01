@@ -26,9 +26,10 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonito
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.InputStream;
 import org.eclipse.core.resources.IFile;
@@ -41,13 +42,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.runtime.QualifiedName;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class IFolderTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	@Test
 	public void testChangeCase() throws CoreException {
@@ -88,8 +88,8 @@ public class IFolderTest {
 		assertThrows(CoreException.class, () -> before.copy(after.getFullPath(), IResource.FORCE, createTestMonitor()));
 
 		//the destination should not exist, because the source does not exist
-		assertTrue("1.1", !before.exists());
-		assertTrue("1.2", !after.exists());
+		assertFalse(before.exists());
+		assertFalse(after.exists());
 	}
 
 	@Test
@@ -100,12 +100,12 @@ public class IFolderTest {
 		removeFromWorkspace(derived);
 
 		derived.create(IResource.DERIVED, true, createTestMonitor());
-		assertTrue("1.0", derived.isDerived());
-		assertTrue("1.1", !derived.isTeamPrivateMember());
+		assertTrue(derived.isDerived());
+		assertFalse(derived.isTeamPrivateMember());
 		derived.delete(false, createTestMonitor());
 		derived.create(IResource.NONE, true, createTestMonitor());
-		assertTrue("2.0", !derived.isDerived());
-		assertTrue("2.1", !derived.isTeamPrivateMember());
+		assertFalse(derived.isDerived());
+		assertFalse(derived.isTeamPrivateMember());
 	}
 
 	@Test
@@ -121,7 +121,7 @@ public class IFolderTest {
 
 		derived.create(IResource.FORCE | IResource.DERIVED, true, createTestMonitor());
 
-		assertTrue("2.0", verifier.isDeltaValid());
+		assertTrue(verifier.isDeltaValid());
 	}
 
 	@Test
@@ -132,13 +132,13 @@ public class IFolderTest {
 		removeFromWorkspace(teamPrivate);
 
 		teamPrivate.create(IResource.TEAM_PRIVATE | IResource.DERIVED, true, createTestMonitor());
-		assertTrue("1.0", teamPrivate.isTeamPrivateMember());
-		assertTrue("1.1", teamPrivate.isDerived());
+		assertTrue(teamPrivate.isTeamPrivateMember());
+		assertTrue(teamPrivate.isDerived());
 
 		teamPrivate.delete(false, createTestMonitor());
 		teamPrivate.create(IResource.NONE, true, createTestMonitor());
-		assertTrue("2.0", !teamPrivate.isTeamPrivateMember());
-		assertTrue("2.1", !teamPrivate.isDerived());
+		assertFalse(teamPrivate.isTeamPrivateMember());
+		assertFalse(teamPrivate.isDerived());
 	}
 
 	@Test
@@ -149,13 +149,13 @@ public class IFolderTest {
 		removeFromWorkspace(teamPrivate);
 
 		teamPrivate.create(IResource.TEAM_PRIVATE, true, createTestMonitor());
-		assertTrue("1.0", teamPrivate.isTeamPrivateMember());
-		assertTrue("1.1", !teamPrivate.isDerived());
+		assertTrue(teamPrivate.isTeamPrivateMember());
+		assertFalse(teamPrivate.isDerived());
 
 		teamPrivate.delete(false, createTestMonitor());
 		teamPrivate.create(IResource.NONE, true, createTestMonitor());
-		assertTrue("2.0", !teamPrivate.isTeamPrivateMember());
-		assertTrue("2.1", !teamPrivate.isDerived());
+		assertFalse(teamPrivate.isTeamPrivateMember());
+		assertFalse(teamPrivate.isDerived());
 	}
 
 	@Test
@@ -165,32 +165,32 @@ public class IFolderTest {
 		createInWorkspace(project);
 
 		IFolder target = project.getFolder("Folder1");
-		assertTrue("1.0", !target.exists());
+		assertFalse(target.exists());
 		target.create(true, true, createTestMonitor());
-		assertTrue("1.1", target.exists());
+		assertTrue(target.exists());
 
 		// nested folder creation
 		IFolder nestedTarget = target.getFolder("Folder2");
-		assertTrue("2.0", !nestedTarget.exists());
+		assertFalse(nestedTarget.exists());
 		nestedTarget.create(true, true, createTestMonitor());
-		assertTrue("2.1", nestedTarget.exists());
+		assertTrue(nestedTarget.exists());
 
 		// try to create a folder that already exists
-		assertTrue("3.0", target.exists());
+		assertTrue(target.exists());
 		IFolder folderTarget = target;
 		assertThrows(CoreException.class, () -> folderTarget.create(true, true, createTestMonitor()));
-		assertTrue("3.2", target.exists());
+		assertTrue(target.exists());
 
 		// try to create a folder over a file that exists
 		IFile file = target.getFile("File1");
 		target = target.getFolder("File1");
 		file.create(createRandomContentsStream(), true, createTestMonitor());
-		assertTrue("4.0", file.exists());
+		assertTrue(file.exists());
 
 		IFolder subfolderTarget = target;
 		assertThrows(CoreException.class, () -> subfolderTarget.create(true, true, createTestMonitor()));
-		assertTrue("5.1", file.exists());
-		assertTrue("5.2", !target.exists());
+		assertTrue(file.exists());
+		assertFalse(target.exists());
 
 		// try to create a folder on a project (one segment) path
 		assertThrows(IllegalArgumentException.class,
@@ -201,20 +201,20 @@ public class IFolderTest {
 		file.create(null, true, createTestMonitor());
 
 		target = project.getFolder("File2/Folder4");
-		assertTrue("7.1", !target.exists());
+		assertFalse(target.exists());
 		IFolder nonexistentSubfolderTarget = target;
 		assertThrows(CoreException.class, () -> nonexistentSubfolderTarget.create(true, true, createTestMonitor()));
-		assertTrue("7.3", file.exists());
-		assertTrue("7.4", !target.exists());
+		assertTrue(file.exists());
+		assertFalse(target.exists());
 
 		// try to create a folder under a non-existant parent
 		IFolder folder = project.getFolder("Folder5");
 		target = folder.getFolder("Folder6");
-		assertTrue("8.0", !folder.exists());
+		assertFalse(folder.exists());
 		IFolder nonexistentFolderTarget = target;
 		assertThrows(CoreException.class, () -> nonexistentFolderTarget.create(true, true, createTestMonitor()));
-		assertTrue("8.2", !folder.exists());
-		assertTrue("8.3", !target.exists());
+		assertFalse(folder.exists());
+		assertFalse(target.exists());
 	}
 
 	@Test
@@ -259,9 +259,9 @@ public class IFolderTest {
 		IFile existing = getWorkspace().getRoot().getFile(path);
 		createInWorkspace(existing);
 		IFolder target = getWorkspace().getRoot().getFolder(path);
-		assertThrows("Should not be able to create folder over a file", CoreException.class,
-				() -> target.create(true, true, createTestMonitor()));
-		assertTrue("2.0", existing.exists());
+		assertThrows(CoreException.class, () -> target.create(true, true, createTestMonitor()),
+				"Should not be able to create folder over a file");
+		assertTrue(existing.exists());
 	}
 
 	/**
@@ -284,9 +284,9 @@ public class IFolderTest {
 
 		for (String name : names) {
 			IFolder folder = project.getFolder(name);
-			assertTrue("1.0 " + name, !folder.exists());
+			assertFalse(folder.exists(), name);
 			assertThrows(CoreException.class, () -> folder.create(true, true, createTestMonitor()));
-			assertTrue("1.2 " + name, !folder.exists());
+			assertFalse(folder.exists(), name);
 		}
 
 		//do some tests with valid names that are *almost* invalid
@@ -299,9 +299,9 @@ public class IFolderTest {
 		}
 		for (String name : names) {
 			IFolder folder = project.getFolder(name);
-			assertTrue("2.0 " + name, !folder.exists());
+			assertFalse(folder.exists(), name);
 			folder.create(true, true, createTestMonitor());
-			assertTrue("2.2 " + name, folder.exists());
+			assertTrue(folder.exists(), name);
 		}
 	}
 
@@ -331,7 +331,7 @@ public class IFolderTest {
 		source.copy(dest.getFullPath(), true, createTestMonitor());
 		assertExistsInWorkspace(dest);
 		assertExistsInWorkspace(source);
-		assertTrue("1.2", dest.isReadOnly());
+		assertTrue(dest.isReadOnly());
 
 		// cleanup - ensure that the files can be deleted.
 		source.setReadOnly(false);
@@ -351,10 +351,10 @@ public class IFolderTest {
 		createInWorkspace(target);
 		target.setPersistentProperty(name, value);
 		// see if we can get the property
-		assertTrue("2.0", target.getPersistentProperty(name).equals(value));
+		assertTrue(target.getPersistentProperty(name).equals(value));
 		// see what happens if we get a non-existant property
 		QualifiedName nonExistentPropertyName = new QualifiedName("itp-test", "testNonProperty");
-		assertNull("2.1", target.getPersistentProperty(nonExistentPropertyName));
+		assertNull(target.getPersistentProperty(nonExistentPropertyName));
 	}
 
 }
