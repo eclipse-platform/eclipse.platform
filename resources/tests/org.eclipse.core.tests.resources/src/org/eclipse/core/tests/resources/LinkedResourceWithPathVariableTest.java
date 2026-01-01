@@ -26,6 +26,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomCont
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
@@ -208,15 +209,15 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		URI value = manager.getURIValue(PROJECT_VARIABLE_NAME);
 		URI relativeValue = manager.getURIValue(PROJECT_RELATIVE_VARIABLE_NAME);
 
-		assertTrue("1.0", !value.equals(relativeValue));
+		assertFalse(value.equals(relativeValue));
 
 		URI resolvedValue = manager.resolveURI(value);
-		assertTrue("1.1", value.equals(resolvedValue));
+		assertTrue(value.equals(resolvedValue));
 
 		URI resolvedRelativeValue = manager.resolveURI(relativeValue);
-		assertTrue("1.2", !relativeValue.equals(resolvedRelativeValue));
+		assertFalse(relativeValue.equals(resolvedRelativeValue));
 
-		assertTrue("1.3", resolvedValue.equals(resolvedRelativeValue));
+		assertTrue(resolvedValue.equals(resolvedRelativeValue));
 	}
 
 	/**
@@ -259,7 +260,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 
 		assertExistsInWorkspace(file);
 		// the location is null
-		assertNull("3.6", file.getLocation());
+		assertNull(file.getLocation());
 
 		// try validating another link location while there is a link with null location
 		IFile other = existingProject.getFile("OtherVar");
@@ -269,10 +270,10 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		manager.setURIValue(VARIABLE_NAME, URIUtil.toURI(existingValue));
 
 		assertExistsInWorkspace(file);
-		assertNotNull("5.1", file.getLocation());
+		assertNotNull(file.getLocation());
 		assertExistsInFileSystem(file);
 		// the contents must be the original ones
-		assertEquals("5.3", "contents for a file", file.readString());
+		assertEquals("contents for a file", file.readString());
 	}
 
 	/**
@@ -315,7 +316,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 
 		assertExistsInWorkspace(file);
 		// the location is null
-		assertNull("3.6", file.getLocation());
+		assertNull(file.getLocation());
 
 		// try validating another link location while there is a link with null
 		// location
@@ -326,10 +327,10 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		manager.setURIValue(PROJECT_VARIABLE_NAME, URIUtil.toURI(existingValue));
 
 		assertExistsInWorkspace(file);
-		assertNotNull("5.1", file.getLocation());
+		assertNotNull(file.getLocation());
 		assertExistsInFileSystem(file);
 		// the contents must be the original ones
-		assertEquals("5.3", "contents for a file", file.readString());
+		assertEquals("contents for a file", file.readString());
 	}
 
 	/**
@@ -531,7 +532,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 
 		assertExistsInWorkspace(file);
 		// the location is null
-		assertNull("3.6", file.getLocation());
+		assertNull(file.getLocation());
 
 		// try validating another link location while there is a link with null
 		// location
@@ -542,10 +543,10 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		manager.setURIValue(PROJECT_RELATIVE_VARIABLE_NAME, existingValue);
 
 		assertExistsInWorkspace(file);
-		assertNotNull("5.1", file.getLocation());
+		assertNotNull(file.getLocation());
 		assertExistsInFileSystem(file);
 		// the contents must be the original ones
-		assertEquals("5.3", "contents for a file", file.readString());
+		assertEquals("contents for a file", file.readString());
 	}
 
 	/**
@@ -590,7 +591,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		IFile destination = folder.getFile(existingFileInExistingProject.getName());
 		assertThrows(CoreException.class,
 				() -> existingFileInExistingProject.copy(destination.getFullPath(), IResource.NONE, createTestMonitor()));
-		assertTrue("3.6", !destination.exists());
+		assertFalse(destination.exists());
 
 		//try to create a sub-file
 		assertThrows(CoreException.class, () -> destination.create(createRandomContentsStream(), IResource.NONE, createTestMonitor()));
@@ -606,13 +607,13 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 
 		assertExistsInWorkspace(folder);
 		// the location is null
-		assertNull("4.2", folder.getLocation());
+		assertNull(folder.getLocation());
 
 		// re-creates the variable with its previous value
 		manager.setURIValue(VARIABLE_NAME, existingValue);
 
 		assertExistsInWorkspace(folder);
-		assertNotNull("6.1", folder.getLocation());
+		assertNotNull(folder.getLocation());
 		assertExistsInFileSystem(folder);
 		assertDoesNotExistInWorkspace(childFile);
 		assertExistsInFileSystem(childFile);
@@ -709,7 +710,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		IFile destination = folder.getFile(existingFileInExistingProject.getName());
 		assertThrows(CoreException.class,
 				() -> existingFileInExistingProject.copy(destination.getFullPath(), IResource.NONE, createTestMonitor()));
-		assertTrue("3.6", !destination.exists());
+		assertFalse(destination.exists());
 
 		// try to create a sub-file
 		assertThrows(CoreException.class, () -> destination.create(createRandomContentsStream(), IResource.NONE, createTestMonitor()));
@@ -725,13 +726,13 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 
 		assertExistsInWorkspace(folder);
 		// the location is null
-		assertNull("4.2", folder.getLocation());
+		assertNull(folder.getLocation());
 
 		// re-creates the variable with its previous value
 		manager.setURIValue(PROJECT_VARIABLE_NAME, existingValue);
 
 		assertExistsInWorkspace(folder);
-		assertNotNull("6.1", folder.getLocation());
+		assertNotNull(folder.getLocation());
 		assertExistsInFileSystem(folder);
 		assertDoesNotExistInWorkspace(childFile);
 		assertExistsInFileSystem(childFile);
@@ -757,8 +758,8 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		assertThrows(CoreException.class, () -> testFolder.createLink(folderLocation, IResource.NONE, createTestMonitor()));
 
 		//validate method should return warning
-		assertTrue("1.2", getWorkspace().validateLinkLocation(testFolder, folderLocation).getSeverity() == IStatus.WARNING);
-		assertTrue("1.3", getWorkspace().validateLinkLocation(testFile, fileLocation).getSeverity() == IStatus.WARNING);
+		assertTrue(getWorkspace().validateLinkLocation(testFolder, folderLocation).getSeverity() == IStatus.WARNING);
+		assertTrue(getWorkspace().validateLinkLocation(testFile, fileLocation).getSeverity() == IStatus.WARNING);
 
 		//should succeed with ALLOW_MISSING_LOCAL
 		testFile.createLink(fileLocation, IResource.ALLOW_MISSING_LOCAL, createTestMonitor());
@@ -830,7 +831,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		// Resource was out of sync - should not be able to change
 		CoreException exception = assertThrows(CoreException.class,
 				() -> file.setContents(createInputStream("new contents"), IResource.NONE, createTestMonitor()));
-		assertEquals("3.1", IResourceStatus.OUT_OF_SYNC_LOCAL, exception.getStatus().getCode());
+		assertEquals(IResourceStatus.OUT_OF_SYNC_LOCAL, exception.getStatus().getCode());
 
 		assertExistsInWorkspace(file);
 		// the location is different - does not exist anymore
@@ -845,7 +846,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		// its location must have changed reflecting the variable change
 		URI expectedNewLocation = manager.resolveURI(variableBasedLocation);
 		URI actualNewLocation = file.getLocationURI();
-		assertEquals("4.2", expectedNewLocation, actualNewLocation);
+		assertEquals(expectedNewLocation, actualNewLocation);
 
 		// its contents are as just set
 		assertEquals("contents in different location", file.readString());
@@ -859,7 +860,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		assertExistsInWorkspace(file);
 		assertExistsInFileSystem(file);
 		// the contents must be the original ones
-		assertEquals("5.3", "contents for a file", file.readString());
+		assertEquals("contents for a file", file.readString());
 	}
 
 	/**
@@ -896,7 +897,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		// Resource was out of sync - should not be able to change
 		CoreException exception = assertThrows(CoreException.class,
 				() -> file.setContents(createInputStream("new contents"), IResource.NONE, createTestMonitor()));
-		assertEquals("3.1", IResourceStatus.OUT_OF_SYNC_LOCAL, exception.getStatus().getCode());
+		assertEquals(IResourceStatus.OUT_OF_SYNC_LOCAL, exception.getStatus().getCode());
 
 		assertExistsInWorkspace(file);
 		// the location is different - does not exist anymore
@@ -911,7 +912,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		// its location must have changed reflecting the variable change
 		URI expectedNewLocation = manager.resolveURI(variableBasedLocation);
 		URI actualNewLocation = file.getLocationURI();
-		assertEquals("4.2", expectedNewLocation, actualNewLocation);
+		assertEquals(expectedNewLocation, actualNewLocation);
 
 		// its contents are as just set
 		assertEquals("contents in different location", file.readString());
@@ -925,41 +926,8 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		assertExistsInWorkspace(file);
 		assertExistsInFileSystem(file);
 		// the contents must be the original ones
-		assertEquals("5.3", "contents for a file", file.readString());
+		assertEquals("contents for a file", file.readString());
 	}
-
-	/**
-	 * Tests a scenario where a variable used in a linked file location is
-	 * changed.
-	 */
-	//	public void testGetPathVariable() {
-	//		final IPathVariableManager manager = existingProject.getPathVariableManager();
-	//		IPathVariable variable = manager.getPathVariable("PROJECT_LOC");
-	//		assertTrue("1.0", variable != null);
-	//		assertTrue("1.1", variable.isReadOnly());
-	//		assertEquals("1.2", null, variable.getVariableHints());
-	//
-	//		variable = manager.getPathVariable("PROJECT_LOC_does_not_exist");
-	//		assertTrue("2.0", variable == null);
-	//
-	//		variable = manager.getPathVariable("PARENT");
-	//		assertTrue("3.0", variable != null);
-	//		assertTrue("3.1", variable.isReadOnly());
-	//		Object[] extensions = variable.getVariableHints();
-	//		assertTrue("3.2", extensions == null);
-	//
-	//		try {
-	//			IPath newLocation = FileSystemHelper.getRandomLocation();
-	//			toDelete.add(newLocation);
-	//			manager.setValue(PROJECT_VARIABLE_NAME, newLocation);
-	//		} catch (CoreException e) {
-	//			fail("4.1", e);
-	//		}
-	//		variable = manager.getPathVariable(PROJECT_VARIABLE_NAME);
-	//		assertTrue("4.0", variable != null);
-	//		assertTrue("4.1", !variable.isReadOnly());
-	//		assertEquals("4.2", null, variable.getVariableHints());
-	//	}
 
 	/**
 	 * Test Bug 288880 - Redundant path variables generated when converting some linked resources to path variable-relative
@@ -982,14 +950,14 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		IPath resolvedPath = URIUtil.toPath(pathVariableManager.resolveURI(URIUtil.toURI(variableBasedLocation)));
 		// the file should not exist yet
 		assertDoesNotExistInWorkspace(file);
-		assertEquals("3.1", targetPath, resolvedPath);
+		assertEquals(targetPath, resolvedPath);
 
 		variableBasedLocation = convertToRelative(targetPath, file, true, null);
 
 		resolvedPath = URIUtil.toPath(pathVariableManager.resolveURI(URIUtil.toURI(variableBasedLocation)));
 		// the file should not exist yet
 		assertDoesNotExistInWorkspace(file);
-		assertEquals("5.1", targetPath, resolvedPath);
+		assertEquals(targetPath, resolvedPath);
 	}
 
 	@Test
@@ -1016,9 +984,9 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 
 		for (int i = 0; i < table.length; i++) {
 			String result = pathVariableManager.convertToUserEditableFormat(toOS(table[i][0]), false);
-			assertEquals("1." + i, toOS(table[i][1]), result);
+			assertEquals(i + "", toOS(table[i][1]), result);
 			String original = pathVariableManager.convertFromUserEditableFormat(result, false);
-			assertEquals("2." + i, toOS(table[i].length == 2 ? table[i][0] : table[i][2]), original);
+			assertEquals(i + "", toOS(table[i].length == 2 ? table[i][0] : table[i][2]), original);
 		}
 
 		String[][] tableLocationFormat = { // format: {internal-format, user-editable-format [, internal-format-reconverted]
@@ -1041,9 +1009,11 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 
 		for (int i = 0; i < table.length; i++) {
 			String result = pathVariableManager.convertToUserEditableFormat(toOS(tableLocationFormat[i][0]), true);
-			assertEquals("3." + i, toOS(tableLocationFormat[i][1]), result);
+			assertEquals(i + "", toOS(tableLocationFormat[i][1]), result);
 			String original = pathVariableManager.convertFromUserEditableFormat(result, true);
-			assertEquals("4." + i, toOS(tableLocationFormat[i].length == 2 ? tableLocationFormat[i][0] : tableLocationFormat[i][2]), original);
+			assertEquals(i + "",
+					toOS(tableLocationFormat[i].length == 2 ? tableLocationFormat[i][0] : tableLocationFormat[i][2]),
+					original);
 		}
 	}
 
@@ -1057,9 +1027,9 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 	@Test
 	public void testPrefixVariablesAreNotConfused() {
 		URI uri = nonExistingFileInExistingFolder.getPathVariableManager().getURIValue("PARENT");
-		assertEquals("1.0", uri, null);
+		assertEquals(uri, null);
 		uri = nonExistingFileInExistingFolder.getPathVariableManager().getURIValue("PARENT_LOC");
-		assertNotNull("1.1", uri);
+		assertNotNull(uri);
 	}
 
 	/**

@@ -145,7 +145,7 @@ public class ProjectSnapshotPerfManualTest {
 			}
 		}.run(getClass(), "Forced refresh only", 1, 1);
 		verifier[0].verifyDelta(null);
-		assertTrue("1.0 " + verifier[0].getMessage(), verifier[0].isDeltaValid());
+		assertTrue(verifier[0].getMessage(), verifier[0].isDeltaValid());
 
 		// close and delete project but leave contents
 		project.close(null);

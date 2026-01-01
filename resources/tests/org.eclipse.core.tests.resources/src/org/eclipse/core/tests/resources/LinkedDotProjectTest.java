@@ -82,16 +82,16 @@ public class LinkedDotProjectTest {
 		linkDotProject(project);
 		assertFalse(project.getLocation().isPrefixOf(project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME).getLocation()));
 		//getNature on open project with no natures
-		assertNull("3.1", project.getNature(NATURE_MISSING));
-		assertNull("3.2", project.getNature(NATURE_EARTH));
+		assertNull(project.getNature(NATURE_MISSING));
+		assertNull(project.getNature(NATURE_EARTH));
 		IProjectDescription desc = project.getDescription();
 		desc.setNatureIds(new String[] { NATURE_EARTH });
 		project.setDescription(desc, null);
 		//getNature on open project with natures
 		IProjectNature nature = project.getNature(NATURE_EARTH);
-		assertNotNull("5.0", nature);
-		assertNull("5.1", project.getNature(NATURE_MISSING));
-		assertEquals("6.0", project, nature.getProject());
+		assertNotNull(nature);
+		assertNull(project.getNature(NATURE_MISSING));
+		assertEquals(project, nature.getProject());
 		assertFalse(project.getLocation().isPrefixOf(project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME).getLocation()));
 
 		//ensure nature is preserved on copy
@@ -101,9 +101,9 @@ public class LinkedDotProjectTest {
 		assertNotEquals(project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME).getLocationURI(), project2.getFile(IProjectDescription.DESCRIPTION_FILE_NAME).getLocationURI());
 		assertTrue(project2.getLocation().isPrefixOf(project2.getFile(IProjectDescription.DESCRIPTION_FILE_NAME).getLocation()));
 		nature2 = project2.getNature(NATURE_EARTH);
-		assertNotNull("7.0", nature2);
-		assertEquals("7.1", project2, nature2.getProject());
-		assertEquals("7.2", project, nature.getProject());
+		assertNotNull(nature2);
+		assertEquals(project2, nature2.getProject());
+		assertEquals(project, nature.getProject());
 	}
 
 }

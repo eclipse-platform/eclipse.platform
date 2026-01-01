@@ -107,9 +107,9 @@ public class LinkedResourceSyncMoveAndCopyTest {
 
 		CoreException exception = assertThrows(CoreException.class, () -> fileLink
 				.setContents(createRandomString().getBytes(), IResource.NONE, createTestMonitor()));
-		assertEquals("1.2", IResourceStatus.NOT_FOUND_LOCAL, exception.getStatus().getCode());
+		assertEquals(IResourceStatus.NOT_FOUND_LOCAL, exception.getStatus().getCode());
 
-		assertTrue("2.0", fileLink.isSynchronized(IResource.DEPTH_INFINITE));
+		assertTrue(fileLink.isSynchronized(IResource.DEPTH_INFINITE));
 		internalMovedAndCopyTest(fileLink, IResource.NONE, false);
 
 		createInFileSystem(fileLocation);
@@ -117,14 +117,14 @@ public class LinkedResourceSyncMoveAndCopyTest {
 
 		exception = assertThrows(CoreException.class, () -> fileLink
 				.setContents(createRandomString().getBytes(), IResource.NONE, createTestMonitor()));
-		assertEquals("2.2", IResourceStatus.OUT_OF_SYNC_LOCAL, exception.getStatus().getCode());
+		assertEquals(IResourceStatus.OUT_OF_SYNC_LOCAL, exception.getStatus().getCode());
 
-		assertFalse("3.0", fileLink.isSynchronized(IResource.DEPTH_INFINITE));
+		assertFalse(fileLink.isSynchronized(IResource.DEPTH_INFINITE));
 		internalMovedAndCopyTest(fileLink, IResource.NONE, false);
 
 		fileLink.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
-		assertTrue("5.0", fileLink.isSynchronized(IResource.DEPTH_INFINITE));
+		assertTrue(fileLink.isSynchronized(IResource.DEPTH_INFINITE));
 		internalMovedAndCopyTest(fileLink, IResource.NONE, true);
 	}
 
@@ -134,18 +134,18 @@ public class LinkedResourceSyncMoveAndCopyTest {
 		IPath fileLocation = getRandomLocation();
 		fileLink.createLink(fileLocation, IResource.ALLOW_MISSING_LOCAL, createTestMonitor());
 
-		assertTrue("2.0", fileLink.isSynchronized(IResource.DEPTH_INFINITE));
+		assertTrue(fileLink.isSynchronized(IResource.DEPTH_INFINITE));
 		internalMovedAndCopyTest(fileLink, IResource.SHALLOW, true);
 
 		createInFileSystem(fileLocation);
 		workspaceRule.deleteOnTearDown(fileLocation);
 
-		assertFalse("3.0", fileLink.isSynchronized(IResource.DEPTH_INFINITE));
+		assertFalse(fileLink.isSynchronized(IResource.DEPTH_INFINITE));
 		internalMovedAndCopyTest(fileLink, IResource.SHALLOW, true);
 
 		fileLink.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
-		assertTrue("5.0", fileLink.isSynchronized(IResource.DEPTH_INFINITE));
+		assertTrue(fileLink.isSynchronized(IResource.DEPTH_INFINITE));
 		internalMovedAndCopyTest(fileLink, IResource.SHALLOW, true);
 	}
 
@@ -155,18 +155,18 @@ public class LinkedResourceSyncMoveAndCopyTest {
 		IPath folderLocation = getRandomLocation();
 		folderLink.createLink(folderLocation, IResource.ALLOW_MISSING_LOCAL, createTestMonitor());
 
-		assertTrue("3.0", folderLink.isSynchronized(IResource.DEPTH_INFINITE));
+		assertTrue(folderLink.isSynchronized(IResource.DEPTH_INFINITE));
 		internalMovedAndCopyTest(folderLink, IResource.NONE, false);
 
 		folderLocation.toFile().mkdir();
 		workspaceRule.deleteOnTearDown(folderLocation);
 
-		assertFalse("3.0", folderLink.isSynchronized(IResource.DEPTH_INFINITE));
+		assertFalse(folderLink.isSynchronized(IResource.DEPTH_INFINITE));
 		internalMovedAndCopyTest(folderLink, IResource.NONE, true);
 
 		folderLink.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
-		assertTrue("5.0", folderLink.isSynchronized(IResource.DEPTH_INFINITE));
+		assertTrue(folderLink.isSynchronized(IResource.DEPTH_INFINITE));
 		internalMovedAndCopyTest(folderLink, IResource.NONE, true);
 	}
 
@@ -176,18 +176,18 @@ public class LinkedResourceSyncMoveAndCopyTest {
 		IPath folderLocation = getRandomLocation();
 		folderLink.createLink(folderLocation, IResource.ALLOW_MISSING_LOCAL, createTestMonitor());
 
-		assertTrue("2.0", folderLink.isSynchronized(IResource.DEPTH_INFINITE));
+		assertTrue(folderLink.isSynchronized(IResource.DEPTH_INFINITE));
 		internalMovedAndCopyTest(folderLink, IResource.SHALLOW, true);
 
 		folderLocation.toFile().mkdir();
 		workspaceRule.deleteOnTearDown(folderLocation);
 
-		assertFalse("3.0", folderLink.isSynchronized(IResource.DEPTH_INFINITE));
+		assertFalse(folderLink.isSynchronized(IResource.DEPTH_INFINITE));
 		internalMovedAndCopyTest(folderLink, IResource.SHALLOW, true);
 
 		folderLink.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
-		assertTrue("5.0", folderLink.isSynchronized(IResource.DEPTH_INFINITE));
+		assertTrue(folderLink.isSynchronized(IResource.DEPTH_INFINITE));
 		internalMovedAndCopyTest(folderLink, IResource.SHALLOW, true);
 	}
 
@@ -216,8 +216,8 @@ public class LinkedResourceSyncMoveAndCopyTest {
 				.move(otherExistingProject.getFolder(createUniqueString()).getFullPath(), IResource.NONE, createTestMonitor()));
 
 		// both the folder and link in the source project should not exist
-		assertFalse("5.0", folderWithLinks.exists());
-		assertFalse("6.0", linkedFile.exists());
+		assertFalse(folderWithLinks.exists());
+		assertFalse(linkedFile.exists());
 	}
 
 	/**
@@ -245,8 +245,8 @@ public class LinkedResourceSyncMoveAndCopyTest {
 				.copy(otherExistingProject.getFolder(createUniqueString()).getFullPath(), IResource.NONE, createTestMonitor()));
 
 		// both the folder and link in the source project should exist
-		assertTrue("5.0", folderWithLinks.exists());
-		assertTrue("6.0", linkedFile.exists());
+		assertTrue(folderWithLinks.exists());
+		assertTrue(linkedFile.exists());
 	}
 
 	@Test

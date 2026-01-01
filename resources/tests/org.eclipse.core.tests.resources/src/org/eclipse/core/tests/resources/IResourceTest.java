@@ -42,7 +42,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -726,32 +725,16 @@ public class IResourceTest {
 		createInWorkspace(project);
 
 		// pass DEPTH_ONE to avoid using proxy visitor
-		assertThrows(CoreException.class, () -> a.accept((IResourceVisitor) resource -> {
-			// we should not get that far if the resource does not exist
-			fail("1.0");
-			return true;
-		}, IResource.DEPTH_ONE, IResource.NONE));
+		assertThrows(CoreException.class, () -> a.accept((IResourceVisitor) resource -> true, IResource.DEPTH_ONE, IResource.NONE));
 
-		assertThrows(CoreException.class, () -> a.accept(proxy -> {
-			// we should not get that far if the resource does not exist
-			fail("2.0");
-			return true;
-		}, IResource.NONE));
+		assertThrows(CoreException.class, () -> a.accept(proxy -> true, IResource.NONE));
 
 		// pass DEPTH_ONE to avoid using proxy visitor
 		// if we don't check for existence, then no exception should be thrown
-		a.accept((IResourceVisitor) resource -> {
-			// we should not get that far if the resource does not exist
-			fail("3.0");
-			return true;
-		}, IResource.DEPTH_ONE, IContainer.DO_NOT_CHECK_EXISTENCE);
+		a.accept((IResourceVisitor) resource -> true, IResource.DEPTH_ONE, IContainer.DO_NOT_CHECK_EXISTENCE);
 
 		// if we don't check for existence, then no exception should be thrown
-		a.accept(proxy -> {
-			// we should not get that far if the resource does not exist
-			fail("4.0");
-			return true;
-		}, IContainer.DO_NOT_CHECK_EXISTENCE);
+		a.accept(proxy -> true, IContainer.DO_NOT_CHECK_EXISTENCE);
 	}
 
 	@Test
@@ -780,20 +763,20 @@ public class IResourceTest {
 		toVisit.addAll(Arrays.asList(new IResource[] {a}));
 		toVisitCount[0] = 1;
 		a.accept(visitor, IResource.DEPTH_ZERO, IResource.NONE);
-		assertTrue("1.0", toVisit.isEmpty());
-		assertEquals("1.1", 0, toVisitCount[0]);
+		assertTrue(toVisit.isEmpty());
+		assertEquals(0, toVisitCount[0]);
 
 		toVisit.addAll(Arrays.asList(a, a1, a2, b));
 		toVisitCount[0] = 4;
 		a.accept(visitor, IResource.DEPTH_ONE, IResource.NONE);
-		assertTrue("2.0", toVisit.isEmpty());
-		assertEquals("2.1", 0, toVisitCount[0]);
+		assertTrue(toVisit.isEmpty());
+		assertEquals(0, toVisitCount[0]);
 
 		toVisit.addAll(Arrays.asList(a, a1, a2, b, b1, b2, c, c1, c2));
 		toVisitCount[0] = 9;
 		a.accept(visitor, IResource.DEPTH_INFINITE, IResource.NONE);
-		assertTrue("3.0", toVisit.isEmpty());
-		assertEquals("3.1", 0, toVisitCount[0]);
+		assertTrue(toVisit.isEmpty());
+		assertEquals(0, toVisitCount[0]);
 	}
 
 	/**
@@ -815,10 +798,10 @@ public class IResourceTest {
 
 		project1.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		project2.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
-		assertTrue("1.1", project1.exists());
-		assertTrue("1.2", project1.isSynchronized(IResource.DEPTH_INFINITE));
-		assertFalse("1.3", project2.exists());
-		assertTrue("1.4", project2.isSynchronized(IResource.DEPTH_INFINITE));
+		assertTrue(project1.exists());
+		assertTrue(project1.isSynchronized(IResource.DEPTH_INFINITE));
+		assertFalse(project2.exists());
+		assertTrue(project2.isSynchronized(IResource.DEPTH_INFINITE));
 	}
 
 	/**
@@ -826,28 +809,28 @@ public class IResourceTest {
 	@Test
 	public void testConstants() {
 		// IResource constants (all have fixed values)
-		assertEquals("1.0", 0, IResource.NONE);
+		assertEquals(0, IResource.NONE);
 
-		assertEquals("2.1", 0x1, IResource.FILE);
-		assertEquals("2.2", 0x2, IResource.FOLDER);
-		assertEquals("2.3", 0x4, IResource.PROJECT);
-		assertEquals("2.4", 0x8, IResource.ROOT);
+		assertEquals(0x1, IResource.FILE);
+		assertEquals(0x2, IResource.FOLDER);
+		assertEquals(0x4, IResource.PROJECT);
+		assertEquals(0x8, IResource.ROOT);
 
-		assertEquals("3.1", 0, IResource.DEPTH_ZERO);
-		assertEquals("3.2", 1, IResource.DEPTH_ONE);
-		assertEquals("3.1", 2, IResource.DEPTH_INFINITE);
+		assertEquals(0, IResource.DEPTH_ZERO);
+		assertEquals(1, IResource.DEPTH_ONE);
+		assertEquals(2, IResource.DEPTH_INFINITE);
 
-		assertEquals("4.1", -1, IResource.NULL_STAMP);
+		assertEquals(-1, IResource.NULL_STAMP);
 
-		assertEquals("5.1", 0x1, IResource.FORCE);
-		assertEquals("5.2", 0x2, IResource.KEEP_HISTORY);
-		assertEquals("5.3", 0x4, IResource.ALWAYS_DELETE_PROJECT_CONTENT);
-		assertEquals("5.4", 0x8, IResource.NEVER_DELETE_PROJECT_CONTENT);
+		assertEquals(0x1, IResource.FORCE);
+		assertEquals(0x2, IResource.KEEP_HISTORY);
+		assertEquals(0x4, IResource.ALWAYS_DELETE_PROJECT_CONTENT);
+		assertEquals(0x8, IResource.NEVER_DELETE_PROJECT_CONTENT);
 
 		// IContainer constants (all have fixed values)
-		assertEquals("6.1", 0x1, IContainer.INCLUDE_PHANTOMS);
-		assertEquals("6.2", 0x2, IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS);
-		assertEquals("6.2", 0x8, IContainer.INCLUDE_HIDDEN);
+		assertEquals(0x1, IContainer.INCLUDE_PHANTOMS);
+		assertEquals(0x2, IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS);
+		assertEquals(0x8, IContainer.INCLUDE_HIDDEN);
 	}
 
 	/**
@@ -1261,89 +1244,89 @@ public class IResourceTest {
 		// default; check each type
 
 		// root - cannot be marked as derived
-		assertFalse("2.1.1", root.isDerived());
-		assertFalse("2.1.2", project.isDerived());
-		assertFalse("2.1.3", folder.isDerived());
-		assertFalse("2.1.4", file.isDerived());
+		assertFalse(root.isDerived());
+		assertFalse(project.isDerived());
+		assertFalse(folder.isDerived());
+		assertFalse(file.isDerived());
 
 		root.setDerived(true, new NullProgressMonitor());
-		assertFalse("2.2.1", root.isDerived());
-		assertFalse("2.2.2", project.isDerived());
-		assertFalse("2.2.3", folder.isDerived());
-		assertFalse("2.2.4", file.isDerived());
-		assertTrue("2.2.5" + verifier.getMessage(), verifier.isDeltaValid());
+		assertFalse(root.isDerived());
+		assertFalse(project.isDerived());
+		assertFalse(folder.isDerived());
+		assertFalse(file.isDerived());
+		assertTrue(verifier.getMessage(), verifier.isDeltaValid());
 		verifier.reset();
 
 		root.setDerived(false, new NullProgressMonitor());
-		assertFalse("2.3.1", root.isDerived());
-		assertFalse("2.3.2", project.isDerived());
-		assertFalse("2.3.3", folder.isDerived());
-		assertFalse("2.3.4", file.isDerived());
-		assertTrue("2.3.5" + verifier.getMessage(), verifier.isDeltaValid());
+		assertFalse(root.isDerived());
+		assertFalse(project.isDerived());
+		assertFalse(folder.isDerived());
+		assertFalse(file.isDerived());
+		assertTrue(verifier.getMessage(), verifier.isDeltaValid());
 		verifier.reset();
 
 		// project - cannot be marked as derived
 		project.setDerived(true, new NullProgressMonitor());
-		assertFalse("3.1.1", root.isDerived());
-		assertFalse("3.1.2", project.isDerived());
-		assertFalse("3.1.3", folder.isDerived());
-		assertFalse("3.1.4", file.isDerived());
-		assertTrue("3.1.5" + verifier.getMessage(), verifier.isDeltaValid());
+		assertFalse(root.isDerived());
+		assertFalse(project.isDerived());
+		assertFalse(folder.isDerived());
+		assertFalse(file.isDerived());
+		assertTrue(verifier.getMessage(), verifier.isDeltaValid());
 		verifier.reset();
 
 		project.setDerived(false, new NullProgressMonitor());
-		assertFalse("3.2.1", root.isDerived());
-		assertFalse("3.2.2", project.isDerived());
-		assertFalse("3.2.3", folder.isDerived());
-		assertFalse("3.2.4", file.isDerived());
-		assertTrue("3.2.5" + verifier.getMessage(), verifier.isDeltaValid());
+		assertFalse(root.isDerived());
+		assertFalse(project.isDerived());
+		assertFalse(folder.isDerived());
+		assertFalse(file.isDerived());
+		assertTrue(verifier.getMessage(), verifier.isDeltaValid());
 		verifier.reset();
 
 		// folder
 		verifier.addExpectedChange(folder, IResourceDelta.CHANGED, IResourceDelta.DERIVED_CHANGED);
 		folder.setDerived(true, new NullProgressMonitor());
-		assertFalse("4.1.1", root.isDerived());
-		assertFalse("4.1.2", project.isDerived());
-		assertTrue("4.1.3", folder.isDerived());
-		assertFalse("4.1.4", file.isDerived());
-		assertTrue("4.1.5" + verifier.getMessage(), verifier.isDeltaValid());
+		assertFalse(root.isDerived());
+		assertFalse(project.isDerived());
+		assertTrue(folder.isDerived());
+		assertFalse(file.isDerived());
+		assertTrue(verifier.getMessage(), verifier.isDeltaValid());
 		verifier.reset();
 
 		verifier.addExpectedChange(folder, IResourceDelta.CHANGED, IResourceDelta.DERIVED_CHANGED);
 		folder.setDerived(false, new NullProgressMonitor());
-		assertFalse("4.2.1", root.isDerived());
-		assertFalse("4.2.2", project.isDerived());
-		assertFalse("4.2.3", folder.isDerived());
-		assertFalse("4.2.4", file.isDerived());
-		assertTrue("4.2.5" + verifier.getMessage(), verifier.isDeltaValid());
+		assertFalse(root.isDerived());
+		assertFalse(project.isDerived());
+		assertFalse(folder.isDerived());
+		assertFalse(file.isDerived());
+		assertTrue(verifier.getMessage(), verifier.isDeltaValid());
 		verifier.reset();
 
 		// file
 		verifier.addExpectedChange(file, IResourceDelta.CHANGED, IResourceDelta.DERIVED_CHANGED);
 		file.setDerived(true, new NullProgressMonitor());
-		assertFalse("5.1.1", root.isDerived());
-		assertFalse("5.1.2", project.isDerived());
-		assertFalse("5.1.3", folder.isDerived());
-		assertTrue("5.1.4", file.isDerived());
-		assertTrue("5.1.5" + verifier.getMessage(), verifier.isDeltaValid());
+		assertFalse(root.isDerived());
+		assertFalse(project.isDerived());
+		assertFalse(folder.isDerived());
+		assertTrue(file.isDerived());
+		assertTrue(verifier.getMessage(), verifier.isDeltaValid());
 		verifier.reset();
 
 		verifier.addExpectedChange(file, IResourceDelta.CHANGED, IResourceDelta.DERIVED_CHANGED);
 		file.setDerived(false, new NullProgressMonitor());
-		assertFalse("5.2.1", root.isDerived());
-		assertFalse("5.2.2", project.isDerived());
-		assertFalse("5.2.3", folder.isDerived());
-		assertFalse("5.2.4", file.isDerived());
-		assertTrue("5.2.5" + verifier.getMessage(), verifier.isDeltaValid());
+		assertFalse(root.isDerived());
+		assertFalse(project.isDerived());
+		assertFalse(folder.isDerived());
+		assertFalse(file.isDerived());
+		assertTrue(verifier.getMessage(), verifier.isDeltaValid());
 		verifier.reset();
 
 		/* remove trash */
 		project.delete(true, createTestMonitor());
 
 		// isDerived should return false when resource does not exist
-		assertFalse("8.1", project.isDerived());
-		assertFalse("8.2", folder.isDerived());
-		assertFalse("8.3", file.isDerived());
+		assertFalse(project.isDerived());
+		assertFalse(folder.isDerived());
+		assertFalse(file.isDerived());
 
 		// setDerived should fail when resource does not exist
 		assertThrows(CoreException.class, () -> project.setDerived(false, new NullProgressMonitor()));
@@ -1370,64 +1353,64 @@ public class IResourceTest {
 		// default; check each type
 
 		// root - cannot be marked as derived
-		assertFalse("2.1.1", root.isDerived());
-		assertFalse("2.1.2", project.isDerived());
-		assertFalse("2.1.3", folder.isDerived());
-		assertFalse("2.1.4", file.isDerived());
+		assertFalse(root.isDerived());
+		assertFalse(project.isDerived());
+		assertFalse(folder.isDerived());
+		assertFalse(file.isDerived());
 		root.setDerived(true);
-		assertFalse("2.2.1", root.isDerived());
-		assertFalse("2.2.2", project.isDerived());
-		assertFalse("2.2.3", folder.isDerived());
-		assertFalse("2.2.4", file.isDerived());
+		assertFalse(root.isDerived());
+		assertFalse(project.isDerived());
+		assertFalse(folder.isDerived());
+		assertFalse(file.isDerived());
 		root.setDerived(false);
-		assertFalse("2.3.1", root.isDerived());
-		assertFalse("2.3.2", project.isDerived());
-		assertFalse("2.3.3", folder.isDerived());
-		assertFalse("2.3.4", file.isDerived());
+		assertFalse(root.isDerived());
+		assertFalse(project.isDerived());
+		assertFalse(folder.isDerived());
+		assertFalse(file.isDerived());
 
 		// project - cannot be marked as derived
 		project.setDerived(true);
-		assertFalse("3.1.1", root.isDerived());
-		assertFalse("3.1.2", project.isDerived());
-		assertFalse("3.1.3", folder.isDerived());
-		assertFalse("3.1.4", file.isDerived());
+		assertFalse(root.isDerived());
+		assertFalse(project.isDerived());
+		assertFalse(folder.isDerived());
+		assertFalse(file.isDerived());
 		project.setDerived(false);
-		assertFalse("3.2.1", root.isDerived());
-		assertFalse("3.2.2", project.isDerived());
-		assertFalse("3.2.3", folder.isDerived());
-		assertFalse("3.2.4", file.isDerived());
+		assertFalse(root.isDerived());
+		assertFalse(project.isDerived());
+		assertFalse(folder.isDerived());
+		assertFalse(file.isDerived());
 
 		// folder
 		folder.setDerived(true);
-		assertFalse("4.1.1", root.isDerived());
-		assertFalse("4.1.2", project.isDerived());
-		assertTrue("4.1.3", folder.isDerived());
-		assertFalse("4.1.4", file.isDerived());
+		assertFalse(root.isDerived());
+		assertFalse(project.isDerived());
+		assertTrue(folder.isDerived());
+		assertFalse(file.isDerived());
 		folder.setDerived(false);
-		assertFalse("4.2.1", root.isDerived());
-		assertFalse("4.2.2", project.isDerived());
-		assertFalse("4.2.3", folder.isDerived());
-		assertFalse("4.2.4", file.isDerived());
+		assertFalse(root.isDerived());
+		assertFalse(project.isDerived());
+		assertFalse(folder.isDerived());
+		assertFalse(file.isDerived());
 
 		// file
 		file.setDerived(true);
-		assertFalse("5.1.1", root.isDerived());
-		assertFalse("5.1.2", project.isDerived());
-		assertFalse("5.1.3", folder.isDerived());
-		assertTrue("5.1.4", file.isDerived());
+		assertFalse(root.isDerived());
+		assertFalse(project.isDerived());
+		assertFalse(folder.isDerived());
+		assertTrue(file.isDerived());
 		file.setDerived(false);
-		assertFalse("5.2.1", root.isDerived());
-		assertFalse("5.2.2", project.isDerived());
-		assertFalse("5.2.3", folder.isDerived());
-		assertFalse("5.2.4", file.isDerived());
+		assertFalse(root.isDerived());
+		assertFalse(project.isDerived());
+		assertFalse(folder.isDerived());
+		assertFalse(file.isDerived());
 
 		/* remove trash */
 		project.delete(true, true, createTestMonitor());
 
 		// isDerived should return false when resource does not exist
-		assertFalse("8.1", project.isDerived());
-		assertFalse("8.2", folder.isDerived());
-		assertFalse("8.3", file.isDerived());
+		assertFalse(project.isDerived());
+		assertFalse(folder.isDerived());
+		assertFalse(file.isDerived());
 
 		// setDerived should fail when resource does not exist
 		assertThrows(CoreException.class, () -> project.setDerived(false));
@@ -1453,48 +1436,48 @@ public class IResourceTest {
 		// initial values should be false
 		for (IResource resource2 : resources) {
 			IResource resource = resource2;
-			assertFalse("1.0: " + resource.getFullPath(), resource.isDerived());
+			assertFalse(resource.getFullPath().toString(), resource.isDerived());
 		}
 
 		// now set the root as derived
 		root.setDerived(true, new NullProgressMonitor());
 
 		// we can't mark the root as derived, so none of its children should be derived
-		assertFalse("2.1: " + root.getFullPath(), root.isDerived(IResource.CHECK_ANCESTORS));
-		assertFalse("2.2: " + project.getFullPath(), project.isDerived(IResource.CHECK_ANCESTORS));
-		assertFalse("2.3: " + folder.getFullPath(), folder.isDerived(IResource.CHECK_ANCESTORS));
-		assertFalse("2.4: " + file1.getFullPath(), file1.isDerived(IResource.CHECK_ANCESTORS));
-		assertFalse("2.5: " + file2.getFullPath(), file2.isDerived(IResource.CHECK_ANCESTORS));
+		assertFalse(root.getFullPath().toString(), root.isDerived(IResource.CHECK_ANCESTORS));
+		assertFalse(project.getFullPath().toString(), project.isDerived(IResource.CHECK_ANCESTORS));
+		assertFalse(folder.getFullPath().toString(), folder.isDerived(IResource.CHECK_ANCESTORS));
+		assertFalse(file1.getFullPath().toString(), file1.isDerived(IResource.CHECK_ANCESTORS));
+		assertFalse(file2.getFullPath().toString(), file2.isDerived(IResource.CHECK_ANCESTORS));
 
 		// now set the project as derived
 		project.setDerived(true, new NullProgressMonitor());
 
 		// we can't mark a project as derived, so none of its children should be derived
 		// even when CHECK_ANCESTORS is used
-		assertFalse("3.0: " + project.getFullPath(), project.isDerived(IResource.CHECK_ANCESTORS));
-		assertFalse("3.1: " + folder.getFullPath(), folder.isDerived(IResource.CHECK_ANCESTORS));
-		assertFalse("3.2: " + file1.getFullPath(), file1.isDerived(IResource.CHECK_ANCESTORS));
-		assertFalse("3.3: " + file2.getFullPath(), file2.isDerived(IResource.CHECK_ANCESTORS));
+		assertFalse(project.getFullPath().toString(), project.isDerived(IResource.CHECK_ANCESTORS));
+		assertFalse(folder.getFullPath().toString(), folder.isDerived(IResource.CHECK_ANCESTORS));
+		assertFalse(file1.getFullPath().toString(), file1.isDerived(IResource.CHECK_ANCESTORS));
+		assertFalse(file2.getFullPath().toString(), file2.isDerived(IResource.CHECK_ANCESTORS));
 
 		// now set the folder as derived
 		folder.setDerived(true, new NullProgressMonitor());
 
 		// first check if isDerived() returns valid values
-		assertTrue("4.1: " + folder.getFullPath(), folder.isDerived());
-		assertFalse("4.2: " + file1.getFullPath(), file1.isDerived());
-		assertFalse("4.3: " + file2.getFullPath(), file2.isDerived());
+		assertTrue(folder.getFullPath().toString(), folder.isDerived());
+		assertFalse(file1.getFullPath().toString(), file1.isDerived());
+		assertFalse(file2.getFullPath().toString(), file2.isDerived());
 
 		// check if isDerived(IResource.CHECK_ANCESTORS) returns valid values
-		assertTrue("4.4: " + folder.getFullPath(), folder.isDerived(IResource.CHECK_ANCESTORS));
-		assertTrue("4.5: " + file1.getFullPath(), file1.isDerived(IResource.CHECK_ANCESTORS));
-		assertTrue("4.6: " + file2.getFullPath(), file2.isDerived(IResource.CHECK_ANCESTORS));
+		assertTrue(folder.getFullPath().toString(), folder.isDerived(IResource.CHECK_ANCESTORS));
+		assertTrue(file1.getFullPath().toString(), file1.isDerived(IResource.CHECK_ANCESTORS));
+		assertTrue(file2.getFullPath().toString(), file2.isDerived(IResource.CHECK_ANCESTORS));
 
 		// clear the values
 		folder.setDerived(false, new NullProgressMonitor());
 
 		// values should be false again
 		for (IResource resource2 : resources) {
-			assertFalse("7.0: " + resource2.getFullPath(), resource2.isDerived());
+			assertFalse(resource2.getFullPath().toString(), resource2.isDerived());
 		}
 	}
 
@@ -1623,7 +1606,7 @@ public class IResourceTest {
 
 		for (IResource resource : resources) {
 			if (resource.getType() != IResource.ROOT) {
-				assertEquals("1.0." + resource.getFullPath(), IResource.NULL_STAMP, resource.getModificationStamp());
+				assertEquals(resource.getFullPath().toString(), IResource.NULL_STAMP, resource.getModificationStamp());
 			}
 		}
 
@@ -1634,24 +1617,25 @@ public class IResourceTest {
 		for (IProject project2 : projects) {
 			project = project2;
 			project.create(createTestMonitor());
-			assertEquals("2.1." + project.getFullPath(), IResource.NULL_STAMP, project.getModificationStamp());
+			assertEquals(project.getFullPath().toString(), IResource.NULL_STAMP, project.getModificationStamp());
 		}
 
 		// open the project(s) and create the resources. none should have a
 		// null stamp anymore.
 		for (IProject project2 : projects) {
 			project = project2;
-			assertEquals("3.1." + project.getFullPath(), IResource.NULL_STAMP, project.getModificationStamp());
+			assertEquals(project.getFullPath().toString(), IResource.NULL_STAMP, project.getModificationStamp());
 			project.open(createTestMonitor());
-			assertNotEquals("3.3." + project.getFullPath(), IResource.NULL_STAMP, project.getModificationStamp());
+			assertNotEquals(project.getFullPath().toString(), IResource.NULL_STAMP, project.getModificationStamp());
 			// cache the value for later use
 			table.put(project.getFullPath(), Long.valueOf(project.getModificationStamp()));
 		}
 		for (IResource resource : resources) {
 			if (resource.getType() != IResource.PROJECT) {
-				assertEquals("3.4." + resource.getFullPath(), IResource.NULL_STAMP, resource.getModificationStamp());
+				assertEquals(resource.getFullPath().toString(), IResource.NULL_STAMP, resource.getModificationStamp());
 				createInWorkspace(resource);
-				assertNotEquals("3.5." + resource.getFullPath(), IResource.NULL_STAMP, resource.getModificationStamp());
+				assertNotEquals(resource.getFullPath().toString(), IResource.NULL_STAMP,
+						resource.getModificationStamp());
 				// cache the value for later use
 				table.put(resource.getFullPath(), Long.valueOf(resource.getModificationStamp()));
 			}
@@ -1664,7 +1648,7 @@ public class IResourceTest {
 		}
 		for (IResource resource : resources) {
 			if (resource.getType() != IResource.ROOT) {
-				assertEquals("4.1." + resource.getFullPath(), IResource.NULL_STAMP, resource.getModificationStamp());
+				assertEquals(resource.getFullPath().toString(), IResource.NULL_STAMP, resource.getModificationStamp());
 			}
 		}
 
@@ -1676,9 +1660,9 @@ public class IResourceTest {
 		for (IResource resource : resources) {
 			if (resource.getType() != IResource.PROJECT) {
 				Object v = table.get(resource.getFullPath());
-				assertNotNull("5.1." + resource.getFullPath(), v);
+				assertNotNull(resource.getFullPath().toString(), v);
 				long old = ((Long) v).longValue();
-				assertEquals("5.2." + resource.getFullPath(), old, resource.getModificationStamp());
+				assertEquals(resource.getFullPath().toString(), old, resource.getModificationStamp());
 			}
 		}
 
@@ -1689,9 +1673,9 @@ public class IResourceTest {
 				resource.touch(createTestMonitor());
 				long stamp = resource.getModificationStamp();
 				Object v = table.get(resource.getFullPath());
-				assertNotNull("6.0." + resource.getFullPath(), v);
+				assertNotNull(resource.getFullPath().toString(), v);
 				long old = ((Long) v).longValue();
-				assertNotEquals("6.1." + resource.getFullPath(), old, stamp);
+				assertNotEquals(resource.getFullPath().toString(), old, stamp);
 				// cache for next time
 				tempTable.put(resource.getFullPath(), Long.valueOf(stamp));
 			}
@@ -1705,9 +1689,10 @@ public class IResourceTest {
 		IResourceVisitor visitor = resource -> {
 			//projects and root are always local
 			if (resource.getType() == IResource.ROOT || resource.getType() == IResource.PROJECT) {
-				assertNotEquals("7.2" + resource.getFullPath(), IResource.NULL_STAMP, resource.getModificationStamp());
+				assertNotEquals(resource.getFullPath().toString(), IResource.NULL_STAMP,
+						resource.getModificationStamp());
 			} else {
-				assertEquals("7.3." + resource.getFullPath(), IResource.NULL_STAMP, resource.getModificationStamp());
+				assertEquals(resource.getFullPath().toString(), IResource.NULL_STAMP, resource.getModificationStamp());
 			}
 			return true;
 		};
@@ -1721,11 +1706,11 @@ public class IResourceTest {
 		for (IResource resource : resources) {
 			if (resource.getType() != IResource.ROOT) {
 				long stamp = resource.getModificationStamp();
-				assertNotEquals("8.2." + resource.getFullPath(), IResource.NULL_STAMP, stamp);
+				assertNotEquals(resource.getFullPath().toString(), IResource.NULL_STAMP, stamp);
 				Object v = table.get(resource.getFullPath());
-				assertNotNull("8.3." + resource.getFullPath(), v);
+				assertNotNull(resource.getFullPath().toString(), v);
 				long old = ((Long) v).longValue();
-				assertNotEquals("8.4." + resource.getFullPath(), IResource.NULL_STAMP, old);
+				assertNotEquals(resource.getFullPath().toString(), IResource.NULL_STAMP, old);
 				tempTable.put(resource.getFullPath(), Long.valueOf(stamp));
 			}
 		}
@@ -1737,11 +1722,11 @@ public class IResourceTest {
 		for (IResource resource : resources) {
 			if (resource.getType() != IResource.ROOT) {
 				long newStamp = resource.getModificationStamp();
-				assertNotEquals("9.2." + resource.getFullPath(), IResource.NULL_STAMP, newStamp);
+				assertNotEquals(resource.getFullPath().toString(), IResource.NULL_STAMP, newStamp);
 				Object v = table.get(resource.getFullPath());
-				assertNotNull("9.3." + resource.getFullPath(), v);
+				assertNotNull(resource.getFullPath().toString(), v);
 				long oldStamp = ((Long) v).longValue();
-				assertEquals("9.4." + resource.getFullPath(), oldStamp, newStamp);
+				assertEquals(resource.getFullPath().toString(), oldStamp, newStamp);
 			}
 		}
 
@@ -1752,7 +1737,7 @@ public class IResourceTest {
 		// should be null
 		for (IResource resource : resources) {
 			if (resource.getType() != IResource.ROOT) {
-				assertEquals("10.1" + resource.getFullPath(), IResource.NULL_STAMP, resource.getModificationStamp());
+				assertEquals(resource.getFullPath().toString(), IResource.NULL_STAMP, resource.getModificationStamp());
 			}
 		}
 
@@ -1771,11 +1756,12 @@ public class IResourceTest {
 				case IResource.ROOT :
 					break;
 				case IResource.PROJECT :
-					assertNotEquals("11.1." + resource.getFullPath(), IResource.NULL_STAMP,
+					assertNotEquals(resource.getFullPath().toString(), IResource.NULL_STAMP,
 							resource.getModificationStamp());
 					break;
 				default :
-					assertEquals("11.2." + resource.getFullPath(), IResource.NULL_STAMP, resource.getModificationStamp());
+					assertEquals(resource.getFullPath().toString(), IResource.NULL_STAMP,
+							resource.getModificationStamp());
 					break;
 			}
 		}
@@ -1783,7 +1769,7 @@ public class IResourceTest {
 		getWorkspace().getRoot().setLocal(true, IResource.DEPTH_INFINITE, createTestMonitor());
 		visitor = resource -> {
 			if (resource.getType() != IResource.ROOT) {
-				assertNotEquals("12.1." + resource.getFullPath(), IResource.NULL_STAMP,
+				assertNotEquals(resource.getFullPath().toString(), IResource.NULL_STAMP,
 						resource.getModificationStamp());
 			}
 			return true;
@@ -1800,7 +1786,7 @@ public class IResourceTest {
 		final IFile file = getWorkspace().getRoot().getFile(IPath.fromOSString("/project/f"));
 		createInWorkspace(file);
 		long modificationStamp = file.getModificationStamp();
-		assertNotEquals("1.1", modificationStamp, IResource.NULL_STAMP);
+		assertNotEquals(modificationStamp, IResource.NULL_STAMP);
 
 		// Remove and re-create the file in a workspace operation
 		getWorkspace().run((IWorkspaceRunnable) monitor -> {
@@ -1808,7 +1794,7 @@ public class IResourceTest {
 			file.create(nullInputStream(), true, createTestMonitor());
 		}, createTestMonitor());
 
-		assertNotEquals("1.0", modificationStamp, file.getModificationStamp());
+		assertNotEquals(modificationStamp, file.getModificationStamp());
 	}
 
 	/**
@@ -1824,29 +1810,29 @@ public class IResourceTest {
 		IResource[] allResources = { project, topFolder, topFile, deepFile };
 
 		//non existing project
-		assertNull("2.0", project.getRawLocation());
+		assertNull(project.getRawLocation());
 
 		//resources in non-existing project
-		assertNull("2.1", topFolder.getRawLocation());
-		assertNull("2.2", topFile.getRawLocation());
-		assertNull("2.3", deepFile.getRawLocation());
+		assertNull(topFolder.getRawLocation());
+		assertNull(topFile.getRawLocation());
+		assertNull(deepFile.getRawLocation());
 
 		createInWorkspace(allResources);
 		//open project
-		assertNull("2.0", project.getRawLocation());
+		assertNull(project.getRawLocation());
 		//resources in open project
 		final IPath workspaceLocation = getWorkspace().getRoot().getLocation();
-		assertEquals("2.1", workspaceLocation.append(topFolder.getFullPath()), topFolder.getRawLocation());
-		assertEquals("2.2", workspaceLocation.append(topFile.getFullPath()), topFile.getRawLocation());
-		assertEquals("2.3", workspaceLocation.append(deepFile.getFullPath()), deepFile.getRawLocation());
+		assertEquals(workspaceLocation.append(topFolder.getFullPath()), topFolder.getRawLocation());
+		assertEquals(workspaceLocation.append(topFile.getFullPath()), topFile.getRawLocation());
+		assertEquals(workspaceLocation.append(deepFile.getFullPath()), deepFile.getRawLocation());
 
 		project.close(createTestMonitor());
 		//closed project
-		assertNull("3.0", project.getRawLocation());
+		assertNull(project.getRawLocation());
 		//resource in closed project
-		assertEquals("3.1", workspaceLocation.append(topFolder.getFullPath()), topFolder.getRawLocation());
-		assertEquals("3.2", workspaceLocation.append(topFile.getFullPath()), topFile.getRawLocation());
-		assertEquals("3.3", workspaceLocation.append(deepFile.getFullPath()), deepFile.getRawLocation());
+		assertEquals(workspaceLocation.append(topFolder.getFullPath()), topFolder.getRawLocation());
+		assertEquals(workspaceLocation.append(topFile.getFullPath()), topFile.getRawLocation());
+		assertEquals(workspaceLocation.append(deepFile.getFullPath()), deepFile.getRawLocation());
 
 		IPath projectLocation = getRandomLocation();
 		workspaceRule.deleteOnTearDown(projectLocation);
@@ -1866,20 +1852,20 @@ public class IResourceTest {
 			project.move(description, IResource.NONE, createTestMonitor());
 
 			//open project not in default location
-			assertEquals("4.0", projectLocation, project.getRawLocation());
+			assertEquals(projectLocation, project.getRawLocation());
 			//resource in open project not in default location
-			assertEquals("4.1", projectLocation.append(topFolder.getProjectRelativePath()), topFolder.getRawLocation());
-			assertEquals("4.2", projectLocation.append(topFile.getProjectRelativePath()), topFile.getRawLocation());
-			assertEquals("4.3", projectLocation.append(deepFile.getProjectRelativePath()), deepFile.getRawLocation());
+			assertEquals(projectLocation.append(topFolder.getProjectRelativePath()), topFolder.getRawLocation());
+			assertEquals(projectLocation.append(topFile.getProjectRelativePath()), topFile.getRawLocation());
+			assertEquals(projectLocation.append(deepFile.getProjectRelativePath()), deepFile.getRawLocation());
 
 			project.close(createTestMonitor());
 
 			//closed project not in default location
-			assertEquals("5.0", projectLocation, project.getRawLocation());
+			assertEquals(projectLocation, project.getRawLocation());
 			//resource in closed project not in default location
-			assertEquals("5.1", projectLocation.append(topFolder.getProjectRelativePath()), topFolder.getRawLocation());
-			assertEquals("5.2", projectLocation.append(topFile.getProjectRelativePath()), topFile.getRawLocation());
-			assertEquals("5.3", projectLocation.append(deepFile.getProjectRelativePath()), deepFile.getRawLocation());
+			assertEquals(projectLocation.append(topFolder.getProjectRelativePath()), topFolder.getRawLocation());
+			assertEquals(projectLocation.append(topFile.getProjectRelativePath()), topFile.getRawLocation());
+			assertEquals(projectLocation.append(deepFile.getProjectRelativePath()), deepFile.getRawLocation());
 
 			project.open(createTestMonitor());
 			removeFromWorkspace(topFolder);
@@ -1891,21 +1877,21 @@ public class IResourceTest {
 			createInWorkspace(deepFile);
 
 			//linked file
-			assertEquals("6.0", fileLocation, topFile.getRawLocation());
+			assertEquals(fileLocation, topFile.getRawLocation());
 			//linked folder
-			assertEquals("6.1", folderLocation, topFolder.getRawLocation());
+			assertEquals(folderLocation, topFolder.getRawLocation());
 			//resource below linked folder
-			assertEquals("6.2", folderLocation.append(deepFile.getName()), deepFile.getRawLocation());
+			assertEquals(folderLocation.append(deepFile.getName()), deepFile.getRawLocation());
 
 			project.close(createTestMonitor());
 
 			//linked file in closed project (should default to project
 			// location)
-			assertEquals("7.0", projectLocation.append(topFile.getProjectRelativePath()), topFile.getRawLocation());
+			assertEquals(projectLocation.append(topFile.getProjectRelativePath()), topFile.getRawLocation());
 			//linked folder in closed project
-			assertEquals("7.1", projectLocation.append(topFolder.getProjectRelativePath()), topFolder.getRawLocation());
+			assertEquals(projectLocation.append(topFolder.getProjectRelativePath()), topFolder.getRawLocation());
 			//resource below linked folder in closed project
-			assertEquals("7.3", projectLocation.append(deepFile.getProjectRelativePath()), deepFile.getRawLocation());
+			assertEquals(projectLocation.append(deepFile.getProjectRelativePath()), deepFile.getRawLocation());
 
 			project.open(createTestMonitor());
 			IPath variableFolderLocation = IPath.fromOSString(variableName).append("/VarFolderName");
@@ -1919,20 +1905,21 @@ public class IResourceTest {
 			createInWorkspace(deepFile);
 
 			//linked file with variable
-			assertEquals("8.0", variableFileLocation, topFile.getRawLocation());
+			assertEquals(variableFileLocation, topFile.getRawLocation());
 			//linked folder with variable
-			assertEquals("8.1", variableFolderLocation, topFolder.getRawLocation());
+			assertEquals(variableFolderLocation, topFolder.getRawLocation());
 			//resource below linked folder with variable
-			assertEquals("8.3", varMan.resolvePath(variableFolderLocation).append(deepFile.getName()), deepFile.getRawLocation());
+			assertEquals(varMan.resolvePath(variableFolderLocation).append(deepFile.getName()),
+					deepFile.getRawLocation());
 
 			project.close(createTestMonitor());
 
 			//linked file in closed project with variable
-			assertEquals("9.0", projectLocation.append(topFile.getProjectRelativePath()), topFile.getRawLocation());
+			assertEquals(projectLocation.append(topFile.getProjectRelativePath()), topFile.getRawLocation());
 			//linked folder in closed project with variable
-			assertEquals("9.1", projectLocation.append(topFolder.getProjectRelativePath()), topFolder.getRawLocation());
+			assertEquals(projectLocation.append(topFolder.getProjectRelativePath()), topFolder.getRawLocation());
 			//resource below linked folder in closed project with variable
-			assertEquals("9.3", projectLocation.append(deepFile.getProjectRelativePath()), deepFile.getRawLocation());
+			assertEquals(projectLocation.append(deepFile.getProjectRelativePath()), deepFile.getRawLocation());
 		} finally {
 			varMan.setValue(variableName, null);
 		}
@@ -2266,18 +2253,18 @@ public class IResourceTest {
 		file.create(createRandomContentsStream(), true, createTestMonitor());
 
 		// file
-		assertFalse("1.0", file.isReadOnly());
+		assertFalse(file.isReadOnly());
 		file.setReadOnly(true);
-		assertTrue("1.2", file.isReadOnly());
+		assertTrue(file.isReadOnly());
 		file.setReadOnly(false);
-		assertFalse("1.4", file.isReadOnly());
+		assertFalse(file.isReadOnly());
 
 		// folder
-		assertFalse("2.0", project.isReadOnly());
+		assertFalse(project.isReadOnly());
 		project.setReadOnly(true);
-		assertTrue("2.2", project.isReadOnly());
+		assertTrue(project.isReadOnly());
 		project.setReadOnly(false);
-		assertFalse("2.4", project.isReadOnly());
+		assertFalse(project.isReadOnly());
 	}
 
 	/**
@@ -2385,12 +2372,12 @@ public class IResourceTest {
 			resource.touch(null);
 			long newStamp = resource.getModificationStamp();
 			if (resource.getType() == IResource.ROOT) {
-				assertEquals("1.0." + resource.getFullPath(), oldStamp, newStamp);
+				assertEquals(resource.getFullPath().toString(), oldStamp, newStamp);
 			} else {
-				assertNotEquals("1.0." + resource.getFullPath(), oldStamp, newStamp);
+				assertNotEquals(resource.getFullPath().toString(), oldStamp, newStamp);
 			}
 			resource.revertModificationStamp(oldStamp);
-			assertEquals("1.1." + resource.getFullPath(), oldStamp, resource.getModificationStamp());
+			assertEquals(resource.getFullPath().toString(), oldStamp, resource.getModificationStamp());
 			return true;
 		});
 
@@ -2488,64 +2475,64 @@ public class IResourceTest {
 		// all non-TPM by default; check each type
 
 		// root - cannot be made team private member
-		assertFalse("2.1.1", root.isTeamPrivateMember());
-		assertFalse("2.1.2", project.isTeamPrivateMember());
-		assertFalse("2.1.3", folder.isTeamPrivateMember());
-		assertFalse("2.1.4", file.isTeamPrivateMember());
+		assertFalse(root.isTeamPrivateMember());
+		assertFalse(project.isTeamPrivateMember());
+		assertFalse(folder.isTeamPrivateMember());
+		assertFalse(file.isTeamPrivateMember());
 		root.setTeamPrivateMember(true);
-		assertFalse("2.2.1", root.isTeamPrivateMember());
-		assertFalse("2.2.2", project.isTeamPrivateMember());
-		assertFalse("2.2.3", folder.isTeamPrivateMember());
-		assertFalse("2.2.4", file.isTeamPrivateMember());
+		assertFalse(root.isTeamPrivateMember());
+		assertFalse(project.isTeamPrivateMember());
+		assertFalse(folder.isTeamPrivateMember());
+		assertFalse(file.isTeamPrivateMember());
 		root.setTeamPrivateMember(false);
-		assertFalse("2.3.1", root.isTeamPrivateMember());
-		assertFalse("2.3.2", project.isTeamPrivateMember());
-		assertFalse("2.3.3", folder.isTeamPrivateMember());
-		assertFalse("2.3.4", file.isTeamPrivateMember());
+		assertFalse(root.isTeamPrivateMember());
+		assertFalse(project.isTeamPrivateMember());
+		assertFalse(folder.isTeamPrivateMember());
+		assertFalse(file.isTeamPrivateMember());
 
 		// project - cannot be made team private member
 		project.setTeamPrivateMember(true);
-		assertFalse("3.1.1", root.isTeamPrivateMember());
-		assertFalse("3.1.2", project.isTeamPrivateMember());
-		assertFalse("3.1.3", folder.isTeamPrivateMember());
-		assertFalse("3.1.4", file.isTeamPrivateMember());
+		assertFalse(root.isTeamPrivateMember());
+		assertFalse(project.isTeamPrivateMember());
+		assertFalse(folder.isTeamPrivateMember());
+		assertFalse(file.isTeamPrivateMember());
 		project.setTeamPrivateMember(false);
-		assertFalse("3.2.1", root.isTeamPrivateMember());
-		assertFalse("3.2.2", project.isTeamPrivateMember());
-		assertFalse("3.2.3", folder.isTeamPrivateMember());
-		assertFalse("3.2.4", file.isTeamPrivateMember());
+		assertFalse(root.isTeamPrivateMember());
+		assertFalse(project.isTeamPrivateMember());
+		assertFalse(folder.isTeamPrivateMember());
+		assertFalse(file.isTeamPrivateMember());
 
 		// folder
 		folder.setTeamPrivateMember(true);
-		assertFalse("4.1.1", root.isTeamPrivateMember());
-		assertFalse("4.1.2", project.isTeamPrivateMember());
-		assertTrue("4.1.3", folder.isTeamPrivateMember());
-		assertFalse("4.1.4", file.isTeamPrivateMember());
+		assertFalse(root.isTeamPrivateMember());
+		assertFalse(project.isTeamPrivateMember());
+		assertTrue(folder.isTeamPrivateMember());
+		assertFalse(file.isTeamPrivateMember());
 		folder.setTeamPrivateMember(false);
-		assertFalse("4.2.1", root.isTeamPrivateMember());
-		assertFalse("4.2.2", project.isTeamPrivateMember());
-		assertFalse("4.2.3", folder.isTeamPrivateMember());
-		assertFalse("4.2.4", file.isTeamPrivateMember());
+		assertFalse(root.isTeamPrivateMember());
+		assertFalse(project.isTeamPrivateMember());
+		assertFalse(folder.isTeamPrivateMember());
+		assertFalse(file.isTeamPrivateMember());
 
 		// file
 		file.setTeamPrivateMember(true);
-		assertFalse("5.1.1", root.isTeamPrivateMember());
-		assertFalse("5.1.2", project.isTeamPrivateMember());
-		assertFalse("5.1.3", folder.isTeamPrivateMember());
-		assertTrue("5.1.4", file.isTeamPrivateMember());
+		assertFalse(root.isTeamPrivateMember());
+		assertFalse(project.isTeamPrivateMember());
+		assertFalse(folder.isTeamPrivateMember());
+		assertTrue(file.isTeamPrivateMember());
 		file.setTeamPrivateMember(false);
-		assertFalse("5.2.1", root.isTeamPrivateMember());
-		assertFalse("5.2.2", project.isTeamPrivateMember());
-		assertFalse("5.2.3", folder.isTeamPrivateMember());
-		assertFalse("5.2.4", file.isTeamPrivateMember());
+		assertFalse(root.isTeamPrivateMember());
+		assertFalse(project.isTeamPrivateMember());
+		assertFalse(folder.isTeamPrivateMember());
+		assertFalse(file.isTeamPrivateMember());
 
 		/* remove trash */
 		project.delete(true, createTestMonitor());
 
 		// isTeamPrivateMember should return false when resource does not exist
-		assertFalse("8.1", project.isTeamPrivateMember());
-		assertFalse("8.2", folder.isTeamPrivateMember());
-		assertFalse("8.3", file.isTeamPrivateMember());
+		assertFalse(project.isTeamPrivateMember());
+		assertFalse(folder.isTeamPrivateMember());
+		assertFalse(file.isTeamPrivateMember());
 
 		// setTeamPrivateMember should fail when resource does not exist
 		assertThrows(CoreException.class, () -> project.setTeamPrivateMember(false));
@@ -2577,7 +2564,7 @@ public class IResourceTest {
 		project.accept(visitor, IResource.DEPTH_INFINITE, IResource.NONE);
 
 		List<IResource> expectedOrder = Arrays.asList(project, project.getFile(".project"),  settings, prefs, a, a1, a2, b, b2, b1);
-		assertEquals("1.0", expectedOrder.toString(), actualOrder.toString());
+		assertEquals(expectedOrder.toString(), actualOrder.toString());
 	}
 
 	private static class LogListener implements ILogListener {

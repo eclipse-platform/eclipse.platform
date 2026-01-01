@@ -110,12 +110,12 @@ public class NonLocalLinkedResourceTest {
 
 		//shallow copy to destination should succeed
 		source.copy(destination.getFullPath(), IResource.SHALLOW, createTestMonitor());
-		assertTrue("1.1", destination.exists());
+		assertTrue(destination.exists());
 
 		//deep copy to destination should succeed
 		destination.delete(IResource.NONE, createTestMonitor());
 		source.copy(destination.getFullPath(), IResource.NONE, createTestMonitor());
-		assertTrue("2.1", destination.exists());
+		assertTrue(destination.exists());
 
 		//should fail when destination is occupied
 		assertThrows(CoreException.class, () -> source.copy(destination.getFullPath(), IResource.NONE, createTestMonitor()));

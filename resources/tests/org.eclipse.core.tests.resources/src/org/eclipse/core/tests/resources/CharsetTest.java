@@ -642,133 +642,6 @@ public class CharsetTest {
 			assertTrue(isDerivedEncodingStoredSeparately(project1));
 			assertTrue(derivedPrefs.isDerived());
 
-			//			//8 - manually changing preference 'true'->'false'
-			//			verifier.reset();
-			//			backgroundVerifier.reset();
-			//			verifier.addExpectedChange(regularPrefs, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
-			//			backgroundVerifier.addExpectedChange(regularPrefs, IResourceDelta.CHANGED, IResourceDelta.ENCODING);
-			//			backgroundVerifier.addExpectedChange(new IResource[] {project1, a1, b1, a, regularPrefs.getParent(), regularPrefs}, IResourceDelta.CHANGED, IResourceDelta.ENCODING);
-			//			backgroundVerifier.addExpectedChange(derivedPrefs, IResourceDelta.REMOVED, 0);
-			//			assertTrue("7.99", isDerivedEncodingStoredSeparately(project1));
-			//			try {
-			//				regularPrefs.setContents(new ByteArrayInputStream(SAMPLE_DERIVED_ENCODING_TO_FALSE_REGULAR_PREFS.getBytes()), 0, getMonitor());
-			//			} catch (CoreException e) {
-			//				fail("8.0", e);
-			//			}
-			//			assertTrue("8.1.1", verifier.waitForEvent(10000));
-			//			assertTrue("8.1.2", backgroundVerifier.waitForEvent(10000));
-			//			assertTrue("8.2.1 " + verifier.getMessage(), verifier.isDeltaValid());
-			//			assertTrue("8.2.2 " + backgroundVerifier.getMessage(), backgroundVerifier.isDeltaValid());
-			//			assertExistsInWorkspace("8.3", regularPrefs);
-			//			//checkPreferencesContent("8.3.1", regularPrefs, SAMPLE_DERIVED_ENCODING_AFTER_FALSE_REGULAR_PREFS);
-			//			assertDoesNotExistInWorkspace("8.4", derivedPrefs);
-			//			assertTrue("8.5", !isDerivedEncodingStoredSeparately(project1));
-			//			try {
-			//				assertCharsetIs("8.6", "UTF-8", new IResource[] {a}, true);
-			//			} catch (CoreException e) {
-			//				fail("8.6.1", e);
-			//			}
-			//
-			//			//9 - manually changing preference 'false'->'true'
-			//			verifier.reset();
-			//			backgroundVerifier.reset();
-			//			verifier.addExpectedChange(regularPrefs, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
-			//			//backgroundVerifier.addExpectedChange(new IResource[] {project1, a1, b1, a, regularPrefs.getParent(), regularPrefs}, IResourceDelta.CHANGED, IResourceDelta.ENCODING);
-			//			backgroundVerifier.addExpectedChange(derivedPrefs, IResourceDelta.ADDED, 0);
-			//			assertDoesNotExistInWorkspace("8.98", derivedPrefs);
-			//			assertTrue("8.99", !isDerivedEncodingStoredSeparately(project1));
-			//			try {
-			//				regularPrefs.setContents(new ByteArrayInputStream(SAMPLE_DERIVED_ENCODING_TO_TRUE_REGULAR_PREFS.getBytes()), 0, getMonitor());
-			//			} catch (CoreException e) {
-			//				fail("9.0", e);
-			//			}
-			//			assertTrue("9.1.1", verifier.waitForEvent(10000));
-			//			assertTrue("9.1.2", backgroundVerifier.waitForEvent(10000));
-			//			assertTrue("9.2.1 " + verifier.getMessage(), verifier.isDeltaValid());
-			//			assertTrue("9.2.2 " + backgroundVerifier.getMessage(), backgroundVerifier.isDeltaValid());
-			//			//updating prefs is run in separate job so wait some time for completion
-			//			backgroundVerifier.waitForEvent(10000);
-			//			assertExistsInWorkspace("9.3", regularPrefs);
-			//			//checkPreferencesContent("9.3.1", regularPrefs, SAMPLE_DERIVED_ENCODING_AFTER_TRUE_REGULAR_PREFS);
-			//			assertExistsInWorkspace("9.4", derivedPrefs);
-			//			checkPreferencesContent("9.4.1", derivedPrefs, SAMPLE_DERIVED_ENCODING_AFTER_TRUE_DERIVED_PREFS);
-			//			assertTrue("9.5", isDerivedEncodingStoredSeparately(project1));
-			//			try {
-			//				assertCharsetIs("9.6", "UTF-8", new IResource[] {a}, true);
-			//			} catch (CoreException e) {
-			//				fail("9.6.1", e);
-			//			}
-			//			assertTrue("9.7", derivedPrefs.isDerived());
-			//
-			//			//10 - manually changing preference 'true'->'false' outside Eclipse
-			//			verifier.reset();
-			//			backgroundVerifier.reset();
-			//			verifier.addExpectedChange(regularPrefs, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
-			//			backgroundVerifier.addExpectedChange(regularPrefs, IResourceDelta.CHANGED, IResourceDelta.ENCODING);
-			//			backgroundVerifier.addExpectedChange(new IResource[] {project1, a1, b1, a, regularPrefs.getParent(), regularPrefs}, IResourceDelta.CHANGED, IResourceDelta.ENCODING);
-			//			backgroundVerifier.addExpectedChange(derivedPrefs, IResourceDelta.REMOVED, 0);
-			//			assertTrue("9.99", isDerivedEncodingStoredSeparately(project1));
-			//			try {
-			//				File file = regularPrefs.getLocation().toFile();
-			//				BufferedWriter bw = new BufferedWriter(new FileWriter(file));
-			//				bw.write(SAMPLE_DERIVED_ENCODING_TO_FALSE_REGULAR_PREFS);
-			//				bw.close();
-			//				regularPrefs.refreshLocal(IResource.DEPTH_ZERO, getMonitor());
-			//			} catch (IOException e) {
-			//				fail("10.0.1", e);
-			//			} catch (CoreException e) {
-			//				fail("10.0.2", e);
-			//			}
-			//			assertTrue("10.1.1", verifier.waitForEvent(10000));
-			//			assertTrue("10.1.2", backgroundVerifier.waitForEvent(10000));
-			//			assertTrue("10.2.1 " + verifier.getMessage(), verifier.isDeltaValid());
-			//			assertTrue("10.2.2 " + backgroundVerifier.getMessage(), backgroundVerifier.isDeltaValid());
-			//			assertExistsInWorkspace("10.3", regularPrefs);
-			//			//checkPreferencesContent("10.3.1", regularPrefs, SAMPLE_DERIVED_ENCODING_AFTER_FALSE_REGULAR_PREFS);
-			//			assertDoesNotExistInWorkspace("10.4", derivedPrefs);
-			//			assertTrue("10.5", !isDerivedEncodingStoredSeparately(project1));
-			//			try {
-			//				assertCharsetIs("10.6", "UTF-8", new IResource[] {a}, true);
-			//			} catch (CoreException e) {
-			//				fail("10.6.1", e);
-			//			}
-			//
-			//			//11 - manually changing preference 'false'->'true' outside Eclipse
-			//			verifier.reset();
-			//			backgroundVerifier.reset();
-			//			verifier.addExpectedChange(regularPrefs, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
-			//			//backgroundVerifier.addExpectedChange(new IResource[] {project1, a1, b1, a, regularPrefs.getParent(), regularPrefs}, IResourceDelta.CHANGED, IResourceDelta.ENCODING);
-			//			backgroundVerifier.addExpectedChange(derivedPrefs, IResourceDelta.ADDED, 0);
-			//			assertDoesNotExistInWorkspace("10.98", derivedPrefs);
-			//			assertTrue("10.99", !isDerivedEncodingStoredSeparately(project1));
-			//			try {
-			//				File file = regularPrefs.getLocation().toFile();
-			//				BufferedWriter bw = new BufferedWriter(new FileWriter(file));
-			//				bw.write(SAMPLE_DERIVED_ENCODING_TO_TRUE_REGULAR_PREFS);
-			//				bw.close();
-			//				regularPrefs.refreshLocal(IResource.DEPTH_ZERO, getMonitor());
-			//			} catch (IOException e) {
-			//				fail("11.0.1", e);
-			//			} catch (CoreException e) {
-			//				fail("11.0.2", e);
-			//			}
-			//			assertTrue("11.1.1", verifier.waitForEvent(10000));
-			//			assertTrue("11.1.2", backgroundVerifier.waitForEvent(10000));
-			//			assertTrue("11.2.1 " + verifier.getMessage(), verifier.isDeltaValid());
-			//			assertTrue("11.2.2 " + backgroundVerifier.getMessage(), backgroundVerifier.isDeltaValid());
-			//			//updating prefs is run in separate job so wait some time for completion
-			//			backgroundVerifier.waitForEvent(10000);
-			//			assertExistsInWorkspace("11.3", regularPrefs);
-			//			//checkPreferencesContent("11.3.1", regularPrefs, SAMPLE_DERIVED_ENCODING_AFTER_TRUE_REGULAR_PREFS);
-			//			assertExistsInWorkspace("11.4", derivedPrefs);
-			//			checkPreferencesContent("11.4.1", derivedPrefs, SAMPLE_DERIVED_ENCODING_AFTER_TRUE_DERIVED_PREFS);
-			//			assertTrue("11.5", isDerivedEncodingStoredSeparately(project1));
-			//			try {
-			//				assertCharsetIs("11.6", "UTF-8", new IResource[] {a}, true);
-			//			} catch (CoreException e) {
-			//				fail("11.6.1", e);
-			//			}
-			//			assertTrue("11.7", derivedPrefs.isDerived());
 		} finally {
 			workspace.removeResourceChangeListener(verifier);
 			backgroundVerifier.removeResourceChangeListeners();
@@ -1607,6 +1480,7 @@ public class CharsetTest {
 						failMessage.append("verifier.isValidDelta(): " + isValidDelta);
 						failMessage.append(System.lineSeparator());
 						failMessage.append(deltaVerifier.getMessage());
+						failMessage.append(System.lineSeparator());
 					}
 					assertTrue(failMessage.toString(), validDeltas);
 				}

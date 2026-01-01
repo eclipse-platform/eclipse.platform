@@ -17,6 +17,7 @@ package org.eclipse.core.tests.resources;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
@@ -78,16 +79,16 @@ public class MarkerSetTest {
 		for (int i = 0; i < infos.length; i++) {
 			info = infos[i];
 			set.add(info);
-			assertTrue("2.0." + i, set.contains(info.getId()));
-			assertEquals("2.1." + i, i + 1, set.size());
+			assertTrue(i + "", set.contains(info.getId()));
+			assertEquals(i + "", i + 1, set.size());
 		}
 
 		// make sure they are all still there
-		assertEquals("3.0", max, set.size());
+		assertEquals(max, set.size());
 		for (int i = 0; i < infos.length; i++) {
 			info = infos[i];
-			assertTrue("3.1." + i, set.contains(info.getId()));
-			assertNotNull("3.2." + i, set.get(info.getId()));
+			assertTrue(i + "", set.contains(info.getId()));
+			assertNotNull(i + "", set.get(info.getId()));
 		}
 	}
 
@@ -104,7 +105,7 @@ public class MarkerSetTest {
 			infos[i] = info;
 		}
 		set.addAll(infos);
-		assertEquals("1.0", max, set.size());
+		assertEquals(max, set.size());
 
 		// remove each element
 		assertMarkerElementsEqual(set.elements(), infos);
@@ -123,22 +124,22 @@ public class MarkerSetTest {
 			infos[i] = info;
 		}
 		set.addAll(infos);
-		assertEquals("1.0", max, set.size());
+		assertEquals(max, set.size());
 
 		// remove each element
 		for (int i = max - 1; i >= 0; i--) {
 			info = infos[i];
 			set.remove(info);
-			assertTrue("2.0." + i, !set.contains(info.getId()));
-			assertEquals("2.1," + i, i, set.size());
+			assertFalse(i + "", set.contains(info.getId()));
+			assertEquals(i + "", i, set.size());
 			// check that the others still exist
 			for (int j = 0; j < i; j++) {
-				assertTrue("2.2." + j, set.contains(infos[j].getId()));
+				assertTrue(j + "", set.contains(infos[j].getId()));
 			}
 		}
 
 		// all gone?
-		assertEquals("3.0", 0, set.size());
+		assertEquals(0, set.size());
 	}
 
 	@Test

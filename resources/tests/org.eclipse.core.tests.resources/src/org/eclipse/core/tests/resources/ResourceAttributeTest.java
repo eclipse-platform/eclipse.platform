@@ -88,18 +88,18 @@ public class ResourceAttributeTest {
 		createInWorkspace(file, createRandomString());
 
 		// file bit is set already for a new file
-		assertTrue("1.0", file.getResourceAttributes().isArchive());
+		assertTrue(file.getResourceAttributes().isArchive());
 		setArchive(file, false);
-		assertTrue("1.2", !file.getResourceAttributes().isArchive());
+		assertFalse(file.getResourceAttributes().isArchive());
 		setArchive(file, true);
-		assertTrue("1.4", file.getResourceAttributes().isArchive());
+		assertTrue(file.getResourceAttributes().isArchive());
 
 		// folder bit is not set already for a new folder
-		assertTrue("2.0", !project.getResourceAttributes().isArchive());
+		assertFalse(project.getResourceAttributes().isArchive());
 		setArchive(project, true);
-		assertTrue("2.2", project.getResourceAttributes().isArchive());
+		assertTrue(project.getResourceAttributes().isArchive());
 		setArchive(project, false);
-		assertTrue("2.4", !project.getResourceAttributes().isArchive());
+		assertFalse(project.getResourceAttributes().isArchive());
 	}
 
 	@Test
@@ -112,19 +112,19 @@ public class ResourceAttributeTest {
 		createInWorkspace(file, createRandomString());
 
 		// file
-		assertTrue("1.0", !file.getResourceAttributes().isExecutable());
+		assertFalse(file.getResourceAttributes().isExecutable());
 		setExecutable(file, true);
-		assertTrue("1.2", file.getResourceAttributes().isExecutable());
+		assertTrue(file.getResourceAttributes().isExecutable());
 		setExecutable(file, false);
-		assertTrue("1.4", !file.getResourceAttributes().isExecutable());
+		assertFalse(file.getResourceAttributes().isExecutable());
 
 		// folder
 		// folder is executable initially
-		assertTrue("2.0", project.getResourceAttributes().isExecutable());
+		assertTrue(project.getResourceAttributes().isExecutable());
 		setExecutable(project, false);
-		assertTrue("2.2", !project.getResourceAttributes().isExecutable());
+		assertFalse(project.getResourceAttributes().isExecutable());
 		setExecutable(project, true);
-		assertTrue("2.4", project.getResourceAttributes().isExecutable());
+		assertTrue(project.getResourceAttributes().isExecutable());
 	}
 
 	@Test
@@ -137,18 +137,18 @@ public class ResourceAttributeTest {
 		createInWorkspace(file, createRandomString());
 
 		// file
-		assertTrue("1.0", !file.getResourceAttributes().isHidden());
+		assertFalse(file.getResourceAttributes().isHidden());
 		setHidden(file, true);
-		assertTrue("1.2", file.getResourceAttributes().isHidden());
+		assertTrue(file.getResourceAttributes().isHidden());
 		setHidden(file, false);
-		assertTrue("1.4", !file.getResourceAttributes().isHidden());
+		assertFalse(file.getResourceAttributes().isHidden());
 
 		// folder
-		assertTrue("2.0", !project.getResourceAttributes().isHidden());
+		assertFalse(project.getResourceAttributes().isHidden());
 		setHidden(project, true);
-		assertTrue("2.2", project.getResourceAttributes().isHidden());
+		assertTrue(project.getResourceAttributes().isHidden());
 		setHidden(project, false);
-		assertTrue("2.4", !project.getResourceAttributes().isHidden());
+		assertFalse(project.getResourceAttributes().isHidden());
 	}
 
 	@Test
@@ -161,18 +161,18 @@ public class ResourceAttributeTest {
 		createInWorkspace(file, createRandomString());
 
 		// file
-		assertTrue("1.0", !file.getResourceAttributes().isReadOnly());
+		assertFalse(file.getResourceAttributes().isReadOnly());
 		setReadOnly(file, true);
-		assertTrue("1.2", file.getResourceAttributes().isReadOnly());
+		assertTrue(file.getResourceAttributes().isReadOnly());
 		setReadOnly(file, false);
-		assertTrue("1.4", !file.getResourceAttributes().isReadOnly());
+		assertFalse(file.getResourceAttributes().isReadOnly());
 
 		// folder
-		assertTrue("2.0", !project.getResourceAttributes().isReadOnly());
+		assertFalse(project.getResourceAttributes().isReadOnly());
 		setReadOnly(project, true);
-		assertTrue("2.2", project.getResourceAttributes().isReadOnly());
+		assertTrue(project.getResourceAttributes().isReadOnly());
 		setReadOnly(project, false);
-		assertTrue("2.4", !project.getResourceAttributes().isReadOnly());
+		assertFalse(project.getResourceAttributes().isReadOnly());
 	}
 
 	/**
@@ -183,7 +183,7 @@ public class ResourceAttributeTest {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		createInWorkspace(project);
 		project.close(createTestMonitor());
-		assertNull("1.0", project.getResourceAttributes());
+		assertNull(project.getResourceAttributes());
 	}
 
 	@Test
@@ -193,17 +193,17 @@ public class ResourceAttributeTest {
 		IFolder folder = project.getFolder("folder");
 		IFile file = project.getFile("file");
 		removeFromWorkspace(project);
-		assertNull("1.0", project.getResourceAttributes());
-		assertNull("1.1", folder.getResourceAttributes());
-		assertNull("1.2", file.getResourceAttributes());
+		assertNull(project.getResourceAttributes());
+		assertNull(folder.getResourceAttributes());
+		assertNull(file.getResourceAttributes());
 
 		//now create the resources and ensure non-null result
 		createInWorkspace(project);
 		createInWorkspace(folder);
 		createInWorkspace(file);
-		assertNotNull("2.0", project.getResourceAttributes());
-		assertNotNull("2.1", folder.getResourceAttributes());
-		assertNotNull("2.2", file.getResourceAttributes());
+		assertNotNull(project.getResourceAttributes());
+		assertNotNull(folder.getResourceAttributes());
+		assertNotNull(file.getResourceAttributes());
 	}
 
 	/**
@@ -228,8 +228,8 @@ public class ResourceAttributeTest {
 		createInWorkspace(file, createRandomString());
 
 		// folder is executable initially and the file should exist
-		assertTrue("1.0", project.getResourceAttributes().isExecutable());
-		assertTrue("1.1", file.exists());
+		assertTrue(project.getResourceAttributes().isExecutable());
+		assertTrue(file.exists());
 
 		setExecutable(folder, false);
 		waitForRefresh();
@@ -241,8 +241,8 @@ public class ResourceAttributeTest {
 		// fail
 		setExecutable(folder, true);
 
-		assertTrue("2.1", !wasExecutable);
-		assertTrue("2.2", !fileExists);
+		assertFalse(wasExecutable);
+		assertFalse(fileExists);
 	}
 
 	@Test
@@ -255,11 +255,11 @@ public class ResourceAttributeTest {
 
 		// attempts to set the symbolic link attribute wont't affect
 		// the resource and the underlying file
-		assertTrue("1.0", !link.getResourceAttributes().isSymbolicLink());
+		assertFalse(link.getResourceAttributes().isSymbolicLink());
 		setSymlink(link, true);
-		assertTrue("2.0", !link.getResourceAttributes().isSymbolicLink());
+		assertFalse(link.getResourceAttributes().isSymbolicLink());
 		setSymlink(link, false);
-		assertTrue("3.0", !link.getResourceAttributes().isSymbolicLink());
+		assertFalse(link.getResourceAttributes().isSymbolicLink());
 
 		removeFromWorkspace(link);
 
@@ -271,12 +271,12 @@ public class ResourceAttributeTest {
 		// the resource in the workspace should have symbolic link attribute set
 		createSymLink(project.getLocation().toFile(), "link", "target", false);
 		createInWorkspace(link);
-		assertTrue("5.0", link.getResourceAttributes().isSymbolicLink());
+		assertTrue(link.getResourceAttributes().isSymbolicLink());
 
 		// attempts to clear the symbolic link attribute shouldn't affect
 		// the resource and the underlying file
 		setSymlink(link, false);
-		assertTrue("3.0", link.getResourceAttributes().isSymbolicLink());
+		assertTrue(link.getResourceAttributes().isSymbolicLink());
 
 		// remove the underlying file and add it again as a local file,
 		// the resource in the workspace should have the symbolic link attribute
@@ -285,7 +285,7 @@ public class ResourceAttributeTest {
 
 		link.getLocation().toFile().delete();
 		new File(s).createNewFile();
-		assertTrue("3.0", !link.getResourceAttributes().isSymbolicLink());
+		assertFalse(link.getResourceAttributes().isSymbolicLink());
 	}
 
 	@Test
@@ -306,21 +306,21 @@ public class ResourceAttributeTest {
 			ResourceAttributes resAttr = file.getResourceAttributes();
 			resAttr.set(attribute, true);
 			file.setResourceAttributes(resAttr);
-			assertTrue("1.0", file.getResourceAttributes().isSet(attribute));
+			assertTrue(file.getResourceAttributes().isSet(attribute));
 
 			resAttr.set(attribute, false);
 			file.setResourceAttributes(resAttr);
-			assertFalse("2.0", file.getResourceAttributes().isSet(attribute));
+			assertFalse(file.getResourceAttributes().isSet(attribute));
 
 			// folder
 			resAttr = project.getResourceAttributes();
 			resAttr.set(attribute, true);
 			project.setResourceAttributes(resAttr);
-			assertTrue("3.0", project.getResourceAttributes().isSet(attribute));
+			assertTrue(project.getResourceAttributes().isSet(attribute));
 
 			resAttr.set(attribute, false);
 			project.setResourceAttributes(resAttr);
-			assertFalse("4.0", project.getResourceAttributes().isSet(attribute));
+			assertFalse(project.getResourceAttributes().isSet(attribute));
 		}
 	}
 

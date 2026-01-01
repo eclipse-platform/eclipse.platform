@@ -22,6 +22,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspac
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
@@ -255,7 +256,7 @@ public class ISynchronizerTest {
 			if (type == IResource.FILE && resource.getParent().getType() == IResource.PROJECT && resource.getName().equals(IProjectDescription.DESCRIPTION_FILE_NAME)) {
 				return true;
 			}
-			assertNull("5.0." + resource.getFullPath(), synchronizer.getSyncInfo(qname, resource));
+			assertNull(resource.getFullPath().toString(), synchronizer.getSyncInfo(qname, resource));
 			return true;
 		};
 
@@ -337,8 +338,8 @@ public class ISynchronizerTest {
 		// rename the file and ensure that the sync info is moved with it
 		IProject destProject = getWorkspace().getRoot().getProject("newProject");
 		sourceProject.move(destProject.getFullPath(), true, createTestMonitor());
-		assertNull("7.1", synchronizer.getSyncInfo(qname, sourceProject));
-		assertNull("7.2", synchronizer.getSyncInfo(qname, sourceFile));
+		assertNull(synchronizer.getSyncInfo(qname, sourceProject));
+		assertNull(synchronizer.getSyncInfo(qname, sourceFile));
 		syncInfo = synchronizer.getSyncInfo(qname, destProject.getFile(sourceFile.getName()));
 		assertThat(syncInfo).as("sync info for resource: %s", sourceFile.getFullPath()).isNotNull().isEqualTo(b);
 		syncInfo = synchronizer.getSyncInfo(qname, destProject);
@@ -460,136 +461,6 @@ public class ISynchronizerTest {
 	}
 
 	@Test
-	public void testSnap() {
-		/*
-		 final Hashtable table = new Hashtable(10);
-		 final QualifiedName qname = new QualifiedName("org.eclipse.core.tests.resources", "myTarget");
-		 final Synchronizer synchronizer = (Synchronizer) ResourcesPlugin.getWorkspace().getSynchronizer();
-
-		 // register the sync partner and set the sync info on the resources
-		 synchronizer.add(qname);
-		 IResourceVisitor visitor = new IResourceVisitor() {
-		 public boolean visit(IResource resource) throws CoreException {
-		 if (resource.getType() == IResource.ROOT)
-		 return true;
-		 try {
-		 byte[] b = getRandomString().getBytes();
-		 synchronizer.setSyncInfo(qname, resource, b);
-		 table.put(resource.getFullPath(), b);
-		 } catch (CoreException e) {
-		 fail("0.0." + resource.getFullPath(), e);
-		 }
-		 return true;
-		 }
-		 };
-		 try {
-		 getWorkspace().getRoot().accept(visitor);
-		 } catch (CoreException e) {
-		 fail("0.1", e);
-		 }
-
-		 // write out the data
-		 File file = Platform.getLocation().append(".testsyncinfo.snap").toFile();
-		 SafeChunkyOutputStream safeOutput = null;
-		 DataOutputStream o1 = null;
-		 try {
-		 safeOutput = new SafeChunkyOutputStream(file);
-		 o1 = new DataOutputStream(safeOutput);
-		 } catch (IOException e) {
-		 if (safeOutput != null)
-		 try {
-		 safeOutput.close();
-		 } catch (IOException e2) {
-		 }
-		 fail("1.0", e);
-		 }
-		 final DataOutputStream output = o1;
-		 visitor = new IResourceVisitor() {
-		 public boolean visit(IResource resource) throws CoreException {
-		 try {
-		 synchronizer.snapSyncInfo(resource, output);
-		 } catch (IOException e) {
-		 fail("1.1", e);
-		 }
-		 return true;
-		 }
-		 };
-		 try {
-		 getWorkspace().getRoot().accept(visitor);
-		 safeOutput.succeed();
-		 } catch (CoreException e) {
-		 fail("1.2", e);
-		 } catch (IOException e) {
-		 fail("1.3", e);
-		 } finally {
-		 try {
-		 output.close();
-		 } catch (IOException e) {
-		 fail("1.4", e);
-		 }
-		 }
-
-		 // flush the sync info in memory
-		 try {
-		 flushAllSyncInfo(getWorkspace().getRoot());
-		 } catch (CoreException e) {
-		 fail("2.0", e);
-		 }
-
-		 // read in the data
-		 try {
-		 InputStream safeInput = new SafeChunkyInputStream(file);
-		 final DataInputStream input = new DataInputStream(safeInput);
-		 IWorkspaceRunnable body = new IWorkspaceRunnable() {
-		 public void run(IProgressMonitor monitor) throws CoreException {
-		 SyncInfoSnapReader reader = new SyncInfoSnapReader((Workspace) getWorkspace(), synchronizer);
-		 try {
-		 reader.readSyncInfo(input);
-		 } catch (IOException e) {
-		 fail("3.0", e);
-		 }
-		 }
-		 };
-		 try {
-		 getWorkspace().run(body, getMonitor());
-		 } finally {
-		 try {
-		 input.close();
-		 } catch (IOException e) {
-		 fail("3.1", e);
-		 }
-		 }
-		 } catch (FileNotFoundException e) {
-		 fail("3.2", e);
-		 } catch (IOException e) {
-		 fail("3.3", e);
-		 } catch (CoreException e) {
-		 fail("3.4", e);
-		 }
-
-		 // confirm the sync bytes are the same
-		 visitor = new IResourceVisitor() {
-		 public boolean visit(IResource resource) throws CoreException {
-		 byte[] actual = synchronizer.getSyncInfo(qname, resource);
-		 if (resource.getType() == IResource.ROOT) {
-		 assertNull("4.0", actual);
-		 return true;
-		 } else
-		 assertNotNull("4.1." + resource.getFullPath(), actual);
-		 byte[] expected = (byte[]) table.get(resource.getFullPath());
-		 assertEquals("4.2." + resource.getFullPath(), expected, actual);
-		 return true;
-		 }
-		 };
-		 try {
-		 getWorkspace().getRoot().accept(visitor);
-		 } catch (CoreException e) {
-		 fail("4.3", e);
-		 }
-		 */
-	}
-
-	@Test
 	public void testSyncInfo() throws CoreException {
 		final QualifiedName qname = new QualifiedName("org.eclipse.core.tests.resources", "myTarget");
 		final ISynchronizer synchronizer = ResourcesPlugin.getWorkspace().getSynchronizer();
@@ -706,38 +577,38 @@ public class ISynchronizerTest {
 		synchronizer.setSyncInfo(partner, file2, createRandomString().getBytes());
 
 		// 1) tests with one child first
-		assertTrue("1.1", file1.exists());
-		assertTrue("1.2", !file1.isPhantom());
+		assertTrue(file1.exists());
+		assertFalse(file1.isPhantom());
 		// deletes file
 		file1.delete(true, createTestMonitor());
 		// file is now a phantom resource
-		assertTrue("2.1", !file1.exists());
-		assertTrue("2.2", file1.isPhantom());
+		assertFalse(file1.exists());
+		assertTrue(file1.isPhantom());
 		// removes sync info
 		synchronizer.setSyncInfo(partner, file1, null);
 		// phantom should not exist any more
-		assertTrue("3.1", !file1.exists());
-		assertTrue("3.2", !file1.isPhantom());
+		assertFalse(file1.exists());
+		assertFalse(file1.isPhantom());
 
 		// 2) tests with the folder and remaining child
-		assertTrue("4.1", folder.exists());
-		assertTrue("4.2", !folder.isPhantom());
-		assertTrue("4.3", file2.exists());
-		assertTrue("4.4", !file2.isPhantom());
+		assertTrue(folder.exists());
+		assertFalse(folder.isPhantom());
+		assertTrue(file2.exists());
+		assertFalse(file2.isPhantom());
 		// deletes the folder and its only child
 		folder.delete(true, createTestMonitor());
 		// both resources are now phantom resources
-		assertTrue("5.1", !folder.exists());
-		assertTrue("5.2", folder.isPhantom());
-		assertTrue("5.3", !file2.exists());
-		assertTrue("5.4", file2.isPhantom());
+		assertFalse(folder.exists());
+		assertTrue(folder.isPhantom());
+		assertFalse(file2.exists());
+		assertTrue(file2.isPhantom());
 		// removes only folder sync info
 		synchronizer.setSyncInfo(partner, folder, null);
 		// phantoms should not exist any more
-		assertTrue("6.1", !folder.exists());
-		assertTrue("6.2", !folder.isPhantom());
-		assertTrue("6.3", !file2.exists());
-		assertTrue("6.4", !file2.isPhantom());
+		assertFalse(folder.exists());
+		assertFalse(folder.isPhantom());
+		assertFalse(file2.exists());
+		assertFalse(file2.isPhantom());
 
 		// clean-up
 		synchronizer.remove(partner);
