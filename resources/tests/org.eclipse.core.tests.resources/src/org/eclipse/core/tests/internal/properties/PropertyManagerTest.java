@@ -19,14 +19,14 @@ import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RE
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -45,22 +45,20 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.QualifiedName;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class PropertyManagerTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private IProject project;
 
-	@Before
+	@BeforeEach
 	public void createTestProject() throws CoreException {
 		project = getWorkspace().getRoot().getProject("test");
 		createInWorkspace(project);
@@ -214,14 +212,14 @@ public class PropertyManagerTest {
 		manager.setProperty(source, propName, propValue);
 		manager.setProperty(sourceFolder, propName, propValue);
 		manager.setProperty(sourceFile, propName, propValue);
-		assertNotNull("1.1", manager.getProperty(source, propName));
+		assertNotNull(manager.getProperty(source, propName));
 
 		String hint = "Property cache returned another instance. Same instance is not required but expected. Eiter the Garbage Collector deleted the cache or the cache is not working.";
-		assertSame(hint + "1.2", propValue, manager.getProperty(source, propName));
-		assertNotNull("1.3", manager.getProperty(sourceFolder, propName));
-		assertSame(hint + "1.4", propValue, manager.getProperty(sourceFolder, propName));
-		assertNotNull("1.5", manager.getProperty(sourceFile, propName));
-		assertSame(hint + "1.6", propValue, manager.getProperty(sourceFile, propName));
+		assertSame(propValue, manager.getProperty(source, propName), hint);
+		assertNotNull(manager.getProperty(sourceFolder, propName));
+		assertSame(propValue, manager.getProperty(sourceFolder, propName), hint);
+		assertNotNull(manager.getProperty(sourceFile, propName));
+		assertSame(propValue, manager.getProperty(sourceFile, propName), hint);
 	}
 
 	@Test
@@ -241,11 +239,11 @@ public class PropertyManagerTest {
 		manager.setProperty(sourceFile, propName, propValue);
 
 		String hint = "Property cache returned another instance. Same instance is not required but expected. Eiter the Garbage Collector deleted the cache or the cache is not working.";
-		assertSame(hint + "1.2", propValue, manager.getProperty(source, propName));
+		assertSame(propValue, manager.getProperty(source, propName), hint);
 		assertNotNull(manager.getProperty(sourceFolder, propName));
-		assertSame(hint + "1.4", propValue, manager.getProperty(sourceFolder, propName));
+		assertSame(propValue, manager.getProperty(sourceFolder, propName), hint);
 		assertNotNull(manager.getProperty(sourceFile, propName));
-		assertSame(hint + "1.6", propValue, manager.getProperty(sourceFile, propName));
+		assertSame(propValue, manager.getProperty(sourceFile, propName), hint);
 
 		List<byte[]> wastedMemory = new LinkedList<>();
 		try {
@@ -503,14 +501,14 @@ public class PropertyManagerTest {
 		// set the properties individually and retrieve them
 		for (StoredProperty prop : props) {
 			manager.setProperty(target, prop.getName(), prop.getStringValue());
-			assertEquals("1.0." + prop.getName(), prop.getStringValue(), manager.getProperty(target, prop.getName()));
+			assertEquals(prop.getStringValue(), manager.getProperty(target, prop.getName()), prop.getName().toString());
 		}
 		// check properties are be appropriately deleted (when set to null)
 		for (StoredProperty prop : props) {
 			manager.setProperty(target, prop.getName(), null);
-			assertEquals("2.0." + prop.getName(), null, manager.getProperty(target, prop.getName()));
+			assertNull(manager.getProperty(target, prop.getName()), prop.getName().toString());
 		}
-		assertEquals("3.0", 0, manager.getProperties(target).size());
+		assertEquals(0, manager.getProperties(target).size());
 		manager.deleteProperties(target, IResource.DEPTH_INFINITE);
 	}
 
