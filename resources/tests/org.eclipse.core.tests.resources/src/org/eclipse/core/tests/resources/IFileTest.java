@@ -30,12 +30,12 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonito
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureOutOfSync;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
@@ -73,14 +73,13 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class IFileTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	//name of files according to sync category
 	public static final String DOES_NOT_EXIST = "DoesNotExistFile";
@@ -311,7 +310,7 @@ public class IFileTest {
 		}
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		generateInterestingFiles();
 	}
@@ -561,7 +560,7 @@ public class IFileTest {
 			AtomicInteger changeCount = new AtomicInteger();
 			ResourcesPlugin.getWorkspace().addResourceChangeListener(event -> changeCount.incrementAndGet());
 			derived.write(("updateOrCreate" + i).getBytes(), false, setDerived, keepHistory, monitor);
-			assertEquals("not atomic", 1, changeCount.get());
+			assertEquals(1, changeCount.get(), "not atomic");
 			monitor.assertUsedUp();
 			if (deleteBefore) {
 				assertEquals(setDerived, derived.isDerived());
@@ -576,7 +575,7 @@ public class IFileTest {
 			derived.write(("update" + i).getBytes(), false, false, keepHistory, null);
 			boolean oldDerived2 = derived.isDerived();
 			assertEquals(oldDerived2, derived.isDerived());
-			assertEquals("not atomic", 1, changeCount.get());
+			assertEquals(1, changeCount.get(), "not atomic");
 			IFileState[] history2 = derived.getHistory(null);
 			assertEquals((keepHistory && !oldDerived2) ? 1 : 0, history2.length - history1.length);
 		}
@@ -682,14 +681,14 @@ public class IFileTest {
 			resource.write(("create").getBytes(), false, false, false, null);
 		}, workspace.getRuleFactory().createRule(resource), IWorkspace.AVOID_UPDATE, null);
 		assertTrue(resource.exists());
-		assertEquals("not atomic", 1, changeCount.get());
+		assertEquals(1, changeCount.get(), "not atomic");
 		// test that modifyRule can be used for IFile.write() if the file already exits:
 		changeCount.set(0);
 		workspace.run(pm -> {
 			resource.write(("replace").getBytes(), false, false, false, null);
 		}, workspace.getRuleFactory().modifyRule(resource), IWorkspace.AVOID_UPDATE, null);
 		assertTrue(resource.exists());
-		assertEquals("not atomic", 1, changeCount.get());
+		assertEquals(1, changeCount.get(), "not atomic");
 	}
 
 	@Test
@@ -1084,10 +1083,10 @@ public class IFileTest {
 		for (String name : names) {
 			monitor.prepare();
 			IFile file = project.getFile(IPath.fromPortableString(name));
-			assertTrue("1.0 " + name, !file.exists());
+			assertFalse(file.exists(), name);
 			assertThrows(CoreException.class, () -> file.create(createRandomContentsStream(), true, monitor));
 			monitor.sanityCheck();
-			assertTrue("1.2 " + name, !file.exists());
+			assertFalse(file.exists(), name);
 		}
 
 		//do some tests with valid names that are *almost* invalid
@@ -1100,11 +1099,11 @@ public class IFileTest {
 		}
 		for (String name : names) {
 			IFile file = project.getFile(name);
-			assertFalse(name + " shouldn't exist", file.exists());
+			assertFalse(file.exists(), name + " shouldn't exist");
 			monitor.prepare();
 			file.create(createRandomContentsStream(), true, monitor);
 			monitor.assertUsedUp();
-			assertTrue(name + " should exist", file.exists());
+			assertTrue(file.exists(), name + " should exist");
 		}
 	}
 
@@ -1243,7 +1242,7 @@ public class IFileTest {
 					target.setContents(content, true, false, monitor);
 					monitor.assertUsedUp();
 					byte[] allBytes = target.readAllBytes();
-					assertArrayEquals(target.getName(), content, allBytes);
+					assertArrayEquals(content, allBytes, target.getName());
 					char[] allChars = target.readAllChars();
 					String readString = target.readString();
 					String expected;
@@ -1254,8 +1253,8 @@ public class IFileTest {
 						// ".txt" files autodetect charset by BOM if present
 						expected = testString;
 					}
-					assertArrayEquals(target.getName(), expected.toCharArray(), allChars);
-					assertEquals(target.getName(), expected, readString);
+					assertArrayEquals(expected.toCharArray(), allChars, target.getName());
+					assertEquals(expected, readString, target.getName());
 				}
 			}
 		}
