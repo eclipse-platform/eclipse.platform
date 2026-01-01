@@ -91,31 +91,31 @@ public class IResourceDeltaTest {
 		IResourceChangeListener listener = event -> {
 			//delta relative to root
 			IResourceDelta delta = event.getDelta();
-			assertNotNull("1.0", delta.findMember(project1.getFullPath()));
-			assertNotNull("1.1", delta.findMember(file1.getFullPath()));
-			assertNotNull("1.2", delta.findMember(folder2.getFullPath()));
-			assertNotNull("1.3", delta.findMember(file3.getFullPath()));
-			assertNotNull("1.4", delta.findMember(file4.getFullPath()));
-			assertNull("1.5", delta.findMember(project2.getFullPath()));
-			assertNull("1.6", delta.findMember(file2.getFullPath()));
-			assertNull("1.7", delta.findMember(folder3.getFullPath()));
+			assertNotNull(delta.findMember(project1.getFullPath()));
+			assertNotNull(delta.findMember(file1.getFullPath()));
+			assertNotNull(delta.findMember(folder2.getFullPath()));
+			assertNotNull(delta.findMember(file3.getFullPath()));
+			assertNotNull(delta.findMember(file4.getFullPath()));
+			assertNull(delta.findMember(project2.getFullPath()));
+			assertNull(delta.findMember(file2.getFullPath()));
+			assertNull(delta.findMember(folder3.getFullPath()));
 
 			//delta relative to project
 			delta = delta.findMember(project1.getFullPath());
-			assertNotNull("2.1", delta.findMember(file1.getProjectRelativePath()));
-			assertNotNull("2.2", delta.findMember(folder2.getProjectRelativePath()));
-			assertNotNull("2.3", delta.findMember(file3.getProjectRelativePath()));
-			assertNotNull("2.4", delta.findMember(file4.getProjectRelativePath()));
-			assertNull("2.5", delta.findMember(project2.getFullPath()));
-			assertNull("2.6", delta.findMember(file2.getProjectRelativePath()));
-			assertNull("2.7", delta.findMember(folder3.getProjectRelativePath()));
-			assertNull("2.8", delta.findMember(project1.getFullPath()));
-			assertNull("2.9", delta.findMember(file1.getFullPath()));
+			assertNotNull(delta.findMember(file1.getProjectRelativePath()));
+			assertNotNull(delta.findMember(folder2.getProjectRelativePath()));
+			assertNotNull(delta.findMember(file3.getProjectRelativePath()));
+			assertNotNull(delta.findMember(file4.getProjectRelativePath()));
+			assertNull(delta.findMember(project2.getFullPath()));
+			assertNull(delta.findMember(file2.getProjectRelativePath()));
+			assertNull(delta.findMember(folder3.getProjectRelativePath()));
+			assertNull(delta.findMember(project1.getFullPath()));
+			assertNull(delta.findMember(file1.getFullPath()));
 
 			//delta with no children
 			delta = delta.findMember(file1.getProjectRelativePath());
-			assertEquals("3.1", delta, delta.findMember(IPath.ROOT));
-			assertNull("3.2", delta.findMember(IPath.fromOSString("foo")));
+			assertEquals(delta, delta.findMember(IPath.ROOT));
+			assertNull(delta.findMember(IPath.fromOSString("foo")));
 		};
 		getWorkspace().addResourceChangeListener(listener);
 

@@ -161,7 +161,7 @@ public class IWorkspaceTest {
 				() -> getWorkspace().copy(new IResource[] { file, file2 }, folder2.getFullPath(), false, createTestMonitor()));
 
 		//make sure the first copy worked
-		assertTrue("1.5", fileCopy.exists());
+		assertTrue(fileCopy.exists());
 		fileCopy.delete(true, createTestMonitor());
 
 		// create the files
@@ -195,7 +195,7 @@ public class IWorkspaceTest {
 
 		//make sure the first copy worked
 		fileCopy = folder2.getFile("File");
-		assertTrue("2.2", fileCopy.exists());
+		assertTrue(fileCopy.exists());
 		fileCopy.delete(true, createTestMonitor());
 
 		//resource out of sync with filesystem
@@ -212,14 +212,14 @@ public class IWorkspaceTest {
 
 		//copy single file
 		getWorkspace().copy(new IResource[] { file }, folder2.getFullPath(), false, createTestMonitor());
-		assertTrue("3.2", fileCopy.exists());
+		assertTrue(fileCopy.exists());
 		removeFromWorkspace(fileCopy);
 		removeFromFileSystem(fileCopy);
 
 		//copy two files
 		getWorkspace().copy(new IResource[] { file, file2 }, folder2.getFullPath(), false, createTestMonitor());
-		assertTrue("3.4", fileCopy.exists());
-		assertTrue("3.5", file2Copy.exists());
+		assertTrue(fileCopy.exists());
+		assertTrue(file2Copy.exists());
 		removeFromWorkspace(fileCopy);
 		removeFromWorkspace(file2Copy);
 		removeFromFileSystem(fileCopy);
@@ -227,7 +227,7 @@ public class IWorkspaceTest {
 
 		//copy a folder
 		getWorkspace().copy(new IResource[] { folder }, folder2.getFullPath(), false, createTestMonitor());
-		assertTrue("3.7", folderCopy.exists());
+		assertTrue(folderCopy.exists());
 		assertThat(folderCopy.members()).hasSizeGreaterThan(0);
 		removeFromWorkspace(folderCopy);
 		removeFromFileSystem(folderCopy);
@@ -307,43 +307,43 @@ public class IWorkspaceTest {
 		IProjectNatureDescriptor[] descriptors = getWorkspace().getNatureDescriptors();
 
 		IProjectNatureDescriptor current = findNature(descriptors, NATURE_SIMPLE);
-		assertNotNull("2.0", current);
-		assertEquals("2.1", NATURE_SIMPLE, current.getNatureId());
-		assertEquals("2.2", "Simple", current.getLabel());
+		assertNotNull(current);
+		assertEquals(NATURE_SIMPLE, current.getNatureId());
+		assertEquals("Simple", current.getLabel());
 		assertThat(current.getRequiredNatureIds()).isEmpty();
 		assertThat(current.getNatureSetIds()).isEmpty();
 
 		current = findNature(descriptors, NATURE_SNOW);
-		assertNotNull("3.0", current);
-		assertEquals("3.1", NATURE_SNOW, current.getNatureId());
-		assertEquals("3.2", "Snow", current.getLabel());
+		assertNotNull(current);
+		assertEquals(NATURE_SNOW, current.getNatureId());
+		assertEquals("Snow", current.getLabel());
 		String[] required = current.getRequiredNatureIds();
 		assertThat(required).containsExactly(NATURE_WATER);
 		String[] sets = current.getNatureSetIds();
 		assertThat(sets).containsExactly(SET_OTHER);
 
 		current = findNature(descriptors, NATURE_WATER);
-		assertNotNull("4.0", current);
-		assertEquals("4.1", NATURE_WATER, current.getNatureId());
-		assertEquals("4.2", "Water", current.getLabel());
+		assertNotNull(current);
+		assertEquals(NATURE_WATER, current.getNatureId());
+		assertEquals("Water", current.getLabel());
 		required = current.getRequiredNatureIds();
 		assertThat(required).isEmpty();
 		sets = current.getNatureSetIds();
 		assertThat(sets).containsExactly(SET_STATE);
 
 		current = findNature(descriptors, NATURE_EARTH);
-		assertNotNull("5.0", current);
-		assertEquals("5.1", NATURE_EARTH, current.getNatureId());
-		assertEquals("5.2", "Earth", current.getLabel());
+		assertNotNull(current);
+		assertEquals(NATURE_EARTH, current.getNatureId());
+		assertEquals("Earth", current.getLabel());
 		required = current.getRequiredNatureIds();
 		assertThat(required).isEmpty();
 		sets = current.getNatureSetIds();
 		assertThat(sets).containsExactly(SET_STATE);
 
 		current = findNature(descriptors, NATURE_MUD);
-		assertNotNull("6.0", current);
-		assertEquals("6.1", NATURE_MUD, current.getNatureId());
-		assertEquals("6.2", "Mud", current.getLabel());
+		assertNotNull(current);
+		assertEquals(NATURE_MUD, current.getNatureId());
+		assertEquals("Mud", current.getLabel());
 		required = current.getRequiredNatureIds();
 		//water and earth are required for mud
 		assertThat(required).containsExactlyInAnyOrder(NATURE_WATER, NATURE_EARTH);
@@ -351,36 +351,36 @@ public class IWorkspaceTest {
 		assertThat(sets).containsExactly(SET_OTHER);
 
 		current = findNature(descriptors, NATURE_INVALID);
-		assertNotNull("7.0", current);
-		assertEquals("7.1", NATURE_INVALID, current.getNatureId());
-		assertEquals("7.2", "", current.getLabel());
+		assertNotNull(current);
+		assertEquals(NATURE_INVALID, current.getNatureId());
+		assertEquals("", current.getLabel());
 		required = current.getRequiredNatureIds();
 		assertThat(required).isEmpty();
 		sets = current.getNatureSetIds();
 		assertThat(sets).isEmpty();
 
 		current = findNature(descriptors, NATURE_CYCLE1);
-		assertNotNull("8.0", current);
-		assertEquals("8.1", NATURE_CYCLE1, current.getNatureId());
-		assertEquals("8.2", "Cycle1", current.getLabel());
+		assertNotNull(current);
+		assertEquals(NATURE_CYCLE1, current.getNatureId());
+		assertEquals("Cycle1", current.getLabel());
 		required = current.getRequiredNatureIds();
 		assertThat(required).containsExactly(NATURE_CYCLE2);
 		sets = current.getNatureSetIds();
 		assertThat(sets).isEmpty();
 
 		current = findNature(descriptors, NATURE_CYCLE2);
-		assertNotNull("5.0", current);
-		assertEquals("9.1", NATURE_CYCLE2, current.getNatureId());
-		assertEquals("9.2", "Cycle2", current.getLabel());
+		assertNotNull(current);
+		assertEquals(NATURE_CYCLE2, current.getNatureId());
+		assertEquals("Cycle2", current.getLabel());
 		required = current.getRequiredNatureIds();
 		assertThat(required).containsExactly(NATURE_CYCLE3);
 		sets = current.getNatureSetIds();
 		assertThat(sets).isEmpty();
 
 		current = findNature(descriptors, NATURE_CYCLE3);
-		assertNotNull("10.0", current);
-		assertEquals("10.1", NATURE_CYCLE3, current.getNatureId());
-		assertEquals("10.2", "Cycle3", current.getLabel());
+		assertNotNull(current);
+		assertEquals(NATURE_CYCLE3, current.getNatureId());
+		assertEquals("Cycle3", current.getLabel());
 		required = current.getRequiredNatureIds();
 		assertThat(required).containsExactly(NATURE_CYCLE1);
 		sets = current.getNatureSetIds();
@@ -397,79 +397,79 @@ public class IWorkspaceTest {
 		IWorkspace ws = getWorkspace();
 
 		IProjectNatureDescriptor current = ws.getNatureDescriptor(NATURE_SIMPLE);
-		assertNotNull("2.0", current);
-		assertEquals("2.1", NATURE_SIMPLE, current.getNatureId());
-		assertEquals("2.2", "Simple", current.getLabel());
+		assertNotNull(current);
+		assertEquals(NATURE_SIMPLE, current.getNatureId());
+		assertEquals("Simple", current.getLabel());
 		assertThat(current.getRequiredNatureIds()).isEmpty();
 		assertThat(current.getNatureSetIds()).isEmpty();
 
 		current = ws.getNatureDescriptor(NATURE_SNOW);
-		assertNotNull("3.0", current);
-		assertEquals("3.1", NATURE_SNOW, current.getNatureId());
-		assertEquals("3.2", "Snow", current.getLabel());
+		assertNotNull(current);
+		assertEquals(NATURE_SNOW, current.getNatureId());
+		assertEquals("Snow", current.getLabel());
 		String[] required = current.getRequiredNatureIds();
 		assertThat(required).containsExactly(NATURE_WATER);
 		String[] sets = current.getNatureSetIds();
 		assertThat(sets).containsExactly(SET_OTHER);
 
 		current = ws.getNatureDescriptor(NATURE_WATER);
-		assertNotNull("4.0", current);
-		assertEquals("4.1", NATURE_WATER, current.getNatureId());
-		assertEquals("4.2", "Water", current.getLabel());
+		assertNotNull(current);
+		assertEquals(NATURE_WATER, current.getNatureId());
+		assertEquals("Water", current.getLabel());
 		required = current.getRequiredNatureIds();
 		assertThat(required).isEmpty();
 		sets = current.getNatureSetIds();
 		assertThat(sets).containsExactly(SET_STATE);
 
 		current = ws.getNatureDescriptor(NATURE_EARTH);
-		assertNotNull("5.0", current);
-		assertEquals("5.1", NATURE_EARTH, current.getNatureId());
-		assertEquals("5.2", "Earth", current.getLabel());
+		assertNotNull(current);
+		assertEquals(NATURE_EARTH, current.getNatureId());
+		assertEquals("Earth", current.getLabel());
 		required = current.getRequiredNatureIds();
 		assertThat(required).isEmpty();
 		sets = current.getNatureSetIds();
 		assertThat(sets).containsExactly(SET_STATE);
 
 		current = ws.getNatureDescriptor(NATURE_MUD);
-		assertNotNull("6.0", current);
-		assertEquals("6.1", NATURE_MUD, current.getNatureId());
-		assertEquals("6.2", "Mud", current.getLabel());
+		assertNotNull(current);
+		assertEquals(NATURE_MUD, current.getNatureId());
+		assertEquals("Mud", current.getLabel());
 		required = current.getRequiredNatureIds();
 		assertThat(required).containsExactlyInAnyOrder(NATURE_WATER, NATURE_EARTH);
 		sets = current.getNatureSetIds();
 		assertThat(sets).containsExactly(SET_OTHER);
 
 		current = ws.getNatureDescriptor(NATURE_INVALID);
-		assertNotNull("7.0", current);
-		assertEquals("7.1", NATURE_INVALID, current.getNatureId());
-		assertEquals("7.2", "", current.getLabel());
+		assertNotNull(current);
+		assertEquals(NATURE_INVALID, current.getNatureId());
+		assertEquals("", current.getLabel());
 		required = current.getRequiredNatureIds();
 		assertThat(required).isEmpty();
 		sets = current.getNatureSetIds();
 		assertThat(sets).isEmpty();
 
 		current = ws.getNatureDescriptor(NATURE_CYCLE1);
-		assertNotNull("8.0", current);
-		assertEquals("8.1", NATURE_CYCLE1, current.getNatureId());
-		assertEquals("8.2", "Cycle1", current.getLabel());
+		assertNotNull(current);
+		assertEquals(NATURE_CYCLE1, current.getNatureId());
+		assertEquals("Cycle1", current.getLabel());
 		required = current.getRequiredNatureIds();
 		assertThat(required).containsExactly(NATURE_CYCLE2);
 		sets = current.getNatureSetIds();
 		assertThat(sets).isEmpty();
 
 		current = ws.getNatureDescriptor(NATURE_CYCLE2);
-		assertNotNull("5.0", current);
-		assertEquals("9.1", NATURE_CYCLE2, current.getNatureId());
-		assertEquals("9.2", "Cycle2", current.getLabel());
+		assertNotNull(current);
+		assertEquals(NATURE_CYCLE2, current.getNatureId());
+		assertEquals("Cycle2", current.getLabel());
 		required = current.getRequiredNatureIds();
 		assertThat(required).containsExactly(NATURE_CYCLE3);
 		sets = current.getNatureSetIds();
 		assertThat(sets).isEmpty();
 
 		current = ws.getNatureDescriptor(NATURE_CYCLE3);
-		assertNotNull("10.0", current);
-		assertEquals("10.1", NATURE_CYCLE3, current.getNatureId());
-		assertEquals("10.2", "Cycle3", current.getLabel());
+		assertNotNull(current);
+		assertEquals(NATURE_CYCLE3, current.getNatureId());
+		assertEquals("Cycle3", current.getLabel());
 		required = current.getRequiredNatureIds();
 		assertThat(required).containsExactly(NATURE_CYCLE1);
 		sets = current.getNatureSetIds();
@@ -493,36 +493,36 @@ public class IWorkspaceTest {
 		/* normal case */
 		IResource[] resources = {file, anotherFile, oneMoreFile};
 		getWorkspace().move(resources, folder.getFullPath(), true, createTestMonitor());
-		assertFalse("1.1", file.exists());
-		assertFalse("1.2", anotherFile.exists());
-		assertFalse("1.3", oneMoreFile.exists());
-		assertTrue("1.4", folder.getFile(file.getName()).exists());
-		assertTrue("1.5", folder.getFile(anotherFile.getName()).exists());
-		assertTrue("1.6", folder.getFile(oneMoreFile.getName()).exists());
+		assertFalse(file.exists());
+		assertFalse(anotherFile.exists());
+		assertFalse(oneMoreFile.exists());
+		assertTrue(folder.getFile(file.getName()).exists());
+		assertTrue(folder.getFile(anotherFile.getName()).exists());
+		assertTrue(folder.getFile(oneMoreFile.getName()).exists());
 
 		/* test duplicates */
 		resources = new IResource[] {folder.getFile(file.getName()), folder.getFile(anotherFile.getName()), folder.getFile(oneMoreFile.getName()), folder.getFile(oneMoreFile.getName())};
 		IStatus status = getWorkspace().move(resources, project.getFullPath(), true, createTestMonitor());
-		assertTrue("2.1", status.isOK());
-		assertTrue("2.3", file.exists());
-		assertTrue("2.4", anotherFile.exists());
-		assertTrue("2.5", oneMoreFile.exists());
-		assertFalse("2.6", folder.getFile(file.getName()).exists());
-		assertFalse("2.7", folder.getFile(anotherFile.getName()).exists());
-		assertFalse("2.8", folder.getFile(oneMoreFile.getName()).exists());
+		assertTrue(status.isOK());
+		assertTrue(file.exists());
+		assertTrue(anotherFile.exists());
+		assertTrue(oneMoreFile.exists());
+		assertFalse(folder.getFile(file.getName()).exists());
+		assertFalse(folder.getFile(anotherFile.getName()).exists());
+		assertFalse(folder.getFile(oneMoreFile.getName()).exists());
 
 		/* test no simblings */
 		IResource[] resources2 = new IResource[] { file, anotherFile, oneMoreFile, project };
 		CoreException ex = assertThrows(CoreException.class,
 				() -> getWorkspace().move(resources2, folder.getFullPath(), true, createTestMonitor()));
-		assertFalse("3.1", ex.getStatus().isOK());
+		assertFalse(ex.getStatus().isOK());
 		assertThat(ex.getStatus().getChildren()).hasSize(1);
-		assertFalse("3.3", file.exists());
-		assertFalse("3.4", anotherFile.exists());
-		assertFalse("3.5", oneMoreFile.exists());
-		assertTrue("3.6", folder.getFile(file.getName()).exists());
-		assertTrue("3.7", folder.getFile(anotherFile.getName()).exists());
-		assertTrue("3.8", folder.getFile(oneMoreFile.getName()).exists());
+		assertFalse(file.exists());
+		assertFalse(anotherFile.exists());
+		assertFalse(oneMoreFile.exists());
+		assertTrue(folder.getFile(file.getName()).exists());
+		assertTrue(folder.getFile(anotherFile.getName()).exists());
+		assertTrue(folder.getFile(oneMoreFile.getName()).exists());
 
 		/* inexisting resource */
 		IResource[] resources3 = new IResource[] { folder.getFile(file.getName()),
@@ -530,13 +530,13 @@ public class IWorkspaceTest {
 				folder.getFile(oneMoreFile.getName()) };
 		CoreException ex2 = assertThrows(CoreException.class,
 				() -> getWorkspace().move(resources3, project.getFullPath(), true, createTestMonitor()));
-		assertFalse("4.1", ex2.getStatus().isOK());
-		assertTrue("4.3", file.exists());
-		assertTrue("4.4", anotherFile.exists());
-		assertTrue("4.5", oneMoreFile.exists());
-		assertFalse("4.6", folder.getFile(file.getName()).exists());
-		assertFalse("4.7", folder.getFile(anotherFile.getName()).exists());
-		assertFalse("4.8", folder.getFile(oneMoreFile.getName()).exists());
+		assertFalse(ex2.getStatus().isOK());
+		assertTrue(file.exists());
+		assertTrue(anotherFile.exists());
+		assertTrue(oneMoreFile.exists());
+		assertFalse(folder.getFile(file.getName()).exists());
+		assertFalse(folder.getFile(anotherFile.getName()).exists());
+		assertFalse(folder.getFile(oneMoreFile.getName()).exists());
 	}
 
 	/**
@@ -565,12 +565,12 @@ public class IWorkspaceTest {
 		/* normal case */
 		resources = new IResource[] {file1, anotherFile, oneMoreFile};
 		getWorkspace().copy(resources, folder.getFullPath(), true, createTestMonitor());
-		assertTrue("1.1", file1.exists());
-		assertTrue("1.2", anotherFile.exists());
-		assertTrue("1.3", oneMoreFile.exists());
-		assertTrue("1.4", folder.getFile(file1.getName()).exists());
-		assertTrue("1.5", folder.getFile(anotherFile.getName()).exists());
-		assertTrue("1.6", folder.getFile(oneMoreFile.getName()).exists());
+		assertTrue(file1.exists());
+		assertTrue(anotherFile.exists());
+		assertTrue(oneMoreFile.exists());
+		assertTrue(folder.getFile(file1.getName()).exists());
+		assertTrue(folder.getFile(anotherFile.getName()).exists());
+		assertTrue(folder.getFile(oneMoreFile.getName()).exists());
 		removeFromWorkspace(folder.getFile(file1.getName()));
 		removeFromWorkspace(folder.getFile(anotherFile.getName()));
 		removeFromWorkspace(folder.getFile(oneMoreFile.getName()));
@@ -581,12 +581,12 @@ public class IWorkspaceTest {
 		/* test duplicates */
 		resources = new IResource[] {file1, anotherFile, oneMoreFile, file1};
 		getWorkspace().copy(resources, folder.getFullPath(), true, createTestMonitor());
-		assertTrue("2.2", file1.exists());
-		assertTrue("2.3", anotherFile.exists());
-		assertTrue("2.4", oneMoreFile.exists());
-		assertTrue("2.5", folder.getFile(file1.getName()).exists());
-		assertTrue("2.6", folder.getFile(anotherFile.getName()).exists());
-		assertTrue("2.7", folder.getFile(oneMoreFile.getName()).exists());
+		assertTrue(file1.exists());
+		assertTrue(anotherFile.exists());
+		assertTrue(oneMoreFile.exists());
+		assertTrue(folder.getFile(file1.getName()).exists());
+		assertTrue(folder.getFile(anotherFile.getName()).exists());
+		assertTrue(folder.getFile(oneMoreFile.getName()).exists());
 		removeFromWorkspace(folder.getFile(file1.getName()));
 		removeFromWorkspace(folder.getFile(anotherFile.getName()));
 		removeFromWorkspace(folder.getFile(oneMoreFile.getName()));
@@ -599,14 +599,14 @@ public class IWorkspaceTest {
 		CoreException e = assertThrows(CoreException.class,
 				() -> getWorkspace().copy(resources2, folder.getFullPath(), true, createTestMonitor()));
 		IStatus status = e.getStatus();
-		assertFalse("3.1", status.isOK());
+		assertFalse(status.isOK());
 		assertThat(status.getChildren()).hasSize(1);
-		assertTrue("3.3", file1.exists());
-		assertTrue("3.4", anotherFile.exists());
-		assertTrue("3.5", oneMoreFile.exists());
-		assertTrue("3.6", folder.getFile(file1.getName()).exists());
-		assertTrue("3.7", folder.getFile(anotherFile.getName()).exists());
-		assertTrue("3.8", folder.getFile(oneMoreFile.getName()).exists());
+		assertTrue(file1.exists());
+		assertTrue(anotherFile.exists());
+		assertTrue(oneMoreFile.exists());
+		assertTrue(folder.getFile(file1.getName()).exists());
+		assertTrue(folder.getFile(anotherFile.getName()).exists());
+		assertTrue(folder.getFile(oneMoreFile.getName()).exists());
 		removeFromWorkspace(folder.getFile(file1.getName()));
 		removeFromWorkspace(folder.getFile(anotherFile.getName()));
 		removeFromWorkspace(folder.getFile(oneMoreFile.getName()));
@@ -619,20 +619,20 @@ public class IWorkspaceTest {
 		CoreException ex = assertThrows(CoreException.class,
 				() -> getWorkspace().copy(resources3, folder.getFullPath(), true, createTestMonitor()));
 		status = ex.getStatus();
-		assertFalse("4.1", status.isOK());
-		assertTrue("4.2", file1.exists());
-		assertTrue("4.3", anotherFile.exists());
-		assertTrue("4.4", oneMoreFile.exists());
-		assertTrue("4.5", folder.getFile(file1.getName()).exists());
-		assertTrue("4.6", folder.getFile(anotherFile.getName()).exists());
-		assertTrue("4.7 Fails because of 1FVFOOQ", folder.getFile(oneMoreFile.getName()).exists());
+		assertFalse(status.isOK());
+		assertTrue(file1.exists());
+		assertTrue(anotherFile.exists());
+		assertTrue(oneMoreFile.exists());
+		assertTrue(folder.getFile(file1.getName()).exists());
+		assertTrue(folder.getFile(anotherFile.getName()).exists());
+		assertTrue("Fails because of 1FVFOOQ", folder.getFile(oneMoreFile.getName()).exists());
 
 		/* copy projects should not be allowed */
 		IResource destination = getWorkspace().getRoot().getProject("destination");
 		CoreException ex2 = assertThrows(CoreException.class,
 				() -> getWorkspace().copy(new IResource[] { project }, destination.getFullPath(), true, createTestMonitor()));
 		status = ex2.getStatus();
-		assertFalse("5.1", status.isOK());
+		assertFalse(status.isOK());
 		assertThat(status.getChildren()).hasSize(1);
 	}
 
@@ -729,7 +729,7 @@ public class IWorkspaceTest {
 		IFile descriptionFile = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
 		descriptionFile.delete(IResource.NONE, null);
 		IStatus result = getWorkspace().save(true, createTestMonitor());
-		assertEquals("1.0", IStatus.WARNING, result.getSeverity());
+		assertEquals(IStatus.WARNING, result.getSeverity());
 	}
 
 	/**
@@ -774,11 +774,11 @@ public class IWorkspaceTest {
 		IFile file = project.getFile("myfile.txt");
 		createInWorkspace(new IResource[] {project, file});
 		IStatus result = getWorkspace().validateEdit(new IFile[] {file}, null);
-		assertTrue("1.0", result.isOK());
+		assertTrue(result.isOK());
 		file.setReadOnly(true);
 		result = getWorkspace().validateEdit(new IFile[] {file}, null);
-		assertEquals("1.1", IStatus.ERROR, result.getSeverity());
-		//	assertEquals("1.2", IResourceStatus.READ_ONLY_LOCAL, result.getCode());
+		assertEquals(IStatus.ERROR, result.getSeverity());
+		// assertEquals(IResourceStatus.READ_ONLY_LOCAL, result.getCode());
 		// remove the read-only status so test cleanup will work ok
 		file.setReadOnly(false);
 	}
@@ -796,56 +796,56 @@ public class IWorkspaceTest {
 	@Test
 	public void testValidateName() {
 		/* normal name */
-		assertTrue("1.1", getWorkspace().validateName("abcdef", IResource.FILE).isOK());
+		assertTrue(getWorkspace().validateName("abcdef", IResource.FILE).isOK());
 		/* invalid characters (windows only) */
 		if (OS.isWindows()) {
-			assertFalse("2.1", getWorkspace().validateName("dsa:sf", IResource.FILE).isOK());
-			assertFalse("2.2", getWorkspace().validateName("*dsasf", IResource.FILE).isOK());
-			assertFalse("2.3", getWorkspace().validateName("?dsasf", IResource.FILE).isOK());
-			assertFalse("2.4", getWorkspace().validateName("\"dsasf", IResource.FILE).isOK());
-			assertFalse("2.5", getWorkspace().validateName("<dsasf", IResource.FILE).isOK());
-			assertFalse("2.6", getWorkspace().validateName(">dsasf", IResource.FILE).isOK());
-			assertFalse("2.7", getWorkspace().validateName("|dsasf", IResource.FILE).isOK());
-			assertFalse("2.8", getWorkspace().validateName("\"dsasf", IResource.FILE).isOK());
-			assertFalse("2.10", getWorkspace().validateName("\\dsasf", IResource.FILE).isOK());
-			assertFalse("2.11", getWorkspace().validateName("...", IResource.PROJECT).isOK());
-			assertFalse("2.12", getWorkspace().validateName("foo.", IResource.FILE).isOK());
+			assertFalse(getWorkspace().validateName("dsa:sf", IResource.FILE).isOK());
+			assertFalse(getWorkspace().validateName("*dsasf", IResource.FILE).isOK());
+			assertFalse(getWorkspace().validateName("?dsasf", IResource.FILE).isOK());
+			assertFalse(getWorkspace().validateName("\"dsasf", IResource.FILE).isOK());
+			assertFalse(getWorkspace().validateName("<dsasf", IResource.FILE).isOK());
+			assertFalse(getWorkspace().validateName(">dsasf", IResource.FILE).isOK());
+			assertFalse(getWorkspace().validateName("|dsasf", IResource.FILE).isOK());
+			assertFalse(getWorkspace().validateName("\"dsasf", IResource.FILE).isOK());
+			assertFalse(getWorkspace().validateName("\\dsasf", IResource.FILE).isOK());
+			assertFalse(getWorkspace().validateName("...", IResource.PROJECT).isOK());
+			assertFalse(getWorkspace().validateName("foo.", IResource.FILE).isOK());
 			for (int i = 0; i <= 31; i++) {
-				assertFalse("2.13 Windows should NOT accept character #" + i,
+				assertFalse("Windows should NOT accept character #" + i,
 						getWorkspace().validateName("anything" + ((char) i) + "something", IResource.FILE).isOK());
 			}
-			assertTrue("2.14 Windows should accept character #" + 32,
+			assertTrue("Windows should accept character #" + 32,
 					getWorkspace().validateName("anything" + ((char) 32) + "something", IResource.FILE).isOK());
-			assertFalse("2.15 Windows should NOT accept space at the end",
+			assertFalse("Windows should NOT accept space at the end",
 					getWorkspace().validateName("foo ", IResource.FILE).isOK());
-			assertTrue("2.16 Windows should accept space in the middle",
+			assertTrue("Windows should accept space in the middle",
 					getWorkspace().validateName("fo o", IResource.FILE).isOK());
-			assertTrue("2.17 Windows should accept space in at the beginning",
+			assertTrue("Windows should accept space in at the beginning",
 					getWorkspace().validateName(" foo", IResource.FILE).isOK());
 		} else {
 			//trailing dots are ok on other platforms
-			assertTrue("3.3", getWorkspace().validateName("...", IResource.FILE).isOK());
-			assertTrue("3.4", getWorkspace().validateName("....", IResource.PROJECT).isOK());
-			assertTrue("3.7", getWorkspace().validateName("abc.", IResource.FILE).isOK());
+			assertTrue(getWorkspace().validateName("...", IResource.FILE).isOK());
+			assertTrue(getWorkspace().validateName("....", IResource.PROJECT).isOK());
+			assertTrue(getWorkspace().validateName("abc.", IResource.FILE).isOK());
 			for (int i = 1; i <= 32; i++) {
-				assertTrue("3.8 Unix-style filesystems should accept character #" + i,
+				assertTrue("Unix-style filesystems should accept character #" + i,
 						getWorkspace().validateName("anything" + ((char) i) + "something", IResource.FILE).isOK());
 			}
-			assertTrue("3.9 Unix-style filesystems should accept space at the end",
+			assertTrue("Unix-style filesystems should accept space at the end",
 					getWorkspace().validateName("foo ", IResource.FILE).isOK());
 		}
 		/* invalid characters on all platforms */
-		assertFalse("2.9", getWorkspace().validateName("/dsasf", IResource.FILE).isOK());
-		assertFalse("2.9", getWorkspace().validateName("", IResource.FILE).isOK());
+		assertFalse(getWorkspace().validateName("/dsasf", IResource.FILE).isOK());
+		assertFalse(getWorkspace().validateName("", IResource.FILE).isOK());
 
 		/* dots */
-		assertFalse("3.1", getWorkspace().validateName(".", IResource.FILE).isOK());
-		assertFalse("3.2", getWorkspace().validateName("..", IResource.FILE).isOK());
-		assertTrue("3.3", getWorkspace().validateName("...z", IResource.FILE).isOK());
-		assertTrue("3.4", getWorkspace().validateName("....z", IResource.FILE).isOK());
-		assertTrue("3.5", getWorkspace().validateName("....abc", IResource.FILE).isOK());
-		assertTrue("3.6", getWorkspace().validateName("abc....def", IResource.FILE).isOK());
-		assertTrue("3.7", getWorkspace().validateName("abc.d...z", IResource.FILE).isOK());
+		assertFalse(getWorkspace().validateName(".", IResource.FILE).isOK());
+		assertFalse(getWorkspace().validateName("..", IResource.FILE).isOK());
+		assertTrue(getWorkspace().validateName("...z", IResource.FILE).isOK());
+		assertTrue(getWorkspace().validateName("....z", IResource.FILE).isOK());
+		assertTrue(getWorkspace().validateName("....abc", IResource.FILE).isOK());
+		assertTrue(getWorkspace().validateName("abc....def", IResource.FILE).isOK());
+		assertTrue(getWorkspace().validateName("abc.d...z", IResource.FILE).isOK());
 	}
 
 	/**
@@ -878,55 +878,55 @@ public class IWorkspaceTest {
 	@Test
 	public void testValidatePath() {
 		/* normal path */
-		assertTrue("1.1", getWorkspace().validatePath("/one/two/three/four/", IResource.FILE | IResource.FOLDER).isOK());
+		assertTrue(getWorkspace().validatePath("/one/two/three/four/", IResource.FILE | IResource.FOLDER).isOK());
 
 		/* invalid characters (windows only) */
 		final boolean WINDOWS = OS.isWindows();
 		if (WINDOWS) {
-			assertFalse("2.1", (getWorkspace().validatePath("\\dsa:sf", IResource.FILE).isOK()));
-			assertFalse("2.2", (getWorkspace().validatePath("/abc/*dsasf", IResource.FILE).isOK()));
-			assertFalse("2.3", (getWorkspace().validatePath("/abc/?dsasf", IResource.FILE).isOK()));
-			assertFalse("2.4", (getWorkspace().validatePath("/abc/\"dsasf", IResource.FILE).isOK()));
-			assertFalse("2.5", (getWorkspace().validatePath("/abc/<dsasf", IResource.FILE).isOK()));
-			assertFalse("2.6", (getWorkspace().validatePath("/abc/>dsasf", IResource.FILE).isOK()));
-			assertFalse("2.7", (getWorkspace().validatePath("/abc/|dsasf", IResource.FILE).isOK()));
-			assertFalse("2.8", (getWorkspace().validatePath("/abc/\"dsasf", IResource.FILE).isOK()));
+			assertFalse(getWorkspace().validatePath("\\dsa:sf", IResource.FILE).isOK());
+			assertFalse(getWorkspace().validatePath("/abc/*dsasf", IResource.FILE).isOK());
+			assertFalse(getWorkspace().validatePath("/abc/?dsasf", IResource.FILE).isOK());
+			assertFalse(getWorkspace().validatePath("/abc/\"dsasf", IResource.FILE).isOK());
+			assertFalse(getWorkspace().validatePath("/abc/<dsasf", IResource.FILE).isOK());
+			assertFalse(getWorkspace().validatePath("/abc/>dsasf", IResource.FILE).isOK());
+			assertFalse(getWorkspace().validatePath("/abc/|dsasf", IResource.FILE).isOK());
+			assertFalse(getWorkspace().validatePath("/abc/\"dsasf", IResource.FILE).isOK());
 
-			assertFalse("5.2", (getWorkspace().validatePath("\\", IResource.FILE).isOK()));
-			assertFalse("5.4", (getWorkspace().validatePath("device:/abc/123", IResource.FILE).isOK()));
+			assertFalse(getWorkspace().validatePath("\\", IResource.FILE).isOK());
+			assertFalse(getWorkspace().validatePath("device:/abc/123", IResource.FILE).isOK());
 
 			//trailing dots in segments names not allowed on Windows
-			assertFalse("3.1", getWorkspace().validatePath("/abc/.../defghi", IResource.FILE).isOK());
-			assertFalse("3.2", getWorkspace().validatePath("/abc/..../defghi", IResource.FILE).isOK());
-			assertFalse("3.3", getWorkspace().validatePath("/abc/def..../ghi", IResource.FILE).isOK());
+			assertFalse(getWorkspace().validatePath("/abc/.../defghi", IResource.FILE).isOK());
+			assertFalse(getWorkspace().validatePath("/abc/..../defghi", IResource.FILE).isOK());
+			assertFalse(getWorkspace().validatePath("/abc/def..../ghi", IResource.FILE).isOK());
 		} else {
-			assertTrue("3.1", getWorkspace().validatePath("/abc/.../defghi", IResource.FILE).isOK());
-			assertTrue("3.2", getWorkspace().validatePath("/abc/..../defghi", IResource.FILE).isOK());
-			assertTrue("3.3", getWorkspace().validatePath("/abc/def..../ghi", IResource.FILE).isOK());
+			assertTrue(getWorkspace().validatePath("/abc/.../defghi", IResource.FILE).isOK());
+			assertTrue(getWorkspace().validatePath("/abc/..../defghi", IResource.FILE).isOK());
+			assertTrue(getWorkspace().validatePath("/abc/def..../ghi", IResource.FILE).isOK());
 		}
 
 		/* dots */
-		assertTrue("3.4", getWorkspace().validatePath("/abc/../ghi/j", IResource.FILE).isOK());
-		assertTrue("3.5", getWorkspace().validatePath("/abc/....def/ghi", IResource.FILE).isOK());
-		assertTrue("3.6", getWorkspace().validatePath("/abc/def....ghi/jkl", IResource.FILE).isOK());
+		assertTrue(getWorkspace().validatePath("/abc/../ghi/j", IResource.FILE).isOK());
+		assertTrue(getWorkspace().validatePath("/abc/....def/ghi", IResource.FILE).isOK());
+		assertTrue(getWorkspace().validatePath("/abc/def....ghi/jkl", IResource.FILE).isOK());
 
 		/* test hiding incorrect characters using .. and device separator : */
-		assertTrue("4.1", getWorkspace().validatePath("/abc/.?./../def/as", IResource.FILE).isOK());
-		assertTrue("4.2", getWorkspace().validatePath("/abc/;*?\"'/../def/safd", IResource.FILE).isOK());
-		assertTrue("4.3", getWorkspace().validatePath("/abc;*?\"':/def/asdf/sadf", IResource.FILE).isOK() != WINDOWS);
+		assertTrue(getWorkspace().validatePath("/abc/.?./../def/as", IResource.FILE).isOK());
+		assertTrue(getWorkspace().validatePath("/abc/;*?\"'/../def/safd", IResource.FILE).isOK());
+		assertTrue(getWorkspace().validatePath("/abc;*?\"':/def/asdf/sadf", IResource.FILE).isOK() != WINDOWS);
 
 		/* other invalid paths */
-		assertFalse("5.1", (getWorkspace().validatePath("/", IResource.FILE).isOK()));
-		assertFalse("5.3", (getWorkspace().validatePath("", IResource.FILE).isOK()));
+		assertFalse(getWorkspace().validatePath("/", IResource.FILE).isOK());
+		assertFalse(getWorkspace().validatePath("", IResource.FILE).isOK());
 
 		/* test types / segments */
-		assertTrue("6.6", getWorkspace().validatePath("/asf", IResource.PROJECT).isOK());
-		assertFalse("6.7", (getWorkspace().validatePath("/asf", IResource.FILE).isOK()));
+		assertTrue(getWorkspace().validatePath("/asf", IResource.PROJECT).isOK());
+		assertFalse((getWorkspace().validatePath("/asf", IResource.FILE).isOK()));
 		// note this is value for a file OR project (note the logical OR)
-		assertTrue("6.8", getWorkspace().validatePath("/asf", IResource.PROJECT | IResource.FILE).isOK());
-		assertTrue("6.10", getWorkspace().validatePath("/project/.metadata", IResource.FILE).isOK());
+		assertTrue(getWorkspace().validatePath("/asf", IResource.PROJECT | IResource.FILE).isOK());
+		assertTrue(getWorkspace().validatePath("/project/.metadata", IResource.FILE).isOK());
 		// FIXME: Should this be valid?
-		assertTrue("6.11", getWorkspace().validatePath("/.metadata/project", IResource.FILE).isOK());
+		assertTrue(getWorkspace().validatePath("/.metadata/project", IResource.FILE).isOK());
 	}
 
 	/**
@@ -939,66 +939,63 @@ public class IWorkspaceTest {
 		IProject project = workspace.getRoot().getProject("Project");
 
 		/* normal path */
-		assertTrue("1.1", workspace.validateProjectLocation(project, IPath.fromOSString("/one/two/three/four/")).isOK());
+		assertTrue(workspace.validateProjectLocation(project, IPath.fromOSString("/one/two/three/four/")).isOK());
 
 		/* invalid characters (windows only) */
 		final boolean WINDOWS = OS.isWindows();
 		if (WINDOWS) {
-			assertFalse("2.1", workspace.validateProjectLocation(project, IPath.fromOSString("d:\\dsa:sf")).isOK());
-			assertFalse("2.2", workspace.validateProjectLocation(project, IPath.fromOSString("/abc/*dsasf")).isOK());
-			assertFalse("2.3", workspace.validateProjectLocation(project, IPath.fromOSString("/abc/?dsasf")).isOK());
-			assertFalse("2.4", workspace.validateProjectLocation(project, IPath.fromOSString("/abc/\"dsasf")).isOK());
-			assertFalse("2.5", workspace.validateProjectLocation(project, IPath.fromOSString("/abc/<dsasf")).isOK());
-			assertFalse("2.6", workspace.validateProjectLocation(project, IPath.fromOSString("/abc/>dsasf")).isOK());
-			assertFalse("2.7", workspace.validateProjectLocation(project, IPath.fromOSString("/abc/|dsasf")).isOK());
-			assertFalse("2.8", workspace.validateProjectLocation(project, IPath.fromOSString("/abc/\"dsasf")).isOK());
+			assertFalse(workspace.validateProjectLocation(project, IPath.fromOSString("d:\\dsa:sf")).isOK());
+			assertFalse(workspace.validateProjectLocation(project, IPath.fromOSString("/abc/*dsasf")).isOK());
+			assertFalse(workspace.validateProjectLocation(project, IPath.fromOSString("/abc/?dsasf")).isOK());
+			assertFalse(workspace.validateProjectLocation(project, IPath.fromOSString("/abc/\"dsasf")).isOK());
+			assertFalse(workspace.validateProjectLocation(project, IPath.fromOSString("/abc/<dsasf")).isOK());
+			assertFalse(workspace.validateProjectLocation(project, IPath.fromOSString("/abc/>dsasf")).isOK());
+			assertFalse(workspace.validateProjectLocation(project, IPath.fromOSString("/abc/|dsasf")).isOK());
+			assertFalse(workspace.validateProjectLocation(project, IPath.fromOSString("/abc/\"dsasf")).isOK());
 
 			//trailing dots invalid on Windows
-			assertFalse("3.1", workspace.validateProjectLocation(project, IPath.fromOSString("/abc/.../defghi")).isOK());
-			assertFalse("3.2", workspace.validateProjectLocation(project, IPath.fromOSString("/abc/..../defghi")).isOK());
-			assertFalse("3.3", workspace.validateProjectLocation(project, IPath.fromOSString("/abc/def..../ghi")).isOK());
+			assertFalse(workspace.validateProjectLocation(project, IPath.fromOSString("/abc/.../defghi")).isOK());
+			assertFalse(workspace.validateProjectLocation(project, IPath.fromOSString("/abc/..../defghi")).isOK());
+			assertFalse(workspace.validateProjectLocation(project, IPath.fromOSString("/abc/def..../ghi")).isOK());
 		} else {
-			assertTrue("3.1", workspace.validateProjectLocation(project, IPath.fromOSString("/abc/.../defghi")).isOK());
-			assertTrue("3.2", workspace.validateProjectLocation(project, IPath.fromOSString("/abc/..../defghi")).isOK());
-			assertTrue("3.3", workspace.validateProjectLocation(project, IPath.fromOSString("/abc/def..../ghi")).isOK());
+			assertTrue(workspace.validateProjectLocation(project, IPath.fromOSString("/abc/.../defghi")).isOK());
+			assertTrue(workspace.validateProjectLocation(project, IPath.fromOSString("/abc/..../defghi")).isOK());
+			assertTrue(workspace.validateProjectLocation(project, IPath.fromOSString("/abc/def..../ghi")).isOK());
 		}
 
 		/* dots */
-		assertTrue("3.4", workspace.validateProjectLocation(project, IPath.fromOSString("/abc/....def/ghi")).isOK());
-		assertTrue("3.5", workspace.validateProjectLocation(project, IPath.fromOSString("/abc/def....ghi/jkl")).isOK());
+		assertTrue(workspace.validateProjectLocation(project, IPath.fromOSString("/abc/....def/ghi")).isOK());
+		assertTrue(workspace.validateProjectLocation(project, IPath.fromOSString("/abc/def....ghi/jkl")).isOK());
 
 		/* test hiding incorrect characters using .. and device separator : */
-		assertTrue("4.1", workspace.validateProjectLocation(project, IPath.fromOSString("/abc/.?./../def/as")).isOK());
-		assertTrue("4.2", workspace.validateProjectLocation(project, IPath.fromOSString("/abc/;*?\"'/../def/safd")).isOK());
-		assertFalse("4.3",
-				(workspace.validateProjectLocation(project, IPath.fromOSString("c:/abc;*?\"':/def/asdf/sadf")).isOK()));
+		assertTrue(workspace.validateProjectLocation(project, IPath.fromOSString("/abc/.?./../def/as")).isOK());
+		assertTrue(workspace.validateProjectLocation(project, IPath.fromOSString("/abc/;*?\"'/../def/safd")).isOK());
+		assertFalse(
+				workspace.validateProjectLocation(project, IPath.fromOSString("c:/abc;*?\"':/def/asdf/sadf")).isOK());
 
 		// cannot overlap the platform directory
 		IPath platformLocation = Platform.getLocation();
-		assertFalse("5.1",
-				(workspace.validateProjectLocation(project, new Path(platformLocation.getDevice(), "/")).isOK()));
-		assertFalse("5.2",
-				(workspace.validateProjectLocation(project, new Path(platformLocation.getDevice(), "\\")).isOK()));
-		assertFalse("5.3",
-				(workspace.validateProjectLocation(project, new Path(platformLocation.getDevice(), "")).isOK()));
-		assertFalse("5.4", (workspace.validateProjectLocation(project, platformLocation).isOK()));
-		assertFalse("5.5", (workspace.validateProjectLocation(project, platformLocation.append("foo")).isOK()));
+		assertFalse(workspace.validateProjectLocation(project, new Path(platformLocation.getDevice(), "/")).isOK());
+		assertFalse(workspace.validateProjectLocation(project, new Path(platformLocation.getDevice(), "\\")).isOK());
+		assertFalse(workspace.validateProjectLocation(project, new Path(platformLocation.getDevice(), "")).isOK());
+		assertFalse(workspace.validateProjectLocation(project, platformLocation).isOK());
+		assertFalse(workspace.validateProjectLocation(project, platformLocation.append("foo")).isOK());
 
 		//can overlap platform directory on another device
 		IPath anotherDevice = platformLocation.setDevice("u:");
-		assertTrue("6.1", workspace.validateProjectLocation(project, new Path("u:", "/")).isOK());
+		assertTrue(workspace.validateProjectLocation(project, new Path("u:", "/")).isOK());
 		if (WINDOWS) {
-			assertTrue("6.2", workspace.validateProjectLocation(project, new Path("u:", "\\")).isOK());
+			assertTrue(workspace.validateProjectLocation(project, new Path("u:", "\\")).isOK());
 		}
-		assertTrue("6.4", workspace.validateProjectLocation(project, anotherDevice).isOK());
-		assertTrue("6.5", workspace.validateProjectLocation(project, anotherDevice.append("foo")).isOK());
+		assertTrue(workspace.validateProjectLocation(project, anotherDevice).isOK());
+		assertTrue(workspace.validateProjectLocation(project, anotherDevice.append("foo")).isOK());
 
 		//cannot be a relative path
-		assertFalse("7.1", workspace.validateProjectLocation(project, new Path("u:", "")).isOK());
-		assertFalse("7.2", workspace.validateProjectLocation(project, IPath.fromOSString("c:")).isOK());
-		assertFalse("7.3", workspace.validateProjectLocation(project, IPath.fromOSString("c:foo")).isOK());
-		assertFalse("7.4", workspace.validateProjectLocation(project, IPath.fromOSString("foo/bar")).isOK());
-		assertFalse("7.5", workspace.validateProjectLocation(project, IPath.fromOSString("c:foo/bar")).isOK());
+		assertFalse(workspace.validateProjectLocation(project, new Path("u:", "")).isOK());
+		assertFalse(workspace.validateProjectLocation(project, IPath.fromOSString("c:")).isOK());
+		assertFalse(workspace.validateProjectLocation(project, IPath.fromOSString("c:foo")).isOK());
+		assertFalse(workspace.validateProjectLocation(project, IPath.fromOSString("foo/bar")).isOK());
+		assertFalse(workspace.validateProjectLocation(project, IPath.fromOSString("c:foo/bar")).isOK());
 
 		//may be relative to an existing path variable
 		final String PATH_VAR_NAME = "FOOVAR";
@@ -1006,9 +1003,9 @@ public class IWorkspaceTest {
 		try {
 			IPath varPath = IPath.fromOSString(PATH_VAR_NAME);
 			workspace.getPathVariableManager().setValue(PATH_VAR_NAME, PATH_VAR_VALUE);
-			assertTrue("8.1", workspace.validateProjectLocation(project, varPath).isOK());
-			assertTrue("8.2", workspace.validateProjectLocation(project, varPath.append("test")).isOK());
-			assertTrue("8.3", workspace.validateProjectLocation(project, varPath.append("test/ing")).isOK());
+			assertTrue(workspace.validateProjectLocation(project, varPath).isOK());
+			assertTrue(workspace.validateProjectLocation(project, varPath.append("test")).isOK());
+			assertTrue(workspace.validateProjectLocation(project, varPath.append("test/ing")).isOK());
 		} finally {
 			workspace.getPathVariableManager().setValue(PATH_VAR_NAME, null);
 		}
@@ -1032,29 +1029,29 @@ public class IWorkspaceTest {
 			desc.setReferencedProjects(new IProject[] {project});
 			open.setDescription(desc, IResource.FORCE, createTestMonitor());
 
-			assertFalse("9.1", workspace.validateProjectLocation(project, openProjectLocation).isOK());
-			assertFalse("9.2", workspace.validateProjectLocation(project, closedProjectLocation).isOK());
+			assertFalse(workspace.validateProjectLocation(project, openProjectLocation).isOK());
+			assertFalse(workspace.validateProjectLocation(project, closedProjectLocation).isOK());
 
 			//for an existing project, it cannot overlap itself, but its own location is valid
-			assertTrue("9.3", workspace.validateProjectLocation(open, openProjectLocation).isOK());
-			assertFalse("9.4", workspace.validateProjectLocation(open, openProjectLocation.append("sub")).isOK());
+			assertTrue(workspace.validateProjectLocation(open, openProjectLocation).isOK());
+			assertFalse(workspace.validateProjectLocation(open, openProjectLocation.append("sub")).isOK());
 
 			//an existing project cannot overlap the location of any linked resource in that project
 			linkLocation.toFile().mkdirs();
-			assertTrue("10.1", workspace.validateProjectLocation(open, linkLocation).isOK());
+			assertTrue(workspace.validateProjectLocation(open, linkLocation).isOK());
 			IFolder link = open.getFolder("link");
 			link.createLink(linkLocation, IResource.NONE, createTestMonitor());
-			assertFalse("10.2", workspace.validateProjectLocation(open, linkLocation).isOK());
-			assertFalse("10.3", workspace.validateProjectLocation(open, linkLocation.append("sub")).isOK());
+			assertFalse(workspace.validateProjectLocation(open, linkLocation).isOK());
+			assertFalse(workspace.validateProjectLocation(open, linkLocation.append("sub")).isOK());
 
 			//however another project can overlap an existing link location
-			assertTrue("10.4", workspace.validateProjectLocation(project, linkLocation).isOK());
+			assertTrue(workspace.validateProjectLocation(project, linkLocation).isOK());
 
 			// A new project cannot overlap the default locations of other projects, but its own location is valid
 			IPath defaultProjectLocation = workspace.getRoot().getLocation();
-			assertTrue("11.1", workspace.validateProjectLocation(project, defaultProjectLocation.append(project.getName())).isOK());
-			assertFalse("11.2",
-					workspace.validateProjectLocation(project, defaultProjectLocation.append("foo")).isOK());
+			assertTrue(workspace.validateProjectLocation(project, defaultProjectLocation.append(project.getName()))
+					.isOK());
+			assertFalse(workspace.validateProjectLocation(project, defaultProjectLocation.append("foo")).isOK());
 		} finally {
 			Workspace.clear(linkLocation.toFile());
 			//make sure we clean up project directories
@@ -1068,17 +1065,17 @@ public class IWorkspaceTest {
 		}
 
 		// cannot overlap .metadata folder from the current workspace
-		assertFalse("12.1", (workspace.validateProjectLocation(project,
+		assertFalse((workspace.validateProjectLocation(project,
 				platformLocation.addTrailingSeparator().append(".metadata"))).isOK());
 
 		IProject metadataProject = workspace.getRoot().getProject(".metadata");
-		assertFalse("12.2", (workspace.validateProjectLocation(metadataProject, null)).isOK());
+		assertFalse((workspace.validateProjectLocation(metadataProject, null)).isOK());
 
 		// FIXME: Should this be valid?
-		assertTrue("23.1", workspace.validateProjectLocation(project, IPath.fromOSString("/asf")).isOK());
-		assertTrue("23.2", workspace.validateProjectLocation(project, IPath.fromOSString("/project/.metadata")).isOK());
+		assertTrue(workspace.validateProjectLocation(project, IPath.fromOSString("/asf")).isOK());
+		assertTrue(workspace.validateProjectLocation(project, IPath.fromOSString("/project/.metadata")).isOK());
 		// FIXME: Should this be valid?
-		assertTrue("23.3", workspace.validateProjectLocation(project, IPath.fromOSString("/.metadata/project")).isOK());
+		assertTrue(workspace.validateProjectLocation(project, IPath.fromOSString("/.metadata/project")).isOK());
 	}
 
 	/**
@@ -1091,27 +1088,27 @@ public class IWorkspaceTest {
 		IProject project = workspace.getRoot().getProject("Project");
 		// URI with no scheme
 		URI uri = new URI("eferfsdfwer");
-		assertFalse("1.0", workspace.validateProjectLocationURI(project, uri).isOK());
+		assertFalse(workspace.validateProjectLocationURI(project, uri).isOK());
 		// URI with unknown scheme
 		uri = new URI("blorts://foo.com?bad");
-		assertFalse("1.1", workspace.validateProjectLocationURI(project, uri).isOK());
+		assertFalse(workspace.validateProjectLocationURI(project, uri).isOK());
 	}
 
 	@Test
 	public void testWorkspaceService() {
 		final BundleContext context = FrameworkUtil.getBundle(IWorkspaceTest.class).getBundleContext();
 		ServiceReference<IWorkspace> ref = context.getServiceReference(IWorkspace.class);
-		assertNotNull("1.0", ref);
+		assertNotNull(ref);
 		IWorkspace ws = context.getService(ref);
-		assertNotNull("1.1", ws);
+		assertNotNull(ws);
 	}
 
 	@Test
 	public void testGetFilterMatcherDescriptor() {
 		IFilterMatcherDescriptor descriptor = getWorkspace().getFilterMatcherDescriptor("");
-		assertNull("1.0", descriptor);
+		assertNull(descriptor);
 		descriptor = getWorkspace().getFilterMatcherDescriptor("org.eclipse.core.resources.regexFilterMatcher");
-		assertNotNull("1.1", descriptor);
+		assertNotNull(descriptor);
 	}
 
 }

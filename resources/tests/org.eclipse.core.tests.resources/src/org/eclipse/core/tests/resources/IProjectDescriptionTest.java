@@ -19,6 +19,7 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -71,7 +72,7 @@ public class IProjectDescriptionTest {
 		project.build(IncrementalProjectBuilder.FULL_BUILD, null);
 
 		// Get a non-cloned version of the project desc build spec, and check for the builder
-		assertTrue(((BuildCommand) project.internalGetDescription().getBuildSpec(false)[0]).getBuilders() != null);
+		assertNotNull(((BuildCommand) project.internalGetDescription().getBuildSpec(false)[0]).getBuilders());
 
 		// Now reset the build command. The builder shouldn't disappear.
 		desc = project.getDescription();
@@ -79,7 +80,7 @@ public class IProjectDescriptionTest {
 		project.setDescription(desc, null);
 
 		// builder should still be there
-		assertTrue(((BuildCommand) project.internalGetDescription().getBuildSpec(false)[0]).getBuilders() != null);
+		assertNotNull(((BuildCommand) project.internalGetDescription().getBuildSpec(false)[0]).getBuilders());
 	}
 
 	/**

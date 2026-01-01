@@ -29,8 +29,8 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -66,6 +66,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -197,7 +198,7 @@ public class IResourceChangeListenerTest {
 	void assertNotDeltaIncludes(IResourceDelta delta, IResource[] resources) {
 		IResource deltaResource = delta.getResource();
 		for (IResource resource : resources) {
-			assertTrue(!deltaResource.equals(resource));
+			assertFalse(deltaResource.equals(resource));
 		}
 		IResourceDelta[] children = delta.getAffectedChildren();
 		for (IResourceDelta element : children) {
@@ -213,7 +214,7 @@ public class IResourceChangeListenerTest {
 		delta.accept(delta2 -> {
 			IResource deltaResource = delta2.getResource();
 			for (IResource resource : resources) {
-				assertTrue(!deltaResource.equals(resource));
+				assertFalse(deltaResource.equals(resource));
 			}
 			return true;
 		});
@@ -423,7 +424,7 @@ public class IResourceChangeListenerTest {
 			} catch (CoreException e) {
 				return;
 			}
-			listenerInMainThreadCallback.set(() -> fail("1.0"));
+			listenerInMainThreadCallback.set(Assert::fail);
 		};
 		// register the listener with the workspace.
 		getWorkspace().addResourceChangeListener(listener, IResourceChangeEvent.POST_CHANGE);
@@ -467,23 +468,23 @@ public class IResourceChangeListenerTest {
 					file1.touch(null);
 					workspace.build(trigger, monitor);
 				}, createTestMonitor());
-				assertEquals("1.0." + i, workspace, preBuild.source);
-				assertEquals("1.1." + i, workspace, postBuild.source);
-				assertEquals("1.2." + i, workspace, postChange.source);
-				assertEquals("1.3." + i, trigger, preBuild.trigger);
-				assertEquals("1.4." + i, trigger, postBuild.trigger);
-				assertEquals("1.5." + i, 0, postChange.trigger);
+				assertEquals(i + "", workspace, preBuild.source);
+				assertEquals(i + "", workspace, postBuild.source);
+				assertEquals(i + "", workspace, postChange.source);
+				assertEquals(i + "", trigger, preBuild.trigger);
+				assertEquals(i + "", trigger, postBuild.trigger);
+				assertEquals(i + "", 0, postChange.trigger);
 
 				workspace.run((IWorkspaceRunnable) monitor -> {
 					file1.touch(null);
 					project1.build(trigger, createTestMonitor());
 				}, createTestMonitor());
-				assertEquals("2.0." + i, project1, preBuild.source);
-				assertEquals("2.2." + i, project1, postBuild.source);
-				assertEquals("2.2." + i, workspace, postChange.source);
-				assertEquals("2.3." + i, trigger, preBuild.trigger);
-				assertEquals("2.4." + i, trigger, postBuild.trigger);
-				assertEquals("2.5." + i, 0, postChange.trigger);
+				assertEquals(i + "", project1, preBuild.source);
+				assertEquals(i + "", project1, postBuild.source);
+				assertEquals(i + "", workspace, postChange.source);
+				assertEquals(i + "", trigger, preBuild.trigger);
+				assertEquals(i + "", trigger, postBuild.trigger);
+				assertEquals(i + "", 0, postChange.trigger);
 
 			}
 
@@ -492,12 +493,12 @@ public class IResourceChangeListenerTest {
 			file1.touch(null);
 			waitForBuild();
 			int trigger = IncrementalProjectBuilder.AUTO_BUILD;
-			assertEquals("1.0", workspace, preBuild.source);
-			assertEquals("1.1", workspace, postBuild.source);
-			assertEquals("1.2", workspace, postChange.source);
-			assertEquals("1.3", trigger, preBuild.trigger);
-			assertEquals("1.4", trigger, postBuild.trigger);
-			assertEquals("1.5", 0, postChange.trigger);
+			assertEquals(workspace, preBuild.source);
+			assertEquals(workspace, postBuild.source);
+			assertEquals(workspace, postChange.source);
+			assertEquals(trigger, preBuild.trigger);
+			assertEquals(trigger, postBuild.trigger);
+			assertEquals(0, postChange.trigger);
 
 		} finally {
 			workspace.removeResourceChangeListener(preBuild);
@@ -752,7 +753,7 @@ public class IResourceChangeListenerTest {
 						listener.wait(1000);
 					} catch (InterruptedException e) {
 					}
-					assertTrue("2.0", ++i < 60);
+					assertTrue(++i < 60);
 				}
 			}
 		} finally {
@@ -771,8 +772,8 @@ public class IResourceChangeListenerTest {
 		project2.create(createTestMonitor());
 		project2.open(createTestMonitor());
 
-		assertTrue("1.0", project1.isOpen());
-		assertTrue("2.0", project2.isOpen());
+		assertTrue(project1.isOpen());
+		assertTrue(project2.isOpen());
 
 		final IFolder f = project1.getFolder(createUniqueString());
 		f.create(true, true, createTestMonitor());
@@ -835,8 +836,8 @@ public class IResourceChangeListenerTest {
 		project1.create(null);
 		project1.open(null);
 
-		assertTrue("1.0", p.isOpen());
-		assertTrue("2.0", project1.isOpen());
+		assertTrue(p.isOpen());
+		assertTrue(project1.isOpen());
 
 		// the listener checks if an attempt to modify the tree succeeds if made in a job
 		// that belongs to FAMILY_MANUAL_REFRESH
@@ -919,7 +920,7 @@ public class IResourceChangeListenerTest {
 		project1.create(null);
 		project1.open(null);
 
-		assertTrue("1.0", project1.isOpen());
+		assertTrue(project1.isOpen());
 
 		class Listener1 implements IResourceChangeListener {
 			public volatile boolean wasPerformed = false;
@@ -944,17 +945,17 @@ public class IResourceChangeListenerTest {
 			Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_MANUAL_REFRESH);
 			Job.getJobManager().join(ResourcesPlugin.FAMILY_MANUAL_REFRESH, null);
 
-			assertTrue("2.0", listener1.wasPerformed);
-			assertEquals("3.0", getWorkspace(), listener1.eventSource);
-			assertEquals("4.0", null, listener1.eventResource);
+			assertTrue(listener1.wasPerformed);
+			assertEquals(getWorkspace(), listener1.eventSource);
+			assertEquals(null, listener1.eventResource);
 
 			project1.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 			Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_MANUAL_REFRESH);
 			Job.getJobManager().join(ResourcesPlugin.FAMILY_MANUAL_REFRESH, null);
 
-			assertTrue("5.0", listener1.wasPerformed);
-			assertEquals("6.0", project1, listener1.eventSource);
-			assertEquals("7.0", project1, listener1.eventResource);
+			assertTrue(listener1.wasPerformed);
+			assertEquals(project1, listener1.eventSource);
+			assertEquals(project1, listener1.eventResource);
 		} finally {
 			getWorkspace().removeResourceChangeListener(listener1);
 		}
