@@ -25,12 +25,12 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomCont
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.findAvailableDevices;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import org.eclipse.core.internal.resources.File;
 import org.eclipse.core.internal.resources.Resource;
@@ -47,30 +47,28 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.runtime.QualifiedName;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests the move operation.
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class MoveTest {
 
 	private static final int NUMBER_OF_PROPERTIES = 5;
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	/**
 	 * This test has Windows as the target OS. Drives C: and D: should be available.
 	 */
 	@Test
 	public void testMoveFileAcrossVolumes() throws CoreException {
-		assumeTrue("only relevant on Windows", OS.isWindows());
+		assumeTrue(OS.isWindows(), "only relevant on Windows");
 
 		/* look for the adequate environment */
 		String[] devices = findAvailableDevices();
-		assumeFalse("only executable if at least two volumes are present", devices[0] == null || devices[1] == null);
+		assumeFalse(devices[0] == null || devices[1] == null, "only executable if at least two volumes are present");
 
 		// create common objects
 		String location = createUniqueString();
@@ -113,8 +111,8 @@ public class MoveTest {
 		for (int j = 0; j < NUMBER_OF_PROPERTIES; j++) {
 			String persistentValue = newFile.getPersistentProperty(propNames[j]);
 			Object sessionValue = newFile.getSessionProperty(propNames[j]);
-			assertEquals("5.1", persistentValue, propValues[j]);
-			assertEquals("5.2", sessionValue, propValues[j]);
+			assertEquals(persistentValue, propValues[j]);
+			assertEquals(sessionValue, propValues[j]);
 		}
 	}
 
@@ -160,8 +158,8 @@ public class MoveTest {
 		for (int j = 0; j < NUMBER_OF_PROPERTIES; j++) {
 			String persistentValue = newFile.getPersistentProperty(propNames[j]);
 			Object sessionValue = newFile.getSessionProperty(propNames[j]);
-			assertEquals("persistent property value is not the same", propValues[j], persistentValue);
-			assertEquals("session property value is not the same", propValues[j], sessionValue);
+			assertEquals(propValues[j], persistentValue, "persistent property value is not the same");
+			assertEquals(propValues[j], sessionValue, "session property value is not the same");
 		}
 	}
 
@@ -170,11 +168,11 @@ public class MoveTest {
 	 */
 	@Test
 	public void testMoveFolderAcrossVolumes() throws CoreException {
-		assumeTrue("only relevant on Windows", OS.isWindows());
+		assumeTrue(OS.isWindows(), "only relevant on Windows");
 
 		/* look for the adequate environment */
 		String[] devices = findAvailableDevices();
-		assumeFalse("only executable if at least two volumes are present", devices[0] == null || devices[1] == null);
+		assumeFalse(devices[0] == null || devices[1] == null, "only executable if at least two volumes are present");
 
 		// create common objects
 		String location = createUniqueString();
@@ -265,8 +263,8 @@ public class MoveTest {
 		for (int j = 0; j < NUMBER_OF_PROPERTIES; j++) {
 			String persistentValue = newFolder.getPersistentProperty(propNames[j]);
 			Object sessionValue = newFolder.getSessionProperty(propNames[j]);
-			assertEquals("persistent property value is not the same", propValues[j], persistentValue);
-			assertEquals("session property value is not the same", propValues[j], sessionValue);
+			assertEquals(propValues[j], persistentValue, "persistent property value is not the same");
+			assertEquals(propValues[j], sessionValue, "session property value is not the same");
 		}
 	}
 
@@ -338,8 +336,8 @@ public class MoveTest {
 				String propValue = sourceResource.getName() + propValues[j];
 				String persistentValue = destResource.getPersistentProperty(propName);
 				Object sessionValue = destResource.getSessionProperty(propName);
-				assertEquals("persistent property value is not the same", propValue, persistentValue);
-				assertEquals("session property value is not the same", propValue, sessionValue);
+				assertEquals(propValue, persistentValue, "persistent property value is not the same");
+				assertEquals(propValue, sessionValue, "session property value is not the same");
 			}
 		}
 	}
@@ -411,8 +409,8 @@ public class MoveTest {
 				String propValue = sourceResource.getName() + propValues[j];
 				String persistentValue = destResource.getPersistentProperty(propName);
 				Object sessionValue = destResource.getSessionProperty(propName);
-				assertEquals("persistent property value is not the same", propValue, persistentValue);
-				assertEquals("session property value is not the same", propValue, sessionValue);
+				assertEquals(propValue, persistentValue, "persistent property value is not the same");
+				assertEquals(propValue, sessionValue, "session property value is not the same");
 			}
 		}
 	}
@@ -541,8 +539,8 @@ public class MoveTest {
 		for (int j = 0; j < NUMBER_OF_PROPERTIES; j++) {
 			String persistentValue = newFile.getPersistentProperty(propNames[j]);
 			Object sessionValue = newFile.getSessionProperty(propNames[j]);
-			assertEquals("persistent property value is not the same", propValues[j], persistentValue);
-			assertEquals("session property value is not the same", propValues[j], sessionValue);
+			assertEquals(propValues[j], persistentValue, "persistent property value is not the same");
+			assertEquals(propValues[j], sessionValue, "session property value is not the same");
 		}
 	}
 
@@ -593,8 +591,8 @@ public class MoveTest {
 		for (int j = 0; j < NUMBER_OF_PROPERTIES; j++) {
 			String persistentValue = newFolder.getPersistentProperty(propNames[j]);
 			Object sessionValue = newFolder.getSessionProperty(propNames[j]);
-			assertEquals("persistent property value is not the same", propValues[j], persistentValue);
-			assertEquals("session property value is not the same", propValues[j], sessionValue);
+			assertEquals(propValues[j], persistentValue, "persistent property value is not the same");
+			assertEquals(propValues[j], sessionValue, "session property value is not the same");
 		}
 	}
 
@@ -628,8 +626,8 @@ public class MoveTest {
 		for (int i = 0; i < NUMBER_OF_PROPERTIES; i++) {
 			String persistentValue = projects[i].getPersistentProperty(propNames[i]);
 			Object sessionValue = projects[i].getSessionProperty(propNames[i]);
-			assertEquals("persistent property value is not the same", propValues[i], persistentValue);
-			assertEquals("session property value is not the same", propValues[i], sessionValue);
+			assertEquals(propValues[i], persistentValue, "persistent property value is not the same");
+			assertEquals(propValues[i], sessionValue, "session property value is not the same");
 		}
 
 		// move (rename) projects
@@ -649,8 +647,8 @@ public class MoveTest {
 		for (int i = 0; i < NUMBER_OF_PROPERTIES; i++) {
 			String persistentValue = projects[i].getPersistentProperty(propNames[i]);
 			Object sessionValue = projects[i].getSessionProperty(propNames[i]);
-			assertEquals("persistent property value is not the same", propValues[i], persistentValue);
-			assertEquals("session property value is not the same", propValues[i], sessionValue);
+			assertEquals(propValues[i], persistentValue, "persistent property value is not the same");
+			assertEquals(propValues[i], sessionValue, "session property value is not the same");
 		}
 	}
 

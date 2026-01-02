@@ -22,9 +22,9 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.core.internal.resources.ICoreConstants;
 import org.eclipse.core.internal.resources.TestingSupport;
@@ -34,19 +34,17 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class LocalSyncTest implements ICoreConstants {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private IProject project;
 
-	@Before
+	@BeforeEach
 	public void createTestProject() throws CoreException {
 		project = getWorkspace().getRoot().getProject("Project");
 		createInWorkspace(project);
@@ -83,7 +81,7 @@ public class LocalSyncTest implements ICoreConstants {
 
 		/* resources should not exist anymore */
 		for (int i = 1; i < resources.length; i++) {
-			assertFalse("Resource does unexpectedly exist: " + resources[i], resources[i].exists());
+			assertFalse(resources[i].exists(), "Resource does unexpectedly exist: " + resources[i]);
 		}
 	}
 

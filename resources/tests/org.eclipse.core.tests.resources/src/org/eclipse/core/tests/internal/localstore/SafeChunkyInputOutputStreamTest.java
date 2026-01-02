@@ -17,9 +17,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.DataInputStream;
 import java.io.EOFException;
@@ -30,16 +30,14 @@ import org.eclipse.core.internal.localstore.ILocalStoreConstants;
 import org.eclipse.core.internal.localstore.SafeChunkyInputStream;
 import org.eclipse.core.internal.localstore.SafeChunkyOutputStream;
 import org.eclipse.core.internal.resources.Workspace;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class SafeChunkyInputOutputStreamTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private File temp;
 
@@ -54,16 +52,16 @@ public class SafeChunkyInputOutputStreamTest {
 		return result;
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		streams = new ArrayList<>();
 		temp = getRandomLocation().append("temp").toFile();
 		temp.mkdirs();
-		assertTrue("could not create temp directory", temp.isDirectory());
+		assertTrue(temp.isDirectory(), "could not create temp directory");
 		target = new File(temp, "target");
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		for (SafeChunkyOutputStream stream : streams) {
 			try {
@@ -78,7 +76,7 @@ public class SafeChunkyInputOutputStreamTest {
 	@Test
 	public void testBufferLimit() throws Exception {
 		Workspace.clear(target); // make sure there was nothing here before
-		assertTrue(!target.exists());
+		assertFalse(target.exists());
 
 		// use only one chunk but bigger than the buffer
 		int bufferSize = 10024;
@@ -192,7 +190,7 @@ public class SafeChunkyInputOutputStreamTest {
 	@Test
 	public void testAlmostEmpty() throws Exception {
 		Workspace.clear(target); // make sure there was nothing here before
-		assertTrue(!target.exists());
+		assertFalse(target.exists());
 
 		// open the file but don't write anything.
 		try (SafeChunkyOutputStream output = new SafeChunkyOutputStream(target)) {

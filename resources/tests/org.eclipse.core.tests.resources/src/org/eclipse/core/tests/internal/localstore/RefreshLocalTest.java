@@ -24,10 +24,10 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureOutOfSync;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isLocal;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import org.eclipse.core.filesystem.IFileStore;
@@ -40,19 +40,22 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.FileStoreAutoDeleteExtension;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class RefreshLocalTest implements ICoreConstants {
 
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+	@RegisterExtension
+	private final FileStoreAutoDeleteExtension fileStoreExtension = new FileStoreAutoDeleteExtension();
 
 	private IProject project;
 
-	@Before
+	@BeforeEach
 	public void createTestProject() throws CoreException {
 		project = getWorkspace().getRoot().getProject("Project");
 		createInWorkspace(project);
@@ -86,65 +89,12 @@ public class RefreshLocalTest implements ICoreConstants {
 	}
 
 	/**
-	 * Test discovery of a linked resource on refresh.
-	 */
-	@Test
-	public void testDiscoverLinkedResource() {
-		//create a linked resource with local contents missing
-		//	IProject project = projects[0];
-		//	ensureExistsInWorkspace(project);
-		//	IPath location = getRandomLocation();
-		//	IFile link = project.getFile("Link");
-		//	try {
-		//		link.createLink(location, IResource.ALLOW_MISSING_LOCAL, getMonitor());
-		//	} catch (CoreException e) {
-		//		fail("0.99", e);
-		//	}
-		//
-		//	//should not be synchronized (exists in ws, but not in fs)
-		//	assertTrue("1.0", !project.isSynchronized(IResource.DEPTH_INFINITE));
-		//	assertTrue("1.1", !link.isSynchronized(IResource.DEPTH_ZERO));
-		//
-		//	//should exist in workspace
-		//	assertTrue("1.3", link.exists());
-		//
-		//	//refreshing shouldn't get rid of the link
-		//	try {
-		//		link.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-		//	} catch (CoreException e) {
-		//		fail("1.99", e);
-		//	}
-		//	assertTrue("1.4", link.exists());
-		//
-		//	//create the contents in the file system
-		//	try {
-		//		createFileInFileSystem(location);
-		//	} catch (CoreException e) {
-		//		fail("2.99", e);
-		//	}
-		//
-		//	//should now be synchronized
-		//	assertTrue("2.1", project.isSynchronized(IResource.DEPTH_INFINITE));
-		//	assertTrue("2.2", link.isSynchronized(IResource.DEPTH_ZERO));
-		//
-		//	//refresh
-		//	try {
-		//		link.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-		//	} catch (CoreException e) {
-		//		fail("3.99", e);
-		//	}
-		//
-		//	//assert should exist in workspace
-		//	assertTrue("2.3", link.exists());
-	}
-
-	/**
 	 * Tests discovering a file via refresh local when neither the file
 	 * nor its parent exists in the workspace.
 	 */
 	@Test
 	public void testFileDiscovery() throws Throwable {
-		workspaceRule.deleteOnTearDown(project.getLocation());
+		fileStoreExtension.deleteOnTearDown(project.getLocation());
 		IFolder folder = project.getFolder("Folder");
 		IFile file = folder.getFile("File");
 

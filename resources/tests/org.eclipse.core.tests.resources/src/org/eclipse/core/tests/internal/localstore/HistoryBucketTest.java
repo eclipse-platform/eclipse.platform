@@ -14,23 +14,23 @@
 package org.eclipse.core.tests.internal.localstore;
 
 import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.eclipse.core.internal.localstore.Bucket.Entry;
 import org.eclipse.core.internal.localstore.HistoryBucket;
 import org.eclipse.core.internal.utils.UniversalUniqueIdentifier;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.FileStoreAutoDeleteExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class HistoryBucketTest {
 
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+	@RegisterExtension
+	private final FileStoreAutoDeleteExtension fileStoreExtension = new FileStoreAutoDeleteExtension();
 
 	/**
 	 * Ensures that if another entry having exactly the same UUID is added,
@@ -39,7 +39,7 @@ public class HistoryBucketTest {
 	@Test
 	public void testDuplicates() throws CoreException {
 		IPath baseLocation = getRandomLocation();
-		workspaceRule.deleteOnTearDown(baseLocation);
+		fileStoreExtension.deleteOnTearDown(baseLocation);
 		HistoryBucket index1 = new HistoryBucket();
 		IPath location1 = baseLocation.append("location1");
 		index1.load("foo", location1.toFile());
@@ -61,7 +61,7 @@ public class HistoryBucketTest {
 	@Test
 	public void testPersistence() throws CoreException {
 		IPath baseLocation = getRandomLocation();
-		workspaceRule.deleteOnTearDown(baseLocation);
+		fileStoreExtension.deleteOnTearDown(baseLocation);
 		HistoryBucket index1 = new HistoryBucket();
 		IPath location = baseLocation.append("location");
 		index1.load("foo", location.toFile());
