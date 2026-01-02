@@ -11,7 +11,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.ant.tests.ui.debug;
+package org.eclipse.ant.tests.ui.testplugin;
 
 /**
  * Exception to indicate a test should be run again when it fails.

@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.eclipse.ant.internal.launching.debug.model.AntLineBreakpoint;
 import org.eclipse.ant.internal.launching.debug.model.AntThread;
+import org.eclipse.ant.tests.ui.testplugin.TestAgainException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.model.IStackFrame;

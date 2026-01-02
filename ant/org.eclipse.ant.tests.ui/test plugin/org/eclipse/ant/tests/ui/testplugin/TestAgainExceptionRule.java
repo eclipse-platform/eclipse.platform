@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.ant.tests.ui.testplugin;
 
-import org.eclipse.ant.tests.ui.debug.TestAgainException;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;

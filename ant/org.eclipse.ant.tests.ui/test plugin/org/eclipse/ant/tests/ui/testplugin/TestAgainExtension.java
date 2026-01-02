@@ -12,7 +12,6 @@ package org.eclipse.ant.tests.ui.testplugin;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.eclipse.ant.tests.ui.debug.TestAgainException;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
 

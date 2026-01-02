@@ -27,6 +27,7 @@ import org.eclipse.ant.internal.launching.debug.model.AntStackFrame;
 import org.eclipse.ant.internal.launching.debug.model.AntThread;
 import org.eclipse.ant.tests.ui.testplugin.DebugElementKindEventWaiter;
 import org.eclipse.ant.tests.ui.testplugin.DebugEventWaiter;
+import org.eclipse.ant.tests.ui.testplugin.TestAgainException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugEvent;
