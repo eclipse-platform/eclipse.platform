@@ -22,10 +22,10 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspac
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.URI;
 import org.eclipse.core.filesystem.URIUtil;
@@ -39,15 +39,19 @@ import org.eclipse.core.resources.IResourceStatus;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.FileStoreAutoDeleteExtension;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class LinkedResourceSyncMoveAndCopyTest {
 
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+	@RegisterExtension
+	private final FileStoreAutoDeleteExtension fileStoreExtension = new FileStoreAutoDeleteExtension();
 
 	protected IProject existingProject;
 	protected IProject otherExistingProject;
@@ -66,7 +70,7 @@ public class LinkedResourceSyncMoveAndCopyTest {
 		return uri;
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		existingProject = getWorkspace().getRoot().getProject("ExistingProject");
 		otherExistingProject = getWorkspace().getRoot().getProject("OtherExistingProject");
@@ -113,7 +117,7 @@ public class LinkedResourceSyncMoveAndCopyTest {
 		internalMovedAndCopyTest(fileLink, IResource.NONE, false);
 
 		createInFileSystem(fileLocation);
-		workspaceRule.deleteOnTearDown(fileLocation);
+		fileStoreExtension.deleteOnTearDown(fileLocation);
 
 		exception = assertThrows(CoreException.class, () -> fileLink
 				.setContents(createRandomString().getBytes(), IResource.NONE, createTestMonitor()));
@@ -138,7 +142,7 @@ public class LinkedResourceSyncMoveAndCopyTest {
 		internalMovedAndCopyTest(fileLink, IResource.SHALLOW, true);
 
 		createInFileSystem(fileLocation);
-		workspaceRule.deleteOnTearDown(fileLocation);
+		fileStoreExtension.deleteOnTearDown(fileLocation);
 
 		assertFalse(fileLink.isSynchronized(IResource.DEPTH_INFINITE));
 		internalMovedAndCopyTest(fileLink, IResource.SHALLOW, true);
@@ -159,7 +163,7 @@ public class LinkedResourceSyncMoveAndCopyTest {
 		internalMovedAndCopyTest(folderLink, IResource.NONE, false);
 
 		folderLocation.toFile().mkdir();
-		workspaceRule.deleteOnTearDown(folderLocation);
+		fileStoreExtension.deleteOnTearDown(folderLocation);
 
 		assertFalse(folderLink.isSynchronized(IResource.DEPTH_INFINITE));
 		internalMovedAndCopyTest(folderLink, IResource.NONE, true);
@@ -180,7 +184,7 @@ public class LinkedResourceSyncMoveAndCopyTest {
 		internalMovedAndCopyTest(folderLink, IResource.SHALLOW, true);
 
 		folderLocation.toFile().mkdir();
-		workspaceRule.deleteOnTearDown(folderLocation);
+		fileStoreExtension.deleteOnTearDown(folderLocation);
 
 		assertFalse(folderLink.isSynchronized(IResource.DEPTH_INFINITE));
 		internalMovedAndCopyTest(folderLink, IResource.SHALLOW, true);
@@ -224,7 +228,7 @@ public class LinkedResourceSyncMoveAndCopyTest {
 	 * Tests bug 299024.
 	 */
 	@Test
-	@Ignore("see bug 299024")
+	@Disabled("see bug 299024")
 	public void testCopyFolderWithLinksToNonExistingLocations_withShallow() throws CoreException {
 		// create a folder
 		IFolder folderWithLinks = existingProject.getFolder(createUniqueString());
@@ -263,7 +267,7 @@ public class LinkedResourceSyncMoveAndCopyTest {
 		internalMovedAndCopyTest(folder, IResource.NONE, false);
 
 		createInFileSystem(fileLocation);
-		workspaceRule.deleteOnTearDown(fileLocation);
+		fileStoreExtension.deleteOnTearDown(fileLocation);
 
 		assertFalse(folder.isSynchronized(IResource.DEPTH_INFINITE));
 		internalMovedAndCopyTest(folder, IResource.NONE, false);
@@ -288,7 +292,7 @@ public class LinkedResourceSyncMoveAndCopyTest {
 		internalMovedAndCopyTest(folder, IResource.SHALLOW, true);
 
 		createInFileSystem(fileLocation);
-		workspaceRule.deleteOnTearDown(fileLocation);
+		fileStoreExtension.deleteOnTearDown(fileLocation);
 
 		assertFalse(folder.isSynchronized(IResource.DEPTH_INFINITE));
 		internalMovedAndCopyTest(folder, IResource.SHALLOW, true);
@@ -313,7 +317,7 @@ public class LinkedResourceSyncMoveAndCopyTest {
 		internalMovedAndCopyTest(folder, IResource.NONE, false);
 
 		folderLocation.toFile().mkdir();
-		workspaceRule.deleteOnTearDown(folderLocation);
+		fileStoreExtension.deleteOnTearDown(folderLocation);
 
 		assertFalse(folder.isSynchronized(IResource.DEPTH_INFINITE));
 		internalMovedAndCopyTest(folder, IResource.NONE, true);
@@ -338,7 +342,7 @@ public class LinkedResourceSyncMoveAndCopyTest {
 		internalMovedAndCopyTest(folder, IResource.SHALLOW, true);
 
 		folderLocation.toFile().mkdir();
-		workspaceRule.deleteOnTearDown(folderLocation);
+		fileStoreExtension.deleteOnTearDown(folderLocation);
 
 		assertFalse(folder.isSynchronized(IResource.DEPTH_INFINITE));
 		internalMovedAndCopyTest(folder, IResource.SHALLOW, true);

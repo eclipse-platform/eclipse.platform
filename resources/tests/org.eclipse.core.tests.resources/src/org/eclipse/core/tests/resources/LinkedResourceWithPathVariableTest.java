@@ -25,12 +25,12 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStrea
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,9 +54,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.tests.harness.FileSystemHelper;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * This class extends <code>LinkedResourceTest</code> in order to use
@@ -73,20 +73,20 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 	private IFileStore toSetWritable = null;
 
 	@Override
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		IPath base = FileSystemHelper.getRandomLocation();
-		workspaceRule.deleteOnTearDown(base);
+		fileStoreExtension.deleteOnTearDown(base);
 		getWorkspace().getPathVariableManager().setURIValue(VARIABLE_NAME, URIUtil.toURI(base));
 		base = FileSystemHelper.getRandomLocation();
-		workspaceRule.deleteOnTearDown(base);
+		fileStoreExtension.deleteOnTearDown(base);
 		super.setUp();
 		existingProject.getPathVariableManager().setURIValue(PROJECT_VARIABLE_NAME, URIUtil.toURI(base));
 		existingProject.getPathVariableManager().setURIValue(PROJECT_RELATIVE_VARIABLE_NAME,
 				URIUtil.toURI(IPath.fromPortableString(PROJECT_RELATIVE_VARIABLE_VALUE)));
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		if (toSetWritable != null) {
 			IFileInfo info = toSetWritable.fetchInfo();
@@ -155,7 +155,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 			}
 			path = FileSystemHelper.computeRandomLocation(parent);
 		}
-		workspaceRule.deleteOnTearDown(pathVars.resolvePath(path));
+		fileStoreExtension.deleteOnTearDown(pathVars.resolvePath(path));
 		return URIUtil.toURI(path);
 	}
 
@@ -172,7 +172,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 			}
 			path = FileSystemHelper.computeRandomLocation(parent);
 		}
-		workspaceRule.deleteOnTearDown(pathVars.resolvePath(path));
+		fileStoreExtension.deleteOnTearDown(pathVars.resolvePath(path));
 		return URIUtil.toURI(path);
 	}
 
@@ -189,7 +189,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 			}
 			path = FileSystemHelper.computeRandomLocation(parent);
 		}
-		workspaceRule.deleteOnTearDown(pathVars.resolvePath(path));
+		fileStoreExtension.deleteOnTearDown(pathVars.resolvePath(path));
 		return URIUtil.toURI(path);
 	}
 
@@ -348,7 +348,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		if (!targetPath.toFile().exists()) {
 			targetPath.toFile().createNewFile();
 		}
-		workspaceRule.deleteOnTearDown(targetPath);
+		fileStoreExtension.deleteOnTearDown(targetPath);
 
 		variableBasedLocation = convertToRelative(targetPath, file, true, null);
 
@@ -364,8 +364,8 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		IFile newFile = nonExistingFileInExistingFolder;
 		file.move(newFile.getFullPath(), IResource.SHALLOW, null);
 		assertExistsInWorkspace(newFile);
-		assertTrue("3,2", !newFile.getLocation().equals(newFile.getRawLocation()));
-		assertEquals("3,3", newFile.getLocation(), resolvedPath);
+		assertFalse(newFile.getLocation().equals(newFile.getRawLocation()));
+		assertEquals(newFile.getLocation(), resolvedPath);
 	}
 
 	private IPath convertToRelative(IPath path, IResource res, boolean force, String variableHint) throws CoreException {
@@ -396,7 +396,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		if (!targetPath.toFile().exists()) {
 			targetPath.toFile().createNewFile();
 		}
-		workspaceRule.deleteOnTearDown(targetPath);
+		fileStoreExtension.deleteOnTearDown(targetPath);
 
 		existingProjectInSubDirectory.getPathVariableManager().setURIValue("P_RELATIVE",
 				URIUtil.toURI(IPath.fromPortableString("${PARENT-3-PROJECT_LOC}")));
@@ -415,14 +415,14 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		file.move(newFile.getFullPath(), IResource.SHALLOW, null);
 		assertExistsInWorkspace(newFile);
 		URI newLocation = newFile.getLocationURI();
-		assertTrue("3,2", !newLocation.equals(newFile.getRawLocationURI()));
+		assertFalse(newLocation.equals(newFile.getRawLocationURI()));
 		URI newRawLocation = newFile.getRawLocationURI();
 		/* we cannot test the value of the location since the test machines generate an incorrect value
 		IPath newValue = newFile.getProject().getPathVariableManager().getValue("P_RELATIVE");
 		assertEquals("3,3", Path.fromPortableString("${PARENT-1-PROJECT_LOC}/sub"), newValue);
 		*/
-		assertTrue("3,4", newRawLocation.equals(variableBasedLocation));
-		assertTrue("3,5", newLocation.equals(resolvedPath));
+		assertTrue(newRawLocation.equals(variableBasedLocation));
+		assertTrue(newLocation.equals(resolvedPath));
 	}
 
 	/**
@@ -453,10 +453,10 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		// removes the variable - the location will be undefined (null)
 		file.move(newFile.getFullPath(), IResource.SHALLOW, null);
 		assertExistsInWorkspace(newFile);
-		assertTrue("3,2", !newFile.getLocation().equals(newFile.getRawLocation()));
-		assertTrue("3,3", newFile.getRawLocationURI().equals(variableBasedLocation));
-		assertTrue("3,4", newFile.getRawLocationURI().equals(variableBasedLocation));
-		assertTrue("3,5", newFile.getLocationURI().equals(resolvedPath));
+		assertFalse(newFile.getLocation().equals(newFile.getRawLocation()));
+		assertTrue(newFile.getRawLocationURI().equals(variableBasedLocation));
+		assertTrue(newFile.getRawLocationURI().equals(variableBasedLocation));
+		assertTrue(newFile.getLocationURI().equals(resolvedPath));
 	}
 
 	/**
@@ -487,9 +487,9 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		// moves the variable - the location will be undefined (null)
 		file.move(newFile.getFullPath(), IResource.SHALLOW, createTestMonitor());
 		assertExistsInWorkspace(newFile);
-		assertTrue("3,2", !newFile.getLocation().equals(newFile.getRawLocation()));
-		assertTrue("3,3", newFile.getRawLocationURI().equals(variableBasedLocation));
-		assertTrue("3,4", newFile.getLocationURI().equals(resolvedPath));
+		assertFalse(newFile.getLocation().equals(newFile.getRawLocation()));
+		assertTrue(newFile.getRawLocationURI().equals(variableBasedLocation));
+		assertTrue(newFile.getLocationURI().equals(resolvedPath));
 	}
 
 	/**
@@ -824,7 +824,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 
 		// changes the variable value - the file location will change
 		IPath newLocation = FileSystemHelper.getRandomLocation();
-		workspaceRule.deleteOnTearDown(newLocation);
+		fileStoreExtension.deleteOnTearDown(newLocation);
 		manager.setURIValue(VARIABLE_NAME, URIUtil.toURI(newLocation));
 
 		// try to change resource's contents
@@ -890,7 +890,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 
 		// changes the variable value - the file location will change
 		IPath newLocation = FileSystemHelper.getRandomLocation();
-		workspaceRule.deleteOnTearDown(newLocation);
+		fileStoreExtension.deleteOnTearDown(newLocation);
 		manager.setURIValue(PROJECT_VARIABLE_NAME, URIUtil.toURI(newLocation));
 
 		// try to change resource's contents
@@ -944,7 +944,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		if (!targetPath.toFile().exists()) {
 			targetPath.toFile().createNewFile();
 		}
-		workspaceRule.deleteOnTearDown(targetPath);
+		fileStoreExtension.deleteOnTearDown(targetPath);
 
 		variableBasedLocation = convertToRelative(targetPath, file, true, null);
 		IPath resolvedPath = URIUtil.toPath(pathVariableManager.resolveURI(URIUtil.toURI(variableBasedLocation)));
@@ -984,9 +984,9 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 
 		for (int i = 0; i < table.length; i++) {
 			String result = pathVariableManager.convertToUserEditableFormat(toOS(table[i][0]), false);
-			assertEquals(i + "", toOS(table[i][1]), result);
+			assertEquals(toOS(table[i][1]), result, i + "");
 			String original = pathVariableManager.convertFromUserEditableFormat(result, false);
-			assertEquals(i + "", toOS(table[i].length == 2 ? table[i][0] : table[i][2]), original);
+			assertEquals(toOS(table[i].length == 2 ? table[i][0] : table[i][2]), original, i + "");
 		}
 
 		String[][] tableLocationFormat = { // format: {internal-format, user-editable-format [, internal-format-reconverted]
@@ -1009,11 +1009,11 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 
 		for (int i = 0; i < table.length; i++) {
 			String result = pathVariableManager.convertToUserEditableFormat(toOS(tableLocationFormat[i][0]), true);
-			assertEquals(i + "", toOS(tableLocationFormat[i][1]), result);
+			assertEquals(toOS(tableLocationFormat[i][1]), result, i + "");
 			String original = pathVariableManager.convertFromUserEditableFormat(result, true);
-			assertEquals(i + "",
+			assertEquals(
 					toOS(tableLocationFormat[i].length == 2 ? tableLocationFormat[i][0] : tableLocationFormat[i][2]),
-					original);
+					original, i + "");
 		}
 	}
 

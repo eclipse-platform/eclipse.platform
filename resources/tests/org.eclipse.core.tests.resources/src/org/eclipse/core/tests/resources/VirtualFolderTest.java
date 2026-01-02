@@ -26,11 +26,11 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspac
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
@@ -42,23 +42,27 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.FileStoreAutoDeleteExtension;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * Tests Virtual Folders
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class VirtualFolderTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	protected IProject existingProject;
 	protected IFolder existingVirtualFolderInExistingProject;
 
-	@Before
-	public void setUp() throws Exception {
+	@RegisterExtension
+	private final FileStoreAutoDeleteExtension fileStoreExtension = new FileStoreAutoDeleteExtension();
+
+	@BeforeEach
+	void setUp() throws Exception {
 		existingProject = getWorkspace().getRoot().getProject("ExistingProject");
 		existingVirtualFolderInExistingProject = existingProject.getFolder("existingVirtualFolderInExistingProject");
 		createInWorkspace(new IResource[] { existingProject });
@@ -160,9 +164,9 @@ public class VirtualFolderTest {
 	@Test
 	public void testCopyProjectWithVirtualFolder() throws Exception {
 		IPath fileLocation = getRandomLocation();
-		workspaceRule.deleteOnTearDown(fileLocation);
+		fileStoreExtension.deleteOnTearDown(fileLocation);
 		IPath folderLocation = getRandomLocation();
-		workspaceRule.deleteOnTearDown(folderLocation);
+		fileStoreExtension.deleteOnTearDown(folderLocation);
 
 		IFile linkedFile = existingVirtualFolderInExistingProject.getFile(createUniqueString());
 		IFolder linkedFolder = existingVirtualFolderInExistingProject.getFolder(createUniqueString());
@@ -204,9 +208,9 @@ public class VirtualFolderTest {
 	@Test
 	public void testMoveProjectWithVirtualFolder() throws Exception {
 		IPath fileLocation = getRandomLocation();
-		workspaceRule.deleteOnTearDown(fileLocation);
+		fileStoreExtension.deleteOnTearDown(fileLocation);
 		IPath folderLocation = getRandomLocation();
-		workspaceRule.deleteOnTearDown(folderLocation);
+		fileStoreExtension.deleteOnTearDown(folderLocation);
 
 		IFile file = existingVirtualFolderInExistingProject.getFile(createUniqueString());
 		IFolder folder = existingVirtualFolderInExistingProject.getFolder(createUniqueString());
@@ -267,7 +271,7 @@ public class VirtualFolderTest {
 	@Test
 	public void testDeleteProjectWithVirtualFolderAndLink() throws CoreException {
 		IPath folderLocation = getRandomLocation();
-		workspaceRule.deleteOnTearDown(folderLocation);
+		fileStoreExtension.deleteOnTearDown(folderLocation);
 
 		IFolder virtualFolder = existingProject.getFolder(createUniqueString());
 		IFolder linkedFolder = virtualFolder.getFolder("a_link");
@@ -330,9 +334,9 @@ public class VirtualFolderTest {
 		IFolder virtualFolder = subFolder.getFolder("virtualFolder");
 
 		IPath linkedFolderLocation = getRandomLocation();
-		workspaceRule.deleteOnTearDown(linkedFolderLocation);
+		fileStoreExtension.deleteOnTearDown(linkedFolderLocation);
 		IPath subFolderLocation = linkedFolderLocation.append(subFolder.getName());
-		workspaceRule.deleteOnTearDown(subFolderLocation);
+		fileStoreExtension.deleteOnTearDown(subFolderLocation);
 
 		// create the structure on disk
 		linkedFolderLocation.toFile().mkdir();

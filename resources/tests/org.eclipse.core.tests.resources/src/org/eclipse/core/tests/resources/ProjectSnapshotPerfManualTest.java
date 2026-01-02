@@ -16,7 +16,8 @@ package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.File;
 import java.net.URI;
@@ -31,9 +32,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
-import org.junit.Assume;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Measure speed of a project "Import with Snapshot" operation compared
@@ -44,10 +45,8 @@ import org.junit.Test;
  * to be available on a slow file system (bigSiteLocation). Modify
  * bigSiteLocation to suit your needs, then run-as &gt; JUnit Plug-in Test.
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class ProjectSnapshotPerfManualTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	/** big site default volume (windows) */
 	public static final String bigSiteDevice = "c:";
@@ -85,7 +84,7 @@ public class ProjectSnapshotPerfManualTest {
 	@Test
 	public void testSnapshotImportPerformance() throws Exception {
 		// test if the test can be done in this machine
-		Assume.assumeTrue(bigSiteLocation.toFile().isDirectory());
+		assumeTrue(bigSiteLocation.toFile().isDirectory());
 
 		// create common objects
 		final IProject project = getWorkspace().getRoot().getProject("MyTestProject");
@@ -145,7 +144,7 @@ public class ProjectSnapshotPerfManualTest {
 			}
 		}.run(getClass(), "Forced refresh only", 1, 1);
 		verifier[0].verifyDelta(null);
-		assertTrue(verifier[0].getMessage(), verifier[0].isDeltaValid());
+		assertTrue(verifier[0].isDeltaValid(), verifier[0].getMessage());
 
 		// close and delete project but leave contents
 		project.close(null);

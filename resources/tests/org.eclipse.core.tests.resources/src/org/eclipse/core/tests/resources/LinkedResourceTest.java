@@ -31,14 +31,14 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.readStringInFile
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -71,10 +71,13 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.tests.harness.CancelingProgressMonitor;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.function.ThrowingRunnable;
+import org.eclipse.core.tests.resources.util.FileStoreAutoDeleteExtension;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.api.function.Executable;
 
 /**
  * Tests the following API methods:
@@ -93,10 +96,11 @@ import org.junit.function.ThrowingRunnable;
  * <code>IFile#createLink</code> and <code>IFolder#createLink</code> and when
  * the location is obtained using <code>IResource#getLocation()</code>.
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class LinkedResourceTest {
 
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+	@RegisterExtension
+	final FileStoreAutoDeleteExtension fileStoreExtension = new FileStoreAutoDeleteExtension();
 
 	protected String childName = "File.txt";
 	protected IProject closedProject;
@@ -151,7 +155,7 @@ public class LinkedResourceTest {
 		return uri;
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		existingProject = getWorkspace().getRoot().getProject("ExistingProject");
 		existingProjectInSubDirectory = getWorkspace().getRoot().getProject("ExistingProjectInSubDirectory");
@@ -172,9 +176,9 @@ public class LinkedResourceTest {
 		nonExistingFileInOtherExistingProject = otherExistingProject.getFile("nonExistingFileInOtherExistingProject");
 		nonExistingFileInExistingFolder = existingFolderInExistingProject.getFile("nonExistingFileInExistingFolder");
 		localFolder = getRandomLocation();
-		workspaceRule.deleteOnTearDown(resolve(localFolder));
+		fileStoreExtension.deleteOnTearDown(resolve(localFolder));
 		nonExistingLocation = getRandomLocation();
-		workspaceRule.deleteOnTearDown(resolve(nonExistingLocation));
+		fileStoreExtension.deleteOnTearDown(resolve(nonExistingLocation));
 		localFile = localFolder.append(childName);
 		doCleanup();
 
@@ -183,7 +187,7 @@ public class LinkedResourceTest {
 			File dir = existingProject.getLocation().toFile();
 			dir = dir.getParentFile();
 			dir = new File(dir + File.separator + "sub");
-			workspaceRule.deleteOnTearDown(IPath.fromOSString(dir.getAbsolutePath()));
+			fileStoreExtension.deleteOnTearDown(IPath.fromOSString(dir.getAbsolutePath()));
 			dir = new File(dir + File.separator + "dir" + File.separator + "more" + File.separator + "proj");
 			dir.mkdirs();
 			desc.setLocation(IPath.fromOSString(dir.getAbsolutePath()));
@@ -571,7 +575,7 @@ public class LinkedResourceTest {
 	@Test
 	public void testCopyProjectWithLinks() throws Exception {
 		IPath fileLocation = getRandomLocation();
-		workspaceRule.deleteOnTearDown(fileLocation);
+		fileStoreExtension.deleteOnTearDown(fileLocation);
 		IFile linkedFile = nonExistingFileInExistingProject;
 		IFolder linkedFolder = nonExistingFolderInExistingProject;
 		createInFileSystem(resolve(fileLocation));
@@ -611,7 +615,7 @@ public class LinkedResourceTest {
 		IResource[] srcChildren = existingProject.members();
 		for (int i = 0; i < srcChildren.length; i++) {
 			if (!srcChildren[i].equals(linkedFile)) {
-				assertNotNull(i + "", destination.findMember(srcChildren[i].getProjectRelativePath()));
+				assertNotNull(destination.findMember(srcChildren[i].getProjectRelativePath()), i + "");
 			}
 		}
 		// test copy project when linked resources don't exist with force=true
@@ -621,12 +625,12 @@ public class LinkedResourceTest {
 		assertThrows(CoreException.class,
 				() -> existingProject.copy(destination.getFullPath(), IResource.FORCE, createTestMonitor()));
 		assertTrue(destination.exists());
-		assertTrue("6.7.1", !destination.getFile(linkedFile.getName()).exists());
+		assertFalse(destination.getFile(linkedFile.getName()).exists());
 		// all members except the missing link should have been copied
 		srcChildren = existingProject.members();
 		for (int i = 0; i < srcChildren.length; i++) {
 			if (!srcChildren[i].equals(linkedFile)) {
-				assertNotNull(i + "", destination.findMember(srcChildren[i].getProjectRelativePath()));
+				assertNotNull(destination.findMember(srcChildren[i].getProjectRelativePath()), i + "");
 			}
 		}
 	}
@@ -636,7 +640,7 @@ public class LinkedResourceTest {
 	 */
 	@Test
 	public void testCreateFolderInBackground() throws Exception {
-		final IFileStore rootStore = workspaceRule.getTempStore();
+		final IFileStore rootStore = fileStoreExtension.getTempStore();
 		rootStore.mkdir(IResource.NONE, createTestMonitor());
 		IFileStore childStore = rootStore.getChild("file.txt");
 		createInFileSystem(childStore);
@@ -661,10 +665,10 @@ public class LinkedResourceTest {
 		IFolder variant = link.getParent().getFolder(IPath.fromOSString(link.getName().toUpperCase()));
 		createInWorkspace(variant);
 
-		ThrowingRunnable linkCreation = () -> link.createLink(localFolder, IResource.NONE, createTestMonitor());
+		Executable linkCreation = () -> link.createLink(localFolder, IResource.NONE, createTestMonitor());
 		// should fail on case insensitive platforms
 		if (Workspace.caseSensitive) {
-			linkCreation.run();
+			linkCreation.execute();
 		} else {
 			assertThrows(CoreException.class, linkCreation);
 		}
@@ -732,7 +736,7 @@ public class LinkedResourceTest {
 	@Test
 	public void testDeepMoveProjectWithLinks() throws Exception {
 		IPath fileLocation = getRandomLocation();
-		workspaceRule.deleteOnTearDown(fileLocation);
+		fileStoreExtension.deleteOnTearDown(fileLocation);
 		IFile file = nonExistingFileInExistingProject;
 		IFolder folder = nonExistingFolderInExistingProject;
 		IFile childFile = folder.getFile(childName);
@@ -890,7 +894,7 @@ public class LinkedResourceTest {
 	 */
 	@Test
 	public void testFindFilesForLocationCaseVariant() throws CoreException {
-		assumeTrue("only relevant on Windows", OS.isWindows());
+		assumeTrue(OS.isWindows(), "only relevant on Windows");
 
 		IFolder link = nonExistingFolderInExistingProject;
 		IPath localLocation = resolve(localFolder);
@@ -911,9 +915,9 @@ public class LinkedResourceTest {
 		//initially nothing is linked
 		IResource[] toTest = new IResource[] {closedProject, existingFileInExistingProject, existingFolderInExistingFolder, existingFolderInExistingProject, existingProject, nonExistingFileInExistingFolder, nonExistingFileInExistingProject, nonExistingFileInOtherExistingProject, nonExistingFolderInExistingFolder, nonExistingFolderInExistingProject, nonExistingFolderInNonExistingFolder, nonExistingFolderInNonExistingProject, nonExistingFolderInOtherExistingProject, nonExistingProject, otherExistingProject};
 		for (IResource t : toTest) {
-			assertFalse(t.toString(), t.isLinked());
-			assertFalse(t.toString(), t.isLinked(IResource.NONE));
-			assertFalse(t.toString(), t.isLinked(IResource.CHECK_ANCESTORS));
+			assertFalse(t.isLinked(), t.toString());
+			assertFalse(t.isLinked(IResource.NONE), t.toString());
+			assertFalse(t.isLinked(IResource.CHECK_ANCESTORS), t.toString());
 		}
 		// create a link
 		IFolder link = nonExistingFolderInExistingProject;
@@ -934,9 +938,9 @@ public class LinkedResourceTest {
 		// initially nothing is linked
 		IResource[] toTest = new IResource[] {closedProject, existingFileInExistingProject, existingFolderInExistingFolder, existingFolderInExistingProject, existingProject, nonExistingFileInExistingFolder, nonExistingFileInExistingProject, nonExistingFileInOtherExistingProject, nonExistingFolderInExistingFolder, nonExistingFolderInExistingProject, nonExistingFolderInNonExistingFolder, nonExistingFolderInNonExistingProject, nonExistingFolderInOtherExistingProject, nonExistingProject, otherExistingProject};
 		for (IResource toTest1 : toTest) {
-			assertFalse(toTest1.toString(), toTest1.isLinked());
-			assertFalse(toTest1.toString(), toTest1.isLinked(IResource.NONE));
-			assertFalse(toTest1.toString(), toTest1.isLinked(IResource.CHECK_ANCESTORS));
+			assertFalse(toTest1.isLinked(), toTest1.toString());
+			assertFalse(toTest1.isLinked(IResource.NONE), toTest1.toString());
+			assertFalse(toTest1.isLinked(IResource.CHECK_ANCESTORS), toTest1.toString());
 		}
 		// create a link
 		IFolder link = nonExistingFolderInExistingProject;
@@ -995,9 +999,9 @@ public class LinkedResourceTest {
 		//initially nothing is linked
 		IResource[] toTest = new IResource[] {closedProject, existingFileInExistingProject, existingFolderInExistingFolder, existingFolderInExistingProject, existingProject, nonExistingFileInExistingFolder, nonExistingFileInExistingProject, nonExistingFileInOtherExistingProject, nonExistingFolderInExistingFolder, nonExistingFolderInExistingProject, nonExistingFolderInNonExistingFolder, nonExistingFolderInNonExistingProject, nonExistingFolderInOtherExistingProject, nonExistingProject, otherExistingProject};
 		for (IResource toTest1 : toTest) {
-			assertFalse(toTest1.toString(), toTest1.isLinked());
-			assertFalse(toTest1.toString(), toTest1.isLinked(IResource.NONE));
-			assertFalse(toTest1.toString(), toTest1.isLinked(IResource.CHECK_ANCESTORS));
+			assertFalse(toTest1.isLinked(), toTest1.toString());
+			assertFalse(toTest1.isLinked(IResource.NONE), toTest1.toString());
+			assertFalse(toTest1.isLinked(IResource.CHECK_ANCESTORS), toTest1.toString());
 		}
 		//create a link
 		IFolder link = nonExistingFolderInExistingProject;
@@ -1029,9 +1033,9 @@ public class LinkedResourceTest {
 		IFolder linkedFolder = top.getFolder("linkedFolder");
 		IFolder subFolder = linkedFolder.getFolder("subFolder");
 		IFile linkedFile = subFolder.getFile("Link.txt");
-		IFileStore folderStore = workspaceRule.getTempStore();
+		IFileStore folderStore = fileStoreExtension.getTempStore();
 		IFileStore subFolderStore = folderStore.getChild(subFolder.getName());
-		IFileStore fileStore = workspaceRule.getTempStore();
+		IFileStore fileStore = fileStoreExtension.getTempStore();
 		IPath folderLocation = URIUtil.toPath(folderStore.toURI());
 		IPath fileLocation = URIUtil.toPath(fileStore.toURI());
 
@@ -1277,7 +1281,7 @@ public class LinkedResourceTest {
 	 */
 	@Test
 	public void testLocationWithColon() throws CoreException {
-		assumeFalse("not relevant on Windows, as it does not allow a location with colon in the name", OS.isWindows());
+		assumeFalse(OS.isWindows(), "not relevant on Windows, as it does not allow a location with colon in the name");
 
 		IFolder folder = nonExistingFolderInExistingProject;
 		// Note that on *nix, "c:/temp" is a relative path with two segments
@@ -1294,7 +1298,7 @@ public class LinkedResourceTest {
 	@Test
 	public void testModificationStamp() throws Exception {
 		IPath location = getRandomLocation();
-		workspaceRule.deleteOnTearDown(location);
+		fileStoreExtension.deleteOnTearDown(location);
 		IFile linkedFile = nonExistingFileInExistingProject;
 		linkedFile.createLink(location, IResource.ALLOW_MISSING_LOCAL, createTestMonitor());
 		assertEquals(IResource.NULL_STAMP, linkedFile.getModificationStamp());
@@ -1542,7 +1546,7 @@ public class LinkedResourceTest {
 	@Test
 	public void testMoveProjectWithLinks() throws Exception {
 		IPath fileLocation = getRandomLocation();
-		workspaceRule.deleteOnTearDown(fileLocation);
+		fileStoreExtension.deleteOnTearDown(fileLocation);
 		IFile file = nonExistingFileInExistingProject;
 		IFolder folder = nonExistingFolderInExistingProject;
 		IFile childFile = folder.getFile(childName);
@@ -1591,7 +1595,7 @@ public class LinkedResourceTest {
 	@Test
 	public void testMoveProjectWithLinks2() throws Exception {
 		IPath fileLocation = getRandomLocation();
-		workspaceRule.deleteOnTearDown(fileLocation);
+		fileStoreExtension.deleteOnTearDown(fileLocation);
 		IFile linkedFile = existingProject.getFile("(test)");
 		createInFileSystem(resolve(fileLocation));
 		linkedFile.createLink(fileLocation, IResource.NONE, createTestMonitor());
@@ -1615,7 +1619,7 @@ public class LinkedResourceTest {
 		folderWithLinks.create(true, true, createTestMonitor());
 
 		IPath fileLocation = getRandomLocation();
-		workspaceRule.deleteOnTearDown(fileLocation);
+		fileStoreExtension.deleteOnTearDown(fileLocation);
 		createInFileSystem(resolve(fileLocation));
 
 		// create a linked file in the folder
@@ -1675,8 +1679,8 @@ public class LinkedResourceTest {
 	 */
 	@Test
 	public void testNestedLink() throws CoreException {
-		final IFileStore store1 = workspaceRule.getTempStore();
-		final IFileStore store2 = workspaceRule.getTempStore();
+		final IFileStore store1 = fileStoreExtension.getTempStore();
+		final IFileStore store2 = fileStoreExtension.getTempStore();
 		URI location1 = store1.toURI();
 		URI location2 = store2.toURI();
 		//folder names are important here, because we want a certain order in the link hash map
@@ -1760,11 +1764,11 @@ public class LinkedResourceTest {
 
 	@Test
 	public void testLinkedFolderWithSymlink_Bug338010() throws Exception {
-		assumeTrue("only relevant for platforms supporting symbolic links", canCreateSymLinks());
+		assumeTrue(canCreateSymLinks(), "only relevant for platforms supporting symbolic links");
 
 		IPath baseLocation = getRandomLocation();
 		IPath resolvedBaseLocation = resolve(baseLocation);
-		workspaceRule.deleteOnTearDown(resolvedBaseLocation);
+		fileStoreExtension.deleteOnTearDown(resolvedBaseLocation);
 		IPath symlinkTarget = resolvedBaseLocation.append("dir1/target");
 		symlinkTarget.toFile().mkdirs();
 		createSymLink(resolvedBaseLocation.toFile(), "symlink", symlinkTarget.toOSString(), true);
@@ -1772,7 +1776,7 @@ public class LinkedResourceTest {
 		IPath resolvedLinkChildLocation = resolve(linkChildLocation);
 		File linkChild = resolvedLinkChildLocation.toFile();
 		linkChild.mkdir();
-		assertTrue("Could not create link at location: " + linkChild, linkChild.exists());
+		assertTrue(linkChild.exists(), "Could not create link at location: " + linkChild);
 
 		IFolder folder = nonExistingFolderInExistingProject;
 		folder.createLink(linkChildLocation, IResource.NONE, createTestMonitor());
@@ -1785,11 +1789,11 @@ public class LinkedResourceTest {
 	 */
 	@Test
 	public void testDeleteLinkTarget_Bug507084() throws Exception {
-		assumeTrue("only relevant for platforms supporting symbolic links", canCreateSymLinks());
+		assumeTrue(canCreateSymLinks(), "only relevant for platforms supporting symbolic links");
 
 		IPath baseLocation = getRandomLocation();
 		IPath resolvedBaseLocation = resolve(baseLocation);
-		workspaceRule.deleteOnTearDown(resolvedBaseLocation);
+		fileStoreExtension.deleteOnTearDown(resolvedBaseLocation);
 		IPath symlinkTarget = resolvedBaseLocation.append("dir1/A");
 		symlinkTarget.append("B/C").toFile().mkdirs();
 		IPath linkParentDir = resolvedBaseLocation.append("dir2");

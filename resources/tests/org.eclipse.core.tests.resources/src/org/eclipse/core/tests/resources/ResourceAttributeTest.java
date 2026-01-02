@@ -27,11 +27,11 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.isAttributeSuppo
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setReadOnly;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.File;
 import org.eclipse.core.filesystem.EFS;
@@ -41,47 +41,46 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.runtime.CoreException;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class ResourceAttributeTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private void setArchive(IResource resource, boolean value) throws CoreException {
 		ResourceAttributes attributes = resource.getResourceAttributes();
-		assertNotNull("setAchive for null attributes", attributes);
+		assertNotNull(attributes);
 		attributes.setArchive(value);
 		resource.setResourceAttributes(attributes);
 	}
 
 	private void setExecutable(IResource resource, boolean value) throws CoreException {
 		ResourceAttributes attributes = resource.getResourceAttributes();
-		assertNotNull("setExecutable for null attributes", attributes);
+		assertNotNull(attributes);
 		attributes.setExecutable(value);
 		resource.setResourceAttributes(attributes);
 	}
 
 	private void setHidden(IResource resource, boolean value) throws CoreException {
 		ResourceAttributes attributes = resource.getResourceAttributes();
-		assertNotNull("setHidden for null attributes", attributes);
+		assertNotNull(attributes);
 		attributes.setHidden(value);
 		resource.setResourceAttributes(attributes);
 	}
 
 	private void setSymlink(IResource resource, boolean value) throws CoreException {
 		ResourceAttributes attributes = resource.getResourceAttributes();
-		assertNotNull("setSymlink for null attributes", attributes);
+		assertNotNull(attributes);
 		attributes.setSymbolicLink(value);
 		resource.setResourceAttributes(attributes);
 	}
 
 	@Test
 	public void testAttributeArchive() throws CoreException {
-		assumeTrue("only relevant for platforms supporting archive attribute",
-				isAttributeSupported(EFS.ATTRIBUTE_ARCHIVE));
+		assumeTrue(isAttributeSupported(EFS.ATTRIBUTE_ARCHIVE),
+				"only relevant for platforms supporting archive attribute");
 
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFile file = project.getFile("target");
@@ -104,8 +103,8 @@ public class ResourceAttributeTest {
 
 	@Test
 	public void testAttributeExecutable() throws CoreException {
-		assumeTrue("only relevant for platforms supporting executable attribute",
-				isAttributeSupported(EFS.ATTRIBUTE_EXECUTABLE));
+		assumeTrue(isAttributeSupported(EFS.ATTRIBUTE_EXECUTABLE),
+				"only relevant for platforms supporting executable attribute");
 
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFile file = project.getFile("target");
@@ -129,8 +128,8 @@ public class ResourceAttributeTest {
 
 	@Test
 	public void testAttributeHidden() throws CoreException {
-		assumeTrue("only relevant for platforms supporting hidden attribute",
-				isAttributeSupported(EFS.ATTRIBUTE_HIDDEN));
+		assumeTrue(isAttributeSupported(EFS.ATTRIBUTE_HIDDEN),
+				"only relevant for platforms supporting hidden attribute");
 
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFile file = project.getFile("target");
@@ -153,8 +152,8 @@ public class ResourceAttributeTest {
 
 	@Test
 	public void testAttributeReadOnly() throws CoreException {
-		assumeTrue("only relevant for platforms supporting read-only attribute",
-				isAttributeSupported(EFS.ATTRIBUTE_READ_ONLY));
+		assumeTrue(isAttributeSupported(EFS.ATTRIBUTE_READ_ONLY),
+				"only relevant for platforms supporting read-only attribute");
 
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFile file = project.getFile("target");
@@ -217,10 +216,10 @@ public class ResourceAttributeTest {
 	 * See https://bugs.eclipse.org/bugs/show_bug.cgi?id=397353
 	 */
 	@Test
-	@Ignore("currently failing on Hudson: see https://bugs.eclipse.org/bugs/show_bug.cgi?id=397353")
+	@Disabled("currently failing on Hudson: see https://bugs.eclipse.org/bugs/show_bug.cgi?id=397353")
 	public void testRefreshExecutableOnFolder() throws CoreException {
-		assumeTrue("only relevant for platforms supporting executable attribute",
-				isAttributeSupported(EFS.ATTRIBUTE_EXECUTABLE));
+		assumeTrue(isAttributeSupported(EFS.ATTRIBUTE_EXECUTABLE),
+				"only relevant for platforms supporting executable attribute");
 
 		IProject project = getWorkspace().getRoot().getProject("testRefreshExecutableOnFolder");
 		IFolder folder = project.getFolder("folder");
@@ -247,7 +246,7 @@ public class ResourceAttributeTest {
 
 	@Test
 	public void testAttributeSymlink() throws Exception {
-		assumeTrue("only relevant for platforms supporting symbolic links", canCreateSymLinks());
+		assumeTrue(canCreateSymLinks(), "only relevant for platforms supporting symbolic links");
 
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFile link = project.getFile("link");

@@ -14,7 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -64,11 +64,11 @@ public class MarkerAttributeChangeListener implements IResourceChangeListener {
 	private void checkDelta(IMarkerDelta[] deltas) {
 		int expectedCount = attributeMap.size();
 		int actualCount = deltas.length;
-		assertEquals("wrong number of changes", expectedCount, actualCount);
+		assertEquals(expectedCount, actualCount, "wrong number of changes");
 		for (IMarkerDelta delta : deltas) {
 			Map<String, Object> expected = attributeMap.get(Long.valueOf(delta.getId()));
 			Map<String, Object> actual = delta.getAttributes();
-			assertEquals("Changes different from expecations", expected, actual);
+			assertEquals(expected, actual, "Changes different from expecations");
 		}
 	}
 

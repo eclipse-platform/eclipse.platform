@@ -30,17 +30,16 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * This class tests the public API of IResourceChangeEvent.
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class IResourceChangeEventTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	/* some random resource handles */
 	protected IProject project1;
@@ -61,7 +60,7 @@ public class IResourceChangeEventTest {
 	 * Sets up the fixture, for example, open a network connection.
 	 * This method is called before a test is executed.
 	 */
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		// Create some resource handles
 		project1 = getWorkspace().getRoot().getProject("Project" + 1);

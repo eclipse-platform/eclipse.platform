@@ -34,6 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -1389,7 +1390,7 @@ public class CharsetTest {
 	 * This verifier succeeds if either all expected changes are received in a
 	 * single delta, or if each expected change is received in a delta of its own.
 	 */
-	private class MultipleDeltasCharsetVerifier extends org.junit.Assert implements IResourceChangeListener {
+	private class MultipleDeltasCharsetVerifier implements IResourceChangeListener {
 
 		private final int flags;
 		private final CharsetVerifier singleDeltaVerifier;
@@ -1482,7 +1483,7 @@ public class CharsetTest {
 						failMessage.append(deltaVerifier.getMessage());
 						failMessage.append(System.lineSeparator());
 					}
-					assertTrue(failMessage.toString(), validDeltas);
+					assertTrue(validDeltas, failMessage.toString());
 				}
 			}
 		}

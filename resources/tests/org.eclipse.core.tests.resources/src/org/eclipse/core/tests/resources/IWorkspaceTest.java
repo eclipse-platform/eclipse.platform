@@ -43,13 +43,13 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureOutOfSync;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -73,16 +73,15 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Platform.OS;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class IWorkspaceTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private IResource[] buildResourceHierarchy() throws CoreException {
 		return buildResources(getWorkspace().getRoot(),
@@ -625,7 +624,7 @@ public class IWorkspaceTest {
 		assertTrue(oneMoreFile.exists());
 		assertTrue(folder.getFile(file1.getName()).exists());
 		assertTrue(folder.getFile(anotherFile.getName()).exists());
-		assertTrue("Fails because of 1FVFOOQ", folder.getFile(oneMoreFile.getName()).exists());
+		assertTrue(folder.getFile(oneMoreFile.getName()).exists(), "Fails because of 1FVFOOQ");
 
 		/* copy projects should not be allowed */
 		IResource destination = getWorkspace().getRoot().getProject("destination");
@@ -811,28 +810,28 @@ public class IWorkspaceTest {
 			assertFalse(getWorkspace().validateName("...", IResource.PROJECT).isOK());
 			assertFalse(getWorkspace().validateName("foo.", IResource.FILE).isOK());
 			for (int i = 0; i <= 31; i++) {
-				assertFalse("Windows should NOT accept character #" + i,
-						getWorkspace().validateName("anything" + ((char) i) + "something", IResource.FILE).isOK());
+				assertFalse(getWorkspace().validateName("anything" + ((char) i) + "something", IResource.FILE).isOK(),
+						"Windows should NOT accept character #" + i);
 			}
-			assertTrue("Windows should accept character #" + 32,
-					getWorkspace().validateName("anything" + ((char) 32) + "something", IResource.FILE).isOK());
-			assertFalse("Windows should NOT accept space at the end",
-					getWorkspace().validateName("foo ", IResource.FILE).isOK());
-			assertTrue("Windows should accept space in the middle",
-					getWorkspace().validateName("fo o", IResource.FILE).isOK());
-			assertTrue("Windows should accept space in at the beginning",
-					getWorkspace().validateName(" foo", IResource.FILE).isOK());
+			assertTrue(getWorkspace().validateName("anything" + ((char) 32) + "something", IResource.FILE).isOK(),
+					"Windows should accept character #" + 32);
+			assertFalse(getWorkspace().validateName("foo ", IResource.FILE).isOK(),
+					"Windows should NOT accept space at the end");
+			assertTrue(getWorkspace().validateName("fo o", IResource.FILE).isOK(),
+					"Windows should accept space in the middle");
+			assertTrue(getWorkspace().validateName(" foo", IResource.FILE).isOK(),
+					"Windows should accept space in at the beginning");
 		} else {
 			//trailing dots are ok on other platforms
 			assertTrue(getWorkspace().validateName("...", IResource.FILE).isOK());
 			assertTrue(getWorkspace().validateName("....", IResource.PROJECT).isOK());
 			assertTrue(getWorkspace().validateName("abc.", IResource.FILE).isOK());
 			for (int i = 1; i <= 32; i++) {
-				assertTrue("Unix-style filesystems should accept character #" + i,
-						getWorkspace().validateName("anything" + ((char) i) + "something", IResource.FILE).isOK());
+				assertTrue(getWorkspace().validateName("anything" + ((char) i) + "something", IResource.FILE).isOK(),
+						"Unix-style filesystems should accept character #" + i);
 			}
-			assertTrue("Unix-style filesystems should accept space at the end",
-					getWorkspace().validateName("foo ", IResource.FILE).isOK());
+			assertTrue(getWorkspace().validateName("foo ", IResource.FILE).isOK(),
+					"Unix-style filesystems should accept space at the end");
 		}
 		/* invalid characters on all platforms */
 		assertFalse(getWorkspace().validateName("/dsasf", IResource.FILE).isOK());
@@ -860,14 +859,14 @@ public class IWorkspaceTest {
 		String[][] invalid = getInvalidNatureSets();
 		for (int i = 0; i < invalid.length; i++) {
 			IStatus result = ws.validateNatureSet(invalid[i]);
-			assertFalse("invalid (severity): " + i, result.isOK());
-			assertNotEquals("invalid (code): " + i, IStatus.OK, result.getCode());
+			assertFalse(result.isOK(), "invalid (severity): " + i);
+			assertNotEquals(IStatus.OK, result.getCode(), "invalid (code): " + i);
 		}
 		String[][] valid = getValidNatureSets();
 		for (int i = 0; i < valid.length; i++) {
 			IStatus result = ws.validateNatureSet(valid[i]);
-			assertTrue("valid (severity): " + i, result.isOK());
-			assertEquals("valid (code): " + i, IStatus.OK, result.getCode());
+			assertTrue(result.isOK(), "valid (severity): " + i);
+			assertEquals(IStatus.OK, result.getCode(), "valid (code): " + i);
 		}
 	}
 

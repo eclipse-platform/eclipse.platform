@@ -14,7 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.HashSet;
 import java.util.Hashtable;

@@ -28,9 +28,9 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorksp
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -65,12 +65,13 @@ import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.FileStoreAutoDeleteExtension;
 import org.junit.function.ThrowingRunnable;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -87,8 +88,8 @@ import org.osgi.service.log.LogReaderService;
  */
 public class IResourceChangeListenerTest {
 
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+	@RegisterExtension
+	private final FileStoreAutoDeleteExtension fileStoreExtension = new FileStoreAutoDeleteExtension();
 
 	static class SimpleListener implements IResourceChangeListener {
 		Object source;
@@ -159,7 +160,7 @@ public class IResourceChangeListenerTest {
 			IProjectDescription description = getWorkspace().newProjectDescription(project.getName());
 			IPath root = getWorkspace().getRoot().getLocation();
 			IPath contents = root.append("temp/testing");
-			workspaceRule.deleteOnTearDown(root.append("temp"));
+			fileStoreExtension.deleteOnTearDown(root.append("temp"));
 			description.setLocation(contents);
 			project.create(description, createTestMonitor());
 			project.open(createTestMonitor());
@@ -188,7 +189,7 @@ public class IResourceChangeListenerTest {
 	 * Tests that the builder is receiving an appropriate delta
 	 */
 	public void assertDelta() {
-		assertTrue(verifier.getMessage(), verifier.isDeltaValid());
+		assertTrue(verifier.isDeltaValid(), verifier.getMessage());
 	}
 
 	/**
@@ -224,7 +225,7 @@ public class IResourceChangeListenerTest {
 	 * Sets up the fixture, for example, open a network connection. This method
 	 * is called before a test is executed.
 	 */
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		// Create some resource handles
 		project1 = getWorkspace().getRoot().getProject("Project" + 1);
@@ -260,7 +261,7 @@ public class IResourceChangeListenerTest {
 	 * Tears down the fixture, for example, close a network connection. This
 	 * method is called after a test is executed.
 	 */
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		getWorkspace().removeResourceChangeListener(verifier);
 	}
@@ -339,7 +340,7 @@ public class IResourceChangeListenerTest {
 			}
 		}, createTestMonitor());
 		// should not have been verified since there was no change
-		assertTrue("Unexpected notification on no change", !verifier.hasBeenNotified());
+		assertFalse(verifier.hasBeenNotified(), "Unexpected notification on no change");
 	}
 
 	@Test
@@ -355,7 +356,7 @@ public class IResourceChangeListenerTest {
 			}
 		}, createTestMonitor());
 		// should not have been verified since there was no change
-		assertTrue("Unexpected notification on no change", !verifier.hasBeenNotified());
+		assertFalse(verifier.hasBeenNotified(), "Unexpected notification on no change");
 	}
 
 	@Test
@@ -424,7 +425,7 @@ public class IResourceChangeListenerTest {
 			} catch (CoreException e) {
 				return;
 			}
-			listenerInMainThreadCallback.set(Assert::fail);
+			listenerInMainThreadCallback.set(Assertions::fail);
 		};
 		// register the listener with the workspace.
 		getWorkspace().addResourceChangeListener(listener, IResourceChangeEvent.POST_CHANGE);
@@ -468,23 +469,23 @@ public class IResourceChangeListenerTest {
 					file1.touch(null);
 					workspace.build(trigger, monitor);
 				}, createTestMonitor());
-				assertEquals(i + "", workspace, preBuild.source);
-				assertEquals(i + "", workspace, postBuild.source);
-				assertEquals(i + "", workspace, postChange.source);
-				assertEquals(i + "", trigger, preBuild.trigger);
-				assertEquals(i + "", trigger, postBuild.trigger);
-				assertEquals(i + "", 0, postChange.trigger);
+				assertEquals(workspace, preBuild.source, i + "");
+				assertEquals(workspace, postBuild.source, i + "");
+				assertEquals(workspace, postChange.source, i + "");
+				assertEquals(trigger, preBuild.trigger, i + "");
+				assertEquals(trigger, postBuild.trigger, i + "");
+				assertEquals(0, postChange.trigger, i + "");
 
 				workspace.run((IWorkspaceRunnable) monitor -> {
 					file1.touch(null);
 					project1.build(trigger, createTestMonitor());
 				}, createTestMonitor());
-				assertEquals(i + "", project1, preBuild.source);
-				assertEquals(i + "", project1, postBuild.source);
-				assertEquals(i + "", workspace, postChange.source);
-				assertEquals(i + "", trigger, preBuild.trigger);
-				assertEquals(i + "", trigger, postBuild.trigger);
-				assertEquals(i + "", 0, postChange.trigger);
+				assertEquals(project1, preBuild.source, i + "");
+				assertEquals(project1, postBuild.source, i + "");
+				assertEquals(workspace, postChange.source, i + "");
+				assertEquals(trigger, preBuild.trigger, i + "");
+				assertEquals(trigger, postBuild.trigger, i + "");
+				assertEquals(0, postChange.trigger, i + "");
 
 			}
 
@@ -537,10 +538,10 @@ public class IResourceChangeListenerTest {
 			((Workspace) getWorkspace()).getBuildManager().waitForAutoBuildOff();
 
 			int trigger = IncrementalProjectBuilder.AUTO_BUILD;
-			assertEquals("Should see PRE_BUILD event", trigger, preBuild.trigger);
-			assertEquals("Should see POST_BUILD event", trigger, postBuild.trigger);
-			assertEquals("Should see workspace root on PRE_BUILD event", workspace, preBuild.source);
-			assertEquals("Should see workspace root on POST_BUILD event", workspace, postBuild.source);
+			assertEquals(trigger, preBuild.trigger, "Should see PRE_BUILD event");
+			assertEquals(trigger, postBuild.trigger, "Should see POST_BUILD event");
+			assertEquals(workspace, preBuild.source, "Should see workspace root on PRE_BUILD event");
+			assertEquals(workspace, postBuild.source, "Should see workspace root on POST_BUILD event");
 		} finally {
 			workspace.removeResourceChangeListener(preBuild);
 			workspace.removeResourceChangeListener(postBuild);
@@ -816,7 +817,7 @@ public class IResourceChangeListenerTest {
 			Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_MANUAL_REFRESH);
 			Job.getJobManager().join(ResourcesPlugin.FAMILY_MANUAL_REFRESH, null);
 
-			assertTrue("deletion did unexpectedly not succeed", listener1.deletePerformed);
+			assertTrue(listener1.deletePerformed, "deletion did unexpectedly not succeed");
 			assertDoesNotExistInWorkspace(f);
 		} finally {
 			getWorkspace().removeResourceChangeListener(listener1);
@@ -1268,7 +1269,7 @@ public class IResourceChangeListenerTest {
 	@Test
 	public void testMoveProject2() throws CoreException {
 		final IPath path = getRandomLocation();
-		workspaceRule.deleteOnTearDown(path);
+		fileStoreExtension.deleteOnTearDown(path);
 		verifier.addExpectedChange(project1, IResourceDelta.CHANGED, IResourceDelta.DESCRIPTION);
 		getWorkspace().run((IWorkspaceRunnable) m -> {
 			m.beginTask("Creating and moving", 100);
@@ -1304,16 +1305,14 @@ public class IResourceChangeListenerTest {
 			int i = 0;
 			while (!(listener1.done && listener2.done)) {
 				// timeout if the listeners are never called
-				assertTrue("Listeners were never called", ++i < 600);
+				assertTrue(++i < 600, "Listeners were never called");
 				try {
 					Thread.sleep(100);
 				} catch (InterruptedException e1) {
 				}
 			}
-			assertEquals("Improper change event processed by first listener", IResourceChangeEvent.POST_CHANGE,
-					listener1.eventType);
-			assertEquals("Improper change event processed by second listener", IResourceChangeEvent.POST_BUILD,
-					listener2.eventType);
+			assertEquals(IResourceChangeEvent.POST_CHANGE, listener1.eventType);
+			assertEquals(IResourceChangeEvent.POST_BUILD, listener2.eventType);
 		} finally {
 			getWorkspace().removeResourceChangeListener(listener1);
 			getWorkspace().removeResourceChangeListener(listener2);
@@ -1390,12 +1389,9 @@ public class IResourceChangeListenerTest {
 				reg3.unregister();
 			}
 		}
-		assertEquals("Improper change event processed by first listener", IResourceChangeEvent.POST_CHANGE,
-				listener1.eventType);
-		assertEquals("Improper change event processed by second listener", IResourceChangeEvent.POST_BUILD,
-				listener2.eventType);
-		assertEquals("Improper change event processed by third listener", IResourceChangeEvent.POST_CHANGE,
-				listener3.eventType);
+		assertEquals(IResourceChangeEvent.POST_CHANGE, listener1.eventType);
+		assertEquals(IResourceChangeEvent.POST_BUILD, listener2.eventType);
+		assertEquals(IResourceChangeEvent.POST_CHANGE, listener3.eventType);
 		logListenerInMainThreadCallback.get().run();
 	}
 
@@ -1528,11 +1524,11 @@ public class IResourceChangeListenerTest {
 		verifier.reset();
 		// set local on a file that is already local -- should be no change
 		file1.setLocal(true, IResource.DEPTH_INFINITE, createTestMonitor());
-		assertTrue("Unexpected notification on no change", !verifier.hasBeenNotified());
+		assertFalse(verifier.hasBeenNotified(), "Unexpected notification on no change");
 		// set non-local, still shouldn't appear in delta
 		verifier.reset();
 		file1.setLocal(false, IResource.DEPTH_INFINITE, createTestMonitor());
-		assertTrue("Unexpected notification on no change", !verifier.hasBeenNotified());
+		assertFalse(verifier.hasBeenNotified(), "Unexpected notification on no change");
 	}
 
 	@Test
@@ -1670,7 +1666,7 @@ public class IResourceChangeListenerTest {
 	@Test
 	public void testRemoveAndCreateUnderlyingFileForLinkedResource() throws CoreException, IOException {
 		IPath path = getTempDir().addTrailingSeparator().append(createUniqueString());
-		workspaceRule.deleteOnTearDown(path);
+		fileStoreExtension.deleteOnTearDown(path);
 		path.toFile().createNewFile();
 
 		IFile linkedFile = project1.getFile(createUniqueString());
@@ -1693,7 +1689,7 @@ public class IResourceChangeListenerTest {
 	@Test
 	public void testRemoveAndCreateUnderlyingFolderForLinkedResource() throws CoreException {
 		IPath path = getTempDir().addTrailingSeparator().append(createUniqueString());
-		workspaceRule.deleteOnTearDown(path);
+		fileStoreExtension.deleteOnTearDown(path);
 
 		path.toFile().mkdir();
 		IFolder linkedFolder = project1.getFolder(createUniqueString());
@@ -1715,7 +1711,7 @@ public class IResourceChangeListenerTest {
 	@Test
 	public void testBug228354() throws CoreException {
 		IPath path = getTempDir().addTrailingSeparator().append(createUniqueString());
-		workspaceRule.deleteOnTearDown(path);
+		fileStoreExtension.deleteOnTearDown(path);
 
 		path.toFile().mkdir();
 		IFolder linkedFolder = project1.getFolder(createUniqueString());

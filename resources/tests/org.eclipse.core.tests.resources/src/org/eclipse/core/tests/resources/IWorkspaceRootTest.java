@@ -21,12 +21,12 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspac
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.ByteArrayInputStream;
 import java.net.URI;
@@ -47,26 +47,30 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.tests.internal.filesystem.wrapper.WrapperFileSystem;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.FileStoreAutoDeleteExtension;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class IWorkspaceRootTest {
 
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+	@RegisterExtension
+	private final FileStoreAutoDeleteExtension fileStoreExtension = new FileStoreAutoDeleteExtension();
 
 	/**
 	 * Tests findFilesForLocation when non-canonical paths are used (bug 155101).
 	 */
 	@Test
 	public void testFindFilesNonCanonicalPath() throws Exception {
-		assumeTrue("only relevant on Windows", OS.isWindows());
+		assumeTrue(OS.isWindows(), "only relevant on Windows");
 
 		IProject project = getWorkspace().getRoot().getProject("testFindFilesNonCanonicalPath");
 		createInWorkspace(project);
 
 		IFile link = project.getFile("file.txt");
-		IFileStore fileStore = workspaceRule.getTempStore();
+		IFileStore fileStore = fileStoreExtension.getTempStore();
 		createInFileSystem(fileStore);
 		assertEquals(EFS.SCHEME_FILE, fileStore.getFileSystem().getScheme());
 		IPath fileLocationLower = URIUtil.toPath(fileStore.toURI());
@@ -144,7 +148,7 @@ public class IWorkspaceRootTest {
 		assertThrows(RuntimeException.class, () -> root.findContainersForLocationURI(relative));
 		//linked folder that does not overlap a project location
 		IFolder otherLink = p1.getFolder("otherLink");
-		IFileStore linkStore = workspaceRule.getTempStore();
+		IFileStore linkStore = fileStoreExtension.getTempStore();
 		URI location = linkStore.toURI();
 		linkStore.mkdir(EFS.NONE, createTestMonitor());
 		otherLink.createLink(location, IResource.NONE, createTestMonitor());
@@ -225,7 +229,7 @@ public class IWorkspaceRootTest {
 
 		//linked resource
 		IFolder link = project.getFolder("link");
-		IFileStore linkStore = workspaceRule.getTempStore();
+		IFileStore linkStore = fileStoreExtension.getTempStore();
 		URI location = linkStore.toURI();
 		linkStore.mkdir(EFS.NONE, createTestMonitor());
 		link.createLink(location, IResource.NONE, createTestMonitor());
@@ -274,7 +278,7 @@ public class IWorkspaceRootTest {
 	@Test
 	public void testGetFileForLocation() {
 		IWorkspaceRoot root = getWorkspace().getRoot();
-		assertTrue(root.getFileForLocation(root.getLocation()) == null);
+		assertNull(root.getFileForLocation(root.getLocation()));
 	}
 
 	@Test

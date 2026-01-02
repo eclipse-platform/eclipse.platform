@@ -13,10 +13,12 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.util.Arrays;
 import java.util.Random;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
-import org.junit.Assert;
 
 /**
  * Abstract superclass of inner classes used for black-box testing
@@ -73,7 +75,7 @@ public abstract class TestPerformer {
 				if (shouldFail(args, count)) {
 					try {
 						invokeMethod(args, count);
-						Assert.fail(getFailMessagePrefixForCurrentInvocation(args)
+						fail(getFailMessagePrefixForCurrentInvocation(args)
 								+ "invocation did not fail although it should"
 								+ (reasonForExpectedFail != null ? ": " + reasonForExpectedFail : ""));
 					} catch (Exception ex) {
@@ -102,8 +104,8 @@ public abstract class TestPerformer {
 					} catch (Exception ex) {
 						ex.printStackTrace();
 					}
-					Assert.assertTrue(getFailMessagePrefixForCurrentInvocation(args)
-							+ "invocation should succeed but did not produce desired result", success);
+					assertTrue(success, getFailMessagePrefixForCurrentInvocation(args)
+							+ "invocation should succeed but did not produce desired result");
 				}
 				cleanUp(args, count);
 				count++;

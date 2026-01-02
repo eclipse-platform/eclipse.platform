@@ -27,18 +27,17 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Performs black box testing of the following API methods:
  * <code>IWorkspace.computeProjectOrder(IProject[])</code>
  * <code>IWorkspace.computePrerequisiteOrder(IProject[])</code>
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class ProjectOrderTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	/**
 	 * Adds a project reference from the given source project, which must
