@@ -13,9 +13,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.filesystem;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.URI;
 import org.eclipse.core.filesystem.EFS;
@@ -23,7 +23,7 @@ import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.internal.filesystem.wrapper.WrapperFileSystem;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests API methods of the class {@link org.eclipse.core.filesystem.URIUtil}.

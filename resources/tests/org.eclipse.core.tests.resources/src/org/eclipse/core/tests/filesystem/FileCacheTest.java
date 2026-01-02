@@ -15,9 +15,9 @@ package org.eclipse.core.tests.filesystem;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.tests.filesystem.FileSystemTestUtil.getMonitor;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.OutputStream;
@@ -27,21 +27,21 @@ import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.tests.internal.filesystem.ram.MemoryFileStore;
 import org.eclipse.core.tests.internal.filesystem.ram.MemoryTree;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the file caching provided by FileStore.toLocalFile.
  */
 public class FileCacheTest {
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		MemoryTree.TREE.deleteAll();
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		MemoryTree.TREE.deleteAll();
 	}

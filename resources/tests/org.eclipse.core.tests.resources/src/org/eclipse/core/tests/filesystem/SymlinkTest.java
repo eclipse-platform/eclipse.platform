@@ -26,12 +26,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.tests.filesystem.FileSystemTestUtil.ensureDoesNotExist;
 import static org.eclipse.core.tests.filesystem.FileSystemTestUtil.ensureExists;
 import static org.eclipse.core.tests.filesystem.FileSystemTestUtil.getMonitor;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -43,11 +43,11 @@ import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Platform.OS;
-import org.eclipse.core.tests.filesystem.FileStoreCreationRule.FileSystemType;
+import org.eclipse.core.tests.filesystem.FileStoreCreationExtension.FileSystemType;
 import org.eclipse.core.tests.harness.FileSystemHelper;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class SymlinkTest {
 	/**
@@ -65,13 +65,12 @@ public class SymlinkTest {
 	protected IFileStore lDir, lFile; //symlink to Dir, File
 	protected IFileStore llDir, llFile; //link to link to Dir, File
 
-	@Rule
-	public final FileStoreCreationRule fileStoreRule = new FileStoreCreationRule(FileSystemType.LOCAL);
+	@RegisterExtension
+	public final FileStoreCreationExtension fileStoreExtension = new FileStoreCreationExtension(FileSystemType.LOCAL);
 
-	@Before
+	@BeforeEach
 	public void assumeSymbolicLinksAvailable() throws Exception {
-		assumeTrue("only relevant for platforms supporting symbolic links",
-				FileSystemHelper.canCreateSymLinks());
+		assumeTrue(FileSystemHelper.canCreateSymLinks(), "only relevant for platforms supporting symbolic links");
 	}
 
 	protected void fetchFileInfos() {
@@ -88,7 +87,7 @@ public class SymlinkTest {
 	}
 
 	protected void makeLinkStructure() throws CoreException, IOException {
-		IFileStore baseStore = fileStoreRule.getFileStore();
+		IFileStore baseStore = fileStoreExtension.getFileStore();
 		aDir = baseStore.getChild("aDir");
 		aFile = baseStore.getChild("aFile");
 		lDir = baseStore.getChild("lDir");
@@ -155,7 +154,7 @@ public class SymlinkTest {
 	// Moving a broken symlink is possible.
 	@Test
 	public void testBrokenSymlinkMove() throws Exception {
-		IFileStore baseStore = fileStoreRule.getFileStore();
+		IFileStore baseStore = fileStoreExtension.getFileStore();
 		makeLinkStructure();
 		ensureDoesNotExist(aFile);
 		ensureDoesNotExist(aDir);
@@ -191,7 +190,7 @@ public class SymlinkTest {
 	// Removing a broken symlink is possible.
 	@Test
 	public void testBrokenSymlinkRemove() throws Exception {
-		IFileStore baseStore = fileStoreRule.getFileStore();
+		IFileStore baseStore = fileStoreExtension.getFileStore();
 		makeLinkStructure();
 		ensureDoesNotExist(aFile);
 		ensureDoesNotExist(aDir);
@@ -209,7 +208,7 @@ public class SymlinkTest {
 
 	@Test
 	public void testRecursiveSymlink() throws Exception {
-		IFileStore baseStore = fileStoreRule.getFileStore();
+		IFileStore baseStore = fileStoreExtension.getFileStore();
 		mkLink(baseStore, "l1", "l2", false);
 		mkLink(baseStore, "l2", "l1", false);
 		IFileStore l1 = baseStore.getChild("l1");
@@ -347,7 +346,7 @@ public class SymlinkTest {
 	 * TODO Fix this test.  See https://bugs.eclipse.org/bugs/show_bug.cgi?id=172346
 	 */
 	public void _testSymlinkExtendedChars() throws Exception {
-		IFileStore baseStore = fileStoreRule.getFileStore();
+		IFileStore baseStore = fileStoreExtension.getFileStore();
 		IFileStore childDir = baseStore.getChild(specialCharName);
 		ensureExists(childDir, true);
 		IFileStore childFile = baseStore.getChild("ff" + specialCharName);
@@ -373,7 +372,7 @@ public class SymlinkTest {
 
 	@Test
 	public void testSymlinkPutLastModified() throws Exception {
-		assumeFalse("setting EFS.SET_LAST_MODIFIED fails on Mac", OS.isMac());
+		assumeFalse(OS.isMac(), "setting EFS.SET_LAST_MODIFIED fails on Mac");
 
 		//check that putInfo() "writes through" the symlink
 		makeLinkStructure();
@@ -436,8 +435,8 @@ public class SymlinkTest {
 
 	@Test
 	public void testSymlinkPutExecutable() throws Exception {
-		assumeTrue("only relevant for platforms supporting hidden attribute",
-				isAttributeSupported(EFS.ATTRIBUTE_EXECUTABLE));
+		assumeTrue(isAttributeSupported(EFS.ATTRIBUTE_EXECUTABLE),
+				"only relevant for platforms supporting hidden attribute");
 
 		//check that putInfo() "writes through" the symlink
 		makeLinkStructure();
@@ -462,8 +461,8 @@ public class SymlinkTest {
 
 	@Test
 	public void testSymlinkPutHidden() throws Exception {
-		assumeTrue("only relevant for platforms supporting hidden attribute",
-				isAttributeSupported(EFS.ATTRIBUTE_HIDDEN));
+		assumeTrue(isAttributeSupported(EFS.ATTRIBUTE_HIDDEN),
+				"only relevant for platforms supporting hidden attribute");
 
 		// Check that putInfo() applies the attribute to the symlink itself.
 		makeLinkStructure();
