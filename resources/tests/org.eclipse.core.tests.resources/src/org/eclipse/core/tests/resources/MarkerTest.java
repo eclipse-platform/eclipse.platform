@@ -23,9 +23,9 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomStri
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForEncodingRelatedJobs;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -65,19 +65,15 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class MarkerTest {
-
-	@Rule
-	public TestName testName = new TestName();
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	public static final String TRANSIENT_MARKER = "org.eclipse.core.tests.resources.transientmarker";
 	public static final String TEST_PROBLEM_MARKER = "org.eclipse.core.tests.resources.testproblem";
@@ -128,8 +124,8 @@ public class MarkerTest {
 	}
 
 	protected void assertMarkerDoesNotExist(IMarker marker) {
-		assertFalse(String.format("marker '%s' exists unexpectedly for resource '%s'", marker, marker.getResource()),
-				marker.exists());
+		assertFalse(marker.exists(),
+				String.format("marker '%s' exists unexpectedly for resource '%s'", marker, marker.getResource()));
 	}
 
 	protected void assertMarkersExist(IMarker[] markers) {
@@ -139,8 +135,8 @@ public class MarkerTest {
 	}
 
 	protected void assertMarkerExists(IMarker marker) {
-		assertTrue(String.format("marker '%s' does not exist for resource '%s'", marker, marker.getResource()),
-				marker.exists());
+		assertTrue(marker.exists(),
+				String.format("marker '%s' does not exist for resource '%s'", marker, marker.getResource()));
 	}
 
 	private void assertMarkerHasAttributeValue(IMarker marker, String attributeName, Object expectedValue)
@@ -161,11 +157,11 @@ public class MarkerTest {
 	}
 
 	private void assertMarkerIsSubtype(IMarker marker, String superType) throws CoreException {
-		assertTrue(String.format("Marker '%s' is no subtype of %s", marker, superType), marker.isSubtypeOf(superType));
+		assertTrue(marker.isSubtypeOf(superType), String.format("Marker '%s' is no subtype of %s", marker, superType));
 	}
 
 	private void assertMarkerIsNoSubtype(IMarker marker, String superType) throws CoreException {
-		assertFalse(String.format("Marker '%s' is subtype of %s", marker, superType), marker.isSubtypeOf(superType));
+		assertFalse(marker.isSubtypeOf(superType), String.format("Marker '%s' is subtype of %s", marker, superType));
 	}
 
 	public IResource[] createLargeHierarchy() throws CoreException {
@@ -193,7 +189,7 @@ public class MarkerTest {
 		marker.setAttribute(IMarker.SEVERITY, severity);
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		resources = buildResources(getWorkspace().getRoot(),
 				new String[] { "/", "1/", "1/1", "1/2/", "1/2/1", "1/2/2/", "2/", "2/1", "2/2/", "2/2/1", "2/2/2/" });
@@ -208,7 +204,7 @@ public class MarkerTest {
 	}
 
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		if (registeredResourceChangeLister != null) {
 			setResourceChangeListener(null);
@@ -283,14 +279,14 @@ public class MarkerTest {
 			assertMarkersExist(markers);
 			listener.assertNumberOfAffectedResources(1);
 			listener.assertChanges(resource, markers, null, null);
-			assertThrows(resource.getFullPath().toString(), RuntimeException.class, () -> resource.createMarker(null));
+			assertThrows(RuntimeException.class, () -> resource.createMarker(null), resource.getFullPath().toString());
 		}
 
 		// try creating a marker on a resource which does't exist
 		IResource testResource = getWorkspace().getRoot().getFile(IPath.fromOSString("non/existant/resource"));
-		assertFalse("resource should not exist: " + testResource, testResource.exists());
-		assertThrows(testResource.getFullPath().toString(), CoreException.class,
-				() -> testResource.createMarker(IMarker.PROBLEM));
+		assertFalse(testResource.exists(), "resource should not exist: " + testResource);
+		assertThrows(CoreException.class, () -> testResource.createMarker(IMarker.PROBLEM),
+				testResource.getFullPath().toString());
 	}
 
 	@Test
@@ -325,9 +321,10 @@ public class MarkerTest {
 	public void testCreateMarkerWithAttributesOnAResourceWhichDoesNotExistShouldFail() {
 		// try creating a marker on a resource which does't exist
 		IResource testResource = getWorkspace().getRoot().getFile(IPath.fromOSString("non/existant/resource"));
-		assertFalse("resource should not exist: " + testResource, testResource.exists());
-		assertThrows(testResource.getFullPath().toString(), CoreException.class,
-				() -> testResource.createMarker(IMarker.PROBLEM, Map.of(IMarker.MESSAGE, "My text")));
+		assertFalse(testResource.exists(), "resource should not exist: " + testResource);
+		assertThrows(CoreException.class,
+				() -> testResource.createMarker(IMarker.PROBLEM, Map.of(IMarker.MESSAGE, "My text")),
+				testResource.getFullPath().toString());
 	}
 
 	// testing that markers creation and calling setAttribute trigger multiple
@@ -907,14 +904,14 @@ public class MarkerTest {
 	 * Tests the appearance of marker changes in the resource delta.
 	 */
 	@Test
-	public void testMarkerDeltasMoveFolder() throws CoreException {
+	public void testMarkerDeltasMoveFolder(TestInfo testInfo) throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		final IProject project = root.getProject("MyProject");
 		IFolder folder = project.getFolder("folder");
 		IFile file = project.getFile("file.txt");
 		IFile subFile = folder.getFile("subFile.txt");
 		createInWorkspace(new IResource[] { project, folder, file, subFile });
-		waitForEncodingRelatedJobs(testName.getMethodName());
+		waitForEncodingRelatedJobs(testInfo.getDisplayName());
 		IFolder destFolder = project.getFolder("myOtherFolder");
 		IFile destSubFile = destFolder.getFile(subFile.getName());
 
@@ -947,14 +944,14 @@ public class MarkerTest {
 	 * Tests the appearance of marker changes in the resource delta.
 	 */
 	@Test
-	public void testMarkerDeltasMoveFile() throws CoreException {
+	public void testMarkerDeltasMoveFile(TestInfo testInfo) throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		final IProject project = root.getProject("MyProject");
 		IFolder folder = project.getFolder("folder");
 		IFile file = project.getFile("file.txt");
 		IFile subFile = folder.getFile("subFile.txt");
 		createInWorkspace(new IResource[] { project, folder, file, subFile });
-		waitForEncodingRelatedJobs(testName.getMethodName());
+		waitForEncodingRelatedJobs(testInfo.getDisplayName());
 		IFile destFile = folder.getFile(file.getName());
 		IFile destSubFile = project.getFile(subFile.getName());
 
@@ -1109,7 +1106,7 @@ public class MarkerTest {
 		assertThat(actual).containsExactlyInAnyOrder(expected);
 
 		// cleanup
-		assertTrue("deleting file failed", file.delete());
+		assertTrue(file.delete());
 	}
 
 	@Test
@@ -1198,7 +1195,7 @@ public class MarkerTest {
 		assertThat(actual).containsExactlyInAnyOrder(expected);
 
 		// cleanup
-		assertTrue("deleting file failed", file.delete());
+		assertTrue(file.delete());
 	}
 
 	/**
@@ -1260,22 +1257,23 @@ public class MarkerTest {
 			assertThat(marker.getAttributes()).as(resourcePath).isEqualTo(originalMap);
 
 			// try sending null as args
-			assertThrows(resourcePath, RuntimeException.class, () -> marker.getAttribute(null));
-			assertThrows(resourcePath, RuntimeException.class, () -> marker.getAttributes(null));
-			assertThrows(resourcePath, RuntimeException.class, () -> marker.setAttribute(null, createRandomString()));
-			assertThrows(resourcePath, RuntimeException.class,
-					() -> marker.setAttributes(null, new String[] { createRandomString() }));
-			assertThrows(resourcePath, RuntimeException.class,
-					() -> marker.setAttributes(new String[] { IMarker.MESSAGE }, null));
+			assertThrows(RuntimeException.class, () -> marker.getAttribute(null), resourcePath);
+			assertThrows(RuntimeException.class, () -> marker.getAttributes(null), resourcePath);
+			assertThrows(RuntimeException.class, () -> marker.setAttribute(null, createRandomString()), resourcePath);
+			assertThrows(RuntimeException.class,
+					() -> marker.setAttributes(null, new String[] { createRandomString() }), resourcePath);
+			assertThrows(RuntimeException.class, () -> marker.setAttributes(new String[] { IMarker.MESSAGE }, null),
+					resourcePath);
 			//set attributes on deleted marker
 			marker.delete();
-			assertThrows(resourcePath, CoreException.class, () -> marker.setAttribute(IMarker.MESSAGE, "Hello"));
-			assertThrows(resourcePath, CoreException.class,
+			assertThrows(CoreException.class, () -> marker.setAttribute(IMarker.MESSAGE, "Hello"), resourcePath);
+			assertThrows(CoreException.class,
 					() -> marker.setAttributes(new String[] { IMarker.LINE_NUMBER },
-					new Object[] { Integer.valueOf(4) }));
+							new Object[] { Integer.valueOf(4) }),
+					resourcePath);
 			HashMap<String, String> attributes = new HashMap<>();
 			attributes.put(IMarker.MESSAGE, "Hello");
-			assertThrows(resourcePath, CoreException.class, () -> marker.setAttributes(attributes));
+			assertThrows(CoreException.class, () -> marker.setAttributes(attributes), resourcePath);
 		}
 	}
 
@@ -1341,16 +1339,16 @@ public class MarkerTest {
 			assertThat(marker.getAttributes()).as(resourcePath).isEqualTo(originalMap);
 
 			// try sending null as args
-			assertThrows(resourcePath, RuntimeException.class, () -> marker.getAttribute(null));
-			assertThrows(resourcePath, RuntimeException.class, () -> marker.getAttribute(null, "default"));
-			assertThrows(resourcePath, RuntimeException.class, () -> marker.getAttribute(null, true));
-			assertThrows(resourcePath, RuntimeException.class, () -> marker.getAttribute(null, 5));
-			assertThrows(resourcePath, RuntimeException.class, () -> marker.getAttributes(null));
-			assertThrows(resourcePath, RuntimeException.class, () -> marker.setAttribute(null, createRandomString()));
-			assertThrows(resourcePath, RuntimeException.class,
-					() -> marker.setAttributes(null, new String[] { createRandomString() }));
-			assertThrows(resourcePath, RuntimeException.class,
-					() -> marker.setAttributes(new String[] { IMarker.MESSAGE }, null));
+			assertThrows(RuntimeException.class, () -> marker.getAttribute(null), resourcePath);
+			assertThrows(RuntimeException.class, () -> marker.getAttribute(null, "default"), resourcePath);
+			assertThrows(RuntimeException.class, () -> marker.getAttribute(null, true), resourcePath);
+			assertThrows(RuntimeException.class, () -> marker.getAttribute(null, 5), resourcePath);
+			assertThrows(RuntimeException.class, () -> marker.getAttributes(null), resourcePath);
+			assertThrows(RuntimeException.class, () -> marker.setAttribute(null, createRandomString()), resourcePath);
+			assertThrows(RuntimeException.class,
+					() -> marker.setAttributes(null, new String[] { createRandomString() }), resourcePath);
+			assertThrows(RuntimeException.class, () -> marker.setAttributes(new String[] { IMarker.MESSAGE }, null),
+					resourcePath);
 
 			Map<String, Object> retrievedAttributes = marker.getAttributes();
 			retrievedAttributes.put("1", null); // allowed for clients using IMarker.getAttributes()
@@ -1363,7 +1361,7 @@ public class MarkerTest {
 			Map<String, Object> reretrievedAttributes = marker.getAttributes();
 			reretrievedAttributes.put(null, 1); // allowed for clients using IMarker.getAttributes()
 			// not allowed for clients to put null key
-			assertThrows(resourcePath, RuntimeException.class, () -> marker.setAttributes(reretrievedAttributes));
+			assertThrows(RuntimeException.class, () -> marker.setAttributes(reretrievedAttributes), resourcePath);
 			assertThat(marker.getAttribute("2")).as(resourcePath).isNotNull();
 			assertThat(marker.getAttributes()).as(resourcePath).isNotNull();
 			marker.setAttributes(null);
