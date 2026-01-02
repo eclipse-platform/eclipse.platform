@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Vector Informatik GmbH and others.
+ * Copyright (c) 2026 Vector Informatik GmbH and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -7,7 +7,6 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
  *******************************************************************************/
 package org.eclipse.core.tests.filesystem;
 
@@ -20,26 +19,24 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.tests.harness.FileSystemHelper;
 import org.eclipse.core.tests.internal.filesystem.ram.MemoryTree;
 import org.eclipse.core.tests.resources.TestUtil;
-import org.junit.rules.ExternalResource;
-import org.junit.runner.Description;
-import org.junit.runners.model.Statement;
+import org.junit.jupiter.api.extension.AfterEachCallback;
+import org.junit.jupiter.api.extension.BeforeEachCallback;
+import org.junit.jupiter.api.extension.ExtensionContext;
 
 /**
- * A test rule for automatically creating and disposing a file store for the
- * local file system or in memory.
+ * A test extension for automatically creating and disposing a file store for
+ * the local file system or in memory.
  */
-public class FileStoreCreationRule extends ExternalResource {
+public class FileStoreCreationExtension implements BeforeEachCallback, AfterEachCallback {
 	public enum FileSystemType {
 		LOCAL, IN_MEMORY
 	}
 
 	private final FileSystemType fileSystemType;
 
-	private String testName;
-
 	private IFileStore fileStore;
 
-	public FileStoreCreationRule(FileSystemType fileSystemType) {
+	public FileStoreCreationExtension(FileSystemType fileSystemType) {
 		this.fileSystemType = fileSystemType;
 	}
 
@@ -48,17 +45,12 @@ public class FileStoreCreationRule extends ExternalResource {
 	}
 
 	@Override
-	public Statement apply(Statement base, Description description) {
-		testName = description.getDisplayName();
-		return super.apply(base, description);
-	}
-
-	@Override
-	protected void before() throws Throwable {
+	public void beforeEach(ExtensionContext context) throws Exception {
 		switch(fileSystemType) {
 		case LOCAL:
 			var fileStoreLocation = FileSystemHelper
-					.getRandomLocation(FileSystemHelper.getTempDir()).append(IPath.SEPARATOR + testName);
+					.getRandomLocation(FileSystemHelper.getTempDir())
+					.append(IPath.SEPARATOR + context.getDisplayName());
 			fileStore = EFS.getLocalFileSystem().getStore(fileStoreLocation);
 			break;
 		case IN_MEMORY:
@@ -67,14 +59,15 @@ public class FileStoreCreationRule extends ExternalResource {
 			break;
 		}
 		fileStore.mkdir(EFS.NONE, null);
+
 	}
 
 	@Override
-	protected void after() {
+	public void afterEach(ExtensionContext context) throws Exception {
 		try {
 			fileStore.delete(EFS.NONE, null);
 		} catch (CoreException e) {
-			TestUtil.log(IStatus.ERROR, testName, "Could not delete file store: " + fileStore, e);
+			TestUtil.log(IStatus.ERROR, context.getDisplayName(), "Could not delete file store: " + fileStore, e);
 		}
 		switch (fileSystemType) {
 		case IN_MEMORY:
@@ -84,4 +77,5 @@ public class FileStoreCreationRule extends ExternalResource {
 			// Nothing to do
 		}
 	}
+
 }

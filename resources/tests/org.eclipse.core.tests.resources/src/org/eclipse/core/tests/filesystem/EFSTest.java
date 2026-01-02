@@ -13,12 +13,12 @@
  *******************************************************************************/
 package org.eclipse.core.tests.filesystem;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileSystem;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests public API methods of the class EFS.

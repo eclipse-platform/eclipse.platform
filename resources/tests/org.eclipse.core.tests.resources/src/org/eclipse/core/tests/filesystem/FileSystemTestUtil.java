@@ -11,7 +11,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.filesystem;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -29,7 +30,7 @@ final class FileSystemTestUtil {
 
 	static void ensureDoesNotExist(IFileStore store) throws CoreException {
 		store.delete(EFS.NONE, getMonitor());
-		assertTrue("store was not properly deleted: " + store, !store.fetchInfo().exists());
+		assertFalse(store.fetchInfo().exists(), "store was not properly deleted: " + store);
 	}
 
 	/**
@@ -39,15 +40,15 @@ final class FileSystemTestUtil {
 		if (directory) {
 			store.mkdir(EFS.NONE, getMonitor());
 			final IFileInfo info = store.fetchInfo();
-			assertTrue("file info for store does not exist: " + store, info.exists());
-			assertTrue("created file for store is not a directory: " + store, info.isDirectory());
+			assertTrue(info.exists(), "file info for store does not exist: " + store);
+			assertTrue(info.isDirectory(), "created file for store is not a directory: " + store);
 		} else {
 			try (OutputStream out = store.openOutputStream(EFS.NONE, getMonitor())) {
 				out.write(5);
 			}
 			final IFileInfo info = store.fetchInfo();
-			assertTrue("file info for store does not exist: " + store, info.exists());
-			assertTrue("created file for store is not a directory: " + store, !info.isDirectory());
+			assertTrue(info.exists(), "file info for store does not exist: " + store);
+			assertFalse(info.isDirectory(), "created file for store is not a directory: " + store);
 		}
 	}
 

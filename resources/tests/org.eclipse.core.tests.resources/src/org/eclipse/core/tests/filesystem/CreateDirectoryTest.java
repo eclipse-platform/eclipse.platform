@@ -16,12 +16,12 @@ package org.eclipse.core.tests.filesystem;
 import static org.eclipse.core.tests.filesystem.FileSystemTestUtil.ensureDoesNotExist;
 import static org.eclipse.core.tests.filesystem.FileSystemTestUtil.ensureExists;
 import static org.eclipse.core.tests.filesystem.FileSystemTestUtil.getMonitor;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.net.URI;
@@ -31,11 +31,11 @@ import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.tests.filesystem.FileStoreCreationRule.FileSystemType;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.filesystem.FileStoreCreationExtension.FileSystemType;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * Black box testing of mkdir method.
@@ -43,15 +43,16 @@ import org.junit.Test;
 public class CreateDirectoryTest {
 	protected IFileStore topDir, subDir, file, subFile;
 
-	@Rule
-	public final FileStoreCreationRule localFileStoreRule = new FileStoreCreationRule(FileSystemType.LOCAL);
+	@RegisterExtension
+	public final FileStoreCreationExtension localFileStoreExtension = new FileStoreCreationExtension(FileSystemType.LOCAL);
 
-	@Rule
-	public final FileStoreCreationRule inMemoryFileStoreRule = new FileStoreCreationRule(FileSystemType.IN_MEMORY);
+	@RegisterExtension
+	public final FileStoreCreationExtension inMemoryFileStoreExtension = new FileStoreCreationExtension(
+			FileSystemType.IN_MEMORY);
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
-		IFileStore baseStore = inMemoryFileStoreRule.getFileStore();
+		IFileStore baseStore = inMemoryFileStoreExtension.getFileStore();
 		baseStore.mkdir(EFS.NONE, null);
 		topDir = baseStore.getChild("topDir");
 		subDir = topDir.getChild("subDir");
@@ -62,7 +63,7 @@ public class CreateDirectoryTest {
 		ensureDoesNotExist(file);
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		ensureDoesNotExist(topDir);
 		ensureDoesNotExist(file);
@@ -126,7 +127,7 @@ public class CreateDirectoryTest {
 
 	@Test
 	public void testParentNotExistsShallowInLocalFile() throws CoreException {
-		IFileStore localFileBaseStore = localFileStoreRule.getFileStore();
+		IFileStore localFileBaseStore = localFileStoreExtension.getFileStore();
 		localFileBaseStore.delete(EFS.NONE, getMonitor());
 		CoreException e = assertThrows(CoreException.class, () -> {
 			IFileStore localFileTopDir = localFileBaseStore.getChild("topDir");
@@ -138,7 +139,7 @@ public class CreateDirectoryTest {
 
 	@Test
 	public void testTargetIsFileInLocalFile() throws Exception {
-		IFileStore localFileBaseStore = localFileStoreRule.getFileStore();
+		IFileStore localFileBaseStore = localFileStoreExtension.getFileStore();
 		localFileBaseStore.delete(EFS.NONE, getMonitor());
 		CoreException e = assertThrows(CoreException.class, () -> {
 			ensureExists(localFileBaseStore, true);

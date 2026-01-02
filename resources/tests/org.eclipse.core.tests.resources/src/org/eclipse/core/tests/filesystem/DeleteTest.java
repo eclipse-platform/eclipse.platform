@@ -15,29 +15,31 @@ package org.eclipse.core.tests.filesystem;
 
 import static org.eclipse.core.tests.filesystem.FileSystemTestUtil.ensureExists;
 import static org.eclipse.core.tests.filesystem.FileSystemTestUtil.getMonitor;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.core.tests.filesystem.FileStoreCreationRule.FileSystemType;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.filesystem.FileStoreCreationExtension.FileSystemType;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * Black box testing of {@link IFileStore#delete(int, org.eclipse.core.runtime.IProgressMonitor)}.
  */
 public class DeleteTest {
-	@Rule
-	public final FileStoreCreationRule localFileStoreRule = new FileStoreCreationRule(FileSystemType.LOCAL);
+	@RegisterExtension
+	public final FileStoreCreationExtension localFileStoreExtension = new FileStoreCreationExtension(
+			FileSystemType.LOCAL);
 
-	@Rule
-	public final FileStoreCreationRule inMemoryFileStoreRule = new FileStoreCreationRule(FileSystemType.IN_MEMORY);
+	@RegisterExtension
+	public final FileStoreCreationExtension inMemoryFileStoreExtension = new FileStoreCreationExtension(
+			FileSystemType.IN_MEMORY);
 
 	@Test
 	public void testDeleteFile() throws Exception {
-		IFileStore baseStore = inMemoryFileStoreRule.getFileStore();
+		IFileStore baseStore = inMemoryFileStoreExtension.getFileStore();
 		IFileStore file = baseStore.getChild("child");
 		ensureExists(file, false);
 
@@ -48,7 +50,7 @@ public class DeleteTest {
 
 	@Test
 	public void testDeleteDirectory() throws Exception {
-		IFileStore baseStore = inMemoryFileStoreRule.getFileStore();
+		IFileStore baseStore = inMemoryFileStoreExtension.getFileStore();
 		IFileStore dir = baseStore.getChild("child");
 		ensureExists(dir, true);
 
@@ -59,7 +61,7 @@ public class DeleteTest {
 
 	@Test
 	public void testDeleteReadOnlyFile() throws Exception {
-		IFileStore localFileBaseStore = localFileStoreRule.getFileStore();
+		IFileStore localFileBaseStore = localFileStoreExtension.getFileStore();
 		ensureExists(localFileBaseStore, true);
 		IFileStore file = localFileBaseStore.getChild("child");
 		ensureExists(file, false);

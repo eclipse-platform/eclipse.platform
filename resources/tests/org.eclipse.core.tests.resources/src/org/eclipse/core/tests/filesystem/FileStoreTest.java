@@ -22,13 +22,13 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.getFileStore;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isAttributeSupported;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setReadOnly;
-import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -157,8 +157,8 @@ public class FileStoreTest {
 		IFileStore[] tempDirectories = getFileStoresOnTwoVolumes();
 
 		/* test if we are in the adequate environment */
-		assumeFalse("only executable if at least two volumes are present", tempDirectories == null
-				|| tempDirectories.length < 2 || tempDirectories[0] == null || tempDirectories[1] == null);
+		assumeFalse(tempDirectories == null || tempDirectories.length < 2 || tempDirectories[0] == null
+				|| tempDirectories[1] == null, "only executable if at least two volumes are present");
 
 		/* build scenario */
 		// create source root folder
@@ -238,7 +238,7 @@ public class FileStoreTest {
 	public void testCaseInsensitive(int fileSize) throws Throwable {
 	IFileStore temp = createDir(randomUniqueNotExistingFileStore(), true);
 		boolean isCaseSensitive = temp.getFileSystem().isCaseSensitive();
-		assumeFalse("only relevant for platforms with case-sensitive file system", isCaseSensitive);
+		assumeFalse(isCaseSensitive, "only relevant for platforms with case-sensitive file system");
 
 		byte[] content = new byte[fileSize];
 		RANDOM.nextBytes(content);
@@ -317,8 +317,8 @@ public class FileStoreTest {
 		IFileStore[] tempDirectories = getFileStoresOnTwoVolumes();
 
 		/* test if we are in the adequate environment */
-		assumeFalse("only executable if at least two volumes are present", tempDirectories == null
-				|| tempDirectories.length < 2 || tempDirectories[0] == null || tempDirectories[1] == null);
+		assumeFalse(tempDirectories == null || tempDirectories.length < 2 || tempDirectories[0] == null
+				|| tempDirectories[1] == null, "only executable if at least two volumes are present");
 
 		/* build scenario */
 		/* get the source folder */
@@ -528,8 +528,8 @@ public class FileStoreTest {
 		IFileStore[] tempDirectories = getFileStoresOnTwoVolumes();
 
 		/* test if we are in the adequate environment */
-		assumeFalse("only executable if at least two volumes are present", tempDirectories == null
-				|| tempDirectories.length < 2 || tempDirectories[0] == null || tempDirectories[1] == null);
+		assumeFalse(tempDirectories == null || tempDirectories.length < 2 || tempDirectories[0] == null
+				|| tempDirectories[1] == null, "only executable if at least two volumes are present");
 
 		/* build scenario */
 		/* get the source folder */
@@ -641,7 +641,7 @@ public class FileStoreTest {
 	}
 
 	private void testAttribute(int attribute) throws Exception {
-		assumeTrue("only relevant for platforms supporting attribute: " + attribute, isAttributeSupported(attribute));
+		assumeTrue(isAttributeSupported(attribute), "only relevant for platforms supporting attribute: " + attribute);
 
 		IFileStore targetFolder = createDir(randomUniqueNotExistingFileStore(), true);
 		IFileStore targetFile = targetFolder.getChild("targetFile");
