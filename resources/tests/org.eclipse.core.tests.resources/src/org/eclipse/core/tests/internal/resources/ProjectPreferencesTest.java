@@ -23,13 +23,13 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.getLineSeparator
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.touchInFilesystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -70,19 +70,17 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChange
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
 /**
  * @since 3.0
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class ProjectPreferencesTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private static final String DIR_NAME = ".settings";
 	private static final String FILE_EXTENSION = "prefs";
@@ -163,13 +161,13 @@ public class ProjectPreferencesTest {
 		// get the value through service searching
 		for (int i = 0; i < contextsWithoutScope.length; i++) {
 			actual = service.getString(qualifier, key, null, contextsWithoutScope[i]);
-			assertNotNull("Null Index:" + i, actual);
-			assertEquals("Not Equal Index:" + i, instanceValue, actual);
+			assertNotNull(actual, "Null Index:" + i);
+			assertEquals(instanceValue, actual, "Not Equal Index:" + i);
 		}
 		for (int i = 0; i < contextsWithScope.length; i++) {
 			actual = service.getString(qualifier, key, null, contextsWithScope[i]);
-			assertNotNull("Null Index:" + i, actual);
-			assertEquals("Not Equal Index:" + i, instanceValue, actual);
+			assertNotNull(actual, "Null Index:" + i);
+			assertEquals(instanceValue, actual, "Not Equal Index:" + i);
 		}
 
 		// set a preference value in the project scope
@@ -182,13 +180,13 @@ public class ProjectPreferencesTest {
 		// get the value through service searching
 		for (int i = 0; i < contextsWithoutScope.length; i++) {
 			actual = service.getString(qualifier, key, null, contextsWithoutScope[i]);
-			assertNotNull("Null Index:" + i, actual);
-			assertEquals("Not Equal Index:" + i, instanceValue, actual);
+			assertNotNull(actual, "Null Index:" + i);
+			assertEquals(instanceValue, actual, "Not Equal Index:" + i);
 		}
 		for (int i = 0; i < contextsWithScope.length; i++) {
 			actual = service.getString(qualifier, key, null, contextsWithScope[i]);
-			assertNotNull("Null Index:" + i, actual);
-			assertEquals("Not Equal Index:" + i, projectValue, actual);
+			assertNotNull(actual, "Null Index:" + i);
+			assertEquals(projectValue, actual, "Not Equal Index:" + i);
 		}
 
 		// remove the project scope value
@@ -200,13 +198,13 @@ public class ProjectPreferencesTest {
 		// get the value through service searching
 		for (int i = 0; i < contextsWithoutScope.length; i++) {
 			actual = service.getString(qualifier, key, null, contextsWithoutScope[i]);
-			assertNotNull("Null Index:" + i, actual);
-			assertEquals("Not Equal Index:" + i, instanceValue, actual);
+			assertNotNull(actual, "Null Index:" + i);
+			assertEquals(instanceValue, actual, "Not Equal Index:" + i);
 		}
 		for (int i = 0; i < contextsWithScope.length; i++) {
 			actual = service.getString(qualifier, key, null, contextsWithScope[i]);
-			assertNotNull("Null Index:" + i, actual);
-			assertEquals("Not Equal Index:" + i, instanceValue, actual);
+			assertNotNull(actual, "Null Index:" + i);
+			assertEquals(instanceValue, actual, "Not Equal Index:" + i);
 		}
 
 		// remove the instance value so there is nothing
@@ -215,11 +213,11 @@ public class ProjectPreferencesTest {
 		actual = node.get(key, null);
 		for (int i = 0; i < contextsWithoutScope.length; i++) {
 			actual = service.getString(qualifier, key, null, contextsWithoutScope[i]);
-			assertNull("Not Null Index:" + i, actual);
+			assertNull(actual, "Not Null Index:" + i);
 		}
 		for (int i = 0; i < contextsWithScope.length; i++) {
 			actual = service.getString(qualifier, key, null, contextsWithScope[i]);
-			assertNull("Not Null Index:" + i, actual);
+			assertNull(actual, "Not Null Index:" + i);
 		}
 	}
 
@@ -617,7 +615,7 @@ public class ProjectPreferencesTest {
 		node.node("child").node("node").put("key", "childValue2");
 		node.flush();
 		IFile prefFile = getFileInWorkspace(project, ResourcesPlugin.PI_RESOURCES);
-		assertTrue("Preferences missing", prefFile.exists());
+		assertTrue(prefFile.exists(), "Preferences missing");
 		Properties properties = new Properties();
 		try (InputStream contents = prefFile.getContents()) {
 			properties.load(contents);

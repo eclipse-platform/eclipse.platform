@@ -14,7 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.resources;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -23,22 +23,18 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import org.eclipse.core.internal.resources.ResourceInfo;
 import org.eclipse.core.runtime.QualifiedName;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class ResourceInfoTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	static public void assertEquals(ResourceInfo expected, ResourceInfo actual) {
 		if (expected == null && actual == null) {
 			return;
 		}
-		if (expected == null || actual == null) {
-			assertTrue(false);
-		}
+		assertFalse(expected == null || actual == null);
 		boolean different = false;
 		different &= expected.getFlags() == actual.getFlags();
 		different &= expected.getContentId() == actual.getContentId();
@@ -48,9 +44,7 @@ public class ResourceInfoTest {
 		// TODO sync info isn't serialized by this class so don't expect it to be loaded
 		//	assertEquals(message, expected.getSyncInfo(false), actual.getSyncInfo(false));
 		different &= expected.getMarkerGenerationCount() == actual.getMarkerGenerationCount();
-		if (different) {
-			assertTrue(false);
-		}
+		assertFalse(different);
 	}
 
 	@Test

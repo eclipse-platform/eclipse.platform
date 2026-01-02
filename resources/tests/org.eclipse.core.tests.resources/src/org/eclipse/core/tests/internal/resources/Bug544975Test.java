@@ -15,8 +15,8 @@ package org.eclipse.core.tests.internal.resources;
 
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,14 +31,12 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class Bug544975Test {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	@Test
 	public void testBug544975ProjectOpenBackgroundRefresh() throws Exception {
@@ -58,7 +56,7 @@ public class Bug544975Test {
 			project.close(new NullProgressMonitor());
 
 			Path projectPath = Paths.get(project.getLocationURI());
-			assertTrue("Test project must exist on file system", Files.exists(projectPath));
+			assertTrue(Files.exists(projectPath), "Test project must exist on file system");
 
 			Path filePath = projectPath.resolve("someFile.txt");
 			Files.delete(filePath);
@@ -70,11 +68,11 @@ public class Bug544975Test {
 			Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, new NullProgressMonitor());
 
 			file1 = project.getFile("someFile.txt");
-			assertFalse("Expected deleted project resource not exist after opening with BACKGROUND_REFRESH",
-					file1.exists());
+			assertFalse(file1.exists(),
+					"Expected deleted project resource not exist after opening with BACKGROUND_REFRESH");
 			file2 = project.getFile("someOtherFile.txt");
-			assertTrue("Expected new project resource to be found after opening with BACKGROUND_REFRESH",
-					file2.exists());
+			assertTrue(file2.exists(),
+					"Expected new project resource to be found after opening with BACKGROUND_REFRESH");
 		} finally {
 			prefs.putBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, originalRefreshSetting);
 		}
@@ -93,7 +91,7 @@ public class Bug544975Test {
 		project.close(new NullProgressMonitor());
 
 		Path projectPath = Paths.get(project.getLocationURI());
-		assertTrue("Test project must exist on file system", Files.exists(projectPath));
+		assertTrue(Files.exists(projectPath), "Test project must exist on file system");
 
 		Path filePath = projectPath.resolve("someFile.txt");
 		Files.delete(filePath);
@@ -105,11 +103,11 @@ public class Bug544975Test {
 		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, new NullProgressMonitor());
 
 		file1 = project.getFile("someFile.txt");
-		assertTrue("Expected deleted project resource still exist after opening without BACKGROUND_REFRESH",
-				file1.exists());
+		assertTrue(file1.exists(),
+				"Expected deleted project resource still exist after opening without BACKGROUND_REFRESH");
 		file2 = project.getFile("someOtherFile.txt");
-		assertFalse("Expected new project resource not to be found after opening without BACKGROUND_REFRESH",
-				file2.exists());
+		assertFalse(file2.exists(),
+				"Expected new project resource not to be found after opening without BACKGROUND_REFRESH");
 	}
 
 	private IFile createFile(IProject project, String fileName, String initialContents) throws CoreException {
