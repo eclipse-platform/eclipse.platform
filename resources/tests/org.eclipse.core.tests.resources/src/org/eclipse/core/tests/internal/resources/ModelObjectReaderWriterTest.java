@@ -22,7 +22,7 @@ import static org.eclipse.core.tests.harness.FileSystemHelper.getTempDir;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.ByteArrayOutputStream;
@@ -33,6 +33,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -57,19 +59,19 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Platform.OS;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.eclipse.core.tests.resources.util.FileStoreAutoDeleteExtension;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.api.io.TempDir;
 import org.xml.sax.InputSource;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class ModelObjectReaderWriterTest {
 
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
-
-	@Rule
-	public TemporaryFolder folder = new TemporaryFolder();
+	@RegisterExtension
+	private final FileStoreAutoDeleteExtension fileStoreExtension = new FileStoreAutoDeleteExtension();
 
 	static final IPath LONG_LOCATION = IPath.fromOSString("/eclipse/dev/i0218/eclipse/pffds/fds//fds///fdsfsdfsd///fdsfdsf/fsdfsdfsd/lugi/dsds/fsd//f/ffdsfdsf/fsdfdsfsd/fds//fdsfdsfdsf/fdsfdsfds/fdsfdsfdsf/fdsfdsfdsds/ns/org.eclipse.help.ui_2.1.0/contexts.xml").setDevice(OS.isWindows() ? "D:" : null);
 	static final URI LONG_LOCATION_URI = LONG_LOCATION.toFile().toURI();
@@ -300,7 +302,7 @@ public class ModelObjectReaderWriterTest {
 		String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + newline + "<projectDescription>" + newline + "	<name>MyProjectDescription</name>" + newline + "	<comment></comment>" + newline + "	<projects>" + newline + "	</projects>" + newline + "	<buildSpec>" + newline + "		<buildCommand>" + newline + "			<name>MyCommand</name>" + newline + "			<arguments>" + newline + "				<dictionary>" + newline + "					<key>aA</key>" + newline + "					<value>2 x ARGH!</value>" + newline + "				</dictionary>" + newline + "				<dictionary>" + newline + "					<key>b</key>" + newline + "					<value>ARGH!</value>" + newline + "				</dictionary>" + newline
 				+ "			</arguments>" + newline + "		</buildCommand>" + newline + "	</buildSpec>" + newline + "	<natures>" + newline + "	</natures>" + newline + "	<linkedResources>" + newline + "		<link>" + newline + "			<name>pathA</name>" + newline + "			<type>2</type>" + newline + "			<location>" + locationA + "</location>" + newline + "		</link>" + newline + "		<link>" + newline + "			<name>pathB</name>" + newline + "			<type>2</type>" + newline + "			<location>" + locationB + "</location>" + newline + "		</link>" + newline + "	</linkedResources>" + newline + "</projectDescription>" + newline;
 
-		IFileStore tempStore = workspaceRule.getTempStore();
+		IFileStore tempStore = fileStoreExtension.getTempStore();
 		URI location = tempStore.toURI();
 
 		ProjectDescription description = new ProjectDescription();
@@ -332,14 +334,14 @@ public class ModelObjectReaderWriterTest {
 	}
 
 	@Test
-	public void testLocalMetaAreaReadWriteNatures() throws CoreException, IOException {
+	public void testLocalMetaAreaReadWriteNatures(@TempDir Path folder) throws CoreException, IOException {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		LocalMetaArea area = new LocalMetaArea((Workspace) workspace);
 		ProjectDescription description = new ProjectDescription();
 		description.setName("Testme");
 		String[] value = new String[] { "org.eclipse.jdt.core.javanature", "org.eclipse.pde.PluginNature" };
 		description.setNatureIds(value);
-		File file = folder.newFile();
+		File file = Files.createFile(folder.resolve("test")).toFile();
 		area.writeToFile(description, file);
 		IProject proj = workspace.getRoot().getProject("tmpproject");
 		ProjectDescription readme = new ProjectDescription();
@@ -348,7 +350,7 @@ public class ModelObjectReaderWriterTest {
 	}
 
 	@Test
-	public void testLocalMetaAreaReadWriteBuildSpec() throws CoreException, IOException {
+	public void testLocalMetaAreaReadWriteBuildSpec(@TempDir Path folder) throws CoreException, IOException {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		LocalMetaArea area = new LocalMetaArea((Workspace) workspace);
 		ProjectDescription description = new ProjectDescription();
@@ -358,7 +360,7 @@ public class ModelObjectReaderWriterTest {
 		Map<String, String> args = Map.of("1", "2");
 		buildCommand.setArguments(args);
 		description.setBuildSpec(new ICommand[] { buildCommand });
-		File file = folder.newFile();
+		File file = Files.createFile(folder.resolve("test")).toFile();
 		area.writeToFile(description, file);
 		IProject proj = workspace.getRoot().getProject("tmpproject");
 		ProjectDescription readme = new ProjectDescription();
@@ -377,7 +379,7 @@ public class ModelObjectReaderWriterTest {
 		IWorkspace workspace = getWorkspace();
 		IPath root = workspace.getRoot().getLocation();
 		IPath location = root.append("ModelObjectReaderWriterTest.txt");
-		workspaceRule.deleteOnTearDown(location);
+		fileStoreExtension.deleteOnTearDown(location);
 
 		ProjectDescriptionReader reader = new ProjectDescriptionReader(workspace);
 		// Write out the project description file
@@ -393,7 +395,7 @@ public class ModelObjectReaderWriterTest {
 	public void testInvalidProjectDescription2() throws Throwable {
 		String invalidProjectDescription = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<projectDescription>\n" + "	<bogusname>abc</bogusname>\n" + "</projectDescription>";
 
-		IFileStore store = workspaceRule.getTempStore();
+		IFileStore store = fileStoreExtension.getTempStore();
 		// Write out the project description file
 		try (OutputStream output = store.openOutputStream(EFS.NONE, null)) {
 			createInputStream(invalidProjectDescription).transferTo(output);
@@ -413,7 +415,7 @@ public class ModelObjectReaderWriterTest {
 	public void testInvalidProjectDescription3() throws Throwable {
 		String invalidProjectDescription = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<projectDescription>\n" + "	<name>abc</name>\n" + "	<comment></comment>\n" + "	<projects>\n" + "	</projects>\n" + "	<buildSpec>\n" + "		<badBuildCommand>\n" + "			<name>org.eclipse.jdt.core.javabuilder</name>\n" + "			<arguments>\n" + "			</arguments>\n" + "		</badBuildCommand>\n" + "	</buildSpec>\n" + "</projectDescription>";
 
-		IFileStore store = workspaceRule.getTempStore();
+		IFileStore store = fileStoreExtension.getTempStore();
 		// Write out the project description file
 		try (OutputStream output = store.openOutputStream(EFS.NONE, null)) {
 			createInputStream(invalidProjectDescription).transferTo(output);
@@ -434,7 +436,7 @@ public class ModelObjectReaderWriterTest {
 	public void testInvalidProjectDescription4() throws Throwable {
 		String invalidProjectDescription = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<projectDescription>\n" + "	<name>abc</name>\n" + "	<comment></comment>\n" + "	<projects>\n" + "	</projects>\n" + "	<buildSpec>\n" + "	</buildSpec>\n" + "	<natures>\n" + "	</natures>\n" + "	<linkedResources>\n" + "		<link>\n" + "			<name>newLink</name>\n" + "			<type>foobar</type>\n" + "			<location>" + PATH_STRING + "</location>\n" + "		</link>\n" + "	</linkedResources>\n" + "</projectDescription>";
 
-		IFileStore store = workspaceRule.getTempStore();
+		IFileStore store = fileStoreExtension.getTempStore();
 		// Write out the project description file
 		try (OutputStream output = store.openOutputStream(EFS.NONE, null)) {
 			createInputStream(invalidProjectDescription).transferTo(output);
@@ -460,7 +462,7 @@ public class ModelObjectReaderWriterTest {
 		String longProjectDescription = getLongDescription();
 
 		IPath location = getRandomLocation();
-		workspaceRule.deleteOnTearDown(location);
+		fileStoreExtension.deleteOnTearDown(location);
 
 		ProjectDescriptionReader reader = new ProjectDescriptionReader(getWorkspace());
 		// Write out the project description file
@@ -484,7 +486,7 @@ public class ModelObjectReaderWriterTest {
 	public void testLongProjectDescriptionURI() throws Throwable {
 		String longProjectDescription = getLongDescriptionURI();
 		IPath location = getRandomLocation();
-		workspaceRule.deleteOnTearDown(location);
+		fileStoreExtension.deleteOnTearDown(location);
 
 		ProjectDescriptionReader reader = new ProjectDescriptionReader(ResourcesPlugin.getWorkspace());
 		// Write out the project description file
@@ -512,9 +514,9 @@ public class ModelObjectReaderWriterTest {
 		IWorkspace workspace = getWorkspace();
 		IPath root = workspace.getRoot().getLocation();
 		IPath multiLocation = root.append("multiLineTest.txt");
-		workspaceRule.deleteOnTearDown(multiLocation);
+		fileStoreExtension.deleteOnTearDown(multiLocation);
 		IPath singleLocation = root.append("singleLineTest.txt");
-		workspaceRule.deleteOnTearDown(singleLocation);
+		fileStoreExtension.deleteOnTearDown(singleLocation);
 
 		ProjectDescriptionReader reader = new ProjectDescriptionReader(workspace);
 		// Write out the project description file
@@ -551,7 +553,7 @@ public class ModelObjectReaderWriterTest {
 
 	@Test
 	public void testProjectDescription() throws Throwable {
-		IFileStore tempStore = workspaceRule.getTempStore();
+		IFileStore tempStore = fileStoreExtension.getTempStore();
 		URI location = tempStore.toURI();
 		/* test write */
 		ProjectDescription description = new ProjectDescription();
@@ -600,7 +602,7 @@ public class ModelObjectReaderWriterTest {
 		/* initialize common objects */
 		ModelObjectWriter writer = new ModelObjectWriter();
 		ProjectDescriptionReader reader = new ProjectDescriptionReader(getWorkspace());
-		IFileStore tempStore = workspaceRule.getTempStore();
+		IFileStore tempStore = fileStoreExtension.getTempStore();
 		URI location = tempStore.toURI();
 		/* test write */
 		ProjectDescription description = new ProjectDescription();
@@ -654,7 +656,7 @@ public class ModelObjectReaderWriterTest {
 	// see bug 274437
 	@Test
 	public void testProjectDescription3() throws Throwable {
-		IFileStore tempStore = workspaceRule.getTempStore();
+		IFileStore tempStore = fileStoreExtension.getTempStore();
 		URI location = tempStore.toURI();
 		/* test write */
 		ProjectDescription description = new ProjectDescription();
@@ -682,7 +684,7 @@ public class ModelObjectReaderWriterTest {
 
 	@Test
 	public void testProjectDescriptionWithSpaces() throws Throwable {
-		IFileStore store = workspaceRule.getTempStore();
+		IFileStore store = fileStoreExtension.getTempStore();
 		IPath path = IPath.fromOSString("link");
 		URI location = store.toURI();
 		URI locationWithSpaces = store.getChild("With some spaces").toURI();
@@ -745,7 +747,7 @@ public class ModelObjectReaderWriterTest {
 
 		IPath root = getWorkspace().getRoot().getLocation();
 		IPath location = root.append("ModelObjectReaderWriterTest.txt");
-		workspaceRule.deleteOnTearDown(location);
+		fileStoreExtension.deleteOnTearDown(location);
 
 		ProjectDescriptionReader reader = new ProjectDescriptionReader(getWorkspace());
 		// Write out the project description file

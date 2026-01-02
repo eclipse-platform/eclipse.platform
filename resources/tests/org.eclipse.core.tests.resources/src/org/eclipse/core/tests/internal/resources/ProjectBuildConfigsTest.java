@@ -23,18 +23,16 @@ import org.eclipse.core.resources.IBuildConfiguration;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests configuration project build configuration on the project description
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class ProjectBuildConfigsTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private IProject project;
 	private static final String variantId0 = "Variant0";
@@ -45,7 +43,7 @@ public class ProjectBuildConfigsTest {
 	private IBuildConfiguration variant2;
 	private IBuildConfiguration defaultVariant;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		project = getWorkspace().getRoot().getProject("ProjectBuildConfigsTest_Project");
 		createInWorkspace(new IProject[] {project});

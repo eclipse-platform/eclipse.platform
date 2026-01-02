@@ -33,21 +33,19 @@ import org.eclipse.core.resources.IWorkspace.ProjectOrder;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test project dynamic references provided by extension point
  * <code>org.eclipse.core.resources.builders</code> and dynamicReference
  * {@link IDynamicReferenceProvider}
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class ProjectDynamicReferencesTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private static final String PROJECT_0_NAME = "ProjectDynamicReferencesTest_p0";
 
@@ -55,7 +53,7 @@ public class ProjectDynamicReferencesTest {
 	private IProject project1;
 	private IProject project2;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		project0 = getWorkspace().getRoot().getProject(PROJECT_0_NAME);
 		project1 = getWorkspace().getRoot().getProject("ProjectDynamicReferencesTest_p1");
@@ -66,7 +64,7 @@ public class ProjectDynamicReferencesTest {
 		updateProjectDescription(project2).addingCommand(Builder.NAME).apply();
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		DynamicReferenceProvider.clear();
 	}

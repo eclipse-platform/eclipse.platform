@@ -17,25 +17,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.eclipse.core.internal.resources.BuildConfiguration;
 import org.eclipse.core.resources.IBuildConfiguration;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test project variant references
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class ProjectReferencesTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private IProject project0;
 	private IProject project1;
@@ -52,7 +50,7 @@ public class ProjectReferencesTest {
 	private static final String bc1 = "Variant1";
 	private static final String nonExistentBC = "foo";
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		project0 = getWorkspace().getRoot().getProject("ProjectReferencesTest_p0");
 		project1 = getWorkspace().getRoot().getProject("ProjectReferencesTest_p1");

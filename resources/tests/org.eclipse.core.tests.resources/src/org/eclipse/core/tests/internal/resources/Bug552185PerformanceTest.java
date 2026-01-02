@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
+import org.junit.jupiter.api.Test;
 
 /**
  * A benchmark for bug 552185.
@@ -35,6 +36,7 @@ import org.eclipse.core.runtime.SubMonitor;
  */
 public class Bug552185PerformanceTest {
 
+	@Test
 	public void testBug552185Performance() throws Exception {
 		// run inside a WorkspaceJob, in case there are listeners on workspace changes
 		WorkspaceJob testJob = new WorkspaceJob(Bug552185PerformanceTest.class.getName()) {

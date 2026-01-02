@@ -16,8 +16,8 @@ package org.eclipse.core.tests.internal.resources;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicIntegerArray;
@@ -40,17 +40,15 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tests.harness.CancelingProgressMonitor;
 import org.eclipse.core.tests.harness.TestBarrier2;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests concurrency issues when dealing with operations on the workspace
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class WorkspaceConcurrencyTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private void sleep(long duration) {
 		try {
@@ -119,7 +117,7 @@ public class WorkspaceConcurrencyTest {
 			t2.start();
 			t2.join();
 			//should have canceled
-			assertTrue("thread was not canceled", canceled.get());
+			assertTrue(canceled.get(), "thread was not canceled");
 
 			//finally release the listener and ensure the first thread completes
 			barrier.set(0, TestBarrier2.STATUS_DONE);
@@ -291,7 +289,7 @@ public class WorkspaceConcurrencyTest {
 		while (job.getState() != Job.NONE) {
 			sleep(100);
 			//sanity test to avoid hanging tests
-			assertTrue("Timeout waiting for job to complete", i++ < 1000);
+			assertTrue(i++ < 1000, "Timeout waiting for job to complete");
 		}
 	}
 }
