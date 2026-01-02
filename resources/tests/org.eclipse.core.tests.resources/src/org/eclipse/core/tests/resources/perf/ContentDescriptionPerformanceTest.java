@@ -15,8 +15,10 @@ package org.eclipse.core.tests.resources.perf;
 
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.util.Set;
 import org.eclipse.core.resources.IFile;
@@ -27,18 +29,12 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.content.IContentDescription;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class ContentDescriptionPerformanceTest {
-
-	@Rule
-	public TestName testName = new TestName();
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private final static String DEFAULT_DESCRIPTION_FILE_NAME = "default.xml";
 	private final static String NO_DESCRIPTION_FILE_NAME = "none.some-uncommon-file-extension";
@@ -63,18 +59,20 @@ public class ContentDescriptionPerformanceTest {
 
 	void assertHasExpectedDescription(String fileName, IContentDescription description) {
 		if (fileName.endsWith(DEFAULT_DESCRIPTION_FILE_NAME)) {
-			assertTrue("description for " + fileName, description == description.getContentType().getDefaultDescription());
+			assertSame(description, description.getContentType().getDefaultDescription(),
+					"description for " + fileName);
 		} else if (fileName.endsWith(NON_DEFAULT_DESCRIPTION_FILE_NAME)) {
-			assertTrue("description for " + fileName, description != description.getContentType().getDefaultDescription());
+			assertNotSame(description, description.getContentType().getDefaultDescription(),
+					"description for " + fileName);
 		} else {
-			assertNull("description for " + fileName, description);
+			assertNull(description, "description for " + fileName);
 		}
 	}
 
 	void createFiles() throws CoreException {
 		// create a project with thousands of files
 		IProject bigProject = ResourcesPlugin.getWorkspace().getRoot().getProject("bigproject");
-		assertTrue("1.0", !bigProject.exists());
+		assertFalse(bigProject.exists());
 		bigProject.create(createTestMonitor());
 		bigProject.open(createTestMonitor());
 		for (int i = 0; i < SUBDIRS; i++) {

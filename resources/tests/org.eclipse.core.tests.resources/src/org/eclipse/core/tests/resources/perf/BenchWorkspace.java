@@ -31,23 +31,19 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class BenchWorkspace {
-
-	@Rule
-	public TestName testName = new TestName();
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private static final int FILES_PER_FOLDER = 20;
 	private static final int NUM_FOLDERS = 400;//must be multiple of 10
 	IProject project;
+	private TestInfo testInfo;
 
 	/**
 	 * Creates the given number of problem markers on each resource in the workspace.
@@ -114,8 +110,9 @@ public class BenchWorkspace {
 		return root.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
 	}
 
-	@Before
-	public void setUp() throws Exception {
+	@BeforeEach
+	public void setUp(TestInfo info) throws Exception {
+		testInfo = info;
 		IWorkspaceRunnable runnable = monitor -> {
 			//create resources
 			project = getWorkspace().getRoot().getProject("TestProject");
@@ -142,7 +139,7 @@ public class BenchWorkspace {
 			protected void test() {
 				workspace.countResources(root.getFullPath(), IResource.DEPTH_INFINITE, true);
 			}
-		}.run(getClass(), testName.getMethodName(), 10, 100);
+		}.run(getClass(), testInfo.getDisplayName(), 10, 100);
 	}
 
 	/**
@@ -168,7 +165,7 @@ public class BenchWorkspace {
 					protected void test() {
 						workspace.countResources(project.getFullPath(), IResource.DEPTH_INFINITE, true);
 					}
-				}.run(getClass(), testName.getMethodName(), 10, 10);
+				}.run(getClass(), testInfo.getDisplayName(), 10, 10);
 			} catch (CoreException e) {
 				throw e;
 			} catch (Exception e) {
@@ -191,6 +188,6 @@ public class BenchWorkspace {
 			protected void test() throws CoreException {
 				findMaxProblemSeverity2(root);
 			}
-		}.run(getClass(), testName.getMethodName(), 10, 100);
+		}.run(getClass(), testInfo.getDisplayName(), 10, 100);
 	}
 }

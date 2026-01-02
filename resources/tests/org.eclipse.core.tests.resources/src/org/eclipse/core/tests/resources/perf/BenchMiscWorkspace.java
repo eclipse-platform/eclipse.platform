@@ -21,18 +21,21 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class BenchMiscWorkspace {
 
-	@Rule
-	public TestName testName = new TestName();
+	private TestInfo testInfo;
 
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+	@BeforeEach
+	void storeTestInfo(TestInfo info) {
+		testInfo = info;
+	}
 
 	/**
 	 * Benchmarks performing many empty operations.
@@ -51,7 +54,7 @@ public class BenchMiscWorkspace {
 			protected void test() throws CoreException {
 				ws.run(noop, null);
 			}
-		}.run(getClass(), testName.getMethodName(), 10, 100000);
+		}.run(getClass(), testInfo.getDisplayName(), 10, 100000);
 	}
 
 	@Test
@@ -64,7 +67,7 @@ public class BenchMiscWorkspace {
 					root.getProject(Integer.toString(i));
 				}
 			}
-		}.run(getClass(), testName.getMethodName(), 10, 1000);
+		}.run(getClass(), testInfo.getDisplayName(), 10, 1000);
 	}
 
 }

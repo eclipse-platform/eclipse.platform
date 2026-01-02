@@ -35,22 +35,17 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Basic performance calculations for standard workspace operations.
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class WorkspacePerformanceTest {
-
-	@Rule
-	public TestName testName = new TestName();
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private static final String chars = "abcdefghijklmnopqrstuvwxyz";
 	static final int REPEATS = 5;
@@ -60,6 +55,7 @@ public class WorkspacePerformanceTest {
 	private final Random random = new Random();
 	IFolder testFolder;
 	IProject testProject;
+	TestInfo testInfo;
 
 	IFolder copyFolder() throws CoreException {
 		IFolder destination = testProject.getFolder("CopyDestination");
@@ -143,10 +139,11 @@ public class WorkspacePerformanceTest {
 		}
 	}
 
-	@Before
-	public void setUp() throws Exception {
+	@BeforeEach
+	public void setUp(TestInfo info) throws Exception {
 		testProject = getWorkspace().getRoot().getProject("Project");
 		testFolder = testProject.getFolder("TopFolder");
+		testInfo = info;
 	}
 
 	/**
@@ -170,7 +167,7 @@ public class WorkspacePerformanceTest {
 				createAndPopulateProject(DEFAULT_TOTAL_RESOURCES);
 			}
 		};
-		runner.run(getClass(), testName.getMethodName(), REPEATS, 1);
+		runner.run(getClass(), testInfo.getDisplayName(), REPEATS, 1);
 	}
 
 	@Test
@@ -188,7 +185,7 @@ public class WorkspacePerformanceTest {
 				testProject.delete(IResource.NONE, null);
 			}
 		};
-		runner.run(getClass(), testName.getMethodName(), REPEATS, 1);
+		runner.run(getClass(), testInfo.getDisplayName(), REPEATS, 1);
 	}
 
 	@Test
@@ -210,7 +207,7 @@ public class WorkspacePerformanceTest {
 			protected void test() throws CoreException {
 				copyFolder();
 			}
-		}.run(getClass(), testName.getMethodName(), REPEATS, 1);
+		}.run(getClass(), testInfo.getDisplayName(), REPEATS, 1);
 	}
 
 	@Test
@@ -232,7 +229,7 @@ public class WorkspacePerformanceTest {
 			protected void test() throws CoreException {
 				moveFolder();
 			}
-		}.run(getClass(), testName.getMethodName(), REPEATS, 1);
+		}.run(getClass(), testInfo.getDisplayName(), REPEATS, 1);
 	}
 
 	@Test
@@ -256,7 +253,7 @@ public class WorkspacePerformanceTest {
 			}
 		};
 		runner.setFingerprintName("Refresh Project");
-		runner.run(getClass(), testName.getMethodName(), REPEATS, 1);
+		runner.run(getClass(), testInfo.getDisplayName(), REPEATS, 1);
 	}
 
 	@Test
@@ -279,7 +276,7 @@ public class WorkspacePerformanceTest {
 				testProject.close(null);
 				testProject.open(null);
 			}
-		}.run(getClass(), testName.getMethodName(), REPEATS, 3);
+		}.run(getClass(), testInfo.getDisplayName(), REPEATS, 3);
 	}
 
 	@Test
@@ -313,7 +310,7 @@ public class WorkspacePerformanceTest {
 				testProject.loadSnapshot(IProject.SNAPSHOT_TREE, snapshotLocation, null);
 				testProject.open(null);
 			}
-		}.run(getClass(), testName.getMethodName(), REPEATS, 1);
+		}.run(getClass(), testInfo.getDisplayName(), REPEATS, 1);
 	}
 
 	/**
