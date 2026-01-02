@@ -58,12 +58,12 @@ import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.internal.builders.TestBuilder.BuilderRuleCallback;
 import org.eclipse.core.tests.resources.TestUtil;
 import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
-import org.junit.function.ThrowingRunnable;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.function.Executable;
 
 /**
  * This class tests extended functionality (since 3.6) which allows
@@ -140,7 +140,7 @@ public class RelaxedSchedRuleBuilderTest {
 			}
 		});
 
-		final AtomicReference<ThrowingRunnable> exceptionInMainThreadCallback = new AtomicReference<>(Function::identity);
+		final AtomicReference<Executable> exceptionInMainThreadCallback = new AtomicReference<>(Function::identity);
 		Job j = new Job("build job") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
@@ -167,7 +167,7 @@ public class RelaxedSchedRuleBuilderTest {
 		j.cancel();
 		tb.waitForStatus(TestBarrier2.STATUS_DONE);
 
-		exceptionInMainThreadCallback.get().run();
+		exceptionInMainThreadCallback.get().execute();
 	}
 
 	/**
@@ -238,7 +238,7 @@ public class RelaxedSchedRuleBuilderTest {
 			}
 		});
 
-		final AtomicReference<ThrowingRunnable> exceptionInMainThreadCallback = new AtomicReference<>(
+		final AtomicReference<Executable> exceptionInMainThreadCallback = new AtomicReference<>(
 				Function::identity);
 		// Run the build
 		Job j = new Job("build job1") {
@@ -266,7 +266,7 @@ public class RelaxedSchedRuleBuilderTest {
 		tb2.setStatus(TestBarrier2.STATUS_WAIT_FOR_DONE);
 		tb2.waitForStatus(TestBarrier2.STATUS_DONE);
 
-		exceptionInMainThreadCallback.get().run();
+		exceptionInMainThreadCallback.get().execute();
 	}
 
 	HashSet<ISchedulingRule> getRulesAsSet(ISchedulingRule rule) {
@@ -523,7 +523,7 @@ public class RelaxedSchedRuleBuilderTest {
 		//		};
 		//		invokeTestBug343256(project, getRules, buildRules, tb1, tb2, j);
 
-		final AtomicReference<ThrowingRunnable> exceptionInMainThreadCallback = new AtomicReference<>(
+		final AtomicReference<Executable> exceptionInMainThreadCallback = new AtomicReference<>(
 				Function::identity);
 		// IWorkspace.build(IBuildConfiguration[],...)
 		j = new Job("IWorkspace.build(IBuildConfiguration[],...)") {
@@ -541,7 +541,7 @@ public class RelaxedSchedRuleBuilderTest {
 		};
 		invokeTestBug343256(project, getRules, buildRules, tb1, tb2, j);
 
-		exceptionInMainThreadCallback.get().run();
+		exceptionInMainThreadCallback.get().execute();
 		// Test Auto-build
 		//		j = new Job("Auto-build") {
 		//			protected IStatus run(IProgressMonitor monitor) {

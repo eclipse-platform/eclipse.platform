@@ -57,12 +57,12 @@ import org.eclipse.core.tests.harness.FussyProgressMonitor;
 import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.harness.TestJob;
 import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
-import org.junit.function.ThrowingRunnable;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.function.Executable;
 
 /**
  * This class tests public API related to building and to build specifications.
@@ -553,7 +553,7 @@ public class BuilderTest {
 		// Ensure the builder is instantiated
 		workspace.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 
-		final AtomicReference<ThrowingRunnable> exceptionInMainThreadCallback = new AtomicReference<>(
+		final AtomicReference<Executable> exceptionInMainThreadCallback = new AtomicReference<>(
 				Function::identity);
 
 		// Add pre-build listener that swap around the dependencies
@@ -614,7 +614,7 @@ public class BuilderTest {
 			verifier.assertLifecycleEvents();
 			verifier.reset();
 
-			exceptionInMainThreadCallback.get().run();
+			exceptionInMainThreadCallback.get().execute();
 		} finally {
 			getWorkspace().removeResourceChangeListener(buildListener);
 		}

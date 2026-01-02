@@ -66,12 +66,12 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tests.resources.util.FileStoreAutoDeleteExtension;
-import org.junit.function.ThrowingRunnable;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.api.function.Executable;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -102,7 +102,7 @@ public class IResourceChangeListenerTest {
 		}
 	}
 
-	private static final ThrowingRunnable NOOP_RUNNABLE = () -> {
+	private static final Executable NOOP_RUNNABLE = () -> {
 	};
 	protected static final String VERIFIER_NAME = "TestListener";
 	IFile file1; //below folder1
@@ -272,7 +272,7 @@ public class IResourceChangeListenerTest {
 	 */
 	@Test
 	public void test_1GDK9OG() throws Throwable {
-		final AtomicReference<ThrowingRunnable> listenerInMainThreadCallback = new AtomicReference<>(NOOP_RUNNABLE);
+		final AtomicReference<Executable> listenerInMainThreadCallback = new AtomicReference<>(NOOP_RUNNABLE);
 		// create the resource change listener
 		IResourceChangeListener listener = event -> {
 			try {
@@ -324,7 +324,7 @@ public class IResourceChangeListenerTest {
 			// cleanup: ensure that the listener is removed
 			getWorkspace().removeResourceChangeListener(listener);
 		}
-		listenerInMainThreadCallback.get().run();
+		listenerInMainThreadCallback.get().execute();
 	}
 
 	@Test
@@ -403,7 +403,7 @@ public class IResourceChangeListenerTest {
 	 */
 	@Test
 	public void testBug45996() throws Throwable {
-		final AtomicReference<ThrowingRunnable> listenerInMainThreadCallback = new AtomicReference<>(NOOP_RUNNABLE);
+		final AtomicReference<Executable> listenerInMainThreadCallback = new AtomicReference<>(NOOP_RUNNABLE);
 		// create the resource change listener
 		IResourceChangeListener listener = event -> {
 			try {
@@ -447,7 +447,7 @@ public class IResourceChangeListenerTest {
 			// cleanup: ensure that the listener is removed
 			getWorkspace().removeResourceChangeListener(listener);
 		}
-		listenerInMainThreadCallback.get().run();
+		listenerInMainThreadCallback.get().execute();
 	}
 
 	@Test
@@ -721,7 +721,7 @@ public class IResourceChangeListenerTest {
 
 	@Test
 	public void testDeleteProject() throws Throwable {
-		final AtomicReference<ThrowingRunnable> listenerInMainThreadCallback = new AtomicReference<>(NOOP_RUNNABLE);
+		final AtomicReference<Executable> listenerInMainThreadCallback = new AtomicReference<>(NOOP_RUNNABLE);
 		//test that marker deltas are fired when projects are deleted
 		verifier.reset();
 		final IMarker marker = project1.createMarker(IMarker.TASK);
@@ -760,7 +760,7 @@ public class IResourceChangeListenerTest {
 		} finally {
 			getWorkspace().removeResourceChangeListener(listener);
 		}
-		listenerInMainThreadCallback.get().run();
+		listenerInMainThreadCallback.get().execute();
 	}
 
 	@Test
@@ -968,16 +968,16 @@ public class IResourceChangeListenerTest {
 	 */
 	@Test
 	public void testHiddenPhantomChanges() throws Throwable {
-		final AtomicReference<ThrowingRunnable> listenerInMainThreadCallback = new AtomicReference<>(NOOP_RUNNABLE);
+		final AtomicReference<Executable> listenerInMainThreadCallback = new AtomicReference<>(NOOP_RUNNABLE);
 		final IWorkspace workspace = getWorkspace();
 		final IFolder phantomFolder = project1.getFolder("PhantomFolder");
 		final IFile phantomFile = folder1.getFile("PhantomFile");
 		final IResource[] phantomResources = new IResource[] {phantomFolder, phantomFile};
 		final QualifiedName partner = new QualifiedName("Test", "Infected");
 		IResourceChangeListener listener = event -> {
-			ThrowingRunnable oldCallback = listenerInMainThreadCallback.get();
+			Executable oldCallback = listenerInMainThreadCallback.get();
 			listenerInMainThreadCallback.set(() -> {
-				oldCallback.run();
+				oldCallback.execute();
 				// make sure the delta doesn't include the phantom members
 				assertNotDeltaIncludes(event.getDelta(), phantomResources);
 				// make sure a visitor does not find phantom members
@@ -1011,7 +1011,7 @@ public class IResourceChangeListenerTest {
 		} finally {
 			workspace.removeResourceChangeListener(listener);
 		}
-		listenerInMainThreadCallback.get().run();
+		listenerInMainThreadCallback.get().execute();
 	}
 
 	/**
@@ -1020,15 +1020,15 @@ public class IResourceChangeListenerTest {
 	 */
 	@Test
 	public void testHiddenTeamPrivateChanges() throws Throwable {
-		final AtomicReference<ThrowingRunnable> listenerInMainThreadCallback = new AtomicReference<>(NOOP_RUNNABLE);
+		final AtomicReference<Executable> listenerInMainThreadCallback = new AtomicReference<>(NOOP_RUNNABLE);
 		IWorkspace workspace = getWorkspace();
 		final IFolder teamPrivateFolder = project1.getFolder("TeamPrivateFolder");
 		final IFile teamPrivateFile = folder1.getFile("TeamPrivateFile");
 		final IResource[] privateResources = new IResource[] {teamPrivateFolder, teamPrivateFile};
 		IResourceChangeListener listener = event -> {
-			ThrowingRunnable oldCallback = listenerInMainThreadCallback.get();
+			Executable oldCallback = listenerInMainThreadCallback.get();
 			listenerInMainThreadCallback.set(() -> {
-				oldCallback.run();
+				oldCallback.execute();
 				// make sure the delta doesn't include the team private members
 				assertNotDeltaIncludes(event.getDelta(), privateResources);
 				// make sure a visitor does not find team private members
@@ -1066,7 +1066,7 @@ public class IResourceChangeListenerTest {
 		} finally {
 			workspace.removeResourceChangeListener(listener);
 		}
-		listenerInMainThreadCallback.get().run();
+		listenerInMainThreadCallback.get().execute();
 	}
 
 	@Test
@@ -1321,7 +1321,7 @@ public class IResourceChangeListenerTest {
 
 	@Test
 	public void testAutoPublishService() throws Throwable {
-		final AtomicReference<ThrowingRunnable> logListenerInMainThreadCallback = new AtomicReference<>(NOOP_RUNNABLE);
+		final AtomicReference<Executable> logListenerInMainThreadCallback = new AtomicReference<>(NOOP_RUNNABLE);
 		class Loggy implements LogListener {
 			public boolean done = false;
 			@Override
@@ -1392,7 +1392,7 @@ public class IResourceChangeListenerTest {
 		assertEquals(IResourceChangeEvent.POST_CHANGE, listener1.eventType);
 		assertEquals(IResourceChangeEvent.POST_BUILD, listener2.eventType);
 		assertEquals(IResourceChangeEvent.POST_CHANGE, listener3.eventType);
-		logListenerInMainThreadCallback.get().run();
+		logListenerInMainThreadCallback.get().execute();
 	}
 
 	public boolean waitUntil(BooleanSupplier condition) {
