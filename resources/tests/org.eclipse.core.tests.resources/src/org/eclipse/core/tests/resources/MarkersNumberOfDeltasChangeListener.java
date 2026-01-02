@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 
@@ -21,25 +22,25 @@ import org.eclipse.core.resources.IResourceChangeListener;
  */
 public class MarkersNumberOfDeltasChangeListener implements IResourceChangeListener {
 
-	private int number = 0;
+	private AtomicInteger number = new AtomicInteger();
 
 	/**
 	 * Returns the number of resource changed calls.
 	 */
 	public int numberOfChanges() {
-		return number;
+		return number.get();
 	}
 
 
 	public void reset() {
-		number = 0;
+		number.set(0);
 	}
 	/**
 	 * Notification from the workspace.  Extract the marker changes.
 	 */
 	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
-		number++;
+		number.incrementAndGet();
 	}
 
 }

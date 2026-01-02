@@ -16,9 +16,12 @@ package org.eclipse.core.tests.resources;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IResource;
@@ -31,7 +34,7 @@ import org.eclipse.core.runtime.IPath;
  * A support class for the marker tests.
  */
 public class MarkersChangeListener implements IResourceChangeListener {
-	protected HashMap<IPath, List<IMarkerDelta>> changes;
+	private final Map<IPath, List<IMarkerDelta>> changes = new ConcurrentHashMap<>();
 
 	public MarkersChangeListener() {
 		reset();
@@ -72,11 +75,12 @@ public class MarkersChangeListener implements IResourceChangeListener {
 	 * changes since last reset.
 	 */
 	public void assertNumberOfAffectedResources(int expectedNumberOfResource) {
+		TestUtil.waitForCondition(() -> changes.size() == expectedNumberOfResource, 5000);
 		assertThat(changes).hasSize(expectedNumberOfResource);
 	}
 
 	public void reset() {
-		changes = new HashMap<>();
+		changes.clear();
 	}
 
 	/**
@@ -96,11 +100,7 @@ public class MarkersChangeListener implements IResourceChangeListener {
 		}
 		if ((delta.getFlags() & IResourceDelta.MARKERS) != 0) {
 			IPath path = delta.getFullPath();
-			List<IMarkerDelta> v = changes.get(path);
-			if (v == null) {
-				v = new Vector<>();
-				changes.put(path, v);
-			}
+			List<IMarkerDelta> v = changes.computeIfAbsent(path, p -> Collections.synchronizedList(new ArrayList<>()));
 			IMarkerDelta[] markerDeltas = delta.getMarkerDeltas();
 			for (IMarkerDelta markerDelta : markerDeltas) {
 				v.add(markerDelta);
