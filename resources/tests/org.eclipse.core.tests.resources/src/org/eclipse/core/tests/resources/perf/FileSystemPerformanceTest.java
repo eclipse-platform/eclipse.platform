@@ -24,17 +24,14 @@ import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 /**
  * Automated performance tests for file system operations.
  */
 public class FileSystemPerformanceTest {
-
-	@Rule
-	public TestName testName = new TestName();
 
 	private static final String chars = "abcdefghijklmnopqrstuvwxyz";
 	private static final int FILE_COUNT = 100;
@@ -45,6 +42,13 @@ public class FileSystemPerformanceTest {
 
 	private final Random random = new Random();
 	private IFileStore baseStore;
+
+	private TestInfo testInfo;
+
+	@BeforeEach
+	void storeTestInfo(TestInfo info) {
+		testInfo = info;
+	}
 
 	public String createString(int length) {
 		StringBuilder buf = new StringBuilder(length);
@@ -90,7 +94,7 @@ public class FileSystemPerformanceTest {
 				setAttributesOnTree();
 			}
 		};
-		runner.run(getClass(), testName.getMethodName(), OUTER, INNER);
+		runner.run(getClass(), testInfo.getDisplayName(), OUTER, INNER);
 		baseStore.delete(EFS.NONE, null);
 	}
 

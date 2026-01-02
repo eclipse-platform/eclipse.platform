@@ -23,25 +23,22 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class MarkerPerformanceTest {
-
-	@Rule
-	public TestName testName = new TestName();
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	IProject project;
 	IFile file;
 	IMarker[] markers;
 	final int NUM_MARKERS = 5000;
 	final int REPEAT = 100;
+
+	private TestInfo testInfo;
 
 	@Test
 	public void testSetAttributes1() throws Exception {
@@ -61,7 +58,7 @@ public class MarkerPerformanceTest {
 			}
 		};
 		runner.setFingerprintName("Set marker attributes");
-		runner.run(getClass(), testName.getMethodName(), 1, 1);
+		runner.run(getClass(), testInfo.getDisplayName(), 1, 1);
 	}
 
 	@Test
@@ -80,11 +77,12 @@ public class MarkerPerformanceTest {
 			protected void test() throws CoreException {
 				getWorkspace().run(runnable, null);
 			}
-		}.run(getClass(), testName.getMethodName(), 1, 1);
+		}.run(getClass(), testInfo.getDisplayName(), 1, 1);
 	}
 
-	@Before
-	public void setUp() throws Exception {
+	@BeforeEach
+	public void setUp(TestInfo info) throws Exception {
+		testInfo = info;
 		final IMarker[] createdMarkers = new IMarker[NUM_MARKERS];
 		IWorkspaceRunnable runnable = monitor -> {
 			//create resources

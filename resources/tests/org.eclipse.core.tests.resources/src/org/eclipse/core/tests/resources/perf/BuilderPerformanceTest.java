@@ -28,7 +28,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
 import org.eclipse.core.tests.internal.builders.SortBuilder;
 import org.eclipse.core.tests.internal.builders.TestBuilder;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 /**
  * Automated performance tests for builders.
@@ -77,9 +79,9 @@ public class BuilderPerformanceTest extends WorkspacePerformanceTest {
 	}
 
 	@Override
-	@Before
-	public void setUp() throws Exception {
-		super.setUp();
+	@BeforeEach
+	public void setUp(TestInfo info) throws Exception {
+		super.setUp(info);
 		otherProjects = new IProject[PROJECT_COUNT];
 		for (int i = 0; i < otherProjects.length; i++) {
 			otherProjects[i] = getWorkspace().getRoot().getProject("Project " + i);
@@ -92,6 +94,7 @@ public class BuilderPerformanceTest extends WorkspacePerformanceTest {
 	 * Tests performing manual project-level increment builds when autobuild is on.
 	 * See bug 261225 for details.
 	 */
+	@Test
 	public void testManualBuildWithAutobuildOn() throws Exception {
 		PerformanceTestRunner runner = new PerformanceTestRunner() {
 			IProject[] projects;
@@ -117,6 +120,6 @@ public class BuilderPerformanceTest extends WorkspacePerformanceTest {
 		};
 		//this test simulates a manual build before launch with autobuild enabled
 		runner.setFingerprintName("Build workspace before launch");
-		runner.run(getClass(), testName.getMethodName(), REPEATS, 1);
+		runner.run(getClass(), testInfo.getDisplayName(), REPEATS, 1);
 	}
 }

@@ -34,24 +34,26 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
 import org.eclipse.core.tests.internal.localstore.HistoryStoreTest;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.After;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Contains a set of use case-oriented performance tests for the local history.
  *
  * @since 3.1
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class LocalHistoryPerformanceTest {
+	private TestInfo testInfo;
 
-	@Rule
-	public TestName testName = new TestName();
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+	@BeforeEach
+	void storeTestInfo(TestInfo info) {
+		testInfo = info;
+	}
 
 	void cleanHistory() {
 		((Workspace) getWorkspace()).getFileSystemManager().getHistoryStore().clean(createTestMonitor());
@@ -90,7 +92,7 @@ public class LocalHistoryPerformanceTest {
 		return currentDescription;
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		HistoryStoreTest.wipeHistoryStore(createTestMonitor());
 	}
@@ -116,7 +118,7 @@ public class LocalHistoryPerformanceTest {
 			protected void test() throws CoreException {
 				file.setContents(createRandomContentsStream(), IResource.KEEP_HISTORY, createTestMonitor());
 			}
-		}.run(getClass(), testName.getMethodName(), 10, 30);
+		}.run(getClass(), testInfo.getDisplayName(), 10, 30);
 	}
 
 	@Test
@@ -157,7 +159,7 @@ public class LocalHistoryPerformanceTest {
 				file1.move(file2.getFullPath(), true, true, createTestMonitor());
 				file2.move(file1.getFullPath(), true, true, createTestMonitor());
 			}
-		}.run(getClass(), testName.getMethodName(), 10, 5);
+		}.run(getClass(), testInfo.getDisplayName(), 10, 5);
 	}
 
 	private void testClearHistory(final int filesPerFolder, final int statesPerFile) throws Exception {
@@ -188,7 +190,7 @@ public class LocalHistoryPerformanceTest {
 			protected void test() throws CoreException {
 				base.clearHistory(createTestMonitor());
 			}
-		}.run(getClass(), testName.getMethodName(), 4, 3);
+		}.run(getClass(), testInfo.getDisplayName(), 4, 3);
 	}
 
 	@Test
@@ -220,7 +222,7 @@ public class LocalHistoryPerformanceTest {
 				tmpProject[0].copy(newProject.getFullPath(), true, createTestMonitor());
 				tmpProject[0] = newProject;
 			}
-		}.run(getClass(), testName.getMethodName(), 10, 1);
+		}.run(getClass(), testInfo.getDisplayName(), 10, 1);
 	}
 
 	@Test
@@ -250,7 +252,7 @@ public class LocalHistoryPerformanceTest {
 			protected void test() throws CoreException {
 				tmpProject.findDeletedMembersWithHistory(IResource.DEPTH_INFINITE, createTestMonitor());
 			}
-		}.run(getClass(), testName.getMethodName(), 2, 5);
+		}.run(getClass(), testInfo.getDisplayName(), 2, 5);
 	}
 
 	@Test
@@ -281,7 +283,7 @@ public class LocalHistoryPerformanceTest {
 			protected void test() throws CoreException {
 				file.getHistory(createTestMonitor());
 			}
-		}.run(getClass(), testName.getMethodName(), 1, 150);
+		}.run(getClass(), testInfo.getDisplayName(), 1, 150);
 	}
 
 	private void testHistoryCleanUp(final int filesPerFolder, final int statesPerFile) throws Exception {
@@ -313,7 +315,7 @@ public class LocalHistoryPerformanceTest {
 				cleanHistory();
 			}
 
-		}.run(getClass(), testName.getMethodName(), 5, 1);
+		}.run(getClass(), testInfo.getDisplayName(), 5, 1);
 	}
 
 	@Test

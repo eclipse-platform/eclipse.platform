@@ -18,17 +18,14 @@ import java.util.ArrayList;
 import org.eclipse.core.internal.watson.ElementTree;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 /**
  * Benchmarks for <code>ElementTree</code>.
  */
 public class BenchElementTree {
-
-	@Rule
-	public TestName testName = new TestName();
 
 	static String[] javaLangUnits = {"AbstractMethodError.java", "ArithmeticException.java", "ArrayIndexOutOfBoundsException.java", "ArrayStoreException.java", "Boolean.java", //
 			"Byte.java", "Character.java", "Class.java", "ClassCastException.java", "ClassCircularityError.java", "ClassFormatError.java", "ClassLoader.java", "ClassNotFoundException.java", //
@@ -46,6 +43,13 @@ public class BenchElementTree {
 	static final IPath folder = project.append("folder");
 	static final IPath[] files = getFilePaths();
 
+	private TestInfo testInfo;
+
+	@BeforeEach
+	void storeTestInfo(TestInfo info) {
+		testInfo = info;
+	}
+
 	/**
 	 * Tests the performance of the createElement operation.
 	 */
@@ -56,7 +60,7 @@ public class BenchElementTree {
 			protected void test() {
 				createTestTree(false);
 			}
-		}.run(getClass(), testName.getMethodName(), 10, 400);
+		}.run(getClass(), testInfo.getDisplayName(), 10, 400);
 	}
 
 	/**
@@ -81,7 +85,7 @@ public class BenchElementTree {
 				}
 				rep++;
 			}
-		}.run(getClass(), testName.getMethodName(), 1, repeat);
+		}.run(getClass(), testInfo.getDisplayName(), 1, repeat);
 	}
 
 	/**
@@ -98,7 +102,7 @@ public class BenchElementTree {
 					tree.getElementData(file);
 				}
 			}
-		}.run(getClass(), testName.getMethodName(), 1, 500);
+		}.run(getClass(), testInfo.getDisplayName(), 1, 500);
 	}
 
 	/**
@@ -124,7 +128,7 @@ public class BenchElementTree {
 				bases[rep].mergeDeltaChain(folder, chains[rep]);
 				rep++;
 			}
-		}.run(getClass(), testName.getMethodName(), 1, repeat);
+		}.run(getClass(), testInfo.getDisplayName(), 1, repeat);
 	}
 
 	/**
@@ -138,7 +142,7 @@ public class BenchElementTree {
 			protected void test() {
 				doRoutineOperations();
 			}
-		}.run(getClass(), testName.getMethodName(), 1, 75);
+		}.run(getClass(), testInfo.getDisplayName(), 1, 75);
 	}
 
 	/**
@@ -156,7 +160,7 @@ public class BenchElementTree {
 					tree.setElementData(file, data);
 				}
 			}
-		}.run(getClass(), testName.getMethodName(), 1, 500);
+		}.run(getClass(), testInfo.getDisplayName(), 1, 500);
 	}
 
 	/**

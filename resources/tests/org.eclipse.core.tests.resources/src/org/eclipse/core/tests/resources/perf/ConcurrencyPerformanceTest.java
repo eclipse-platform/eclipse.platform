@@ -18,18 +18,21 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class ConcurrencyPerformanceTest {
 
-	@Rule
-	public TestName testName = new TestName();
+	private TestInfo testInfo;
 
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+	@BeforeEach
+	void storeTestInfo(TestInfo info) {
+		testInfo = info;
+	}
 
 	@Test
 	public void testSimpleCalls() throws Exception {
@@ -41,7 +44,7 @@ public class ConcurrencyPerformanceTest {
 			protected void test() throws CoreException {
 				getWorkspace().run(job, null);
 			}
-		}.run(getClass(), testName.getMethodName(), 10, 50);
+		}.run(getClass(), testInfo.getDisplayName(), 10, 50);
 	}
 
 }

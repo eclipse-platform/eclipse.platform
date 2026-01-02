@@ -18,7 +18,7 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,18 +31,21 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class PropertyManagerPerformanceTest {
 
-	@Rule
-	public TestName testName = new TestName();
+	private TestInfo testInfo;
 
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+	@BeforeEach
+	void storeTestInfo(TestInfo info) {
+		testInfo = info;
+	}
 
 	public static String getPropertyValue(int size) {
 		StringBuilder value = new StringBuilder(size);
@@ -97,7 +100,7 @@ public class PropertyManagerPerformanceTest {
 					}
 				}
 			}
-		}.run(getClass(), testName.getMethodName(), measurements, repetitions);
+		}.run(getClass(), testInfo.getDisplayName(), measurements, repetitions);
 		((Workspace) getWorkspace()).getPropertyManager().deleteProperties(folder1, IResource.DEPTH_INFINITE);
 
 	}
@@ -137,7 +140,7 @@ public class PropertyManagerPerformanceTest {
 							getPropertyValue(200));
 				}
 			}
-		}.run(getClass(), testName.getMethodName(), measurements, repetitions);
+		}.run(getClass(), testInfo.getDisplayName(), measurements, repetitions);
 	}
 
 	@Test

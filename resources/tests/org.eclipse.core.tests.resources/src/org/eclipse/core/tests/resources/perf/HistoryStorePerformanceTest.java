@@ -21,18 +21,16 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class HistoryStorePerformanceTest {
 
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
-
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		project.create(createTestMonitor());
@@ -44,7 +42,7 @@ public class HistoryStorePerformanceTest {
 		getWorkspace().setDescription(description);
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		project.clearHistory(createTestMonitor());
