@@ -19,7 +19,9 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnly;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.setReadOnly;
 import static org.junit.Assume.assumeTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -35,9 +37,12 @@ import org.eclipse.core.resources.IResourceStatus;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform.OS;
+import org.eclipse.core.tests.resources.ResourceTestUtil.ReadOnlyApi;
 import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 @ExtendWith(WorkspaceResetExtension.class)
 public class IFolderTest {
@@ -47,8 +52,9 @@ public class IFolderTest {
 	 * the immediate parent to see if it is read-only so we can return a better
 	 * error code and message to the user.
 	 */
-	@Test
-	public void testBug25662() throws CoreException {
+	@ParameterizedTest
+	@EnumSource(ReadOnlyApi.class)
+	public void testBug25662(ReadOnlyApi apiVersion) throws CoreException {
 		// We need to know whether or not we can unset the read-only flag
 		// in order to perform this test.
 		assumeTrue("only relevant for platforms supporting read-only files", isReadOnlySupported());
@@ -63,12 +69,12 @@ public class IFolderTest {
 		IFolder folder = parentFolder.getFolder("folder");
 
 		try {
-			parentFolder.setReadOnly(true);
-			assertThat(parentFolder).matches(IResource::isReadOnly, "is read only");
+			setReadOnly(parentFolder, true, apiVersion);
+			assertThat(parentFolder).matches(res -> isReadOnly(res, apiVersion), "is read only");
 			CoreException exception = assertThrows(CoreException.class, () -> folder.create(true, true, createTestMonitor()));
 			assertEquals(IResourceStatus.PARENT_READ_ONLY, exception.getStatus().getCode());
 		} finally {
-			parentFolder.setReadOnly(false);
+			setReadOnly(parentFolder, false, apiVersion);
 		}
 	}
 

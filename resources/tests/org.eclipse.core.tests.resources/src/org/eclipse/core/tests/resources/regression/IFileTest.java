@@ -19,7 +19,9 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnly;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.setReadOnly;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -42,10 +44,13 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.tests.resources.ResourceTestUtil.ReadOnlyApi;
 import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 @ExtendWith(WorkspaceResetExtension.class)
 public class IFileTest {
@@ -55,9 +60,10 @@ public class IFileTest {
 	 * you try to create a file in a read-only folder on Linux should be
 	 * ERROR_WRITE.
 	 */
-	@Test
+	@ParameterizedTest
+	@EnumSource(ReadOnlyApi.class)
 	@Disabled("This test is no longer valid since the error code is dependent on whether or not the parent folder is marked as read-only. We need to write a different test to make the file.create fail.")
-	public void testBug25658() throws CoreException {
+	public void testBug25658(ReadOnlyApi apiVersion) throws CoreException {
 		// We need to know whether or not we can unset the read-only flag
 		// in order to perform this test.
 		assumeTrue("only relevant for platforms supporting read-only files", isReadOnlySupported());
@@ -71,13 +77,13 @@ public class IFileTest {
 		IFile file = folder.getFile("file.txt");
 
 		try {
-			folder.setReadOnly(true);
-			assertThat(folder).matches(IResource::isReadOnly, "is read only");
+			setReadOnly(folder, true, apiVersion);
+			assertThat(folder).matches(res -> isReadOnly(res, apiVersion), "is read only");
 			CoreException exception = assertThrows(CoreException.class,
 					() -> file.create(createRandomContentsStream(), true, createTestMonitor()));
 			assertEquals(IResourceStatus.FAILED_WRITE_LOCAL, exception.getStatus().getCode());
 		} finally {
-			folder.setReadOnly(false);
+			setReadOnly(folder, false, apiVersion);
 		}
 	}
 
@@ -86,8 +92,9 @@ public class IFileTest {
 	 * parent to see if it is read-only so we can return a better error code and message
 	 * to the user.
 	 */
-	@Test
-	public void testBug25662() throws CoreException {
+	@ParameterizedTest
+	@EnumSource(ReadOnlyApi.class)
+	public void testBug25662(ReadOnlyApi apiVersion) throws CoreException {
 
 		// We need to know whether or not we can unset the read-only flag
 		// in order to perform this test.
@@ -103,13 +110,13 @@ public class IFileTest {
 		IFile file = folder.getFile("file.txt");
 
 		try {
-			folder.setReadOnly(true);
-			assertThat(folder).matches(IResource::isReadOnly, "is read only");
+			setReadOnly(folder, true, apiVersion);
+			assertThat(folder).matches(res -> isReadOnly(res, apiVersion), "is read only");
 			CoreException exception = assertThrows(CoreException.class,
 					() -> file.create(createRandomContentsStream(), true, createTestMonitor()));
 			assertEquals(IResourceStatus.PARENT_READ_ONLY, exception.getStatus().getCode());
 		} finally {
-			folder.setReadOnly(false);
+			setReadOnly(folder, false, apiVersion);
 		}
 	}
 
