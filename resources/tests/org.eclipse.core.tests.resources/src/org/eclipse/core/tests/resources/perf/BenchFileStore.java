@@ -23,10 +23,10 @@ import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.filesystem.local.LocalFileNativesManager;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
-import org.junit.function.ThrowingRunnable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.function.Executable;
 
 /**
  * Benchmarks basic operations on the IFileStore interface
@@ -109,11 +109,11 @@ public class BenchFileStore {
 		});
 	}
 
-	private static void withNatives(boolean natives, ThrowingRunnable runnable) throws Throwable {
+	private static void withNatives(boolean natives, Executable runnable) throws Throwable {
 		try {
 			assertEquals(natives, LocalFileNativesManager.setUsingNative(natives),
 					"can't set natives to the desired value");
-			runnable.run();
+			runnable.execute();
 		} finally {
 			LocalFileNativesManager.reset();
 		}
