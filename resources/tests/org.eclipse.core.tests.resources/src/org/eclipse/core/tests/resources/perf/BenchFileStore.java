@@ -14,7 +14,7 @@
 package org.eclipse.core.tests.resources.perf;
 
 import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import org.eclipse.core.filesystem.EFS;
@@ -111,8 +111,8 @@ public class BenchFileStore {
 
 	private static void withNatives(boolean natives, ThrowingRunnable runnable) throws Throwable {
 		try {
-			assertEquals("can't set natives to the desired value", natives,
-					LocalFileNativesManager.setUsingNative(natives));
+			assertEquals(natives, LocalFileNativesManager.setUsingNative(natives),
+					"can't set natives to the desired value");
 			runnable.run();
 		} finally {
 			LocalFileNativesManager.reset();

@@ -14,8 +14,8 @@
 package org.eclipse.core.tests.internal.builders;
 
 import static org.eclipse.core.tests.resources.TestUtil.waitForCondition;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -138,7 +138,7 @@ public class TimerBuilder extends IncrementalProjectBuilder {
 
 	@Override
 	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
-		assertNotEquals("no expected number of builds has been set", -1, executionState.expectedNumberOfBuilds);
+		assertNotEquals(-1, executionState.expectedNumberOfBuilds, "no expected number of builds has been set");
 		executionState.startedExecutingProject(getProject());
 		try {
 			int durationInMillis = Integer.parseInt(args.get(DURATION_ARG));
@@ -189,7 +189,7 @@ public class TimerBuilder extends IncrementalProjectBuilder {
 	 * running.
 	 */
 	public static void setExpectedNumberOfBuilds(int expectedNumberOfBuilds) {
-		assertFalse("builds are still running while resetting TimerBuilder", executionState.isExecuting());
+		assertFalse(executionState.isExecuting(), "builds are still running while resetting TimerBuilder");
 		executionState = new BuildExecutionState(expectedNumberOfBuilds);
 	}
 

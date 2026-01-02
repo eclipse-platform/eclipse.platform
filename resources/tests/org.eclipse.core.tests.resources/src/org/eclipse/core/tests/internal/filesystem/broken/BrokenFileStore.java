@@ -24,7 +24,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
 public class BrokenFileStore extends FileStore {
 
@@ -38,7 +38,7 @@ public class BrokenFileStore extends FileStore {
 		try {
 			uri = new URI(uri.getScheme(), path.toString(), null);
 		} catch (URISyntaxException e) {
-			Assert.fail(e.getMessage());
+			Assertions.fail(e.getMessage());
 		}
 	}
 

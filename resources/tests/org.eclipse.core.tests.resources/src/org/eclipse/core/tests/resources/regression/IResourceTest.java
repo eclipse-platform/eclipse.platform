@@ -26,12 +26,12 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonito
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureOutOfSync;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isAttributeSupported;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
-import static org.junit.Assume.assumeTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -106,8 +106,8 @@ public class IResourceTest {
 
 	@Test
 	public void testBug28790() throws CoreException {
-		assumeTrue("only relevant for platforms supporting archive attribute",
-				isAttributeSupported(EFS.ATTRIBUTE_ARCHIVE));
+		assumeTrue(isAttributeSupported(EFS.ATTRIBUTE_ARCHIVE),
+				"only relevant for platforms supporting archive attribute");
 
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFile file = project.getFile("a.txt");
@@ -220,7 +220,7 @@ public class IResourceTest {
 
 	@Test
 	public void testBug111821() throws CoreException {
-		assumeTrue("only relevant on Windows", OS.isWindows());
+		assumeTrue(OS.isWindows(), "only relevant on Windows");
 
 		IProject project = getWorkspace().getRoot().getProject("testBug111821");
 		IFolder folder = project.getFolder(new Path(null, "c:"));
@@ -260,7 +260,7 @@ public class IResourceTest {
 	 */
 	@Test
 	public void testCreate_1FW87XF() throws Throwable {
-		assumeTrue("only relevant on Linux", OS.isLinux());
+		assumeTrue(OS.isLinux(), "only relevant on Linux");
 
 		// test if the file system is case sensitive
 		boolean caseSensitive = new java.io.File("abc").compareTo(new java.io.File("ABC")) != 0;

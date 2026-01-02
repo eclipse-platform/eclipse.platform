@@ -25,8 +25,8 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonito
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setReadOnly;
-import static org.junit.Assume.assumeTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.InputStream;
 import java.util.function.Predicate;
@@ -62,7 +62,7 @@ public class Bug_026294 {
 	 */
 	@Test
 	public void testDeleteOpenProjectWindows() throws Exception {
-		assumeTrue("only relevant on Windows", OS.isWindows());
+		assumeTrue(OS.isWindows(), "only relevant on Windows\"");
 
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(createUniqueString());
@@ -132,7 +132,7 @@ public class Bug_026294 {
 	 */
 	@Test
 	public void testDeleteOpenProjectLinux() throws CoreException {
-		assumeTrue("only relevant on Linux", OS.isLinux() && isReadOnlySupported());
+		assumeTrue(OS.isLinux() && isReadOnlySupported(), "only relevant on Linux");
 
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(createUniqueString());
@@ -179,7 +179,7 @@ public class Bug_026294 {
 	 */
 	@Test
 	public void testDeleteClosedProjectWindows() throws Exception {
-		assumeTrue("only relevant on Windows", OS.isWindows());
+		assumeTrue(OS.isWindows(), "only relevant on Windows");
 
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(createUniqueString());
@@ -216,7 +216,7 @@ public class Bug_026294 {
 	 */
 	@Test
 	public void testDeleteClosedProjectLinux() throws CoreException {
-		assumeTrue("only relevant on Linux", OS.isLinux());
+		assumeTrue(OS.isLinux(), "only relevant on Linux");
 
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(createUniqueString());
@@ -259,7 +259,7 @@ public class Bug_026294 {
 	 */
 	@Test
 	public void testDeleteFolderWindows() throws Exception {
-		assumeTrue("only relevant on Windows", OS.isWindows());
+		assumeTrue(OS.isWindows(), "only relevant on Windows");
 
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(createUniqueString());
@@ -291,7 +291,7 @@ public class Bug_026294 {
 	 */
 	@Test
 	public void testDeleteFolderLinux() throws CoreException {
-		assumeTrue("only relevant on Linux", OS.isLinux());
+		assumeTrue(OS.isLinux(), "only relevant on Linux");
 
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(createUniqueString());

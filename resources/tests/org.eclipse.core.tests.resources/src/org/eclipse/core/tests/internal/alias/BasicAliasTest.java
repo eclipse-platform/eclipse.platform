@@ -31,14 +31,14 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.findAvailableDev
 import static org.eclipse.core.tests.resources.ResourceTestUtil.getFileStore;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.wrapInCanonicalIPath;
-import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.IOException;
 import java.net.URI;
@@ -274,11 +274,11 @@ public class BasicAliasTest {
 	 */
 	@Test
 	public void testBug198571() throws Exception {
-		assumeTrue("only relevant on Windows", OS.isWindows());
+		assumeTrue(OS.isWindows(), "only relevant on Windows");
 
 		/* look for the adequate environment */
 		String[] devices = findAvailableDevices();
-		assumeFalse("only executable if at least two volumes are present", devices[0] == null || devices[1] == null);
+		assumeFalse(devices[0] == null || devices[1] == null, "only executable if at least two volumes are present");
 
 		String location = createUniqueString();
 		IProject testProject1 = getWorkspace().getRoot().getProject(location + "1");

@@ -20,7 +20,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonito
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.getFileStore;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isAttributeSupported;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.nio.file.Path;
 import org.eclipse.core.filesystem.EFS;
@@ -40,7 +40,7 @@ public class Bug_329836 {
 
 	@Test
 	public void testBug(@TempDir Path tempDirectory) throws Exception {
-		assumeTrue("only relevant on Mac", OS.isMac());
+		assumeTrue(OS.isMac(), "only relevant on Mac");
 
 		IFileStore fileStore = getFileStore(tempDirectory).getChild(createUniqueString());
 		createInFileSystem(fileStore);
