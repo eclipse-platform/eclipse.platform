@@ -345,6 +345,7 @@ public class MarkerTest {
 			IMarker marker = resource.createMarker(TEST_PROBLEM_MARKER);
 			marker.setAttribute(IMarker.MESSAGE, createRandomString());
 			marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
+			TestUtil.waitForCondition(() -> listener.numberOfChanges() == 3, 5000);
 			assertThat(listener.numberOfChanges()).isEqualTo(3);
 		}
 	}
@@ -362,6 +363,7 @@ public class MarkerTest {
 			// each setAttributes triggers one resource change event
 			resource.createMarker(TEST_PROBLEM_MARKER,
 					Map.of(IMarker.MESSAGE, createRandomString(), IMarker.PRIORITY, IMarker.PRIORITY_HIGH));
+			TestUtil.waitForCondition(() -> listener.numberOfChanges() == 1, 5000);
 			assertThat(listener.numberOfChanges()).isEqualTo(1);
 		}
 	}
