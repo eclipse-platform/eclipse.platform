@@ -773,4 +773,28 @@ public final class ResourceTestUtil {
 		return resource.isLocal(depth);
 	}
 
+	public enum ReadOnlyApi {
+		CURRENT, DEPRECATED
+	}
+
+	@SuppressWarnings("deprecation")
+	public static void setReadOnly(IResource resource, boolean value, ReadOnlyApi api) throws CoreException {
+		if (api == ReadOnlyApi.CURRENT) {
+			ResourceAttributes attributes = new ResourceAttributes();
+			attributes.setReadOnly(value);
+			resource.setResourceAttributes(attributes);
+		} else {
+			resource.setReadOnly(value);
+		}
+	}
+
+	@SuppressWarnings("deprecation")
+	public static boolean isReadOnly(IResource resource, ReadOnlyApi api) {
+		if (api == ReadOnlyApi.CURRENT) {
+			ResourceAttributes attributes = resource.getResourceAttributes();
+			return attributes.isReadOnly();
+		}
+		return resource.isReadOnly();
+	}
+
 }

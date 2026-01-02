@@ -23,9 +23,11 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStrea
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnly;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.setReadOnly;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -42,9 +44,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.core.tests.resources.ResourceTestUtil.ReadOnlyApi;
 import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 @ExtendWith(WorkspaceResetExtension.class)
 public class IFolderTest {
@@ -316,8 +321,9 @@ public class IFolderTest {
 		assertDoesNotExistInWorkspace(source);
 	}
 
-	@Test
-	public void testReadOnlyFolderCopy() throws Exception {
+	@ParameterizedTest
+	@EnumSource(ReadOnlyApi.class)
+	public void testReadOnlyFolderCopy(ReadOnlyApi apiVersion) throws Exception {
 		// We need to know whether or not we can unset the read-only flag
 		// in order to perform this test.
 		if (!isReadOnlySupported()) {
@@ -326,16 +332,16 @@ public class IFolderTest {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFolder source = project.getFolder("Folder1");
 		createInWorkspace(source);
-		source.setReadOnly(true);
+		setReadOnly(source, true, apiVersion);
 		IFolder dest = project.getFolder("Folder2");
 		source.copy(dest.getFullPath(), true, createTestMonitor());
 		assertExistsInWorkspace(dest);
 		assertExistsInWorkspace(source);
-		assertTrue(dest.isReadOnly());
+		assertTrue(isReadOnly(dest, apiVersion));
 
 		// cleanup - ensure that the files can be deleted.
-		source.setReadOnly(false);
-		dest.setReadOnly(false);
+		setReadOnly(source, false, apiVersion);
+		setReadOnly(dest, true, apiVersion);
 	}
 
 	@Test

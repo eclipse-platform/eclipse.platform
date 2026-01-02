@@ -43,6 +43,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureOutOfSync;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.setReadOnly;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -73,9 +74,12 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Platform.OS;
+import org.eclipse.core.tests.resources.ResourceTestUtil.ReadOnlyApi;
 import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
@@ -762,8 +766,9 @@ public class IWorkspaceTest {
 				order -> assertThat(order).containsExactly(NATURE_SIMPLE, NATURE_WATER, NATURE_SNOW));
 	}
 
-	@Test
-	public void testValidateEdit() throws CoreException {
+	@ParameterizedTest
+	@EnumSource(ReadOnlyApi.class)
+	public void testValidateEdit(ReadOnlyApi apiVersion) throws CoreException {
 		// We need to know whether or not we can unset the read-only flag
 		// in order to perform this test.
 		if (!isReadOnlySupported()) {
@@ -774,12 +779,12 @@ public class IWorkspaceTest {
 		createInWorkspace(new IResource[] {project, file});
 		IStatus result = getWorkspace().validateEdit(new IFile[] {file}, null);
 		assertTrue(result.isOK());
-		file.setReadOnly(true);
+		setReadOnly(file, true, apiVersion);
 		result = getWorkspace().validateEdit(new IFile[] {file}, null);
 		assertEquals(IStatus.ERROR, result.getSeverity());
 		// assertEquals(IResourceStatus.READ_ONLY_LOCAL, result.getCode());
 		// remove the read-only status so test cleanup will work ok
-		file.setReadOnly(false);
+		setReadOnly(file, false, apiVersion);
 	}
 
 	@Test
