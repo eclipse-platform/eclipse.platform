@@ -1990,6 +1990,8 @@ public class IProjectTest  {
 	/**
 	 * Tests API on IProjectDescription
 	 */
+	// Explicitly tests deprecated API
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testProjectDescriptionDynamic() {
 		IProjectDescription desc = getWorkspace().newProjectDescription("foo");

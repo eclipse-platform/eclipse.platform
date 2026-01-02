@@ -205,6 +205,8 @@ public class IResourceTest {
 	/**
 	 * Calling isSynchronized on a non-local resource caused an internal error.
 	 */
+	// Explicitly tests deprecated API
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testBug83777() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("testBug83777");

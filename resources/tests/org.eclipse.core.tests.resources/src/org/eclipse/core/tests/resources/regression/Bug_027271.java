@@ -33,6 +33,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * Tests how changes in the underlying preference store may affect the path
  * variable manager.
  */
+// Explicitly tests deprecated API
+@SuppressWarnings("deprecation")
 @ExtendWith(WorkspaceResetExtension.class)
 public class Bug_027271 {
 

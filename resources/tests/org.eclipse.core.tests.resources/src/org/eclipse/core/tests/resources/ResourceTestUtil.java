@@ -767,5 +767,10 @@ public final class ResourceTestUtil {
 		IPath canonicalIPath = wrapInCanonicalIPath(path);
 		return EFS.getLocalFileSystem().getStore(canonicalIPath);
 	}
+	
+	@SuppressWarnings("deprecation")
+	public static boolean isLocal(IResource resource, int depth) {
+		return resource.isLocal(depth);
+	}
 
 }

@@ -75,6 +75,8 @@ public class IFolderTest {
 	/**
 	 * Bug 11510 [resources] Non-local folders do not become local when directory is created.
 	 */
+	// Explicitly tests deprecated API
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testBug11510() throws Exception {
 		IWorkspaceRoot root = getWorkspace().getRoot();

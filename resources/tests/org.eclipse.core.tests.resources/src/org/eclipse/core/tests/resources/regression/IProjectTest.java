@@ -70,6 +70,8 @@ public class IProjectTest {
 		project.delete(true, createTestMonitor());
 	}
 
+	// Explicitly tests deprecated API
+	@SuppressWarnings("deprecation")
 	@Test
 	public void test_1G5I6PV() throws CoreException {
 		/* common objects */
