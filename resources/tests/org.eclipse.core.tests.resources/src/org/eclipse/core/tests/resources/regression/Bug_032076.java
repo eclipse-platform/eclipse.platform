@@ -24,10 +24,10 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.getFileStore;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setReadOnly;
-import static org.junit.Assume.assumeTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -66,7 +66,7 @@ public class Bug_032076 {
 
 	@Test
 	public void testFileBugOnWindows() throws Exception {
-		assumeTrue("only relevant on Windows", OS.isWindows());
+		assumeTrue(OS.isWindows(), "only relevant on Windows");
 
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(createUniqueString());
@@ -117,7 +117,7 @@ public class Bug_032076 {
 
 	@Test
 	public void testFolderBugOnWindows() throws Exception {
-		assumeTrue("only relevant on Windows", OS.isWindows());
+		assumeTrue(OS.isWindows(), "only relevant on Windows");
 
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(createUniqueString());
@@ -177,7 +177,7 @@ public class Bug_032076 {
 
 	@Test
 	public void testProjectBugOnWindows() throws Exception {
-		assumeTrue("only relevant on Windows", OS.isWindows());
+		assumeTrue(OS.isWindows(), "only relevant on Windows");
 
 		IWorkspace workspace = getWorkspace();
 		IProject sourceProject = workspace.getRoot().getProject(createUniqueString() + ".source");
@@ -226,7 +226,7 @@ public class Bug_032076 {
 	@Test
 	@Disabled("test is currently failing and needs further investigation (bug 203078)")
 	public void testFileBugOnLinux() throws CoreException {
-		assumeTrue("only relevant on Linux", OS.isLinux() && isReadOnlySupported());
+		assumeTrue(OS.isLinux() && isReadOnlySupported(), "only relevant on Linux");
 
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(createUniqueString());
@@ -283,7 +283,7 @@ public class Bug_032076 {
 	@Test
 	@Disabled("test is currently failing and needs further investigation (bug 203078)")
 	public void testFolderBugOnLinux() throws CoreException {
-		assumeTrue("only relevant on Linux", OS.isLinux() && isReadOnlySupported());
+		assumeTrue(OS.isLinux() && isReadOnlySupported(), "only relevant on Linux");
 
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(createUniqueString());
@@ -356,7 +356,7 @@ public class Bug_032076 {
 	@Test
 	@Disabled("test is currently failing and needs further investigation (bug 203078)")
 	public void testProjectBugOnLinux(@TempDir Path tempDirectory) throws CoreException, IOException {
-		assumeTrue("only relevant on Linux", OS.isLinux() && isReadOnlySupported());
+		assumeTrue(OS.isLinux() && isReadOnlySupported(), "only relevant on Linux");
 
 		IWorkspace workspace = getWorkspace();
 		IProject sourceProject = workspace.getRoot().getProject(createUniqueString() + ".source");

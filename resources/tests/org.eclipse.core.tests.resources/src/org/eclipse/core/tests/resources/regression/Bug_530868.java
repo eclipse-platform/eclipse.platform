@@ -15,8 +15,8 @@ package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
-import static org.junit.Assume.assumeFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import java.io.ByteArrayInputStream;
 import org.eclipse.core.filesystem.provider.FileInfo;
@@ -56,7 +56,7 @@ public class Bug_530868 {
 	 */
 	@Test
 	public void testMillisecondResolution() throws Exception {
-		assumeFalse("not relevant on Mac, as it does not have milliseconds resolution", OS.isMac());
+		assumeFalse(OS.isMac(), "not relevant on Mac, as it does not have milliseconds resolution");
 		try {
 			/*
 			 * Run 3 times in case we have seconds resolution due to a bug, but by chance we

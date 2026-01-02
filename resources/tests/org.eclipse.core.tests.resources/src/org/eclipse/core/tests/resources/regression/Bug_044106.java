@@ -23,7 +23,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspac
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.getFileStore;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -100,7 +100,7 @@ public class Bug_044106 {
 	 */
 	private void doTestDeleteLinkedFolder(IFolder linkedFolder, boolean deleteParent, int deleteFlags)
 			throws Exception {
-		assumeTrue("only relevant on Linux", OS.isLinux());
+		assumeTrue(OS.isLinux(), "only relevant on Linux");
 
 		IFileStore linkDestLocation = getFileStore(tempDirectory);
 		IFileStore linkDestFile = linkDestLocation.getChild(createUniqueString());
@@ -140,14 +140,14 @@ public class Bug_044106 {
 
 	@Test
 	public void testDeleteLinkedFile() throws Exception {
-		assumeTrue("only relevant on Linux", OS.isLinux());
+		assumeTrue(OS.isLinux(), "only relevant on Linux");
 
 		doTestDeleteLinkedFile(IResource.NONE);
 	}
 
 	@Test
 	public void testDeleteLinkedFolder() throws Exception {
-		assumeTrue("only relevant on Linux", OS.isLinux());
+		assumeTrue(OS.isLinux(), "only relevant on Linux");
 
 		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFolder linkedFolder = project.getFolder("linkedFolder");
@@ -156,7 +156,7 @@ public class Bug_044106 {
 
 	@Test
 	public void testDeleteLinkedResourceInProject() throws Exception {
-		assumeTrue("only relevant on Linux", OS.isLinux());
+		assumeTrue(OS.isLinux(), "only relevant on Linux");
 
 		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFolder linkedFolder = project.getFolder("linkedFolder");
@@ -165,14 +165,14 @@ public class Bug_044106 {
 
 	@Test
 	public void testDeleteLinkedFileKeepHistory() throws Exception {
-		assumeTrue("only relevant on Linux", OS.isLinux());
+		assumeTrue(OS.isLinux(), "only relevant on Linux");
 
 		doTestDeleteLinkedFile(IResource.KEEP_HISTORY);
 	}
 
 	@Test
 	public void testDeleteLinkedFolderParentKeepHistory() throws Exception {
-		assumeTrue("only relevant on Linux", OS.isLinux());
+		assumeTrue(OS.isLinux(), "only relevant on Linux");
 
 		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFolder parent = project.getFolder("parent");
@@ -182,7 +182,7 @@ public class Bug_044106 {
 
 	@Test
 	public void testDeleteLinkedFolderKeepHistory() throws Exception {
-		assumeTrue("only relevant on Linux", OS.isLinux());
+		assumeTrue(OS.isLinux(), "only relevant on Linux");
 
 		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFolder linkedFolder = project.getFolder("linkedFolder");
@@ -191,7 +191,7 @@ public class Bug_044106 {
 
 	@Test
 	public void testDeleteLinkedResourceInProjectKeepHistory() throws Exception {
-		assumeTrue("only relevant on Linux", OS.isLinux());
+		assumeTrue(OS.isLinux(), "only relevant on Linux");
 
 		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFolder linkedFolder = project.getFolder("linkedFolder");

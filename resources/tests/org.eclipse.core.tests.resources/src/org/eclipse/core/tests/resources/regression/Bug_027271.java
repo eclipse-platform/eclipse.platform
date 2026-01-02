@@ -15,8 +15,8 @@ package org.eclipse.core.tests.resources.regression;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
-import static org.junit.Assume.assumeTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -63,7 +63,7 @@ public class Bug_027271 {
 
 	@Test
 	public void testBug() {
-		assumeTrue("only relevant on Windows", OS.isWindows());
+		assumeTrue(OS.isWindows(), "only relevant on Windows");
 
 		IPathVariableManager pvm = getWorkspace().getPathVariableManager();
 		Preferences prefs = ResourcesPlugin.getPlugin().getPluginPreferences();

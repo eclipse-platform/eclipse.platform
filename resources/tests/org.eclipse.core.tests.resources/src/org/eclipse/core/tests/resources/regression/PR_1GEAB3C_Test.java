@@ -17,7 +17,7 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.core.internal.preferences.EclipsePreferences;
 import org.eclipse.core.resources.IFile;
@@ -89,7 +89,7 @@ public class PR_1GEAB3C_Test {
 			}
 		};
 		getWorkspace().run(body, createTestMonitor());
-		assertTrue(verifier.getMessage(), verifier.isDeltaValid());
+		assertTrue(verifier.isDeltaValid(), verifier.getMessage());
 	}
 
 }

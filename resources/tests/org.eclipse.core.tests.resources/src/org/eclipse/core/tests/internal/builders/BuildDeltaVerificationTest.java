@@ -19,8 +19,8 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomCont
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
-import static org.junit.Assert.assertSame;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -366,7 +366,7 @@ public class BuildDeltaVerificationTest {
 
 		project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 
-		assertSame("both builders should receive the same cached delta ", deltas.get(0), deltas.get(1));
+		assertSame(deltas.get(0), deltas.get(1), "both builders should receive the same cached delta ");
 	}
 
 }

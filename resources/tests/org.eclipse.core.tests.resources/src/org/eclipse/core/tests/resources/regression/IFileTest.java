@@ -20,10 +20,10 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspac
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
-import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -60,10 +60,10 @@ public class IFileTest {
 	public void testBug25658() throws CoreException {
 		// We need to know whether or not we can unset the read-only flag
 		// in order to perform this test.
-		assumeTrue("only relevant for platforms supporting read-only files", isReadOnlySupported());
+		assumeTrue(isReadOnlySupported(), "only relevant for platforms supporting read-only files");
 
 		// Don't test this on Windows
-		assumeFalse("not relevant on Windows", OS.isWindows());
+		assumeFalse(OS.isWindows(), "not relevant on Windows");
 
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFolder folder = project.getFolder("folder");
@@ -91,11 +91,11 @@ public class IFileTest {
 
 		// We need to know whether or not we can unset the read-only flag
 		// in order to perform this test.
-		assumeTrue("only relevant for platforms supporting read-only files", isReadOnlySupported());
+		assumeTrue(isReadOnlySupported(), "only relevant for platforms supporting read-only files");
 
 		// Only run this test on Linux for now since Windows lets you create
 		// a file within a read-only folder.
-		assumeTrue("only relevant on Linux", OS.isLinux());
+		assumeTrue(OS.isLinux(), "only relevant on Linux");
 
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFolder folder = project.getFolder("folder");

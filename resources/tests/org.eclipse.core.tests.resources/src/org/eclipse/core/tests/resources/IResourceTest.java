@@ -89,7 +89,7 @@ import org.eclipse.core.tests.harness.FileSystemHelper;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
 import org.eclipse.core.tests.resources.util.FileStoreAutoDeleteExtension;
 import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -619,7 +619,7 @@ public class IResourceTest {
 		}
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		if (verifier != null) {
 			getWorkspace().removeResourceChangeListener(verifier);

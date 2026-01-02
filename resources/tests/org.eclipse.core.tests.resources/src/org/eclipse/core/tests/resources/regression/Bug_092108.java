@@ -14,7 +14,7 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
@@ -33,7 +33,7 @@ public class Bug_092108 {
 
 	@Test
 	public void testBug() throws CoreException {
-		assumeTrue("only relevant on Windows", OS.isWindows());
+		assumeTrue(OS.isWindows(), "only relevant on Windows");
 
 		IFileStore root = EFS.getStore(new java.io.File("c:\\").toURI());
 		IFileInfo info = root.fetchInfo();

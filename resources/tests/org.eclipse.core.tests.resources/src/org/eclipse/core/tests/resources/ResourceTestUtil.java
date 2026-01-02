@@ -14,9 +14,9 @@ package org.eclipse.core.tests.resources;
 import static java.io.InputStream.nullInputStream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -266,8 +266,8 @@ public final class ResourceTestUtil {
 	 * info tree.
 	 */
 	public static void assertExistsInWorkspace(IResource resource) {
-		assertTrue(resource.getFullPath() + " unexpectedly does not exist in the workspace",
-				existsInWorkspace(resource));
+		assertTrue(existsInWorkspace(resource),
+				resource.getFullPath() + " unexpectedly does not exist in the workspace");
 	}
 
 	/**
@@ -325,7 +325,7 @@ public final class ResourceTestUtil {
 	 * tree.
 	 */
 	public static void assertDoesNotExistInWorkspace(IResource resource) {
-		assertFalse(resource.getFullPath() + " unexpectedly exists in the workspace", existsInWorkspace(resource));
+		assertFalse(existsInWorkspace(resource), resource.getFullPath() + " unexpectedly exists in the workspace");
 	}
 
 	/**
@@ -343,8 +343,8 @@ public final class ResourceTestUtil {
 	 * resource manager to ensure that we have a correct Path -&gt; File mapping.
 	 */
 	public static void assertExistsInFileSystem(IResource resource) {
-		assertTrue(resource.getFullPath() + " unexpectedly does not exist in the file system",
-				existsInFileSystem(resource));
+		assertTrue(existsInFileSystem(resource),
+				resource.getFullPath() + " unexpectedly does not exist in the file system");
 	}
 
 
@@ -382,7 +382,7 @@ public final class ResourceTestUtil {
 	 * Assert that the given resource does not exist in the local store.
 	 */
 	public static void assertDoesNotExistInFileSystem(IResource resource) {
-		assertFalse(resource.getFullPath() + " unexpectedly exists in the file system", existsInFileSystem(resource));
+		assertFalse(existsInFileSystem(resource), resource.getFullPath() + " unexpectedly exists in the file system");
 	}
 
 	/**
@@ -455,7 +455,7 @@ public final class ResourceTestUtil {
 	 */
 	public static void setReadOnly(IResource target, boolean value) throws CoreException {
 		ResourceAttributes attributes = target.getResourceAttributes();
-		assertNotNull("tried to set read only for null attributes", attributes);
+		assertNotNull(attributes, "tried to set read only for null attributes");
 		attributes.setReadOnly(value);
 		target.setResourceAttributes(attributes);
 	}
@@ -509,7 +509,7 @@ public final class ResourceTestUtil {
 	 */
 	public static String readStringInFileSystem(IFile file) throws IOException {
 		IPath location = file.getLocation();
-		assertNotNull("location was null for file: " + file, location);
+		assertNotNull(location, "location was null for file: " + file);
 		return new String(Files.readAllBytes(location.toPath()), StandardCharsets.UTF_8);
 	}
 
@@ -767,7 +767,7 @@ public final class ResourceTestUtil {
 		IPath canonicalIPath = wrapInCanonicalIPath(path);
 		return EFS.getLocalFileSystem().getStore(canonicalIPath);
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	public static boolean isLocal(IResource resource, int depth) {
 		return resource.isLocal(depth);

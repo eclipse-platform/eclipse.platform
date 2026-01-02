@@ -20,9 +20,9 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspac
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
-import static org.junit.Assume.assumeTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,7 +49,7 @@ public class Bug_025457 {
 
 	@Test
 	public void testFile() throws Exception {
-		assumeTrue("only relevant on Windows", OS.isWindows());
+		assumeTrue(OS.isWindows(), "only relevant on Windows");
 
 		IProject source = getWorkspace().getRoot().getProject("project");
 		IFile sourceFile = source.getFile("file.txt");
@@ -75,7 +75,7 @@ public class Bug_025457 {
 	@Test
 	public void testFolder() throws IOException, CoreException {
 		//native code must also be present so move can detect the case change
-		assumeTrue("only relevant on Windows", OS.isWindows() && isReadOnlySupported());
+		assumeTrue(OS.isWindows() && isReadOnlySupported(), "only relevant on Windows");
 
 		IProject source = getWorkspace().getRoot().getProject("SourceProject");
 		IFolder sourceFolder = source.getFolder("folder");
@@ -104,7 +104,7 @@ public class Bug_025457 {
 
 	@Test
 	public void testProject() throws IOException, CoreException {
-		assumeTrue("only relevant on Windows", OS.isWindows());
+		assumeTrue(OS.isWindows(), "only relevant on Windows");
 
 		IProject source = getWorkspace().getRoot().getProject("project");
 		IProject destination = getWorkspace().getRoot().getProject("Project");

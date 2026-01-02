@@ -23,7 +23,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspac
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.getFileStore;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.IOException;
 import java.net.URI;
@@ -50,7 +50,7 @@ public class Bug_233939 {
 
 	@BeforeEach
 	public void requireCanCreateSymlinks() throws IOException {
-		assumeTrue("only relevant for platforms supporting symbolic links", canCreateSymLinks());
+		assumeTrue(canCreateSymLinks(), "only relevant for platforms supporting symbolic links");
 	}
 
 	/**
