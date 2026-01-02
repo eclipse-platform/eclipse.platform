@@ -62,6 +62,8 @@ public class IWorkspaceRootTest {
 	/**
 	 * Tests findFilesForLocation when non-canonical paths are used (bug 155101).
 	 */
+	// Explicitly tests deprecated API
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testFindFilesNonCanonicalPath() throws Exception {
 		assumeTrue(OS.isWindows(), "only relevant on Windows");
@@ -115,6 +117,8 @@ public class IWorkspaceRootTest {
 	/**
 	 * Tests the API method findContainersForLocation.
 	 */
+	// Explicitly tests deprecated API
+	@SuppressWarnings("deprecation")
 	private void testFindContainersForLocation(IProject p1, IProject p2) throws Exception {
 		//should find the workspace root
 		IWorkspaceRoot root = getWorkspace().getRoot();
@@ -189,6 +193,8 @@ public class IWorkspaceRootTest {
 	/**
 	 * Tests the API method findFilesForLocation.
 	 */
+	// Explicitly tests deprecated API
+	@SuppressWarnings("deprecation")
 	private void testFindFilesForLocation(IProject project) throws CoreException {
 		//should not find the workspace root
 		IWorkspaceRoot root = getWorkspace().getRoot();

@@ -21,6 +21,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSyst
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureOutOfSync;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.isLocal;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.junit.Assert.assertEquals;
@@ -231,7 +232,7 @@ public class RefreshLocalTest implements ICoreConstants {
 		};
 		workspace.run(operation, null);
 		assertTrue(file.exists());
-		assertTrue(file.isLocal(IResource.DEPTH_ZERO));
+		assertTrue(isLocal(file, IResource.DEPTH_ZERO));
 		project.refreshLocal(IResource.DEPTH_INFINITE, null);
 		assertFalse(file.exists());
 		removeFromWorkspace(file);
@@ -252,15 +253,15 @@ public class RefreshLocalTest implements ICoreConstants {
 		file = folder.getFile("file");
 		createInFileSystem(file);
 		assertTrue(folder.exists());
-		assertTrue(folder.isLocal(IResource.DEPTH_ZERO));
+		assertTrue(isLocal(folder, IResource.DEPTH_ZERO));
 		assertFalse(file.exists());
 		folder.refreshLocal(IResource.DEPTH_ZERO, null);
 		assertTrue(folder.exists());
-		assertTrue(folder.isLocal(IResource.DEPTH_ZERO));
+		assertTrue(isLocal(folder, IResource.DEPTH_ZERO));
 		assertFalse(file.exists());
 		folder.refreshLocal(IResource.DEPTH_ONE, null);
 		assertTrue(folder.exists());
-		assertTrue(folder.isLocal(IResource.DEPTH_ZERO));
+		assertTrue(isLocal(folder, IResource.DEPTH_ZERO));
 		assertTrue(file.exists());
 		removeFromWorkspace(folder);
 		removeFromFileSystem(folder);
@@ -270,7 +271,7 @@ public class RefreshLocalTest implements ICoreConstants {
 		IFileStore fileStore = ((Resource) file).getStore();
 		createInWorkspace(file);
 		assertTrue(file.exists());
-		assertTrue(file.isLocal(IResource.DEPTH_ZERO));
+		assertTrue(isLocal(file, IResource.DEPTH_ZERO));
 		assertEquals(fileStore.fetchInfo().getLastModified(),
 				((Resource) file).getResourceInfo(false, false).getLocalSyncInfo());
 		ensureOutOfSync(file);

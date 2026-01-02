@@ -21,6 +21,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspac
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureOutOfSync;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.isLocal;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
@@ -147,7 +148,7 @@ public class FileSystemResourceManagerTest implements ICoreConstants {
 		/* create file with flag false */
 		file.create(createInputStream(originalContent), false, null);
 		assertTrue(file.exists());
-		assertTrue(file.isLocal(IResource.DEPTH_ZERO));
+		assertTrue(isLocal(file, IResource.DEPTH_ZERO));
 		assertEquals(file.getStore().fetchInfo().getLastModified(), file.getResourceInfo(false, false).getLocalSyncInfo());
 		try (InputStream readFile = getLocalManager().read(file, true, null)) {
 			assertThat(readFile).hasContent(originalContent);
@@ -187,6 +188,8 @@ public class FileSystemResourceManagerTest implements ICoreConstants {
 		assertNull(testFile);
 	}
 
+	// Explicitly tests deprecated API
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testIsLocal() throws CoreException {
 		// create resources

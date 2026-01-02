@@ -27,6 +27,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspac
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.isLocal;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.readStringInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
@@ -714,7 +715,7 @@ public class LinkedResourceTest {
 		project.open(IResource.BACKGROUND_REFRESH, createTestMonitor());
 		assertTrue(folder.exists());
 		assertTrue(parent.exists());
-		assertTrue(parent.isLocal(IResource.DEPTH_INFINITE));
+		assertTrue(isLocal(parent, IResource.DEPTH_INFINITE));
 	}
 
 	/**

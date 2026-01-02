@@ -1303,6 +1303,8 @@ public class FilteredResourceTest {
 	/**
 	 * Regression test for bug 343914
 	 */
+	// Explicitly tests deprecated API
+	@SuppressWarnings("deprecation")
 	@Test
 	public void test343914() throws CoreException {
 		String subProjectName = "subProject";

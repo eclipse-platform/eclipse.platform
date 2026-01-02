@@ -47,12 +47,4 @@ final class IResourceTestUtil {
 		assertThrows(CoreException.class, () -> resource.getSessionProperty(Q_NAME_SESSION));
 		assertThrows(CoreException.class, () -> resource.setSessionProperty(Q_NAME_SESSION, STRING_VALUE));
 	}
-
-	/**
-	 * Wrapper for deprecated method {@link IResource#isLocal(int)} to reduce
-	 * warnings.
-	 */
-	public static boolean isLocal(IResource resource, int depth) {
-		return resource.isLocal(depth);
-	}
 }

@@ -17,11 +17,11 @@ package org.eclipse.core.tests.resources.usecase;
 import static java.util.function.Predicate.not;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.isLocal;
 import static org.eclipse.core.tests.resources.usecase.IResourceTestUtil.PROJECT;
 import static org.eclipse.core.tests.resources.usecase.IResourceTestUtil.Q_NAME_SESSION;
 import static org.eclipse.core.tests.resources.usecase.IResourceTestUtil.STRING_VALUE;
 import static org.eclipse.core.tests.resources.usecase.IResourceTestUtil.commonFailureTestsForResource;
-import static org.eclipse.core.tests.resources.usecase.IResourceTestUtil.isLocal;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Hashtable;

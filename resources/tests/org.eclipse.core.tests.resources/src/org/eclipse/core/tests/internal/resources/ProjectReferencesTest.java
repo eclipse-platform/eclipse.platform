@@ -155,7 +155,7 @@ public class ProjectReferencesTest {
 	public void testMixedProjectAndBuildConfigRefs() throws CoreException {
 		// Set project variant references
 		IProjectDescription desc = project0.getDescription();
-		desc.setDynamicReferences(new IProject[] {project1, project3});
+		setDynamicReferences(desc, new IProject[] { project1, project3 });
 		project0.setDescription(desc, createTestMonitor());
 
 		// Check getters
@@ -190,22 +190,22 @@ public class ProjectReferencesTest {
 		// Set project references
 		IProjectDescription desc = project0.getDescription();
 		desc.setReferencedProjects(new IProject[] {project3, project1});
-		desc.setDynamicReferences(new IProject[] {project1, project2});
+		setDynamicReferences(desc, new IProject[] { project1, project2 });
 		project0.setDescription(desc, createTestMonitor());
 
 		desc = project1.getDescription();
 		desc.setReferencedProjects(new IProject[] {project0});
-		desc.setDynamicReferences(new IProject[] {});
+		setDynamicReferences(desc, new IProject[] {});
 		project1.setDescription(desc, createTestMonitor());
 
 		desc = project2.getDescription();
 		desc.setReferencedProjects(new IProject[] {});
-		desc.setDynamicReferences(new IProject[] {});
+		setDynamicReferences(desc, new IProject[] {});
 		project2.setDescription(desc, createTestMonitor());
 
 		desc = project3.getDescription();
 		desc.setReferencedProjects(new IProject[] {});
-		desc.setDynamicReferences(new IProject[] {project0});
+		setDynamicReferences(desc, new IProject[] { project0 });
 		project3.setDescription(desc, createTestMonitor());
 
 		// Test getters
@@ -220,6 +220,12 @@ public class ProjectReferencesTest {
 				project1v0, project2v0);
 	}
 
+	// Suppress warning as we explicitly test deprecated API
+	@SuppressWarnings("deprecation")
+	private void setDynamicReferences(IProjectDescription description, IProject[] projects) {
+		description.setDynamicReferences(projects);
+	}
+
 	@Test
 	public void testSetAndGetProjectConfigReferences() throws CoreException {
 		// Set project variant references
@@ -227,7 +233,7 @@ public class ProjectReferencesTest {
 		// 1 static reference
 		desc.setReferencedProjects(new IProject[] {project1});
 		// 1 dynamic project-level reference
-		desc.setDynamicReferences(new IProject[] {project3});
+		setDynamicReferences(desc, new IProject[] { project3 });
 		// config level references
 		desc.setBuildConfigReferences(bc0, new IBuildConfiguration[] {project2v0, project1v0});
 		desc.setBuildConfigReferences(bc1, new IBuildConfiguration[] {project2v0});
