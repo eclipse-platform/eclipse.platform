@@ -31,28 +31,27 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
 import org.eclipse.osgi.util.NLS;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.DiagnosingMatcher;
-import org.junit.After;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test for integration of marker
  * {@link org.eclipse.core.resources.ResourcesPlugin#PREF_MISSING_ENCODING_MARKER_SEVERITY}.
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class ProjectEncodingTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private static final int IGNORE = -1;
 
 	private IProject project;
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		if (project != null) {
 			project.delete(true, true, null);

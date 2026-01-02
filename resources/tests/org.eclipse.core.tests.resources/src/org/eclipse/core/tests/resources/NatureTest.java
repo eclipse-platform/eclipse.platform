@@ -25,7 +25,7 @@ import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.getVa
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -52,21 +52,20 @@ import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.tests.internal.resources.SimpleNature;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.function.ThrowingRunnable;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.function.Executable;
 
 /**
  * Tests all aspects of project natures.  These tests only
  * exercise API classes and methods.  Note that the nature-related
  * APIs on IWorkspace are tested by IWorkspaceTest.
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class NatureTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	IProject project;
 
@@ -94,22 +93,22 @@ public class NatureTest {
 		} else {
 			flags = IResource.KEEP_HISTORY;
 		}
-		ThrowingRunnable descriptionSetter = () -> project.setDescription(desc, flags, createTestMonitor());
+		Executable descriptionSetter = () -> project.setDescription(desc, flags, createTestMonitor());
 		if (shouldFail) {
 			assertThrows(CoreException.class, descriptionSetter);
 		} else {
-			descriptionSetter.run();
+			descriptionSetter.execute();
 		}
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		project.delete(true, null);
 		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES).putInt(ResourcesPlugin.PREF_MISSING_NATURE_MARKER_SEVERITY, PreferenceInitializer.PREF_MISSING_NATURE_MARKER_SEVERITY_DEFAULT);
 		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES).flush();
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		this.project = ResourcesPlugin.getWorkspace().getRoot().getProject(createUniqueString());
 	}
@@ -186,7 +185,7 @@ public class NatureTest {
 		desc.setNatureIds(new String[] { NATURE_SIMPLE, NATURE_SIMPLE });
 		// This should not throw IllegalArgumentException when hasPrivateChanges is called
 		project.setDescription(desc, IResource.KEEP_HISTORY, createTestMonitor());
-		
+
 		// After deduplication, only one instance of the nature should remain
 		assertHasEnabledNature(NATURE_SIMPLE);
 	}

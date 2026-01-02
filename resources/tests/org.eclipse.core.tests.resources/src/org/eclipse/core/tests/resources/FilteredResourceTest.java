@@ -22,7 +22,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspac
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -49,9 +49,12 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.FileStoreAutoDeleteExtension;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * Tests the following API methods:
@@ -61,12 +64,14 @@ import org.junit.Test;
  * This test tests resource filters with projects, folders, linked resource folders,
  * and moving those resources to different parents.
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class FilteredResourceTest {
 
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
-
 	private static final String REGEX_FILTER_PROVIDER = "org.eclipse.core.resources.regexFilterMatcher";
+
+	@RegisterExtension
+	private final FileStoreAutoDeleteExtension fileStoreExtension = new FileStoreAutoDeleteExtension();
+
 	protected String childName = "File.txt";
 	protected IProject closedProject;
 	protected IFile existingFileInExistingProject;
@@ -106,7 +111,7 @@ public class FilteredResourceTest {
 		return uri;
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		existingProject = getWorkspace().getRoot().getProject("ExistingProject");
 		otherExistingProject = getWorkspace().getRoot().getProject("OtherExistingProject");
@@ -122,7 +127,7 @@ public class FilteredResourceTest {
 		nonExistingFileInOtherExistingProject = otherExistingProject.getFile("nonExistingFileInOtherExistingProject");
 		nonExistingFileInExistingFolder = existingFolderInExistingProject.getFile("nonExistingFileInExistingFolder");
 		localFolder = getRandomLocation();
-		workspaceRule.deleteOnTearDown(resolve(localFolder));
+		fileStoreExtension.deleteOnTearDown(resolve(localFolder));
 		localFile = localFolder.append(childName);
 		doCleanup();
 	}

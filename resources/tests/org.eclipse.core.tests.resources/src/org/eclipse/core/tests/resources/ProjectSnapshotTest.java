@@ -19,11 +19,11 @@ package org.eclipse.core.tests.resources;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.InputStream;
 import java.net.URI;
@@ -41,9 +41,12 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.FileStoreAutoDeleteExtension;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * Tests API for save/load refresh snapshots introduced in 3.6M6 (bug 301563):
@@ -53,10 +56,11 @@ import org.junit.Test;
  * <li>{@link IProject#SNAPSHOT_TREE}
  * </ul>
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class ProjectSnapshotTest {
 
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+	@RegisterExtension
+	private final FileStoreAutoDeleteExtension fileStoreExtension = new FileStoreAutoDeleteExtension();
 
 	/** location of refresh snapshot file */
 	private static final String REFRESH_SNAPSHOT_FILE_LOCATION = "resource-index.zip";
@@ -64,7 +68,7 @@ public class ProjectSnapshotTest {
 	protected IProject[] projects = new IProject[2];
 
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		projects[0] = getWorkspace().getRoot().getProject("p1");
 		projects[1] = getWorkspace().getRoot().getProject("p2");
@@ -176,7 +180,7 @@ public class ProjectSnapshotTest {
 		// perform refresh to create resource delta against snapshot
 		project.refreshLocal(IResource.DEPTH_INFINITE, null);
 		verifier.verifyDelta(null);
-		assertTrue(verifier.getMessage(), verifier.isDeltaValid());
+		assertTrue(verifier.isDeltaValid(), verifier.getMessage());
 		// verify that the resources are no longer thought to exist
 		assertFalse(file.exists());
 		assertFalse(folder.exists());
@@ -287,7 +291,7 @@ public class ProjectSnapshotTest {
 		IProject project = getWorkspace().getRoot().getProject("project");
 		IProjectDescription description = getWorkspace().newProjectDescription(project.getName());
 		// create project with non-existing snapshot autoload location
-		((ProjectDescription) description).setSnapshotLocationURI(workspaceRule.getTempStore().toURI());
+		((ProjectDescription) description).setSnapshotLocationURI(fileStoreExtension.getTempStore().toURI());
 		project.create(description, null);
 		createInFileSystem(project.getFile("foo"));
 		assertFalse(project.getFile("foo").exists());
@@ -307,7 +311,7 @@ public class ProjectSnapshotTest {
 	@Test
 	public void testAutoLoadWithRename() throws Throwable {
 		// create project p0 outside the workspace
-		IFileStore tempStore = workspaceRule.getTempStore();
+		IFileStore tempStore = fileStoreExtension.getTempStore();
 		tempStore.mkdir(EFS.NONE, null);
 		IProject project = getWorkspace().getRoot().getProject("project");
 		IProjectDescription description = getWorkspace().newProjectDescription(project.getName());
@@ -354,7 +358,7 @@ public class ProjectSnapshotTest {
 	@Test
 	public void testResetAutoLoadSnapshot() throws Throwable {
 		IProject project = projects[0];
-		URI tempURI = workspaceRule.getTempStore().toURI();
+		URI tempURI = fileStoreExtension.getTempStore().toURI();
 		IFile projectFile = project.getFile(".project");
 		long stamp = projectFile.getModificationStamp();
 

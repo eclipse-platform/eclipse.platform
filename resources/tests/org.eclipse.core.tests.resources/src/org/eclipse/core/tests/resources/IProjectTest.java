@@ -31,13 +31,13 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueStri
 import static org.eclipse.core.tests.resources.ResourceTestUtil.getLineSeparatorFromFile;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
@@ -65,16 +65,20 @@ import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.FileStoreAutoDeleteExtension;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class IProjectTest  {
 
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+	@RegisterExtension
+	private final FileStoreAutoDeleteExtension fileStoreExtension = new FileStoreAutoDeleteExtension();
 
 	private final FussyProgressMonitor monitor = new FussyProgressMonitor();
 
@@ -97,13 +101,13 @@ public class IProjectTest  {
 		QualifiedName name = new QualifiedName("itp-test", "testProperty");
 		target.setPersistentProperty(name, value);
 		// see if we can get the property
-		assertTrue("get not equal set", target.getPersistentProperty(name).equals(value));
+		assertTrue(target.getPersistentProperty(name).equals(value), "get not equal set");
 		// see what happens if we get a non-existant property
 		name = new QualifiedName("eclipse-test", "testNonProperty");
-		assertNull("non-existant persistent property not missing", target.getPersistentProperty(name));
+		assertNull(target.getPersistentProperty(name), "non-existant persistent property not missing");
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		monitor.prepare();
 	}
@@ -233,7 +237,7 @@ public class IProjectTest  {
 		}
 		for (String name : names) {
 			IProject project = root.getProject(name);
-			assertFalse(name, project.exists());
+			assertFalse(project.exists(), name);
 			assertThrows(CoreException.class, () -> {
 				monitor.prepare();
 				project.create(monitor);
@@ -242,8 +246,8 @@ public class IProjectTest  {
 				project.open(monitor);
 				monitor.assertUsedUp();
 			});
-			assertFalse(name, project.exists());
-			assertFalse(name, project.isOpen());
+			assertFalse(project.exists(), name);
+			assertFalse(project.isOpen(), name);
 		}
 
 		//do some tests with valid names that are *almost* invalid
@@ -256,15 +260,15 @@ public class IProjectTest  {
 		}
 		for (String name : names) {
 			IProject project = root.getProject(name);
-			assertFalse(name, project.exists());
+			assertFalse(project.exists(), name);
 			monitor.prepare();
 			project.create(monitor);
 			monitor.assertUsedUp();
 			monitor.prepare();
 			project.open(monitor);
 			monitor.assertUsedUp();
-			assertTrue(name, project.exists());
-			assertTrue(name, project.isOpen());
+			assertTrue(project.exists(), name);
+			assertTrue(project.isOpen(), name);
 		}
 	}
 
@@ -641,7 +645,7 @@ public class IProjectTest  {
 	 */
 	@Test
 	public void testProjectCreationLocationExistsWithDifferentCase() throws CoreException {
-		assumeTrue("only relevant on Windows", OS.isWindows());
+		assumeTrue(OS.isWindows(), "only relevant on Windows");
 
 		String projectName = createUniqueString() + "a";
 		IProject project = getWorkspace().getRoot().getProject(projectName);
@@ -1099,7 +1103,7 @@ public class IProjectTest  {
 		 * Force = TRUE
 		 * Delete content = ALWAYS
 		 * =======================================================================*/
-		projectStore = workspaceRule.getTempStore();
+		projectStore = fileStoreExtension.getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
 		createInWorkspace(file);
@@ -1125,7 +1129,7 @@ public class IProjectTest  {
 		 * Force = FALSE
 		 * Delete content = ALWAYS
 		 * =======================================================================*/
-		projectStore = workspaceRule.getTempStore();
+		projectStore = fileStoreExtension.getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
 		createInWorkspace(file);
@@ -1149,7 +1153,7 @@ public class IProjectTest  {
 		 * Force = TRUE
 		 * Delete content = NEVER
 		 * =======================================================================*/
-		projectStore = workspaceRule.getTempStore();
+		projectStore = fileStoreExtension.getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
 		createInWorkspace(file);
@@ -1173,7 +1177,7 @@ public class IProjectTest  {
 		 * Force = FALSE
 		 * Delete content = NEVER
 		 * =======================================================================*/
-		projectStore = workspaceRule.getTempStore();
+		projectStore = fileStoreExtension.getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
 		createInWorkspace(file);
@@ -1197,7 +1201,7 @@ public class IProjectTest  {
 		 * Force = TRUE
 		 * Delete content = DEFAULT
 		 * =======================================================================*/
-		projectStore = workspaceRule.getTempStore();
+		projectStore = fileStoreExtension.getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
 		createInWorkspace(new IResource[] {project, file});
@@ -1221,7 +1225,7 @@ public class IProjectTest  {
 		 * Force = FALSE
 		 * Delete content = DEFAULT
 		 * =======================================================================*/
-		projectStore = workspaceRule.getTempStore();
+		projectStore = fileStoreExtension.getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
 		createInWorkspace(file);
@@ -1260,7 +1264,7 @@ public class IProjectTest  {
 		 * Force = TRUE
 		 * Delete content = ALWAYS
 		 * =======================================================================*/
-		projectStore = workspaceRule.getTempStore();
+		projectStore = fileStoreExtension.getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
 		createInWorkspace(file);
@@ -1291,7 +1295,7 @@ public class IProjectTest  {
 		 * Force = FALSE
 		 * Delete content = ALWAYS
 		 * =======================================================================*/
-		projectStore = workspaceRule.getTempStore();
+		projectStore = fileStoreExtension.getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
 		createInWorkspace(file);
@@ -1320,7 +1324,7 @@ public class IProjectTest  {
 		 * Force = TRUE
 		 * Delete content = NEVER
 		 * =======================================================================*/
-		projectStore = workspaceRule.getTempStore();
+		projectStore = fileStoreExtension.getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
 		createInWorkspace(file);
@@ -1347,7 +1351,7 @@ public class IProjectTest  {
 		 * Force = FALSE
 		 * Delete content = NEVER
 		 * =======================================================================*/
-		projectStore = workspaceRule.getTempStore();
+		projectStore = fileStoreExtension.getTempStore();
 
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
@@ -1376,7 +1380,7 @@ public class IProjectTest  {
 		 * Force = TRUE
 		 * Delete content = DEFAULT
 		 * =======================================================================*/
-		projectStore = workspaceRule.getTempStore();
+		projectStore = fileStoreExtension.getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
 		createInWorkspace(new IResource[] {project, file});
@@ -1404,7 +1408,7 @@ public class IProjectTest  {
 		 * Force = FALSE
 		 * Delete content = DEFAULT
 		 * =======================================================================*/
-		projectStore = workspaceRule.getTempStore();
+		projectStore = fileStoreExtension.getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
 		createInWorkspace(file);
@@ -1695,7 +1699,7 @@ public class IProjectTest  {
 		 * Force = TRUE
 		 * Delete content = ALWAYS
 		 * =======================================================================*/
-		projectStore = workspaceRule.getTempStore();
+		projectStore = fileStoreExtension.getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
 		createInWorkspace(file);
@@ -1717,7 +1721,7 @@ public class IProjectTest  {
 		 * Force = FALSE
 		 * Delete content = ALWAYS
 		 * =======================================================================*/
-		projectStore = workspaceRule.getTempStore();
+		projectStore = fileStoreExtension.getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
 		createInWorkspace(file);
@@ -1737,7 +1741,7 @@ public class IProjectTest  {
 		 * Force = TRUE
 		 * Delete content = NEVER
 		 * =======================================================================*/
-		projectStore = workspaceRule.getTempStore();
+		projectStore = fileStoreExtension.getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
 		createInWorkspace(file);
@@ -1756,7 +1760,7 @@ public class IProjectTest  {
 		 * Force = FALSE
 		 * Delete content = NEVER
 		 * =======================================================================*/
-		projectStore = workspaceRule.getTempStore();
+		projectStore = fileStoreExtension.getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
 		createInWorkspace(file);
@@ -1777,7 +1781,7 @@ public class IProjectTest  {
 		 * Force = TRUE
 		 * Delete content = DEFAULT
 		 * =======================================================================*/
-		projectStore = workspaceRule.getTempStore();
+		projectStore = fileStoreExtension.getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
 		createInWorkspace(new IResource[] {project, file});
@@ -1797,7 +1801,7 @@ public class IProjectTest  {
 		 * Force = FALSE
 		 * Delete content = DEFAULT
 		 * =======================================================================*/
-		projectStore = workspaceRule.getTempStore();
+		projectStore = fileStoreExtension.getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
 		createInWorkspace(file);
@@ -1832,7 +1836,7 @@ public class IProjectTest  {
 		 * Force = TRUE
 		 * Delete content = ALWAYS
 		 * =======================================================================*/
-		projectStore = workspaceRule.getTempStore();
+		projectStore = fileStoreExtension.getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
 		createInWorkspace(file);
@@ -1860,7 +1864,7 @@ public class IProjectTest  {
 		 * Force = FALSE
 		 * Delete content = ALWAYS
 		 * =======================================================================*/
-		projectStore = workspaceRule.getTempStore();
+		projectStore = fileStoreExtension.getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
 		createInWorkspace(file);
@@ -1886,7 +1890,7 @@ public class IProjectTest  {
 		 * Force = TRUE
 		 * Delete content = NEVER
 		 * =======================================================================*/
-		projectStore = workspaceRule.getTempStore();
+		projectStore = fileStoreExtension.getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
 		createInWorkspace(file);
@@ -1912,7 +1916,7 @@ public class IProjectTest  {
 		 * Force = FALSE
 		 * Delete content = NEVER
 		 * =======================================================================*/
-		projectStore = workspaceRule.getTempStore();
+		projectStore = fileStoreExtension.getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
 		createInWorkspace(file);
@@ -1936,7 +1940,7 @@ public class IProjectTest  {
 		 * Force = TRUE
 		 * Delete content = DEFAULT
 		 * =======================================================================*/
-		projectStore = workspaceRule.getTempStore();
+		projectStore = fileStoreExtension.getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
 		createInWorkspace(new IResource[] {project, file});
@@ -1961,7 +1965,7 @@ public class IProjectTest  {
 		 * Force = FALSE
 		 * Delete content = DEFAULT
 		 * =======================================================================*/
-		projectStore = workspaceRule.getTempStore();
+		projectStore = fileStoreExtension.getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
 		createInWorkspace(file);
@@ -2119,7 +2123,7 @@ public class IProjectTest  {
 		IProjectDescription desc = getWorkspace().newProjectDescription(project1.getName());
 		desc.setLocation(location);
 		project1.create(desc, monitor);
-		workspaceRule.deleteOnTearDown(location);
+		fileStoreExtension.deleteOnTearDown(location);
 		monitor.assertUsedUp();
 		project1.open(null);
 
@@ -2145,7 +2149,7 @@ public class IProjectTest  {
 		IProjectDescription destination = project.getDescription();
 		IPath oldPath = project.getLocation();
 		IPath newPath = getTempDir().append(Long.toString(System.currentTimeMillis()));
-		workspaceRule.deleteOnTearDown(newPath);
+		fileStoreExtension.deleteOnTearDown(newPath);
 		destination.setLocation(newPath);
 		monitor.prepare();
 		project.move(destination, false, monitor);
@@ -2337,7 +2341,7 @@ public class IProjectTest  {
 		IResource[] resources = buildResources(project, children);
 		// create the project at an external location
 		IProjectDescription description = getWorkspace().newProjectDescription(project.getName());
-		description.setLocationURI(workspaceRule.getTempStore().toURI());
+		description.setLocationURI(fileStoreExtension.getTempStore().toURI());
 		monitor.prepare();
 		project.create(description, monitor);
 		monitor.assertUsedUp();
@@ -2388,7 +2392,7 @@ public class IProjectTest  {
 		IProject target = getWorkspace().getRoot().getProject("testReplaceLocation");
 		createInWorkspace(target);
 
-		IFileStore projectStore = workspaceRule.getTempStore();
+		IFileStore projectStore = fileStoreExtension.getTempStore();
 		IFileStore childFile = projectStore.getChild("File.txt");
 
 		// add some content to the current location

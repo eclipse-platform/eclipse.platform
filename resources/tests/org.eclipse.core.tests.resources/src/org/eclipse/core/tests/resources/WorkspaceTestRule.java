@@ -20,7 +20,7 @@ import static org.eclipse.core.tests.harness.FileSystemHelper.getTempDir;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -71,7 +71,7 @@ public class WorkspaceTestRule extends ExternalResource {
 		// Wait for any pending refresh operation, in particular from startup
 		waitForRefresh();
 		TestUtil.log(IStatus.INFO, testName, "setUp");
-		assertNotNull("Workspace was not setup", getWorkspace());
+		assertNotNull(getWorkspace(), "Workspace was not setup");
 		FreezeMonitor.expectCompletionInAMinute();
 		waitForRefresh();
 	}

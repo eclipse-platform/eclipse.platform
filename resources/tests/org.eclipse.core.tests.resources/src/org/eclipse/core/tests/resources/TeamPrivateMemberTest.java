@@ -22,8 +22,8 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonito
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureOutOfSync;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -36,13 +36,12 @@ import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class TeamPrivateMemberTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	@Test
 	public void testRefreshLocal() throws Exception {
@@ -61,7 +60,7 @@ public class TeamPrivateMemberTest {
 			setTeamPrivateMember(folder, true, IResource.DEPTH_ZERO);
 			ensureOutOfSync(subFile);
 			project.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
-			assertTrue(listener.getMessage(), listener.isDeltaValid());
+			assertTrue(listener.isDeltaValid(), listener.getMessage());
 		} finally {
 			getWorkspace().removeResourceChangeListener(listener);
 		}
@@ -188,19 +187,19 @@ public class TeamPrivateMemberTest {
 		visitor.addExpected(resources);
 		visitor.addExpected(description);
 		project.accept(visitor);
-		assertTrue(visitor.getMessage(), visitor.isValid());
+		assertTrue(visitor.isValid(), visitor.getMessage());
 
 		visitor.reset();
 		visitor.addExpected(resources);
 		visitor.addExpected(description);
 		project.accept(visitor, IResource.DEPTH_INFINITE, IResource.NONE);
-		assertTrue(visitor.getMessage(), visitor.isValid());
+		assertTrue(visitor.isValid(), visitor.getMessage());
 
 		visitor.reset();
 		visitor.addExpected(resources);
 		visitor.addExpected(description);
 		project.accept(visitor, IResource.DEPTH_INFINITE, IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS);
-		assertTrue(visitor.getMessage(), visitor.isValid());
+		assertTrue(visitor.isValid(), visitor.getMessage());
 
 		// set the folder to be team private. It and its children should
 		// be ignored by the visitor
@@ -212,7 +211,7 @@ public class TeamPrivateMemberTest {
 		visitor.addExpected(settings);
 		visitor.addExpected(prefs);
 		project.accept(visitor);
-		assertTrue(visitor.getMessage(), visitor.isValid());
+		assertTrue(visitor.isValid(), visitor.getMessage());
 
 		visitor.reset();
 		visitor.addExpected(project);
@@ -221,27 +220,27 @@ public class TeamPrivateMemberTest {
 		visitor.addExpected(settings);
 		visitor.addExpected(prefs);
 		project.accept(visitor, IResource.DEPTH_INFINITE, IResource.NONE);
-		assertTrue(visitor.getMessage(), visitor.isValid());
+		assertTrue(visitor.isValid(), visitor.getMessage());
 		// should see all resources if we include the flag
 		visitor.reset();
 		visitor.addExpected(resources);
 		visitor.addExpected(description);
 		project.accept(visitor, IResource.DEPTH_INFINITE, IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS);
-		assertTrue(visitor.getMessage(), visitor.isValid());
+		assertTrue(visitor.isValid(), visitor.getMessage());
 		// should NOT visit the folder and its members if we call accept on it directly
 		visitor.reset();
 		folder.accept(visitor);
-		assertTrue(visitor.getMessage(), visitor.isValid());
+		assertTrue(visitor.isValid(), visitor.getMessage());
 
 		visitor.reset();
 		folder.accept(visitor, IResource.DEPTH_INFINITE, IResource.NONE);
-		assertTrue(visitor.getMessage(), visitor.isValid());
+		assertTrue(visitor.isValid(), visitor.getMessage());
 
 		visitor.reset();
 		visitor.addExpected(folder);
 		visitor.addExpected(subFile);
 		folder.accept(visitor, IResource.DEPTH_INFINITE, IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS);
-		assertTrue(visitor.getMessage(), visitor.isValid());
+		assertTrue(visitor.isValid(), visitor.getMessage());
 
 		// now set all file/folder resources to be team private.
 		setTeamPrivateMember(project, true, IResource.DEPTH_INFINITE);
@@ -250,18 +249,18 @@ public class TeamPrivateMemberTest {
 		// projects are never team private
 		visitor.addExpected(project);
 		project.accept(visitor);
-		assertTrue(visitor.getMessage(), visitor.isValid());
+		assertTrue(visitor.isValid(), visitor.getMessage());
 
 		visitor.reset();
 		visitor.addExpected(project);
 		project.accept(visitor, IResource.DEPTH_INFINITE, IResource.NONE);
-		assertTrue(visitor.getMessage(), visitor.isValid());
+		assertTrue(visitor.isValid(), visitor.getMessage());
 		// should see all resources if we include the flag
 		visitor.reset();
 		visitor.addExpected(resources);
 		visitor.addExpected(description);
 		project.accept(visitor, IResource.DEPTH_INFINITE, IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS);
-		assertTrue(visitor.getMessage(), visitor.isValid());
+		assertTrue(visitor.isValid(), visitor.getMessage());
 	}
 
 	@Test
@@ -452,7 +451,7 @@ public class TeamPrivateMemberTest {
 			listener.addExpectedChange(description, IResourceDelta.ADDED, IResource.NONE);
 			getWorkspace().run(body, createTestMonitor());
 			waitForBuild();
-			assertTrue(listener.getMessage(), listener.isDeltaValid());
+			assertTrue(listener.isDeltaValid(), listener.getMessage());
 			removeFromWorkspace(resources);
 		} finally {
 			getWorkspace().removeResourceChangeListener(listener);
@@ -470,7 +469,7 @@ public class TeamPrivateMemberTest {
 			listener.addExpectedChange(project, IResourceDelta.ADDED, IResourceDelta.OPEN);
 			listener.addExpectedChange(description, IResourceDelta.ADDED, IResource.NONE);
 			getWorkspace().run(body, createTestMonitor());
-			assertTrue(listener.getMessage(), listener.isDeltaValid());
+			assertTrue(listener.isDeltaValid(), listener.getMessage());
 			removeFromWorkspace(resources);
 		} finally {
 			getWorkspace().removeResourceChangeListener(listener);
@@ -488,7 +487,7 @@ public class TeamPrivateMemberTest {
 			listener.addExpectedChange(project, IResourceDelta.ADDED, IResourceDelta.OPEN);
 			listener.addExpectedChange(description, IResourceDelta.ADDED, IResource.NONE);
 			getWorkspace().run(body, createTestMonitor());
-			assertTrue(listener.getMessage(), listener.isDeltaValid());
+			assertTrue(listener.isDeltaValid(), listener.getMessage());
 			removeFromWorkspace(resources);
 		} finally {
 			getWorkspace().removeResourceChangeListener(listener);

@@ -27,11 +27,11 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspac
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.File;
 import java.io.InputStream;
@@ -46,18 +46,22 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.FileStoreAutoDeleteExtension;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * This class should be refactored into the black box tests for
  * solution, project, folder and file.
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class WorkspaceTest {
 
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+	@RegisterExtension
+	private final FileStoreAutoDeleteExtension fileStoreExtension = new FileStoreAutoDeleteExtension();
 
 	protected IProject getTestProject() {
 		return getWorkspace().getRoot().getProject("testProject");
@@ -72,10 +76,10 @@ public class WorkspaceTest {
 		QualifiedName name = new QualifiedName("itp-test", "testProperty");
 		target.setPersistentProperty(name, value);
 		// see if we can get the property
-		assertTrue("get not equal set", target.getPersistentProperty(name).equals(value));
+		assertTrue(target.getPersistentProperty(name).equals(value), "get not equal set");
 		// see what happens if we get a non-existant property
 		name = new QualifiedName("itp-test", "testNonProperty");
-		assertNull("non-existant persistent property not missing", target.getPersistentProperty(name));
+		assertNull(target.getPersistentProperty(name), "non-existant persistent property not missing");
 	}
 
 	@Test
@@ -295,7 +299,7 @@ public class WorkspaceTest {
 		assertTrue(!target.exists());
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		IProject target = getTestProject();
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
@@ -333,18 +337,18 @@ public class WorkspaceTest {
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
 		target.delete(true, monitor);
 		monitor.assertUsedUp();
-		assertTrue("Project Deletion failed", !target.exists());
+		assertFalse(target.exists(), "Project Deletion failed");
 	}
 
 	@Test
 	public void testWorkingLocationDeletion_bug433061() throws Throwable {
-		assumeTrue("only relevant for platforms supporting symbolic links", canCreateSymLinks());
+		assumeTrue(canCreateSymLinks(), "only relevant for platforms supporting symbolic links");
 
 		IProject project = getTestProject();
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
 		IPath workingLocation = project.getWorkingLocation("org.eclipse.core.tests.resources");
 		IPath linkTarget = getRandomLocation();
-		workspaceRule.deleteOnTearDown(linkTarget);
+		fileStoreExtension.deleteOnTearDown(linkTarget);
 		linkTarget.toFile().mkdirs();
 		File file = linkTarget.append("aFile").toFile();
 		assertTrue(file.createNewFile());
@@ -355,9 +359,9 @@ public class WorkspaceTest {
 		monitor.prepare();
 		project.delete(true, monitor);
 		monitor.assertUsedUp();
-		assertTrue("Project deletion failed", !project.exists());
-		assertTrue("Working location was not deleted", !workingLocation.toFile().exists());
-		assertTrue("File inside a symlinked directory got deleted", file.exists());
+		assertFalse(project.exists(), "Project deletion failed");
+		assertFalse(workingLocation.toFile().exists(), "Working location was not deleted");
+		assertTrue(file.exists(), "File inside a symlinked directory got deleted");
 	}
 
 	@Test
@@ -435,7 +439,7 @@ public class WorkspaceTest {
 		String value = "this is a test property value";
 		QualifiedName name = new QualifiedName("itp-test", "testProperty");
 		target.setPersistentProperty(name, value);
-		assertTrue("get not equal set", target.getPersistentProperty(name).equals(value));
+		assertTrue(target.getPersistentProperty(name).equals(value), "get not equal set");
 	}
 
 	@Test

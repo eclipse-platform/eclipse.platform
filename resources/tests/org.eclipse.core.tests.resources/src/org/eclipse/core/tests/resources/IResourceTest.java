@@ -35,13 +35,13 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorksp
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.touchInFilesystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -87,16 +87,17 @@ import org.eclipse.core.runtime.jobs.MultiRule;
 import org.eclipse.core.tests.harness.CancelingProgressMonitor;
 import org.eclipse.core.tests.harness.FileSystemHelper;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
+import org.eclipse.core.tests.resources.util.FileStoreAutoDeleteExtension;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
 import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.function.ThrowingRunnable;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.api.function.Executable;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class IResourceTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	protected static final Boolean[] FALSE_AND_TRUE = { Boolean.FALSE, Boolean.TRUE };
 	protected static final IPath[] interestingPaths = getInterestingPaths();
@@ -144,6 +145,9 @@ public class IResourceTest {
 	protected static final int S_WORKSPACE_ONLY = 0;
 	protected static final Boolean[] TRUE_AND_FALSE = { Boolean.TRUE, Boolean.FALSE };
 	protected static Set<IResource> unsynchronizedResources = new HashSet<>();
+
+	@RegisterExtension
+	private final FileStoreAutoDeleteExtension fileStoreExtension = new FileStoreAutoDeleteExtension();
 
 	/* the delta verifier */
 	ResourceDeltaVerifier verifier;
@@ -289,7 +293,7 @@ public class IResourceTest {
 	 * @param target the resource that was out of sync
 	 */
 	protected boolean checkAfterState(IResource receiver, IResource target, int state, int depth) {
-		assertTrue(verifier.getMessage(), verifier.isDeltaValid());
+		assertTrue(verifier.isDeltaValid(), verifier.getMessage());
 		switch (state) {
 			case S_FILESYSTEM_ONLY :
 				assertExistsInFileSystem(target);
@@ -443,7 +447,7 @@ public class IResourceTest {
 		return true;
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		setAutoBuilding(false);
 		initializeProjects();
@@ -793,7 +797,7 @@ public class IResourceTest {
 		IProject project2 = getWorkspace().getRoot().getProject("NewProject");
 
 		IPath projectPath = project1.getLocation().removeLastSegments(1).append("NewProject");
-		workspaceRule.deleteOnTearDown(projectPath);
+		fileStoreExtension.deleteOnTearDown(projectPath);
 		projectPath.toFile().mkdirs();
 
 		project1.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
@@ -996,7 +1000,7 @@ public class IResourceTest {
 		IProject destProj = getWorkspace().getRoot().getProject("testCopyProject" + 2);
 		IPath targetLocation = IPath
 				.fromOSString(getRandomLocation(FileSystemHelper.getTempDir()).append(destProj.getName()).toOSString());
-		workspaceRule.deleteOnTearDown(targetLocation);
+		fileStoreExtension.deleteOnTearDown(targetLocation);
 		IProjectDescription desc = prepareDestProjDesc(sourceProj, destProj, targetLocation);
 
 		LogListener logListener = copyProject(sourceProj, desc);
@@ -1005,8 +1009,8 @@ public class IResourceTest {
 		logListener.assertNoLoggedErrors();
 		// assert there is no duplicate folder in the workspace.
 		IPath destProjLocInWs = getWorkspace().getRoot().getLocation().append(destProj.getName());
-		assertFalse("Project folder should not exist in workspace when copied to external location",
-				destProjLocInWs.toFile().exists());
+		assertFalse(destProjLocInWs.toFile().exists(),
+				"Project folder should not exist in workspace when copied to external location");
 	}
 
 	/**
@@ -1020,7 +1024,7 @@ public class IResourceTest {
 		IProject destProj = getWorkspace().getRoot().getProject("testCopyProject" + 2);
 		IPath targetLocation = IPath
 				.fromOSString(getRandomLocation(FileSystemHelper.getTempDir()).append(destProj.getName()).toOSString());
-		workspaceRule.deleteOnTearDown(targetLocation);
+		fileStoreExtension.deleteOnTearDown(targetLocation);
 		IProjectDescription desc = prepareDestProjDesc(sourceProj, destProj, targetLocation);
 
 		LogListener logListener = copyProject(sourceProj, desc);
@@ -1029,9 +1033,9 @@ public class IResourceTest {
 		logListener.assertNoLoggedErrors();
 		// assert there is no duplicate folder in the workspace.
 		IPath destProjLocInWs = getWorkspace().getRoot().getLocation().append(destProj.getName());
-		assertFalse("Project folder should not exist in workspace when copied to external location",
-				destProjLocInWs.toFile().exists());
-		assertTrue("Project folder should exist in external location", destProj.getLocation().toFile().exists());
+		assertFalse(destProjLocInWs.toFile().exists(),
+				"Project folder should not exist in workspace when copied to external location");
+		assertTrue(destProj.getLocation().toFile().exists(), "Project folder should exist in external location");
 	}
 
 	/**
@@ -1052,8 +1056,8 @@ public class IResourceTest {
 		logListener.assertNoLoggedErrors();
 		// assert there is no duplicate folder in the workspace.
 		IPath destProjLocInWs = getWorkspace().getRoot().getLocation().append(destProj.getName());
-		assertTrue("Project folder should exist in workspace when copied with default location",
-				destProjLocInWs.toFile().exists());
+		assertTrue(destProjLocInWs.toFile().exists(),
+				"Project folder should exist in workspace when copied with default location");
 	}
 
 	private LogListener copyProject(IProject sourceProj, IProjectDescription desc) throws CoreException {
@@ -1122,7 +1126,8 @@ public class IResourceTest {
 				}
 				try {
 					if (resource.exists()) {
-						workspaceRule.deleteOnTearDown(resource.getLocation()); // Ensure that resource contents are
+						fileStoreExtension.deleteOnTearDown(resource.getLocation()); // Ensure that resource contents
+																						// are
 																				// removed from file
 																	// system
 					}
@@ -1254,7 +1259,7 @@ public class IResourceTest {
 		assertFalse(project.isDerived());
 		assertFalse(folder.isDerived());
 		assertFalse(file.isDerived());
-		assertTrue(verifier.getMessage(), verifier.isDeltaValid());
+		assertTrue(verifier.isDeltaValid(), verifier.getMessage());
 		verifier.reset();
 
 		root.setDerived(false, new NullProgressMonitor());
@@ -1262,7 +1267,7 @@ public class IResourceTest {
 		assertFalse(project.isDerived());
 		assertFalse(folder.isDerived());
 		assertFalse(file.isDerived());
-		assertTrue(verifier.getMessage(), verifier.isDeltaValid());
+		assertTrue(verifier.isDeltaValid(), verifier.getMessage());
 		verifier.reset();
 
 		// project - cannot be marked as derived
@@ -1271,7 +1276,7 @@ public class IResourceTest {
 		assertFalse(project.isDerived());
 		assertFalse(folder.isDerived());
 		assertFalse(file.isDerived());
-		assertTrue(verifier.getMessage(), verifier.isDeltaValid());
+		assertTrue(verifier.isDeltaValid(), verifier.getMessage());
 		verifier.reset();
 
 		project.setDerived(false, new NullProgressMonitor());
@@ -1279,7 +1284,7 @@ public class IResourceTest {
 		assertFalse(project.isDerived());
 		assertFalse(folder.isDerived());
 		assertFalse(file.isDerived());
-		assertTrue(verifier.getMessage(), verifier.isDeltaValid());
+		assertTrue(verifier.isDeltaValid(), verifier.getMessage());
 		verifier.reset();
 
 		// folder
@@ -1289,7 +1294,7 @@ public class IResourceTest {
 		assertFalse(project.isDerived());
 		assertTrue(folder.isDerived());
 		assertFalse(file.isDerived());
-		assertTrue(verifier.getMessage(), verifier.isDeltaValid());
+		assertTrue(verifier.isDeltaValid(), verifier.getMessage());
 		verifier.reset();
 
 		verifier.addExpectedChange(folder, IResourceDelta.CHANGED, IResourceDelta.DERIVED_CHANGED);
@@ -1298,7 +1303,7 @@ public class IResourceTest {
 		assertFalse(project.isDerived());
 		assertFalse(folder.isDerived());
 		assertFalse(file.isDerived());
-		assertTrue(verifier.getMessage(), verifier.isDeltaValid());
+		assertTrue(verifier.isDeltaValid(), verifier.getMessage());
 		verifier.reset();
 
 		// file
@@ -1308,7 +1313,7 @@ public class IResourceTest {
 		assertFalse(project.isDerived());
 		assertFalse(folder.isDerived());
 		assertTrue(file.isDerived());
-		assertTrue(verifier.getMessage(), verifier.isDeltaValid());
+		assertTrue(verifier.isDeltaValid(), verifier.getMessage());
 		verifier.reset();
 
 		verifier.addExpectedChange(file, IResourceDelta.CHANGED, IResourceDelta.DERIVED_CHANGED);
@@ -1317,7 +1322,7 @@ public class IResourceTest {
 		assertFalse(project.isDerived());
 		assertFalse(folder.isDerived());
 		assertFalse(file.isDerived());
-		assertTrue(verifier.getMessage(), verifier.isDeltaValid());
+		assertTrue(verifier.isDeltaValid(), verifier.getMessage());
 		verifier.reset();
 
 		/* remove trash */
@@ -1436,48 +1441,48 @@ public class IResourceTest {
 		// initial values should be false
 		for (IResource resource2 : resources) {
 			IResource resource = resource2;
-			assertFalse(resource.getFullPath().toString(), resource.isDerived());
+			assertFalse(resource.isDerived(), resource.getFullPath().toString());
 		}
 
 		// now set the root as derived
 		root.setDerived(true, new NullProgressMonitor());
 
 		// we can't mark the root as derived, so none of its children should be derived
-		assertFalse(root.getFullPath().toString(), root.isDerived(IResource.CHECK_ANCESTORS));
-		assertFalse(project.getFullPath().toString(), project.isDerived(IResource.CHECK_ANCESTORS));
-		assertFalse(folder.getFullPath().toString(), folder.isDerived(IResource.CHECK_ANCESTORS));
-		assertFalse(file1.getFullPath().toString(), file1.isDerived(IResource.CHECK_ANCESTORS));
-		assertFalse(file2.getFullPath().toString(), file2.isDerived(IResource.CHECK_ANCESTORS));
+		assertFalse(root.isDerived(IResource.CHECK_ANCESTORS), root.getFullPath().toString());
+		assertFalse(project.isDerived(IResource.CHECK_ANCESTORS), project.getFullPath().toString());
+		assertFalse(folder.isDerived(IResource.CHECK_ANCESTORS), folder.getFullPath().toString());
+		assertFalse(file1.isDerived(IResource.CHECK_ANCESTORS), file1.getFullPath().toString());
+		assertFalse(file2.isDerived(IResource.CHECK_ANCESTORS), file2.getFullPath().toString());
 
 		// now set the project as derived
 		project.setDerived(true, new NullProgressMonitor());
 
 		// we can't mark a project as derived, so none of its children should be derived
 		// even when CHECK_ANCESTORS is used
-		assertFalse(project.getFullPath().toString(), project.isDerived(IResource.CHECK_ANCESTORS));
-		assertFalse(folder.getFullPath().toString(), folder.isDerived(IResource.CHECK_ANCESTORS));
-		assertFalse(file1.getFullPath().toString(), file1.isDerived(IResource.CHECK_ANCESTORS));
-		assertFalse(file2.getFullPath().toString(), file2.isDerived(IResource.CHECK_ANCESTORS));
+		assertFalse(project.isDerived(IResource.CHECK_ANCESTORS), project.getFullPath().toString());
+		assertFalse(folder.isDerived(IResource.CHECK_ANCESTORS), folder.getFullPath().toString());
+		assertFalse(file1.isDerived(IResource.CHECK_ANCESTORS), file1.getFullPath().toString());
+		assertFalse(file2.isDerived(IResource.CHECK_ANCESTORS), file2.getFullPath().toString());
 
 		// now set the folder as derived
 		folder.setDerived(true, new NullProgressMonitor());
 
 		// first check if isDerived() returns valid values
-		assertTrue(folder.getFullPath().toString(), folder.isDerived());
-		assertFalse(file1.getFullPath().toString(), file1.isDerived());
-		assertFalse(file2.getFullPath().toString(), file2.isDerived());
+		assertTrue(folder.isDerived(), folder.getFullPath().toString());
+		assertFalse(file1.isDerived(), file1.getFullPath().toString());
+		assertFalse(file2.isDerived(), file2.getFullPath().toString());
 
 		// check if isDerived(IResource.CHECK_ANCESTORS) returns valid values
-		assertTrue(folder.getFullPath().toString(), folder.isDerived(IResource.CHECK_ANCESTORS));
-		assertTrue(file1.getFullPath().toString(), file1.isDerived(IResource.CHECK_ANCESTORS));
-		assertTrue(file2.getFullPath().toString(), file2.isDerived(IResource.CHECK_ANCESTORS));
+		assertTrue(folder.isDerived(IResource.CHECK_ANCESTORS), folder.getFullPath().toString());
+		assertTrue(file1.isDerived(IResource.CHECK_ANCESTORS), file1.getFullPath().toString());
+		assertTrue(file2.isDerived(IResource.CHECK_ANCESTORS), file2.getFullPath().toString());
 
 		// clear the values
 		folder.setDerived(false, new NullProgressMonitor());
 
 		// values should be false again
 		for (IResource resource2 : resources) {
-			assertFalse(resource2.getFullPath().toString(), resource2.isDerived());
+			assertFalse(resource2.isDerived(), resource2.getFullPath().toString());
 		}
 	}
 
@@ -1514,8 +1519,8 @@ public class IResourceTest {
 				boolean booleanResult = ((Boolean) result).booleanValue();
 				boolean expectedResult = resource0.getFullPath().equals(resource1.getFullPath()) && resource0.getType() == resource1.getType() && resource0.getWorkspace().equals(resource1.getWorkspace());
 				if (booleanResult) {
-					assertEquals("hashCode should be equal if equals returns true", resource0.hashCode(),
-							resource1.hashCode());
+					assertEquals(resource0.hashCode(), resource1.hashCode(),
+							"hashCode should be equal if equals returns true");
 				}
 				return booleanResult == expectedResult;
 			}
@@ -1606,7 +1611,7 @@ public class IResourceTest {
 
 		for (IResource resource : resources) {
 			if (resource.getType() != IResource.ROOT) {
-				assertEquals(resource.getFullPath().toString(), IResource.NULL_STAMP, resource.getModificationStamp());
+				assertEquals(IResource.NULL_STAMP, resource.getModificationStamp(), resource.getFullPath().toString());
 			}
 		}
 
@@ -1617,25 +1622,25 @@ public class IResourceTest {
 		for (IProject project2 : projects) {
 			project = project2;
 			project.create(createTestMonitor());
-			assertEquals(project.getFullPath().toString(), IResource.NULL_STAMP, project.getModificationStamp());
+			assertEquals(IResource.NULL_STAMP, project.getModificationStamp(), project.getFullPath().toString());
 		}
 
 		// open the project(s) and create the resources. none should have a
 		// null stamp anymore.
 		for (IProject project2 : projects) {
 			project = project2;
-			assertEquals(project.getFullPath().toString(), IResource.NULL_STAMP, project.getModificationStamp());
+			assertEquals(IResource.NULL_STAMP, project.getModificationStamp(), project.getFullPath().toString());
 			project.open(createTestMonitor());
-			assertNotEquals(project.getFullPath().toString(), IResource.NULL_STAMP, project.getModificationStamp());
+			assertNotEquals(IResource.NULL_STAMP, project.getModificationStamp(), project.getFullPath().toString());
 			// cache the value for later use
 			table.put(project.getFullPath(), Long.valueOf(project.getModificationStamp()));
 		}
 		for (IResource resource : resources) {
 			if (resource.getType() != IResource.PROJECT) {
-				assertEquals(resource.getFullPath().toString(), IResource.NULL_STAMP, resource.getModificationStamp());
+				assertEquals(IResource.NULL_STAMP, resource.getModificationStamp(), resource.getFullPath().toString());
 				createInWorkspace(resource);
-				assertNotEquals(resource.getFullPath().toString(), IResource.NULL_STAMP,
-						resource.getModificationStamp());
+				assertNotEquals(IResource.NULL_STAMP, resource.getModificationStamp(),
+						resource.getFullPath().toString());
 				// cache the value for later use
 				table.put(resource.getFullPath(), Long.valueOf(resource.getModificationStamp()));
 			}
@@ -1648,7 +1653,7 @@ public class IResourceTest {
 		}
 		for (IResource resource : resources) {
 			if (resource.getType() != IResource.ROOT) {
-				assertEquals(resource.getFullPath().toString(), IResource.NULL_STAMP, resource.getModificationStamp());
+				assertEquals(IResource.NULL_STAMP, resource.getModificationStamp(), resource.getFullPath().toString());
 			}
 		}
 
@@ -1660,9 +1665,9 @@ public class IResourceTest {
 		for (IResource resource : resources) {
 			if (resource.getType() != IResource.PROJECT) {
 				Object v = table.get(resource.getFullPath());
-				assertNotNull(resource.getFullPath().toString(), v);
+				assertNotNull(v, resource.getFullPath().toString());
 				long old = ((Long) v).longValue();
-				assertEquals(resource.getFullPath().toString(), old, resource.getModificationStamp());
+				assertEquals(old, resource.getModificationStamp(), resource.getFullPath().toString());
 			}
 		}
 
@@ -1673,9 +1678,9 @@ public class IResourceTest {
 				resource.touch(createTestMonitor());
 				long stamp = resource.getModificationStamp();
 				Object v = table.get(resource.getFullPath());
-				assertNotNull(resource.getFullPath().toString(), v);
+				assertNotNull(v, resource.getFullPath().toString());
 				long old = ((Long) v).longValue();
-				assertNotEquals(resource.getFullPath().toString(), old, stamp);
+				assertNotEquals(old, stamp, resource.getFullPath().toString());
 				// cache for next time
 				tempTable.put(resource.getFullPath(), Long.valueOf(stamp));
 			}
@@ -1689,10 +1694,10 @@ public class IResourceTest {
 		IResourceVisitor visitor = resource -> {
 			//projects and root are always local
 			if (resource.getType() == IResource.ROOT || resource.getType() == IResource.PROJECT) {
-				assertNotEquals(resource.getFullPath().toString(), IResource.NULL_STAMP,
-						resource.getModificationStamp());
+				assertNotEquals(IResource.NULL_STAMP, resource.getModificationStamp(),
+						resource.getFullPath().toString());
 			} else {
-				assertEquals(resource.getFullPath().toString(), IResource.NULL_STAMP, resource.getModificationStamp());
+				assertEquals(IResource.NULL_STAMP, resource.getModificationStamp(), resource.getFullPath().toString());
 			}
 			return true;
 		};
@@ -1706,11 +1711,11 @@ public class IResourceTest {
 		for (IResource resource : resources) {
 			if (resource.getType() != IResource.ROOT) {
 				long stamp = resource.getModificationStamp();
-				assertNotEquals(resource.getFullPath().toString(), IResource.NULL_STAMP, stamp);
+				assertNotEquals(IResource.NULL_STAMP, stamp, resource.getFullPath().toString());
 				Object v = table.get(resource.getFullPath());
-				assertNotNull(resource.getFullPath().toString(), v);
+				assertNotNull(v, resource.getFullPath().toString());
 				long old = ((Long) v).longValue();
-				assertNotEquals(resource.getFullPath().toString(), IResource.NULL_STAMP, old);
+				assertNotEquals(IResource.NULL_STAMP, old, resource.getFullPath().toString());
 				tempTable.put(resource.getFullPath(), Long.valueOf(stamp));
 			}
 		}
@@ -1722,11 +1727,11 @@ public class IResourceTest {
 		for (IResource resource : resources) {
 			if (resource.getType() != IResource.ROOT) {
 				long newStamp = resource.getModificationStamp();
-				assertNotEquals(resource.getFullPath().toString(), IResource.NULL_STAMP, newStamp);
+				assertNotEquals(IResource.NULL_STAMP, newStamp, resource.getFullPath().toString());
 				Object v = table.get(resource.getFullPath());
-				assertNotNull(resource.getFullPath().toString(), v);
+				assertNotNull(v, resource.getFullPath().toString());
 				long oldStamp = ((Long) v).longValue();
-				assertEquals(resource.getFullPath().toString(), oldStamp, newStamp);
+				assertEquals(oldStamp, newStamp, resource.getFullPath().toString());
 			}
 		}
 
@@ -1737,7 +1742,7 @@ public class IResourceTest {
 		// should be null
 		for (IResource resource : resources) {
 			if (resource.getType() != IResource.ROOT) {
-				assertEquals(resource.getFullPath().toString(), IResource.NULL_STAMP, resource.getModificationStamp());
+				assertEquals(IResource.NULL_STAMP, resource.getModificationStamp(), resource.getFullPath().toString());
 			}
 		}
 
@@ -1756,12 +1761,12 @@ public class IResourceTest {
 				case IResource.ROOT :
 					break;
 				case IResource.PROJECT :
-					assertNotEquals(resource.getFullPath().toString(), IResource.NULL_STAMP,
-							resource.getModificationStamp());
+					assertNotEquals(IResource.NULL_STAMP, resource.getModificationStamp(),
+							resource.getFullPath().toString());
 					break;
 				default :
-					assertEquals(resource.getFullPath().toString(), IResource.NULL_STAMP,
-							resource.getModificationStamp());
+					assertEquals(IResource.NULL_STAMP, resource.getModificationStamp(),
+							resource.getFullPath().toString());
 					break;
 			}
 		}
@@ -1769,8 +1774,8 @@ public class IResourceTest {
 		getWorkspace().getRoot().setLocal(true, IResource.DEPTH_INFINITE, createTestMonitor());
 		visitor = resource -> {
 			if (resource.getType() != IResource.ROOT) {
-				assertNotEquals(resource.getFullPath().toString(), IResource.NULL_STAMP,
-						resource.getModificationStamp());
+				assertNotEquals(IResource.NULL_STAMP, resource.getModificationStamp(),
+						resource.getFullPath().toString());
 			}
 			return true;
 		};
@@ -1835,13 +1840,13 @@ public class IResourceTest {
 		assertEquals(workspaceLocation.append(deepFile.getFullPath()), deepFile.getRawLocation());
 
 		IPath projectLocation = getRandomLocation();
-		workspaceRule.deleteOnTearDown(projectLocation);
+		fileStoreExtension.deleteOnTearDown(projectLocation);
 		IPath folderLocation = getRandomLocation();
-		workspaceRule.deleteOnTearDown(folderLocation);
+		fileStoreExtension.deleteOnTearDown(folderLocation);
 		IPath fileLocation = getRandomLocation();
-		workspaceRule.deleteOnTearDown(fileLocation);
+		fileStoreExtension.deleteOnTearDown(fileLocation);
 		IPath variableLocation = getRandomLocation();
-		workspaceRule.deleteOnTearDown(variableLocation);
+		fileStoreExtension.deleteOnTearDown(variableLocation);
 		final String variableName = "IResourceTest_VariableName";
 		IPathVariableManager varMan = getWorkspace().getPathVariableManager();
 		try {
@@ -2372,12 +2377,12 @@ public class IResourceTest {
 			resource.touch(null);
 			long newStamp = resource.getModificationStamp();
 			if (resource.getType() == IResource.ROOT) {
-				assertEquals(resource.getFullPath().toString(), oldStamp, newStamp);
+				assertEquals(oldStamp, newStamp, resource.getFullPath().toString());
 			} else {
-				assertNotEquals(resource.getFullPath().toString(), oldStamp, newStamp);
+				assertNotEquals(oldStamp, newStamp, resource.getFullPath().toString());
 			}
 			resource.revertModificationStamp(oldStamp);
-			assertEquals(resource.getFullPath().toString(), oldStamp, resource.getModificationStamp());
+			assertEquals(oldStamp, resource.getModificationStamp(), resource.getFullPath().toString());
 			return true;
 		});
 
@@ -2396,9 +2401,9 @@ public class IResourceTest {
 		getWorkspace().getRoot().delete(IResource.ALWAYS_DELETE_PROJECT_CONTENT, createTestMonitor());
 		for (IResource resource : resources) {
 			//should fail except for root
-			ThrowingRunnable revertOperation = () -> resource.revertModificationStamp(1);
+			Executable revertOperation = () -> resource.revertModificationStamp(1);
 			if (resource.getType() == IResource.ROOT) {
-				revertOperation.run();
+				revertOperation.execute();
 			} else {
 				assertThrows(CoreException.class, revertOperation);
 			}

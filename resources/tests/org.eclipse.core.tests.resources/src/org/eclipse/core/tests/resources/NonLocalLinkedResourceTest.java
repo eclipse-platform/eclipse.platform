@@ -18,8 +18,8 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspac
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
@@ -33,18 +33,22 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.tests.internal.filesystem.bogus.BogusFileSystem;
 import org.eclipse.core.tests.internal.filesystem.ram.MemoryFileSystem;
 import org.eclipse.core.tests.internal.filesystem.ram.MemoryTree;
-import org.junit.After;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.FileStoreAutoDeleteExtension;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * Tests behaviour of manipulating linked resources that are not linked into
  * the local file system.
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class NonLocalLinkedResourceTest {
 
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+	@RegisterExtension
+	private final FileStoreAutoDeleteExtension fileStoreExtension = new FileStoreAutoDeleteExtension();
 
 	/**
 	 * Creates a folder in the test file system with the given name
@@ -60,7 +64,7 @@ public class NonLocalLinkedResourceTest {
 		return EFS.getFileSystem(MemoryFileSystem.SCHEME_MEMORY);
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		MemoryTree.TREE.deleteAll();
 	}
@@ -179,7 +183,7 @@ public class NonLocalLinkedResourceTest {
 	protected IFileStore createBogusFolderStore(String name) throws CoreException {
 		IFileSystem system = getBogusFileSystem();
 		IFileStore store = system.getStore(IPath.ROOT.append(name));
-		workspaceRule.deleteOnTearDown(
+		fileStoreExtension.deleteOnTearDown(
 					IPath.fromOSString(system.getStore(IPath.ROOT).toLocalFile(EFS.NONE, createTestMonitor()).getPath()));
 		store.mkdir(EFS.NONE, createTestMonitor());
 		return store;

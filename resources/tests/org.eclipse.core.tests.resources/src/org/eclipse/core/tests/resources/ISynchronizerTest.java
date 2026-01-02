@@ -22,11 +22,11 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspac
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -61,18 +61,22 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.Status;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.FileStoreAutoDeleteExtension;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class ISynchronizerTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	public static int NUMBER_OF_PARTNERS = 100;
 	public IResource[] resources;
+
+	@RegisterExtension
+	private final FileStoreAutoDeleteExtension fileStoreExtension = new FileStoreAutoDeleteExtension();
 
 	/*
 	 * Internal method used for flushing all sync information for a particular resource
@@ -95,14 +99,14 @@ public class ISynchronizerTest {
 		getWorkspace().run(body, null);
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		resources = buildResources(getWorkspace().getRoot(),
 				new String[] { "/", "1/", "1/1", "1/2/", "1/2/1", "1/2/2/", "2/", "2/1", "2/2/", "2/2/1", "2/2/2/" });
 		createInWorkspace(resources);
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		// remove all registered sync partners so we don't create
 		// phantoms when we delete
@@ -179,7 +183,7 @@ public class ISynchronizerTest {
 
 		// sync info should be gone since projects can't become phantoms
 		visitor = resource -> {
-			assertNull(resource.getFullPath().toString(), synchronizer.getSyncInfo(qname, resource));
+			assertNull(synchronizer.getSyncInfo(qname, resource), resource.getFullPath().toString());
 			return true;
 		};
 		getWorkspace().getRoot().accept(visitor);
@@ -256,7 +260,7 @@ public class ISynchronizerTest {
 			if (type == IResource.FILE && resource.getParent().getType() == IResource.PROJECT && resource.getName().equals(IProjectDescription.DESCRIPTION_FILE_NAME)) {
 				return true;
 			}
-			assertNull(resource.getFullPath().toString(), synchronizer.getSyncInfo(qname, resource));
+			assertNull(synchronizer.getSyncInfo(qname, resource), resource.getFullPath().toString());
 			return true;
 		};
 
@@ -395,7 +399,7 @@ public class ISynchronizerTest {
 		// write out the data
 		IPath syncInfoPath = Platform.getLocation().append(".testsyncinfo");
 		File file = syncInfoPath.toFile();
-		workspaceRule.deleteOnTearDown(syncInfoPath);
+		fileStoreExtension.deleteOnTearDown(syncInfoPath);
 		try (OutputStream fileOutput = new FileOutputStream(file)) {
 			try (DataOutputStream output = new DataOutputStream(fileOutput)) {
 				final List<QualifiedName> list = new ArrayList<>(5);
@@ -500,7 +504,7 @@ public class ISynchronizerTest {
 		// there shouldn't be any info yet
 		visitor = resource -> {
 			byte[] actual = synchronizer.getSyncInfo(qname, resource);
-			assertNull("3.0." + resource.getFullPath(), actual);
+			assertNull(actual, resource.getFullPath().toString());
 			return true;
 		};
 		getWorkspace().getRoot().accept(visitor);
