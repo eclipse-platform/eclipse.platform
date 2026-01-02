@@ -13,10 +13,10 @@
  *******************************************************************************/
 package org.eclipse.ant.tests.ui;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.eclipse.jdt.core.JavaCore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class APITests {
 
@@ -24,15 +24,15 @@ public class APITests {
 	public void testCompareJavaVersions() {
 		String vmver = "1.6"; //$NON-NLS-1$
 		int comparison = JavaCore.compareJavaVersions(vmver, JavaCore.VERSION_1_7);
-		assertEquals("VM less than 1.7 version: ", -1, comparison); //$NON-NLS-1$
+		assertEquals(-1, comparison, "VM less than 1.7 version: "); //$NON-NLS-1$
 
 		vmver = "1.7"; //$NON-NLS-1$
 		comparison = JavaCore.compareJavaVersions(vmver, JavaCore.VERSION_1_7);
-		assertEquals("VM equal to 1.7: ", 0, comparison); //$NON-NLS-1$
+		assertEquals(0, comparison, "VM equal to 1.7: "); //$NON-NLS-1$
 
 		vmver = "1.8"; //$NON-NLS-1$
 		comparison = JavaCore.compareJavaVersions(vmver, JavaCore.VERSION_1_7);
-		assertEquals("VM more than 1.7: ", 1, comparison); //$NON-NLS-1$
+		assertEquals(1, comparison, "VM more than 1.7: "); //$NON-NLS-1$
 
 	}
 

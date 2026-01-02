@@ -26,7 +26,7 @@ import org.eclipse.jface.text.contentassist.ICompletionListener;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistantExtension2;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.w3c.dom.Element;
 
 @SuppressWarnings("restriction")
@@ -159,7 +159,7 @@ public class TestTextCompletionProcessor extends AntEditorCompletionProcessor {
 			tempFile = File.createTempFile("test", null); //$NON-NLS-1$
 		}
 		catch (IOException e) {
-			Assert.fail(e.getMessage());
+			Assertions.fail(e.getMessage());
 		}
 		tempFile.deleteOnExit();
 		return tempFile;

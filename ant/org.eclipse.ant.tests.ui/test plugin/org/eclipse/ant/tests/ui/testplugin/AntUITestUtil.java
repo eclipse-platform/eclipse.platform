@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.ant.tests.ui.testplugin;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -67,7 +67,7 @@ public final class AntUITestUtil {
 	public static ILaunchConfiguration getLaunchConfiguration(String buildFileName) {
 		IFile file = getJavaProject().getProject().getFolder("launchConfigurations").getFile(buildFileName + ".launch"); //$NON-NLS-1$ //$NON-NLS-2$
 		ILaunchConfiguration config = getLaunchManager().getLaunchConfiguration(file);
-		assertTrue("Could not find launch configuration for " + buildFileName, config.exists()); //$NON-NLS-1$
+		assertTrue(config.exists(), "Could not find launch configuration for " + buildFileName); //$NON-NLS-1$
 		return config;
 	}
 
@@ -95,11 +95,11 @@ public final class AntUITestUtil {
 			throw new TestAgainException("Retest - Program did not suspend launching: " + configuration.getName()); //$NON-NLS-1$
 		}
 		boolean terminated = launch.isTerminated();
-		assertTrue("launch did not terminate", terminated); //$NON-NLS-1$
+		assertTrue(terminated, "launch did not terminate"); //$NON-NLS-1$
 		if (terminated && !ConsoleLineTracker.isClosed()) {
 			ConsoleLineTracker.waitForConsole();
 		}
-		assertTrue("Console is not closed", ConsoleLineTracker.isClosed()); //$NON-NLS-1$
+		assertTrue(ConsoleLineTracker.isClosed(), "Console is not closed"); //$NON-NLS-1$
 		return suspendee;
 	}
 
@@ -111,10 +111,10 @@ public final class AntUITestUtil {
 		waiter.setTimeout(timeout);
 
 		Object terminatee = launchAndWait(config, waiter);
-		assertTrue("terminatee is not an IProcess", terminatee instanceof IProcess); //$NON-NLS-1$
+		assertTrue(terminatee instanceof IProcess, "terminatee is not an IProcess"); //$NON-NLS-1$
 		IProcess process = (IProcess) terminatee;
 		boolean terminated = process.isTerminated();
-		assertTrue("process is not terminated", terminated); //$NON-NLS-1$
+		assertTrue(terminated, "process is not terminated"); //$NON-NLS-1$
 	}
 
 	/**
@@ -219,7 +219,7 @@ public final class AntUITestUtil {
 	 */
 	public static void launch(String buildFileName, String arguments) throws CoreException {
 		ILaunchConfiguration config = getLaunchConfiguration(buildFileName);
-		assertNotNull("Could not locate launch configuration for " + buildFileName, config); //$NON-NLS-1$
+		assertNotNull(config, "Could not locate launch configuration for " + buildFileName); //$NON-NLS-1$
 		ILaunchConfigurationWorkingCopy copy = config.getWorkingCopy();
 		copy.setAttribute(IExternalToolConstants.ATTR_TOOL_ARGUMENTS, arguments);
 		launchAndTerminate(copy, 20000);
@@ -233,7 +233,7 @@ public final class AntUITestUtil {
 	 */
 	public static void launch(String buildFileName) throws CoreException {
 		ILaunchConfiguration config = getLaunchConfiguration(buildFileName);
-		assertNotNull("Could not locate launch configuration for " + buildFileName, config); //$NON-NLS-1$
+		assertNotNull(config, "Could not locate launch configuration for " + buildFileName); //$NON-NLS-1$
 		launchAndTerminate(config, 20000);
 	}
 
@@ -253,7 +253,7 @@ public final class AntUITestUtil {
 	 */
 	public static File getBuildFile(String buildFileName) {
 		IFile file = getIFile(buildFileName);
-		assertTrue("Could not find build file named: " + buildFileName, file.exists()); //$NON-NLS-1$
+		assertTrue(file.exists(), "Could not find build file named: " + buildFileName); //$NON-NLS-1$
 		return file.getLocation().toFile();
 	}
 
