@@ -14,6 +14,10 @@
 package org.eclipse.ant.tests.ui.debug;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.ant.tests.ui.debug.AntDebugTestUtil.createLineBreakpoint;
+import static org.eclipse.ant.tests.ui.debug.AntDebugTestUtil.launchToLineBreakpoint;
+import static org.eclipse.ant.tests.ui.debug.AntDebugTestUtil.removeAllBreakpoints;
+import static org.eclipse.ant.tests.ui.debug.AntDebugTestUtil.terminateAndRemove;
 import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getIFile;
 
 import org.eclipse.ant.internal.launching.debug.model.AntThread;
@@ -21,9 +25,10 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.model.ILineBreakpoint;
 import org.eclipse.debug.core.model.IStackFrame;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class StackTests extends AbstractAntDebugTest {
+@AntUIDebugTest
+public class StackTests {
 
 	@Test
 	public void testStackForAntCall() throws Exception {
