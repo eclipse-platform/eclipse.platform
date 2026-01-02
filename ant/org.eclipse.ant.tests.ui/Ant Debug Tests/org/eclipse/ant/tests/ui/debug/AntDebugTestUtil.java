@@ -16,15 +16,15 @@ package org.eclipse.ant.tests.ui.debug;
 import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getIFile;
 import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getLaunchConfiguration;
 import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getLaunchManager;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.eclipse.ant.internal.launching.debug.model.AntDebugTarget;
 import org.eclipse.ant.internal.launching.debug.model.AntLineBreakpoint;
 import org.eclipse.ant.internal.launching.debug.model.AntStackFrame;
 import org.eclipse.ant.internal.launching.debug.model.AntThread;
-import org.eclipse.ant.tests.ui.AbstractAntUIBuildTest;
 import org.eclipse.ant.tests.ui.testplugin.DebugElementKindEventWaiter;
 import org.eclipse.ant.tests.ui.testplugin.DebugEventWaiter;
 import org.eclipse.core.resources.IFile;
@@ -39,45 +39,12 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.ILineBreakpoint;
 import org.eclipse.debug.core.model.IThread;
-import org.eclipse.debug.internal.ui.DebugUIPlugin;
-import org.eclipse.debug.internal.ui.IInternalDebugUIConstants;
-import org.eclipse.debug.internal.ui.preferences.IDebugPreferenceConstants;
-import org.eclipse.debug.ui.IDebugUIConstants;
-import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.util.SafeRunnable;
-import org.eclipse.ui.IPerspectiveDescriptor;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.PlatformUI;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 
-/**
- * Tests for launch configurations
- */
-@SuppressWarnings("restriction")
-public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
+public final class AntDebugTestUtil {
 
 	public static final int DEFAULT_TIMEOUT = 20000;
 
-	private static boolean wasAutomatedModeEnabled;
-	private static boolean wasIgnoreErrorEnabled;
-
-	@BeforeClass
-	public static void setupClass() {
-		// set error dialog to non-blocking to avoid hanging the UI during test
-		wasAutomatedModeEnabled = ErrorDialog.AUTOMATED_MODE;
-		ErrorDialog.AUTOMATED_MODE = true;
-		wasIgnoreErrorEnabled = SafeRunnable.getIgnoreErrors();
-		SafeRunnable.setIgnoreErrors(true);
-	}
-
-	@AfterClass
-	public static void teardownClass() {
-		ErrorDialog.AUTOMATED_MODE = wasAutomatedModeEnabled;
-		SafeRunnable.setIgnoreErrors(wasIgnoreErrorEnabled);
+	private AntDebugTestUtil() {
 	}
 
 	/**
@@ -85,7 +52,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	 *
 	 * @return breakpoint manager
 	 */
-	protected IBreakpointManager getBreakpointManager() {
+	public static IBreakpointManager getBreakpointManager() {
 		return DebugPlugin.getDefault().getBreakpointManager();
 	}
 
@@ -99,7 +66,8 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	 *            the event waiter to use
 	 * @return Object the source of the event
 	 */
-	private Object launchAndWait(ILaunchConfiguration configuration, DebugEventWaiter waiter) throws CoreException {
+	private static Object launchAndWait(ILaunchConfiguration configuration, DebugEventWaiter waiter)
+			throws CoreException {
 		return launchAndWait(configuration, waiter, true);
 	}
 
@@ -115,7 +83,8 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	 *            whether to register the launch
 	 * @return Object the source of the event
 	 */
-	protected Object launchAndWait(ILaunchConfiguration configuration, DebugEventWaiter waiter, boolean register) throws CoreException {
+	public static Object launchAndWait(ILaunchConfiguration configuration, DebugEventWaiter waiter, boolean register)
+			throws CoreException {
 		ILaunch launch = configuration.launch(ILaunchManager.DEBUG_MODE, null, false, register);
 		Object suspendee = waiter.waitForEvent();
 		if (suspendee == null) {
@@ -143,12 +112,12 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	 *            whether to register the launch
 	 * @return thread in which the first suspend event occurred
 	 */
-	protected AntThread launchToBreakpoint(String buildFileName, boolean register, boolean sepVM) throws Exception {
+	public static AntThread launchToBreakpoint(String buildFileName, boolean register, boolean sepVM) throws Exception {
 		if (sepVM) {
 			buildFileName += "SepVM"; //$NON-NLS-1$
 		}
 		ILaunchConfiguration config = getLaunchConfiguration(buildFileName);
-		assertNotNull("Could not locate launch configuration for " + buildFileName, config); //$NON-NLS-1$
+		assertNotNull(config, "Could not locate launch configuration for " + buildFileName); //$NON-NLS-1$
 		return launchToBreakpoint(config, register);
 	}
 
@@ -162,21 +131,21 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	 *            whether to register the launch
 	 * @return thread in which the first suspend event occurred
 	 */
-	protected AntThread launchToBreakpoint(ILaunchConfiguration config, boolean register) throws CoreException {
+	public static AntThread launchToBreakpoint(ILaunchConfiguration config, boolean register) throws CoreException {
 		DebugEventWaiter waiter = new DebugElementKindEventDetailWaiter(DebugEvent.SUSPEND, AntThread.class, DebugEvent.BREAKPOINT);
 		waiter.setTimeout(DEFAULT_TIMEOUT);
 
 		Object suspendee = launchAndWait(config, waiter, register);
-		assertTrue("suspendee was not an AntThread", suspendee instanceof AntThread); //$NON-NLS-1$
+		assertTrue(suspendee instanceof AntThread, "suspendee was not an AntThread"); //$NON-NLS-1$
 		return (AntThread) suspendee;
 	}
 
-	protected AntDebugTarget launchAndTerminate(String buildFileName, boolean sepVM) throws Exception {
+	public static AntDebugTarget launchAndTerminate(String buildFileName, boolean sepVM) throws Exception {
 		if (sepVM) {
 			buildFileName += "SepVM"; //$NON-NLS-1$
 		}
 		ILaunchConfiguration config = getLaunchConfiguration(buildFileName);
-		assertNotNull("Could not locate launch configuration for " + buildFileName, config); //$NON-NLS-1$
+		assertNotNull(config, "Could not locate launch configuration for " + buildFileName); //$NON-NLS-1$
 		return debugLaunchAndTerminate(config, DEFAULT_TIMEOUT);
 	}
 
@@ -190,15 +159,15 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	 *            the number of milliseconds to wait for a terminate event
 	 * @return thread in which the first suspend event occurred
 	 */
-	protected AntDebugTarget debugLaunchAndTerminate(ILaunchConfiguration config, int timeout) throws Exception {
+	public static AntDebugTarget debugLaunchAndTerminate(ILaunchConfiguration config, int timeout) throws Exception {
 		DebugEventWaiter waiter = new DebugElementKindEventWaiter(DebugEvent.TERMINATE, AntDebugTarget.class);
 		waiter.setTimeout(timeout);
 
 		Object terminatee = launchAndWait(config, waiter);
-		assertNotNull("Program did not terminate.", terminatee); //$NON-NLS-1$
-		assertTrue("terminatee is not an AntDebugTarget", terminatee instanceof AntDebugTarget); //$NON-NLS-1$
+		assertNotNull(terminatee, "Program did not terminate."); //$NON-NLS-1$
+		assertTrue(terminatee instanceof AntDebugTarget, "terminatee is not an AntDebugTarget"); //$NON-NLS-1$
 		AntDebugTarget debugTarget = (AntDebugTarget) terminatee;
-		assertTrue("debug target is not terminated", debugTarget.isTerminated() || debugTarget.isDisconnected()); //$NON-NLS-1$
+		assertTrue(debugTarget.isTerminated() || debugTarget.isDisconnected(), "debug target is not terminated"); //$NON-NLS-1$
 		return debugTarget;
 	}
 
@@ -212,9 +181,9 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	 *            the breakpoint that should cause a suspend event
 	 * @return thread in which the first suspend event occurred
 	 */
-	protected AntThread launchToLineBreakpoint(String buildFileName, ILineBreakpoint bp) throws CoreException {
+	public static AntThread launchToLineBreakpoint(String buildFileName, ILineBreakpoint bp) throws CoreException {
 		ILaunchConfiguration config = getLaunchConfiguration(buildFileName);
-		assertNotNull("Could not locate launch configuration for " + buildFileName, config); //$NON-NLS-1$
+		assertNotNull(config, "Could not locate launch configuration for " + buildFileName); //$NON-NLS-1$
 		return launchToLineBreakpoint(config, bp);
 	}
 
@@ -228,21 +197,22 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	 *            the breakpoint that should cause a suspend event
 	 * @return thread in which the first suspend event occurred
 	 */
-	protected AntThread launchToLineBreakpoint(ILaunchConfiguration config, ILineBreakpoint bp) throws CoreException {
+	public static AntThread launchToLineBreakpoint(ILaunchConfiguration config, ILineBreakpoint bp)
+			throws CoreException {
 		DebugEventWaiter waiter = new DebugElementKindEventDetailWaiter(DebugEvent.SUSPEND, AntThread.class, DebugEvent.BREAKPOINT);
 		waiter.setTimeout(DEFAULT_TIMEOUT);
 
 		Object suspendee = launchAndWait(config, waiter);
-		assertTrue("suspendee was not an AntThread", suspendee instanceof AntThread); //$NON-NLS-1$
+		assertTrue(suspendee instanceof AntThread, "suspendee was not an AntThread"); //$NON-NLS-1$
 		AntThread thread = (AntThread) suspendee;
 		IBreakpoint hit = getBreakpoint(thread);
-		assertNotNull("suspended, but not by breakpoint", hit); //$NON-NLS-1$
-		assertTrue("hit un-registered breakpoint", bp.equals(hit)); //$NON-NLS-1$
-		assertTrue("suspended, but not by line breakpoint", hit instanceof ILineBreakpoint); //$NON-NLS-1$
+		assertNotNull(hit, "suspended, but not by breakpoint"); //$NON-NLS-1$
+		assertTrue(bp.equals(hit), "hit un-registered breakpoint"); //$NON-NLS-1$
+		assertTrue(hit instanceof ILineBreakpoint, "suspended, but not by line breakpoint"); //$NON-NLS-1$
 		ILineBreakpoint breakpoint = (ILineBreakpoint) hit;
 		int lineNumber = breakpoint.getLineNumber();
 		int stackLine = thread.getTopStackFrame().getLineNumber();
-		assertTrue("line numbers of breakpoint and stack frame do not match", lineNumber == stackLine); //$NON-NLS-1$
+		assertEquals(lineNumber, stackLine, "line numbers of breakpoint and stack frame do not match"); //$NON-NLS-1$
 
 		return thread;
 	}
@@ -254,7 +224,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	 *            thread to resume
 	 * @return thread in which the first suspend event occurs
 	 */
-	protected AntThread resume(AntThread thread) throws Exception {
+	public static AntThread resume(AntThread thread) throws Exception {
 		return resume(thread, DEFAULT_TIMEOUT);
 	}
 
@@ -267,7 +237,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	 *            timeout in ms
 	 * @return thread in which the first suspend event occurs
 	 */
-	protected AntThread resume(AntThread thread, int timeout) throws Exception {
+	public static AntThread resume(AntThread thread, int timeout) throws Exception {
 		DebugEventWaiter waiter = new DebugElementKindEventDetailWaiter(DebugEvent.SUSPEND, AntThread.class, DebugEvent.BREAKPOINT);
 		waiter.setTimeout(timeout);
 
@@ -288,7 +258,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	 *            thread to resume
 	 * @return thread in which the first suspend event occurs
 	 */
-	protected AntThread resumeToLineBreakpoint(AntThread resumeThread, ILineBreakpoint bp) throws CoreException {
+	public static AntThread resumeToLineBreakpoint(AntThread resumeThread, ILineBreakpoint bp) throws CoreException {
 		DebugEventWaiter waiter = new DebugElementKindEventDetailWaiter(DebugEvent.SUSPEND, AntThread.class, DebugEvent.BREAKPOINT);
 		waiter.setTimeout(DEFAULT_TIMEOUT);
 
@@ -298,16 +268,16 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 		if (suspendee == null) {
 			throw new TestAgainException("Retest - Program did not suspend"); //$NON-NLS-1$
 		}
-		assertTrue("suspendee was not an AntThread", suspendee instanceof AntThread); //$NON-NLS-1$
+		assertTrue(suspendee instanceof AntThread, "suspendee was not an AntThread"); //$NON-NLS-1$
 		AntThread thread = (AntThread) suspendee;
 		IBreakpoint hit = getBreakpoint(thread);
-		assertNotNull("suspended, but not by breakpoint", hit); //$NON-NLS-1$
-		assertTrue("hit un-registered breakpoint", bp.equals(hit)); //$NON-NLS-1$
-		assertTrue("suspended, but not by line breakpoint", hit instanceof ILineBreakpoint); //$NON-NLS-1$
+		assertNotNull(hit, "suspended, but not by breakpoint"); //$NON-NLS-1$
+		assertTrue(bp.equals(hit), "hit un-registered breakpoint"); //$NON-NLS-1$
+		assertTrue(hit instanceof ILineBreakpoint, "suspended, but not by line breakpoint"); //$NON-NLS-1$
 		ILineBreakpoint breakpoint = (ILineBreakpoint) hit;
 		int lineNumber = breakpoint.getLineNumber();
 		int stackLine = thread.getTopStackFrame().getLineNumber();
-		assertTrue("line numbers of breakpoint and stack frame do not match", lineNumber == stackLine); //$NON-NLS-1$
+		assertEquals(lineNumber, stackLine, "line numbers of breakpoint and stack frame do not match"); //$NON-NLS-1$
 
 		return (AntThread) suspendee;
 	}
@@ -319,7 +289,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	 *            thread to resume
 	 * @return the terminated debug target
 	 */
-	protected AntDebugTarget resumeAndExit(AntThread thread) throws Exception {
+	public static AntDebugTarget resumeAndExit(AntThread thread) throws Exception {
 		DebugEventWaiter waiter = new DebugElementEventWaiter(DebugEvent.TERMINATE, thread.getDebugTarget());
 		waiter.setTimeout(DEFAULT_TIMEOUT);
 
@@ -330,7 +300,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 			throw new TestAgainException("Retest - The program did not terminate"); //$NON-NLS-1$
 		}
 		AntDebugTarget target = (AntDebugTarget) suspendee;
-		assertTrue("program should have exited", target.isTerminated() || target.isDisconnected()); //$NON-NLS-1$
+		assertTrue(target.isTerminated() || target.isDisconnected(), "program should have exited"); //$NON-NLS-1$
 		return target;
 	}
 
@@ -342,7 +312,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	 * @param file
 	 *            the build file
 	 */
-	protected AntLineBreakpoint createLineBreakpoint(int lineNumber, IFile file) throws CoreException {
+	public static AntLineBreakpoint createLineBreakpoint(int lineNumber, IFile file) throws CoreException {
 		return new AntLineBreakpoint(file, lineNumber);
 	}
 
@@ -354,14 +324,14 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	 * @param buildFileName
 	 *            the build file name
 	 */
-	protected AntLineBreakpoint createLineBreakpoint(int lineNumber, String buildFileName) throws CoreException {
+	public static AntLineBreakpoint createLineBreakpoint(int lineNumber, String buildFileName) throws CoreException {
 		return new AntLineBreakpoint(getIFile(buildFileName), lineNumber);
 	}
 
 	/**
 	 * Terminates the given thread and removes its launch
 	 */
-	protected void terminateAndRemove(AntThread thread) throws CoreException {
+	public static void terminateAndRemove(AntThread thread) throws CoreException {
 		if (thread != null) {
 			terminateAndRemove((AntDebugTarget) thread.getDebugTarget());
 		}
@@ -372,7 +342,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	 *
 	 * NOTE: all breakpoints are removed, all threads are resumed, and then the target is terminated. This avoids defunct processes on linux.
 	 */
-	protected void terminateAndRemove(AntDebugTarget debugTarget) throws CoreException {
+	public static void terminateAndRemove(AntDebugTarget debugTarget) throws CoreException {
 		if (debugTarget != null && !(debugTarget.isTerminated() || debugTarget.isDisconnected())) {
 			DebugEventWaiter waiter = new DebugElementEventWaiter(DebugEvent.TERMINATE, debugTarget);
 			removeAllBreakpoints();
@@ -395,8 +365,10 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 		}
 
 		// ensure event queue is flushed
-		DebugEventWaiter waiter = new DebugElementEventWaiter(DebugEvent.MODEL_SPECIFIC, this);
-		DebugPlugin.getDefault().fireDebugEventSet(new DebugEvent[] { new DebugEvent(this, DebugEvent.MODEL_SPECIFIC) });
+		Object context = new Object();
+		DebugEventWaiter waiter = new DebugElementEventWaiter(DebugEvent.MODEL_SPECIFIC, context);
+		DebugPlugin.getDefault()
+				.fireDebugEventSet(new DebugEvent[] { new DebugEvent(context, DebugEvent.MODEL_SPECIFIC) });
 		Object event = waiter.waitForEvent();
 		if (event == null) {
 			throw new TestAgainException("Retest - The model specific event was never recieved"); //$NON-NLS-1$
@@ -406,7 +378,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	/**
 	 * Deletes all existing breakpoints
 	 */
-	protected void removeAllBreakpoints() throws CoreException {
+	public static void removeAllBreakpoints() throws CoreException {
 		IBreakpoint[] bps = getBreakpointManager().getBreakpoints();
 		getBreakpointManager().removeBreakpoints(bps, true);
 	}
@@ -416,7 +388,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	 *
 	 * @return the first breakpoint the given thread is suspended at, or <code>null</code> if none
 	 */
-	protected IBreakpoint getBreakpoint(IThread thread) {
+	public static IBreakpoint getBreakpoint(IThread thread) {
 		IBreakpoint[] bps = thread.getBreakpoints();
 		if (bps.length > 0) {
 			return bps[0];
@@ -430,7 +402,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	 * @param frame
 	 *            stack frame to step in
 	 */
-	protected AntThread stepOver(AntStackFrame frame) throws DebugException {
+	public static AntThread stepOver(AntStackFrame frame) throws DebugException {
 		org.eclipse.ant.tests.ui.testplugin.DebugEventWaiter waiter = new DebugElementKindEventDetailWaiter(DebugEvent.SUSPEND, AntThread.class, DebugEvent.STEP_END);
 		waiter.setTimeout(DEFAULT_TIMEOUT);
 
@@ -449,7 +421,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	 * @param frame
 	 *            stack frame to step in
 	 */
-	protected AntThread stepOverToHitBreakpoint(AntStackFrame frame) throws DebugException {
+	public static AntThread stepOverToHitBreakpoint(AntStackFrame frame) throws DebugException {
 		org.eclipse.ant.tests.ui.testplugin.DebugEventWaiter waiter = new DebugElementKindEventDetailWaiter(DebugEvent.SUSPEND, AntThread.class, DebugEvent.BREAKPOINT);
 		waiter.setTimeout(DEFAULT_TIMEOUT);
 
@@ -468,7 +440,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	 * @param frame
 	 *            stack frame to step in
 	 */
-	protected AntThread stepInto(AntStackFrame frame) throws DebugException {
+	public static AntThread stepInto(AntStackFrame frame) throws DebugException {
 		DebugEventWaiter waiter = new DebugElementKindEventDetailWaiter(DebugEvent.SUSPEND, AntThread.class, DebugEvent.STEP_END);
 		waiter.setTimeout(DEFAULT_TIMEOUT);
 
@@ -481,40 +453,6 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 		return (AntThread) suspendee;
 	}
 
-	/**
-	 * Sets the current set of Debug / Other preferences to use during each test
-	 *
-	 * @since 3.5
-	 */
-	protected void setPreferences() {
-		IPreferenceStore debugUIPreferences = DebugUIPlugin.getDefault().getPreferenceStore();
-		String property = System.getProperty("debug.workbenchActivation"); //$NON-NLS-1$
-		boolean activate = property != null && property.equals("on"); //$NON-NLS-1$
-		debugUIPreferences.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_ERR, activate);
-		debugUIPreferences.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_OUT, activate);
-		debugUIPreferences.setValue(IInternalDebugUIConstants.PREF_ACTIVATE_DEBUG_VIEW, activate);
-		debugUIPreferences.setValue(IDebugUIConstants.PREF_ACTIVATE_WORKBENCH, activate);
-	}
 
-	@After
-	public void tearDown() throws Exception {
-		// reset the options
-		IPreferenceStore debugUIPreferences = DebugUIPlugin.getDefault().getPreferenceStore();
-		debugUIPreferences.setToDefault(IDebugPreferenceConstants.CONSOLE_OPEN_ON_ERR);
-		debugUIPreferences.setToDefault(IDebugPreferenceConstants.CONSOLE_OPEN_ON_OUT);
-		debugUIPreferences.setToDefault(IInternalDebugUIConstants.PREF_ACTIVATE_DEBUG_VIEW);
-		debugUIPreferences.setToDefault(IDebugUIConstants.PREF_ACTIVATE_WORKBENCH);
-	}
 
-	@Before
-	@Override
-	public void setUp() throws Exception {
-		super.setUp();
-		setPreferences();
-		DebugUIPlugin.getStandardDisplay().syncExec(() -> {
-			IWorkbench workbench = PlatformUI.getWorkbench();
-			IPerspectiveDescriptor descriptor = workbench.getPerspectiveRegistry().findPerspectiveWithId(IDebugUIConstants.ID_DEBUG_PERSPECTIVE);
-			workbench.getActiveWorkbenchWindow().getActivePage().setPerspective(descriptor);
-		});
-	}
 }

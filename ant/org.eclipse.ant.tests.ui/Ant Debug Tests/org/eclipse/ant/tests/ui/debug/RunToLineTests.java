@@ -13,8 +13,12 @@
  *******************************************************************************/
 package org.eclipse.ant.tests.ui.debug;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.eclipse.ant.tests.ui.debug.AntDebugTestUtil.createLineBreakpoint;
+import static org.eclipse.ant.tests.ui.debug.AntDebugTestUtil.launchToLineBreakpoint;
+import static org.eclipse.ant.tests.ui.debug.AntDebugTestUtil.removeAllBreakpoints;
+import static org.eclipse.ant.tests.ui.debug.AntDebugTestUtil.terminateAndRemove;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.eclipse.ant.internal.launching.debug.model.AntLineBreakpoint;
 import org.eclipse.ant.internal.launching.debug.model.AntThread;
@@ -38,13 +42,14 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests run to line debug functionality
  */
 @SuppressWarnings("restriction")
-public class RunToLineTests extends AbstractAntDebugTest {
+@AntUIDebugTest
+public class RunToLineTests {
 
 	private final Object fLock = new Object();
 	private IEditorPart fEditor = null;
@@ -170,21 +175,21 @@ public class RunToLineTests extends AbstractAntDebugTest {
 				}
 			}
 
-			assertNotNull("Editor did not open", fEditor); //$NON-NLS-1$
+			assertNotNull(fEditor, "Editor did not open"); //$NON-NLS-1$
 
 			final Exception[] exs = new Exception[1];
 			final IThread suspendee = thread;
 			Runnable r = () -> {
 				ITextEditor editor = (ITextEditor) fEditor;
 				IRunToLineTarget adapter = editor.getAdapter(IRunToLineTarget.class);
-				assertNotNull("no run to line adapter", adapter); //$NON-NLS-1$
+				assertNotNull(adapter, "no run to line adapter"); //$NON-NLS-1$
 				IDocumentProvider documentProvider = editor.getDocumentProvider();
-				assertNotNull("The document provider should not be null for: " + editor.getTitle(), documentProvider); //$NON-NLS-1$
+				assertNotNull(documentProvider, "The document provider should not be null for: " + editor.getTitle()); //$NON-NLS-1$
 				try {
 					// position cursor to line
 					documentProvider.connect(this);
 					IDocument document = documentProvider.getDocument(editor.getEditorInput());
-					assertNotNull("The document should be available for: " + editor.getTitle(), document); //$NON-NLS-1$
+					assertNotNull(document, "The document should be available for: " + editor.getTitle()); //$NON-NLS-1$
 					int lineOffset = document.getLineOffset(lineNumber - 1); // document is 0 based!
 					documentProvider.disconnect(this);
 					editor.selectAndReveal(lineOffset, 0);
@@ -201,8 +206,8 @@ public class RunToLineTests extends AbstractAntDebugTest {
 				throw new TestAgainException("Retest - no suspend event was recieved"); //$NON-NLS-1$
 			}
 			IStackFrame topStackFrame = thread.getTopStackFrame();
-			assertNotNull("There must be a top stack frame", topStackFrame); //$NON-NLS-1$
-			assertEquals("wrong line", expectedLineNumber, topStackFrame.getLineNumber()); //$NON-NLS-1$
+			assertNotNull(topStackFrame, "There must be a top stack frame"); //$NON-NLS-1$
+			assertEquals(expectedLineNumber, topStackFrame.getLineNumber(), "wrong line"); //$NON-NLS-1$
 		} finally {
 			terminateAndRemove(thread);
 			removeAllBreakpoints();

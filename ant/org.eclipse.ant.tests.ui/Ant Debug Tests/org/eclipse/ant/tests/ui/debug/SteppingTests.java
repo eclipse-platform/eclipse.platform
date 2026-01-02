@@ -13,9 +13,16 @@
  *******************************************************************************/
 package org.eclipse.ant.tests.ui.debug;
 
+import static org.eclipse.ant.tests.ui.debug.AntDebugTestUtil.createLineBreakpoint;
+import static org.eclipse.ant.tests.ui.debug.AntDebugTestUtil.launchToLineBreakpoint;
+import static org.eclipse.ant.tests.ui.debug.AntDebugTestUtil.removeAllBreakpoints;
+import static org.eclipse.ant.tests.ui.debug.AntDebugTestUtil.stepInto;
+import static org.eclipse.ant.tests.ui.debug.AntDebugTestUtil.stepOver;
+import static org.eclipse.ant.tests.ui.debug.AntDebugTestUtil.stepOverToHitBreakpoint;
+import static org.eclipse.ant.tests.ui.debug.AntDebugTestUtil.terminateAndRemove;
 import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getLaunchConfiguration;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.ant.internal.launching.debug.model.AntStackFrame;
 import org.eclipse.ant.internal.launching.debug.model.AntThread;
@@ -25,9 +32,10 @@ import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.ILineBreakpoint;
 import org.eclipse.debug.core.model.IStackFrame;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class SteppingTests extends AbstractAntDebugTest {
+@AntUIDebugTest
+public class SteppingTests {
 
 	/**
 	 * bug 84400
@@ -175,8 +183,10 @@ public class SteppingTests extends AbstractAntDebugTest {
 	private AntStackFrame assertFrame(String frameName, int lineNumber, AntStackFrame frame) {
 		String actualFrameName = frame.getName();
 		int actualLineNumber = frame.getLineNumber();
-		assertTrue("Name of stack frame incorrect. Expected " + frameName + " was: " + actualFrameName, frameName.equals(actualFrameName)); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Line number of stack frame incorrect. Expected " + lineNumber + " was: " + actualLineNumber, lineNumber == actualLineNumber); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(frameName.equals(actualFrameName),
+				"Name of stack frame incorrect. Expected " + frameName + " was: " + actualFrameName); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(lineNumber == actualLineNumber,
+				"Line number of stack frame incorrect. Expected " + lineNumber + " was: " + actualLineNumber); //$NON-NLS-1$ //$NON-NLS-2$
 		return frame;
 	}
 

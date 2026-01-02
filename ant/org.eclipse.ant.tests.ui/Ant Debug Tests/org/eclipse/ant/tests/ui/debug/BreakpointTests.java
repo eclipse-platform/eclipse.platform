@@ -13,11 +13,22 @@
  *******************************************************************************/
 package org.eclipse.ant.tests.ui.debug;
 
+import static org.eclipse.ant.tests.ui.debug.AntDebugTestUtil.createLineBreakpoint;
+import static org.eclipse.ant.tests.ui.debug.AntDebugTestUtil.getBreakpoint;
+import static org.eclipse.ant.tests.ui.debug.AntDebugTestUtil.getBreakpointManager;
+import static org.eclipse.ant.tests.ui.debug.AntDebugTestUtil.launchAndTerminate;
+import static org.eclipse.ant.tests.ui.debug.AntDebugTestUtil.launchToBreakpoint;
+import static org.eclipse.ant.tests.ui.debug.AntDebugTestUtil.launchToLineBreakpoint;
+import static org.eclipse.ant.tests.ui.debug.AntDebugTestUtil.removeAllBreakpoints;
+import static org.eclipse.ant.tests.ui.debug.AntDebugTestUtil.resume;
+import static org.eclipse.ant.tests.ui.debug.AntDebugTestUtil.resumeAndExit;
+import static org.eclipse.ant.tests.ui.debug.AntDebugTestUtil.resumeToLineBreakpoint;
+import static org.eclipse.ant.tests.ui.debug.AntDebugTestUtil.terminateAndRemove;
 import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getIFile;
 import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getLaunchConfiguration;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,12 +44,13 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.ILineBreakpoint;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests Ant breakpoints.
  */
-public class BreakpointTests extends AbstractAntDebugTest {
+@AntUIDebugTest
+public class BreakpointTests {
 
 	@Test
 	public void testDeferredBreakpoints() throws Exception {
@@ -59,16 +71,16 @@ public class BreakpointTests extends AbstractAntDebugTest {
 		AntThread thread = null;
 		try {
 			thread = launchToBreakpoint(fileName, true, sepVM);
-			assertNotNull("Breakpoint not hit within timeout period", thread); //$NON-NLS-1$
+			assertNotNull(thread, "Breakpoint not hit within timeout period"); //$NON-NLS-1$
 			while (!bps.isEmpty()) {
 				IBreakpoint hit = getBreakpoint(thread);
-				assertNotNull("suspended, but not by breakpoint", hit); //$NON-NLS-1$
-				assertTrue("hit un-registered breakpoint", bps.contains(hit)); //$NON-NLS-1$
-				assertTrue("suspended, but not by line breakpoint", hit instanceof ILineBreakpoint); //$NON-NLS-1$
+				assertNotNull(hit, "suspended, but not by breakpoint"); //$NON-NLS-1$
+				assertTrue(bps.contains(hit), "hit un-registered breakpoint"); //$NON-NLS-1$
+				assertTrue(hit instanceof ILineBreakpoint, "suspended, but not by line breakpoint"); //$NON-NLS-1$
 				ILineBreakpoint breakpoint = (ILineBreakpoint) hit;
 				int lineNumber = breakpoint.getLineNumber();
 				int stackLine = thread.getTopStackFrame().getLineNumber();
-				assertEquals("line numbers of breakpoint and stack frame do not match", lineNumber, stackLine); //$NON-NLS-1$
+				assertEquals(lineNumber, stackLine, "line numbers of breakpoint and stack frame do not match"); //$NON-NLS-1$
 				bps.remove(breakpoint);
 				breakpoint.delete();
 				if (!bps.isEmpty()) {

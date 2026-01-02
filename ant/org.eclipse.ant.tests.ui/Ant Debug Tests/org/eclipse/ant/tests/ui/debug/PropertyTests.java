@@ -14,10 +14,15 @@
 package org.eclipse.ant.tests.ui.debug;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.ant.tests.ui.debug.AntDebugTestUtil.createLineBreakpoint;
+import static org.eclipse.ant.tests.ui.debug.AntDebugTestUtil.launchToLineBreakpoint;
+import static org.eclipse.ant.tests.ui.debug.AntDebugTestUtil.removeAllBreakpoints;
+import static org.eclipse.ant.tests.ui.debug.AntDebugTestUtil.stepOver;
+import static org.eclipse.ant.tests.ui.debug.AntDebugTestUtil.terminateAndRemove;
 import static org.eclipse.ant.tests.ui.testplugin.AntUITestUtil.getLaunchConfiguration;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.ant.internal.launching.debug.model.AntProperty;
 import org.eclipse.ant.internal.launching.debug.model.AntStackFrame;
@@ -31,10 +36,11 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.model.ILineBreakpoint;
 import org.eclipse.debug.core.model.IVariable;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.Version;
 
-public class PropertyTests extends AbstractAntDebugTest {
+@AntUIDebugTest
+public class PropertyTests {
 
 	private static final String ANT_VERSION;
 
@@ -159,9 +165,9 @@ public class PropertyTests extends AbstractAntDebugTest {
 			throws DebugException {
 		AntStackFrame frame = (AntStackFrame) thread.getTopStackFrame();
 		AntProperty property = frame.findProperty(propertyName);
-		assertNotNull("Did not find property: " + propertyName, property); //$NON-NLS-1$
+		assertNotNull(property, "Did not find property: " + propertyName); //$NON-NLS-1$
 		AntValue value = (AntValue) property.getValue();
-		assertEquals("Value of property " + propertyName + " incorrect", propertyValue, value.getValueString()); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals(propertyValue, value.getValueString(), "Value of property " + propertyName + " incorrect"); //$NON-NLS-1$ //$NON-NLS-2$
 		return frame;
 	}
 
@@ -169,10 +175,10 @@ public class PropertyTests extends AbstractAntDebugTest {
 			throws DebugException {
 		AntStackFrame frame = (AntStackFrame) thread.getTopStackFrame();
 		AntProperty property = frame.findProperty(propertyName);
-		assertNotNull("Did not find property: " + propertyName, property); //$NON-NLS-1$
+		assertNotNull(property, "Did not find property: " + propertyName); //$NON-NLS-1$
 		AntValue value = (AntValue) property.getValue();
-		assertTrue("Value of property" + propertyName + " incorrect: " + value.getValueString() + " should start with " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				+ propertyValue, value.getValueString().startsWith(propertyValue));
+		assertTrue(value.getValueString().startsWith(propertyValue), "Value of property" + propertyName + " incorrect: " //$NON-NLS-1$ //$NON-NLS-2$
+				+ value.getValueString() + " should start with " + propertyValue); //$NON-NLS-1$
 		return frame;
 	}
 }
