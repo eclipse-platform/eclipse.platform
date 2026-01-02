@@ -16,9 +16,9 @@ package org.eclipse.core.tests.internal.localstore;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,14 +30,17 @@ import org.eclipse.core.internal.localstore.BlobStore;
 import org.eclipse.core.internal.utils.UniversalUniqueIdentifier;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.FileStoreAutoDeleteExtension;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class BlobStoreTest {
 
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+	@RegisterExtension
+	private final FileStoreAutoDeleteExtension fileStoreExtension = new FileStoreAutoDeleteExtension();
 
 	@Test
 	public void testConstructor() throws CoreException {
@@ -63,11 +66,11 @@ public class BlobStoreTest {
 	}
 
 	private IFileStore createStore() throws CoreException {
-		IFileStore root = workspaceRule.getTempStore();
+		IFileStore root = fileStoreExtension.getTempStore();
 		root.mkdir(EFS.NONE, null);
 		IFileInfo info = root.fetchInfo();
-		assertTrue("createStore.1", info.exists());
-		assertTrue("createStore.2", info.isDirectory());
+		assertTrue(info.exists());
+		assertTrue(info.isDirectory());
 		return root;
 	}
 

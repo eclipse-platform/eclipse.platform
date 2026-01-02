@@ -22,9 +22,9 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStrea
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureOutOfSync;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -55,19 +55,22 @@ import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.After;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.FileStoreAutoDeleteExtension;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * This class defines all tests for the HistoryStore Class.
  */
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class HistoryStoreTest {
 
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+	@RegisterExtension
+	private final FileStoreAutoDeleteExtension fileStoreExtension = new FileStoreAutoDeleteExtension();
 
 	static class LogListenerVerifier implements ILogListener {
 		List<Integer> actual = new ArrayList<>();
@@ -129,9 +132,9 @@ public class HistoryStoreTest {
 	}
 
 	public static void assertFileStateEquals(String tag, IFileState expected, IFileState actual) {
-		assertEquals(tag + " path differs", expected.getFullPath(), actual.getFullPath());
-		assertEquals(tag + " timestamp differs", expected.getModificationTime(), actual.getModificationTime());
-		assertEquals(tag + " uuid differs", ((FileState) expected).getUUID(), ((FileState) actual).getUUID());
+		assertEquals(expected.getFullPath(), actual.getFullPath(), tag + " path differs");
+		assertEquals(expected.getModificationTime(), actual.getModificationTime(), tag + " timestamp differs");
+		assertEquals(((FileState) expected).getUUID(), ((FileState) actual).getUUID(), tag + " uuid differs");
 	}
 
 	/*
@@ -175,7 +178,7 @@ public class HistoryStoreTest {
 		return currentDescription;
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		wipeHistoryStore(createTestMonitor());
 	}
@@ -254,13 +257,13 @@ public class HistoryStoreTest {
 		// assert that states are in the correct order (newer ones first)
 		long lastModified = states[0].getModificationTime();
 		for (int i = 1; i < states.length; i++) {
-			assertTrue("1.3." + i, lastModified >= states[i].getModificationTime());
+			assertTrue(lastModified >= states[i].getModificationTime(), i + "");
 			lastModified = states[i].getModificationTime();
 		}
 
 		// assert that the most recent states were preserved
 		for (int i = 0; i < states.length; i++) {
-			assertFileStateEquals("1.4." + i, oldStates[i], states[i]);
+			assertFileStateEquals(i + "", oldStates[i], states[i]);
 		}
 
 		/* test max file state size */
@@ -279,7 +282,7 @@ public class HistoryStoreTest {
 		// #states = size + 1 for the 0 byte length file to begin with.
 		for (int i = 0; i < states.length; i++) {
 			int bytesRead = numBytes(states[i].getContents());
-			assertTrue("2.2." + i, bytesRead <= description.getMaxFileStateSize());
+			assertTrue(bytesRead <= description.getMaxFileStateSize(), i + "");
 		}
 
 		/* test max file longevity */
@@ -324,7 +327,7 @@ public class HistoryStoreTest {
 		IHistoryStore store = ((Resource) getWorkspace().getRoot()).getLocalManager().getHistoryStore();
 
 		// location of the data on disk
-		IFileStore fileStore = workspaceRule.getTempStore();
+		IFileStore fileStore = fileStoreExtension.getTempStore();
 		createInFileSystem(fileStore);
 		assertThat(store.getStates(file.getFullPath(), createTestMonitor())).as("check file has no state").isEmpty();
 
@@ -444,12 +447,12 @@ public class HistoryStoreTest {
 		// assert that states are in the correct order (newer ones first)
 		long lastModified = states[0].getModificationTime();
 		for (int i = 1; i < states.length; i++) {
-			assertTrue("2.4." + i, lastModified >= states[i].getModificationTime());
+			assertTrue(lastModified >= states[i].getModificationTime(), i + "");
 			lastModified = states[i].getModificationTime();
 		}
 		// Make sure we kept the 3 newer states.
 		for (int i = 0; i < states.length; i++) {
-			assertTrue("2.5." + i, oldLastModTimes[i] == states[i].getModificationTime());
+			assertTrue(oldLastModTimes[i] == states[i].getModificationTime(), i + "");
 		}
 
 		/* test max file longevity */
@@ -531,7 +534,7 @@ public class HistoryStoreTest {
 
 		// Check to make sure the file has been copied
 		IFile file2 = folder2.getFile("file1.txt");
-		assertTrue("1.3", file2.getFullPath().toString().endsWith("folder2/file1.txt"));
+		assertTrue(file2.getFullPath().toString().endsWith("folder2/file1.txt"));
 
 		// Give the new (copied file) some new contents
 		file2.setContents(createInputStream(contents[3]), true, true, createTestMonitor());
@@ -1122,7 +1125,7 @@ public class HistoryStoreTest {
 
 		// Check to make sure the file has been moved
 		IFile file2 = folder2.getFile("file1.txt");
-		assertTrue("1.3", file2.getFullPath().toString().endsWith("folder2/file1.txt"));
+		assertTrue(file2.getFullPath().toString().endsWith("folder2/file1.txt"));
 
 		// Give the new (moved file) some new contents
 		file2.setContents(createInputStream(contents[3]), true, true, createTestMonitor());
@@ -1188,7 +1191,7 @@ public class HistoryStoreTest {
 
 		// Check to make sure the file has been moved
 		IFile file2 = project2.getFile("folder1/file1.txt");
-		assertTrue("1.3", file2.getFullPath().toString().endsWith("SecondMoveProjectProject/folder1/file1.txt"));
+		assertTrue(file2.getFullPath().toString().endsWith("SecondMoveProjectProject/folder1/file1.txt"));
 
 		// Give the new (copied file) some new contents
 		file2.setContents(createInputStream(contents[3]), true, true, createTestMonitor());

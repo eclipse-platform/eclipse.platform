@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.internal.localstore;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.File;
 import java.util.Date;
@@ -22,15 +23,12 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Assume;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class RefreshLocalPerformanceTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	/** big site default volume (windows) */
 	public static final String bigSiteDevice = "d:";
@@ -76,7 +74,7 @@ public class RefreshLocalPerformanceTest {
 	@Test
 	public void testLocalRefreshPerformance() throws Exception {
 		// test if the test can be done in this machine
-		Assume.assumeTrue(bigSiteLocation.toFile().isDirectory());
+		assumeTrue(bigSiteLocation.toFile().isDirectory());
 
 		// create common objects
 		int n = 10;

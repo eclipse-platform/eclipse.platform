@@ -18,9 +18,9 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSyst
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import org.eclipse.core.internal.resources.Workspace;
@@ -30,15 +30,13 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.function.ThrowingRunnable;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.function.Executable;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class CaseSensitivityTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private final boolean isCaseSensitive = Workspace.caseSensitive;
 
@@ -53,12 +51,12 @@ public class CaseSensitivityTest {
 
 		// create a second project; should fail because has same name with different casing
 		IProject project2 = getWorkspace().getRoot().getProject(projectName.toUpperCase());
-		ThrowingRunnable projectCreation = () -> {
+		Executable projectCreation = () -> {
 			project2.create(null);
 			project2.open(null);
 		};
 		if (isCaseSensitive) {
-			projectCreation.run();
+			projectCreation.execute();
 		} else {
 			assertThrows(CoreException.class, projectCreation);
 		}
@@ -76,9 +74,9 @@ public class CaseSensitivityTest {
 
 		// create a second folder; should fail because has same name with different casing
 		IFolder folder2 = project.getFolder(folderName.toUpperCase());
-		ThrowingRunnable folderCreation = () -> folder2.create(true, true, null);
+		Executable folderCreation = () -> folder2.create(true, true, null);
 		if (isCaseSensitive) {
-			folderCreation.run();
+			folderCreation.execute();
 		} else {
 			assertThrows(CoreException.class, folderCreation);
 		}
@@ -100,9 +98,9 @@ public class CaseSensitivityTest {
 
 		// create a second file; should fail because has same name with different casing
 		IFile file2 = project.getFile(fileName.toUpperCase());
-		ThrowingRunnable fileCreation = () -> file2.create(createRandomContentsStream(), true, null);
+		Executable fileCreation = () -> file2.create(createRandomContentsStream(), true, null);
 		if (isCaseSensitive) {
-			fileCreation.run();
+			fileCreation.execute();
 		} else {
 			assertThrows(CoreException.class, fileCreation);
 		}
@@ -127,10 +125,10 @@ public class CaseSensitivityTest {
 		project2.open(null);
 
 		// try to rename project 1 to the uppercase name of project 2, should fail
-		ThrowingRunnable projectMovement = () -> project1.move(IPath.ROOT.append(project2.getName().toUpperCase()),
+		Executable projectMovement = () -> project1.move(IPath.ROOT.append(project2.getName().toUpperCase()),
 				true, null);
 		if (isCaseSensitive) {
-			projectMovement.run();
+			projectMovement.execute();
 		} else {
 			assertThrows(CoreException.class, projectMovement);
 		}
@@ -153,9 +151,9 @@ public class CaseSensitivityTest {
 
 		// try to rename folder 1 to the uppercase name of folder 2, should fail
 		IFolder folder3 = project.getFolder(folder2name.toUpperCase());
-		ThrowingRunnable folderMovement = () -> folder1.move(folder3.getFullPath(), true, null);
+		Executable folderMovement = () -> folder1.move(folder3.getFullPath(), true, null);
 		if (isCaseSensitive) {
-			folderMovement.run();
+			folderMovement.execute();
 		} else {
 			assertThrows(CoreException.class, folderMovement);
 		}
@@ -178,9 +176,9 @@ public class CaseSensitivityTest {
 
 		// try to rename folder 1 to the uppercase name of folder 2, should fail
 		IFile file3 = project.getFile(file2name.toUpperCase());
-		ThrowingRunnable fileMovement = () -> file1.move(file3.getFullPath(), true, null);
+		Executable fileMovement = () -> file1.move(file3.getFullPath(), true, null);
 		if (isCaseSensitive) {
-			fileMovement.run();
+			fileMovement.execute();
 		} else {
 			assertThrows(CoreException.class, fileMovement);
 		}
@@ -203,10 +201,10 @@ public class CaseSensitivityTest {
 
 		// try to copy the folder from source project to destination project.
 		// should fail due to conflict
-		ThrowingRunnable folderCopy = () -> folder1.copy(destinationProject.getFullPath().append(folder1.getName()),
+		Executable folderCopy = () -> folder1.copy(destinationProject.getFullPath().append(folder1.getName()),
 				true, null);
 		if (isCaseSensitive) {
-			folderCopy.run();
+			folderCopy.execute();
 		} else {
 			assertThrows(CoreException.class, folderCopy);
 		}
@@ -234,10 +232,10 @@ public class CaseSensitivityTest {
 
 		// try to copy the file from source project to destination project.
 		// should fail due to conflict
-		ThrowingRunnable fileCopy = () -> file1.copy(destinationProject.getFullPath().append(file1.getName()), true,
+		Executable fileCopy = () -> file1.copy(destinationProject.getFullPath().append(file1.getName()), true,
 				null);
 		if (isCaseSensitive) {
-			fileCopy.run();
+			fileCopy.execute();
 		} else {
 			assertThrows(CoreException.class, fileCopy);
 		}
@@ -265,10 +263,10 @@ public class CaseSensitivityTest {
 
 		// try to copy the folder from source project to destination project.
 		// should fail due to conflict with existing file with case-different name
-		ThrowingRunnable folderCopy = () -> folder.copy(destinationProject.getFullPath().append(folder.getName()), true,
+		Executable folderCopy = () -> folder.copy(destinationProject.getFullPath().append(folder.getName()), true,
 				null);
 		if (isCaseSensitive) {
-			folderCopy.run();
+			folderCopy.execute();
 		} else {
 			assertThrows(CoreException.class, folderCopy);
 		}
@@ -296,10 +294,10 @@ public class CaseSensitivityTest {
 
 		// try to copy the file from source project to destination project.
 		// should fail due to conflict with existing folder with case-different name
-		ThrowingRunnable fileCopy = () -> file.copy(destinationProject.getFullPath().append(file.getName()), true,
+		Executable fileCopy = () -> file.copy(destinationProject.getFullPath().append(file.getName()), true,
 				null);
 		if (isCaseSensitive) {
-			fileCopy.run();
+			fileCopy.execute();
 		} else {
 			assertThrows(CoreException.class, fileCopy);
 		}

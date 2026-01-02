@@ -25,12 +25,12 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.isLocal;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.InputStream;
 import java.net.URI;
@@ -57,19 +57,17 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.tests.internal.filesystem.bug440110.Bug440110FileSystem;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class FileSystemResourceManagerTest implements ICoreConstants {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private IProject project;
 
-	@Before
+	@BeforeEach
 	public void createTestProject() throws CoreException {
 		project = getWorkspace().getRoot().getProject("Project");
 		createInWorkspace(project);
@@ -308,11 +306,11 @@ public class FileSystemResourceManagerTest implements ICoreConstants {
 		/* test the overwrite parameter (false) */
 		ensureOutOfSync(file);
 		InputStream another2 = createInputStream(anotherContent);
-		assertThrows("Should fail writing out of sync file #1", CoreException.class,
-				() -> write(file, another2, false, null));
+		assertThrows(CoreException.class, () -> write(file, another2, false, null),
+				"Should fail writing out of sync file #1");
 		ensureOutOfSync(file);
-		assertThrows("Should fail writing out of sync file #2", CoreException.class,
-				() -> file.setContents(another2, false, false, null));
+		assertThrows(CoreException.class, () -> file.setContents(another2, false, false, null),
+				"Should fail writing out of sync file #2");
 		try (InputStream another = createInputStream(anotherContent)) {
 			file.setContents(another, true, false, null);
 		}
@@ -321,8 +319,8 @@ public class FileSystemResourceManagerTest implements ICoreConstants {
 		removeFromFileSystem(file); // FIXME Race Condition with asynchronous workplace refresh see Bug 571133
 		InputStream another3 = createInputStream(anotherContent);
 		waitForRefresh(); // wait for refresh to ensure that file is not present in workspace
-		assertThrows("Should fail writing non existing file", CoreException.class,
-				() -> write(file, another3, false, null));
+		assertThrows(CoreException.class, () -> write(file, another3, false, null),
+				"Should fail writing non existing file");
 
 		/* remove trash */
 		removeFromWorkspace(project);
@@ -339,8 +337,8 @@ public class FileSystemResourceManagerTest implements ICoreConstants {
 		write(file, createInputStream(content), true, null);
 
 		file.delete(true, null);
-		assertThrows("Should fail writing file that is already deleted", CoreException.class,
-				() -> write(file, createInputStream(content), false, null));
+		assertThrows(CoreException.class, () -> write(file, createInputStream(content), false, null),
+				"Should fail writing file that is already deleted");
 	}
 
 	@Test
@@ -405,7 +403,7 @@ public class FileSystemResourceManagerTest implements ICoreConstants {
 		// wrap in runnable to prevent snapshot from occurring in the middle.
 		getWorkspace().run((IWorkspaceRunnable) monitor -> {
 			removeFromFileSystem(project);
-			assertFalse("2.1", fileStore.fetchInfo().isDirectory());
+			assertFalse(fileStore.fetchInfo().isDirectory());
 			//write project in a runnable, otherwise tree will be locked
 			((Project) project).writeDescription(IResource.FORCE);
 		}, null);
@@ -428,10 +426,10 @@ public class FileSystemResourceManagerTest implements ICoreConstants {
 		project.open(null);
 		FileSystemResourceManager manager = ((Workspace) getWorkspace()).getFileSystemManager();
 		URI location = manager.locationURIFor(project);
-		assertNotNull("Expected location for accessible project to not be null", location);
+		assertNotNull(location, "Expected location for accessible project to not be null");
 		project.delete(true, null);
 		URI locationAfterDelete = manager.locationURIFor(project);
-		assertEquals("Expected location of project to not change after delete", location, locationAfterDelete);
+		assertEquals(location, locationAfterDelete, "Expected location of project to not change after delete");
 	}
 
 	@Test
@@ -449,7 +447,7 @@ public class FileSystemResourceManagerTest implements ICoreConstants {
 			throws CoreException {
 		try {
 			IWorkspace workspace = getWorkspace();
-			assertNotNull("workspace cannot be null", workspace);
+			assertNotNull(workspace, "workspace cannot be null");
 			workspace.run(new WriteFileContents(file, contents, force, getLocalManager()), monitor);
 		} catch (Throwable t) {
 			// Bug 541493: we see unlikely stack traces reported by JUnit here, log the
@@ -474,21 +472,21 @@ public class FileSystemResourceManagerTest implements ICoreConstants {
 
 		WriteFileContents(IFile file, InputStream contents, boolean force, FileSystemResourceManager localManager) {
 			this.file = file;
-			assertNotNull("file cannot be null", file);
+			assertNotNull(file, "file cannot be null");
 			this.contents = contents;
-			assertNotNull("contents cannot be null", contents);
+			assertNotNull(contents, "contents cannot be null");
 			this.force = force;
 			this.localManager = localManager;
-			assertNotNull("file system resource manager cannot be null", localManager);
+			assertNotNull(localManager, "file system resource manager cannot be null");
 		}
 
 		@Override
 		public void run(IProgressMonitor jobMonitor) throws CoreException {
 			int flags = force ? IResource.FORCE : IResource.NONE;
 			IFileStore store = ((Resource) file).getStore();
-			assertNotNull("file store cannot be null", store);
+			assertNotNull(store, "file store cannot be null");
 			IFileInfo info = store.fetchInfo();
-			assertNotNull("file info cannot be null for file " + file, info);
+			assertNotNull(info, "file info cannot be null for file " + file);
 			localManager.write(file, contents, info, flags, false, jobMonitor);
 		}
 	}
