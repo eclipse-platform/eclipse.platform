@@ -14,11 +14,11 @@
 package org.eclipse.debug.tests.console;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -142,7 +142,7 @@ public class IOConsoleTests {
 		if (assertionError.getSuppressed().length > 0) {
 			throw assertionError;
 		}
-		assertTrue("Test triggered errors in IOConsole: " + allErrors, loggedErrors.isEmpty());
+		assertTrue(loggedErrors.isEmpty(), "Test triggered errors in IOConsole: " + allErrors);
 	}
 
 	/**
@@ -191,7 +191,7 @@ public class IOConsoleTests {
 		try (InputStream consoleIn = c.getConsole().getInputStream()) {
 			if (expectedInputLines.length > 0) {
 				assertNotNull(consoleIn);
-				assertTrue("InputStream is empty.", consoleIn.available() > 0);
+				assertTrue(consoleIn.available() > 0, "InputStream is empty.");
 
 				final List<String> inputLines = new ArrayList<>();
 				try (BufferedReader reader = new BufferedReader(new InputStreamReader(consoleIn, c.getConsole().getCharset()))) {
@@ -200,14 +200,14 @@ public class IOConsoleTests {
 						inputLines.add(line);
 					}
 				}
-				assertEquals("Input contains to many/few lines.", expectedInputLines.length, inputLines.size());
+				assertEquals(expectedInputLines.length, inputLines.size(), "Input contains to many/few lines.");
 				for (int i = 0; i < expectedInputLines.length; i++) {
-					assertEquals("Content of input line " + i + " not as expected.", expectedInputLines[i], inputLines.get(i));
+					assertEquals(expectedInputLines[i], inputLines.get(i), "Content of input line " + i + " not as expected.");
 				}
 			}
 		}
 		c.waitForScheduledJobs();
-		assertTrue("Console close was not signaled.", consoleFinished.get());
+		assertTrue(consoleFinished.get(), "Console close was not signaled.");
 
 		final IConsoleManager consoleManager = ConsolePlugin.getDefault().getConsoleManager();
 		consoleManager.removeConsoles(new IConsole[] { c.getConsole() });
@@ -227,7 +227,7 @@ public class IOConsoleTests {
 
 		c.writeAndVerify("New console content.");
 		c.clear();
-		assertEquals("Unexpected partition type.", IOConsoleTestUtil.inputPartitionType(), c.getPartitioner().getContentType(0));
+		assertEquals(IOConsoleTestUtil.inputPartitionType(), c.getPartitioner().getContentType(0), "Unexpected partition type.");
 
 		c.insertAndVerify("wrong").write("out").verifyContent("wrongout").verifyPartitions(2);
 		c.clear().insertTypingAndVerify("i").write("ooo").verifyContent("iooo").verifyPartitions();
@@ -297,7 +297,7 @@ public class IOConsoleTests {
 		int pos = c.getCaretOffset();
 		c.insertTypingAndVerify("NewLine").moveCaret(-4).enter();
 		expectedInput.add("NewLine");
-		assertEquals("Expected newline entered inside line does not break this line.", c.getContentLength(), c.getCaretOffset());
+		assertEquals(c.getContentLength(), c.getCaretOffset(), "Expected newline entered inside line does not break this line.");
 		c.verifyPartitions().verifyContentByOffset("NewLine", pos);
 		c.backspace().insertAndVerify("--").select(0, c.getContentLength()).insertTyping("<~>");
 		c.verifyContentByLine("<~>", 2).verifyPartitions();
@@ -444,20 +444,20 @@ public class IOConsoleTests {
 		c.getConsole().setHandleControlCharacters(false);
 		c.getConsole().setCarriageReturnAsControlCharacter(false);
 		c.write("\r..");
-		assertEquals("Wrong number of lines.", 2, c.getDocument().getNumberOfLines());
+		assertEquals(2, c.getDocument().getNumberOfLines(), "Wrong number of lines.");
 
 		c.getConsole().setCarriageReturnAsControlCharacter(true);
 		c.write("\r..");
-		assertEquals("Wrong number of lines.", 3, c.getDocument().getNumberOfLines());
+		assertEquals(3, c.getDocument().getNumberOfLines(), "Wrong number of lines.");
 
 		c.getConsole().setHandleControlCharacters(true);
 		c.getConsole().setCarriageReturnAsControlCharacter(false);
 		c.write("\r..");
-		assertEquals("Wrong number of lines.", 4, c.getDocument().getNumberOfLines());
+		assertEquals(4, c.getDocument().getNumberOfLines(), "Wrong number of lines.");
 
 		c.getConsole().setCarriageReturnAsControlCharacter(true);
 		c.write("\r..");
-		assertEquals("Wrong number of lines.", 4, c.getDocument().getNumberOfLines());
+		assertEquals(4, c.getDocument().getNumberOfLines(), "Wrong number of lines.");
 
 		closeConsole(c);
 		assertNoError();
@@ -556,19 +556,19 @@ public class IOConsoleTests {
 		try (IOConsoleOutputStream err = c.getConsole().newOutputStream()) {
 			// test simple carriage return cases
 			c.write("\r");
-			assertEquals("Wrong number of lines.", 1, c.getDocument().getNumberOfLines());
+			assertEquals(1, c.getDocument().getNumberOfLines(), "Wrong number of lines.");
 			c.writeFast("bad", err).write("\rgood").verifyContent("good").verifyPartitions(1);
-			assertEquals("Wrong number of lines.", 1, c.getDocument().getNumberOfLines());
+			assertEquals(1, c.getDocument().getNumberOfLines(), "Wrong number of lines.");
 
 			// test carriage return stops at line start
 			c.clear();
 			c.writeFast("First line\r\n").write("Zecond line", err);
 			c.verifyContentByLine("First line", 0).verifyContentByLine("Zecond line", 1).verifyPartitions(2);
-			assertEquals("Wrong number of lines.", 2, c.getDocument().getNumberOfLines());
+			assertEquals(2, c.getDocument().getNumberOfLines(), "Wrong number of lines.");
 			c.writeFast("\r").write("3.    ").verifyContentByLine("3.     line", 1).verifyPartitions(2);
-			assertEquals("Wrong number of lines.", 2, c.getDocument().getNumberOfLines());
+			assertEquals(2, c.getDocument().getNumberOfLines(), "Wrong number of lines.");
 			c.writeFast("\r\r\r", err).write("Second").verifyContentByLine("Second line", 1).verifyPartitions(2);
-			assertEquals("Wrong number of lines.", 2, c.getDocument().getNumberOfLines());
+			assertEquals(2, c.getDocument().getNumberOfLines(), "Wrong number of lines.");
 
 			// test carriage return with input partitions
 			c.clear();
@@ -581,11 +581,11 @@ public class IOConsoleTests {
 			// test in combination with \r\n
 			c.clear();
 			c.write("\r\n");
-			assertEquals("Wrong number of lines.", 2, c.getDocument().getNumberOfLines());
+			assertEquals(2, c.getDocument().getNumberOfLines(), "Wrong number of lines.");
 			c.writeFast("err", err).writeFast("\r\r\r\r\r\r\r\r\n\n").write("out");
-			assertEquals("Wrong number of lines.", 4, c.getDocument().getNumberOfLines());
+			assertEquals(4, c.getDocument().getNumberOfLines(), "Wrong number of lines.");
 			c.verifyContentByLine("out", -1).verifyPartitions();
-			assertTrue("Line breaks did not overwrite text.", !c.getDocument().get().contains("err"));
+			assertFalse(c.getDocument().get().contains("err"), "Line breaks did not overwrite text.");
 		}
 		closeConsole(c);
 		assertNoError();
@@ -600,14 +600,14 @@ public class IOConsoleTests {
 		c.getConsole().setHandleControlCharacters(true);
 		try (IOConsoleOutputStream err = c.getConsole().newOutputStream()) {
 			c.write("\f");
-			assertEquals("Wrong number of lines.", 2, c.getDocument().getNumberOfLines());
+			assertEquals(2, c.getDocument().getNumberOfLines(), "Wrong number of lines.");
 			c.verifyContentByLine("", 0).verifyContentByLine("", 1);
 			c.writeAndVerify("output").writeFast("\f").write("more");
 			c.verifyContentByLine("output", 1);
 			c.verifyContentByLine("      more", 2);
 			c.clear();
 			c.writeFast("\f\f").writeFast("\f", err).write("\fend").verifyPartitions(2);
-			assertEquals("Wrong number of lines.", 5, c.getDocument().getNumberOfLines());
+			assertEquals(5, c.getDocument().getNumberOfLines(), "Wrong number of lines.");
 			c.verifyContentByLine("end", 4);
 			c.clear();
 			c.write("1st\f2nd\f3rd").verifyPartitions();
@@ -711,12 +711,12 @@ public class IOConsoleTests {
 				}
 				c.write("last\n");
 				c.verifyContentByLine("first", 0).verifyContentByLine("last", -2);
-				assertTrue("Document not filled.", c.getDocument().getNumberOfLines() > 15);
+				assertTrue(c.getDocument().getNumberOfLines() > 15, "Document not filled.");
 
 				c.getConsole().setWaterMarks(50, 100);
 				c.waitForScheduledJobs();
 				c.verifyContentByOffset("0123456789", 0);
-				assertTrue("Document not trimmed.", c.getDocument().getNumberOfLines() < 15);
+				assertTrue(c.getDocument().getNumberOfLines() < 15, "Document not trimmed.");
 			}
 			closeConsole(c);
 		}
@@ -775,58 +775,57 @@ public class IOConsoleTests {
 
 			styles = c.getPartitioner().getStyleRanges(0, c.getContentLength());
 			checkOverlapping(styles);
-			assertNotNull("Partitioner provided no styles.", styles);
+			assertNotNull(styles, "Partitioner provided no styles.");
 			assertThat(styles).hasSizeGreaterThanOrEqualTo(3);
 
 			styles = c.getPartitioner().getStyleRanges(5, 20);
 			checkOverlapping(styles);
-			assertNotNull("Partitioner provided no styles.", styles);
+			assertNotNull(styles, "Partitioner provided no styles.");
 			assertThat(styles).hasSize(1);
 
 			styles = c.getPartitioner().getStyleRanges(loremEnd + 1, 1);
 			checkOverlapping(styles);
-			assertNotNull("Partitioner provided no styles.", styles);
+			assertNotNull(styles, "Partitioner provided no styles.");
 			assertThat(styles).hasSize(1);
 
 			styles = c.getPartitioner().getStyleRanges(loremEnd, c.getContentLength() - loremEnd);
 			checkOverlapping(styles);
-			assertNotNull("Partitioner provided no styles.", styles);
+			assertNotNull(styles, "Partitioner provided no styles.");
 			assertThat(styles).hasSize(2);
 
 			styles = c.getPartitioner().getStyleRanges(loremEnd - 3, 5);
 			checkOverlapping(styles);
-			assertNotNull("Partitioner provided no styles.", styles);
+			assertNotNull(styles, "Partitioner provided no styles.");
 			assertThat(styles).hasSize(2);
 
 			styles = c.getPartitioner().getStyleRanges(loremEnd - 3, 8);
 			checkOverlapping(styles);
-			assertNotNull("Partitioner provided no styles.", styles);
+			assertNotNull(styles, "Partitioner provided no styles.");
 			assertThat(styles).hasSize(3);
 
-
-			assertTrue("Offset should be read-only.", c.getPartitioner().isReadOnly(0));
-			assertTrue("Offset should be read-only.", c.getPartitioner().isReadOnly(1));
-			assertFalse("Offset should be writable.", c.getPartitioner().isReadOnly(2));
+			assertTrue(c.getPartitioner().isReadOnly(0), "Offset should be read-only.");
+			assertTrue(c.getPartitioner().isReadOnly(1), "Offset should be read-only.");
+			assertFalse(c.getPartitioner().isReadOnly(2), "Offset should be writable.");
 			for (int i = 3; i < loremEnd; i++) {
-				assertTrue("Offset should be read-only.", c.getPartitioner().isReadOnly(i));
+				assertTrue(c.getPartitioner().isReadOnly(i), "Offset should be read-only.");
 			}
-			assertFalse("Offset should be writable.", c.getPartitioner().isReadOnly(loremEnd + 0));
-			assertFalse("Offset should be writable.", c.getPartitioner().isReadOnly(loremEnd + 1));
-			assertFalse("Offset should be writable.", c.getPartitioner().isReadOnly(loremEnd + 2));
-			assertTrue("Offset should be read-only.", c.getPartitioner().isReadOnly(loremEnd + 3));
-			assertTrue("Offset should be read-only.", c.getPartitioner().isReadOnly(loremEnd + 4));
-			assertTrue("Offset should be read-only.", c.getPartitioner().isReadOnly(loremEnd + 5));
+			assertFalse(c.getPartitioner().isReadOnly(loremEnd + 0), "Offset should be writable.");
+			assertFalse(c.getPartitioner().isReadOnly(loremEnd + 1), "Offset should be writable.");
+			assertFalse(c.getPartitioner().isReadOnly(loremEnd + 2), "Offset should be writable.");
+			assertTrue(c.getPartitioner().isReadOnly(loremEnd + 3), "Offset should be read-only.");
+			assertTrue(c.getPartitioner().isReadOnly(loremEnd + 4), "Offset should be read-only.");
+			assertTrue(c.getPartitioner().isReadOnly(loremEnd + 5), "Offset should be read-only.");
 
 			if (c.getPartitioner() instanceof IConsoleDocumentPartitionerExtension) {
 				final IConsoleDocumentPartitionerExtension extension = (IConsoleDocumentPartitionerExtension) c.getPartitioner();
-				assertFalse("Writable parts not recognized.", extension.isReadOnly(0, c.getContentLength()));
-				assertTrue("Read-only parts not recognized.", extension.containsReadOnly(0, c.getContentLength()));
-				assertFalse("Writable parts not recognized.", extension.isReadOnly(0, 3));
-				assertTrue("Read-only parts not recognized.", extension.containsReadOnly(0, 3));
-				assertFalse("Area should be writable.", extension.isReadOnly(loremEnd, 3));
-				assertFalse("Area should be writable.", extension.containsReadOnly(loremEnd, 3));
-				assertTrue("Area should be read-only.", extension.isReadOnly(6, 105));
-				assertTrue("Area should be read-only.", extension.containsReadOnly(8, 111));
+				assertFalse(extension.isReadOnly(0, c.getContentLength()), "Writable parts not recognized.");
+				assertTrue(extension.containsReadOnly(0, c.getContentLength()), "Read-only parts not recognized.");
+				assertFalse(extension.isReadOnly(0, 3), "Writable parts not recognized.");
+				assertTrue(extension.containsReadOnly(0, 3), "Read-only parts not recognized.");
+				assertFalse(extension.isReadOnly(loremEnd, 3), "Area should be writable.");
+				assertFalse(extension.containsReadOnly(loremEnd, 3), "Area should be writable.");
+				assertTrue(extension.isReadOnly(6, 105), "Area should be read-only.");
+				assertTrue(extension.containsReadOnly(8, 111), "Area should be read-only.");
 
 				assertThat(extension.computeReadOnlyPartitions()).as("has read-only parts").hasSizeGreaterThan(0);
 				assertThat(extension.computeWritablePartitions()).as("has writable parts").hasSizeGreaterThan(0);
@@ -837,32 +836,32 @@ public class IOConsoleTests {
 				assertThat(extension.computeReadOnlyPartitions(loremEnd, 2)).as("area is not read-only").isEmpty();
 				assertThat(extension.computeWritablePartitions(loremEnd, 2)).as("area is writable").hasSizeGreaterThan(0);
 
-				assertEquals("Got wrong offset.", 0, extension.getNextOffsetByState(0, false));
-				assertEquals("Got wrong offset.", 2, extension.getNextOffsetByState(0, true));
-				assertEquals("Got wrong offset.", 0, extension.getPreviousOffsetByState(0, false));
-				assertEquals("Got wrong offset.", -1, extension.getPreviousOffsetByState(0, true));
-				assertEquals("Got wrong offset.", 1, extension.getNextOffsetByState(1, false));
-				assertEquals("Got wrong offset.", 2, extension.getNextOffsetByState(1, true));
-				assertEquals("Got wrong offset.", 1, extension.getPreviousOffsetByState(1, false));
-				assertEquals("Got wrong offset.", -1, extension.getPreviousOffsetByState(1, true));
-				assertEquals("Got wrong offset.", 3, extension.getNextOffsetByState(2, false));
-				assertEquals("Got wrong offset.", 2, extension.getNextOffsetByState(2, true));
-				assertEquals("Got wrong offset.", 1, extension.getPreviousOffsetByState(2, false));
-				assertEquals("Got wrong offset.", 2, extension.getPreviousOffsetByState(2, true));
+				assertEquals(0, extension.getNextOffsetByState(0, false), "Got wrong offset.");
+				assertEquals(2, extension.getNextOffsetByState(0, true), "Got wrong offset.");
+				assertEquals(0, extension.getPreviousOffsetByState(0, false), "Got wrong offset.");
+				assertEquals(-1, extension.getPreviousOffsetByState(0, true), "Got wrong offset.");
+				assertEquals(1, extension.getNextOffsetByState(1, false), "Got wrong offset.");
+				assertEquals(2, extension.getNextOffsetByState(1, true), "Got wrong offset.");
+				assertEquals(1, extension.getPreviousOffsetByState(1, false), "Got wrong offset.");
+				assertEquals(-1, extension.getPreviousOffsetByState(1, true), "Got wrong offset.");
+				assertEquals(3, extension.getNextOffsetByState(2, false), "Got wrong offset.");
+				assertEquals(2, extension.getNextOffsetByState(2, true), "Got wrong offset.");
+				assertEquals(1, extension.getPreviousOffsetByState(2, false), "Got wrong offset.");
+				assertEquals(2, extension.getPreviousOffsetByState(2, true), "Got wrong offset.");
 				for (int i = 3; i < loremEnd; i++) {
-					assertEquals("Got wrong offset.", i, extension.getNextOffsetByState(i, false));
-					assertEquals("Got wrong offset.", loremEnd, extension.getNextOffsetByState(i, true));
-					assertEquals("Got wrong offset.", i, extension.getPreviousOffsetByState(i, false));
-					assertEquals("Got wrong offset.", 2, extension.getPreviousOffsetByState(i, true));
+					assertEquals(i, extension.getNextOffsetByState(i, false), "Got wrong offset.");
+					assertEquals(loremEnd, extension.getNextOffsetByState(i, true), "Got wrong offset.");
+					assertEquals(i, extension.getPreviousOffsetByState(i, false), "Got wrong offset.");
+					assertEquals(2, extension.getPreviousOffsetByState(i, true), "Got wrong offset.");
 				}
-				assertEquals("Got wrong offset.", loremEnd + 3, extension.getNextOffsetByState(loremEnd, false));
-				assertEquals("Got wrong offset.", loremEnd, extension.getNextOffsetByState(loremEnd, true));
-				assertEquals("Got wrong offset.", loremEnd - 1, extension.getPreviousOffsetByState(loremEnd, false));
-				assertEquals("Got wrong offset.", loremEnd, extension.getPreviousOffsetByState(loremEnd, true));
-				assertEquals("Got wrong offset.", loremEnd + 3, extension.getNextOffsetByState(loremEnd + 2, false));
-				assertEquals("Got wrong offset.", loremEnd + 2, extension.getNextOffsetByState(loremEnd + 2, true));
-				assertEquals("Got wrong offset.", loremEnd - 1, extension.getPreviousOffsetByState(loremEnd + 2, false));
-				assertEquals("Got wrong offset.", loremEnd + 2, extension.getPreviousOffsetByState(loremEnd + 2, true));
+				assertEquals(loremEnd + 3, extension.getNextOffsetByState(loremEnd, false), "Got wrong offset.");
+				assertEquals(loremEnd, extension.getNextOffsetByState(loremEnd, true), "Got wrong offset.");
+				assertEquals(loremEnd - 1, extension.getPreviousOffsetByState(loremEnd, false), "Got wrong offset.");
+				assertEquals(loremEnd, extension.getPreviousOffsetByState(loremEnd, true), "Got wrong offset.");
+				assertEquals(loremEnd + 3, extension.getNextOffsetByState(loremEnd + 2, false), "Got wrong offset.");
+				assertEquals(loremEnd + 2, extension.getNextOffsetByState(loremEnd + 2, true), "Got wrong offset.");
+				assertEquals(loremEnd - 1, extension.getPreviousOffsetByState(loremEnd + 2, false), "Got wrong offset.");
+				assertEquals(loremEnd + 2, extension.getPreviousOffsetByState(loremEnd + 2, true), "Got wrong offset.");
 			} else {
 				TestUtil.log(IStatus.INFO, TestsPlugin.PLUGIN_ID, "IOConsole partitioner does not implement " + IConsoleDocumentPartitionerExtension.class.getName() + ". Skip those tests.");
 			}
@@ -930,7 +929,7 @@ public class IOConsoleTests {
 		if (jobException[0] != null) {
 			throw jobException[0];
 		}
-		assertFalse("Deadlock in stream processing.", deadlocked.get());
+		assertFalse(deadlocked.get(), "Deadlock in stream processing.");
 		closeConsole(c);
 	}
 
@@ -946,7 +945,7 @@ public class IOConsoleTests {
 		Arrays.sort(styles, (a, b) -> Integer.compare(a.start, b.start));
 		int lastEnd = Integer.MIN_VALUE;
 		for (StyleRange s : styles) {
-			assertTrue("Styles overlap.", lastEnd <= s.start);
+			assertTrue(lastEnd <= s.start, "Styles overlap.");
 			lastEnd = s.start + s.length;
 		}
 	}

@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.console;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -50,7 +50,7 @@ public class TextConsoleViewerTest {
 		try {
 			final Method method = TextConsoleViewer.class.getDeclaredMethod("overrideStyleRange", List.class, StyleRange.class);
 			method.setAccessible(true);
-			assertTrue("Required method <" + method + "> is not static.", Modifier.isStatic(method.getModifiers()));
+			assertTrue(Modifier.isStatic(method.getModifiers()), "Required method <\" + method + \"> is not static.\"");
 
 			final List<StyleRange> styles = new ArrayList<>();
 			colorR = new Color(null, 255, 0, 0);
@@ -144,7 +144,7 @@ public class TextConsoleViewerTest {
 			assertStyle(styles, 10, 20, colorW);
 			method.invoke(null, styles, new StyleRange(10, 10, colorK, null));
 			assertStyle(styles, 10, 20, colorK);
-			assertEquals("Wrong number of styles.", 1, styles.size());
+			assertEquals(1, styles.size(), "Wrong number of styles.");
 
 			// overwrite existing: start before, end after
 			method.invoke(null, styles, new StyleRange(5, 15, colorR, null));
@@ -246,7 +246,7 @@ public class TextConsoleViewerTest {
 		while (o < end) {
 			final StyleRange expected = foregroundColor != null ? new StyleRange(0, 0, foregroundColor, null) : null;
 			final StyleRange actual = getStyleAtOffset(styles, o);
-			assertEquals("Got wrong style at offset " + o, generalizeStyle(expected), generalizeStyle(actual));
+			assertEquals(generalizeStyle(expected), generalizeStyle(actual), "Got wrong style at offset " + o);
 			final int step = actual != null ? actual.length : 1;
 			o += Math.min(step, 1);
 		}
@@ -300,8 +300,8 @@ public class TextConsoleViewerTest {
 		}
 		int lastEnd = Integer.MIN_VALUE;
 		for (StyleRange s : styles) {
-			assertTrue("Styles overlap or not sorted.", lastEnd <= s.start);
-			assertTrue("Empty style.", s.length > 0);
+			assertTrue(lastEnd <= s.start, "Styles overlap or not sorted.");
+			assertTrue(s.length > 0, "Empty style.");
 			lastEnd = s.start + s.length;
 		}
 	}
