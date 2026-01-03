@@ -15,6 +15,7 @@
 package org.eclipse.debug.tests.launching;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.debug.tests.TestUtil.getLaunchManager;
 import static org.eclipse.debug.tests.TestUtil.waitWhile;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -92,7 +93,7 @@ import org.osgi.service.prefs.Preferences;
  * Tests for launch configurations
  */
 @SuppressWarnings("deprecation")
-public class LaunchConfigurationTests extends AbstractLaunchTest implements ILaunchConfigurationListener {
+public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 
 	/**
 	 * Identifier of test launch configuration type extension

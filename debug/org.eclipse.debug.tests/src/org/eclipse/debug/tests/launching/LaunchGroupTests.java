@@ -14,6 +14,9 @@
 package org.eclipse.debug.tests.launching;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.debug.tests.TestUtil.getLaunchConfiguration;
+import static org.eclipse.debug.tests.TestUtil.getLaunchConfigurationManager;
+import static org.eclipse.debug.tests.TestUtil.getLaunchManager;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -57,7 +60,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
-public class LaunchGroupTests extends AbstractLaunchTest {
+public class LaunchGroupTests {
 
 	private static final String GROUP_TYPE = "org.eclipse.debug.core.groups.GroupLaunchConfigurationType"; //$NON-NLS-1$
 	private static final String DEF_GRP_NAME = "Test Group"; //$NON-NLS-1$

@@ -14,6 +14,8 @@
 package org.eclipse.debug.tests.launching;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.debug.tests.TestUtil.getLaunchConfiguration;
+import static org.eclipse.debug.tests.TestUtil.getLaunchConfigurationManager;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -40,7 +42,7 @@ import org.junit.jupiter.api.Test;
  *
  * @since 3.3
  */
-public class LaunchHistoryTests extends AbstractLaunchTest {
+public class LaunchHistoryTests {
 
 	private final PreferenceMemento prefMemento = new PreferenceMemento();
 
