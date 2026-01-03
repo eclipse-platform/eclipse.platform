@@ -14,14 +14,18 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.refresh;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
-import junit.framework.AssertionFailedError;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.refresh.*;
+import org.eclipse.core.resources.refresh.IRefreshMonitor;
+import org.eclipse.core.resources.refresh.IRefreshResult;
+import org.eclipse.core.resources.refresh.RefreshProvider;
 
 public class TestRefreshProvider extends RefreshProvider implements IRefreshMonitor {
-	private final List<AssertionFailedError> failures = new CopyOnWriteArrayList<>();
+	private final List<AssertionError> failures = new CopyOnWriteArrayList<>();
 	private final Set<Object> monitoredResources = Collections.synchronizedSet(new HashSet<>());
 	private static volatile TestRefreshProvider instance;
 
@@ -46,8 +50,8 @@ public class TestRefreshProvider extends RefreshProvider implements IRefreshMoni
 	/**
 	 * Returns the failures, or an empty array if there were no failures.
 	 */
-	public AssertionFailedError[] getFailures() {
-		return failures.toArray(new AssertionFailedError[failures.size()]);
+	public AssertionError[] getFailures() {
+		return failures.toArray(new AssertionError[failures.size()]);
 	}
 
 	/**
@@ -60,7 +64,7 @@ public class TestRefreshProvider extends RefreshProvider implements IRefreshMoni
 	@Override
 	public IRefreshMonitor installMonitor(IResource resource, IRefreshResult result) {
 		if (!monitoredResources.add(resource)) {
-			failures.add(new AssertionFailedError("installMonitor on resource that is already monitored: " + resource));
+			failures.add(new AssertionError("installMonitor on resource that is already monitored: " + resource));
 		}
 		return this;
 	}
@@ -72,7 +76,7 @@ public class TestRefreshProvider extends RefreshProvider implements IRefreshMoni
 			return;
 		}
 		if (!monitoredResources.remove(resource)) {
-			failures.add(new AssertionFailedError("Unmonitor on resource that is not monitored: " + resource));
+			failures.add(new AssertionError("Unmonitor on resource that is not monitored: " + resource));
 		}
 	}
 }

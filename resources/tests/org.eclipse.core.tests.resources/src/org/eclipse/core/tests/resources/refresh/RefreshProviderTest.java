@@ -24,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
-import junit.framework.AssertionFailedError;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -97,7 +96,7 @@ public class RefreshProviderTest {
 		joinAutoRefreshJobs();
 		assertThat(provider.getMonitoredResources()).isEmpty();
 		// check provider for other errors
-		AssertionFailedError[] failures = provider.getFailures();
+		AssertionError[] failures = provider.getFailures();
 		assertThat(failures).isEmpty();
 	}
 
@@ -124,7 +123,7 @@ public class RefreshProviderTest {
 		joinAutoRefreshJobs();
 		assertThat(provider.getMonitoredResources()).isEmpty();
 		// check provider for other errors
-		AssertionFailedError[] failures = provider.getFailures();
+		AssertionError[] failures = provider.getFailures();
 		assertThat(failures).isEmpty();
 	}
 
