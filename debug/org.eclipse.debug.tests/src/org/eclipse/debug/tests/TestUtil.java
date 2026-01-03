@@ -14,7 +14,8 @@
  *******************************************************************************/
 package org.eclipse.debug.tests;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
@@ -42,7 +43,6 @@ import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.launchConfigurations.LaunchConfigurationManager;
 import org.eclipse.debug.tests.launching.LaunchConfigurationTests;
 import org.eclipse.swt.widgets.Display;
-import org.junit.Assert;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
@@ -63,7 +63,7 @@ public final class TestUtil {
 	 */
 	public static void cleanUp(String owner) {
 		// Ensure that the Thread.interrupted() flag didn't leak.
-		Assert.assertFalse("The main thread should not be interrupted at the end of a test", Thread.interrupted());
+		assertFalse(Thread.interrupted(), "The main thread should not be interrupted at the end of a test");
 
 		// Wait for any outstanding jobs to finish. Protect against deadlock by
 		// terminating the wait after a timeout.
@@ -76,7 +76,7 @@ public final class TestUtil {
 		}
 
 		// Ensure that the Thread.interrupted() flag didn't leak.
-		Assert.assertFalse("The main thread should not be interrupted at the end of a test", Thread.interrupted());
+		assertFalse(Thread.interrupted(), "The main thread should not be interrupted at the end of a test");
 	}
 
 	public static void log(int severity, String owner, String message, Throwable... optionalError) {
@@ -125,8 +125,8 @@ public final class TestUtil {
 	/**
 	 * Waits while given condition is {@code true} for a given amount of
 	 * milliseconds. If the actual wait time exceeds given timeout and condition
-	 * will be still {@code true}, throws
-	 * {@link junit.framework.AssertionFailedError} with given message.
+	 * will be still {@code true}, throws {@link junit.framework.AssertionError}
+	 * with given message.
 	 * <p>
 	 * Will process UI events while waiting in UI thread, if called from
 	 * background thread, just waits.

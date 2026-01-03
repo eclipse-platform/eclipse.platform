@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.ui;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.eclipse.debug.internal.ui.VariableValueEditorManager;
 import org.eclipse.debug.tests.DebugTestExtension;
@@ -30,7 +30,7 @@ public class VariableValueEditorManagerTests {
 	@Test
 	public void testHighestPriorityEditorUsed() {
 		IVariableValueEditor editor = VariableValueEditorManager.getDefault().getVariableValueEditor("testModel");
-		assertEquals("Not the editor with highest priority used by VariableValueEditorManager", TestVariableValueEditor2.class, editor.getClass());
+		assertEquals(TestVariableValueEditor2.class, editor.getClass(), "Not the editor with highest priority used by VariableValueEditorManager");
 	}
 
 

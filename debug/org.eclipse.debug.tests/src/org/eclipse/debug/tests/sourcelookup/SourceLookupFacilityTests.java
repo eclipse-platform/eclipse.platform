@@ -13,12 +13,12 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.sourcelookup;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Field;
 import java.util.IdentityHashMap;
@@ -64,8 +64,8 @@ public class SourceLookupFacilityTests {
 		try {
 			String artifact = "Empty"; //$NON-NLS-1$
 			ISourceLookupResult result = SourceLookupFacility.getDefault().lookup(artifact, null, false);
-			assertNotNull("There should be a result", result); //$NON-NLS-1$
-			assertNull("Source element should be null", result.getSourceElement()); //$NON-NLS-1$
+			assertNotNull(result, "There should be a result"); //$NON-NLS-1$
+			assertNull(result.getSourceElement(), "Source element should be null"); //$NON-NLS-1$
 		} finally {
 			SourceLookupFacility.shutdown();
 		}
@@ -81,15 +81,15 @@ public class SourceLookupFacilityTests {
 		try {
 			String artifact = "One"; //$NON-NLS-1$
 			ISourceLookupResult result = SourceLookupFacility.getDefault().lookup(artifact, fTestDirector, false);
-			assertNotNull("There should be a result", result); //$NON-NLS-1$
-			assertTrue("The result artifact should be a String", result.getArtifact() instanceof String); //$NON-NLS-1$
-			assertTrue("The result source element should be a String", result.getSourceElement() instanceof String); //$NON-NLS-1$
+			assertNotNull(result, "There should be a result"); //$NON-NLS-1$
+			assertTrue(result.getArtifact() instanceof String, "The result artifact should be a String"); //$NON-NLS-1$
+			assertTrue(result.getSourceElement() instanceof String, "The result source element should be a String"); //$NON-NLS-1$
 			String value = (String) result.getSourceElement();
 			result = SourceLookupFacility.getDefault().lookup(artifact, fTestDirector, false);
-			assertNotNull("There should be a result", result); //$NON-NLS-1$
-			assertTrue("The result artifact should be a String", result.getArtifact() instanceof String); //$NON-NLS-1$
-			assertTrue("The result source element should be a String", result.getSourceElement() instanceof String); //$NON-NLS-1$
-			assertEquals("The results should be equal", value, result.getSourceElement()); //$NON-NLS-1$
+			assertNotNull(result, "There should be a result"); //$NON-NLS-1$
+			assertTrue(result.getArtifact() instanceof String, "The result artifact should be a String"); //$NON-NLS-1$
+			assertTrue(result.getSourceElement() instanceof String, "The result source element should be a String"); //$NON-NLS-1$
+			assertEquals(value, result.getSourceElement(), "The results should be equal"); //$NON-NLS-1$
 		} finally {
 			SourceLookupFacility.shutdown();
 		}
@@ -105,15 +105,15 @@ public class SourceLookupFacilityTests {
 		try {
 			String artifact = "Two"; //$NON-NLS-1$
 			ISourceLookupResult result = SourceLookupFacility.getDefault().lookup(artifact, fTestDirector, true);
-			assertNotNull("There should be a result", result); //$NON-NLS-1$
-			assertTrue("The result artifact should be a String", result.getArtifact() instanceof String); //$NON-NLS-1$
-			assertTrue("The result source element should be a String", result.getSourceElement() instanceof String); //$NON-NLS-1$
+			assertNotNull(result, "There should be a result"); //$NON-NLS-1$
+			assertTrue(result.getArtifact() instanceof String, "The result artifact should be a String"); //$NON-NLS-1$
+			assertTrue(result.getSourceElement() instanceof String, "The result source element should be a String"); //$NON-NLS-1$
 			String value = (String) result.getSourceElement();
 			result = SourceLookupFacility.getDefault().lookup(artifact, fTestDirector, true);
-			assertNotNull("There should be a result", result); //$NON-NLS-1$
-			assertTrue("The result artifact should be a String", result.getArtifact() instanceof String); //$NON-NLS-1$
-			assertTrue("The result source element should be a String", result.getSourceElement() instanceof String); //$NON-NLS-1$
-			assertNotSame("The results should not be equal", value, result.getSourceElement()); //$NON-NLS-1$
+			assertNotNull(result, "There should be a result"); //$NON-NLS-1$
+			assertTrue(result.getArtifact() instanceof String, "The result artifact should be a String"); //$NON-NLS-1$
+			assertTrue(result.getSourceElement() instanceof String, "The result source element should be a String"); //$NON-NLS-1$
+			assertNotSame(value, result.getSourceElement(), "The results should not be equal"); //$NON-NLS-1$
 		} finally {
 			SourceLookupFacility.shutdown();
 		}
@@ -129,8 +129,8 @@ public class SourceLookupFacilityTests {
 		try {
 			String artifact = "Three"; //$NON-NLS-1$
 			ISourceLookupResult result = SourceLookupFacility.getDefault().lookup(artifact, fTestLocator, false);
-			assertNotNull("There should be a result", result); //$NON-NLS-1$
-			assertNull("The source element should be null", result.getSourceElement()); //$NON-NLS-1$
+			assertNotNull(result, "There should be a result"); //$NON-NLS-1$
+			assertNull(result.getSourceElement(), "The source element should be null"); //$NON-NLS-1$
 		} finally {
 			SourceLookupFacility.shutdown();
 		}
@@ -145,15 +145,15 @@ public class SourceLookupFacilityTests {
 	public void testLookupStackframeNoForce() throws Exception {
 		try {
 			ISourceLookupResult result = SourceLookupFacility.getDefault().lookup(fReusableFrame, fTestDirector, false);
-			assertNotNull("There should be a result", result); //$NON-NLS-1$
-			assertTrue("The result source element should be a String", result.getArtifact() instanceof IStackFrame); //$NON-NLS-1$
-			assertTrue("The result source element should be a String", result.getSourceElement() instanceof String); //$NON-NLS-1$
+			assertNotNull(result, "There should be a result"); //$NON-NLS-1$
+			assertTrue(result.getArtifact() instanceof IStackFrame, "The result source element should be a String"); //$NON-NLS-1$
+			assertTrue(result.getSourceElement() instanceof String, "The result source element should be a String"); //$NON-NLS-1$
 			String value = (String) result.getSourceElement();
 			result = SourceLookupFacility.getDefault().lookup(fReusableFrame, fTestDirector, false);
-			assertNotNull("There should be a result", result); //$NON-NLS-1$
-			assertTrue("The result artifact should be a String", result.getArtifact() instanceof IStackFrame); //$NON-NLS-1$
-			assertTrue("The result source element should be a String", result.getSourceElement() instanceof String); //$NON-NLS-1$
-			assertEquals("The results should not be equal", value, result.getSourceElement()); //$NON-NLS-1$
+			assertNotNull(result, "There should be a result"); //$NON-NLS-1$
+			assertTrue(result.getArtifact() instanceof IStackFrame, "The result artifact should be a String"); //$NON-NLS-1$
+			assertTrue(result.getSourceElement() instanceof String, "The result source element should be a String"); //$NON-NLS-1$
+			assertEquals(value, result.getSourceElement(), "The results should not be equal"); //$NON-NLS-1$
 		} finally {
 			SourceLookupFacility.shutdown();
 		}
@@ -168,15 +168,15 @@ public class SourceLookupFacilityTests {
 	public void testLookupStackframeForce() throws Exception {
 		try {
 			ISourceLookupResult result = SourceLookupFacility.getDefault().lookup(fReusableFrame, fTestDirector, true);
-			assertNotNull("There should be a result", result); //$NON-NLS-1$
-			assertTrue("The result source element should be a String", result.getArtifact() instanceof IStackFrame); //$NON-NLS-1$
-			assertTrue("The result source element should be a String", result.getSourceElement() instanceof String); //$NON-NLS-1$
+			assertNotNull(result, "There should be a result"); //$NON-NLS-1$
+			assertTrue(result.getArtifact() instanceof IStackFrame, "The result source element should be a String"); //$NON-NLS-1$
+			assertTrue(result.getSourceElement() instanceof String, "The result source element should be a String"); //$NON-NLS-1$
 			String value = (String) result.getSourceElement();
 			result = SourceLookupFacility.getDefault().lookup(fReusableFrame, fTestDirector, true);
-			assertNotNull("There should be a result", result); //$NON-NLS-1$
-			assertTrue("The result artifact should be a String", result.getArtifact() instanceof IStackFrame); //$NON-NLS-1$
-			assertTrue("The result source element should be a String", result.getSourceElement() instanceof String); //$NON-NLS-1$
-			assertNotSame("The results should not be equal", value, result.getSourceElement()); //$NON-NLS-1$
+			assertNotNull(result, "There should be a result"); //$NON-NLS-1$
+			assertTrue(result.getArtifact() instanceof IStackFrame, "The result artifact should be a String"); //$NON-NLS-1$
+			assertTrue(result.getSourceElement() instanceof String, "The result source element should be a String"); //$NON-NLS-1$
+			assertNotSame(value, result.getSourceElement(), "The results should not be equal"); //$NON-NLS-1$
 		} finally {
 			SourceLookupFacility.shutdown();
 		}
@@ -191,8 +191,8 @@ public class SourceLookupFacilityTests {
 	public void testLookupStackframeWithDebugElement1() throws Exception {
 		try {
 			ISourceLookupResult result = SourceLookupFacility.getDefault().lookup(new TestStackFrame(null), null, false);
-			assertNotNull("There should be a result", result); //$NON-NLS-1$
-			assertNull("Source element should be null", result.getSourceElement()); //$NON-NLS-1$
+			assertNotNull(result, "There should be a result"); //$NON-NLS-1$
+			assertNull(result.getSourceElement(), "Source element should be null"); //$NON-NLS-1$
 		} finally {
 			SourceLookupFacility.shutdown();
 		}
@@ -207,15 +207,15 @@ public class SourceLookupFacilityTests {
 	public void testLookupStackframeWithDebugElement2() throws Exception {
 		try {
 			ISourceLookupResult result = SourceLookupFacility.getDefault().lookup(fReusableFrame, null, false);
-			assertNotNull("There should be a result", result); //$NON-NLS-1$
-			assertTrue("The result source element should be a String", result.getArtifact() instanceof IStackFrame); //$NON-NLS-1$
-			assertTrue("The result source element should be a String", result.getSourceElement() instanceof String); //$NON-NLS-1$
+			assertNotNull(result, "There should be a result"); //$NON-NLS-1$
+			assertTrue(result.getArtifact() instanceof IStackFrame, "The result source element should be a String"); //$NON-NLS-1$
+			assertTrue(result.getSourceElement() instanceof String, "The result source element should be a String"); //$NON-NLS-1$
 			String value = (String) result.getSourceElement();
 			result = SourceLookupFacility.getDefault().lookup(fReusableFrame, null, false);
-			assertNotNull("There should be a result", result); //$NON-NLS-1$
-			assertTrue("The result artifact should be a String", result.getArtifact() instanceof IStackFrame); //$NON-NLS-1$
-			assertTrue("The result source element should be a String", result.getSourceElement() instanceof String); //$NON-NLS-1$
-			assertEquals("The results should be equal", value, result.getSourceElement()); //$NON-NLS-1$
+			assertNotNull(result, "There should be a result"); //$NON-NLS-1$
+			assertTrue(result.getArtifact() instanceof IStackFrame, "The result artifact should be a String"); //$NON-NLS-1$
+			assertTrue(result.getSourceElement() instanceof String, "The result source element should be a String"); //$NON-NLS-1$
+			assertEquals(value, result.getSourceElement(), "The results should be equal"); //$NON-NLS-1$
 		} finally {
 			SourceLookupFacility.shutdown();
 		}
@@ -230,15 +230,15 @@ public class SourceLookupFacilityTests {
 	public void testLookupStackframeWithDebugElement3() throws Exception {
 		try {
 			ISourceLookupResult result = SourceLookupFacility.getDefault().lookup(fReusableFrame, null, true);
-			assertNotNull("There should be a result", result); //$NON-NLS-1$
-			assertTrue("The result source element should be a String", result.getArtifact() instanceof IStackFrame); //$NON-NLS-1$
-			assertTrue("The result source element should be a String", result.getSourceElement() instanceof String); //$NON-NLS-1$
+			assertNotNull(result, "There should be a result"); //$NON-NLS-1$
+			assertTrue(result.getArtifact() instanceof IStackFrame, "The result source element should be a String"); //$NON-NLS-1$
+			assertTrue(result.getSourceElement() instanceof String, "The result source element should be a String"); //$NON-NLS-1$
 			String value = (String) result.getSourceElement();
 			result = SourceLookupFacility.getDefault().lookup(fReusableFrame, null, true);
-			assertNotNull("There should be a result", result); //$NON-NLS-1$
-			assertTrue("The result artifact should be a String", result.getArtifact() instanceof IStackFrame); //$NON-NLS-1$
-			assertTrue("The result source element should be a String", result.getSourceElement() instanceof String); //$NON-NLS-1$
-			assertNotSame("The results should not be equal", value, result.getSourceElement()); //$NON-NLS-1$
+			assertNotNull(result, "There should be a result"); //$NON-NLS-1$
+			assertTrue(result.getArtifact() instanceof IStackFrame, "The result artifact should be a String"); //$NON-NLS-1$
+			assertTrue(result.getSourceElement() instanceof String, "The result source element should be a String"); //$NON-NLS-1$
+			assertNotSame(value, result.getSourceElement(), "The results should not be equal"); //$NON-NLS-1$
 		} finally {
 			SourceLookupFacility.shutdown();
 		}
@@ -253,15 +253,15 @@ public class SourceLookupFacilityTests {
 	public void testLookupStackframeWithDebugElement4() throws Exception {
 		try {
 			ISourceLookupResult result = SourceLookupFacility.getDefault().lookup(fReusableFrame, fTestLocator, false);
-			assertNotNull("There should be a result", result); //$NON-NLS-1$
-			assertTrue("The result source element should be a String", result.getArtifact() instanceof IStackFrame); //$NON-NLS-1$
-			assertTrue("The result source element should be a String", result.getSourceElement() instanceof String); //$NON-NLS-1$
+			assertNotNull( result, "There should be a result"); //$NON-NLS-1$
+			assertTrue( result.getArtifact() instanceof IStackFrame, "The result source element should be a String"); //$NON-NLS-1$
+			assertTrue( result.getSourceElement() instanceof String, "The result source element should be a String"); //$NON-NLS-1$
 			String value = (String) result.getSourceElement();
 			result = SourceLookupFacility.getDefault().lookup(fReusableFrame, fTestLocator, false);
-			assertNotNull("There should be a result", result); //$NON-NLS-1$
-			assertTrue("The result artifact should be a String", result.getArtifact() instanceof IStackFrame); //$NON-NLS-1$
-			assertTrue("The result source element should be a String", result.getSourceElement() instanceof String); //$NON-NLS-1$
-			assertEquals("The results should not be equal", value, result.getSourceElement()); //$NON-NLS-1$
+			assertNotNull( result, "There should be a result"); //$NON-NLS-1$
+			assertTrue( result.getArtifact() instanceof IStackFrame, "The result artifact should be a String"); //$NON-NLS-1$
+			assertTrue( result.getSourceElement() instanceof String, "The result source element should be a String"); //$NON-NLS-1$
+			assertEquals(value, result.getSourceElement(), "The results should not be equal"); //$NON-NLS-1$
 		} finally {
 			SourceLookupFacility.shutdown();
 		}
@@ -276,15 +276,15 @@ public class SourceLookupFacilityTests {
 	public void testLookupStackframeWithDebugElement5() throws Exception {
 		try {
 			ISourceLookupResult result = SourceLookupFacility.getDefault().lookup(fReusableFrame, fTestLocator, true);
-			assertNotNull("There should be a result", result); //$NON-NLS-1$
-			assertTrue("The result source element should be a String", result.getArtifact() instanceof IStackFrame); //$NON-NLS-1$
-			assertTrue("The result source element should be a String", result.getSourceElement() instanceof String); //$NON-NLS-1$
+			assertNotNull(result, "There should be a result"); //$NON-NLS-1$
+			assertTrue(result.getArtifact() instanceof IStackFrame, "The result source element should be a String"); //$NON-NLS-1$
+			assertTrue(result.getSourceElement() instanceof String, "The result source element should be a String"); //$NON-NLS-1$
 			String value = (String) result.getSourceElement();
 			result = SourceLookupFacility.getDefault().lookup(fReusableFrame, fTestLocator, true);
-			assertNotNull("There should be a result", result); //$NON-NLS-1$
-			assertTrue("The result artifact should be a String", result.getArtifact() instanceof IStackFrame); //$NON-NLS-1$
-			assertTrue("The result source element should be a String", result.getSourceElement() instanceof String); //$NON-NLS-1$
-			assertNotSame("The results should not be equal", value, result.getSourceElement()); //$NON-NLS-1$
+			assertNotNull(result, "There should be a result"); //$NON-NLS-1$
+			assertTrue(result.getArtifact() instanceof IStackFrame, "The result artifact should be a String\""); //$NON-NLS-1$
+			assertTrue(result.getSourceElement() instanceof String, "The result source element should be a String"); //$NON-NLS-1$
+			assertNotSame(value, result.getSourceElement(), "The results should not be equal"); //$NON-NLS-1$
 		} finally {
 			SourceLookupFacility.shutdown();
 		}
@@ -305,7 +305,7 @@ public class SourceLookupFacilityTests {
 			for (int i = 0; i < MAX_LRU_SIZE + 1; i++) {
 				String artifact = "" + i; //$NON-NLS-1$
 				ISourceLookupResult result = SourceLookupFacility.getDefault().lookup(artifact, fTestLocator, false);
-				assertNotNull("There should be a result", result); //$NON-NLS-1$
+				assertNotNull(result, "There should be a result"); //$NON-NLS-1$
 				assertFalse(cached.containsValue(result));
 				cached.put(artifact, result);
 
@@ -323,7 +323,7 @@ public class SourceLookupFacilityTests {
 			// If we lookup for the first element again, we should get new one
 			String artifact = "" + 0; //$NON-NLS-1$
 			SourceLookupResult result = SourceLookupFacility.getDefault().lookup(artifact, fTestLocator, false);
-			assertNotNull("There should be a result", result); //$NON-NLS-1$
+			assertNotNull(result, "There should be a result"); //$NON-NLS-1$
 			assertFalse(new IdentityHashMap<>(cached).containsValue(result));
 
 			// Check: the LRU map size should not grow

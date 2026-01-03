@@ -13,9 +13,9 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.breakpoint;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.List;
 
@@ -144,7 +144,7 @@ public class BreakpointOrderingTests {
 
 		@Override
 		public String getText(Object element) {
-			assertTrue("Unexpected element", element instanceof TestBreakpoint); //$NON-NLS-1$
+			assertTrue(element instanceof TestBreakpoint, "Unexpected element"); //$NON-NLS-1$
 			return ((TestBreakpoint)element).getText();
 		}
 

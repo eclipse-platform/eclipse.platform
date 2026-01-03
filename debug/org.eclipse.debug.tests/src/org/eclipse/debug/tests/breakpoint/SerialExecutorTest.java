@@ -14,8 +14,8 @@
 package org.eclipse.debug.tests.breakpoint;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -92,7 +92,7 @@ public class SerialExecutorTest {
 		assertEquals(RUNS, executions.get());
 		assertEquals(0, parallelExecutions.get());
 		long minimalMillis = RUNS * WAIT_MILLIS;
-		assertTrue("Test did finish too fast (" + millis + " ms)", millis >= minimalMillis);
+		assertTrue(millis >= minimalMillis, "Test did finish too fast (" + millis + " ms)");
 	}
 
 	@Test
@@ -156,7 +156,7 @@ public class SerialExecutorTest {
 			Job.getJobManager().join(this, null);
 			Job[] jobs = Job.getJobManager().find(this);
 			assertThat(jobs).isEmpty();
-			assertEquals("failed on run " + run, RUNS, executions.get());
+			assertEquals(RUNS, executions.get(), "failed on run " + run);
 			// does fail on run ~ 40 if the final job.join() is removed.
 		}
 	}
