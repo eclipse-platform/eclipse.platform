@@ -37,15 +37,24 @@ import org.eclipse.debug.internal.ui.views.console.ProcessConsoleManager;
 import org.eclipse.debug.tests.AbstractDebugTest;
 import org.eclipse.debug.tests.TestUtil;
 import org.eclipse.debug.ui.IDebugUIConstants;
+import org.eclipse.jface.preference.PreferenceMemento;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
+import org.junit.After;
 import org.junit.Test;
 
 /**
  * Tests the ProcessConsoleManager.
  */
 public class ProcessConsoleManagerTests extends AbstractDebugTest {
+
+	private final PreferenceMemento prefMemento = new PreferenceMemento();
+
+	@After
+	public void restorePreferences() {
+		prefMemento.resetPreferences();
+	}
 
 	/**
 	 * Test addition and removal of a ProcessConsole. It also kind of tests
@@ -102,7 +111,7 @@ public class ProcessConsoleManagerTests extends AbstractDebugTest {
 		final MockProcess mockProcess2 = new MockProcess(0);
 		final IProcess process2 = mockProcess2.toRuntimeProcess("SecondMockProcess");
 		try {
-			setPreference(DebugUIPlugin.getDefault().getPreferenceStore(), IDebugUIConstants.PREF_AUTO_REMOVE_OLD_LAUNCHES, true);
+			prefMemento.setValue(DebugUIPlugin.getDefault().getPreferenceStore(), IDebugUIConstants.PREF_AUTO_REMOVE_OLD_LAUNCHES, true);
 			// Stop the JobManager to reliable trigger the tested race
 			// condition.
 			TestUtil.waitForJobs(name.getMethodName(), ProcessConsoleManager.class, 0, 10000);

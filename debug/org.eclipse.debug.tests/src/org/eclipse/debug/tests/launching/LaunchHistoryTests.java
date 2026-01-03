@@ -26,6 +26,8 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.launchConfigurations.LaunchHistory;
 import org.eclipse.debug.ui.IDebugUIConstants;
+import org.eclipse.jface.preference.PreferenceMemento;
+import org.junit.After;
 import org.junit.Test;
 
 /**
@@ -39,6 +41,13 @@ import org.junit.Test;
  * @since 3.3
  */
 public class LaunchHistoryTests extends AbstractLaunchTest {
+
+	private final PreferenceMemento prefMemento = new PreferenceMemento();
+
+	@After
+	public void restorePreferences() {
+		prefMemento.resetPreferences();
+	}
 
 	/**
 	 * Returns the run launch history
@@ -60,7 +69,7 @@ public class LaunchHistoryTests extends AbstractLaunchTest {
 	 * @param value the new maximum size for launch histories
 	 */
 	private void setMaxHistorySize(int value) {
-		setPreference(DebugUIPlugin.getDefault().getPreferenceStore(), IDebugUIConstants.PREF_MAX_HISTORY_SIZE, value);
+		prefMemento.setValue(DebugUIPlugin.getDefault().getPreferenceStore(), IDebugUIConstants.PREF_MAX_HISTORY_SIZE, value);
 	}
 
 	/**
