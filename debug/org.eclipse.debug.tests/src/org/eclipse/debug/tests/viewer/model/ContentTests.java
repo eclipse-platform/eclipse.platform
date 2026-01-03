@@ -14,13 +14,14 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.viewer.model;
 
+import static org.eclipse.debug.tests.TestUtil.waitWhile;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.eclipse.debug.internal.ui.viewers.model.IInternalTreeModelViewer;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.ICheckUpdate;
@@ -29,7 +30,6 @@ import org.eclipse.debug.internal.ui.viewers.model.provisional.ILabelUpdate;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.IModelDelta;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.IViewerUpdate;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.ModelDelta;
-import org.eclipse.debug.tests.AbstractDebugTest;
 import org.eclipse.debug.tests.TestUtil;
 import org.eclipse.debug.tests.viewer.model.TestModel.TestElement;
 import org.eclipse.jface.viewers.TreePath;
@@ -66,7 +66,7 @@ abstract public class ContentTests extends AbstractViewerModelTest implements IT
 		fViewer.setInput(model.getRootElement());
 
 		// Wait for the updates to complete.
-		waitWhile(t -> !fListener.isFinished(), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(), createListenerErrorMessage());
 
 		model.validateData(fViewer, TreePath.EMPTY);
 
@@ -84,7 +84,7 @@ abstract public class ContentTests extends AbstractViewerModelTest implements IT
 
 		fViewer.setInput(model.getRootElement());
 
-		waitWhile(t -> !fListener.isFinished(), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(), createListenerErrorMessage());
 
 		model.validateData(fViewer, TreePath.EMPTY);
 
@@ -104,36 +104,36 @@ abstract public class ContentTests extends AbstractViewerModelTest implements IT
 
 		@Override
 		public void update(IChildrenUpdate[] updates) {
-			for (int i = 0; i < updates.length; i++) {
-				TestElement element = (TestElement)updates[i].getElement();
-				int endOffset = updates[i].getOffset() + updates[i].getLength();
-				for (int j = updates[i].getOffset(); j < endOffset; j++) {
+			for (IChildrenUpdate update : updates) {
+				TestElement element = (TestElement)update.getElement();
+				int endOffset = update.getOffset() + update.getLength();
+				for (int j = update.getOffset(); j < endOffset; j++) {
 					if (j < element.getChildren().length) {
-						updates[i].setChild(element.getChildren()[j], j);
+						update.setChild(element.getChildren()[j], j);
 					}
 				}
 				if (fCaptureChildrenUpdates) {
-					fCapturedUpdates.add(updates[i]);
+					fCapturedUpdates.add(update);
 				} else {
-					updates[i].done();
+					update.done();
 				}
 			}
 		}
 
 		@Override
 		public void update(ILabelUpdate[] updates) {
-			for (int i = 0; i < updates.length; i++) {
-				TestElement element = (TestElement)updates[i].getElement();
-				updates[i].setLabel(element.getLabel(), 0);
-				if (updates[i] instanceof ICheckUpdate &&
-					Boolean.TRUE.equals(updates[i].getPresentationContext().getProperty(ICheckUpdate.PROP_CHECK)))
+			for (ILabelUpdate update : updates) {
+				TestElement element = (TestElement)update.getElement();
+				update.setLabel(element.getLabel(), 0);
+				if (update instanceof ICheckUpdate &&
+					Boolean.TRUE.equals(update.getPresentationContext().getProperty(ICheckUpdate.PROP_CHECK)))
 				{
-					((ICheckUpdate)updates[i]).setChecked(element.getChecked(), element.getGrayed());
+					((ICheckUpdate)update).setChecked(element.getChecked(), element.getGrayed());
 				}
 				if (fCaptureLabelUpdates) {
-					fCapturedUpdates.add(updates[i]);
+					fCapturedUpdates.add(update);
 				} else {
-					updates[i].done();
+					update.done();
 				}
 			}
 		}
@@ -158,7 +158,7 @@ abstract public class ContentTests extends AbstractViewerModelTest implements IT
 		// Wait for view to start retrieving content.
 		fViewer.setInput(model.getRootElement());
 		TestUtil.waitForJobs(name.getMethodName(), 300, 5000);
-		waitWhile(t -> model.fCapturedUpdates.size() < model.getRootElement().fChildren.length, createModelErrorMessage(model));
+		waitWhile(() -> model.fCapturedUpdates.size() < model.getRootElement().fChildren.length, createModelErrorMessage(model));
 
 		List<IViewerUpdate> firstUpdates = model.fCapturedUpdates;
 		model.fCapturedUpdates = Collections.synchronizedList(new ArrayList<>(2));
@@ -168,28 +168,28 @@ abstract public class ContentTests extends AbstractViewerModelTest implements IT
 		model.getElement(model.findElement("2")).setLabelAppendix(" - changed"); //$NON-NLS-1$ //$NON-NLS-2$
 		fListener.reset(TreePath.EMPTY, model.getRootElement(), -1, false, false);
 		model.postDelta(new ModelDelta(model.getRootElement(), IModelDelta.CONTENT));
-		waitWhile(t -> model.fCapturedUpdates.size() < model.getRootElement().fChildren.length, createModelErrorMessage(model));
+		waitWhile(() -> model.fCapturedUpdates.size() < model.getRootElement().fChildren.length, createModelErrorMessage(model));
 
 		// Complete the second set of children updates
-		for (int i = 0; i < model.fCapturedUpdates.size(); i++) {
-			model.fCapturedUpdates.get(i).done();
+		for (IViewerUpdate element : model.fCapturedUpdates) {
+			element.done();
 		}
 
 		// Then complete the first set.
-		for (int i = 0; i < firstUpdates.size(); i++) {
-			ILabelUpdate capturedUpdate = (ILabelUpdate)firstUpdates.get(i);
+		for (IViewerUpdate firstUpdate : firstUpdates) {
+			ILabelUpdate capturedUpdate = (ILabelUpdate)firstUpdate;
 			assertTrue(capturedUpdate.isCanceled());
 			capturedUpdate.done();
 		}
 
-		waitWhile(t -> !fListener.isFinished(CHILDREN_UPDATES), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(CHILDREN_UPDATES), createListenerErrorMessage());
 
 		// Check viewer data
 		model.validateData(fViewer, TreePath.EMPTY);
 	}
 
-	private Function<AbstractDebugTest, String> createModelErrorMessage(TestModelWithCapturedUpdates model) {
-		return t -> "Unxexpected model state: captured updates: " + model.fCapturedUpdates + ", root children: " + Arrays.toString(model.getRootElement().fChildren);
+	private Supplier<String> createModelErrorMessage(TestModelWithCapturedUpdates model) {
+		return () -> "Unxexpected model state: captured updates: " + model.fCapturedUpdates + ", root children: " + Arrays.toString(model.getRootElement().fChildren);
 	}
 
 	/**
@@ -214,7 +214,7 @@ abstract public class ContentTests extends AbstractViewerModelTest implements IT
 		// Wait for view to start retrieving content.
 		fViewer.setInput(model.getRootElement());
 		TestUtil.waitForJobs(name.getMethodName(), 300, 5000);
-		waitWhile(t -> model.fCapturedUpdates.size() < model.getRootElement().fChildren.length, createModelErrorMessage(model));
+		waitWhile(() -> model.fCapturedUpdates.size() < model.getRootElement().fChildren.length, createModelErrorMessage(model));
 		List<IViewerUpdate> firstUpdates = model.fCapturedUpdates;
 		model.fCapturedUpdates = Collections.synchronizedList(new ArrayList<>(2));
 
@@ -225,21 +225,21 @@ abstract public class ContentTests extends AbstractViewerModelTest implements IT
 		});
 		fListener.reset(TreePath.EMPTY, model.getRootElement(), -1, false, false);
 		model.postDelta(new ModelDelta(model.getRootElement(), IModelDelta.CONTENT));
-		waitWhile(t -> model.fCapturedUpdates.size() < model.getRootElement().fChildren.length, createModelErrorMessage(model));
+		waitWhile(() -> model.fCapturedUpdates.size() < model.getRootElement().fChildren.length, createModelErrorMessage(model));
 
 		// Complete the second set of children updates
-		for (int i = 0; i < model.fCapturedUpdates.size(); i++) {
-			model.fCapturedUpdates.get(i).done();
+		for (IViewerUpdate element : model.fCapturedUpdates) {
+			element.done();
 		}
 
 		// Then complete the first set.
-		for (int i = 0; i < firstUpdates.size(); i++) {
-			ILabelUpdate capturedUpdate = (ILabelUpdate)firstUpdates.get(i);
+		for (IViewerUpdate firstUpdate : firstUpdates) {
+			ILabelUpdate capturedUpdate = (ILabelUpdate)firstUpdate;
 			assertTrue(capturedUpdate.isCanceled());
 			capturedUpdate.done();
 		}
 
-		waitWhile(t -> !fListener.isFinished(CHILDREN_UPDATES), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(CHILDREN_UPDATES), createListenerErrorMessage());
 
 		// Check viewer data
 		model.validateData(fViewer, TreePath.EMPTY);
@@ -266,7 +266,7 @@ abstract public class ContentTests extends AbstractViewerModelTest implements IT
 		// Set input into the view to update it, but block children updates.
 		// Wait for view to start retrieving content.
 		fViewer.setInput(model.getRootElement());
-		waitWhile(t -> !areCapturedChildrenUpdatesComplete(model.fCapturedUpdates, model.getRootElement().fChildren.length), createModelErrorMessage(model));
+		waitWhile(() -> !areCapturedChildrenUpdatesComplete(model.fCapturedUpdates, model.getRootElement().fChildren.length), createModelErrorMessage(model));
 		IChildrenUpdate[] firstUpdates = model.fCapturedUpdates.toArray(new IChildrenUpdate[0]);
 		model.fCapturedUpdates.clear();
 
@@ -277,19 +277,19 @@ abstract public class ContentTests extends AbstractViewerModelTest implements IT
 		});
 		fListener.reset(TreePath.EMPTY, model.getRootElement(), -1, false, false);
 		model.postDelta(new ModelDelta(model.getRootElement(), IModelDelta.CONTENT));
-		waitWhile(t -> !areCapturedChildrenUpdatesComplete(model.fCapturedUpdates, model.getRootElement().fChildren.length), createModelErrorMessage(model));
+		waitWhile(() -> !areCapturedChildrenUpdatesComplete(model.fCapturedUpdates, model.getRootElement().fChildren.length), createModelErrorMessage(model));
 
 		// Complete the second set of children updates
-		for (int i = 0; i < model.fCapturedUpdates.size(); i++) {
-			model.fCapturedUpdates.get(i).done();
+		for (IViewerUpdate element : model.fCapturedUpdates) {
+			element.done();
 		}
 
 		// Then complete the first set.
-		for (int i = 0; i < firstUpdates.length; i++) {
-			firstUpdates[i].done();
+		for (IChildrenUpdate firstUpdate : firstUpdates) {
+			firstUpdate.done();
 		}
 
-		waitWhile(t -> !fListener.isFinished(CHILDREN_UPDATES), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(CHILDREN_UPDATES), createListenerErrorMessage());
 
 		// Check viewer data
 		model.validateData(fViewer, TreePath.EMPTY);
@@ -301,9 +301,9 @@ abstract public class ContentTests extends AbstractViewerModelTest implements IT
 			expectedChildren.add(Integer.valueOf(i));
 		}
 		IChildrenUpdate[] updates = capturedUpdates.toArray(new IChildrenUpdate[0]);
-		for (int i = 0; i < updates.length; i++) {
-			for (int j = 0; j < updates[i].getLength(); j++) {
-				expectedChildren.remove( Integer.valueOf(updates[i].getOffset() + j) );
+		for (IChildrenUpdate update : updates) {
+			for (int j = 0; j < update.getLength(); j++) {
+				expectedChildren.remove( Integer.valueOf(update.getOffset() + j) );
 			}
 		}
 		return expectedChildren.isEmpty();

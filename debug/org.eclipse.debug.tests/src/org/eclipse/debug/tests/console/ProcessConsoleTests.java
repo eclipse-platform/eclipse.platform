@@ -15,6 +15,7 @@ package org.eclipse.debug.tests.console;
 
 import static java.nio.file.Files.readAllBytes;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.debug.tests.TestUtil.waitWhile;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -35,8 +36,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -296,7 +297,7 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 			if (mockProcess.isAlive()) {
 				mockProcess.destroy();
 			}
-			waitWhile(__ -> !terminationSignaled.get(), __ -> "No console complete notification received.");
+			waitWhile(() -> !terminationSignaled.get(), () -> "No console complete notification received.");
 		} finally {
 			consoleManager.removeConsoles(new IConsole[] { console });
 			TestUtil.waitForJobs(name.getMethodName(), ConsoleManager.CONSOLE_JOB_FAMILY, 0, 10000);
@@ -395,7 +396,7 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 		try {
 			consoleManager.addConsoles(new IConsole[] { console });
 			mockProcess.destroy();
-			waitWhile(c -> !consoleFinished.get(), c -> "Console did not finished.");
+			waitWhile(() -> !consoleFinished.get(), () -> "Console did not finished.");
 
 			Object value = launchConfigAttributes != null ? launchConfigAttributes.get(IDebugUIConstants.ATTR_CAPTURE_IN_FILE) : null;
 			final File outFile = value != null ? new File((String) value) : null;
@@ -452,7 +453,7 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 					mockProcess.destroy();
 					sysout.close();
 
-					Predicate<AbstractDebugTest> waitForLastLineWritten = __ -> {
+					BooleanSupplier waitForLastLineWritten = () -> {
 						try {
 							TestUtil.processUIEvents(50);
 						} catch (Exception e) {
@@ -460,7 +461,7 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 						}
 						return console.getDocument().getNumberOfLines() < lines.length;
 					};
-					Function<AbstractDebugTest, String> errorMessageProvider = __ -> {
+					Supplier<String> errorMessageProvider = () -> {
 						String expected = String.join(System.lineSeparator(), lines);
 						String actual = console.getDocument().get();
 						return "Not all lines have been written, expected: " + expected + ", was: " + actual;
@@ -503,7 +504,7 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 			try {
 				console.initialize();
 
-				Predicate<AbstractDebugTest> waitForFileWritten = __ -> {
+				BooleanSupplier waitForFileWritten = () -> {
 					try {
 						TestUtil.processUIEvents(20);
 						return readAllBytes(outFile.toPath()).length < output.length;
@@ -512,7 +513,7 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 					}
 					return false;
 				};
-				Function<AbstractDebugTest, String> errorMessageProvider = __ -> {
+				Supplier<String> errorMessageProvider = () -> {
 					byte[] actualOutput = new byte[0];
 					try {
 						actualOutput = readAllBytes(outFile.toPath());

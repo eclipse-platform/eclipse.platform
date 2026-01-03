@@ -14,12 +14,14 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.viewer.model;
 
+import static org.eclipse.debug.tests.TestUtil.waitWhile;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Arrays;
 import java.util.List;
+
 import org.eclipse.debug.internal.ui.viewers.model.IInternalTreeModelViewer;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.IModelDelta;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.ModelDelta;
@@ -53,7 +55,7 @@ abstract public class DeltaTests extends AbstractViewerModelTest implements ITes
 
 		// Set the input into the view and update the view.
 		fViewer.setInput(model.getRootElement());
-		waitWhile(t -> !fListener.isFinished(), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(), createListenerErrorMessage());
 		model.validateData(fViewer, TreePath.EMPTY);
 
 		// Update the model
@@ -63,7 +65,7 @@ abstract public class DeltaTests extends AbstractViewerModelTest implements ITes
 
 		fListener.reset(elementPath, element, -1, true, false);
 		model.postDelta(delta);
-		waitWhile(t -> !fListener.isFinished(LABEL_COMPLETE | MODEL_CHANGED_COMPLETE), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(LABEL_COMPLETE | MODEL_CHANGED_COMPLETE), createListenerErrorMessage());
 		model.validateData(fViewer, TreePath.EMPTY);
 	}
 
@@ -79,7 +81,7 @@ abstract public class DeltaTests extends AbstractViewerModelTest implements ITes
 
 		// Set the input into the view and update the view.
 		fViewer.setInput(model.getRootElement());
-		waitWhile(t -> !fListener.isFinished(), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(), createListenerErrorMessage());
 		model.validateData(fViewer, TreePath.EMPTY);
 
 		// Update the model
@@ -94,7 +96,7 @@ abstract public class DeltaTests extends AbstractViewerModelTest implements ITes
 
 		fListener.reset(elementPath, element, -1, true, false);
 		model.postDelta(delta);
-		waitWhile(t -> !fListener.isFinished(), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(), createListenerErrorMessage());
 		model.validateData(fViewer, TreePath.EMPTY);
 	}
 
@@ -110,7 +112,7 @@ abstract public class DeltaTests extends AbstractViewerModelTest implements ITes
 
 		// Set the input into the view and update the view.
 		fViewer.setInput(model.getRootElement());
-		waitWhile(t -> !fListener.isFinished(), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(), createListenerErrorMessage());
 		model.validateData(fViewer, TreePath.EMPTY);
 
 		String prefix = "new - "; //$NON-NLS-1$
@@ -144,7 +146,7 @@ abstract public class DeltaTests extends AbstractViewerModelTest implements ITes
 		fListener.reset(TreePath.EMPTY, element, -1, false, false);
 
 		model.postDelta(new ModelDelta(element, IModelDelta.CONTENT));
-		waitWhile(t -> !fListener.isFinished(ALL_UPDATES_COMPLETE | MODEL_CHANGED_COMPLETE), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(ALL_UPDATES_COMPLETE | MODEL_CHANGED_COMPLETE), createListenerErrorMessage());
 		model.validateData(fViewer, TreePath.EMPTY);
 	}
 
@@ -168,12 +170,12 @@ abstract public class DeltaTests extends AbstractViewerModelTest implements ITes
 
 		// Set the input into the view and update the view.
 		fViewer.setInput(model.getRootElement());
-		waitWhile(t -> !fListener.isFinished(), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(), createListenerErrorMessage());
 		model.validateData(fViewer, TreePath.EMPTY);
 
 		fListener.reset(TreePath.EMPTY, model.getRootElement(), -1, false, false);
 		model.postDelta(new ModelDelta(model.getRootElement(), IModelDelta.CONTENT));
-		waitWhile(t -> !fListener.isFinished(ALL_UPDATES_COMPLETE | MODEL_CHANGED_COMPLETE), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(ALL_UPDATES_COMPLETE | MODEL_CHANGED_COMPLETE), createListenerErrorMessage());
 
 		model.validateData(fViewer, TreePath.EMPTY);
 		assertTrue( fListener.checkCoalesced(TreePath.EMPTY, 0, 6) );
@@ -192,7 +194,7 @@ abstract public class DeltaTests extends AbstractViewerModelTest implements ITes
 		// Set the input into the view and update the view.
 		fViewer.setInput(model.getRootElement());
 
-		waitWhile(t -> !fListener.isFinished(), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(), createListenerErrorMessage());
 		model.validateData(fViewer, TreePath.EMPTY);
 
 		// Update the model
@@ -210,7 +212,7 @@ abstract public class DeltaTests extends AbstractViewerModelTest implements ITes
 		// TODO: redundant label updates on insert!
 		fListener.setFailOnRedundantUpdates(false);
 		model.postDelta(delta);
-		waitWhile(t -> !fListener.isFinished(ALL_UPDATES_COMPLETE | MODEL_CHANGED_COMPLETE), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(ALL_UPDATES_COMPLETE | MODEL_CHANGED_COMPLETE), createListenerErrorMessage());
 		model.validateData(fViewer, TreePath.EMPTY);
 	}
 
@@ -231,7 +233,7 @@ abstract public class DeltaTests extends AbstractViewerModelTest implements ITes
 		// Set the input into the view and update the view.
 		fViewer.setInput(model.getRootElement());
 
-		waitWhile(t -> !fListener.isFinished(), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(), createListenerErrorMessage());
 
 		model.validateData(fViewer, TreePath.EMPTY);
 
@@ -258,7 +260,7 @@ abstract public class DeltaTests extends AbstractViewerModelTest implements ITes
 		fListener.setFailOnRedundantUpdates(false);
 
 		model.postDelta(rootDelta);
-		waitWhile(t -> !fListener.isFinished(), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(), createListenerErrorMessage());
 
 		model.validateData(fViewer, TreePath.EMPTY);
 	}
@@ -276,7 +278,7 @@ abstract public class DeltaTests extends AbstractViewerModelTest implements ITes
 		fListener.reset(TreePath.EMPTY, model.getRootElement(), -1, true, false);
 		fViewer.setInput(model.getRootElement());
 
-		waitWhile(t -> !fListener.isFinished(), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(), createListenerErrorMessage());
 
 		model.validateData(fViewer, TreePath.EMPTY);
 
@@ -303,7 +305,7 @@ abstract public class DeltaTests extends AbstractViewerModelTest implements ITes
 		fListener.setFailOnRedundantUpdates(false);
 
 		model.postDelta(combinedDelta);
-		waitWhile(t -> !fListener.isFinished(ALL_UPDATES_COMPLETE | MODEL_CHANGED_COMPLETE), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(ALL_UPDATES_COMPLETE | MODEL_CHANGED_COMPLETE), createListenerErrorMessage());
 
 		model.validateData(fViewer, TreePath.EMPTY);
 	}
@@ -320,7 +322,7 @@ abstract public class DeltaTests extends AbstractViewerModelTest implements ITes
 
 		// Set the input into the view and update the view.
 		fViewer.setInput(model.getRootElement());
-		waitWhile(t -> !fListener.isFinished(), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(), createListenerErrorMessage());
 		model.validateData(fViewer, TreePath.EMPTY);
 
 		// Update the model
@@ -334,7 +336,7 @@ abstract public class DeltaTests extends AbstractViewerModelTest implements ITes
 		// TODO: redundant updates on add!
 		fListener.setFailOnRedundantUpdates(false);
 		model.postDelta(delta);
-		waitWhile(t -> !fListener.isFinished(ALL_UPDATES_COMPLETE | MODEL_CHANGED_COMPLETE), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(ALL_UPDATES_COMPLETE | MODEL_CHANGED_COMPLETE), createListenerErrorMessage());
 		model.validateData(fViewer, TreePath.EMPTY);
 	}
 
@@ -352,7 +354,7 @@ abstract public class DeltaTests extends AbstractViewerModelTest implements ITes
 
 		// Set the input into the view and update the view.
 		fViewer.setInput(model.getRootElement());
-		waitWhile(t -> !fListener.isFinished(), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(), createListenerErrorMessage());
 
 		// Update the model
 		TreePath parentPath = model.findElement("1"); //$NON-NLS-1$
@@ -365,7 +367,7 @@ abstract public class DeltaTests extends AbstractViewerModelTest implements ITes
 		fListener.reset();
 		fListener.setFailOnRedundantUpdates(false);
 		model.postDelta(rootDelta);
-		waitWhile(t -> !fListener.isFinished(MODEL_CHANGED_COMPLETE | CONTENT_SEQUENCE_COMPLETE), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(MODEL_CHANGED_COMPLETE | CONTENT_SEQUENCE_COMPLETE), createListenerErrorMessage());
 
 		// Update the elements that were added.
 		fListener.reset();
@@ -377,12 +379,12 @@ abstract public class DeltaTests extends AbstractViewerModelTest implements ITes
 		model.getElementDelta(rootDelta, model.findElement("1.4"), true).setFlags(IModelDelta.CONTENT); //$NON-NLS-1$
 
 		model.postDelta(rootDelta);
-		waitWhile(t -> !fListener.isFinished(MODEL_CHANGED_COMPLETE | ALL_UPDATES_COMPLETE), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(MODEL_CHANGED_COMPLETE | ALL_UPDATES_COMPLETE), createListenerErrorMessage());
 
 		fListener.reset(parentPath, model.getElement(parentPath), 1, false, true);
 		fViewer.expandToLevel(parentPath, 1);
 
-		waitWhile(t -> fListener.isFinished(CONTENT_SEQUENCE_STARTED) && !fListener.isFinished(CONTENT_SEQUENCE_COMPLETE), createListenerErrorMessage());
+		waitWhile(() -> fListener.isFinished(CONTENT_SEQUENCE_STARTED) && !fListener.isFinished(CONTENT_SEQUENCE_COMPLETE), createListenerErrorMessage());
 
 		model.validateData(fViewer, parentPath);
 	}
@@ -400,14 +402,14 @@ abstract public class DeltaTests extends AbstractViewerModelTest implements ITes
 
 		// Set the input into the view and update the view.
 		fViewer.setInput(model.getRootElement());
-		waitWhile(t -> !fListener.isFinished(), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(), createListenerErrorMessage());
 
 		// Expand elment "2"
 		TreePath parentPath = model.findElement("2"); //$NON-NLS-1$
 		fListener.reset(parentPath, model.getElement(parentPath), 1, false, true);
 		fViewer.expandToLevel(parentPath, 1);
 
-		waitWhile(t -> fListener.isFinished(CONTENT_SEQUENCE_STARTED) && !fListener.isFinished(CONTENT_SEQUENCE_COMPLETE), createListenerErrorMessage());
+		waitWhile(() -> fListener.isFinished(CONTENT_SEQUENCE_STARTED) && !fListener.isFinished(CONTENT_SEQUENCE_COMPLETE), createListenerErrorMessage());
 
 		// Collapse back element "2"
 		fViewer.setExpandedState(parentPath, false);
@@ -421,13 +423,13 @@ abstract public class DeltaTests extends AbstractViewerModelTest implements ITes
 		model.getElementDelta(rootDelta, model.findElement("2.3"), true).setFlags(IModelDelta.CONTENT); //$NON-NLS-1$
 
 		model.postDelta(rootDelta);
-		waitWhile(t -> !fListener.isFinished(MODEL_CHANGED_COMPLETE | ALL_UPDATES_COMPLETE), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(MODEL_CHANGED_COMPLETE | ALL_UPDATES_COMPLETE), createListenerErrorMessage());
 
 		// Expand back element "2"
 		fListener.reset(parentPath, model.getElement(parentPath), 1, false, true);
 		fViewer.expandToLevel(parentPath, 1);
 
-		waitWhile(t -> fListener.isFinished(CONTENT_SEQUENCE_STARTED) && !fListener.isFinished(CONTENT_SEQUENCE_COMPLETE), createListenerErrorMessage());
+		waitWhile(() -> fListener.isFinished(CONTENT_SEQUENCE_STARTED) && !fListener.isFinished(CONTENT_SEQUENCE_COMPLETE), createListenerErrorMessage());
 
 		model.validateData(fViewer, parentPath, true);
 	}
@@ -444,7 +446,7 @@ abstract public class DeltaTests extends AbstractViewerModelTest implements ITes
 
 		// Set the input into the view and update the view.
 		fViewer.setInput(model.getRootElement());
-		waitWhile(t -> !fListener.isFinished(), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(), createListenerErrorMessage());
 		model.validateData(fViewer, TreePath.EMPTY);
 
 		// Update the model
@@ -454,7 +456,7 @@ abstract public class DeltaTests extends AbstractViewerModelTest implements ITes
 		// be processed.
 		fListener.reset();
 		model.postDelta(delta);
-		waitWhile(t -> !fListener.isFinished(MODEL_CHANGED_COMPLETE), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(MODEL_CHANGED_COMPLETE), createListenerErrorMessage());
 		model.validateData(fViewer, TreePath.EMPTY);
 	}
 
@@ -467,7 +469,7 @@ abstract public class DeltaTests extends AbstractViewerModelTest implements ITes
 
 		// Set the input into the view and update the view.
 		fViewer.setInput(model.getRootElement());
-		waitWhile(t -> !fListener.isFinished(), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(), createListenerErrorMessage());
 		model.validateData(fViewer, TreePath.EMPTY, true);
 
 		// Create the delta
@@ -520,7 +522,7 @@ abstract public class DeltaTests extends AbstractViewerModelTest implements ITes
 		assertFalse(contentProviderViewer.getExpandedState(path_root_3_2_2));
 
 		model.postDelta(deltaRoot);
-		waitWhile(t -> !fListener.isFinished(ALL_UPDATES_COMPLETE | MODEL_CHANGED_COMPLETE), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(ALL_UPDATES_COMPLETE | MODEL_CHANGED_COMPLETE), createListenerErrorMessage());
 		model.validateData(fViewer, TreePath.EMPTY, true);
 
 		// Validate the expansion state AFTER posting the delta.
@@ -550,7 +552,7 @@ abstract public class DeltaTests extends AbstractViewerModelTest implements ITes
 
 		// Set the input into the view and update the view.
 		fViewer.setInput(model.getRootElement());
-		waitWhile(t -> !fListener.isFinished(), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(), createListenerErrorMessage());
 		model.validateData(fViewer, TreePath.EMPTY, true);
 
 		// Create the delta
@@ -574,7 +576,7 @@ abstract public class DeltaTests extends AbstractViewerModelTest implements ITes
 
 		model.postDelta(deltaRoot);
 		TestUtil.processUIEvents();
-		waitWhile(t -> !fListener.isFinished(MODEL_CHANGED_COMPLETE) && !fListener.isFinished(CONTENT_SEQUENCE_COMPLETE | LABEL_SEQUENCE_COMPLETE), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(MODEL_CHANGED_COMPLETE) && !fListener.isFinished(CONTENT_SEQUENCE_COMPLETE | LABEL_SEQUENCE_COMPLETE), createListenerErrorMessage());
 		model.validateData(fViewer, TreePath.EMPTY, true);
 
 		// Validate the expansion state AFTER posting the delta.
@@ -603,7 +605,7 @@ abstract public class DeltaTests extends AbstractViewerModelTest implements ITes
 
 		// Set the input into the view and update the view.
 		fViewer.setInput(model.getRootElement());
-		waitWhile(t -> !fListener.isFinished(), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(), createListenerErrorMessage());
 		model.validateData(fViewer, TreePath.EMPTY, true);
 
 		// Update the model
@@ -620,7 +622,7 @@ abstract public class DeltaTests extends AbstractViewerModelTest implements ITes
 
 		fListener.reset(m4_2_1Path, m4_2_1, -1, true, false);
 		model.postDelta(delta);
-		waitWhile(t -> !fListener.isFinished(), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(), createListenerErrorMessage());
 		model.validateData(fViewer, TreePath.EMPTY);
 	}
 
@@ -635,7 +637,7 @@ abstract public class DeltaTests extends AbstractViewerModelTest implements ITes
 
 		// Set the input into the view and update the view.
 		fViewer.setInput(model.getRootElement());
-		waitWhile(t -> !fListener.isFinished(), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(), createListenerErrorMessage());
 		model.validateData(fViewer, TreePath.EMPTY, true);
 
 		TreePath m3_1Path = model.findElement("m3.1"); //$NON-NLS-1$
@@ -650,7 +652,7 @@ abstract public class DeltaTests extends AbstractViewerModelTest implements ITes
 		fListener.setFailOnRedundantUpdates(false);
 
 		m3.postDelta(delta);
-		waitWhile(t -> !fListener.isFinished(ALL_UPDATES_COMPLETE | MODEL_CHANGED_COMPLETE), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(ALL_UPDATES_COMPLETE | MODEL_CHANGED_COMPLETE), createListenerErrorMessage());
 
 		model.validateData(fViewer, TreePath.EMPTY);
 	}
@@ -663,7 +665,7 @@ abstract public class DeltaTests extends AbstractViewerModelTest implements ITes
 
 		// Set the input into the view and update the view.
 		fViewer.setInput(model.getRootElement());
-		waitWhile(t -> !fListener.isFinished(), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(), createListenerErrorMessage());
 		model.validateData(fViewer, TreePath.EMPTY, true);
 
 		// Update the model: remove one child of an un-expanded element, then
@@ -676,7 +678,7 @@ abstract public class DeltaTests extends AbstractViewerModelTest implements ITes
 		fListener.reset(parentPath, parentElement, 0, false, false);
 		//fListener.addChildreCountUpdate(parentPath);
 		model.postDelta(delta);
-		waitWhile(t -> !fListener.isFinished(MODEL_CHANGED_COMPLETE | CONTENT_COMPLETE), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(MODEL_CHANGED_COMPLETE | CONTENT_COMPLETE), createListenerErrorMessage());
 
 		// Validate the viewer data.
 		model.validateData(fViewer, TreePath.EMPTY, true);
@@ -688,7 +690,7 @@ abstract public class DeltaTests extends AbstractViewerModelTest implements ITes
 		// Update the viewer
 		fListener.reset(parentPath, parentElement, 0, false, false);
 		model.postDelta(delta);
-		waitWhile(t -> !fListener.isFinished(MODEL_CHANGED_COMPLETE | CONTENT_COMPLETE), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(MODEL_CHANGED_COMPLETE | CONTENT_COMPLETE), createListenerErrorMessage());
 
 		// Validate the viewer data.
 		model.validateData(fViewer, TreePath.EMPTY, true);
@@ -700,7 +702,7 @@ abstract public class DeltaTests extends AbstractViewerModelTest implements ITes
 		// Update the viewer
 		fListener.reset(parentPath, parentElement, 0, false, false);
 		model.postDelta(delta);
-		waitWhile(t -> !fListener.isFinished(MODEL_CHANGED_COMPLETE | CONTENT_COMPLETE), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(MODEL_CHANGED_COMPLETE | CONTENT_COMPLETE), createListenerErrorMessage());
 
 		// Validate the viewer data.
 		model.validateData(fViewer, TreePath.EMPTY, true);
