@@ -33,16 +33,18 @@ import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IBinaryStreamMonitor;
 import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.internal.core.OutputStreamMonitor;
-import org.eclipse.debug.tests.AbstractDebugTest;
+import org.eclipse.debug.tests.DebugTestExtension;
 import org.eclipse.debug.tests.TestUtil;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests the {@link OutputStreamMonitor}.
  */
-public class OutputStreamMonitorTests extends AbstractDebugTest {
+@ExtendWith(DebugTestExtension.class)
+public class OutputStreamMonitorTests {
 	private static final Duration TIMEOUT = Duration.ofSeconds(10);
 
 	/** The {@link OutputStreamMonitor} used for the test runs. */
@@ -101,14 +103,14 @@ public class OutputStreamMonitorTests extends AbstractDebugTest {
 		}
 	}
 
-	@Before
+	@BeforeEach
 	public void setupStreams() throws IOException {
 		sysout = new PipedOutputStream();
 		inputFromSysout = new PipedInputStream(sysout);
 		monitor = new TestOutputStreamMonitor(inputFromSysout, StandardCharsets.UTF_8);
 	}
 
-	@After
+	@AfterEach
 	public void closeStreams() throws IOException {
 		inputFromSysout.close();
 		sysout.close();

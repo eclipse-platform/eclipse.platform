@@ -28,16 +28,18 @@ import java.util.Map;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.internal.ui.sourcelookup.SourceLookupFacility;
 import org.eclipse.debug.internal.ui.sourcelookup.SourceLookupResult;
-import org.eclipse.debug.tests.AbstractDebugTest;
+import org.eclipse.debug.tests.DebugTestExtension;
 import org.eclipse.debug.ui.sourcelookup.ISourceLookupResult;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests {@link SourceLookupFacility}
  *
  * @since 3.9.200
  */
-public class SourceLookupFacilityTests extends AbstractDebugTest {
+@ExtendWith(DebugTestExtension.class)
+public class SourceLookupFacilityTests {
 
 	/**
 	 * {@link IStackFrame} to be reused

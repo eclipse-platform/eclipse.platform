@@ -52,9 +52,10 @@ import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.launchConfigurations.LaunchHistory;
 import org.eclipse.debug.tests.TestUtil;
 import org.eclipse.debug.ui.IDebugUIConstants;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 public class LaunchGroupTests extends AbstractLaunchTest {
 
@@ -80,18 +81,14 @@ public class LaunchGroupTests extends AbstractLaunchTest {
 		}
 	};
 
-	@Override
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
-		super.setUp();
-
 		// reset count
 		launchCount.set(0);
 	}
 
-	@Override
-	@After
-	public void tearDown() throws Exception {
+	@AfterEach
+	public void tearDown(TestInfo testInfo) throws Exception {
 		// make sure listener is removed
 		getLaunchManager().removeLaunchListener(lcListener);
 		ILaunch[] launches = getLaunchManager().getLaunches();
@@ -105,10 +102,9 @@ public class LaunchGroupTests extends AbstractLaunchTest {
 					launch.terminate();
 				}
 			} catch (Exception e) {
-				TestUtil.log(IStatus.ERROR, name.getMethodName(), "Error terminating launch: " + launch, e);
+				TestUtil.log(IStatus.ERROR, testInfo.getDisplayName(), "Error terminating launch: " + launch, e);
 			}
 		}
-		super.tearDown();
 	}
 
 	private ILaunchConfiguration createLaunchGroup(String groupName, GroupLaunchElement... children) throws CoreException {

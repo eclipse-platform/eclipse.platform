@@ -18,17 +18,19 @@ import static org.junit.Assert.assertEquals;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.PresentationContext;
-import org.eclipse.debug.tests.AbstractDebugTest;
+import org.eclipse.debug.tests.DebugTestExtension;
 import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.XMLMemento;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test the serialization of presentation context properties.
  *
  * @since 3.4
  */
-public class PresentationContextTests extends AbstractDebugTest {
+@ExtendWith(DebugTestExtension.class)
+public class PresentationContextTests {
 
 	/**
 	 * Tests saving and restoring presentation context properties.

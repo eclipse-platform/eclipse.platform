@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.debug.tests.AbstractDebugTest;
+import org.eclipse.debug.tests.DebugTestExtension;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentAdapter;
@@ -38,7 +38,8 @@ import org.eclipse.swt.custom.TextChangeListener;
 import org.eclipse.swt.custom.TextChangedEvent;
 import org.eclipse.swt.custom.TextChangingEvent;
 import org.eclipse.ui.internal.console.ConsoleDocumentAdapter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests {@link ConsoleDocumentAdapter}.
@@ -46,7 +47,8 @@ import org.junit.Test;
  * Primary tests fixed width mode and calculation of {@link TextChangingEvent}s.
  * </p>
  */
-public class ConsoleDocumentAdapterTests extends AbstractDebugTest {
+@ExtendWith(DebugTestExtension.class)
+public class ConsoleDocumentAdapterTests {
 
 	/**
 	 * Test {@link ConsoleDocumentAdapter#setText(String)}.

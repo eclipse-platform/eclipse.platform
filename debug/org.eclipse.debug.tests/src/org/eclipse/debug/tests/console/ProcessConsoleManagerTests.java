@@ -34,24 +34,27 @@ import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.views.console.ConsoleRemoveAllTerminatedAction;
 import org.eclipse.debug.internal.ui.views.console.ProcessConsole;
 import org.eclipse.debug.internal.ui.views.console.ProcessConsoleManager;
-import org.eclipse.debug.tests.AbstractDebugTest;
+import org.eclipse.debug.tests.DebugTestExtension;
 import org.eclipse.debug.tests.TestUtil;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jface.preference.PreferenceMemento;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests the ProcessConsoleManager.
  */
-public class ProcessConsoleManagerTests extends AbstractDebugTest {
+@ExtendWith(DebugTestExtension.class)
+public class ProcessConsoleManagerTests {
 
 	private final PreferenceMemento prefMemento = new PreferenceMemento();
 
-	@After
+	@AfterEach
 	public void restorePreferences() {
 		prefMemento.resetPreferences();
 	}
@@ -62,7 +65,7 @@ public class ProcessConsoleManagerTests extends AbstractDebugTest {
 	 * through an {@link ILaunchListener} which is honored by this test.
 	 */
 	@Test
-	public void testProcessConsoleLifecycle() throws Exception {
+	public void testProcessConsoleLifecycle(TestInfo testInfo) throws Exception {
 		// ensure debug UI plugin is started before adding first launch
 		DebugUIPlugin.getDefault();
 		final ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
@@ -71,7 +74,7 @@ public class ProcessConsoleManagerTests extends AbstractDebugTest {
 		if (existingNumConsoles > 0) {
 			// existing consoles must not harm this test but it may be
 			// interesting in case the test fails
-			TestUtil.log(IStatus.INFO, name.getMethodName(), "Found " + existingNumConsoles + " existing consoles on test start.");
+			TestUtil.log(IStatus.INFO, testInfo.getDisplayName(), "Found " + existingNumConsoles + " existing consoles on test start.");
 		}
 
 		ILaunch launch = null;
@@ -81,7 +84,7 @@ public class ProcessConsoleManagerTests extends AbstractDebugTest {
 			launch = process.getLaunch();
 			launchManager.addLaunch(launch);
 			// do not wait on input read job
-			TestUtil.waitForJobs(name.getMethodName(), ProcessConsoleManager.class, 0, 10000, ProcessConsole.class);
+			TestUtil.waitForJobs(testInfo.getDisplayName(), ProcessConsoleManager.class, 0, 10000, ProcessConsole.class);
 			assertThat(consoleManager.getConsoles()).as("console has been added").hasSize(1);
 		} finally {
 			mockProcess.destroy();
@@ -89,7 +92,7 @@ public class ProcessConsoleManagerTests extends AbstractDebugTest {
 
 		if (launch != null) {
 			launchManager.removeLaunch(launch);
-			TestUtil.waitForJobs(name.getMethodName(), ProcessConsoleManager.class, 0, 10000);
+			TestUtil.waitForJobs(testInfo.getDisplayName(), ProcessConsoleManager.class, 0, 10000);
 			assertThat(consoleManager.getConsoles()).as("console has been removed").isEmpty();
 		}
 	}
@@ -99,7 +102,7 @@ public class ProcessConsoleManagerTests extends AbstractDebugTest {
 	 * is created. see https://bugs.eclipse.org/bugs/show_bug.cgi?id=546710#c13
 	 */
 	@Test
-	public void testBug546710_ConsoleCreationRaceCondition() throws Exception {
+	public void testBug546710_ConsoleCreationRaceCondition(TestInfo testInfo) throws Exception {
 		final ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
 		for (ILaunch existingLaunch : launchManager.getLaunches()) {
 			assertTrue("Found existing not terminated launch. This should not happen and can interfere this test. Check for leakages in previous run tests.", existingLaunch.isTerminated());
@@ -114,7 +117,7 @@ public class ProcessConsoleManagerTests extends AbstractDebugTest {
 			prefMemento.setValue(DebugUIPlugin.getDefault().getPreferenceStore(), IDebugUIConstants.PREF_AUTO_REMOVE_OLD_LAUNCHES, true);
 			// Stop the JobManager to reliable trigger the tested race
 			// condition.
-			TestUtil.waitForJobs(name.getMethodName(), ProcessConsoleManager.class, 0, 10000);
+			TestUtil.waitForJobs(testInfo.getDisplayName(), ProcessConsoleManager.class, 0, 10000);
 			Job.getJobManager().suspend();
 			launchManager.addLaunch(process1.getLaunch());
 			launchManager.addLaunch(process2.getLaunch());
@@ -122,7 +125,7 @@ public class ProcessConsoleManagerTests extends AbstractDebugTest {
 			Job.getJobManager().resume();
 		}
 
-		TestUtil.waitForJobs(name.getMethodName(), ProcessConsoleManager.class, 0, 10000);
+		TestUtil.waitForJobs(testInfo.getDisplayName(), ProcessConsoleManager.class, 0, 10000);
 		ProcessConsoleManager processConsoleManager = DebugUIPlugin.getDefault().getProcessConsoleManager();
 		ILaunch[] launches = launchManager.getLaunches();
 		Set<IConsole> openConsoles = new HashSet<>();
@@ -143,7 +146,7 @@ public class ProcessConsoleManagerTests extends AbstractDebugTest {
 			assertThat(removeAction).matches(ConsoleRemoveAllTerminatedAction::isEnabled, "is enabled");
 		}
 		removeAction.run();
-		TestUtil.waitForJobs(name.getMethodName(), ProcessConsoleManager.class, 0, 10000);
+		TestUtil.waitForJobs(testInfo.getDisplayName(), ProcessConsoleManager.class, 0, 10000);
 		assertNull("First console not removed.", processConsoleManager.getConsole(process1));
 		assertNull("Second console not removed.", processConsoleManager.getConsole(process1));
 	}

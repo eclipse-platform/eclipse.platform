@@ -20,17 +20,19 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.debug.core.model.IMemoryBlock;
-import org.eclipse.debug.tests.AbstractDebugTest;
+import org.eclipse.debug.tests.DebugTestExtension;
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.memory.IMemoryRenderingBindingsListener;
 import org.eclipse.debug.ui.memory.IMemoryRenderingManager;
 import org.eclipse.debug.ui.memory.IMemoryRenderingType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests memory rendering manager
  */
-public class MemoryRenderingTests extends AbstractDebugTest {
+@ExtendWith(DebugTestExtension.class)
+public class MemoryRenderingTests {
 
 	@Test
 	public void testRenderingTypes() {

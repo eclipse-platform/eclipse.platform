@@ -33,7 +33,8 @@ import org.eclipse.debug.internal.ui.viewers.model.provisional.ModelDelta;
 import org.eclipse.debug.tests.TestUtil;
 import org.eclipse.debug.tests.viewer.model.TestModel.TestElement;
 import org.eclipse.jface.viewers.TreePath;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 /**
  * Tests that verify that the viewer property retrieves all the content
@@ -145,7 +146,7 @@ abstract public class ContentTests extends AbstractViewerModelTest implements IT
 	 * See bug 210027
 	 */
 	@Test
-	public void testLabelUpdatesCompletedOutOfSequence1() throws Exception {
+	public void testLabelUpdatesCompletedOutOfSequence1(TestInfo testInfo) throws Exception {
 		TestModelWithCapturedUpdates model = new TestModelWithCapturedUpdates();
 		model.fCaptureLabelUpdates = true;
 
@@ -157,7 +158,7 @@ abstract public class ContentTests extends AbstractViewerModelTest implements IT
 		// Set input into the view to update it, but block children updates.
 		// Wait for view to start retrieving content.
 		fViewer.setInput(model.getRootElement());
-		TestUtil.waitForJobs(name.getMethodName(), 300, 5000);
+		TestUtil.waitForJobs(testInfo.getDisplayName(), 300, 5000);
 		waitWhile(() -> model.fCapturedUpdates.size() < model.getRootElement().fChildren.length, createModelErrorMessage(model));
 
 		List<IViewerUpdate> firstUpdates = model.fCapturedUpdates;
@@ -201,7 +202,7 @@ abstract public class ContentTests extends AbstractViewerModelTest implements IT
 	 * See bug 210027
 	 */
 	@Test
-	public void testLabelUpdatesCompletedOutOfSequence2() throws Exception {
+	public void testLabelUpdatesCompletedOutOfSequence2(TestInfo testInfo) throws Exception {
 		TestModelWithCapturedUpdates model = new TestModelWithCapturedUpdates();
 		model.fCaptureLabelUpdates = true;
 
@@ -213,7 +214,7 @@ abstract public class ContentTests extends AbstractViewerModelTest implements IT
 		// Set input into the view to update it, but block children updates.
 		// Wait for view to start retrieving content.
 		fViewer.setInput(model.getRootElement());
-		TestUtil.waitForJobs(name.getMethodName(), 300, 5000);
+		TestUtil.waitForJobs(testInfo.getDisplayName(), 300, 5000);
 		waitWhile(() -> model.fCapturedUpdates.size() < model.getRootElement().fChildren.length, createModelErrorMessage(model));
 		List<IViewerUpdate> firstUpdates = model.fCapturedUpdates;
 		model.fCapturedUpdates = Collections.synchronizedList(new ArrayList<>(2));

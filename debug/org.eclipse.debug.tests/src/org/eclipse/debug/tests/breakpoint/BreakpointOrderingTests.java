@@ -24,7 +24,7 @@ import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.ILineBreakpoint;
 import org.eclipse.debug.core.model.IValue;
 import org.eclipse.debug.internal.ui.views.breakpoints.BreakpointsComparator;
-import org.eclipse.debug.tests.AbstractDebugTest;
+import org.eclipse.debug.tests.DebugTestExtension;
 import org.eclipse.debug.ui.IDebugModelPresentation;
 import org.eclipse.debug.ui.IValueDetailListener;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
@@ -34,14 +34,16 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.IEditorInput;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test the ordering used in the breakpoints view.
  *
  * Using a special Comparator which sorts breakpoint texts like file:1, file:2 and file:11 in a numerical ordering.
  */
-public class BreakpointOrderingTests extends AbstractDebugTest {
+@ExtendWith(DebugTestExtension.class)
+public class BreakpointOrderingTests {
 
 	/**
 	 * Test only implementation of ILineBreakpoint.

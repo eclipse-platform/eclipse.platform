@@ -49,7 +49,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.debug.tests.AbstractDebugTest;
+import org.eclipse.debug.tests.DebugTestExtension;
 import org.eclipse.debug.tests.TestUtil;
 import org.eclipse.debug.tests.TestsPlugin;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -69,14 +69,17 @@ import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.IOConsole;
 import org.eclipse.ui.console.IOConsoleOutputStream;
 import org.eclipse.ui.internal.console.ConsoleManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests the {@link IOConsole}. Especially the partitioner and viewer parts.
  */
-public class IOConsoleTests extends AbstractDebugTest {
+@ExtendWith(DebugTestExtension.class)
+public class IOConsoleTests {
 	/**
 	 * The console view used for the running test. Required to obtain access to
 	 * consoles {@link StyledText} widget to simulate user input.
@@ -99,11 +102,11 @@ public class IOConsoleTests extends AbstractDebugTest {
 		}
 	};
 
-	@Override
-	@Before
-	public void setUp() throws Exception {
-		super.setUp();
+	protected TestInfo testInfo;
 
+	@BeforeEach
+	public void setUp(TestInfo testInfo) throws Exception {
+		this.testInfo = testInfo;
 		// create or activate console view
 		final IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 		assertNotNull(window);
@@ -122,12 +125,9 @@ public class IOConsoleTests extends AbstractDebugTest {
 		Platform.addLogListener(errorLogListener);
 	}
 
-	@Override
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		Platform.removeLogListener(errorLogListener);
-		super.tearDown();
-
 		assertNoError();
 	}
 
@@ -161,11 +161,11 @@ public class IOConsoleTests extends AbstractDebugTest {
 		});
 		final IConsoleManager consoleManager = ConsolePlugin.getDefault().getConsoleManager();
 		consoleManager.addConsoles(new IConsole[] { console });
-		TestUtil.waitForJobs(name.getMethodName(), ConsoleManager.CONSOLE_JOB_FAMILY, 25, 10000);
+		TestUtil.waitForJobs(testInfo.getDisplayName(), ConsoleManager.CONSOLE_JOB_FAMILY, 25, 10000);
 		consoleManager.showConsoleView(console);
 		final org.eclipse.ui.internal.console.IOConsolePage page = (org.eclipse.ui.internal.console.IOConsolePage) consoleView.getCurrentPage();
 		final StyledText textPanel = (StyledText) page.getControl();
-		return new IOConsoleTestUtil(console, textPanel, name.getMethodName());
+		return new IOConsoleTestUtil(console, textPanel, testInfo.getDisplayName());
 	}
 
 	/**

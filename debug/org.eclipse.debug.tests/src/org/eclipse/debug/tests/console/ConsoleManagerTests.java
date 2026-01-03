@@ -23,7 +23,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.eclipse.debug.tests.AbstractDebugTest;
+import org.eclipse.debug.tests.DebugTestExtension;
 import org.eclipse.debug.tests.TestUtil;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -40,14 +40,17 @@ import org.eclipse.ui.console.IConsoleView;
 import org.eclipse.ui.internal.console.ConsoleManager;
 import org.eclipse.ui.part.IPageBookViewPage;
 import org.eclipse.ui.part.MessagePage;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests console manager
  */
-public class ConsoleManagerTests extends AbstractDebugTest {
+@ExtendWith(DebugTestExtension.class)
+public class ConsoleManagerTests {
 
 	private ExecutorService executorService;
 	private IConsoleManager manager;
@@ -56,10 +59,8 @@ public class ConsoleManagerTests extends AbstractDebugTest {
 	private ConsoleMock[] consoles;
 	ConsoleMock firstConsole;
 
-	@Override
-	@Before
-	public void setUp() throws Exception {
-		super.setUp();
+	@BeforeEach
+	public void setUp(TestInfo testInfo) throws Exception {
 		assertNotNull("Must run in UI thread, but was in: " + Thread.currentThread().getName(), //$NON-NLS-1$
 				Display.getCurrent());
 		count = 20;
@@ -86,18 +87,17 @@ public class ConsoleManagerTests extends AbstractDebugTest {
 		firstConsole = new ConsoleMock(0);
 		manager.addConsoles(new ConsoleMock[] { firstConsole });
 		manager.showConsoleView(firstConsole);
-		TestUtil.waitForJobs(name.getMethodName(), ConsoleManager.CONSOLE_JOB_FAMILY, 200, 5000);
+		TestUtil.waitForJobs(testInfo.getDisplayName(), ConsoleManager.CONSOLE_JOB_FAMILY, 200, 5000);
 		TestUtil.processUIEvents(100);
 		ConsoleMock.allShownConsoles.set(0);
 	}
 
-	@Override @After
+	@AfterEach
 	public void tearDown() throws Exception {
 		executorService.shutdownNow();
 		manager.removeConsoles(consoles);
 		manager.removeConsoles(new ConsoleMock[] { firstConsole });
 		TestUtil.processUIEvents(100);
-		super.tearDown();
 	}
 
 	/**
@@ -108,18 +108,18 @@ public class ConsoleManagerTests extends AbstractDebugTest {
 	 * See bug 489546.
 	 */
 	@Test
-	public void testShowAllConsoles() throws Exception {
+	public void testShowAllConsoles(TestInfo testInfo) throws Exception {
 		// Create a number of threads which will start and wait for the last one
 		// created to call ConsoleManager.show.
 		for (ConsoleMock console : consoles) {
-			showConsole(console);
+			showConsole(console, testInfo.getDisplayName());
 		}
 		System.out.println("All tasks scheduled, processing UI events now..."); //$NON-NLS-1$
 		TestUtil.processUIEvents(1000);
 
 		// Console manager starts a job with delay, let wait for him a bit
 		System.out.println("Waiting on jobs now..."); //$NON-NLS-1$
-		TestUtil.waitForJobs(name.getMethodName(), ConsoleManager.CONSOLE_JOB_FAMILY, 200, 5000);
+		TestUtil.waitForJobs(testInfo.getDisplayName(), ConsoleManager.CONSOLE_JOB_FAMILY, 200, 5000);
 
 		// Give UI a chance to proceed pending console manager jobs
 		System.out.println("Done with jobs, processing UI events again..."); //$NON-NLS-1$
@@ -153,7 +153,7 @@ public class ConsoleManagerTests extends AbstractDebugTest {
 		return false;
 	}
 
-	private void showConsole(final ConsoleMock console) {
+	private void showConsole(final ConsoleMock console, String testName) {
 		executorService.execute(() -> {
 			// last one arriving here triggers execution for all at same
 			// time
@@ -162,7 +162,7 @@ public class ConsoleManagerTests extends AbstractDebugTest {
 				latch.await(1, TimeUnit.MINUTES);
 				System.out.println("Requesting to show: " + console); //$NON-NLS-1$
 				manager.showConsoleView(console);
-				TestUtil.waitForJobs(name.getMethodName(), ConsoleManager.CONSOLE_JOB_FAMILY, 200, 5000);
+				TestUtil.waitForJobs(testName, ConsoleManager.CONSOLE_JOB_FAMILY, 200, 5000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 				Thread.interrupted();

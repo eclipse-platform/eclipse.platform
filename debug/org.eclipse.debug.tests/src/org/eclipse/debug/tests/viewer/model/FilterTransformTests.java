@@ -20,16 +20,18 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.eclipse.debug.internal.ui.viewers.model.FilterTransform;
-import org.eclipse.debug.tests.AbstractDebugTest;
+import org.eclipse.debug.tests.DebugTestExtension;
 import org.eclipse.jface.viewers.TreePath;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests the virtual viewer's filter transform
  * @since 3.3
  */
-public class FilterTransformTests extends AbstractDebugTest {
+@ExtendWith(DebugTestExtension.class)
+public class FilterTransformTests {
 
 	public Object root;
 	public Object element0;
@@ -48,10 +50,8 @@ public class FilterTransformTests extends AbstractDebugTest {
 	 * and elements 0, 2, 3, 6, 7 are filtered. Elements
 	 * 1, 4, 5 are visible.
 	 */
-	@Override
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
-		super.setUp();
 		transform = new FilterTransform();
 		root = new Object();
 		element0 = new Object();

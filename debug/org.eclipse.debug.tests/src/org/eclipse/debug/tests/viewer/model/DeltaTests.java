@@ -30,7 +30,7 @@ import org.eclipse.debug.tests.viewer.model.TestModel.TestElement;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.TreePath;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests to verify that the viewer property retrieves and processes the

@@ -13,15 +13,19 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.logicalstructure;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILogicalStructureType;
 import org.eclipse.debug.core.model.IValue;
 import org.eclipse.debug.internal.ui.views.variables.LogicalStructureCache;
-import org.eclipse.debug.tests.AbstractDebugTest;
-import org.junit.Test;
+import org.eclipse.debug.tests.DebugTestExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-public class LogicalStructureCacheTest extends AbstractDebugTest {
+@ExtendWith(DebugTestExtension.class)
+public class LogicalStructureCacheTest {
 
 	@Test
 	public void testReleaseValuesOnClear() throws Exception {

@@ -16,14 +16,16 @@ package org.eclipse.debug.tests.ui;
 import static org.junit.Assert.assertEquals;
 
 import org.eclipse.debug.internal.ui.VariableValueEditorManager;
-import org.eclipse.debug.tests.AbstractDebugTest;
+import org.eclipse.debug.tests.DebugTestExtension;
 import org.eclipse.debug.ui.actions.IVariableValueEditor;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests status handlers
  */
-public class VariableValueEditorManagerTests extends AbstractDebugTest {
+@ExtendWith(DebugTestExtension.class)
+public class VariableValueEditorManagerTests {
 
 	@Test
 	public void testHighestPriorityEditorUsed() {

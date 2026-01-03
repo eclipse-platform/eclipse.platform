@@ -30,7 +30,7 @@ public class IOConsoleFixedWidthTests extends IOConsoleTests {
 		c.getConsole().setConsoleWidth(3);
 		c.setIgnoreFixedConsole(true);
 		// console width is applied asynchronous
-		TestUtil.waitForJobs(name.getMethodName(), ConsoleManager.CONSOLE_JOB_FAMILY, 50, 1000);
+		TestUtil.waitForJobs(testInfo.getDisplayName(), ConsoleManager.CONSOLE_JOB_FAMILY, 50, 1000);
 		return c;
 	}
 

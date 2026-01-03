@@ -26,9 +26,10 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.internal.ui.launchConfigurations.LaunchHistory;
 import org.eclipse.debug.ui.IDebugUIConstants;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 /**
  * Test the launch history favorites get updated properly as configurations as
@@ -58,25 +59,21 @@ public class LaunchFavoriteTests extends AbstractLaunchTest {
 		return getLaunchConfigurationManager().getLaunchHistory(IDebugUIConstants.ID_DEBUG_LAUNCH_GROUP);
 	}
 
-	@Override
-	@Before
-	public void setUp() throws Exception {
-		super.setUp();
+	@BeforeEach
+	public void setUp(TestInfo testInfo) throws Exception {
 		// clear the favorites
 		getRunLaunchHistory().setFavorites(new ILaunchConfiguration[0]);
 		getDebugLaunchHistory().setFavorites(new ILaunchConfiguration[0]);
-		fConfig = getLaunchConfiguration(name.getMethodName());
+		fConfig = getLaunchConfiguration(testInfo.getDisplayName());
 	}
 
-	@Override
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		// delete the configuration used during this test
 		ILaunchConfiguration configuration = getLaunchConfiguration();
 		if (configuration.exists()) {
 			configuration.delete();
 		}
-		super.tearDown();
 	}
 
 	/**

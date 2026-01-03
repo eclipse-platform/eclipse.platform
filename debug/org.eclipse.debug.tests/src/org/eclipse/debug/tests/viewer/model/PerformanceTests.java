@@ -26,8 +26,9 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.test.performance.Performance;
 import org.eclipse.test.performance.PerformanceMeter;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 /**
  * Tests to measure the performance of the viewer updates.
@@ -36,8 +37,10 @@ abstract public class PerformanceTests extends AbstractViewerModelTest implement
 
 	protected VisibleVirtualItemValidator fVirtualItemValidator;
 
+	private TestInfo testInfo;
+
 	public String getDefaultScenarioId() {
-		return this.getClass().getName() + '#' + name.getMethodName() + "()"; //$NON-NLS-1$
+		return this.getClass().getName() + '#' + testInfo.getDisplayName() + "()"; //$NON-NLS-1$
 	}
 
 	@Override
@@ -45,10 +48,9 @@ abstract public class PerformanceTests extends AbstractViewerModelTest implement
 		return new TestModelUpdatesListener(viewer, false, false);
 	}
 
-	@Override
-	@Before
-	public void setUp() throws Exception {
-		super.setUp();
+	@BeforeEach
+	public void setUp(TestInfo testInfo) throws Exception {
+		this.testInfo = testInfo;
 		fVirtualItemValidator = new VisibleVirtualItemValidator(0, Integer.MAX_VALUE);
 	}
 
