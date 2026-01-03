@@ -37,7 +37,15 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
 
-public class TestUtil {
+public final class TestUtil {
+
+	/**
+	 * The default test timeout in milliseconds
+	 */
+	public static long DEFAULT_TIMEOUT = 30_000;
+
+	private TestUtil() {
+	}
 
 	/**
 	 * Call this in the tearDown method of every test to clean up state that can
@@ -137,6 +145,26 @@ public class TestUtil {
 		if (stillTrue) {
 			fail(errorMessage.apply(context));
 		}
+	}
+
+	/**
+	 * Waits while given condition is {@code true} for the time defined as
+	 * {@code #TEST_TIMEOUT}. If the actual wait time exceeds that timeout and
+	 * condition will be still {@code true}, throws {@link AssertionError} with
+	 * given message.
+	 * <p>
+	 * Will process UI events while waiting in UI thread, if called from
+	 * background thread, just waits.
+	 *
+	 * @param <T> type of the context
+	 * @param condition function which will be evaluated while waiting
+	 * @param context test context
+	 * @param errorMessage message which will be used to construct the failure
+	 *            exception in case the condition will still return {@code true}
+	 *            after given timeout
+	 */
+	public static <T> void waitWhile(Predicate<T> condition, T context, Function<T, String> errorMessage) throws Exception {
+		waitWhile(condition, context, DEFAULT_TIMEOUT, errorMessage);
 	}
 
 	/**

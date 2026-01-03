@@ -468,7 +468,7 @@ abstract public class UpdateTests extends AbstractViewerModelTest implements ITe
 			long start = System.currentTimeMillis();
 			// Wait for the delta to be processed.
 			while (!fListener.isFinished(MODEL_CHANGED_COMPLETE | CHILDREN_UPDATES_STARTED)
-					&& System.currentTimeMillis() - start < testTimeout) {
+					&& System.currentTimeMillis() - start < TestUtil.DEFAULT_TIMEOUT) {
 				completeQueuedUpdatesOfType(model, IChildrenCountUpdate.class);
 				completeQueuedUpdatesOfType(model, IHasChildrenUpdate.class);
 				TestUtil.processUIEvents();
@@ -511,7 +511,7 @@ abstract public class UpdateTests extends AbstractViewerModelTest implements ITe
 			long start = System.currentTimeMillis();
 			// Wait for the delta to be processed.
 			while (!fListener.isFinished(MODEL_CHANGED_COMPLETE | CHILDREN_UPDATES_STARTED)
-					&& System.currentTimeMillis() - start < testTimeout) {
+					&& System.currentTimeMillis() - start < TestUtil.DEFAULT_TIMEOUT) {
 				completeQueuedUpdatesOfType(model, IChildrenCountUpdate.class);
 				completeQueuedUpdatesOfType(model, IHasChildrenUpdate.class);
 				TestUtil.processUIEvents();

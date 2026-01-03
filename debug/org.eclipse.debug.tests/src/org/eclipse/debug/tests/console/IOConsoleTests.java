@@ -902,7 +902,7 @@ public class IOConsoleTests extends AbstractDebugTest {
 		};
 		Thread watchdog = new Thread(() -> {
 			try {
-				Thread.sleep(testTimeout);
+				Thread.sleep(TestUtil.DEFAULT_TIMEOUT);
 				synchronized (c) {
 					c.notifyAll();
 				}
