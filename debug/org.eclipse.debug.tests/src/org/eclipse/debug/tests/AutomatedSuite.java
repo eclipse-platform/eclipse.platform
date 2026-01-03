@@ -59,83 +59,83 @@ import org.eclipse.debug.tests.viewer.model.VirtualViewerLazyModeTests;
 import org.eclipse.debug.tests.viewer.model.VirtualViewerSelectionTests;
 import org.eclipse.debug.tests.viewer.model.VirtualViewerStateTests;
 import org.eclipse.debug.tests.viewer.model.VirtualViewerUpdateTests;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /**
  * Tests for integration and nightly builds.
  *
  * @since 3.6
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
+@Suite
+@SelectClasses({
 		// Source lookup tests
-		SourceLookupFacilityTests.class,
+		SourceLookupFacilityTests.class, //
 		// BP tests
-		BreakpointOrderingTests.class,
-		BreakpointTests.class,
-		SerialExecutorTest.class,
+		BreakpointOrderingTests.class, //
+		BreakpointTests.class, //
+		SerialExecutorTest.class, //
 		// Note: jface viewer tests were moved out of nightly tests
 		// due to frequent problems on nightly build machines.
 		// (Bug 343308).
 
 		// Virtual viewer tests
-		VirtualViewerCheckTests.class,
-		VirtualViewerDeltaTests.class,
-		VirtualViewerContentTests.class,
-		VirtualViewerLazyModeTests.class,
-		VirtualViewerSelectionTests.class,
-		VirtualViewerStateTests.class,
-		VirtualViewerUpdateTests.class,
-		VirtualViewerFilterTests.class,
+		VirtualViewerCheckTests.class, //
+		VirtualViewerDeltaTests.class, //
+		VirtualViewerContentTests.class, //
+		VirtualViewerLazyModeTests.class, //
+		VirtualViewerSelectionTests.class, //
+		VirtualViewerStateTests.class, //
+		VirtualViewerUpdateTests.class, //
+		VirtualViewerFilterTests.class, //
 
 		// Viewer neutral tests
-		FilterTransformTests.class,
-		ChildrenUpdateTests.class,
-		PresentationContextTests.class,
-		VariableValueEditorManagerTests.class,
+		FilterTransformTests.class, //
+		ChildrenUpdateTests.class, //
+		PresentationContextTests.class, //
+		VariableValueEditorManagerTests.class, //
 
 		// Memory view
-		MemoryRenderingTests.class,
-		TableRenderingTests.class,
+		MemoryRenderingTests.class, //
+		TableRenderingTests.class, //
 
 		// Launch framework
-		LaunchConfigurationTests.class,
-		AcceleratorSubstitutionTests.class,
-		LaunchHistoryTests.class,
-		LaunchFavoriteTests.class,
-		LaunchManagerTests.class,
-		RefreshTabTests.class,
-		ArgumentParsingTests.class,
-		LaunchTests.class,
+		LaunchConfigurationTests.class, //
+		AcceleratorSubstitutionTests.class, //
+		LaunchHistoryTests.class, //
+		LaunchFavoriteTests.class, //
+		LaunchManagerTests.class, //
+		RefreshTabTests.class, //
+		ArgumentParsingTests.class, //
+		LaunchTests.class, //
 
 		// Status handlers
-		StatusHandlerTests.class,
+		StatusHandlerTests.class, //
 
 		// Step filters
-		StepFiltersTests.class,
+		StepFiltersTests.class, //
 
 		// Console view
-		ConsoleDocumentAdapterTests.class,
-		ConsoleManagerTests.class,
-		ConsoleTests.class,
-		IOConsoleTests.class,
-		IOConsoleFixedWidthTests.class,
-		ProcessConsoleManagerTests.class,
-		ProcessConsoleTests.class,
-		StreamsProxyTests.class,
-		TextConsoleViewerTest.class,
-		RuntimeProcessTests.class,
-		OutputStreamMonitorTests.class,
-		InputStreamMonitorTests.class,
-		FileLinkTests.class,
+		ConsoleDocumentAdapterTests.class, //
+		ConsoleManagerTests.class, //
+		ConsoleTests.class, //
+		IOConsoleTests.class, //
+		IOConsoleFixedWidthTests.class, //
+		ProcessConsoleManagerTests.class, //
+		ProcessConsoleTests.class, //
+		StreamsProxyTests.class, //
+		TextConsoleViewerTest.class, //
+		RuntimeProcessTests.class, //
+		OutputStreamMonitorTests.class, //
+		InputStreamMonitorTests.class, //
+		FileLinkTests.class, //
 
 		// Launch Groups
-		LaunchGroupTests.class,
-		LaunchConfigurationTabGroupViewerTest.class,
+		LaunchGroupTests.class, //
+		LaunchConfigurationTabGroupViewerTest.class, //
 
 		// Logical structure
-		LogicalStructureCacheTest.class,
+		LogicalStructureCacheTest.class, //
 })
 public class AutomatedSuite {
 }
