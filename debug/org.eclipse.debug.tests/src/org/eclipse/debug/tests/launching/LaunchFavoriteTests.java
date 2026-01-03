@@ -14,6 +14,7 @@
 package org.eclipse.debug.tests.launching;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.debug.tests.TestUtil.getLaunchConfigurationManager;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -25,6 +26,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.internal.ui.launchConfigurations.LaunchHistory;
+import org.eclipse.debug.tests.TestUtil;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,7 +39,7 @@ import org.junit.jupiter.api.TestInfo;
  *
  * @since 3.6
  */
-public class LaunchFavoriteTests extends AbstractLaunchTest {
+public class LaunchFavoriteTests {
 
 	/**
 	 * Configuration to use for the test. One is created for each test during
@@ -64,7 +66,7 @@ public class LaunchFavoriteTests extends AbstractLaunchTest {
 		// clear the favorites
 		getRunLaunchHistory().setFavorites(new ILaunchConfiguration[0]);
 		getDebugLaunchHistory().setFavorites(new ILaunchConfiguration[0]);
-		fConfig = getLaunchConfiguration(testInfo.getDisplayName());
+		fConfig = TestUtil.getLaunchConfiguration(testInfo.getDisplayName());
 	}
 
 	@AfterEach

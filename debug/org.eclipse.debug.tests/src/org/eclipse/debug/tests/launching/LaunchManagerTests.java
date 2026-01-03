@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.launching;
 
+import static org.eclipse.debug.tests.TestUtil.getLaunchConfiguration;
+import static org.eclipse.debug.tests.TestUtil.getLaunchManager;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -50,7 +52,7 @@ import org.junit.jupiter.api.Test;
  * @since 3.6
  */
 @SuppressWarnings("deprecation")
-public class LaunchManagerTests extends AbstractLaunchTest {
+public class LaunchManagerTests {
 
 
 	/**

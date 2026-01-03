@@ -28,10 +28,19 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import org.eclipse.core.internal.jobs.JobManager;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.core.ILaunchConfigurationType;
+import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.debug.internal.ui.DebugUIPlugin;
+import org.eclipse.debug.internal.ui.launchConfigurations.LaunchConfigurationManager;
+import org.eclipse.debug.tests.launching.LaunchConfigurationTests;
 import org.eclipse.swt.widgets.Display;
 import org.junit.Assert;
 import org.osgi.framework.Bundle;
@@ -330,6 +339,44 @@ public final class TestUtil {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Returns the launch manager.
+	 *
+	 * @return launch manager
+	 */
+	public static ILaunchManager getLaunchManager() {
+		return DebugPlugin.getDefault().getLaunchManager();
+	}
+
+	/**
+	 * Returns the singleton instance of the <code>LaunchConfigurationManager</code>
+	 *
+	 * @return the singleton instance of the <code>LaunchConfigurationManager</code>
+	 */
+	public static LaunchConfigurationManager getLaunchConfigurationManager() {
+		return DebugUIPlugin.getDefault().getLaunchConfigurationManager();
+	}
+
+	/**
+	 * Returns a launch configuration with the given name, creating one if required.
+	 *
+	 * @param configurationName configuration name
+	 * @return launch configuration
+	 */
+	public static ILaunchConfiguration getLaunchConfiguration(String configurationName) throws CoreException {
+		ILaunchManager manager = getLaunchManager();
+		ILaunchConfiguration[] configurations = manager.getLaunchConfigurations();
+		for (ILaunchConfiguration config : configurations) {
+			if (config.getName().equals(configurationName)) {
+				return config;
+			}
+		}
+		 ILaunchConfigurationType type = getLaunchManager().getLaunchConfigurationType(LaunchConfigurationTests.ID_TEST_LAUNCH_TYPE);
+		 ILaunchConfigurationWorkingCopy wc = type.newInstance(null, configurationName);
+		 ILaunchConfiguration saved = wc.doSave();
+		 return saved;
 	}
 
 }

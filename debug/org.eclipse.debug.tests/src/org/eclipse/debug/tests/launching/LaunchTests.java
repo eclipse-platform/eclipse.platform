@@ -57,7 +57,7 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 3.10
  */
-public class LaunchTests extends AbstractLaunchTest {
+public class LaunchTests {
 
 	/**
 	 * Windows MAX_PATH limit for file paths. See

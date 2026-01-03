@@ -44,7 +44,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests the refresh tab.
  */
-public class RefreshTabTests extends AbstractLaunchTest {
+public class RefreshTabTests {
 
 	/**
 	 * Sets the selected resource in the navigator view.
