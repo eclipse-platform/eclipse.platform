@@ -17,6 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,20 +86,20 @@ public class BreakpointTests extends AbstractDebugTest {
 			IUndoContext context = DebugUITools.getBreakpointsUndoContext();
 
 			bpm.addBreakpoint(bp);
-			TestUtil.waitWhile(c -> c.getTestBreakpoints().isEmpty(), this, testTimeout, c -> "Breakpoint is not created");
+			TestUtil.waitWhile(c -> c.getTestBreakpoints().isEmpty(), this, c -> "Breakpoint is not created");
 			assertTrue("Breakpoint marker missing", bp.getMarker().exists());
 			assertTrue("Breakpoint not registered", bp.isRegistered());
 
 			DebugUITools.deleteBreakpoints(new IBreakpoint[] {
 					bp }, null, null);
 			assertTrue(operationHistory.canUndo(context));
-			TestUtil.waitWhile(c -> !c.getTestBreakpoints().isEmpty(), this, testTimeout, c -> "Breakpoint is not deleted");
+			TestUtil.waitWhile(c -> !c.getTestBreakpoints().isEmpty(), this, c -> "Breakpoint is not deleted");
 			assertFalse("Breakpoint marker not removed", bp.getMarker().exists());
 			assertFalse("Breakpoint still registered", bp.isRegistered());
 
 			operationHistory.undo(context, null, null);
 			assertTrue(operationHistory.canRedo(context));
-			TestUtil.waitWhile(c -> c.getTestBreakpoints().isEmpty(), this, testTimeout, c -> "Breakpoint is not recreated");
+			TestUtil.waitWhile(c -> c.getTestBreakpoints().isEmpty(), this, c -> "Breakpoint is not recreated");
 			bp = getTestBreakpoints().get(0);
 			assertEquals("Breakpoint attributes not correctly restored", content, bp.getText());
 			assertTrue("Breakpoint marker missing", bp.getMarker().exists());
@@ -106,13 +107,13 @@ public class BreakpointTests extends AbstractDebugTest {
 
 			operationHistory.redo(context, null, null);
 			assertTrue(operationHistory.canUndo(context));
-			TestUtil.waitWhile(c -> !c.getTestBreakpoints().isEmpty(), this, testTimeout, c -> "Breakpoint is not deleted");
+			TestUtil.waitWhile(c -> !c.getTestBreakpoints().isEmpty(), this, c -> "Breakpoint is not deleted");
 			assertFalse("Breakpoint marker not removed", bp.getMarker().exists());
 			assertFalse("Breakpoint still registered", bp.isRegistered());
 
 			operationHistory.undo(context, null, null);
 			assertTrue(operationHistory.canRedo(context));
-			TestUtil.waitWhile(c -> c.getTestBreakpoints().isEmpty(), this, testTimeout, c -> "Breakpoint is not recreated");
+			TestUtil.waitWhile(c -> c.getTestBreakpoints().isEmpty(), this, c -> "Breakpoint is not recreated");
 			bp = getTestBreakpoints().get(0);
 			assertEquals("Breakpoint attributes not correctly restored", content, bp.getText());
 			assertTrue("Breakpoint marker missing", bp.getMarker().exists());
@@ -123,7 +124,7 @@ public class BreakpointTests extends AbstractDebugTest {
 			TestUtil.waitWhile(c -> {
 				TreeItem item = (TreeItem) finalView.getTreeModelViewer().testFindItem(finalBp);
 				return item == null || item.getText() == null || !item.getText().contains(content);
-			}, this, testTimeout, c -> "Breakpoint not restored in view");
+			}, this, c -> "Breakpoint not restored in view");
 		} finally {
 			if (!viewVisible) {
 				DebugUIPlugin.getActiveWorkbenchWindow().getActivePage().hideView(view);

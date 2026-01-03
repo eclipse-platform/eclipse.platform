@@ -187,7 +187,7 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 	 */
 	public void processConsoleUTF8Input(String prefix, int numTwoByteCharacters) throws Exception {
 		final String input = prefix + String.join("", Collections.nCopies(numTwoByteCharacters, "\u00F8"));
-		final MockProcess mockProcess = new MockProcess(input.getBytes(StandardCharsets.UTF_8).length, testTimeout);
+		final MockProcess mockProcess = new MockProcess(input.getBytes(StandardCharsets.UTF_8).length, TestUtil.DEFAULT_TIMEOUT);
 		try {
 			final ILaunch launch = new Launch(null, ILaunchManager.RUN_MODE, null);
 			launch.setAttribute(DebugPlugin.ATTR_CONSOLE_ENCODING, StandardCharsets.UTF_8.toString());
@@ -198,7 +198,7 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 				@SuppressWarnings("resource")
 				IOConsoleInputStream consoleIn = console.getInputStream();
 				consoleIn.appendData(input);
-				mockProcess.waitFor(testTimeout, TimeUnit.MILLISECONDS);
+				mockProcess.waitFor(TestUtil.DEFAULT_TIMEOUT, TimeUnit.MILLISECONDS);
 			} finally {
 				console.destroy();
 			}
@@ -296,7 +296,7 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 			if (mockProcess.isAlive()) {
 				mockProcess.destroy();
 			}
-			waitWhile(__ -> !terminationSignaled.get(), 10_000, __ -> "No console complete notification received.");
+			waitWhile(__ -> !terminationSignaled.get(), __ -> "No console complete notification received.");
 		} finally {
 			consoleManager.removeConsoles(new IConsole[] { console });
 			TestUtil.waitForJobs(name.getMethodName(), ConsoleManager.CONSOLE_JOB_FAMILY, 0, 10000);
@@ -395,7 +395,7 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 		try {
 			consoleManager.addConsoles(new IConsole[] { console });
 			mockProcess.destroy();
-			waitWhile(c -> !consoleFinished.get(), testTimeout, c -> "Console did not finished.");
+			waitWhile(c -> !consoleFinished.get(), c -> "Console did not finished.");
 
 			Object value = launchConfigAttributes != null ? launchConfigAttributes.get(IDebugUIConstants.ATTR_CAPTURE_IN_FILE) : null;
 			final File outFile = value != null ? new File((String) value) : null;
@@ -465,7 +465,7 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 						String actual = console.getDocument().get();
 						return "Not all lines have been written, expected: " + expected + ", was: " + actual;
 					};
-					waitWhile(waitForLastLineWritten, testTimeout, errorMessageProvider);
+					waitWhile(waitForLastLineWritten, errorMessageProvider);
 
 					for (int i = 0; i < lines.length; i++) {
 						IRegion lineInfo = console.getDocument().getLineInformation(i);
@@ -521,7 +521,7 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 					}
 					return "File has not been written, expected: " + Arrays.toString(output) + ", was: " + Arrays.toString(actualOutput);
 				};
-				waitWhile(waitForFileWritten, testTimeout, errorMessageProvider);
+				waitWhile(waitForFileWritten, errorMessageProvider);
 				mockProcess.destroy();
 			} finally {
 				console.destroy();
@@ -546,7 +546,7 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 
 		final File inFile = createTmpFile("testinput.bin");
 		Files.write(inFile.toPath(), input);
-		final MockProcess mockProcess = new MockProcess(input.length, testTimeout);
+		final MockProcess mockProcess = new MockProcess(input.length, TestUtil.DEFAULT_TIMEOUT);
 		try {
 			Map<String, Object> launchConfigAttributes = new HashMap<>();
 			launchConfigAttributes.put(DebugPlugin.ATTR_CONSOLE_ENCODING, consoleEncoding);
@@ -556,7 +556,7 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 			final org.eclipse.debug.internal.ui.views.console.ProcessConsole console = new org.eclipse.debug.internal.ui.views.console.ProcessConsole(process, new ConsoleColorProvider(), consoleEncoding);
 			try {
 				console.initialize();
-				mockProcess.waitFor(testTimeout, TimeUnit.MILLISECONDS);
+				mockProcess.waitFor(TestUtil.DEFAULT_TIMEOUT, TimeUnit.MILLISECONDS);
 			} finally {
 				console.destroy();
 			}

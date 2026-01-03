@@ -36,11 +36,6 @@ public class AbstractDebugTest {
 
 	private static boolean welcomeClosed;
 
-	/**
-	 * Default timeout in milliseconds to wait on some events
-	 */
-	protected long testTimeout = 30000;
-
 	@Rule
 	public TestName name = new TestName();
 
@@ -88,27 +83,8 @@ public class AbstractDebugTest {
 	}
 
 	/**
-	 * Waits while given condition is {@code true} for a given amount of
-	 * milliseconds. If the actual wait time exceeds given timeout and condition
-	 * will be still {@code true}, throws
-	 * {@link junit.framework.AssertionFailedError} with given message.
-	 * <p>
-	 * Will process UI events while waiting in UI thread, if called from
-	 * background thread, just waits.
-	 *
-	 * @param condition function which will be evaluated while waiting
-	 * @param timeout max wait time in milliseconds to wait on given condition
-	 * @param errorMessage message which will be used to construct the failure
-	 *            exception in case the condition will still return {@code true}
-	 *            after given timeout
-	 */
-	public void waitWhile(Predicate<AbstractDebugTest> condition, long timeout, Function<AbstractDebugTest, String> errorMessage) throws Exception {
-		TestUtil.waitWhile(condition, this, timeout, errorMessage);
-	}
-
-	/**
 	 * Waits while given condition is {@code true} for some time. If the actual
-	 * wait time exceeds {@link #testTimeout} and condition will be still
+	 * wait time exceeds {@link TestUtil#DEFAULT_TIMEOUT} and condition will be still
 	 * {@code true}, throws {@link junit.framework.AssertionFailedError} with
 	 * given message.
 	 * <p>
@@ -121,7 +97,7 @@ public class AbstractDebugTest {
 	 *            after given timeout
 	 */
 	public void waitWhile(Predicate<AbstractDebugTest> condition, Function<AbstractDebugTest, String> errorMessage) throws Exception {
-		TestUtil.waitWhile(condition, this, testTimeout, errorMessage);
+		TestUtil.waitWhile(condition, this, errorMessage);
 	}
 
 	private static void closeIntro(final IWorkbench wb) {

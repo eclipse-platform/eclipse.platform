@@ -1306,7 +1306,7 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 		IProcess process = null;
 		try {
 			process = DebugPlugin.newProcess(launch, new MockProcess(0), "test-terminate-timestamp");
-			waitWhile(__ -> !terminatedLaunches.contains(launch), testTimeout,
+			waitWhile(__ -> !terminatedLaunches.contains(launch),
 					__ -> "Launch termination event did not occur: "+
 							"launch termination state is \"" + launch.isTerminated() + "\" " +
 							"and " + terminatedLaunches.size() + " launches have terminated");
@@ -1454,7 +1454,7 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 		IProcess runtimeProcess = null;
 		try {
 			runtimeProcess = DebugPlugin.newProcess(launch, mockProcess, "test-terminate-launch-listener");
-			waitWhile(__ -> !launchTerminated.get(), testTimeout, __ -> "Launch termination event did not occur");
+			waitWhile(__ -> !launchTerminated.get(), __ -> "Launch termination event did not occur");
 		} finally {
 			DebugPlugin.getDefault().getLaunchManager().removeLaunchListener(listener);
 			if (launch != null) {
