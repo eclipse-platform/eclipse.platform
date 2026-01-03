@@ -342,8 +342,8 @@ public class EclipseConnector {
 				String jar = url.substring(0, excl);
 				String path = url.length() > excl + 2 ? url.substring(excl + 2)
 						: ""; //$NON-NLS-1$
-				url = jar.replaceAll("!", "%21") + "!/" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-						+ path.replaceAll("!", "%21"); //$NON-NLS-1$ //$NON-NLS-2$
+				url = jar.replace("!", "%21") + "!/" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+						+ path.replace("!", "%21"); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 			helpURL = new URL(url);
 		}
