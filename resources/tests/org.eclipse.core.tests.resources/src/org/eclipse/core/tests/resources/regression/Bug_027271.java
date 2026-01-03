@@ -33,18 +33,20 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * Tests how changes in the underlying preference store may affect the path
  * variable manager.
  */
-// Explicitly tests deprecated API
-@SuppressWarnings("deprecation")
+@Deprecated // Explicitly tests deprecated API
 @ExtendWith(WorkspaceResetExtension.class)
 public class Bug_027271 {
 
+	@Deprecated
 	static final String VARIABLE_PREFIX = "pathvariable."; //$NON-NLS-1$
 
+	@Deprecated
 	@BeforeEach
 	public void setUp() {
 		clearPathVariablesProperties();
 	}
 
+	@Deprecated
 	@AfterEach
 	public void tearDown() {
 		clearPathVariablesProperties();
@@ -61,6 +63,7 @@ public class Bug_027271 {
 		}
 	}
 
+	@Deprecated
 	@Test
 	public void testBug() {
 		assumeTrue(OS.isWindows(), "only relevant on Windows");

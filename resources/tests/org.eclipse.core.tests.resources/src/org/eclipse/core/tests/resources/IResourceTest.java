@@ -1343,9 +1343,8 @@ public class IResourceTest {
 	 * Performs black box testing of the following methods: isDerived() and
 	 * setDerived(boolean)
 	 */
-	// Explicitly tests deprecated API
-	@SuppressWarnings("deprecation")
 	@Test
+	@Deprecated // Explicitly tests deprecated API
 	public void testDeprecatedDerived() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject("Project");

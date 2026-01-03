@@ -1426,9 +1426,8 @@ public class IResourceChangeListenerTest {
 		assertDelta();
 	}
 
-	// Explicitly tests deprecated API
-	@SuppressWarnings("deprecation")
 	@Test
+	@Deprecated // Explicitly tests deprecated API
 	public void testProjectDescriptionDynamicRefs() throws CoreException {
 		/* change file1's contents */
 		verifier.addExpectedChange(project1, IResourceDelta.CHANGED, IResourceDelta.DESCRIPTION);
@@ -1521,9 +1520,8 @@ public class IResourceChangeListenerTest {
 		assertDelta();
 	}
 
-	// Explicitly tests deprecated API
-	@SuppressWarnings("deprecation")
 	@Test
+	@Deprecated // Explicitly tests deprecated API
 	public void testSetLocal() throws CoreException {
 		verifier.reset();
 		// set local on a file that is already local -- should be no change
