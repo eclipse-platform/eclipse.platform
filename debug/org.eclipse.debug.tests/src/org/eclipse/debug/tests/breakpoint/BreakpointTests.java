@@ -13,10 +13,10 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.breakpoint;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +79,7 @@ public class BreakpointTests {
 			viewVisible = false;
 			view = ((BreakpointsView) DebugUIPlugin.getActiveWorkbenchWindow().getActivePage().showView(IDebugUIConstants.ID_BREAKPOINT_VIEW));
 		}
-		assertNotNull("Failed to obtain breakpoint view.", view);
+		assertNotNull(view, "Failed to obtain breakpoint view.");
 
 		try {
 			String content = "Bug 424561";
@@ -89,37 +89,37 @@ public class BreakpointTests {
 
 			bpm.addBreakpoint(bp);
 			TestUtil.waitWhile(() -> getTestBreakpoints().isEmpty(), () -> "Breakpoint is not created");
-			assertTrue("Breakpoint marker missing", bp.getMarker().exists());
-			assertTrue("Breakpoint not registered", bp.isRegistered());
+			assertTrue(bp.getMarker().exists(), "Breakpoint marker missing");
+			assertTrue(bp.isRegistered(), "Breakpoint not registered");
 
 			DebugUITools.deleteBreakpoints(new IBreakpoint[] {
 					bp }, null, null);
 			assertTrue(operationHistory.canUndo(context));
 			TestUtil.waitWhile(() -> !getTestBreakpoints().isEmpty(), () -> "Breakpoint is not deleted");
-			assertFalse("Breakpoint marker not removed", bp.getMarker().exists());
-			assertFalse("Breakpoint still registered", bp.isRegistered());
+			assertFalse(bp.getMarker().exists(), "Breakpoint marker not removed");
+			assertFalse(bp.isRegistered(), "Breakpoint still registered");
 
 			operationHistory.undo(context, null, null);
 			assertTrue(operationHistory.canRedo(context));
 			TestUtil.waitWhile(() -> getTestBreakpoints().isEmpty(), () -> "Breakpoint is not recreated");
 			bp = getTestBreakpoints().get(0);
-			assertEquals("Breakpoint attributes not correctly restored", content, bp.getText());
-			assertTrue("Breakpoint marker missing", bp.getMarker().exists());
-			assertTrue("Breakpoint not registered", bp.isRegistered());
+			assertEquals(content, bp.getText(), "Breakpoint attributes not correctly restored");
+			assertTrue(bp.getMarker().exists(), "Breakpoint marker missing");
+			assertTrue(bp.isRegistered(), "Breakpoint not registered");
 
 			operationHistory.redo(context, null, null);
 			assertTrue(operationHistory.canUndo(context));
 			TestUtil.waitWhile(() -> !getTestBreakpoints().isEmpty(), () -> "Breakpoint is not deleted");
-			assertFalse("Breakpoint marker not removed", bp.getMarker().exists());
-			assertFalse("Breakpoint still registered", bp.isRegistered());
+			assertFalse(bp.getMarker().exists(), "Breakpoint marker not removed");
+			assertFalse(bp.isRegistered(), "Breakpoint still registered");
 
 			operationHistory.undo(context, null, null);
 			assertTrue(operationHistory.canRedo(context));
 			TestUtil.waitWhile(() -> getTestBreakpoints().isEmpty(), () -> "Breakpoint is not recreated");
 			bp = getTestBreakpoints().get(0);
-			assertEquals("Breakpoint attributes not correctly restored", content, bp.getText());
-			assertTrue("Breakpoint marker missing", bp.getMarker().exists());
-			assertTrue("Breakpoint not registered", bp.isRegistered());
+			assertEquals(content, bp.getText(), "Breakpoint attributes not correctly restored");
+			assertTrue(bp.getMarker().exists(), "Breakpoint marker missing");
+			assertTrue(bp.isRegistered(), "Breakpoint not registered");
 
 			final BreakpointsView finalView = view;
 			final TestBreakpoint finalBp = bp;

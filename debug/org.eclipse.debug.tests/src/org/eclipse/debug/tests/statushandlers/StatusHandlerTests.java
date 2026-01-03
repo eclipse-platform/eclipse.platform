@@ -13,9 +13,9 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.statushandlers;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -46,8 +46,8 @@ public class StatusHandlerTests {
 	@Test
 	public void testStatusHandlerExtension() {
 		IStatusHandler handler = DebugPlugin.getDefault().getStatusHandler(STATUS);
-		assertNotNull("missing status handler extension", handler); //$NON-NLS-1$
-		assertTrue("Unexpected handler", handler instanceof StatusHandler); //$NON-NLS-1$
+		assertNotNull(handler, "missing status handler extension"); //$NON-NLS-1$
+		assertTrue(handler instanceof StatusHandler, "Unexpected handler"); //$NON-NLS-1$
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class StatusHandlerTests {
 		try {
 			Preferences.setBoolean(DebugPlugin.getUniqueIdentifier(), IInternalDebugCoreConstants.PREF_ENABLE_STATUS_HANDLERS, false, InstanceScope.INSTANCE);
 			IStatusHandler handler = DebugPlugin.getDefault().getStatusHandler(STATUS);
-			assertNull("status handler extension should be disabled", handler); //$NON-NLS-1$
+			assertNull(handler, "status handler extension should be disabled"); //$NON-NLS-1$
 		} finally {
 			Preferences.setBoolean(DebugPlugin.getUniqueIdentifier(), IInternalDebugCoreConstants.PREF_ENABLE_STATUS_HANDLERS, true, InstanceScope.INSTANCE);
 		}
