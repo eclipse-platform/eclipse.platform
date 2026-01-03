@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.viewer.model;
 
+import static org.eclipse.debug.tests.TestUtil.waitWhile;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -76,7 +77,7 @@ abstract public class PopupTests extends AbstractViewerModelTest implements ITes
 
 		// Set the input into the view and update the view.
 		fViewer.setInput(model.getRootElement());
-		waitWhile(t -> !fListener.isFinished(), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(), createListenerErrorMessage());
 		model.validateData(fViewer, TreePath.EMPTY);
 
 		// Update the model
@@ -91,7 +92,7 @@ abstract public class PopupTests extends AbstractViewerModelTest implements ITes
 
 		fListener.reset(elementPath, element, -1, true, false);
 		model.postDelta(delta);
-		waitWhile(t -> !fListener.isFinished(), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(), createListenerErrorMessage());
 		model.validateData(fViewer, TreePath.EMPTY);
 	}
 
@@ -107,7 +108,7 @@ abstract public class PopupTests extends AbstractViewerModelTest implements ITes
 
 		// Set the input into the view and update the view.
 		fViewer.setInput(model.getRootElement());
-		waitWhile(t -> !fListener.isFinished(), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(), createListenerErrorMessage());
 		model.validateData(fViewer, TreePath.EMPTY, true);
 
 		// Create the delta
@@ -131,7 +132,7 @@ abstract public class PopupTests extends AbstractViewerModelTest implements ITes
 
 		model.postDelta(deltaRoot);
 		TestUtil.processUIEvents();
-		waitWhile(t -> !fListener.isFinished(MODEL_CHANGED_COMPLETE)
+		waitWhile(() -> !fListener.isFinished(MODEL_CHANGED_COMPLETE)
 				&& (fListener.isFinished(CONTENT_SEQUENCE_STARTED)
 						|| !fListener.isFinished(CONTENT_SEQUENCE_STARTED) && !fListener.isFinished(CONTENT_SEQUENCE_COMPLETE)),
 				createListenerErrorMessage());
@@ -163,7 +164,7 @@ abstract public class PopupTests extends AbstractViewerModelTest implements ITes
 
 		// Set the input into the view and update the view.
 		fViewer.setInput(model.getRootElement());
-		waitWhile(t -> !fListener.isFinished(), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(), createListenerErrorMessage());
 		model.validateData(fViewer, TreePath.EMPTY, true);
 
 		// Turn off auto-expansion
@@ -188,7 +189,7 @@ abstract public class PopupTests extends AbstractViewerModelTest implements ITes
 
 		// Post the sub-tree update
 		model.postDelta(rootDelta);
-		waitWhile(t -> !fListener.isFinished(ALL_UPDATES_COMPLETE | STATE_RESTORE_COMPLETE), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(ALL_UPDATES_COMPLETE | STATE_RESTORE_COMPLETE), createListenerErrorMessage());
 
 		// Validate data
 		model.validateData(fViewer, TreePath.EMPTY, true);

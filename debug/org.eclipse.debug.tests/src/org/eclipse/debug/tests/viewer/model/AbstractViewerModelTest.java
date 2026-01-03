@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.viewer.model;
 
-import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.eclipse.debug.internal.ui.viewers.model.IInternalTreeModelViewer;
 import org.eclipse.debug.tests.AbstractDebugTest;
@@ -62,8 +62,8 @@ public abstract class AbstractViewerModelTest extends AbstractDebugTest {
 
 	abstract protected TestModelUpdatesListener createListener(IInternalTreeModelViewer viewer);
 
-	protected Function<AbstractDebugTest, String> createListenerErrorMessage() {
-		return t -> "Listener not finished: " + fListener;
+	protected Supplier<String> createListenerErrorMessage() {
+		return () -> "Listener not finished: " + fListener;
 	}
 
 }

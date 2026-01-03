@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -121,18 +122,16 @@ public final class TestUtil {
 	 * Will process UI events while waiting in UI thread, if called from
 	 * background thread, just waits.
 	 *
-	 * @param <T> type of the context
 	 * @param condition function which will be evaluated while waiting
-	 * @param context test context
 	 * @param timeout max wait time in milliseconds to wait on given condition
 	 * @param errorMessage message which will be used to construct the failure
 	 *            exception in case the condition will still return {@code true}
 	 *            after given timeout
 	 */
-	public static <T> void waitWhile(Predicate<T> condition, T context, long timeout, Function<T, String> errorMessage) throws Exception {
+	public static void waitWhile(BooleanSupplier condition, long timeout, Supplier<String> errorMessage) throws Exception {
 		long start = System.currentTimeMillis();
 		Display display = Display.getCurrent();
-		while (System.currentTimeMillis() - start < timeout && condition.test(context)) {
+		while (System.currentTimeMillis() - start < timeout && condition.getAsBoolean()) {
 			if (display != null && !display.isDisposed()) {
 				if (!display.readAndDispatch()) {
 					Thread.sleep(0);
@@ -141,9 +140,9 @@ public final class TestUtil {
 				Thread.sleep(5);
 			}
 		}
-		Boolean stillTrue = condition.test(context);
+		Boolean stillTrue = condition.getAsBoolean();
 		if (stillTrue) {
-			fail(errorMessage.apply(context));
+			fail(errorMessage.get());
 		}
 	}
 
@@ -156,15 +155,13 @@ public final class TestUtil {
 	 * Will process UI events while waiting in UI thread, if called from
 	 * background thread, just waits.
 	 *
-	 * @param <T> type of the context
 	 * @param condition function which will be evaluated while waiting
-	 * @param context test context
 	 * @param errorMessage message which will be used to construct the failure
 	 *            exception in case the condition will still return {@code true}
 	 *            after given timeout
 	 */
-	public static <T> void waitWhile(Predicate<T> condition, T context, Function<T, String> errorMessage) throws Exception {
-		waitWhile(condition, context, DEFAULT_TIMEOUT, errorMessage);
+	public static void waitWhile(BooleanSupplier condition, Supplier<String> errorMessage) throws Exception {
+		waitWhile(condition, DEFAULT_TIMEOUT, errorMessage);
 	}
 
 	/**

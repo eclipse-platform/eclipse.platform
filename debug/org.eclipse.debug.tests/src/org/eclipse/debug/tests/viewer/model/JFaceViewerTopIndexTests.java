@@ -16,6 +16,7 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.viewer.model;
 
+import static org.eclipse.debug.tests.TestUtil.waitWhile;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -82,7 +83,7 @@ public class JFaceViewerTopIndexTests extends AbstractViewerModelTest implements
 		// Set the input into the view and update the view.
 		fViewer.setInput(model.getRootElement());
 
-		waitWhile(t -> !fListener.isFinished(), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(), createListenerErrorMessage());
 		model.validateData(fViewer, TreePath.EMPTY, true);
 
 		// Stop forcing view updates.
@@ -106,12 +107,12 @@ public class JFaceViewerTopIndexTests extends AbstractViewerModelTest implements
 		fListener.addStateUpdates(getCTargetViewer(), originalState, IModelDelta.EXPAND | IModelDelta.SELECT | IModelDelta.REVEAL);
 
 		fViewer.setInput(null);
-		waitWhile(t -> !fListener.isFinished(STATE_SAVE_COMPLETE | STATE_UPDATES), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(STATE_SAVE_COMPLETE | STATE_UPDATES), createListenerErrorMessage());
 
 		// Set the viewer input back to the model to trigger RESTORE operation.
 		fListener.reset(false, false);
 		fViewer.setInput(model.getRootElement());
-		waitWhile(t -> !fListener.isFinished(ALL_UPDATES_COMPLETE | STATE_RESTORE_COMPLETE), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(ALL_UPDATES_COMPLETE | STATE_RESTORE_COMPLETE), createListenerErrorMessage());
 
 		TestUtil.processUIEvents();
 		// check if REVEAL was restored OK
@@ -157,7 +158,7 @@ public class JFaceViewerTopIndexTests extends AbstractViewerModelTest implements
 		// Set the input into the view and update the view.
 		fViewer.setInput(model.getRootElement());
 
-		waitWhile(t -> !fListener.isFinished(), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(), createListenerErrorMessage());
 		model.validateData(fViewer, TreePath.EMPTY, true);
 
 		// Expand first element
@@ -175,7 +176,7 @@ public class JFaceViewerTopIndexTests extends AbstractViewerModelTest implements
 
 		model.postDelta(rootDelta);
 
-		waitWhile(t -> !fListener.isFinished(CONTENT_SEQUENCE_COMPLETE | MODEL_CHANGED_COMPLETE), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(CONTENT_SEQUENCE_COMPLETE | MODEL_CHANGED_COMPLETE), createListenerErrorMessage());
 
 		// Validate that the first node is expanded
 		assertTrue(getCTargetViewer().getExpandedState(firstElemPath));
@@ -199,12 +200,12 @@ public class JFaceViewerTopIndexTests extends AbstractViewerModelTest implements
 		fListener.reset(true, false);
 		fListener.addStateUpdates(getCTargetViewer(), originalState, IModelDelta.EXPAND | IModelDelta.SELECT | IModelDelta.REVEAL);
 		fViewer.setInput(null);
-		waitWhile(t -> !fListener.isFinished(STATE_SAVE_COMPLETE), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(STATE_SAVE_COMPLETE), createListenerErrorMessage());
 
 		// Set the viewer input back to the model
 		fListener.reset(false, false);
 		fViewer.setInput(model.getRootElement());
-		waitWhile(t -> !fListener.isFinished(ALL_UPDATES_COMPLETE | STATE_RESTORE_COMPLETE), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(ALL_UPDATES_COMPLETE | STATE_RESTORE_COMPLETE), createListenerErrorMessage());
 
 		TestUtil.processUIEvents();
 		// check if REVEAL was restored OK
@@ -252,7 +253,7 @@ public class JFaceViewerTopIndexTests extends AbstractViewerModelTest implements
 		// Set the input into the view and update the view.
 		fViewer.setInput(model.getRootElement());
 
-		waitWhile(t -> !fListener.isFinished(), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(), createListenerErrorMessage());
 		model.validateData(fViewer, TreePath.EMPTY, true);
 
 		int indexLastElem = elements.length-1;
@@ -281,12 +282,12 @@ public class JFaceViewerTopIndexTests extends AbstractViewerModelTest implements
 		fListener.addStateUpdates(getCTargetViewer(), originalState, IModelDelta.EXPAND | IModelDelta.SELECT | IModelDelta.REVEAL);
 
 		fViewer.setInput(null);
-		waitWhile(t -> !fListener.isFinished(STATE_SAVE_COMPLETE | STATE_UPDATES), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(STATE_SAVE_COMPLETE | STATE_UPDATES), createListenerErrorMessage());
 
 		// Set the viewer input back to the model.
 		fListener.reset(false, false);
 		fViewer.setInput(model.getRootElement());
-		waitWhile(t -> !fListener.isFinished(ALL_UPDATES_COMPLETE | STATE_RESTORE_COMPLETE), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(ALL_UPDATES_COMPLETE | STATE_RESTORE_COMPLETE), createListenerErrorMessage());
 
 		TestUtil.processUIEvents();
 		// check if REVEAL was restored OK
@@ -313,7 +314,7 @@ public class JFaceViewerTopIndexTests extends AbstractViewerModelTest implements
 
 		// Set the input into the view and update the view.
 		fViewer.setInput(model.getRootElement());
-		waitWhile(t -> !fListener.isFinished(), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(), createListenerErrorMessage());
 		model.validateData(fViewer, TreePath.EMPTY, true);
 
 		// Stop autopopulating the view.
@@ -336,7 +337,7 @@ public class JFaceViewerTopIndexTests extends AbstractViewerModelTest implements
 		TreePath elementPath = model.findElement("3"); //$NON-NLS-1$
 		fListener.addUpdates(fViewer, elementPath, model.getElement(elementPath), 1, STATE_UPDATES);
 		fViewer.setInput(model.getRootElement());
-		waitWhile(t -> !fListener.isFinished(MODEL_CHANGED_COMPLETE | STATE_UPDATES), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(MODEL_CHANGED_COMPLETE | STATE_UPDATES), createListenerErrorMessage());
 
 		// Update the viewer with new selection delta to something new in the view
 		ModelDelta revealDelta = model.makeElementDelta(model.findElement("2.1"), IModelDelta.REVEAL); //$NON-NLS-1$
@@ -344,7 +345,7 @@ public class JFaceViewerTopIndexTests extends AbstractViewerModelTest implements
 		// Wait for the second model delta to process
 		fListener.reset();
 		model.postDelta(revealDelta);
-		waitWhile(t -> !fListener.isFinished(MODEL_CHANGED_COMPLETE | CONTENT_SEQUENCE_COMPLETE), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(MODEL_CHANGED_COMPLETE | CONTENT_SEQUENCE_COMPLETE), createListenerErrorMessage());
 
 		// Clear view then reset it again.
 		fListener.reset();
@@ -355,7 +356,7 @@ public class JFaceViewerTopIndexTests extends AbstractViewerModelTest implements
 
 		autopopulateAgent = new TreeModelViewerAutopopulateAgent(getCTargetViewer());
 		fViewer.setInput(model.getRootElement());
-		waitWhile(t -> !fListener.isFinished(STATE_RESTORE_COMPLETE), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(STATE_RESTORE_COMPLETE), createListenerErrorMessage());
 		autopopulateAgent.dispose();
 	}
 
@@ -381,7 +382,7 @@ public class JFaceViewerTopIndexTests extends AbstractViewerModelTest implements
 
 		// Set the input into the view and update the view.
 		fViewer.setInput(model.getRootElement());
-		waitWhile(t -> !fListener.isFinished(), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(), createListenerErrorMessage());
 		model.validateData(fViewer, TreePath.EMPTY, true);
 
 		// Stop auto-populating and auto-expanding the view.
@@ -407,7 +408,7 @@ public class JFaceViewerTopIndexTests extends AbstractViewerModelTest implements
 		elementPath = model.findElement("3"); //$NON-NLS-1$
 		fListener.addUpdates(fViewer, elementPath, model.getElement(elementPath), 0, STATE_UPDATES);
 		fViewer.setInput(model.getRootElement());
-		waitWhile(t -> !fListener.isFinished(STATE_UPDATES), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(STATE_UPDATES), createListenerErrorMessage());
 
 		// Update the viewer with new selection delta to something new in the view
 		TreePath pathToBeRevealed = model.findElement("2.1"); //$NON-NLS-1$
@@ -419,7 +420,7 @@ public class JFaceViewerTopIndexTests extends AbstractViewerModelTest implements
 
 		// Wait for the second model delta to process
 		model.postDelta(revealDelta);
-		waitWhile(t -> !fListener.isFinished(MODEL_CHANGED_COMPLETE | CHILDREN_UPDATES | LABEL_UPDATES), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(MODEL_CHANGED_COMPLETE | CHILDREN_UPDATES | LABEL_UPDATES), createListenerErrorMessage());
 
 		// check if REVEAL was triggered by the delta and not by the
 		// state restore operation
@@ -450,7 +451,7 @@ public class JFaceViewerTopIndexTests extends AbstractViewerModelTest implements
 		// Set the input into the view and update the view.
 		fViewer.setInput(model.getRootElement());
 
-		waitWhile(t -> !fListener.isFinished(), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(), createListenerErrorMessage());
 		model.validateData(fViewer, TreePath.EMPTY, true);
 
 		// Stop forcing view updates.
@@ -470,13 +471,13 @@ public class JFaceViewerTopIndexTests extends AbstractViewerModelTest implements
 		fListener.reset(true, false);
 		fListener.addStateUpdates(getCTargetViewer(), originalState, IModelDelta.EXPAND | IModelDelta.SELECT | IModelDelta.REVEAL);
 		fViewer.setInput(null);
-		waitWhile(t -> !fListener.isFinished(STATE_SAVE_COMPLETE), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(STATE_SAVE_COMPLETE), createListenerErrorMessage());
 
 		// Set the viewer input back to the model
 		fListener.reset(false, false);
 		fListener.addUpdates(getCTargetViewer(), originalTopPath, (TestElement)originalTopPath.getLastSegment(), 0, STATE_UPDATES);
 		fViewer.setInput(model.getRootElement());
-		waitWhile(t -> !fListener.isFinished(STATE_UPDATES | CONTENT_SEQUENCE_COMPLETE), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(STATE_UPDATES | CONTENT_SEQUENCE_COMPLETE), createListenerErrorMessage());
 
 		TestUtil.processUIEvents();
 		// check if REVEAL was restored OK
@@ -504,7 +505,7 @@ public class JFaceViewerTopIndexTests extends AbstractViewerModelTest implements
 
 		// Set the input into the view and update the view.
 		fViewer.setInput(model.getRootElement());
-		waitWhile(t -> !fListener.isFinished(), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(), createListenerErrorMessage());
 		model.validateData(fViewer, TreePath.EMPTY, true);
 
 		// Set top index of view to element "2" and wait for view to repaint.
@@ -535,11 +536,11 @@ public class JFaceViewerTopIndexTests extends AbstractViewerModelTest implements
 
 		// Wait for the model delta to process
 		model.postDelta(revealDelta);
-		waitWhile(t -> !fListener.isFinished(CHILD_COUNT_UPDATES_STARTED), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(CHILD_COUNT_UPDATES_STARTED), createListenerErrorMessage());
 
 		model.setQeueueingUpdate(false);
 
-		waitWhile(t -> !fListener.isFinished(ALL_UPDATES_COMPLETE), createListenerErrorMessage());
+		waitWhile(() -> !fListener.isFinished(ALL_UPDATES_COMPLETE), createListenerErrorMessage());
 
 		// check if REVEAL actually revealed the desired element
 		topPath = getCTargetViewer().getTopElementPath();

@@ -13,9 +13,6 @@
  *******************************************************************************/
 package org.eclipse.debug.tests;
 
-import java.util.function.Function;
-import java.util.function.Predicate;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -80,24 +77,6 @@ public class AbstractDebugTest {
 			job.setSystem(true);
 			job.schedule();
 		}
-	}
-
-	/**
-	 * Waits while given condition is {@code true} for some time. If the actual
-	 * wait time exceeds {@link TestUtil#DEFAULT_TIMEOUT} and condition will be still
-	 * {@code true}, throws {@link junit.framework.AssertionFailedError} with
-	 * given message.
-	 * <p>
-	 * Will process UI events while waiting in UI thread, if called from
-	 * background thread, just waits.
-	 *
-	 * @param condition function which will be evaluated while waiting
-	 * @param errorMessage message which will be used to construct the failure
-	 *            exception in case the condition will still return {@code true}
-	 *            after given timeout
-	 */
-	public void waitWhile(Predicate<AbstractDebugTest> condition, Function<AbstractDebugTest, String> errorMessage) throws Exception {
-		TestUtil.waitWhile(condition, this, errorMessage);
 	}
 
 	private static void closeIntro(final IWorkbench wb) {

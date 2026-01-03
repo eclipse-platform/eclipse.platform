@@ -15,6 +15,7 @@
 package org.eclipse.debug.tests.launching;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.debug.tests.TestUtil.waitWhile;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -1306,8 +1307,7 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 		IProcess process = null;
 		try {
 			process = DebugPlugin.newProcess(launch, new MockProcess(0), "test-terminate-timestamp");
-			waitWhile(__ -> !terminatedLaunches.contains(launch),
-					__ -> "Launch termination event did not occur: "+
+			waitWhile(() -> !terminatedLaunches.contains(launch), () -> "Launch termination event did not occur: " +
 							"launch termination state is \"" + launch.isTerminated() + "\" " +
 							"and " + terminatedLaunches.size() + " launches have terminated");
 			String launchTerminateTimestampUntyped = launch.getAttribute(DebugPlugin.ATTR_TERMINATE_TIMESTAMP);
@@ -1454,7 +1454,7 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 		IProcess runtimeProcess = null;
 		try {
 			runtimeProcess = DebugPlugin.newProcess(launch, mockProcess, "test-terminate-launch-listener");
-			waitWhile(__ -> !launchTerminated.get(), __ -> "Launch termination event did not occur");
+			waitWhile(() -> !launchTerminated.get(), () -> "Launch termination event did not occur");
 		} finally {
 			DebugPlugin.getDefault().getLaunchManager().removeLaunchListener(listener);
 			if (launch != null) {
