@@ -59,7 +59,7 @@ public class ScmUrlImportDescription {
 	}
 
 	public URI getUri() {
-		return URI.create(url.replaceAll("\"", "")); //$NON-NLS-1$//$NON-NLS-2$
+		return URI.create(url.replace("\"", "")); //$NON-NLS-1$//$NON-NLS-2$
 	}
 
 	public void setUrl(String url) {

@@ -387,11 +387,11 @@ public class SearchForBuildFilesDialog extends InputDialog {
 			// The character "." must be escaped in regex
 			String input = getInput();
 			// replace "." with "\\."
-			input = input.replaceAll("\\.", "\\\\."); //$NON-NLS-1$ //$NON-NLS-2$
+			input = input.replace(".", "\\."); //$NON-NLS-1$ //$NON-NLS-2$
 			// replace "*" with ".*"
-			input = input.replaceAll("\\*", "\\.\\*"); //$NON-NLS-1$ //$NON-NLS-2$
+			input = input.replace("*", ".*"); //$NON-NLS-1$ //$NON-NLS-2$
 			// replace "?" with ".?"
-			input = input.replaceAll("\\?", "\\.\\?"); //$NON-NLS-1$ //$NON-NLS-2$
+			input = input.replace("?", ".?"); //$NON-NLS-1$ //$NON-NLS-2$
 			pattern = Pattern.compile(input);
 		}
 
