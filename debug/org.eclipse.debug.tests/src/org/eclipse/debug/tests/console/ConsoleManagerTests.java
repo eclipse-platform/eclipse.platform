@@ -13,9 +13,9 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.console;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -61,8 +61,7 @@ public class ConsoleManagerTests {
 
 	@BeforeEach
 	public void setUp(TestInfo testInfo) throws Exception {
-		assertNotNull("Must run in UI thread, but was in: " + Thread.currentThread().getName(), //$NON-NLS-1$
-				Display.getCurrent());
+		assertNotNull(Display.getCurrent(), "Must run in UI thread, but was in: " + Thread.currentThread().getName());
 		count = 20;
 		latch = new CountDownLatch(count);
 		executorService = Executors.newFixedThreadPool(count);
@@ -134,13 +133,12 @@ public class ConsoleManagerTests {
 			TestUtil.processUIEvents(10000);
 
 			// timeout?
-			assertTrue("Timeout occurred while waiting on console to be shown", //$NON-NLS-1$
-					waitForExecutorService());
+			assertTrue(waitForExecutorService(), "Timeout occurred while waiting on console to be shown");
 		} else {
 			System.out.println("Done waiting on execution service to finish"); //$NON-NLS-1$
 		}
 		int shown = ConsoleMock.allShownConsoles.intValue();
-		assertEquals("Only " + shown + " consoles were shown from " + count, count, shown); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals(count, shown, "Only " + shown + " consoles were shown from " + count);
 	}
 
 	private boolean waitForExecutorService() throws Exception {

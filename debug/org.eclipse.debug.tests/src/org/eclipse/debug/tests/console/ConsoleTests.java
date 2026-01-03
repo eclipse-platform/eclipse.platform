@@ -15,9 +15,9 @@
 package org.eclipse.debug.tests.console;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -59,23 +59,23 @@ public class ConsoleTests {
 				IConsoleConstants.MESSAGE_CONSOLE_TYPE, null, StandardCharsets.UTF_8.name(), true);
 		IDocument document = console.getDocument();
 		TestUtil.waitForJobs(testInfo.getDisplayName(), ConsoleManager.CONSOLE_JOB_FAMILY, 200, 5000);
-		assertEquals("Document should be empty", "", document.get()); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals("", document.get(), "Document should be empty"); //$NON-NLS-1$ //$NON-NLS-2$
 		try (IOConsoleOutputStream outStream = console.newOutputStream()) {
 			outStream.write(testStringBuffer, 0, 6);
 			// half of Ã¶ (\u00f6) is written so we don't expect this char in
 			// output but all previous chars can be decoded
 			TestUtil.waitForJobs(testInfo.getDisplayName(), ConsoleManager.CONSOLE_JOB_FAMILY, 200, 5000);
-			assertEquals("First 4 chars should be written", testString.substring(0, 4), document.get()); //$NON-NLS-1$
+			assertEquals(testString.substring(0, 4), document.get(), "First 4 chars should be written"); //$NON-NLS-1$
 			outStream.write(testStringBuffer, 6, 6);
 			// all remaining bytes are written so we expect the whole string
 			// including the Ã¶ (\u00f6) which was at buffer boundary
 			TestUtil.waitForJobs(testInfo.getDisplayName(), ConsoleManager.CONSOLE_JOB_FAMILY, 200, 5000);
-			assertEquals("whole test string should be written", testString, document.get()); //$NON-NLS-1$
+			assertEquals(testString, document.get(), "whole test string should be written"); //$NON-NLS-1$
 		}
 		TestUtil.waitForJobs(testInfo.getDisplayName(), ConsoleManager.CONSOLE_JOB_FAMILY, 200, 5000);
 		// after closing the stream, the document content should still be the
 		// same
-		assertEquals("closing the stream should not alter the document", testString, document.get()); //$NON-NLS-1$
+		assertEquals(testString, document.get(), "closing the stream should not alter the document"); //$NON-NLS-1$
 	}
 
 	@Test
@@ -87,17 +87,17 @@ public class ConsoleTests {
 				IConsoleConstants.MESSAGE_CONSOLE_TYPE, null, StandardCharsets.UTF_8.name(), true);
 		IDocument document = console.getDocument();
 		TestUtil.waitForJobs(testInfo.getDisplayName(), ConsoleManager.CONSOLE_JOB_FAMILY, 200, 5000);
-		assertEquals("Document should be empty", "", document.get()); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals("", document.get(), "Document should be empty"); //$NON-NLS-1$ //$NON-NLS-2$
 		try (IOConsoleOutputStream outStream = console.newOutputStream()) {
 			outStream.write(testStringBuffer);
 			// everything but pending \r should be written
 			TestUtil.waitForJobs(testInfo.getDisplayName(), ConsoleManager.CONSOLE_JOB_FAMILY, 200, 5000);
-			assertEquals("First char should be written", testString.substring(0, 1), document.get()); //$NON-NLS-1$
+			assertEquals(testString.substring(0, 1), document.get(), "First char should be written"); //$NON-NLS-1$
 		}
 		TestUtil.waitForJobs(testInfo.getDisplayName(), ConsoleManager.CONSOLE_JOB_FAMILY, 200, 5000);
 		// after closing the stream, the document content should still be the
 		// same
-		assertEquals("closing the stream should write the pending \\r", testString, document.get()); //$NON-NLS-1$
+		assertEquals(testString, document.get(), "closing the stream should write the pending \\r"); //$NON-NLS-1$
 	}
 
 	@Test
@@ -189,11 +189,11 @@ public class ConsoleTests {
 
 			ICommandService commandService = PlatformUI.getWorkbench().getService(ICommandService.class);
 			Command commandFindReplace = commandService.getCommand(IWorkbenchCommandConstants.EDIT_FIND_AND_REPLACE);
-			assertTrue("expected FindReplace command to be enabled after opening console", commandFindReplace.isEnabled());
+			assertTrue(commandFindReplace.isEnabled(), "expected FindReplace command to be enabled after opening console");
 			Command commandFindNext = commandService.getCommand(IWorkbenchActionDefinitionIds.FIND_NEXT);
-			assertTrue("expected FindNext command to be enabled after opening console", commandFindNext.isEnabled());
+			assertTrue(commandFindNext.isEnabled(), "expected FindNext command to be enabled after opening console");
 			Command commandFindPrevious = commandService.getCommand(IWorkbenchActionDefinitionIds.FIND_PREVIOUS);
-			assertTrue("expected FindPrevious command to be enabled after opening console", commandFindPrevious.isEnabled());
+			assertTrue(commandFindPrevious.isEnabled(), "expected FindPrevious command to be enabled after opening console");
 		} finally {
 			consoleManager.removeConsoles(consoles);
 			activePage.hideView(consoleView);
@@ -223,7 +223,7 @@ public class ConsoleTests {
 				} catch (Exception e) {
 				}
 			}).start();
-			assertEquals("read() did not signal EOF.", -1, consoleInput.read());
+			assertEquals(-1, consoleInput.read(), "read() did not signal EOF.");
 		}
 
 		console = new IOConsole("", null);

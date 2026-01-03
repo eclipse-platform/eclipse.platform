@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.console;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
@@ -71,6 +71,6 @@ public class StreamsProxyTests {
 		final StreamsProxy streamProxy = new StreamsProxy(mockProcess, StandardCharsets.UTF_8, "");
 		streamProxy.close();
 		final String readContent = streamProxy.getOutputStreamMonitor().getContents();
-		assertEquals("Process output got corrupted.", s, readContent);
+		assertEquals(s, readContent, "Process output got corrupted.");
 	}
 }

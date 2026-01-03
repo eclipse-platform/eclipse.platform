@@ -13,11 +13,11 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.console;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -84,7 +84,7 @@ public class ConsoleDocumentAdapterTests {
 		final int wrapWidth = 10;
 		final IDocumentAdapter docAdapter = new ConsoleDocumentAdapter(wrapWidth);
 		final ExpectingTextChangeListener eventListener = new ExpectingTextChangeListener(false, docAdapter);
-		assertEquals("Failed to set width.", wrapWidth, ((ConsoleDocumentAdapter) docAdapter).getWidth());
+		assertEquals(wrapWidth, ((ConsoleDocumentAdapter) docAdapter).getWidth(), "Failed to set width.");
 		docAdapter.setDocument(new Document());
 		docAdapter.addTextChangeListener(eventListener);
 		// repeated add should not result in repeated events
@@ -196,7 +196,7 @@ public class ConsoleDocumentAdapterTests {
 		assertLine(docAdapter, 1, "ABCDEFGHIJ");
 		assertLine(docAdapter, 2, "abcdefghij");
 		assertLine(docAdapter, 3, "KLMNOPQRST");
-		assertEquals("Got wrong line index.", 3, docAdapter.getLineAtOffset(40));
+		assertEquals(3, docAdapter.getLineAtOffset(40), "Got wrong line index.");
 		checkLineMapping(docAdapter, rand);
 
 		// add text starting at fixed width border
@@ -250,10 +250,10 @@ public class ConsoleDocumentAdapterTests {
 		assertLine(docAdapter, 3, "KLMNOPQRST");
 		assertLine(docAdapter, 4, "kl");
 		assertLine(docAdapter, 5, "");
-		assertEquals("Got wrong line.", 4, docAdapter.getLineAtOffset(docAdapter.getCharCount() - 2));
-		assertEquals("Got wrong line.", 4, docAdapter.getLineAtOffset(docAdapter.getCharCount() - 1));
-		assertEquals("Got wrong line.", 5, docAdapter.getLineAtOffset(docAdapter.getCharCount()));
-		assertEquals("Get wrong content.", "\n", docAdapter.getTextRange(42, 1));
+		assertEquals(4, docAdapter.getLineAtOffset(docAdapter.getCharCount() - 2), "Got wrong line.");
+		assertEquals(4, docAdapter.getLineAtOffset(docAdapter.getCharCount() - 1), "Got wrong line.");
+		assertEquals(5, docAdapter.getLineAtOffset(docAdapter.getCharCount()), "Got wrong line.");
+		assertEquals("\n", docAdapter.getTextRange(42, 1), "Get wrong content.");
 		checkLineMapping(docAdapter, rand);
 
 		// add text ending at fixed width border
@@ -268,8 +268,8 @@ public class ConsoleDocumentAdapterTests {
 		assertLine(docAdapter, 3, "KLMNOPQRST");
 		assertLine(docAdapter, 4, "kl");
 		assertLine(docAdapter, 5, "UVWXYZ.,:;");
-		assertEquals("Got wrong line.", 5, docAdapter.getLineAtOffset(docAdapter.getCharCount()));
-		assertEquals("Get wrong content.", "l\nU", docAdapter.getTextRange(41, 3));
+		assertEquals(5, docAdapter.getLineAtOffset(docAdapter.getCharCount()), "Got wrong line.");
+		assertEquals("l\nU", docAdapter.getTextRange(41, 3), "Get wrong content.");
 		checkLineMapping(docAdapter, rand);
 
 		// remove text without line wrap change
@@ -298,7 +298,7 @@ public class ConsoleDocumentAdapterTests {
 		assertLine(docAdapter, 3, "KLMNOPQRST");
 		assertLine(docAdapter, 4, "kl");
 		assertLine(docAdapter, 5, "UVWXYZ.,:;");
-		assertEquals("Got wrong line.", 5, docAdapter.getLineAtOffset(docAdapter.getCharCount()));
+		assertEquals(5, docAdapter.getLineAtOffset(docAdapter.getCharCount()), "Got wrong line.");
 		checkLineMapping(docAdapter, rand);
 
 		// replace text without length change
@@ -314,7 +314,7 @@ public class ConsoleDocumentAdapterTests {
 		assertLine(docAdapter, 3, "KLMNOPQRST");
 		assertLine(docAdapter, 4, "kl");
 		assertLine(docAdapter, 5, "UVWXYZ.~~~");
-		assertEquals("Got wrong line.", 5, docAdapter.getLineAtOffset(docAdapter.getCharCount()));
+		assertEquals(5, docAdapter.getLineAtOffset(docAdapter.getCharCount()), "Got wrong line.");
 		checkLineMapping(docAdapter, rand);
 
 		// insert text with one new line wrap
@@ -351,10 +351,10 @@ public class ConsoleDocumentAdapterTests {
 		assertLine(docAdapter, 4, "klmnopqrst"); // <-- real line delimiter here
 		assertLine(docAdapter, 5, "UVWXYZ.,:;");
 		assertLine(docAdapter, 6, "uvwxyz_-=|");
-		assertEquals("Got wrong line.", 4, docAdapter.getLineAtOffset(49));
-		assertEquals("Got wrong line.", 4, docAdapter.getLineAtOffset(50));
-		assertEquals("Got wrong line.", 5, docAdapter.getLineAtOffset(51));
-		assertEquals("Got wrong line.", 6, docAdapter.getLineAtOffset(docAdapter.getCharCount()));
+		assertEquals(4, docAdapter.getLineAtOffset(49), "Got wrong line.");
+		assertEquals(4, docAdapter.getLineAtOffset(50), "Got wrong line.");
+		assertEquals(5, docAdapter.getLineAtOffset(51), "Got wrong line.");
+		assertEquals(6, docAdapter.getLineAtOffset(docAdapter.getCharCount()), "Got wrong line.");
 		checkLineMapping(docAdapter, rand);
 
 		// remove last wrapped line
@@ -400,7 +400,7 @@ public class ConsoleDocumentAdapterTests {
 		assertLine(docAdapter, 4, "XYZ.,:;");
 		checkLineMapping(docAdapter, rand);
 
-		assertFalse("Some expected change events were not received.", eventListener.hasPendingExpections());
+		assertFalse(eventListener.hasPendingExpections(), "Some expected change events were not received.");
 		docAdapter.removeTextChangeListener(eventListener);
 		clearDocument(docAdapter);
 	}
@@ -414,7 +414,7 @@ public class ConsoleDocumentAdapterTests {
 		final int wrapWidth = 10;
 		final IDocumentAdapter docAdapter = new ConsoleDocumentAdapter(wrapWidth);
 		final ExpectingTextChangeListener eventListener = new ExpectingTextChangeListener(false, docAdapter);
-		assertEquals("Failed to set width.", wrapWidth, ((ConsoleDocumentAdapter) docAdapter).getWidth());
+		assertEquals(wrapWidth, ((ConsoleDocumentAdapter) docAdapter).getWidth(), "Failed to set width.");
 		docAdapter.setDocument(new Document());
 		docAdapter.addTextChangeListener(eventListener);
 
@@ -572,7 +572,7 @@ public class ConsoleDocumentAdapterTests {
 		assertLine(docAdapter, 23, "lMNOPQR");
 		checkLineMapping(docAdapter, rand);
 
-		assertFalse("Some expected change events were not received.", eventListener.hasPendingExpections());
+		assertFalse(eventListener.hasPendingExpections(), "Some expected change events were not received.");
 		docAdapter.removeTextChangeListener(eventListener);
 		clearDocument(docAdapter);
 	}
@@ -586,7 +586,7 @@ public class ConsoleDocumentAdapterTests {
 		final int wrapWidth = 10;
 		final ExpectingTextChangeListener eventListener = new ExpectingTextChangeListener(true, null);
 		final IDocumentAdapter docAdapter = new ConsoleDocumentAdapter(wrapWidth);
-		assertEquals("Failed to set width.", wrapWidth, ((ConsoleDocumentAdapter) docAdapter).getWidth());
+		assertEquals(wrapWidth, ((ConsoleDocumentAdapter) docAdapter).getWidth(), "Failed to set width.");
 		docAdapter.setDocument(new Document());
 		docAdapter.addTextChangeListener(eventListener);
 
@@ -609,7 +609,7 @@ public class ConsoleDocumentAdapterTests {
 		eventListener.addExpectation(new TextEventExpectation(TextChangeEventType.CHANGING, 0, "", 0, 0, 0, 0));
 		eventListener.addExpectation(new TextEventExpectation(TextChangeEventType.CHANGED));
 		docAdapter.replaceTextRange(0, 0, "");
-		assertFalse("Some expected change events were not received.", eventListener.hasPendingExpections());
+		assertFalse(eventListener.hasPendingExpections(), "Some expected change events were not received.");
 		checkLineMapping(docAdapter, rand);
 
 		// remove over wrap border (removes wrap)
@@ -699,7 +699,7 @@ public class ConsoleDocumentAdapterTests {
 		assertNumberOfLines(docAdapter, 4);
 		checkLineMapping(docAdapter, rand);
 
-		assertFalse("Some expected change events were not received.", eventListener.hasPendingExpections());
+		assertFalse(eventListener.hasPendingExpections(), "Some expected change events were not received.");
 	}
 
 	/**
@@ -711,7 +711,7 @@ public class ConsoleDocumentAdapterTests {
 		final int wrapWidth = 10;
 		final ExpectingTextChangeListener eventListener = new ExpectingTextChangeListener(true, null);
 		final IDocumentAdapter docAdapter = new ConsoleDocumentAdapter(wrapWidth);
-		assertEquals("Failed to set width.", wrapWidth, ((ConsoleDocumentAdapter) docAdapter).getWidth());
+		assertEquals(wrapWidth, ((ConsoleDocumentAdapter) docAdapter).getWidth(), "Failed to set width.");
 		docAdapter.setDocument(new Document());
 		docAdapter.addTextChangeListener(eventListener);
 
@@ -796,7 +796,7 @@ public class ConsoleDocumentAdapterTests {
 		assertLine(docAdapter, 2, "$b");
 		checkLineMapping(docAdapter, rand);
 
-		assertFalse("Some expected change events were not received.", eventListener.hasPendingExpections());
+		assertFalse(eventListener.hasPendingExpections(), "Some expected change events were not received.");
 	}
 
 	/**
@@ -815,13 +815,13 @@ public class ConsoleDocumentAdapterTests {
 		final String line2 = "abcd";
 		final String text = line0 + "\n" + line1 + "\r\n" + line2;
 		docAdapter.setText(text);
-		assertEquals("Get text range failed.", "#", docAdapter.getTextRange(0, 1));
+		assertEquals("#", docAdapter.getTextRange(0, 1), "Get text range failed.");
 
 		// check with initial disabled fixed width mode
 		assertLine(docAdapter, 0, line0);
 		assertLine(docAdapter, 1, line1);
 		assertLine(docAdapter, 2, line2);
-		assertEquals("Adapter content length wrong.", text.length(), docAdapter.getCharCount());
+		assertEquals(text.length(), docAdapter.getCharCount(), "Adapter content length wrong.");
 		checkLineMapping(docAdapter, rand);
 
 		// test with enabled fixed width mode
@@ -831,7 +831,7 @@ public class ConsoleDocumentAdapterTests {
 		assertLine(docAdapter, 1, line0_1);
 		assertLine(docAdapter, 2, line1);
 		assertLine(docAdapter, 3, line2);
-		assertEquals("Adapter content length wrong.", text.length(), docAdapter.getCharCount());
+		assertEquals(text.length(), docAdapter.getCharCount(), "Adapter content length wrong.");
 		checkLineMapping(docAdapter, rand);
 
 		// test with disabled fixed width mode after it was enabled
@@ -839,7 +839,7 @@ public class ConsoleDocumentAdapterTests {
 		assertLine(docAdapter, 0, line0);
 		assertLine(docAdapter, 1, line1);
 		assertLine(docAdapter, 2, line2);
-		assertEquals("Adapter content length wrong.", text.length(), docAdapter.getCharCount());
+		assertEquals(text.length(), docAdapter.getCharCount(), "Adapter content length wrong.");
 		checkLineMapping(docAdapter, rand);
 
 		// test with fixed width mode but no virtual wrappings
@@ -847,7 +847,7 @@ public class ConsoleDocumentAdapterTests {
 		assertLine(docAdapter, 0, line0);
 		assertLine(docAdapter, 1, line1);
 		assertLine(docAdapter, 2, line2);
-		assertEquals("Adapter content length wrong.", text.length(), docAdapter.getCharCount());
+		assertEquals(text.length(), docAdapter.getCharCount(), "Adapter content length wrong.");
 		checkLineMapping(docAdapter, rand);
 
 		// add a listener for the next width change
@@ -862,7 +862,7 @@ public class ConsoleDocumentAdapterTests {
 		expectedLines += Math.max(line2.length(), 1);
 		assertNumberOfLines(docAdapter, expectedLines);
 		checkLineMapping(docAdapter, rand);
-		assertFalse("Some expected change events were not received.", eventListener.hasPendingExpections());
+		assertFalse(eventListener.hasPendingExpections(), "Some expected change events were not received.");
 	}
 
 	/**
@@ -882,12 +882,12 @@ public class ConsoleDocumentAdapterTests {
 			// IDocumentAdapter#getLineAtOffset(int)
 			docAdapter.setText("\r\n\r\n");
 			checkLineMapping(docAdapter, null);
-			assertEquals("Wrong line for offset.", 0, docAdapter.getLineAtOffset(0));
-			assertEquals("Wrong line for offset.", 0, docAdapter.getLineAtOffset(1));
-			assertEquals("Wrong line for offset.", 1, docAdapter.getLineAtOffset(2));
-			assertEquals("Wrong line for offset.", 1, docAdapter.getLineAtOffset(3));
-			assertEquals("Wrong line for offset.", 2, docAdapter.getLineAtOffset(4));
-			assertEquals("Wrong line for offset.", docAdapter.getLineCount() - 1, docAdapter.getLineAtOffset(docAdapter.getCharCount()));
+			assertEquals(0, docAdapter.getLineAtOffset(0), "Wrong line for offset.");
+			assertEquals(0, docAdapter.getLineAtOffset(1), "Wrong line for offset.");
+			assertEquals(1, docAdapter.getLineAtOffset(2), "Wrong line for offset.");
+			assertEquals(1, docAdapter.getLineAtOffset(3), "Wrong line for offset.");
+			assertEquals(2, docAdapter.getLineAtOffset(4), "Wrong line for offset.");
+			assertEquals(docAdapter.getLineCount() - 1, docAdapter.getLineAtOffset(docAdapter.getCharCount()), "Wrong line for offset.");
 
 			// test against documentation of IDocumentAdapter#getLineCount()
 			docAdapter.setText(null);
@@ -903,11 +903,11 @@ public class ConsoleDocumentAdapterTests {
 			// IDocumentAdapter#getOffsetAtLine(int)
 			docAdapter.setText("\r\ntest\r\n");
 			checkLineMapping(docAdapter, null);
-			assertEquals("Wrong offset for line.", 0, docAdapter.getOffsetAtLine(0));
-			assertEquals("Wrong offset for line.", 2, docAdapter.getOffsetAtLine(1));
-			assertEquals("Wrong offset for line.", 8, docAdapter.getOffsetAtLine(2));
+			assertEquals(0, docAdapter.getOffsetAtLine(0), "Wrong offset for line.");
+			assertEquals(2, docAdapter.getOffsetAtLine(1), "Wrong offset for line.");
+			assertEquals(8, docAdapter.getOffsetAtLine(2), "Wrong offset for line.");
 			docAdapter.setText("");
-			assertEquals("Wrong offset for line.", 0, docAdapter.getOffsetAtLine(0));
+			assertEquals(0, docAdapter.getOffsetAtLine(0), "Wrong offset for line.");
 		}
 	}
 
@@ -932,7 +932,7 @@ public class ConsoleDocumentAdapterTests {
 		docAdapter.setDocument(doc2);
 		docAdapter.setText(text2);
 		assertContent(docAdapter, text2);
-		assertEquals("Document was changed after disconnect.", doc1Text, doc1.get());
+		assertEquals(doc1Text, doc1.get(), "Document was changed after disconnect.");
 
 		docAdapter.setDocument(null);
 	}
@@ -986,7 +986,7 @@ public class ConsoleDocumentAdapterTests {
 				// returns information for this non existing line and
 				// TreeLineTracke does so for compatibility reasons
 				docAdapter.getLine(Integer.MAX_VALUE);
-				assertEquals("Too much success with width: " + width, 0, expectedErrors.get());
+				assertEquals(0, expectedErrors.get(), "Too much success with width: " + width);
 
 				expectedErrors.set(4);
 				docAdapter.getLineAtOffset(Integer.MIN_VALUE);
@@ -994,14 +994,14 @@ public class ConsoleDocumentAdapterTests {
 				docAdapter.getLineAtOffset(1);
 				docAdapter.getLineAtOffset(2);
 				docAdapter.getLineAtOffset(Integer.MAX_VALUE);
-				assertEquals("Too much success with width: " + width, 0, expectedErrors.get());
+				assertEquals(0, expectedErrors.get(), "Too much success with width: " + width);
 
 				expectedErrors.set(4);
 				docAdapter.getOffsetAtLine(Integer.MIN_VALUE);
 				docAdapter.getOffsetAtLine(-1);
 				docAdapter.getOffsetAtLine(1);
 				docAdapter.getOffsetAtLine(Integer.MAX_VALUE);
-				assertEquals("Too much success with width: " + width, 0, expectedErrors.get());
+				assertEquals(0, expectedErrors.get(), "Too much success with width: " + width);
 
 				expectedErrors.set(6);
 				docAdapter.getTextRange(-1, 1);
@@ -1010,7 +1010,7 @@ public class ConsoleDocumentAdapterTests {
 				docAdapter.getTextRange(-1, 2);
 				docAdapter.getTextRange(0, 2);
 				docAdapter.getTextRange(0, 3);
-				assertEquals("Too much success with width: " + width, 0, expectedErrors.get());
+				assertEquals(0, expectedErrors.get(), "Too much success with width: " + width);
 
 				expectedErrors.set(10);
 				docAdapter.replaceTextRange(2, 0, "");
@@ -1023,7 +1023,7 @@ public class ConsoleDocumentAdapterTests {
 				docAdapter.replaceTextRange(1, 1, "foo");
 				docAdapter.replaceTextRange(1, -1, "foo");
 				docAdapter.replaceTextRange(2, 0, "foo");
-				assertEquals("Too much success with width: " + width, 0, expectedErrors.get());
+				assertEquals(0, expectedErrors.get(), "Too much success with width: " + width);
 			}
 		} finally {
 			Platform.removeLogListener(logListener);
@@ -1049,15 +1049,15 @@ public class ConsoleDocumentAdapterTests {
 	}
 
 	private static void assertContent(IDocumentAdapter docAdapter, String content) {
-		assertEquals("Adapter returned wrong content.", content, docAdapter.getTextRange(0, docAdapter.getCharCount()));
+		assertEquals(content, docAdapter.getTextRange(0, docAdapter.getCharCount()), "Adapter returned wrong content.");
 	}
 
 	private static void assertNumberOfLines(IDocumentAdapter docAdapter, int expectedLines) {
-		assertEquals("Adapter has wrong line count.", expectedLines, docAdapter.getLineCount());
+		assertEquals(expectedLines, docAdapter.getLineCount(), "Adapter has wrong line count.");
 	}
 
 	private static void assertLine(IDocumentAdapter docAdapter, int lineIndex, String expectedContent) {
-		assertEquals("Adapter returned wrong content for line " + lineIndex + ".", expectedContent, docAdapter.getLine(lineIndex));
+		assertEquals(docAdapter.getLine(lineIndex), expectedContent, "Adapter returned wrong content for line " + lineIndex + ".");
 	}
 
 	/**
@@ -1091,13 +1091,13 @@ public class ConsoleDocumentAdapterTests {
 				}
 			}
 			final int testLineIndex = docAdapter.getLineAtOffset(offset);
-			assertEquals("Got wrong line with offset " + offset + ".", lineIndex, testLineIndex);
+			assertEquals(lineIndex, testLineIndex, "Got wrong line with offset " + offset + ".");
 		}
 	}
 
 	private static void clearDocument(IDocumentAdapter docAdapter) {
 		docAdapter.setText("");
-		assertEquals("Document not cleared.", 0, docAdapter.getCharCount());
+		assertEquals(0, docAdapter.getCharCount(), "Document not cleared.");
 		assertNumberOfLines(docAdapter, 1);
 		assertLine(docAdapter, 0, "");
 	}
@@ -1192,22 +1192,22 @@ public class ConsoleDocumentAdapterTests {
 			final TextEventExpectation expectation = checkCommon(TextChangeEventType.CHANGING);
 			if (expectation != null) {
 				if (expectation.start != null) {
-					assertEquals("event.start", (int) expectation.start, event.start);
+					assertEquals((int) expectation.start, event.start, "event.start");
 				}
 				if (expectation.newText != null) {
-					assertEquals("event.newText", expectation.newText, event.newText);
+					assertEquals(expectation.newText, event.newText, "event.newText");
 				}
 				if (expectation.replaceCharCount != null) {
-					assertEquals("event.replaceCharCount", (int) expectation.replaceCharCount, event.replaceCharCount);
+					assertEquals((int) expectation.replaceCharCount, event.replaceCharCount, "event.replaceCharCount");
 				}
 				if (expectation.newCharCount != null) {
-					assertEquals("event.newCharCount", (int) expectation.newCharCount, event.newCharCount);
+					assertEquals((int) expectation.newCharCount, event.newCharCount, "event.newCharCount");
 				}
 				if (expectation.replaceLineCount != null) {
-					assertEquals("event.replaceLineCount", (int) expectation.replaceLineCount, event.replaceLineCount);
+					assertEquals((int) expectation.replaceLineCount, event.replaceLineCount, "event.replaceLineCount");
 				}
 				if (expectation.newLineCount != null) {
-					assertEquals("event.newLineCount", (int) expectation.newLineCount, event.newLineCount);
+					assertEquals((int) expectation.newLineCount, event.newLineCount, "event.newLineCount");
 				}
 			}
 
@@ -1218,10 +1218,10 @@ public class ConsoleDocumentAdapterTests {
 				lengthBeforeReplace = docAdapter.getCharCount();
 
 				final int charactersBehindEventStart = docAdapter.getCharCount() - event.start;
-				assertTrue("Tried to remove more characters than available.", event.replaceCharCount <= charactersBehindEventStart);
+				assertTrue(event.replaceCharCount <= charactersBehindEventStart, "Tried to remove more characters than available.");
 
 				final int linesBehindEvent = docAdapter.getLineCount() - docAdapter.getLineAtOffset(event.start);
-				assertTrue("Tried to remove more lines than available.", event.replaceLineCount <= linesBehindEvent);
+				assertTrue(event.replaceLineCount <= linesBehindEvent, "Tried to remove more lines than available.");
 			}
 		}
 
@@ -1232,14 +1232,14 @@ public class ConsoleDocumentAdapterTests {
 			if (docAdapter != null && lastEvent != null) {
 				final int lastEventOffset = lastEvent.start;
 				final int lastEventLineIndex = docAdapter.getLineAtOffset(lastEventOffset);
-				assertTrue("Line of event offset " + lastEventOffset + " has moved up.", eventLineBeforeChange <= lastEventLineIndex);
+				assertTrue(eventLineBeforeChange <= lastEventLineIndex, "Line of event offset " + lastEventOffset + " has moved up.");
 
 				// check if predicted changes are correct
 				final int predictedDocLength = lengthBeforeReplace - lastEvent.replaceCharCount + lastEvent.newCharCount;
-				assertEquals("New widget length not as announce by changing event.", predictedDocLength, docAdapter.getCharCount());
+				assertEquals(predictedDocLength, docAdapter.getCharCount(), "New widget length not as announce by changing event.");
 				final int predictedDocLines = linesBeforeReplace - lastEvent.replaceLineCount + lastEvent.newLineCount;
-				assertEquals("New widget line number not as announce by changing event.", predictedDocLines, docAdapter.getLineCount());
-				assertEquals("Inserted text not found in document.", lastEvent.newText, docAdapter.getTextRange(lastEvent.start, lastEvent.newText.length()));
+				assertEquals(predictedDocLines, docAdapter.getLineCount(), "New widget line number not as announce by changing event.");
+				assertEquals(lastEvent.newText, docAdapter.getTextRange(lastEvent.start, lastEvent.newText.length()), "Inserted text not found in document.");
 			}
 		}
 
@@ -1257,11 +1257,11 @@ public class ConsoleDocumentAdapterTests {
 			if (expectation == null && allowUnexpectedEvents) {
 				return null;
 			}
-			assertNotNull("Unexpected event.", expectation);
+			assertNotNull(expectation, "Unexpected event.");
 			if (expectation.type != eventType && allowUnexpectedEvents) {
 				return null;
 			}
-			assertEquals("Wrong event type.", expectation.type, eventType);
+			assertEquals(expectation.type, eventType, "Wrong event type.");
 			return expectation;
 		}
 	}
