@@ -23,14 +23,17 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.internal.ui.model.elements.SerialExecutor;
-import org.eclipse.debug.tests.AbstractDebugTest;
-import org.junit.Test;
+import org.eclipse.debug.tests.DebugTestExtension;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-public class SerialExecutorTest extends AbstractDebugTest {
-	@Override
+@ExtendWith(DebugTestExtension.class)
+public class SerialExecutorTest {
+
+	@AfterEach
 	public void tearDown() throws Exception {
 		Job.getJobManager().cancel(this);
-		super.tearDown();
 	}
 
 	@Test

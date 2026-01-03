@@ -33,7 +33,8 @@ import org.eclipse.debug.tests.viewer.model.TestModel.TestElement;
 import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeSelection;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 /**
  * Tests to verify that the viewer can save and restore correctly the expansion
@@ -664,7 +665,7 @@ new TreePath[] { model.findElement("5"), model.findElement("5.1"), model.findEle
 	}
 
 	@Test
-	public void testPreserveLargeModelOnContent() throws Exception {
+	public void testPreserveLargeModelOnContent(TestInfo testInfo) throws Exception {
 		//TreeModelViewerAutopopulateAgent autopopulateAgent = new TreeModelViewerAutopopulateAgent(fViewer);
 		TestModel model = alternatingSubsreesModel(100);
 
@@ -675,7 +676,7 @@ new TreePath[] { model.findElement("5"), model.findElement("5.1"), model.findEle
 
 		// Set the input into the view and update the view.
 		fViewer.setInput(model.getRootElement());
-		TestUtil.waitForJobs(name.getMethodName(), 300, 5000);
+		TestUtil.waitForJobs(testInfo.getDisplayName(), 300, 5000);
 		waitWhile(() -> !fListener.isFinished(CONTENT_SEQUENCE_COMPLETE), createListenerErrorMessage());
 
 		expandAlternateElements(fListener, model, false);
@@ -1054,7 +1055,7 @@ new TreePath[] { model.findElement("5"), model.findElement("5.1"), model.findEle
 	}
 
 	@Test
-	public void testSaveAndRestoreLarge() throws Exception {
+	public void testSaveAndRestoreLarge(TestInfo testInfo) throws Exception {
 		//TreeModelViewerAutopopulateAgent autopopulateAgent = new TreeModelViewerAutopopulateAgent(fViewer);
 		TestModel model = alternatingSubsreesModel(100);
 
@@ -1065,7 +1066,7 @@ new TreePath[] { model.findElement("5"), model.findElement("5.1"), model.findEle
 
 		// Set the input into the view and update the view.
 		fViewer.setInput(model.getRootElement());
-		TestUtil.waitForJobs(name.getMethodName(), 300, 5000);
+		TestUtil.waitForJobs(testInfo.getDisplayName(), 300, 5000);
 		waitWhile(() -> !fListener.isFinished(CONTENT_SEQUENCE_COMPLETE), createListenerErrorMessage());
 
 		expandAlternateElements(fListener, model, false);
@@ -1084,7 +1085,7 @@ new TreePath[] { model.findElement("5"), model.findElement("5.1"), model.findEle
 		fListener.addStateUpdates(getInternalViewer(), originalState, IModelDelta.EXPAND | IModelDelta.SELECT | IModelDelta.REVEAL);
 
 		fViewer.setInput(null);
-		TestUtil.waitForJobs(name.getMethodName(), 300, 5000);
+		TestUtil.waitForJobs(testInfo.getDisplayName(), 300, 5000);
 		waitWhile(() -> !fListener.isFinished(STATE_SAVE_COMPLETE | STATE_UPDATES), createListenerErrorMessage());
 
 		// Set the viewer input back to the model.  When view updates are complete
@@ -1092,7 +1093,7 @@ new TreePath[] { model.findElement("5"), model.findElement("5.1"), model.findEle
 		// Note: disable redundant updates because the reveal delta triggers one.
 		fListener.reset();
 		fViewer.setInput(model.getRootElement());
-		TestUtil.waitForJobs(name.getMethodName(), 300, 5000);
+		TestUtil.waitForJobs(testInfo.getDisplayName(), 300, 5000);
 		waitWhile(() -> !fListener.isFinished(CONTENT_SEQUENCE_COMPLETE), createListenerErrorMessage());
 
 		// Validate data (only select visible elements).
@@ -1114,7 +1115,7 @@ new TreePath[] { model.findElement("5"), model.findElement("5.1"), model.findEle
 	 * the saved state delta once all the elements are visible.
 	 */
 	@Test
-	public void testSaveAndRestorePartialStateLarge() throws Exception {
+	public void testSaveAndRestorePartialStateLarge(TestInfo testInfo) throws Exception {
 		//TreeModelViewerAutopopulateAgent autopopulateAgent = new TreeModelViewerAutopopulateAgent(fViewer);
 		TestModel model = alternatingSubsreesModel(100);
 
@@ -1125,7 +1126,7 @@ new TreePath[] { model.findElement("5"), model.findElement("5.1"), model.findEle
 
 		// Set the input into the view and update the view.
 		fViewer.setInput(model.getRootElement());
-		TestUtil.waitForJobs(name.getMethodName(), 300, 5000);
+		TestUtil.waitForJobs(testInfo.getDisplayName(), 300, 5000);
 		waitWhile(() -> !fListener.isFinished(CONTENT_SEQUENCE_COMPLETE), createListenerErrorMessage());
 
 		expandAlternateElements(fListener, model, false);
@@ -1144,7 +1145,7 @@ new TreePath[] { model.findElement("5"), model.findElement("5.1"), model.findEle
 		fListener.addStateUpdates(getInternalViewer(), originalState, IModelDelta.EXPAND | IModelDelta.SELECT | IModelDelta.REVEAL);
 
 		fViewer.setInput(null);
-		TestUtil.waitForJobs(name.getMethodName(), 300, 5000);
+		TestUtil.waitForJobs(testInfo.getDisplayName(), 300, 5000);
 		waitWhile(() -> !fListener.isFinished(STATE_SAVE_COMPLETE | STATE_UPDATES), createListenerErrorMessage());
 
 
@@ -1158,7 +1159,7 @@ new TreePath[] { model.findElement("5"), model.findElement("5.1"), model.findEle
 		// Note: disable redundant updates because the reveal delta triggers one.
 		fListener.reset();
 		fViewer.setInput(model.getRootElement());
-		TestUtil.waitForJobs(name.getMethodName(), 300, 5000);
+		TestUtil.waitForJobs(testInfo.getDisplayName(), 300, 5000);
 
 		// MONITOR FOR THE STATE RESTORE TO COMPLETE
 		waitWhile(() -> !fListener.isFinished(CONTENT_SEQUENCE_COMPLETE | STATE_RESTORE_COMPLETE), createListenerErrorMessage());

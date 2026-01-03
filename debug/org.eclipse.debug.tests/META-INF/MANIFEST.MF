@@ -32,6 +32,9 @@ Export-Package: org.eclipse.debug.tests,
 Import-Package: org.assertj.core.api;version="3.24.2",
  org.assertj.core.api.iterable,
  org.junit.jupiter.api;version="[5.14.0,6.0.0)",
+ org.junit.jupiter.api.io;version="[5.14.0,6.0.0)",
+ org.junit.jupiter.api.extension;version="[5.14.0,6.0.0)",
+ org.junit.jupiter.params;version="[5.14.0,6.0.0)",
  org.junit.platform.suite.api;version="[1.14.0,2.0.0)"
 Eclipse-BundleShape: dir
 Automatic-Module-Name: org.eclipse.debug.tests

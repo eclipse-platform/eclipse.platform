@@ -24,15 +24,17 @@ import java.util.function.Supplier;
 
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.debug.internal.core.InputStreamMonitor;
-import org.eclipse.debug.tests.AbstractDebugTest;
+import org.eclipse.debug.tests.DebugTestExtension;
 import org.eclipse.debug.tests.TestUtil;
 import org.eclipse.debug.tests.TestsPlugin;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests the {@link InputStreamMonitor}.
  */
-public class InputStreamMonitorTests extends AbstractDebugTest {
+@ExtendWith(DebugTestExtension.class)
+public class InputStreamMonitorTests {
 	private static int CONDITION_TIMEOUT_IN_MILLIS = 1_000;
 
 	/**

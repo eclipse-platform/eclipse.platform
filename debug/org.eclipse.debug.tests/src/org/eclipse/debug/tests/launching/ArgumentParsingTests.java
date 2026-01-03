@@ -31,15 +31,17 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.URIUtil;
 import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.tests.AbstractDebugTest;
+import org.eclipse.debug.tests.DebugTestExtension;
 import org.eclipse.osgi.service.environment.Constants;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests {@link org.eclipse.debug.core.DebugPlugin#parseArguments(String)} and
  * {@link org.eclipse.debug.core.DebugPlugin#renderArguments(String[], int[])}.
  */
-public class ArgumentParsingTests extends AbstractDebugTest {
+@ExtendWith(DebugTestExtension.class)
+public class ArgumentParsingTests {
 
 	private void execute1Arg(String cmdLine) throws Exception {
 		execute1Arg(cmdLine, cmdLine);

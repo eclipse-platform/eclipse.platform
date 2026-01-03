@@ -41,7 +41,7 @@ import org.eclipse.debug.tests.launching.ThrowingLaunchDelegate.ThrowingLaunch;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

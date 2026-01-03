@@ -30,8 +30,8 @@ import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
 import org.eclipse.debug.ui.ILaunchConfigurationTabGroup;
 import org.eclipse.swt.widgets.Display;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class LaunchConfigurationTabGroupViewerTest {
 
@@ -44,7 +44,7 @@ public class LaunchConfigurationTabGroupViewerTest {
 	private ILaunchConfigurationType fLaunchConfigurationType;
 	private LaunchConfigurationsDialog fLaunchConfigurationsDialog;
 
-	@Before
+	@BeforeEach
 	public void createDialog() throws CoreException {
 		fLaunchConfigurationType = getLaunchManager().getLaunchConfigurationType(LAUNCH_CONFIG_TYPE_ID);
 		ILaunchConfigurationTabGroup tabGroup = getLaunchConfigurationTabGroup(fLaunchConfigurationType);

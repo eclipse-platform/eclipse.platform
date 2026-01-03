@@ -22,17 +22,19 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.debug.tests.AbstractDebugTest;
+import org.eclipse.debug.tests.DebugTestExtension;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.ui.console.TextConsoleViewer;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Not really a test for {@link TextConsoleViewer} yet since it only test one
  * private method of it.
  */
-public class TextConsoleViewerTest extends AbstractDebugTest {
+@ExtendWith(DebugTestExtension.class)
+public class TextConsoleViewerTest {
 
 	/**
 	 * Test override of existing styles with a new style. Typically used to

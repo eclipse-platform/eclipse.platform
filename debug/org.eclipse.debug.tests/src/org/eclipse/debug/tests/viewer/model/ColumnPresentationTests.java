@@ -26,7 +26,7 @@ import org.eclipse.debug.internal.ui.viewers.model.provisional.IColumnPresentati
 import org.eclipse.debug.internal.ui.viewers.model.provisional.IPresentationContext;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.PresentationContext;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.TreeModelViewer;
-import org.eclipse.debug.tests.AbstractDebugTest;
+import org.eclipse.debug.tests.DebugTestExtension;
 import org.eclipse.debug.tests.TestUtil;
 import org.eclipse.debug.tests.viewer.model.TestModel.TestElement;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -41,32 +41,30 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.XMLMemento;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests to verify that the viewer properly handles initial columns width.
  */
-public class ColumnPresentationTests extends AbstractDebugTest implements ITestModelUpdatesListenerConstants {
+@ExtendWith(DebugTestExtension.class)
+public class ColumnPresentationTests implements ITestModelUpdatesListenerConstants {
 	private Display fDisplay;
 	private Shell fShell;
 	private TreeModelViewer fViewer;
 	private TestModelUpdatesListener fListener;
 	private boolean fResized = false;
 
-	@Override
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
-		super.setUp();
 		createViewer();
 	}
 
-	@Override
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		destroyViewer();
-		super.tearDown();
 	}
 
 	void createViewer() {

@@ -29,14 +29,16 @@ import org.eclipse.debug.core.model.IExpression;
 import org.eclipse.debug.core.model.IWatchExpression;
 import org.eclipse.debug.internal.core.ExpressionManager;
 import org.eclipse.debug.internal.core.IExpressionsListener2;
-import org.eclipse.debug.tests.AbstractDebugTest;
-import org.junit.After;
-import org.junit.Test;
+import org.eclipse.debug.tests.DebugTestExtension;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests expression manager and listener call backs
  */
-public class ExpressionManagerTests extends AbstractDebugTest {
+@ExtendWith(DebugTestExtension.class)
+public class ExpressionManagerTests {
 
 	static class SinlgeListener implements IExpressionListener {
 
@@ -129,12 +131,10 @@ public class ExpressionManagerTests extends AbstractDebugTest {
 		return DebugPlugin.getDefault().getExpressionManager();
 	}
 
-	@Override
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		// remove all expressions from the manager
 		getManager().removeExpressions(getManager().getExpressions());
-		super.tearDown();
 	}
 
 	/**

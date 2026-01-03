@@ -21,12 +21,11 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.launchConfigurations.LaunchConfigurationManager;
-import org.eclipse.debug.tests.AbstractDebugTest;
 
 /**
  * Common function for launch related tests.
  */
-public abstract class AbstractLaunchTest extends AbstractDebugTest {
+public abstract class AbstractLaunchTest {
 
 	/**
 	 * Returns the launch manager.

@@ -32,20 +32,23 @@ import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.RuntimeProcess;
 import org.eclipse.debug.internal.core.DebugCoreMessages;
-import org.eclipse.debug.tests.AbstractDebugTest;
+import org.eclipse.debug.tests.DebugTestExtension;
 import org.eclipse.debug.tests.TestUtil;
 import org.eclipse.debug.tests.sourcelookup.TestLaunch;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-public class RuntimeProcessTests extends AbstractDebugTest {
+@ExtendWith(DebugTestExtension.class)
+public class RuntimeProcessTests {
 
 	/**
 	 * Test behavior of {@link RuntimeProcess} if the wrapped process
 	 * terminates.
 	 */
 	@Test
-	public void testProcessTerminated() throws Exception {
+	public void testProcessTerminated(TestInfo testInfo) throws Exception {
 		AtomicInteger processTerminateEvents = new AtomicInteger();
 		DebugPlugin.getDefault().addDebugEventListener(events -> {
 			for (DebugEvent event : events) {
@@ -65,14 +68,14 @@ public class RuntimeProcessTests extends AbstractDebugTest {
 		mockProcess.destroy();
 
 		TestUtil.waitWhile(() -> !runtimeProcess.isTerminated(), () -> "RuntimeProcess not terminated.");
-		TestUtil.waitForJobs(name.getMethodName(), 25, TestUtil.DEFAULT_TIMEOUT);
+		TestUtil.waitForJobs(testInfo.getDisplayName(), 25, TestUtil.DEFAULT_TIMEOUT);
 		assertEquals("Wrong number of terminate events.", 1, processTerminateEvents.get());
 		assertEquals("RuntimeProcess reported wrong exit code.", 1, runtimeProcess.getExitValue());
 	}
 
 	/** Test {@link RuntimeProcess} terminating the wrapped process. */
 	@Test
-	public void testTerminateProcess() throws Exception {
+	public void testTerminateProcess(TestInfo testInfo) throws Exception {
 		AtomicInteger processTerminateEvents = new AtomicInteger();
 		DebugPlugin.getDefault().addDebugEventListener(events -> {
 			for (DebugEvent event : events) {
@@ -93,7 +96,7 @@ public class RuntimeProcessTests extends AbstractDebugTest {
 		assertFalse("RuntimeProcess failed to terminate wrapped process.", mockProcess.isAlive());
 
 		TestUtil.waitWhile(() -> !runtimeProcess.isTerminated(), () -> "RuntimeProcess not terminated.");
-		TestUtil.waitForJobs(name.getMethodName(), 25, TestUtil.DEFAULT_TIMEOUT);
+		TestUtil.waitForJobs(testInfo.getDisplayName(), 25, TestUtil.DEFAULT_TIMEOUT);
 		assertEquals("Wrong number of terminate events.", 1, processTerminateEvents.get());
 		assertEquals("RuntimeProcess reported wrong exit code.", 1, runtimeProcess.getExitValue());
 	}
@@ -216,19 +219,19 @@ public class RuntimeProcessTests extends AbstractDebugTest {
 	 * for why this test fails
 	 */
 	@Test
-	@Ignore("See https://bugs.eclipse.org/bugs/show_bug.cgi?id=577189")
-	public void testOutputAfterDestroy() throws Exception {
+	@Disabled("See https://bugs.eclipse.org/bugs/show_bug.cgi?id=577189")
+	public void testOutputAfterDestroy(TestInfo testInfo) throws Exception {
 		MockProcess proc = new MockProcess();
 
 		IProcess iProc = new RuntimeProcess(new TestLaunch(), proc, "foo", Collections.emptyMap());
 		iProc.terminate();
 
 		String str = iProc.getStreamsProxy().getOutputStreamMonitor().getContents();
-		TestUtil.log(IStatus.INFO, name.getMethodName(), "Stream result: ");
+		TestUtil.log(IStatus.INFO, testInfo.getDisplayName(), "Stream result: ");
 		for (int i = 0; i < str.length(); i += 100) {
-			TestUtil.log(IStatus.INFO, name.getMethodName(), str.substring(i, Math.min(i + 100, str.length())));
+			TestUtil.log(IStatus.INFO, testInfo.getDisplayName(), str.substring(i, Math.min(i + 100, str.length())));
 		}
-		TestUtil.log(IStatus.INFO, name.getMethodName(), "Stream done.");
+		TestUtil.log(IStatus.INFO, testInfo.getDisplayName(), "Stream done.");
 		// Make sure that the inputstream (process's stdout) has been fully read
 		// and is at EOF
 		@SuppressWarnings("resource")

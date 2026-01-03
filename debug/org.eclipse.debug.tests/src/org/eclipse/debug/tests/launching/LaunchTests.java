@@ -24,7 +24,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
-import java.util.Collections;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.Locale;
@@ -46,10 +47,10 @@ import org.eclipse.debug.core.Launch;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IDisconnect;
 import org.eclipse.debug.core.model.IProcess;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Tests for the {@link Launch} class
@@ -75,11 +76,11 @@ public class LaunchTests extends AbstractLaunchTest {
 	private Runnable readIsDisconnectedTask;
 	private Runnable writeProcessesTask;
 	private Runnable writeDebugTargetsTask;
+	private TestInfo testInfo;
 
-	@Override
-	@Before
-	public void setUp() throws Exception {
-		super.setUp();
+	@BeforeEach
+	public void setUp(TestInfo testInfo) throws Exception {
+		this.testInfo = testInfo;
 		final Launch launch = new Launch(null, ILaunchManager.RUN_MODE, null);
 
 		handler = (proxy, method, args) -> {
@@ -153,17 +154,18 @@ public class LaunchTests extends AbstractLaunchTest {
 		assertTrue(testExecution(readIsDisconnectedTask, writeProcessesTask));
 	}
 
-	@ClassRule
-	public static TemporaryFolder tempFolder = new TemporaryFolder();
-
 	@Test
-	public void testProcessLaunchWithLongWorkingDirectory() throws CoreException, IOException {
+	public void testProcessLaunchWithLongWorkingDirectory(@TempDir Path tempDir) throws CoreException, IOException {
 		assumeTrue(Platform.OS.isWindows());
 
-		int rootLength = tempFolder.getRoot().toString().length();
+		int rootLength = tempDir.toAbsolutePath().toString().length();
 		String subPathElementsName = "subfolder-with-relatively-long-name";
-		String[] segments = Collections.nCopies((LONG_PATH_LENGTH_TARGET - rootLength) / subPathElementsName.length(), subPathElementsName).toArray(String[]::new);
-		File workingDirectory = tempFolder.newFolder(segments);
+		Path folder = tempDir;
+		int segmentsToWrite = (LONG_PATH_LENGTH_TARGET - rootLength) / subPathElementsName.length();
+		for (int i = 0; i < segmentsToWrite; i++) {
+			folder = folder.resolve(subPathElementsName);
+		}
+		File workingDirectory = Files.createDirectories(folder).toFile();
 		assertTrue(workingDirectory.toString().length() > WINDOWS_MAX_PATH);
 
 		// Just launch any process in a directory with a path longer than
@@ -173,13 +175,17 @@ public class LaunchTests extends AbstractLaunchTest {
 	}
 
 	@Test
-	public void testProcessLaunchWithLongExecutablePath() throws CoreException, IOException {
+	public void testProcessLaunchWithLongExecutablePath(@TempDir Path tempDir) throws CoreException, IOException {
 		assumeTrue(Platform.OS.isWindows());
 
-		int rootLength = tempFolder.getRoot().toString().length();
+		int rootLength = tempDir.toAbsolutePath().toString().length();
 		String subPathElementsName = "another-one-with-a-long-path-name-2";
-		String[] segments = Collections.nCopies((LONG_PATH_LENGTH_TARGET - rootLength) / subPathElementsName.length(), subPathElementsName).toArray(String[]::new);
-		File workingDirectory = tempFolder.newFolder(segments);
+		Path folder = tempDir;
+		int segmentsToWrite = (LONG_PATH_LENGTH_TARGET - rootLength) / subPathElementsName.length();
+		for (int i = 0; i < segmentsToWrite; i++) {
+			folder = folder.resolve(subPathElementsName);
+		}
+		File workingDirectory = Files.createDirectories(folder).toFile();
 		assertTrue(workingDirectory.toString().length() > WINDOWS_MAX_PATH);
 		File jar = new File(workingDirectory, "dummy.jar");
 		try (JarOutputStream stream = new JarOutputStream(new FileOutputStream(jar))) {
@@ -250,7 +256,7 @@ public class LaunchTests extends AbstractLaunchTest {
 				}
 			}
 		} finally {
-			System.out.println(name.getMethodName() + " runs: " + runs); //$NON-NLS-1$
+			System.out.println(testInfo.getDisplayName() + " runs: " + runs); //$NON-NLS-1$
 			job.cancel();
 		}
 

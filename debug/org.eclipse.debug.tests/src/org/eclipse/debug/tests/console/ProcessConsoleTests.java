@@ -55,7 +55,7 @@ import org.eclipse.debug.core.Launch;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.views.console.ProcessConsole;
-import org.eclipse.debug.tests.AbstractDebugTest;
+import org.eclipse.debug.tests.DebugTestExtension;
 import org.eclipse.debug.tests.TestUtil;
 import org.eclipse.debug.tests.launching.LaunchConfigurationTests;
 import org.eclipse.debug.ui.IDebugUIConstants;
@@ -70,14 +70,17 @@ import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.IOConsole;
 import org.eclipse.ui.console.IOConsoleInputStream;
 import org.eclipse.ui.internal.console.ConsoleManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests the ProcessConsole.
  */
-public class ProcessConsoleTests extends AbstractDebugTest {
+@ExtendWith(DebugTestExtension.class)
+public class ProcessConsoleTests {
 	/**
 	 * Log messages with severity error received while running a single test
 	 * method.
@@ -94,24 +97,22 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 	/** Temporary test files created by a test. Will be deleted on teardown. */
 	private final ArrayList<File> tmpFiles = new ArrayList<>();
 
-	@Override
-	@Before
-	public void setUp() throws Exception {
-		super.setUp();
+	private TestInfo testInfo;
+
+	@BeforeEach
+	public void setUp(TestInfo testInfo) throws Exception {
+		this.testInfo = testInfo;
 		loggedErrors.clear();
 		Platform.addLogListener(errorLogListener);
 	}
 
-	@Override
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		Platform.removeLogListener(errorLogListener);
 		for (File tmpFile : tmpFiles) {
 			tmpFile.delete();
 		}
 		tmpFiles.clear();
-
-		super.tearDown();
 
 		assertThat(errorsToStrings()).as("logged errors").isEmpty();
 	}
@@ -229,7 +230,7 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 				final Class<?> jobFamily = org.eclipse.debug.internal.ui.views.console.ProcessConsole.class;
 				assertThat(Job.getJobManager().find(jobFamily)).as("check input read job started").hasSizeGreaterThan(0);
 				Job.getJobManager().cancel(jobFamily);
-				TestUtil.waitForJobs(name.getMethodName(), ProcessConsole.class, 0, 1000);
+				TestUtil.waitForJobs(testInfo.getDisplayName(), ProcessConsole.class, 0, 1000);
 				assertThat(Job.getJobManager().find(jobFamily)).as("check input read job is canceled").isEmpty();
 			} finally {
 				console.destroy();
@@ -244,9 +245,9 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 	 */
 	@Test
 	public void testProcessTerminationNotification() throws Exception {
-		TestUtil.log(IStatus.INFO, name.getMethodName(), "Process terminates after Console is initialized.");
+		TestUtil.log(IStatus.INFO, testInfo.getDisplayName(), "Process terminates after Console is initialized.");
 		processTerminationTest(null, false);
-		TestUtil.log(IStatus.INFO, name.getMethodName(), "Process terminates before Console is initialized.");
+		TestUtil.log(IStatus.INFO, testInfo.getDisplayName(), "Process terminates before Console is initialized.");
 		processTerminationTest(null, true);
 	}
 
@@ -261,11 +262,11 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 		assertTrue("Failed to prepare input file.", fileCreated);
 		try {
 			ILaunchConfigurationType launchType = DebugPlugin.getDefault().getLaunchManager().getLaunchConfigurationType(LaunchConfigurationTests.ID_TEST_LAUNCH_TYPE);
-			ILaunchConfigurationWorkingCopy launchConfiguration = launchType.newInstance(null, name.getMethodName());
+			ILaunchConfigurationWorkingCopy launchConfiguration = launchType.newInstance(null, testInfo.getDisplayName());
 			launchConfiguration.setAttribute(IDebugUIConstants.ATTR_CAPTURE_STDIN_FILE, inFile.getAbsolutePath());
-			TestUtil.log(IStatus.INFO, name.getMethodName(), "Process terminates after Console is initialized.");
+			TestUtil.log(IStatus.INFO, testInfo.getDisplayName(), "Process terminates after Console is initialized.");
 			processTerminationTest(launchConfiguration, false);
-			TestUtil.log(IStatus.INFO, name.getMethodName(), "Process terminates before Console is initialized.");
+			TestUtil.log(IStatus.INFO, testInfo.getDisplayName(), "Process terminates before Console is initialized.");
 			processTerminationTest(launchConfiguration, true);
 		} finally {
 			inFile.delete();
@@ -284,7 +285,7 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 	public void processTerminationTest(ILaunchConfiguration launchConfig, boolean terminateBeforeConsoleInitialization) throws Exception {
 		final AtomicBoolean terminationSignaled = new AtomicBoolean(false);
 		final Process mockProcess = new MockProcess(null, null, terminateBeforeConsoleInitialization ? 0 : -1);
-		final IProcess process = DebugPlugin.newProcess(new Launch(launchConfig, ILaunchManager.RUN_MODE, null), mockProcess, name.getMethodName());
+		final IProcess process = DebugPlugin.newProcess(new Launch(launchConfig, ILaunchManager.RUN_MODE, null), mockProcess, testInfo.getDisplayName());
 		final org.eclipse.debug.internal.ui.views.console.ProcessConsole console = new org.eclipse.debug.internal.ui.views.console.ProcessConsole(process, new ConsoleColorProvider());
 		console.addPropertyChangeListener(event -> {
 				if (event.getSource() == console && IConsoleConstants.P_CONSOLE_OUTPUT_COMPLETE.equals(event.getProperty())) {
@@ -300,7 +301,7 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 			waitWhile(() -> !terminationSignaled.get(), () -> "No console complete notification received.");
 		} finally {
 			consoleManager.removeConsoles(new IConsole[] { console });
-			TestUtil.waitForJobs(name.getMethodName(), ConsoleManager.CONSOLE_JOB_FAMILY, 0, 10000);
+			TestUtil.waitForJobs(testInfo.getDisplayName(), ConsoleManager.CONSOLE_JOB_FAMILY, 0, 10000);
 		}
 	}
 
@@ -418,7 +419,7 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 				process.terminate();
 			}
 			consoleManager.removeConsoles(new IConsole[] { console });
-			TestUtil.waitForJobs(name.getMethodName(), ConsoleManager.CONSOLE_JOB_FAMILY, 0, 1000);
+			TestUtil.waitForJobs(testInfo.getDisplayName(), ConsoleManager.CONSOLE_JOB_FAMILY, 0, 1000);
 		}
 	}
 

@@ -16,26 +16,26 @@ package org.eclipse.debug.tests.viewer.model;
 import java.util.function.Supplier;
 
 import org.eclipse.debug.internal.ui.viewers.model.IInternalTreeModelViewer;
-import org.eclipse.debug.tests.AbstractDebugTest;
+import org.eclipse.debug.tests.DebugTestExtension;
 import org.eclipse.debug.tests.TestUtil;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-public abstract class AbstractViewerModelTest extends AbstractDebugTest {
+@ExtendWith(DebugTestExtension.class)
+public abstract class AbstractViewerModelTest {
 
 	Display fDisplay;
 	Shell fShell;
 	IInternalTreeModelViewer fViewer;
 	TestModelUpdatesListener fListener;
 
-	@Override
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
-		super.setUp();
 		fDisplay = PlatformUI.getWorkbench().getDisplay();
 		fShell = new Shell(fDisplay);
 		fShell.setMaximized(true);
@@ -46,8 +46,7 @@ public abstract class AbstractViewerModelTest extends AbstractDebugTest {
 		TestUtil.processUIEvents();
 	}
 
-	@Override
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		fListener.dispose();
 		fViewer.getPresentationContext().dispose();
@@ -55,7 +54,6 @@ public abstract class AbstractViewerModelTest extends AbstractDebugTest {
 		// Close the shell and exit.
 		fShell.close();
 		TestUtil.processUIEvents();
-		super.tearDown();
 	}
 
 	abstract protected IInternalTreeModelViewer createViewer(Display display, Shell shell);

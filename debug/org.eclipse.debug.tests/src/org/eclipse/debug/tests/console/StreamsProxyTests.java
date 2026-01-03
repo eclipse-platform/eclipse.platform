@@ -20,13 +20,15 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
 import org.eclipse.debug.internal.core.StreamsProxy;
-import org.eclipse.debug.tests.AbstractDebugTest;
-import org.junit.Test;
+import org.eclipse.debug.tests.DebugTestExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests the {@link StreamsProxy}.
  */
-public class StreamsProxyTests extends AbstractDebugTest {
+@ExtendWith(DebugTestExtension.class)
+public class StreamsProxyTests {
 
 	/**
 	 * Test console receiving UTF-8 output from process where two-byte UTF-8

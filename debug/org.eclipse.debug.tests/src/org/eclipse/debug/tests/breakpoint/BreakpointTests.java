@@ -29,21 +29,23 @@ import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.internal.core.BreakpointManager;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.views.breakpoints.BreakpointsView;
-import org.eclipse.debug.tests.AbstractDebugTest;
+import org.eclipse.debug.tests.DebugTestExtension;
 import org.eclipse.debug.tests.TestUtil;
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.PlatformUI;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-public class BreakpointTests extends AbstractDebugTest {
+@ExtendWith(DebugTestExtension.class)
+public class BreakpointTests {
 
 	private final IBreakpointManager bpm = DebugPlugin.getDefault().getBreakpointManager();
 
-	@Override
+	@AfterEach
 	public void tearDown() throws Exception {
-		super.tearDown();
 		for (IBreakpoint bp : getTestBreakpoints()) {
 			bp.delete();
 		}

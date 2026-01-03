@@ -26,27 +26,29 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.debug.tests.AbstractDebugTest;
+import org.eclipse.debug.tests.DebugTestExtension;
 import org.eclipse.debug.ui.console.FileLink;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests for {@link FileLink}.
  */
-public class FileLinkTests extends AbstractDebugTest {
+@ExtendWith(DebugTestExtension.class)
+public class FileLinkTests {
 
 	private IProject testProject;
 	private IFile testFile;
 
-	@Override
+	@BeforeEach
 	public void setUp() throws Exception {
-		super.setUp();
-
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		testProject = workspace.getRoot().getProject("FileLinkTest-" + UUID.randomUUID());
 		testProject.create(null);
@@ -55,13 +57,11 @@ public class FileLinkTests extends AbstractDebugTest {
 		setTestContent("Test file\nSecond line");
 	}
 
-	@Override
+	@AfterEach
 	public void tearDown() throws Exception {
 		if (testProject.exists()) {
 			testProject.delete(true, true, null);
 		}
-
-		super.tearDown();
 	}
 
 	private void setTestContent(String fileContent) throws UnsupportedEncodingException, CoreException {

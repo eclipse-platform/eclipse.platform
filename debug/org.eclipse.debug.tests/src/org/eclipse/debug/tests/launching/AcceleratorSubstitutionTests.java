@@ -16,8 +16,9 @@ package org.eclipse.debug.tests.launching;
 import static org.junit.Assert.assertEquals;
 
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
-import org.eclipse.debug.tests.AbstractDebugTest;
-import org.junit.Test;
+import org.eclipse.debug.tests.DebugTestExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests accelerator adjustments for DBCS languages.
@@ -25,7 +26,8 @@ import org.junit.Test;
  *
  * @since 3.3
  */
-public class AcceleratorSubstitutionTests extends AbstractDebugTest {
+@ExtendWith(DebugTestExtension.class)
+public class AcceleratorSubstitutionTests {
 
 
 	/**

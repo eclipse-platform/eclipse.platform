@@ -32,7 +32,9 @@ import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 /**
  * Tests that verify that the viewer property retrieves all the content
@@ -41,6 +43,13 @@ import org.junit.Test;
  * @since 3.8
  */
 abstract public class FilterTests extends AbstractViewerModelTest implements ITestModelUpdatesListenerConstants {
+
+	private TestInfo testInfo;
+
+	@BeforeEach
+	void storeTestInfo(TestInfo info) {
+		this.testInfo = info;
+	}
 
 	@Override
 	protected TestModelUpdatesListener createListener(IInternalTreeModelViewer viewer) {
@@ -213,7 +222,7 @@ abstract public class FilterTests extends AbstractViewerModelTest implements ITe
 
 		// Populate the view (all elements containing a "2" will be filtered out.
 		fViewer.setInput(model.getRootElement());
-		TestUtil.waitForJobs(name.getMethodName(), 300, 5000);
+		TestUtil.waitForJobs(testInfo.getDisplayName(), 300, 5000);
 
 		waitWhile(() -> !fListener.isFinished(ALL_UPDATES_COMPLETE), createListenerErrorMessage());
 
@@ -262,7 +271,7 @@ abstract public class FilterTests extends AbstractViewerModelTest implements ITe
 
 		// Populate the view (all elements containing a "2" will be filtered out.
 		fViewer.setInput(model.getRootElement());
-		TestUtil.waitForJobs(name.getMethodName(), 300, 5000);
+		TestUtil.waitForJobs(testInfo.getDisplayName(), 300, 5000);
 
 		waitWhile(() -> !fListener.isFinished(ALL_UPDATES_COMPLETE), createListenerErrorMessage());
 
@@ -318,7 +327,7 @@ abstract public class FilterTests extends AbstractViewerModelTest implements ITe
 
 		// Populate the view (all elements containing a "2" will be filtered out.
 		fViewer.setInput(model.getRootElement());
-		TestUtil.waitForJobs(name.getMethodName(), 300, 5000);
+		TestUtil.waitForJobs(testInfo.getDisplayName(), 300, 5000);
 
 		waitWhile(() -> !fListener.isFinished(ALL_UPDATES_COMPLETE), createListenerErrorMessage());
 

@@ -24,14 +24,16 @@ import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IStatusHandler;
 import org.eclipse.debug.internal.core.IInternalDebugCoreConstants;
 import org.eclipse.debug.internal.core.Preferences;
-import org.eclipse.debug.tests.AbstractDebugTest;
+import org.eclipse.debug.tests.DebugTestExtension;
 import org.eclipse.debug.tests.TestsPlugin;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests status handlers
  */
-public class StatusHandlerTests extends AbstractDebugTest {
+@ExtendWith(DebugTestExtension.class)
+public class StatusHandlerTests {
 
 	/**
 	 * Status for which a handler is registered.

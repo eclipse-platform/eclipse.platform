@@ -26,7 +26,7 @@ import org.eclipse.debug.internal.ui.views.memory.renderings.HexIntegerRendering
 import org.eclipse.debug.internal.ui.views.memory.renderings.RenderingsUtil;
 import org.eclipse.debug.internal.ui.views.memory.renderings.SignedIntegerRendering;
 import org.eclipse.debug.internal.ui.views.memory.renderings.UnsignedIntegerRendering;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for translation of memory bytes between in-memory representation and UI

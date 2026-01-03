@@ -27,8 +27,8 @@ import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.launchConfigurations.LaunchHistory;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jface.preference.PreferenceMemento;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test the utilization of launch histories: sizing, ordering, completeness and correctness
@@ -44,7 +44,7 @@ public class LaunchHistoryTests extends AbstractLaunchTest {
 
 	private final PreferenceMemento prefMemento = new PreferenceMemento();
 
-	@After
+	@AfterEach
 	public void restorePreferences() {
 		prefMemento.resetPreferences();
 	}
