@@ -20,8 +20,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferenceMemento;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -43,11 +41,6 @@ public class AbstractDebugTest {
 	 */
 	protected long testTimeout = 30000;
 
-	/**
-	 * Preference helper to restore changed preference values after test run.
-	 */
-	private final PreferenceMemento prefMemento = new PreferenceMemento();
-
 	@Rule
 	public TestName name = new TestName();
 
@@ -62,7 +55,6 @@ public class AbstractDebugTest {
 	public void tearDown() throws Exception {
 		TestUtil.log(IStatus.INFO, name.getMethodName(), "tearDown");
 		TestUtil.cleanUp(name.getMethodName());
-		prefMemento.resetPreferences();
 	}
 
 	/**
@@ -143,27 +135,4 @@ public class AbstractDebugTest {
 		}
 	}
 
-	/**
-	 * Change a preference value for this test run. The preference will be reset
-	 * to its value before test started automatically on {@link #tearDown()}.
-	 *
-	 * @param <T> preference value type. The type must have a corresponding
-	 *            {@link IPreferenceStore} setter.
-	 * @param store preference store to manipulate (must not be
-	 *            <code>null</code>)
-	 * @param name preference to change
-	 * @param value new preference value
-	 * @throws IllegalArgumentException when setting a type which is not
-	 *             supported by {@link IPreferenceStore}
-	 *
-	 * @see IPreferenceStore#setValue(String, double)
-	 * @see IPreferenceStore#setValue(String, float)
-	 * @see IPreferenceStore#setValue(String, int)
-	 * @see IPreferenceStore#setValue(String, long)
-	 * @see IPreferenceStore#setValue(String, boolean)
-	 * @see IPreferenceStore#setValue(String, String)
-	 */
-	protected <T> void setPreference(IPreferenceStore store, String name, T value) {
-		prefMemento.setValue(store, name, value);
-	}
 }
