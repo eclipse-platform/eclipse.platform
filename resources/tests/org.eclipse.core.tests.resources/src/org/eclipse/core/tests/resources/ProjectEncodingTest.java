@@ -18,8 +18,10 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspac
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
-import static org.hamcrest.MatcherAssert.assertThat;
 
+import org.assertj.core.api.AbstractAssert;
+import org.assertj.core.api.Assertions;
+import org.assertj.core.api.SoftAssertions;
 import org.eclipse.core.internal.resources.PreferenceInitializer;
 import org.eclipse.core.internal.resources.ValidateProjectEncoding;
 import org.eclipse.core.internal.utils.Messages;
@@ -33,9 +35,6 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
 import org.eclipse.osgi.util.NLS;
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
-import org.hamcrest.DiagnosingMatcher;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -185,60 +184,39 @@ public class ProjectEncodingTest {
 	}
 
 	private void thenProjectHasEncodingMarkerOfSeverity(int expectedSeverity) throws Exception {
-		assertThat(project, hasEncodingMarkerOfSeverity(expectedSeverity));
+		IProjectMatcher.assertThat(project).hasEncodingMarkerOfSeverity(expectedSeverity);
 	}
 
-	private BaseMatcher<IProject> hasEncodingMarkerOfSeverity(final int expectedSeverity) {
-		return new DiagnosingMatcher<>() {
+	private static class IProjectMatcher extends AbstractAssert<IProjectMatcher, IProject> {
 
-			@Override
-			public boolean matches(Object item, Description mismatchDescription) {
-				IProject theProject = (IProject) item;
+		private IProjectMatcher(IProject actual) {
+			super(actual, IProjectMatcher.class);
+		}
 
-				try {
-					IMarker[] markers = theProject.findMarkers(ValidateProjectEncoding.MARKER_TYPE, false,
-							IResource.DEPTH_ONE);
-					if (markers.length == 1) {
-						IMarker marker = markers[0];
-						String[] attributeNames = { IMarker.MESSAGE, IMarker.SEVERITY, IMarker.LOCATION };
-						Object[] values = marker.getAttributes(attributeNames);
+		public static IProjectMatcher assertThat(IProject project) {
+			return new IProjectMatcher(project);
+		}
 
-						boolean msgOk = getExpectedMarkerMessage().equals(values[0]);
-						boolean sevOk = ((Integer) expectedSeverity).equals(values[1]);
-						boolean locOk = project.getFullPath().toString().equals(values[2]);
+		public void hasEncodingMarkerOfSeverity(int expectedSeverity) throws CoreException {
+			isNotNull();
 
-						if (!msgOk) {
-							mismatchDescription.appendText("\n has marker message: " + values[0]);
-						}
-						if (!sevOk) {
-							mismatchDescription.appendText("\n has marker severity: " + values[1]);
-						}
-						if (!locOk) {
-							mismatchDescription.appendText("\n has marker location: " + values[2]);
-						}
+			IMarker[] markers = actual.findMarkers(ValidateProjectEncoding.MARKER_TYPE, false, IResource.DEPTH_ONE);
+			Assertions.assertThat(markers).hasSize(1).allSatisfy(marker -> {
+				String[] attributeNames = { IMarker.MESSAGE, IMarker.SEVERITY, IMarker.LOCATION };
+				Object[] values = marker.getAttributes(attributeNames);
 
-						return msgOk && sevOk && locOk;
-					}
-					mismatchDescription.appendText("\n has " + markers.length + " encoding markers");
+				SoftAssertions softAssert = new SoftAssertions();
+				softAssert.assertThat(values[0]).as("marker message").isEqualTo(getExpectedMarkerMessage());
+				softAssert.assertThat(values[1]).as("marker severity").isEqualTo(expectedSeverity);
+				softAssert.assertThat(values[2]).as("marker location").isEqualTo(actual.getFullPath().toString());
+				softAssert.assertAll();
+			});
+		}
 
-				} catch (CoreException e) {
-					mismatchDescription.appendText("\n cannot access markers: " + e.getMessage());
-				}
-				return false;
-			}
+		private String getExpectedMarkerMessage() {
+			return NLS.bind(Messages.resources_checkExplicitEncoding_problemText, actual.getName());
+		}
 
-			@Override
-			public void describeTo(Description description) {
-				description.appendText("\n has marker of message: '" + getExpectedMarkerMessage() + "'");
-				description.appendText("\n has marker severity: " + expectedSeverity);
-				description.appendText("\n has location: <path of the project>");
-			}
-
-			private String getExpectedMarkerMessage() {
-				return NLS.bind(Messages.resources_checkExplicitEncoding_problemText, project.getName());
-			}
-
-		};
 	}
 
 	private void buildAndWaitForBuildFinish() {
