@@ -24,7 +24,6 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSy
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import junit.framework.ComparisonFailure;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.internal.resources.WorkspacePreferences;
 import org.eclipse.core.resources.IWorkspace;
@@ -260,8 +259,7 @@ public class WorkspacePreferencesTest {
 	 * Compares the values in a workspace description with the corresponding
 	 * properties in a preferences object.
 	 */
-	private void assertMatchesPreferences(Preferences expectedPreferences, IWorkspaceDescription actualDescription)
-			throws ComparisonFailure {
+	private void assertMatchesPreferences(Preferences expectedPreferences, IWorkspaceDescription actualDescription) {
 		assertThat(actualDescription.isAutoBuilding()).as("check auto building")
 				.isEqualTo(expectedPreferences.getBoolean(ResourcesPlugin.PREF_AUTO_BUILDING));
 		assertThat(actualDescription.getBuildOrder() == null).as("check default build order")
@@ -287,8 +285,8 @@ public class WorkspacePreferencesTest {
 	/**
 	 * Compares two workspace description objects..
 	 */
-	private void assertDescriptionEquals(IWorkspaceDescription expectedDescription, IWorkspaceDescription actualDescription)
-			throws ComparisonFailure {
+	private void assertDescriptionEquals(IWorkspaceDescription expectedDescription,
+			IWorkspaceDescription actualDescription) {
 		assertThat(actualDescription.isAutoBuilding()).as("check auto building")
 				.isEqualTo(expectedDescription.isAutoBuilding());
 		assertThat(actualDescription.getBuildOrder()).as("check default build order")
