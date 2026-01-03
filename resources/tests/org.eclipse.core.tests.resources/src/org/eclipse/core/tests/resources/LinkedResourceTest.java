@@ -894,6 +894,7 @@ public class LinkedResourceTest {
 	 * in presence of a linked resource that does not match the case in the file system
 	 */
 	@Test
+	@Deprecated // Explicitly tests deprecated API
 	public void testFindFilesForLocationCaseVariant() throws CoreException {
 		assumeTrue(OS.isWindows(), "only relevant on Windows");
 

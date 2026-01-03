@@ -20,6 +20,7 @@ import org.junit.platform.suite.api.Suite;
 /**
  * A suite that runs all regression tests.
  */
+@SuppressWarnings("deprecation")
 @Suite
 @SelectClasses({ //
 		Bug_006708.class, //

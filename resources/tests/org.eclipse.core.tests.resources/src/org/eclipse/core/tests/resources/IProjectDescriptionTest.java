@@ -157,9 +157,8 @@ public class IProjectDescriptionTest {
 		assertTrue(modificationStamp != projectDescription.getModificationStamp());
 	}
 
-	// Explicitly tests deprecated API
-	@SuppressWarnings("deprecation")
 	@Test
+	@Deprecated // Explicitly tests deprecated API
 	public void testDynamicProjectReferences() throws CoreException {
 		IProject target1 = getWorkspace().getRoot().getProject("target1");
 		IProject target2 = getWorkspace().getRoot().getProject("target2");

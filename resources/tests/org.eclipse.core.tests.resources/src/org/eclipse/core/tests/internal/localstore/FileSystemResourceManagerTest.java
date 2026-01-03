@@ -186,9 +186,8 @@ public class FileSystemResourceManagerTest implements ICoreConstants {
 		assertNull(testFile);
 	}
 
-	// Explicitly tests deprecated API
-	@SuppressWarnings("deprecation")
 	@Test
+	@Deprecated // Explicitly tests deprecated API
 	public void testIsLocal() throws CoreException {
 		// create resources
 		IResource[] resources = buildResources(project, new String[] { "/Folder1/", "/Folder1/File1",

@@ -62,9 +62,8 @@ public class IWorkspaceRootTest {
 	/**
 	 * Tests findFilesForLocation when non-canonical paths are used (bug 155101).
 	 */
-	// Explicitly tests deprecated API
-	@SuppressWarnings("deprecation")
 	@Test
+	@Deprecated // Explicitly tests deprecated API
 	public void testFindFilesNonCanonicalPath() throws Exception {
 		assumeTrue(OS.isWindows(), "only relevant on Windows");
 
@@ -90,6 +89,7 @@ public class IWorkspaceRootTest {
 	 * Tests the API method findContainersForLocation.
 	 */
 	@Test
+	@Deprecated // Explicitly tests deprecated API
 	public void testFindContainersForLocation() throws Exception {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject p1 = root.getProject("p1");
@@ -104,6 +104,7 @@ public class IWorkspaceRootTest {
 	}
 
 	@Test
+	@Deprecated // Explicitly tests deprecated API
 	public void testFindContainersForLocationOnWrappedFileSystem() throws Exception {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject p1 = root.getProject("p1");
@@ -117,8 +118,7 @@ public class IWorkspaceRootTest {
 	/**
 	 * Tests the API method findContainersForLocation.
 	 */
-	// Explicitly tests deprecated API
-	@SuppressWarnings("deprecation")
+	@Deprecated // Explicitly tests deprecated API
 	private void testFindContainersForLocation(IProject p1, IProject p2) throws Exception {
 		//should find the workspace root
 		IWorkspaceRoot root = getWorkspace().getRoot();
@@ -171,6 +171,7 @@ public class IWorkspaceRootTest {
 	 * Tests the API method findFilesForLocation.
 	 */
 	@Test
+	@Deprecated // Explicitly tests deprecated API
 	public void testFindFilesForLocationOnWrappedFileSystem() throws CoreException {
 		//should not find the workspace root
 		IWorkspaceRoot root = getWorkspace().getRoot();
@@ -184,6 +185,7 @@ public class IWorkspaceRootTest {
 	 * Tests the API method findFilesForLocation on non-default file system.
 	 */
 	@Test
+	@Deprecated // Explicitly tests deprecated API
 	public void testFindFilesForLocation() throws CoreException {
 		//should not find the workspace root
 		IWorkspaceRoot root = getWorkspace().getRoot();
@@ -193,8 +195,7 @@ public class IWorkspaceRootTest {
 	/**
 	 * Tests the API method findFilesForLocation.
 	 */
-	// Explicitly tests deprecated API
-	@SuppressWarnings("deprecation")
+	@Deprecated // Explicitly tests deprecated API
 	private void testFindFilesForLocation(IProject project) throws CoreException {
 		//should not find the workspace root
 		IWorkspaceRoot root = getWorkspace().getRoot();

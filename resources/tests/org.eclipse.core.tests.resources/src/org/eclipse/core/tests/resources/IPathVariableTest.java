@@ -228,6 +228,7 @@ public class IPathVariableTest {
 	 * Test IPathVariableManager#getValue and IPathVariableManager#setValue
 	 */
 	@Test
+	@Deprecated // Explicitly tests deprecated API
 	public void testGetSetValue() throws CoreException {
 		boolean WINDOWS = java.io.File.separatorChar == '\\';
 		IPath pathOne = WINDOWS ? IPath.fromOSString("C:\\testGetSetValue") : IPath.fromOSString("/testGetSetValue");
@@ -296,6 +297,7 @@ public class IPathVariableTest {
 	 * Test IPathVariableManager#resolvePath
 	 */
 	@Test
+	@Deprecated // Explicitly tests deprecated API
 	public void testResolvePathWithMacro() throws CoreException {
 		final boolean WINDOWS = java.io.File.separatorChar == '\\';
 		IPath pathOne = WINDOWS ? IPath.fromOSString("c:/testGetSetValue/foo") : IPath.fromOSString("/testGetSetValue/foo");
@@ -378,6 +380,7 @@ public class IPathVariableTest {
 	 * Test IPathVariableManager#resolvePath
 	 */
 	@Test
+	@Deprecated // Explicitly tests deprecated API
 	public void testResolvePath() throws CoreException {
 		final boolean WINDOWS = java.io.File.separatorChar == '\\';
 		IPath pathOne = WINDOWS ? IPath.fromOSString("C:/testGetSetValue/foo") : IPath.fromOSString("/testGetSetValue/foo");
