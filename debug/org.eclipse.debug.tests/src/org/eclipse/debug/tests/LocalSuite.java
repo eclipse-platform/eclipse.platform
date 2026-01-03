@@ -23,8 +23,8 @@ import org.eclipse.debug.tests.viewer.model.JFaceViewerSelectionTests;
 import org.eclipse.debug.tests.viewer.model.JFaceViewerStateTests;
 import org.eclipse.debug.tests.viewer.model.JFaceViewerTopIndexTests;
 import org.eclipse.debug.tests.viewer.model.JFaceViewerUpdateTests;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /**
  * Tests to run locally.  They require a user terminal to execute correctly
@@ -32,8 +32,8 @@ import org.junit.runners.Suite;
  *
  * @since 3.7
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
+@Suite
+@SelectClasses({ //
 		JFaceViewerCheckTests.class, JFaceViewerContentTests.class,
 		JFaceViewerDeltaTests.class, JFaceViewerSelectionTests.class,
 		JFaceViewerStateTests.class, JFaceViewerUpdateTests.class,

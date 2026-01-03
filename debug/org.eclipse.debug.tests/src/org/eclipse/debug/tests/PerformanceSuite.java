@@ -15,17 +15,18 @@ package org.eclipse.debug.tests;
 
 import org.eclipse.debug.tests.viewer.model.JFaceViewerPerformanceTests;
 import org.eclipse.debug.tests.viewer.model.VirtualViewerPerformanceTests;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /**
  * Tests for release builds.
  *
  * @since 3.6
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-		JFaceViewerPerformanceTests.class,
-		VirtualViewerPerformanceTests.class })
+@Suite
+@SelectClasses({ //
+		JFaceViewerPerformanceTests.class, //
+		VirtualViewerPerformanceTests.class, //
+})
 public class PerformanceSuite {
 }
