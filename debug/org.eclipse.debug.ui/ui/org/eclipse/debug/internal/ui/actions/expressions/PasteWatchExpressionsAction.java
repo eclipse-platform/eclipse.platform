@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 Adobe Systems, Inc. and others.
+ * Copyright (c) 2009, 2025 Adobe Systems, Inc. and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -10,6 +10,7 @@
  *
  * Contributors:
  *     Adobe Systems, Inc. - initial API and implementation
+ *     IBM Corporation - Improve paste expressions
  *******************************************************************************/
 package org.eclipse.debug.internal.ui.actions.expressions;
 
@@ -27,8 +28,6 @@ public class PasteWatchExpressionsAction extends SelectionListenerAction {
 	public PasteWatchExpressionsAction(ExpressionView expressionView) {
 		super(ActionMessages.PasteWatchExpressionsAction_0);
 		fExpressionView = expressionView;
-//        setToolTipText(BreakpointGroupMessages.PasteWatchExpressionsAction_1);
-//        PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IDebugHelpContextIds.PASTE_WATCH_EXPRESSIONS_ACTION);
 	}
 
 	@Override
@@ -43,6 +42,10 @@ public class PasteWatchExpressionsAction extends SelectionListenerAction {
 		return fExpressionView.canPaste();
 	}
 
+	@Override
+	public String getText() {
+		return ActionMessages.PasteWatchExpressionsActionLabel;
+	}
 
 
 }
