@@ -38,9 +38,11 @@ public class StreamMergerTest {
 	private static final String _123 = "123"; //$NON-NLS-1$
 	private static final String _456 = "456"; //$NON-NLS-1$
 
-	String encoding = "UTF-8"; //$NON-NLS-1$
+	private String encoding = "UTF-8"; //$NON-NLS-1$
+	@Deprecated
 	static final String SEPARATOR = System.lineSeparator();
 
+	@Deprecated
 	@Test
 	public void testIncomingAddition() {
 
@@ -57,6 +59,7 @@ public class StreamMergerTest {
 		assertEquals(output.toString(), ABC + SEPARATOR + DEF + SEPARATOR + _123 + SEPARATOR + XYZ + SEPARATOR);
 	}
 
+	@Deprecated
 	@Test
 	public void testIncomingDeletion() {
 
@@ -73,6 +76,7 @@ public class StreamMergerTest {
 		assertEquals(output.toString(), ABC + SEPARATOR + XYZ + SEPARATOR);
 	}
 
+	@Deprecated
 	@Test
 	public void testIncomingReplacement() {
 
@@ -89,6 +93,7 @@ public class StreamMergerTest {
 		assertEquals(output.toString(), ABC + SEPARATOR + _123 + SEPARATOR + XYZ + SEPARATOR);
 	}
 
+	@Deprecated
 	@Test
 	public void testNonConflictingMerge() {
 
@@ -106,6 +111,7 @@ public class StreamMergerTest {
 				ABC + SEPARATOR + _123 + SEPARATOR + _456 + SEPARATOR + XYZ + SEPARATOR + FOO + SEPARATOR);
 	}
 
+	@Deprecated
 	@Test
 	public void testConflictingReplacement() {
 
@@ -121,6 +127,7 @@ public class StreamMergerTest {
 		assertEquals(status.getCode(), IStreamMerger.CONFLICT);
 	}
 
+	@Deprecated
 	@Test
 	public void testConflictingAddition() {
 
@@ -137,6 +144,7 @@ public class StreamMergerTest {
 		assertEquals(output.toString(), ABC + SEPARATOR + DEF + SEPARATOR + _123 + SEPARATOR + XYZ + SEPARATOR);
 	}
 
+	@Deprecated
 	@Test
 	public void testConflictingDeletion() {
 
