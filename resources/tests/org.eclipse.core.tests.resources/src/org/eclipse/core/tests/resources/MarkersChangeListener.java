@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IResource;
@@ -46,14 +46,12 @@ public class MarkersChangeListener implements IResourceChangeListener {
 	 */
 	public void assertChanges(IResource resource, IMarker[] added, IMarker[] removed, IMarker[] changed) {
 		IPath path = resource == null ? IPath.ROOT : resource.getFullPath();
-		List<IMarkerDelta> v = changes.get(path);
-		if (v == null) {
-			v = new Vector<>();
-		}
+		Supplier<List<IMarkerDelta>> changesRetriever = () -> changes.getOrDefault(path, Collections.emptyList());
 		int numChanges = (added == null ? 0 : added.length) + (removed == null ? 0 : removed.length) + (changed == null ? 0 : changed.length);
-		assertThat(numChanges).as("number of markers for resource %s", path).isEqualTo(v.size());
+		TestUtil.waitForCondition(() -> changesRetriever.get().size() == numChanges, 5000);
+		assertThat(numChanges).as("number of markers for resource %s", path).isEqualTo(changesRetriever.get().size());
 
-		for (IMarkerDelta delta : v) {
+		for (IMarkerDelta delta : changesRetriever.get()) {
 			switch (delta.getKind()) {
 			case IResourceDelta.ADDED:
 				assertThat(added).as("check added markers contain resource %s", path).contains(delta.getMarker());
