@@ -10,11 +10,13 @@
  *******************************************************************************/
 package org.eclipse.terminal.test;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({ AutomatedPluginTestSuite.class, AutomatedTestSuite.class })
+@Suite
+@SelectClasses({ //
+		AutomatedPluginTestSuite.class, //
+		AutomatedTestSuite.class, //
+})
 public class AutomatedIntegrationSuite {
-
 }
