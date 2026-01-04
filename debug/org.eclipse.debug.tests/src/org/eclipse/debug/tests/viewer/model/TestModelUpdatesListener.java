@@ -15,6 +15,9 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.viewer.model;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -46,7 +49,6 @@ import org.eclipse.debug.internal.ui.viewers.model.provisional.IViewerUpdateList
 import org.eclipse.debug.tests.viewer.model.TestModel.TestElement;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.ViewerFilter;
-import org.junit.Assert;
 
 public class TestModelUpdatesListener implements IViewerUpdateListener, ILabelUpdateListener, IModelChangedListener, ITestModelUpdatesListenerConstants, IStateUpdateListener, IJobChangeListener {
 	public static final ViewerFilter[] EMPTY_FILTER_ARRAY = new ViewerFilter[0];
@@ -458,16 +460,16 @@ public class TestModelUpdatesListener implements IViewerUpdateListener, ILabelUp
 		}
 
 		if (fFailOnRedundantUpdates && !fRedundantUpdates.isEmpty()) {
-			Assert.fail("Redundant Updates: " + fRedundantUpdates); //$NON-NLS-1$
+			fail("Redundant Updates: " + fRedundantUpdates); //$NON-NLS-1$
 		}
 		if (fFailOnRedundantLabelUpdates && !fRedundantLabelUpdates.isEmpty()) {
-			Assert.fail("Redundant Label Updates: " + fRedundantLabelUpdates); //$NON-NLS-1$
+			fail("Redundant Label Updates: " + fRedundantLabelUpdates); //$NON-NLS-1$
 		}
 		if (fFailOnMultipleLabelUpdateSequences && fLabelUpdatesComplete > (fLabelUpdatesCompleteAtReset + 1)) {
-			Assert.fail("Multiple label update sequences detected"); //$NON-NLS-1$
+			fail("Multiple label update sequences detected"); //$NON-NLS-1$
 		}
 		if (fFailOnMultipleModelUpdateSequences && fViewerUpdatesComplete > (fViewerUpdatesCompleteAtReset + 1)) {
-			Assert.fail("Multiple viewer update sequences detected"); //$NON-NLS-1$
+			fail("Multiple viewer update sequences detected"); //$NON-NLS-1$
 		}
 
 		if ((flags & LABEL_SEQUENCE_COMPLETE) != 0) {
@@ -697,7 +699,7 @@ public class TestModelUpdatesListener implements IViewerUpdateListener, ILabelUp
 		fLabelUpdatesCounter--;
 		if (!fLabelUpdates.remove(update.getElementPath()) && fFailOnRedundantLabelUpdates && !fRedundantLabelUpdateExceptions.contains(update.getElementPath())) {
 			fRedundantLabelUpdates.add(update);
-			Assert.fail("Redundant update: " + update); //$NON-NLS-1$
+			fail("Redundant update: " + update); //$NON-NLS-1$
 		}
 	}
 
@@ -746,7 +748,7 @@ public class TestModelUpdatesListener implements IViewerUpdateListener, ILabelUp
 
 	@Override
 	public void stateRestoreUpdatesComplete(Object input) {
-		Assert.assertFalse("RESTORE STATE already complete!", fStateRestoreComplete); //$NON-NLS-1$
+		assertFalse(fStateRestoreComplete, "RESTORE STATE already complete!"); //$NON-NLS-1$
 		fStateRestoreComplete = true;
 	}
 
@@ -914,9 +916,8 @@ public class TestModelUpdatesListener implements IViewerUpdateListener, ILabelUp
 			return "(EMPTY)"; //$NON-NLS-1$
 		}
 		StringBuilder buf = new StringBuilder();
-		for (Iterator<TreePath> itr = map.keySet().iterator(); itr.hasNext();) {
+		for (TreePath path : map.keySet()) {
 			buf.append("\n\t\t"); //$NON-NLS-1$
-			TreePath path = itr.next();
 			buf.append(toString(path));
 			Set<?> updates = map.get(path);
 			buf.append(" = "); //$NON-NLS-1$
