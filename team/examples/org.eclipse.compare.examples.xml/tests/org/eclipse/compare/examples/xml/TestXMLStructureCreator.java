@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.compare.examples.xml;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -23,8 +23,8 @@ import java.nio.charset.StandardCharsets;
 import org.eclipse.compare.IEncodedStreamContentAccessor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.Document;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class TestXMLStructureCreator {
 
@@ -49,7 +49,7 @@ public class TestXMLStructureCreator {
 		}
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		fdoc = new Document();
 		fsc = new XMLStructureCreator();

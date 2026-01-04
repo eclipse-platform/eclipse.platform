@@ -13,15 +13,15 @@
  *******************************************************************************/
 package org.eclipse.compare.examples.xml;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /**
  * TestSuite that runs all the XML Compare tests.
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-	TestXMLStructureCreator.class
+@Suite
+@SelectClasses({ //
+		TestXMLStructureCreator.class, //
 })
 public class AllXMLCompareTests {
 	//test suite
