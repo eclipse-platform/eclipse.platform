@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2010 IBM Corporation and others.
+ * Copyright (c) 2006, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -17,19 +17,19 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.mapping.IModelProviderDescriptor;
 import org.eclipse.core.resources.mapping.ModelProvider;
 import org.eclipse.jface.viewers.TreePath;
-import org.eclipse.jface.viewers.TreePathViewerSorter;
+import org.eclipse.jface.viewers.TreePathViewerComparator;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.team.internal.ui.Utils;
-import org.eclipse.ui.navigator.CommonViewerSorter;
+import org.eclipse.ui.navigator.CommonViewerComparator;
 import org.eclipse.ui.views.navigator.ResourceComparator;
 
-public class TeamViewerSorter extends TreePathViewerSorter {
+public class TeamViewerComparator extends TreePathViewerComparator {
 
-	private final CommonViewerSorter sorter;
+	private final CommonViewerComparator comparator;
 	private final ResourceComparator resourceComparator;
 
-	public TeamViewerSorter(CommonViewerSorter sorter) {
-		this.sorter = sorter;
+	public TeamViewerComparator(CommonViewerComparator comparator) {
+		this.comparator = comparator;
 		this.resourceComparator = new ResourceComparator(ResourceComparator.NAME);
 	}
 
@@ -72,7 +72,7 @@ public class TeamViewerSorter extends TreePathViewerSorter {
 				return resourceComparator.compare(viewer, r1, r2);
 			}
 		}
-		return sorter.compare(viewer, parentPath, e1, e2);
+		return comparator.compare(viewer, parentPath, e1, e2);
 	}
 
 	private boolean isExtends(ModelProvider mp1, IModelProviderDescriptor desc) {
