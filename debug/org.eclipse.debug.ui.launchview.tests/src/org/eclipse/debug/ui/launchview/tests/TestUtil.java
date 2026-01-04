@@ -14,8 +14,6 @@
  *******************************************************************************/
 package org.eclipse.debug.ui.launchview.tests;
 
-import static org.junit.Assert.fail;
-
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.util.ArrayList;
@@ -23,8 +21,6 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
@@ -81,94 +77,6 @@ public class TestUtil {
 				// Keep pumping events until the queue is empty
 			}
 		}
-	}
-
-	/**
-	 * Process all queued UI events. If called from background thread, just
-	 * waits
-	 *
-	 * @param millis max wait time to process events
-	 */
-	public static void processUIEvents(final long millis) throws Exception {
-		long start = System.currentTimeMillis();
-		while (System.currentTimeMillis() - start < millis) {
-			Display display = Display.getCurrent();
-			if (display != null && !display.isDisposed()) {
-				while (display.readAndDispatch()) {
-					// loop until the queue is empty
-				}
-			} else {
-				Thread.sleep(10);
-			}
-		}
-	}
-
-	/**
-	 * Waits while given condition is {@code true} for a given amount of
-	 * milliseconds. If the actual wait time exceeds given timeout and condition
-	 * will be still {@code true}, throws
-	 * {@link junit.framework.AssertionFailedError} with given message.
-	 * <p>
-	 * Will process UI events while waiting in UI thread, if called from
-	 * background thread, just waits.
-	 *
-	 * @param <T> type of the context
-	 * @param condition function which will be evaluated while waiting
-	 * @param context test context
-	 * @param timeout max wait time in milliseconds to wait on given condition
-	 * @param errorMessage message which will be used to construct the failure
-	 *            exception in case the condition will still return {@code true}
-	 *            after given timeout
-	 */
-	public static <T> void waitWhile(Function<T, Boolean> condition, T context, long timeout, Function<T, String> errorMessage) throws Exception {
-		long start = System.currentTimeMillis();
-		Display display = Display.getCurrent();
-		while (System.currentTimeMillis() - start < timeout && condition.apply(context)) {
-			if (display != null && !display.isDisposed()) {
-				if (!display.readAndDispatch()) {
-					Thread.sleep(0);
-				}
-			} else {
-				Thread.sleep(5);
-			}
-		}
-		Boolean stillTrue = condition.apply(context);
-		if (stillTrue) {
-			fail(errorMessage.apply(context));
-		}
-	}
-
-	/**
-	 * A simplified variant of
-	 * {@link #waitWhile(Function, Object, long, Function)}.
-	 * <p>
-	 * Waits while given condition is {@code true} for a given amount of
-	 * milliseconds.
-	 * <p>
-	 * Will process UI events while waiting in UI thread, if called from
-	 * background thread, just waits.
-	 *
-	 * @param condition function which will be evaluated while waiting
-	 * @param timeout max wait time in milliseconds to wait on given condition
-	 * @return value of condition when method returned
-	 */
-	public static boolean waitWhile(Supplier<Boolean> condition, long timeout) throws Exception {
-		if (condition == null) {
-			condition = () -> true;
-		}
-		long start = System.currentTimeMillis();
-		Display display = Display.getCurrent();
-		while (System.currentTimeMillis() - start < timeout && condition.get()) {
-			Thread.yield();
-			if (display != null && !display.isDisposed()) {
-				if (!display.readAndDispatch()) {
-					Thread.sleep(1);
-				}
-			} else {
-				Thread.sleep(5);
-			}
-		}
-		return condition.get();
 	}
 
 	/**
