@@ -15,7 +15,7 @@
 package org.eclipse.debug.tests.viewer.model;
 
 import static org.eclipse.debug.tests.TestUtil.waitWhile;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.function.Supplier;

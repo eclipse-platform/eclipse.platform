@@ -14,8 +14,9 @@
 package org.eclipse.debug.tests.viewer.model;
 
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.eclipse.jface.viewers.TreePath;
-import org.junit.Assert;
 
 /**
  * Utility for comparing TreePath objects in unit tests.  This wrapper prints the tree
@@ -64,7 +65,7 @@ public class TreePathWrapper {
 	 * generated exception will contain a printout of the tree paths' contents.
 	 */
 	public static void assertEqual(TreePath expected, TreePath actual) {
-		Assert.assertEquals(
+		assertEquals(
 			expected != null ? new TreePathWrapper(expected) : null,
 			actual != null ? new TreePathWrapper(actual) : null);
 	}

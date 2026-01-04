@@ -15,12 +15,12 @@
 package org.eclipse.debug.tests.viewer.model;
 
 import static org.eclipse.debug.tests.TestUtil.waitWhile;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.debug.internal.ui.viewers.model.IInternalTreeModelViewer;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.ModelDelta;
 import org.eclipse.debug.tests.viewer.model.TestModel.TestElement;
 import org.eclipse.jface.viewers.TreePath;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -100,7 +100,7 @@ abstract public class CheckTests extends AbstractViewerModelTest {
 
 		waitWhile(() -> !fListener.isFinished(ITestModelUpdatesListenerConstants.MODEL_CHANGED_COMPLETE), createListenerErrorMessage());
 
-		Assert.assertTrue(element.getChecked() != initialCheckState);
+		assertTrue(element.getChecked() != initialCheckState);
 	}
 
 	@Test

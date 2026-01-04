@@ -15,6 +15,7 @@
 package org.eclipse.debug.tests.viewer.model;
 
 import static org.eclipse.debug.tests.TestUtil.waitWhile;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -30,7 +31,6 @@ import org.eclipse.debug.internal.ui.viewers.model.provisional.ModelDelta;
 import org.eclipse.debug.tests.TestUtil;
 import org.eclipse.debug.tests.viewer.model.TestModel.TestElement;
 import org.eclipse.jface.viewers.TreePath;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -222,7 +222,7 @@ abstract public class UpdateTests extends AbstractViewerModelTest implements ITe
 		// Wait for the delta to be processed.
 		waitWhile(() -> !fListener.isFinished(MODEL_CHANGED_COMPLETE), createListenerErrorMessage());
 
-		Assert.assertTrue( fListener.isFinished(CONTENT_SEQUENCE_STARTED) );
+		assertTrue(fListener.isFinished(CONTENT_SEQUENCE_STARTED));
 	}
 
 

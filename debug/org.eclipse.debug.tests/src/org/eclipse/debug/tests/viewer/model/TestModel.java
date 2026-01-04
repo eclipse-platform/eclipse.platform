@@ -15,6 +15,9 @@
 package org.eclipse.debug.tests.viewer.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,7 +50,6 @@ import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.widgets.Display;
-import org.junit.Assert;
 
 /**
  * Test model for the use in unit tests.  This test model contains a set of
@@ -369,7 +371,7 @@ public class TestModel implements IElementContentProvider, IElementLabelProvider
 	 */
 	public void elementChecked(IPresentationContext context, Object viewerInput, TreePath path, boolean checked) {
 		TestElement element = getElement(path);
-		Assert.assertFalse(element.getGrayed());
+		assertFalse(element.getGrayed());
 		element.setChecked(checked, false);
 	}
 
@@ -427,8 +429,8 @@ public class TestModel implements IElementContentProvider, IElementLabelProvider
 		IInternalTreeModelViewer viewer = (IInternalTreeModelViewer)_viewer;
 		TestElement element = getElement(path);
 		if ( Boolean.TRUE.equals(_viewer.getPresentationContext().getProperty(ICheckUpdate.PROP_CHECK)) ) {
-			Assert.assertTrue(element.getChecked() == viewer.getElementChecked(path));
-			Assert.assertTrue(element.getGrayed() == viewer.getElementGrayed(path));
+			assertTrue(element.getChecked() == viewer.getElementChecked(path));
+			assertTrue(element.getGrayed() == viewer.getElementGrayed(path));
 		}
 
 		if (!expandedElementsOnly || path.getSegmentCount() == 0 || viewer.getExpandedState(path) ) {
@@ -439,11 +441,11 @@ public class TestModel implements IElementContentProvider, IElementLabelProvider
 				if (TestModelUpdatesListener.isFiltered(child, filters)) {
 					continue;
 				}
-				Assert.assertEquals(child, viewer.getChildElement(path, viewerIndex));
+				assertEquals(child, viewer.getChildElement(path, viewerIndex));
 				validateData(viewer, path.createChildPath(child), expandedElementsOnly, filters);
 				viewerIndex++;
 			}
-			Assert.assertEquals(viewerIndex, viewer.getChildCount(path));
+			assertEquals(viewerIndex, viewer.getChildCount(path));
 		} else if (!viewer.getExpandedState(path)) {
 			// If element not expanded, verify the plus sign.
 			if (viewer.getHasChildren(path)) {
@@ -505,7 +507,7 @@ public class TestModel implements IElementContentProvider, IElementLabelProvider
 	}
 
 	public ModelDelta appendElementLabel(TreePath path, String labelAppendix) {
-		org.junit.Assert.assertTrue(path.startsWith(fRootPath, null));
+		assertTrue(path.startsWith(fRootPath, null));
 		ModelDelta rootDelta = new ModelDelta(fInput, IModelDelta.NO_CHANGE);
 		ModelDelta baseDelta = getBaseDelta(rootDelta);
 		TreePath relativePath = getRelativePath(path);
@@ -518,7 +520,7 @@ public class TestModel implements IElementContentProvider, IElementLabelProvider
 	}
 
 	public ModelDelta setElementChecked(TreePath path, boolean checked, boolean grayed) {
-		Assert.assertTrue(path.startsWith(fRootPath, null));
+		assertTrue(path.startsWith(fRootPath, null));
 		ModelDelta rootDelta = new ModelDelta(fInput, IModelDelta.NO_CHANGE);
 		ModelDelta baseDelta = getBaseDelta(rootDelta);
 		TreePath relativePath = getRelativePath(path);
@@ -531,7 +533,7 @@ public class TestModel implements IElementContentProvider, IElementLabelProvider
 	}
 
 	public ModelDelta setElementChildren(TreePath path, TestElement[] children) {
-		Assert.assertTrue(path.startsWith(fRootPath, null));
+		assertTrue(path.startsWith(fRootPath, null));
 		ModelDelta rootDelta = new ModelDelta(fInput, IModelDelta.NO_CHANGE);
 		ModelDelta baseDelta = getBaseDelta(rootDelta);
 		TreePath relativePath = getRelativePath(path);
