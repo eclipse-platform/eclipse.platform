@@ -14,7 +14,7 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.viewer.model;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.PresentationContext;
@@ -48,10 +48,10 @@ public class PresentationContextTests {
 
 		context = new PresentationContext("test"); //$NON-NLS-1$
 		context.initProperties(memento);
-		assertEquals("Wrong value restored", "string", context.getProperty("string")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		assertEquals("Wrong value restored", Integer.valueOf(1), context.getProperty("integer")); //$NON-NLS-1$ //$NON-NLS-2$
-		assertEquals("Wrong value restored", Boolean.TRUE, context.getProperty("boolean")); //$NON-NLS-1$ //$NON-NLS-2$
-		assertEquals("Wrong value restored", ResourcesPlugin.getWorkspace().getRoot(), context.getProperty("persistable")); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals("string", context.getProperty("string"), "Wrong value restored"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		assertEquals(Integer.valueOf(1), context.getProperty("integer"), "Wrong value restored"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals(Boolean.TRUE, context.getProperty("boolean"), "Wrong value restored"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals(ResourcesPlugin.getWorkspace().getRoot(), context.getProperty("persistable"), "Wrong value restored"); //$NON-NLS-1$ //$NON-NLS-2$
 		context.dispose();
 	}
 

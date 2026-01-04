@@ -15,10 +15,10 @@
 package org.eclipse.debug.tests.viewer.model;
 
 import static org.eclipse.debug.tests.TestUtil.waitWhile;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -1271,7 +1271,7 @@ new TreePath[] { model.findElement("5"), model.findElement("5.1"), model.findEle
 		fListener.expectRestoreAfterSaveComplete();
 		fViewer.setInput(copyModel.getRootElement());
 		waitWhile(() -> !fListener.isFinished(STATE_RESTORE_STARTED), createListenerErrorMessage());
-		assertTrue("RESTORE started before SAVE to complete", fListener.isFinished(STATE_SAVE_COMPLETE)); //$NON-NLS-1$
+		assertTrue(fListener.isFinished(STATE_SAVE_COMPLETE), "RESTORE started before SAVE to complete"); //$NON-NLS-1$
 	}
 
 	/**

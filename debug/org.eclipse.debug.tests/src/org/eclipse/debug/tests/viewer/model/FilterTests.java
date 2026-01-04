@@ -16,7 +16,8 @@ package org.eclipse.debug.tests.viewer.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.debug.tests.TestUtil.waitWhile;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.regex.Pattern;
 
@@ -380,13 +381,13 @@ new TreePath[] { model.findElement("5"), model.findElement("5.1"), model.findEle
 
 		// Validate data
 		model.validateData(fViewer, TreePath.EMPTY, true, filters);
-		assertTrue(!getInternalViewer().getExpandedState(model.findElement("2"))); //$NON-NLS-1$
+		assertFalse(getInternalViewer().getExpandedState(model.findElement("2"))); //$NON-NLS-1$
 		assertTrue(getInternalViewer().getExpandedState(model.findElement("3"))); //$NON-NLS-1$
 		assertTrue(getInternalViewer().getExpandedState(model.findElement("3.1"))); //$NON-NLS-1$
-		assertTrue(!getInternalViewer().getExpandedState(model.findElement("4"))); //$NON-NLS-1$
+		assertFalse(getInternalViewer().getExpandedState(model.findElement("4"))); //$NON-NLS-1$
 		assertTrue(getInternalViewer().getExpandedState(model.findElement("5"))); //$NON-NLS-1$
 		assertTrue(getInternalViewer().getExpandedState(model.findElement("5.1"))); //$NON-NLS-1$
-		assertTrue(!getInternalViewer().getExpandedState(model.findElement("6"))); //$NON-NLS-1$
+		assertFalse(getInternalViewer().getExpandedState(model.findElement("6"))); //$NON-NLS-1$
 		assertTrue( StateTests.areTreeSelectionsEqual(originalSelection, (ITreeSelection)fViewer.getSelection()) );
 
 		// Note: in past it was observed sub-optimal coalescing in this test due
@@ -405,13 +406,13 @@ new TreePath[] { model.findElement("5"), model.findElement("5.1"), model.findEle
 
 		// Validate data
 		model.validateData(fViewer, TreePath.EMPTY, true, filters);
-		assertTrue(!getInternalViewer().getExpandedState(model.findElement("2"))); //$NON-NLS-1$
+		assertFalse(getInternalViewer().getExpandedState(model.findElement("2"))); //$NON-NLS-1$
 		assertTrue(getInternalViewer().getExpandedState(model.findElement("3"))); //$NON-NLS-1$
 		assertTrue(getInternalViewer().getExpandedState(model.findElement("3.1"))); //$NON-NLS-1$
-		assertTrue(!getInternalViewer().getExpandedState(model.findElement("4"))); //$NON-NLS-1$
+		assertFalse(getInternalViewer().getExpandedState(model.findElement("4"))); //$NON-NLS-1$
 		assertTrue(getInternalViewer().getExpandedState(model.findElement("5"))); //$NON-NLS-1$
 		assertTrue(getInternalViewer().getExpandedState(model.findElement("5.1"))); //$NON-NLS-1$
-		assertTrue(!getInternalViewer().getExpandedState(model.findElement("6"))); //$NON-NLS-1$
+		assertFalse(getInternalViewer().getExpandedState(model.findElement("6"))); //$NON-NLS-1$
 		assertTrue( StateTests.areTreeSelectionsEqual(originalSelection, (ITreeSelection)fViewer.getSelection()) );
 
 	}

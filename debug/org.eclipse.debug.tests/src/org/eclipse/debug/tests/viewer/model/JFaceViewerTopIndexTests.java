@@ -17,8 +17,8 @@
 package org.eclipse.debug.tests.viewer.model;
 
 import static org.eclipse.debug.tests.TestUtil.waitWhile;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.internal.ui.viewers.model.IInternalTreeModelViewer;
@@ -94,7 +94,7 @@ public class JFaceViewerTopIndexTests extends AbstractViewerModelTest implements
 		getCTargetViewer().reveal(TreePath.EMPTY, indexRevealElem);
 		TestUtil.processUIEvents();
 		final TreePath originalTopPath = getCTargetViewer().getTopElementPath();
-		assertNotNull("Top item should not be null!", originalTopPath); //$NON-NLS-1$
+		assertNotNull(originalTopPath, "Top item should not be null!"); //$NON-NLS-1$
 		// Bug 116105: On a Mac the reveal call is not reliable.  Use the viewer returned path instead.
 		// assertEquals(elements[indexRevealElem], originalTopPath.getLastSegment());
 
@@ -117,7 +117,7 @@ public class JFaceViewerTopIndexTests extends AbstractViewerModelTest implements
 		TestUtil.processUIEvents();
 		// check if REVEAL was restored OK
 		final TreePath topPath = getCTargetViewer().getTopElementPath();
-		assertNotNull("Top item should not be null!", topPath); //$NON-NLS-1$
+		assertNotNull(topPath, "Top item should not be null!"); //$NON-NLS-1$
 		TreePathWrapper.assertEqual(originalTopPath, topPath);
 	}
 
@@ -188,7 +188,7 @@ public class JFaceViewerTopIndexTests extends AbstractViewerModelTest implements
 		getCTargetViewer().reveal(TreePath.EMPTY, 1);
 		TestUtil.processUIEvents();
 		final TreePath originalTopPath = getCTargetViewer().getTopElementPath();
-		assertNotNull("Top item should not be null!", originalTopPath); //$NON-NLS-1$
+		assertNotNull(originalTopPath, "Top item should not be null!"); //$NON-NLS-1$
 		// Bug 116105: On a Mac the reveal call is not reliable.  Use the viewer returned path instead.
 		//assertEquals(elements[1], originalTopPath.getLastSegment());
 
@@ -210,7 +210,7 @@ public class JFaceViewerTopIndexTests extends AbstractViewerModelTest implements
 		TestUtil.processUIEvents();
 		// check if REVEAL was restored OK
 		final TreePath topPath = getCTargetViewer().getTopElementPath();
-		assertNotNull("Top item should not be null!", topPath); //$NON-NLS-1$
+		assertNotNull(topPath, "Top item should not be null!"); //$NON-NLS-1$
 		TreePathWrapper.assertEqual(originalTopPath, topPath);
 	}
 
@@ -271,7 +271,7 @@ public class JFaceViewerTopIndexTests extends AbstractViewerModelTest implements
 		getCTargetViewer().reveal(TreePath.EMPTY, indexLastElem-1);
 		TestUtil.processUIEvents();
 		final TreePath originalTopPath = getCTargetViewer().getTopElementPath();
-		assertNotNull("Top item should not be null!", originalTopPath); //$NON-NLS-1$
+		assertNotNull(originalTopPath, "Top item should not be null!"); //$NON-NLS-1$
 
 		// Extract the original state from viewer
 		ModelDelta originalState = new ModelDelta(model.getRootElement(), IModelDelta.NO_CHANGE);
@@ -292,7 +292,7 @@ public class JFaceViewerTopIndexTests extends AbstractViewerModelTest implements
 		TestUtil.processUIEvents();
 		// check if REVEAL was restored OK
 		final TreePath topPath = getCTargetViewer().getTopElementPath();
-		assertNotNull("Top item should not be null!", topPath); //$NON-NLS-1$
+		assertNotNull(topPath, "Top item should not be null!"); //$NON-NLS-1$
 		TreePathWrapper.assertEqual(originalTopPath, topPath);
 	}
 
@@ -425,7 +425,7 @@ public class JFaceViewerTopIndexTests extends AbstractViewerModelTest implements
 		// check if REVEAL was triggered by the delta and not by the
 		// state restore operation
 		TreePath topPath = getCTargetViewer().getTopElementPath();
-		assertNotNull("Top item should not be null!", topPath); //$NON-NLS-1$
+		assertNotNull(topPath, "Top item should not be null!"); //$NON-NLS-1$
 		TreePathWrapper.assertEqual(pathToBeRevealed, topPath);
 	}
 
@@ -461,7 +461,7 @@ public class JFaceViewerTopIndexTests extends AbstractViewerModelTest implements
 		getCTargetViewer().reveal(model.findElement("3.6.3.16.16.16.16.16"), 1); //$NON-NLS-1$
 		TestUtil.processUIEvents();
 		final TreePath originalTopPath = getCTargetViewer().getTopElementPath();
-		assertNotNull("Top item should not be null!", originalTopPath); //$NON-NLS-1$
+		assertNotNull(originalTopPath, "Top item should not be null!"); //$NON-NLS-1$
 
 		// Extract the original state from viewer
 		ModelDelta originalState = new ModelDelta(model.getRootElement(), IModelDelta.NO_CHANGE);
@@ -482,7 +482,7 @@ public class JFaceViewerTopIndexTests extends AbstractViewerModelTest implements
 		TestUtil.processUIEvents();
 		// check if REVEAL was restored OK
 		final TreePath topPath = getCTargetViewer().getTopElementPath();
-		assertNotNull("Top item should not be null!", topPath); //$NON-NLS-1$
+		assertNotNull(topPath, "Top item should not be null!"); //$NON-NLS-1$
 		TreePathWrapper.assertEqual(originalTopPath, topPath);
 
 	}
@@ -514,7 +514,7 @@ public class JFaceViewerTopIndexTests extends AbstractViewerModelTest implements
 		TreePath element2Path = model.findElement("2"); //$NON-NLS-1$
 		TreePath pathToBeRevealed = element2Path;
 		TreePath topPath = getCTargetViewer().getTopElementPath();
-		assertNotNull("Top item should not be null!", topPath); //$NON-NLS-1$
+		assertNotNull(topPath, "Top item should not be null!"); //$NON-NLS-1$
 		TreePathWrapper.assertEqual(pathToBeRevealed, topPath);
 
 		// Update the viewer with new reveal delta
@@ -544,7 +544,7 @@ public class JFaceViewerTopIndexTests extends AbstractViewerModelTest implements
 
 		// check if REVEAL actually revealed the desired element
 		topPath = getCTargetViewer().getTopElementPath();
-		assertNotNull("Top item should not be null!", topPath); //$NON-NLS-1$
+		assertNotNull(topPath, "Top item should not be null!"); //$NON-NLS-1$
 		TreePathWrapper.assertEqual(pathToBeRevealed, topPath);
 	}
 
