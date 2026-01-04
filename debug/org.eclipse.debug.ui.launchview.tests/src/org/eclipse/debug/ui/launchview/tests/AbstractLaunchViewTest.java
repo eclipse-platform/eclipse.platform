@@ -24,29 +24,24 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.intro.IIntroManager;
 import org.eclipse.ui.intro.IIntroPart;
 import org.eclipse.ui.progress.UIJob;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.rules.TestName;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.TestInfo;
 
 public class AbstractLaunchViewTest {
 
 	private static boolean welcomeClosed;
 
-	@Rule
-	public TestName name = new TestName();
-
-
-	@Before
-	public void setUp() throws Exception {
-		TestUtil.log(IStatus.INFO, name.getMethodName(), "setUp");
+	@BeforeEach
+	public void setUp(TestInfo testInfo) throws Exception {
+		TestUtil.log(IStatus.INFO, testInfo.getDisplayName(), "setUp");
 		assertWelcomeScreenClosed();
 	}
 
-	@After
-	public void tearDown() throws Exception {
-		TestUtil.log(IStatus.INFO, name.getMethodName(), "tearDown");
-		TestUtil.cleanUp(name.getMethodName());
+	@AfterEach
+	public void tearDown(TestInfo testInfo) throws Exception {
+		TestUtil.log(IStatus.INFO, testInfo.getDisplayName(), "tearDown");
+		TestUtil.cleanUp(testInfo.getDisplayName());
 	}
 
 	/**

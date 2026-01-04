@@ -16,18 +16,18 @@
 package org.eclipse.debug.ui.launchview.tests;
 
 import org.eclipse.debug.ui.launchview.tests.launchview.LaunchViewSmokeTest;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /**
  * Tests for integration and nightly builds.
  *
  * @since 1.0
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
+@Suite
+@SelectClasses({ //
 		// Launch Configuration View
-		LaunchViewSmokeTest.class,
+		LaunchViewSmokeTest.class, //
 })
 public class AutomatedSuite {
 }

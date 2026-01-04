@@ -7,8 +7,9 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui;bundle-version="[3.6.0,4.0.0)",
  org.eclipse.core.runtime;bundle-version="[3.29.0,4.0.0)",
  org.eclipse.debug.ui;bundle-version="[3.10.0,4.0.0)",
- org.eclipse.debug.ui.launchview;bundle-version="[1.0.2,2.0.0)",
- org.junit
+ org.eclipse.debug.ui.launchview;bundle-version="[1.0.2,2.0.0)"
+Import-Package: org.junit.jupiter.api;version="[5.14.0,6.0.0)",
+ org.junit.platform.suite.api;version="[1.14.0,2.0.0)"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-21
 Bundle-Vendor: %providerName
