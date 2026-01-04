@@ -13,24 +13,25 @@
  *******************************************************************************/
 package org.eclipse.debug.ui.launchview.tests.launchview;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.eclipse.debug.ui.launchview.tests.AbstractLaunchViewTest;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class LaunchViewSmokeTest extends AbstractLaunchViewTest {
 
 	@Test
 	public void testOpenView() {
 		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-		assertNotNull("The active workbench page should not be null", page); //$NON-NLS-1$
+		assertNotNull(page, "The active workbench page should not be null");
 		try {
 			page.showView("org.eclipse.debug.ui.launchView"); //$NON-NLS-1$
 		} catch (PartInitException exception) {
-			assertNotNull("Failed to open launch configuration view", null); //$NON-NLS-1$
+			fail("Failed to open launch configuration view");
 		}
 
 	}

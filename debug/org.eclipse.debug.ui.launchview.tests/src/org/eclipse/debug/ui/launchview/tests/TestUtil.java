@@ -14,6 +14,8 @@
  *******************************************************************************/
 package org.eclipse.debug.ui.launchview.tests;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.util.ArrayList;
@@ -27,7 +29,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Display;
-import org.junit.Assert;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
@@ -40,7 +41,7 @@ public class TestUtil {
 	 */
 	public static void cleanUp(String owner) {
 		// Ensure that the Thread.interrupted() flag didn't leak.
-		Assert.assertFalse("The main thread should not be interrupted at the end of a test", Thread.interrupted());
+		assertFalse(Thread.interrupted(), "The main thread should not be interrupted at the end of a test");
 
 		// Wait for any outstanding jobs to finish. Protect against deadlock by
 		// terminating the wait after a timeout.
@@ -53,7 +54,7 @@ public class TestUtil {
 		}
 
 		// Ensure that the Thread.interrupted() flag didn't leak.
-		Assert.assertFalse("The main thread should not be interrupted at the end of a test", Thread.interrupted());
+		assertFalse(Thread.interrupted(), "The main thread should not be interrupted at the end of a test");
 	}
 
 	public static void log(int severity, String owner, String message, Throwable... optionalError) {
