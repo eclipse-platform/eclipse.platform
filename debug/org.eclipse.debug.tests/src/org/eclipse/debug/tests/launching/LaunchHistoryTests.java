@@ -16,9 +16,9 @@ package org.eclipse.debug.tests.launching;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.debug.tests.TestUtil.getLaunchConfiguration;
 import static org.eclipse.debug.tests.TestUtil.getLaunchConfigurationManager;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -88,12 +88,12 @@ public class LaunchHistoryTests {
 	@Test
 	public void testHistoryAddition() throws CoreException {
 		LaunchHistory runhistory = getRunLaunchHistory();
-		assertNotNull("The run launch history should not be null", runhistory); //$NON-NLS-1$
+		assertNotNull(runhistory, "The run launch history should not be null"); //$NON-NLS-1$
 		ILaunchConfiguration config = getLaunchConfiguration("LaunchHistoryTest"); //$NON-NLS-1$
-		assertNotNull("LaunchHistoryTest launch config should not be null", config); //$NON-NLS-1$
+		assertNotNull(config, "LaunchHistoryTest launch config should not be null"); //$NON-NLS-1$
 		config.launch(ILaunchManager.RUN_MODE, new NullProgressMonitor());
-		assertTrue("The run history should contain the LaunchHistoryTest config", runhistory.contains(config)); //$NON-NLS-1$
-		assertEquals("The most recent launch should be LaunchHistoryTest", runhistory.getRecentLaunch(), config); //$NON-NLS-1$
+		assertTrue(runhistory.contains(config), "The run history should contain the LaunchHistoryTest config"); //$NON-NLS-1$
+		assertEquals(runhistory.getRecentLaunch(), config, "The most recent launch should be LaunchHistoryTest"); //$NON-NLS-1$
 	}
 
 	/**
@@ -104,16 +104,16 @@ public class LaunchHistoryTests {
 	@Test
 	public void testHistoriesInSync() throws CoreException {
 		LaunchHistory runhistory = getRunLaunchHistory();
-		assertNotNull("The run launch history should not be null", runhistory); //$NON-NLS-1$
+		assertNotNull(runhistory, "The run launch history should not be null"); //$NON-NLS-1$
 		LaunchHistory debughistory = getDebugLaunchHistory();
-		assertNotNull("the debug launch history should not be null", debughistory); //$NON-NLS-1$
+		assertNotNull(debughistory, "the debug launch history should not be null"); //$NON-NLS-1$
 		ILaunchConfiguration config = getLaunchConfiguration("LaunchHistoryTest"); //$NON-NLS-1$
-		assertNotNull("LaunchHistoryTest launch config should not be null", config); //$NON-NLS-1$
+		assertNotNull(config, "LaunchHistoryTest launch config should not be null"); //$NON-NLS-1$
 		config.launch(ILaunchManager.RUN_MODE, new NullProgressMonitor());
-		assertTrue("the run history should contain LaunchHistoryTest", runhistory.contains(config)); //$NON-NLS-1$
-		assertEquals("the run recent launch should be LaunchHistoryTest", runhistory.getRecentLaunch(), config); //$NON-NLS-1$
-		assertTrue("the debug history should contain LaunchHistoryTest", debughistory.contains(config)); //$NON-NLS-1$
-		assertEquals("the debug recent launch should be LaunchHistoryTest", debughistory.getRecentLaunch(), config); //$NON-NLS-1$
+		assertTrue(runhistory.contains(config), "the run history should contain LaunchHistoryTest"); //$NON-NLS-1$
+		assertEquals(runhistory.getRecentLaunch(), config, "the run recent launch should be LaunchHistoryTest"); //$NON-NLS-1$
+		assertTrue(debughistory.contains(config), "the debug history should contain LaunchHistoryTest"); //$NON-NLS-1$
+		assertEquals(debughistory.getRecentLaunch(), config, "the debug recent launch should be LaunchHistoryTest"); //$NON-NLS-1$
 	}
 
 	/**
@@ -123,22 +123,22 @@ public class LaunchHistoryTests {
 	@Test
 	public void testHistoryReodering() throws CoreException {
 		LaunchHistory runhistory = getRunLaunchHistory();
-		assertNotNull("The run launch history should not be null", runhistory); //$NON-NLS-1$
+		assertNotNull(runhistory, "The run launch history should not be null"); //$NON-NLS-1$
 		ILaunchConfiguration config = getLaunchConfiguration("LaunchHistoryTest"); //$NON-NLS-1$
-		assertNotNull("LaunchHistoryTest launch config should not be null", config); //$NON-NLS-1$
+		assertNotNull(config, "LaunchHistoryTest launch config should not be null"); //$NON-NLS-1$
 		config.launch(ILaunchManager.RUN_MODE, new NullProgressMonitor());
-		assertTrue("The run history should contain the LaunchHistoryTest config", runhistory.contains(config)); //$NON-NLS-1$
-		assertEquals("The most recent launch should be LaunchHistoryTest", runhistory.getRecentLaunch(), config); //$NON-NLS-1$
+		assertTrue(runhistory.contains(config), "The run history should contain the LaunchHistoryTest config"); //$NON-NLS-1$
+		assertEquals(runhistory.getRecentLaunch(), config, "The most recent launch should be LaunchHistoryTest"); //$NON-NLS-1$
 		config = getLaunchConfiguration("LaunchHistoryTest2"); //$NON-NLS-1$
-		assertNotNull("LaunchHistoryTest2 launch config should not be null", config); //$NON-NLS-1$
+		assertNotNull(config, "LaunchHistoryTest2 launch config should not be null"); //$NON-NLS-1$
 		config.launch(ILaunchManager.RUN_MODE, new NullProgressMonitor());
-		assertTrue("The run history should contain the LaunchHistoryTest2 config", runhistory.contains(config)); //$NON-NLS-1$
-		assertEquals("The most recent launch should be LaunchHistoryTest2", runhistory.getRecentLaunch(), config); //$NON-NLS-1$
+		assertTrue(runhistory.contains(config), "The run history should contain the LaunchHistoryTest2 config"); //$NON-NLS-1$
+		assertEquals(runhistory.getRecentLaunch(), config, "The most recent launch should be LaunchHistoryTest2"); //$NON-NLS-1$
 		config = getLaunchConfiguration("LaunchHistoryTest"); //$NON-NLS-1$
-		assertNotNull("LaunchHistoryTest launch config should not be null", config); //$NON-NLS-1$
+		assertNotNull(config, "LaunchHistoryTest launch config should not be null"); //$NON-NLS-1$
 		config.launch(ILaunchManager.RUN_MODE, new NullProgressMonitor());
-		assertTrue("The run history should contain the LaunchHistoryTest config", runhistory.contains(config)); //$NON-NLS-1$
-		assertEquals("The most recent launch should be LaunchHistoryTest", runhistory.getRecentLaunch(), config); //$NON-NLS-1$
+		assertTrue(runhistory.contains(config), "The run history should contain the LaunchHistoryTest config"); //$NON-NLS-1$
+		assertEquals(runhistory.getRecentLaunch(), config, "The most recent launch should be LaunchHistoryTest"); //$NON-NLS-1$
 	}
 
 	/**
@@ -148,16 +148,16 @@ public class LaunchHistoryTests {
 	@Test
 	public void testRenameConfigHistoryUpdate() throws CoreException {
 		LaunchHistory runhistory = getRunLaunchHistory();
-		assertNotNull("The run launch history should not be null", runhistory); //$NON-NLS-1$
+		assertNotNull(runhistory, "The run launch history should not be null"); //$NON-NLS-1$
 		ILaunchConfiguration config = getLaunchConfiguration("LaunchHistoryTest"); //$NON-NLS-1$
-		assertNotNull("LaunchHistoryTest launch config should not be null", config); //$NON-NLS-1$
+		assertNotNull(config, "LaunchHistoryTest launch config should not be null"); //$NON-NLS-1$
 		config.launch(ILaunchManager.RUN_MODE, new NullProgressMonitor());
-		assertTrue("The run history should contain the LaunchHistoryTest config", runhistory.contains(config)); //$NON-NLS-1$
-		assertEquals("The most recent launch should be LaunchHistoryTest", runhistory.getRecentLaunch(), config); //$NON-NLS-1$
+		assertTrue(runhistory.contains(config), "The run history should contain the LaunchHistoryTest config"); //$NON-NLS-1$
+		assertEquals(runhistory.getRecentLaunch(), config, "The most recent launch should be LaunchHistoryTest"); //$NON-NLS-1$
 		ILaunchConfigurationWorkingCopy copy = config.getWorkingCopy();
 		copy.rename("RenamedLaunchHistoryItem"); //$NON-NLS-1$
 		config = copy.doSave();
-		assertEquals("the renamed config should still be the first on in the history", runhistory.getRecentLaunch(), config); //$NON-NLS-1$
+		assertEquals(runhistory.getRecentLaunch(), config, "the renamed config should still be the first on in the history"); //$NON-NLS-1$
 
 		//rename the configuration back to what it was
 		copy = config.getWorkingCopy();
@@ -173,20 +173,20 @@ public class LaunchHistoryTests {
 	@Test
 	public void testDeleteLaunchConfigurationHistoryUpdate() throws CoreException {
 		LaunchHistory runhistory = getRunLaunchHistory();
-		assertNotNull("The run launch history should not be null", runhistory); //$NON-NLS-1$
+		assertNotNull(runhistory, "The run launch history should not be null"); //$NON-NLS-1$
 		ILaunchConfiguration config = getLaunchConfiguration("LaunchHistoryTest"); //$NON-NLS-1$
-		assertNotNull("LaunchHistoryTest launch config should not be null", config); //$NON-NLS-1$
+		assertNotNull(config, "LaunchHistoryTest launch config should not be null"); //$NON-NLS-1$
 		config.launch(ILaunchManager.RUN_MODE, new NullProgressMonitor());
-		assertTrue("The run history should contain the LaunchHistoryTest config", runhistory.contains(config)); //$NON-NLS-1$
-		assertEquals("The most recent launch should be LaunchHistoryTest", runhistory.getRecentLaunch(), config); //$NON-NLS-1$
+		assertTrue(runhistory.contains(config), "The run history should contain the LaunchHistoryTest config"); //$NON-NLS-1$
+		assertEquals(runhistory.getRecentLaunch(), config, "The most recent launch should be LaunchHistoryTest"); //$NON-NLS-1$
 		config = getLaunchConfiguration("LaunchHistoryTest2"); //$NON-NLS-1$
-		assertNotNull("LaunchHistoryTest2 launch config should not be null", config); //$NON-NLS-1$
+		assertNotNull(config, "LaunchHistoryTest2 launch config should not be null"); //$NON-NLS-1$
 		config.launch(ILaunchManager.RUN_MODE, new NullProgressMonitor());
-		assertTrue("The run history should contain the LaunchHistoryTest2 config", runhistory.contains(config)); //$NON-NLS-1$
-		assertEquals("The most recent launch should be LaunchHistoryTest2", runhistory.getRecentLaunch(), config); //$NON-NLS-1$
+		assertTrue(runhistory.contains(config), "The run history should contain the LaunchHistoryTest2 config"); //$NON-NLS-1$
+		assertEquals(runhistory.getRecentLaunch(), config, "The most recent launch should be LaunchHistoryTest2"); //$NON-NLS-1$
 		config.delete();
 		config = getLaunchConfiguration("LaunchHistoryTest"); //$NON-NLS-1$
-		assertEquals("the run history should have LaunchHistoryTest as the recent launch after delete", runhistory.getRecentLaunch(), config); //$NON-NLS-1$
+		assertEquals(runhistory.getRecentLaunch(), config, "the run history should have LaunchHistoryTest as the recent launch after delete"); //$NON-NLS-1$
 	}
 
 	/**
@@ -196,14 +196,14 @@ public class LaunchHistoryTests {
 	@Test
 	public void testLaunchHistorySize() throws CoreException {
 		LaunchHistory runhistory = getRunLaunchHistory();
-		assertNotNull("The run launch history should not be null", runhistory); //$NON-NLS-1$
+		assertNotNull(runhistory, "The run launch history should not be null"); //$NON-NLS-1$
 		setMaxHistorySize(2);
-		assertTrue("the maximum history size should be 2", getMaxHistorySize() == 2); //$NON-NLS-1$
+		assertTrue(getMaxHistorySize() == 2, "the maximum history size should be 2"); //$NON-NLS-1$
 		ILaunchConfiguration config = getLaunchConfiguration("LaunchHistoryTest"); //$NON-NLS-1$
-		assertNotNull("LaunchHistoryTest launch config should not be null", config); //$NON-NLS-1$
+		assertNotNull(config, "LaunchHistoryTest launch config should not be null"); //$NON-NLS-1$
 		config.launch(ILaunchManager.RUN_MODE, new NullProgressMonitor());
 		config = getLaunchConfiguration("LaunchHistoryTest2"); //$NON-NLS-1$
-		assertNotNull("LaunchHistoryTest2 launch config should not be null", config); //$NON-NLS-1$
+		assertNotNull(config, "LaunchHistoryTest2 launch config should not be null"); //$NON-NLS-1$
 		config.launch(ILaunchManager.RUN_MODE, new NullProgressMonitor());
 		assertThat(runhistory.getHistory()).hasSize(getMaxHistorySize());
 		assertThat(runhistory.getCompleteLaunchHistory()).hasSizeGreaterThanOrEqualTo(runhistory.getHistory().length);

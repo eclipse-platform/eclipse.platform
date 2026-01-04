@@ -17,13 +17,13 @@ package org.eclipse.debug.tests.launching;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.debug.tests.TestUtil.getLaunchManager;
 import static org.eclipse.debug.tests.TestUtil.waitWhile;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -243,14 +243,14 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 	 */
 	protected ILaunchConfigurationWorkingCopy newConfiguration(IContainer container, String configurationName) throws CoreException {
 		ILaunchConfigurationType type = getLaunchManager().getLaunchConfigurationType(ID_TEST_LAUNCH_TYPE);
-		assertTrue("Should support debug mode", type.supportsMode(ILaunchManager.DEBUG_MODE)); //$NON-NLS-1$
-		assertTrue("Should support run mode", type.supportsMode(ILaunchManager.RUN_MODE)); //$NON-NLS-1$
+		assertTrue(type.supportsMode(ILaunchManager.DEBUG_MODE), "Should support debug mode"); //$NON-NLS-1$
+		assertTrue(type.supportsMode(ILaunchManager.RUN_MODE), "Should support run mode"); //$NON-NLS-1$
 		ILaunchConfigurationWorkingCopy wc = type.newInstance(container, configurationName);
 		wc.setAttribute("String1", "String1"); //$NON-NLS-1$ //$NON-NLS-2$
 		wc.setAttribute("Int1", 1); //$NON-NLS-1$
 		wc.setAttribute("Boolean1", true); //$NON-NLS-1$
 		wc.setAttribute("Boolean2", false); //$NON-NLS-1$
-		assertTrue("Should need saving", wc.isDirty()); //$NON-NLS-1$
+		assertTrue(wc.isDirty(), "Should need saving"); //$NON-NLS-1$
 		return wc;
 	}
 
@@ -261,7 +261,7 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 	protected ILaunchConfigurationWorkingCopy newEmptyConfiguration(IContainer container, String configurationName) throws CoreException {
 		ILaunchConfigurationType type = getLaunchManager().getLaunchConfigurationType(ID_TEST_LAUNCH_TYPE);
 		ILaunchConfigurationWorkingCopy wc = type.newInstance(container, configurationName);
-		assertEquals("Should have no attributes", 0, wc.getAttributes().size()); //$NON-NLS-1$
+		assertEquals(0, wc.getAttributes().size(), "Should have no attributes"); //$NON-NLS-1$
 		return wc;
 	}
 
@@ -275,14 +275,14 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 	 */
 	protected ILaunchConfigurationWorkingCopy newPrototype(IContainer container, String configurationName) throws CoreException {
 		ILaunchConfigurationType type = getLaunchManager().getLaunchConfigurationType(ID_TEST_LAUNCH_TYPE);
-		assertTrue("Should support debug mode", type.supportsMode(ILaunchManager.DEBUG_MODE)); //$NON-NLS-1$
-		assertTrue("Should support run mode", type.supportsMode(ILaunchManager.RUN_MODE)); //$NON-NLS-1$
+		assertTrue(type.supportsMode(ILaunchManager.DEBUG_MODE), "Should support debug mode"); //$NON-NLS-1$
+		assertTrue(type.supportsMode(ILaunchManager.RUN_MODE), "Should support run mode"); //$NON-NLS-1$
 		ILaunchConfigurationWorkingCopy wc = type.newPrototypeInstance(container, configurationName);
 		wc.setAttribute("String1", "String1"); //$NON-NLS-1$ //$NON-NLS-2$
 		wc.setAttribute("Int1", 1); //$NON-NLS-1$
 		wc.setAttribute("Boolean1", true); //$NON-NLS-1$
 		wc.setAttribute("Boolean2", false); //$NON-NLS-1$
-		assertTrue("Should need saving", wc.isDirty()); //$NON-NLS-1$
+		assertTrue(wc.isDirty(), "Should need saving"); //$NON-NLS-1$
 		return wc;
 	}
 
@@ -293,7 +293,7 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 	protected ILaunchConfigurationWorkingCopy newEmptyPrototype(IContainer container, String configurationName) throws CoreException {
 		ILaunchConfigurationType type = getLaunchManager().getLaunchConfigurationType(ID_TEST_LAUNCH_TYPE);
 		ILaunchConfigurationWorkingCopy wc = type.newPrototypeInstance(container, configurationName);
-		assertEquals("Should have no attributes", 0, wc.getAttributes().size()); //$NON-NLS-1$
+		assertEquals(0, wc.getAttributes().size(), "Should have no attributes"); //$NON-NLS-1$
 		return wc;
 	}
 
@@ -320,21 +320,21 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 		IPath location = wc.getLocation();
 		ILaunchConfiguration handle = wc.doSave();
 		File file = location.toFile();
-		assertTrue("Configuration file should exist", file.exists()); //$NON-NLS-1$
+		assertTrue(file.exists(), "Configuration file should exist"); //$NON-NLS-1$
 
 		// retrieve attributes
-		assertEquals("String1 should be String1", handle.getAttribute("String1", "Missing"), "String1"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		assertEquals("Int1 should be 1", handle.getAttribute("Int1", 0), 1); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean1 should be true", handle.getAttribute("Boolean1", false));  //$NON-NLS-1$//$NON-NLS-2$
-		assertTrue("Boolean2 should be false", !handle.getAttribute("Boolean2", true));  //$NON-NLS-1$//$NON-NLS-2$
+		assertEquals(handle.getAttribute("String1", "Missing"), "String1", "String1 should be String1"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		assertEquals(handle.getAttribute("Int1", 0), 1, "Int1 should be 1"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(handle.getAttribute("Boolean1", false), "Boolean1 should be true");  //$NON-NLS-1$//$NON-NLS-2$
+		assertTrue(!handle.getAttribute("Boolean2", true), "Boolean2 should be false");  //$NON-NLS-1$//$NON-NLS-2$
 
 		// ensure new handle is the index
 		ILaunchConfiguration[] configs = getLaunchManager().getLaunchConfigurations();
-		assertTrue("Configuration should exist in project index", existsIn(configs, handle)); //$NON-NLS-1$
+		assertTrue(existsIn(configs, handle), "Configuration should exist in project index"); //$NON-NLS-1$
 
 		// cleanup
 		handle.delete();
-		assertTrue("Config should not exist after deletion", !handle.exists()); //$NON-NLS-1$
+		assertTrue(!handle.exists(), "Config should not exist after deletion"); //$NON-NLS-1$
 	}
 
 	/**
@@ -344,14 +344,14 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 	public void testLocalName() throws CoreException {
 		ILaunchConfigurationWorkingCopy wc = newConfiguration(null, "localName"); //$NON-NLS-1$
 		ILaunchConfiguration handle = wc.doSave();
-		assertTrue("Configuration should exist", handle.exists()); //$NON-NLS-1$
+		assertTrue(handle.exists(), "Configuration should exist"); //$NON-NLS-1$
 
 		// retrieve attributes
-		assertEquals("Wrong name", handle.getName(), "localName"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals(handle.getName(), "localName", "Wrong name"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		// cleanup
 		handle.delete();
-		assertTrue("Config should not exist after deletion", !handle.exists()); //$NON-NLS-1$
+		assertTrue(!handle.exists(), "Config should not exist after deletion"); //$NON-NLS-1$
 	}
 
 	/**
@@ -361,14 +361,14 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 	public void testSharedName() throws CoreException {
 		ILaunchConfigurationWorkingCopy wc = newConfiguration(getProject(), "sharedName"); //$NON-NLS-1$
 		ILaunchConfiguration handle = wc.doSave();
-		assertTrue("Configuration should exist", handle.exists()); //$NON-NLS-1$
+		assertTrue(handle.exists(), "Configuration should exist"); //$NON-NLS-1$
 
 		// retrieve attributes
-		assertEquals("Wrong name", handle.getName(), "sharedName"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals(handle.getName(), "sharedName", "Wrong name"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		// cleanup
 		handle.delete();
-		assertTrue("Config should not exist after deletion", !handle.exists()); //$NON-NLS-1$
+		assertTrue(!handle.exists(), "Config should not exist after deletion"); //$NON-NLS-1$
 	}
 
 	/**
@@ -380,18 +380,18 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 		IPath location = wc.getLocation();
 		ILaunchConfiguration handle = wc.doSave();
 		File file = location.toFile();
-		assertTrue("Configuration file should exist", file.exists()); //$NON-NLS-1$
+		assertTrue(file.exists(), "Configuration file should exist"); //$NON-NLS-1$
 
 		Map<?, ?> attributes = handle.getAttributes();
 		// retrieve attributes
-		assertEquals("String1 should be String1", "String1", attributes.get("String1")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		assertEquals("Int1 should be 1", Integer.valueOf(1), attributes.get("Int1")); //$NON-NLS-1$ //$NON-NLS-2$
-		assertEquals("Boolean1 should be true", Boolean.TRUE, attributes.get("Boolean1")); //$NON-NLS-1$ //$NON-NLS-2$
-		assertEquals("Boolean2 should be false", Boolean.FALSE, attributes.get("Boolean2")); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals("String1", attributes.get("String1"), "String1 should be String1"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		assertEquals(Integer.valueOf(1), attributes.get("Int1"), "Int1 should be 1"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals(Boolean.TRUE, attributes.get("Boolean1"), "Boolean1 should be true"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals(Boolean.FALSE, attributes.get("Boolean2"), "Boolean2 should be false"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		// cleanup
 		handle.delete();
-		assertTrue("Config should not exist after deletion", !handle.exists()); //$NON-NLS-1$
+		assertTrue(!handle.exists(), "Config should not exist after deletion"); //$NON-NLS-1$
 	}
 
 	/**
@@ -407,17 +407,17 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 		IPath location = wc.getLocation();
 		ILaunchConfiguration handle = wc.doSave();
 		File file = location.toFile();
-		assertTrue("Configuration file should exist", file.exists()); //$NON-NLS-1$
+		assertTrue(file.exists(), "Configuration file should exist"); //$NON-NLS-1$
 
 		Map<?, ?> attributes = handle.getAttributes();
-		assertEquals("should have two attributes", 2, attributes.size()); //$NON-NLS-1$
+		assertEquals(2, attributes.size(), "should have two attributes"); //$NON-NLS-1$
 		// retrieve attributes
-		assertEquals("ATTR1 should be ONE", "ONE", attributes.get("ATTR1")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		assertEquals("ATTR2 should be TWO", "TWO", attributes.get("ATTR2")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		assertEquals("ONE", attributes.get("ATTR1"), "ATTR1 should be ONE"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		assertEquals("TWO", attributes.get("ATTR2"), "ATTR2 should be TWO"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 		// cleanup
 		handle.delete();
-		assertTrue("Config should not exist after deletion", !handle.exists()); //$NON-NLS-1$
+		assertTrue(!handle.exists(), "Config should not exist after deletion"); //$NON-NLS-1$
 	}
 
 	/**
@@ -430,13 +430,13 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 		IPath location = wc.getLocation();
 		ILaunchConfiguration handle = wc.doSave();
 		File file = location.toFile();
-		assertTrue("Configuration file should exist", file.exists()); //$NON-NLS-1$
+		assertTrue(file.exists(), "Configuration file should exist"); //$NON-NLS-1$
 
 		Map<?, ?> attributes = handle.getAttributes();
-		assertEquals("should have no attributes", 0, attributes.size()); //$NON-NLS-1$
+		assertEquals(0, attributes.size(), "should have no attributes"); //$NON-NLS-1$
 		// cleanup
 		handle.delete();
-		assertTrue("Config should not exist after deletion", !handle.exists()); //$NON-NLS-1$
+		assertTrue(!handle.exists(), "Config should not exist after deletion"); //$NON-NLS-1$
 	}
 
 	/**
@@ -450,35 +450,35 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 		IPath location = wc.getLocation();
 		ILaunchConfiguration handle = wc.doSave();
 		File file = location.toFile();
-		assertTrue("Configuration file should exist", file.exists()); //$NON-NLS-1$
+		assertTrue(file.exists(), "Configuration file should exist"); //$NON-NLS-1$
 
 		// retrieve attributes
-		assertTrue("String1 should be String1", handle.getAttribute("String1", "Missing").equals("String1")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		assertTrue("Int1 should be 1", handle.getAttribute("Int1", 0) == 1); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean1 should be true", handle.getAttribute("Boolean1", false)); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean2 should be false", !handle.getAttribute("Boolean2", true)); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(handle.getAttribute("String1", "Missing").equals("String1"), "String1 should be String1"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		assertTrue(handle.getAttribute("Int1", 0) == 1, "Int1 should be 1"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(handle.getAttribute("Boolean1", false), "Boolean1 should be true"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(!handle.getAttribute("Boolean2", true), "Boolean2 should be false"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		// ensure new handle is the index
 		ILaunchConfiguration[] configs = getLaunchManager().getLaunchConfigurations();
-		assertTrue("Configuration should exist in project index", existsIn(configs, handle)); //$NON-NLS-1$
+		assertTrue(existsIn(configs, handle), "Configuration should exist in project index"); //$NON-NLS-1$
 
 		ILaunchConfigurationWorkingCopy softCopy = handle.copy("CopyOf" + handle.getName()); //$NON-NLS-1$
-		assertNull("Original in copy should be null", softCopy.getOriginal()); //$NON-NLS-1$
+		assertNull(softCopy.getOriginal(), "Original in copy should be null"); //$NON-NLS-1$
 		ILaunchConfiguration hardCopy = softCopy.doSave();
 
 		// retrieve attributes
-		assertTrue("String1 should be String1", hardCopy.getAttribute("String1", "Missing").equals("String1")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		assertTrue("Int1 should be 1", hardCopy.getAttribute("Int1", 0) == 1); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean1 should be true", hardCopy.getAttribute("Boolean1", false)); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean2 should be false", !hardCopy.getAttribute("Boolean2", true));		  //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(hardCopy.getAttribute("String1", "Missing").equals("String1"), "String1 should be String1"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		assertTrue(hardCopy.getAttribute("Int1", 0) == 1, "Int1 should be 1"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(hardCopy.getAttribute("Boolean1", false), "Boolean1 should be true"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(!hardCopy.getAttribute("Boolean2", true), "Boolean2 should be false");		  //$NON-NLS-1$ //$NON-NLS-2$
 
-		assertTrue("Original should still exist", handle.exists()); //$NON-NLS-1$
+		assertTrue(handle.exists(), "Original should still exist"); //$NON-NLS-1$
 
 		// cleanup
 		handle.delete();
-		assertTrue("Config should not exist after deletion", !handle.exists()); //$NON-NLS-1$
+		assertTrue(!handle.exists(), "Config should not exist after deletion"); //$NON-NLS-1$
 		hardCopy.delete();
-		assertTrue("Config should not exist after deletion", !hardCopy.exists());		 		  //$NON-NLS-1$
+		assertTrue(!hardCopy.exists(), "Config should not exist after deletion");		 		  //$NON-NLS-1$
 	}
 
 	/**
@@ -491,22 +491,22 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 		IPath location = wc.getLocation();
 		ILaunchConfiguration handle = wc.doSave();
 		File file = location.toFile();
-		assertTrue("Configuration file should exist", file.exists()); //$NON-NLS-1$
+		assertTrue(file.exists(), "Configuration file should exist"); //$NON-NLS-1$
 
 		// retrieve attributes
-		assertTrue("String1 should be String1", handle.getAttribute("String1", "Missing").equals("String1")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		assertTrue("Int1 should be 1", handle.getAttribute("Int1", 0) == 1); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean1 should be true", handle.getAttribute("Boolean1", false)); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean2 should be false", !handle.getAttribute("Boolean2", true)); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(handle.getAttribute("String1", "Missing").equals("String1"), "String1 should be String1"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		assertTrue(handle.getAttribute("Int1", 0) == 1, "Int1 should be 1"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(handle.getAttribute("Boolean1", false), "Boolean1 should be true"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(!handle.getAttribute("Boolean2", true), "Boolean2 should be false"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		// ensure new handle is the index
 		ILaunchConfiguration[] configs = getLaunchManager().getLaunchConfigurations();
-		assertTrue("Configuration should exist in project index", existsIn(configs, handle)); //$NON-NLS-1$
+		assertTrue(existsIn(configs, handle), "Configuration should exist in project index"); //$NON-NLS-1$
 
 		String configurationName = wc.getName();
 		wc.rename("newName"); //$NON-NLS-1$
 		wc.rename(configurationName);
-		assertTrue("Should be dirty", wc.isDirty()); //$NON-NLS-1$
+		assertTrue(wc.isDirty(), "Should be dirty"); //$NON-NLS-1$
 		wc.doSave();
 
 		ILaunchConfiguration[] newConfigs = getLaunchManager().getLaunchConfigurations();
@@ -514,7 +514,7 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 
 		// cleanup
 		handle.delete();
-		assertTrue("Config should not exist after deletion", !handle.exists()); //$NON-NLS-1$
+		assertTrue(!handle.exists(), "Config should not exist after deletion"); //$NON-NLS-1$
 
 	}
 
@@ -528,21 +528,21 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 		ILaunchConfigurationWorkingCopy wc = newConfiguration(null, "config2delete"); //$NON-NLS-1$
 		ILaunchConfiguration handle = wc.doSave();
 		File file = wc.getLocation().toFile();
-		assertTrue("Configuration file should exist", file.exists()); //$NON-NLS-1$
+		assertTrue(file.exists(), "Configuration file should exist"); //$NON-NLS-1$
 
 		// retrieve attributes
-		assertTrue("String1 should be String1", handle.getAttribute("String1", "Missing").equals("String1")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		assertTrue("Int1 should be 1", handle.getAttribute("Int1", 0) == 1); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean1 should be true", handle.getAttribute("Boolean1", false)); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean2 should be false", !handle.getAttribute("Boolean2", true)); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(handle.getAttribute("String1", "Missing").equals("String1"), "String1 should be String1"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		assertTrue(handle.getAttribute("Int1", 0) == 1, "Int1 should be 1"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(handle.getAttribute("Boolean1", false), "Boolean1 should be true"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(!handle.getAttribute("Boolean2", true), "Boolean2 should be false"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		// delete
 		handle.delete();
-		assertTrue("Config should no longer exist", !handle.exists()); //$NON-NLS-1$
+		assertTrue(!handle.exists(), "Config should no longer exist"); //$NON-NLS-1$
 
 		// ensure handle is not in the index
 		ILaunchConfiguration[] configs = getLaunchManager().getLaunchConfigurations();
-		assertTrue("Configuration should not exist in project index", !existsIn(configs, handle));		  //$NON-NLS-1$
+		assertTrue(!existsIn(configs, handle), "Configuration should not exist in project index");		  //$NON-NLS-1$
 	}
 
 	/**
@@ -557,13 +557,13 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 		IPath location = wc.getLocation();
 		ILaunchConfiguration handle = wc.doSave();
 		File file = location.toFile();
-		assertTrue("Configuration file should exist", file.exists()); //$NON-NLS-1$
+		assertTrue(file.exists(), "Configuration file should exist"); //$NON-NLS-1$
 
 		// retrieve attributes
-		assertTrue("String1 should be String1", handle.getAttribute("String1", "Missing").equals("String1")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		assertTrue("Int1 should be 1", handle.getAttribute("Int1", 0) == 1); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean1 should be true", handle.getAttribute("Boolean1", false)); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean2 should be false", !handle.getAttribute("Boolean2", true)); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(handle.getAttribute("String1", "Missing").equals("String1"), "String1 should be String1"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		assertTrue(handle.getAttribute("Int1", 0) == 1, "Int1 should be 1"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(handle.getAttribute("Boolean1", false), "Boolean1 should be true"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(!handle.getAttribute("Boolean2", true), "Boolean2 should be false"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		// rename
 		wc = handle.getWorkingCopy();
@@ -571,24 +571,24 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 		addConfigListener();
 		ILaunchConfiguration newHandle = wc.doSave();
 		removeConfigListener();
-		assertTrue("Config should no longer exist", !handle.exists()); //$NON-NLS-1$
-		assertEquals("From should be original", handle, fFrom); //$NON-NLS-1$
-		assertEquals("To should be new handle", newHandle, fTo); //$NON-NLS-1$
+		assertTrue(!handle.exists(), "Config should no longer exist"); //$NON-NLS-1$
+		assertEquals(handle, fFrom, "From should be original"); //$NON-NLS-1$
+		assertEquals(newHandle, fTo, "To should be new handle"); //$NON-NLS-1$
 
 		// retrieve new attributes
-		assertTrue("String1 should be String1", newHandle.getAttribute("String1", "Missing").equals("String1")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		assertTrue("Int1 should be 1", newHandle.getAttribute("Int1", 0) == 1); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean1 should be true", newHandle.getAttribute("Boolean1", false));  //$NON-NLS-1$//$NON-NLS-2$
-		assertTrue("Boolean2 should be false", !newHandle.getAttribute("Boolean2", true));		  //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(newHandle.getAttribute("String1", "Missing").equals("String1"), "String1 should be String1"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		assertTrue(newHandle.getAttribute("Int1", 0) == 1, "Int1 should be 1"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(newHandle.getAttribute("Boolean1", false), "Boolean1 should be true");  //$NON-NLS-1$//$NON-NLS-2$
+		assertTrue(!newHandle.getAttribute("Boolean2", true), "Boolean2 should be false");		  //$NON-NLS-1$ //$NON-NLS-2$
 
 		// ensure new handle is in the index
 		ILaunchConfiguration[] configs = getLaunchManager().getLaunchConfigurations();
-		assertTrue("Renamed configuration should exist in project index", existsIn(configs, newHandle));		  //$NON-NLS-1$
-		assertTrue("Original configuration should NOT exist in project index", !existsIn(configs, handle));	 //$NON-NLS-1$
+		assertTrue(existsIn(configs, newHandle), "Renamed configuration should exist in project index");		  //$NON-NLS-1$
+		assertTrue(!existsIn(configs, handle), "Original configuration should NOT exist in project index");	 //$NON-NLS-1$
 
 		// cleanup
 		newHandle.delete();
-		assertTrue("Config should not exist after deletion", !newHandle.exists());		 	  //$NON-NLS-1$
+		assertTrue(!newHandle.exists(), "Config should not exist after deletion");		 	  //$NON-NLS-1$
 	}
 
 	/**
@@ -600,13 +600,13 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 		IPath location = wc.getLocation();
 		ILaunchConfiguration handle = wc.doSave();
 		File file = location.toFile();
-		assertTrue("Configuration file should exist", file.exists()); //$NON-NLS-1$
+		assertTrue(file.exists(), "Configuration file should exist"); //$NON-NLS-1$
 
 		// retrieve attributes
-		assertTrue("String1 should be String1", handle.getAttribute("String1", "Missing").equals("String1")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		assertTrue("Int1 should be 1", handle.getAttribute("Int1", 0) == 1); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean1 should be true", handle.getAttribute("Boolean1", false)); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean2 should be false", !handle.getAttribute("Boolean2", true)); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(handle.getAttribute("String1", "Missing").equals("String1"), "String1 should be String1"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		assertTrue(handle.getAttribute("Int1", 0) == 1, "Int1 should be 1"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(handle.getAttribute("Boolean1", false), "Boolean1 should be true"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(!handle.getAttribute("Boolean2", true), "Boolean2 should be false"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		// move
 		wc = handle.getWorkingCopy();
@@ -614,24 +614,24 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 		addConfigListener();
 		ILaunchConfiguration newHandle = wc.doSave();
 		removeConfigListener();
-		assertTrue("Config should no longer exist", !handle.exists()); //$NON-NLS-1$
-		assertEquals("From should be original", handle, fFrom); //$NON-NLS-1$
-		assertEquals("To should be new handle", newHandle, fTo); //$NON-NLS-1$
+		assertTrue(!handle.exists(), "Config should no longer exist"); //$NON-NLS-1$
+		assertEquals(handle, fFrom, "From should be original"); //$NON-NLS-1$
+		assertEquals(newHandle, fTo, "To should be new handle"); //$NON-NLS-1$
 
 		// retrieve new attributes
-		assertTrue("String1 should be String1", newHandle.getAttribute("String1", "Missing").equals("String1")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		assertTrue("Int1 should be 1", newHandle.getAttribute("Int1", 0) == 1); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean1 should be true", newHandle.getAttribute("Boolean1", false)); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean2 should be false", !newHandle.getAttribute("Boolean2", true)); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(newHandle.getAttribute("String1", "Missing").equals("String1"), "String1 should be String1"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		assertTrue(newHandle.getAttribute("Int1", 0) == 1, "Int1 should be 1"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(newHandle.getAttribute("Boolean1", false), "Boolean1 should be true"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(!newHandle.getAttribute("Boolean2", true), "Boolean2 should be false"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		// ensure new handle is in the index
 		ILaunchConfiguration[] configs = getLaunchManager().getLaunchConfigurations();
-		assertTrue("Renamed configuration should exist in project index", existsIn(configs, newHandle)); //$NON-NLS-1$
-		assertTrue("Original configuration should NOT exist in project index", !existsIn(configs, handle)); //$NON-NLS-1$
+		assertTrue(existsIn(configs, newHandle), "Renamed configuration should exist in project index"); //$NON-NLS-1$
+		assertTrue(!existsIn(configs, handle), "Original configuration should NOT exist in project index"); //$NON-NLS-1$
 
 		// cleanup
 		newHandle.delete();
-		assertTrue("Config should not exist after deletion", !newHandle.exists()); //$NON-NLS-1$
+		assertTrue(!newHandle.exists(), "Config should not exist after deletion"); //$NON-NLS-1$
 	}
 
 	/**
@@ -643,13 +643,13 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 		IPath location = wc.getLocation();
 		ILaunchConfiguration handle = wc.doSave();
 		File file = location.toFile();
-		assertTrue("Configuration file should exist", file.exists()); //$NON-NLS-1$
+		assertTrue(file.exists(), "Configuration file should exist"); //$NON-NLS-1$
 
 		// retrieve attributes
-		assertTrue("String1 should be String1", handle.getAttribute("String1", "Missing").equals("String1")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		assertTrue("Int1 should be 1", handle.getAttribute("Int1", 0) == 1); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean1 should be true", handle.getAttribute("Boolean1", false)); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean2 should be false", !handle.getAttribute("Boolean2", true)); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(handle.getAttribute("String1", "Missing").equals("String1"), "String1 should be String1"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		assertTrue(handle.getAttribute("Int1", 0) == 1, "Int1 should be 1"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(handle.getAttribute("Boolean1", false), "Boolean1 should be true"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(!handle.getAttribute("Boolean2", true), "Boolean2 should be false"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		// move
 		wc = handle.getWorkingCopy();
@@ -657,24 +657,24 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 		addConfigListener();
 		ILaunchConfiguration newHandle = wc.doSave();
 		removeConfigListener();
-		assertTrue("Config should no longer exist", !handle.exists()); //$NON-NLS-1$
-		assertEquals("From should be original", handle, fFrom); //$NON-NLS-1$
-		assertEquals("To should be new handle", newHandle, fTo); //$NON-NLS-1$
+		assertTrue(!handle.exists(), "Config should no longer exist"); //$NON-NLS-1$
+		assertEquals(handle, fFrom, "From should be original"); //$NON-NLS-1$
+		assertEquals(newHandle, fTo, "To should be new handle"); //$NON-NLS-1$
 
 		// retrieve new attributes
-		assertTrue("String1 should be String1", newHandle.getAttribute("String1", "Missing").equals("String1")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		assertTrue("Int1 should be 1", newHandle.getAttribute("Int1", 0) == 1); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean1 should be true", newHandle.getAttribute("Boolean1", false)); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean2 should be false", !newHandle.getAttribute("Boolean2", true)); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(newHandle.getAttribute("String1", "Missing").equals("String1"), "String1 should be String1"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		assertTrue(newHandle.getAttribute("Int1", 0) == 1, "Int1 should be 1"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(newHandle.getAttribute("Boolean1", false), "Boolean1 should be true"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(!newHandle.getAttribute("Boolean2", true), "Boolean2 should be false"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		// ensure new handle is in the index
 		ILaunchConfiguration[] configs = getLaunchManager().getLaunchConfigurations();
-		assertTrue("Renamed configuration should exist in project index", existsIn(configs, newHandle)); //$NON-NLS-1$
-		assertTrue("Original configuration should NOT exist in project index", !existsIn(configs, handle)); //$NON-NLS-1$
+		assertTrue(existsIn(configs, newHandle), "Renamed configuration should exist in project index"); //$NON-NLS-1$
+		assertTrue(!existsIn(configs, handle), "Original configuration should NOT exist in project index"); //$NON-NLS-1$
 
 		// cleanup
 		newHandle.delete();
-		assertTrue("Config should not exist after deletion", !newHandle.exists()); //$NON-NLS-1$
+		assertTrue(!newHandle.exists(), "Config should not exist after deletion"); //$NON-NLS-1$
 	}
 
 	/**
@@ -685,21 +685,21 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 	public void testCreateSharedConfiguration() throws CoreException {
 		ILaunchConfigurationWorkingCopy wc = newConfiguration(getProject(), "config2"); //$NON-NLS-1$
 		ILaunchConfiguration handle = wc.doSave();
-		assertTrue("Configuration should exist", handle.exists()); //$NON-NLS-1$
+		assertTrue(handle.exists(), "Configuration should exist"); //$NON-NLS-1$
 
 		// retrieve attributes
-		assertTrue("String1 should be String1", handle.getAttribute("String1", "Missing").equals("String1")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		assertTrue("Int1 should be 1", handle.getAttribute("Int1", 0) == 1); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean1 should be true", handle.getAttribute("Boolean1", false)); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean2 should be false", !handle.getAttribute("Boolean2", true)); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(handle.getAttribute("String1", "Missing").equals("String1"), "String1 should be String1"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		assertTrue(handle.getAttribute("Int1", 0) == 1, "Int1 should be 1"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(handle.getAttribute("Boolean1", false), "Boolean1 should be true"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(!handle.getAttribute("Boolean2", true), "Boolean2 should be false"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		// ensure new handle is in the index
 		ILaunchConfiguration[] configs = getLaunchManager().getLaunchConfigurations();
-		assertTrue("Configuration should exist in project index", existsIn(configs, handle));  //$NON-NLS-1$
+		assertTrue(existsIn(configs, handle), "Configuration should exist in project index");  //$NON-NLS-1$
 
 		// cleanup
 		handle.delete();
-		assertTrue("Config should not exist after deletion", !handle.exists()); //$NON-NLS-1$
+		assertTrue(!handle.exists(), "Config should not exist after deletion"); //$NON-NLS-1$
 	}
 
 	@Test
@@ -727,14 +727,14 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 		ILaunchConfiguration sharedHandle = wc.doSave();
 		assertEquals(systemSeparator, sharedHandle.getFile().getLineSeparator(false));
 		sharedHandle.delete();
-		assertTrue("Shared config should not exist after deletion", !sharedHandle.exists()); //$NON-NLS-1$
+		assertTrue(!sharedHandle.exists(), "Shared config should not exist after deletion"); //$NON-NLS-1$
 
 		// non-system separator in instance prefs, should override system
 		workspacePrefs.put(Platform.PREF_LINE_SEPARATOR, nonSystemSeparator);
 		sharedHandle = wc.doSave();
 		assertEquals(nonSystemSeparator, sharedHandle.getFile().getLineSeparator(false));
 		sharedHandle.delete();
-		assertTrue("Shared config should not exist after deletion", !sharedHandle.exists()); //$NON-NLS-1$
+		assertTrue(!sharedHandle.exists(), "Shared config should not exist after deletion"); //$NON-NLS-1$
 
 		// non-system separator in project prefs, should override system
 		workspacePrefs.put(Platform.PREF_LINE_SEPARATOR, systemSeparator);
@@ -742,7 +742,7 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 		sharedHandle = wc.doSave();
 		assertEquals(nonSystemSeparator, sharedHandle.getFile().getLineSeparator(false));
 		sharedHandle.delete();
-		assertTrue("Shared config should not exist after deletion", !sharedHandle.exists()); //$NON-NLS-1$
+		assertTrue(!sharedHandle.exists(), "Shared config should not exist after deletion"); //$NON-NLS-1$
 		sharedHandle = null;
 
 		// Test preservation for EXISTING file in workspace with various configs
@@ -765,7 +765,7 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 		systemNewlineHandle = wc.doSave();
 		assertEquals(systemSeparator, systemNewlineHandle.getFile().getLineSeparator(false));
 		systemNewlineHandle.delete();
-		assertTrue("Shared config should not exist after deletion", !systemNewlineHandle.exists()); //$NON-NLS-1$
+		assertTrue(!systemNewlineHandle.exists(), "Shared config should not exist after deletion"); //$NON-NLS-1$
 		systemNewlineHandle = null;
 
 		// control file 2: uses non-system separator
@@ -782,14 +782,14 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 		nonSystemNewlineHandle = wc.doSave();
 		assertEquals(nonSystemSeparator, nonSystemNewlineHandle.getFile().getLineSeparator(false));
 		nonSystemNewlineHandle.delete();
-		assertTrue("Shared config 2 should not exist after deletion", !nonSystemNewlineHandle.exists()); //$NON-NLS-1$
+		assertTrue(!nonSystemNewlineHandle.exists(), "Shared config 2 should not exist after deletion"); //$NON-NLS-1$
 		nonSystemNewlineHandle = null;
 
 		// cleanup
 		workspacePrefs.remove(Platform.PREF_LINE_SEPARATOR);
 		projectNode.node(Platform.PI_RUNTIME).remove(Platform.PREF_LINE_SEPARATOR);
 		inWorkspaceMetadataHandle.delete();
-		assertTrue("Config should not exist after deletion", !inWorkspaceMetadataHandle.exists()); //$NON-NLS-1$
+		assertTrue(!inWorkspaceMetadataHandle.exists(), "Config should not exist after deletion"); //$NON-NLS-1$
 	}
 
 	/**
@@ -801,35 +801,35 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 	public void testSharedCopy() throws CoreException {
 		ILaunchConfigurationWorkingCopy wc = newConfiguration(getProject(), "config2Copy"); //$NON-NLS-1$
 		ILaunchConfiguration handle = wc.doSave();
-		assertTrue("Configuration should exist", handle.exists()); //$NON-NLS-1$
+		assertTrue(handle.exists(), "Configuration should exist"); //$NON-NLS-1$
 
 		// retrieve attributes
-		assertTrue("String1 should be String1", handle.getAttribute("String1", "Missing").equals("String1")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		assertTrue("Int1 should be 1", handle.getAttribute("Int1", 0) == 1); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean1 should be true", handle.getAttribute("Boolean1", false)); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean2 should be false", !handle.getAttribute("Boolean2", true)); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(handle.getAttribute("String1", "Missing").equals("String1"), "String1 should be String1"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		assertTrue(handle.getAttribute("Int1", 0) == 1, "Int1 should be 1"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(handle.getAttribute("Boolean1", false), "Boolean1 should be true"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(!handle.getAttribute("Boolean2", true), "Boolean2 should be false"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		// ensure new handle is in the index
 		ILaunchConfiguration[] configs = getLaunchManager().getLaunchConfigurations();
-		assertTrue("Configuration should exist in project index", existsIn(configs, handle));  //$NON-NLS-1$
+		assertTrue(existsIn(configs, handle), "Configuration should exist in project index");  //$NON-NLS-1$
 
 		// copy
 		ILaunchConfigurationWorkingCopy softCopy = handle.copy("CopyOf" + handle.getName()); //$NON-NLS-1$
 		ILaunchConfiguration hardCopy = softCopy.doSave();
 
 		// retrieve attributes
-		assertTrue("String1 should be String1", hardCopy.getAttribute("String1", "Missing").equals("String1")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		assertTrue("Int1 should be 1", hardCopy.getAttribute("Int1", 0) == 1); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean1 should be true", hardCopy.getAttribute("Boolean1", false)); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean2 should be false", !hardCopy.getAttribute("Boolean2", true));		  //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(hardCopy.getAttribute("String1", "Missing").equals("String1"), "String1 should be String1"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		assertTrue(hardCopy.getAttribute("Int1", 0) == 1, "Int1 should be 1"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(hardCopy.getAttribute("Boolean1", false), "Boolean1 should be true"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(!hardCopy.getAttribute("Boolean2", true), "Boolean2 should be false");		  //$NON-NLS-1$ //$NON-NLS-2$
 
-		assertTrue("Original should still exist", handle.exists()); //$NON-NLS-1$
+		assertTrue(handle.exists(), "Original should still exist"); //$NON-NLS-1$
 
 		// cleanup
 		handle.delete();
-		assertTrue("Config should not exist after deletion", !handle.exists()); //$NON-NLS-1$
+		assertTrue(!handle.exists(), "Config should not exist after deletion"); //$NON-NLS-1$
 		hardCopy.delete();
-		assertTrue("Config should not exist after deletion", !hardCopy.exists());		 		 		  //$NON-NLS-1$
+		assertTrue(!hardCopy.exists(), "Config should not exist after deletion");		 		 		  //$NON-NLS-1$
 	}
 
 
@@ -842,21 +842,21 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 	public void testDeleteSharedConfiguration() throws CoreException {
 		ILaunchConfigurationWorkingCopy wc = newConfiguration(getProject(), "shared2delete"); //$NON-NLS-1$
 		ILaunchConfiguration handle = wc.doSave();
-		assertTrue("Configuration should exist", handle.exists()); //$NON-NLS-1$
+		assertTrue(handle.exists(), "Configuration should exist"); //$NON-NLS-1$
 
 		// retrieve attributes
-		assertTrue("String1 should be String1", handle.getAttribute("String1", "Missing").equals("String1")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		assertTrue("Int1 should be 1", handle.getAttribute("Int1", 0) == 1); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean1 should be true", handle.getAttribute("Boolean1", false)); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean2 should be false", !handle.getAttribute("Boolean2", true)); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(handle.getAttribute("String1", "Missing").equals("String1"), "String1 should be String1"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		assertTrue(handle.getAttribute("Int1", 0) == 1, "Int1 should be 1"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(handle.getAttribute("Boolean1", false), "Boolean1 should be true"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(!handle.getAttribute("Boolean2", true), "Boolean2 should be false"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		// delete
 		handle.delete();
-		assertTrue("Config should no longer exist", !handle.exists()); //$NON-NLS-1$
+		assertTrue(!handle.exists(), "Config should no longer exist"); //$NON-NLS-1$
 
 		// ensure handle is not in the index
 		ILaunchConfiguration[] configs = getLaunchManager().getLaunchConfigurations();
-		assertTrue("Configuration should not exist in project index", !existsIn(configs, handle));		  //$NON-NLS-1$
+		assertTrue(!existsIn(configs, handle), "Configuration should not exist in project index");		  //$NON-NLS-1$
 	}
 
 	/**
@@ -869,13 +869,13 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 	public void testRenameSharedConfiguration() throws CoreException {
 		ILaunchConfigurationWorkingCopy wc = newConfiguration(getProject(), "shared2rename"); //$NON-NLS-1$
 		ILaunchConfiguration handle = wc.doSave();
-		assertTrue("Configuration should exist", handle.exists()); //$NON-NLS-1$
+		assertTrue(handle.exists(), "Configuration should exist"); //$NON-NLS-1$
 
 		// retrieve attributes
-		assertTrue("String1 should be String1", handle.getAttribute("String1", "Missing").equals("String1")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		assertTrue("Int1 should be 1", handle.getAttribute("Int1", 0) == 1); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean1 should be true", handle.getAttribute("Boolean1", false)); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean2 should be false", !handle.getAttribute("Boolean2", true)); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(handle.getAttribute("String1", "Missing").equals("String1"), "String1 should be String1"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		assertTrue(handle.getAttribute("Int1", 0) == 1, "Int1 should be 1"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(handle.getAttribute("Boolean1", false), "Boolean1 should be true"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(!handle.getAttribute("Boolean2", true), "Boolean2 should be false"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		// rename
 		wc = handle.getWorkingCopy();
@@ -883,24 +883,24 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 		addConfigListener();
 		ILaunchConfiguration newHandle = wc.doSave();
 		removeConfigListener();
-		assertTrue("Config should no longer exist", !handle.exists()); //$NON-NLS-1$
-		assertEquals("From should be original", handle, fFrom); //$NON-NLS-1$
-		assertEquals("To should be new handle", newHandle, fTo);		  //$NON-NLS-1$
+		assertTrue(!handle.exists(), "Config should no longer exist"); //$NON-NLS-1$
+		assertEquals(handle, fFrom, "From should be original"); //$NON-NLS-1$
+		assertEquals(newHandle, fTo, "To should be new handle");		  //$NON-NLS-1$
 
 		// retrieve new attributes
-		assertTrue("String1 should be String1", newHandle.getAttribute("String1", "Missing").equals("String1")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		assertTrue("Int1 should be 1", newHandle.getAttribute("Int1", 0) == 1); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean1 should be true", newHandle.getAttribute("Boolean1", false)); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean2 should be false", !newHandle.getAttribute("Boolean2", true));		  //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(newHandle.getAttribute("String1", "Missing").equals("String1"), "String1 should be String1"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		assertTrue(newHandle.getAttribute("Int1", 0) == 1, "Int1 should be 1"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(newHandle.getAttribute("Boolean1", false), "Boolean1 should be true"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(!newHandle.getAttribute("Boolean2", true), "Boolean2 should be false");		  //$NON-NLS-1$ //$NON-NLS-2$
 
 		// ensure new handle is in the index
 		ILaunchConfiguration[] configs = getLaunchManager().getLaunchConfigurations();
-		assertTrue("Renamed configuration should exist in project index", existsIn(configs, newHandle));		  //$NON-NLS-1$
-		assertTrue("Original configuration should NOT exist in project index", !existsIn(configs, handle));		  //$NON-NLS-1$
+		assertTrue(existsIn(configs, newHandle), "Renamed configuration should exist in project index");		  //$NON-NLS-1$
+		assertTrue(!existsIn(configs, handle), "Original configuration should NOT exist in project index");		  //$NON-NLS-1$
 
 		// cleanup
 		newHandle.delete();
-		assertTrue("Config should not exist after deletion", !newHandle.exists());		  //$NON-NLS-1$
+		assertTrue(!newHandle.exists(), "Config should not exist after deletion");		  //$NON-NLS-1$
 	}
 
 	/**
@@ -927,8 +927,8 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 
 		IProject project = getProject();
 		ILaunchConfiguration[] before = getLaunchManager().getLaunchConfigurations();
-		assertTrue("config should be in index", existsIn(before, lc1)); //$NON-NLS-1$
-		assertTrue("config should be in index", existsIn(before, lc2)); //$NON-NLS-1$
+		assertTrue(existsIn(before, lc1), "config should be in index"); //$NON-NLS-1$
+		assertTrue(existsIn(before, lc2), "config should be in index"); //$NON-NLS-1$
 
 		project.close(null);
 		ILaunchConfiguration[] during = getLaunchManager().getLaunchConfigurations();
@@ -938,18 +938,18 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 			local = local && (d.isLocal() || !d.getFile().getProject().equals(project));
 		}
 		project.open(null);
-		assertTrue("Should only be local configs when closed", local); //$NON-NLS-1$
+		assertTrue(local, "Should only be local configs when closed"); //$NON-NLS-1$
 		ILaunchConfiguration[] after = getLaunchManager().getLaunchConfigurations();
 		assertThat(after).as("compare number of configs").hasSameSizeAs(before);
 		for (ILaunchConfiguration b : before) {
-			assertTrue("Config should exist after openning", existsIn(after, b)); //$NON-NLS-1$
+			assertTrue(existsIn(after, b), "Config should exist after openning"); //$NON-NLS-1$
 		}
 
 		// cleanup
 		lc1.delete();
-		assertTrue("Config should not exist after deletion", !lc1.exists()); //$NON-NLS-1$
+		assertTrue(!lc1.exists(), "Config should not exist after deletion"); //$NON-NLS-1$
 		lc2.delete();
-		assertTrue("Config should not exist after deletion", !lc2.exists());		  //$NON-NLS-1$
+		assertTrue(!lc2.exists(), "Config should not exist after deletion");		  //$NON-NLS-1$
 
 
 	}
@@ -993,11 +993,11 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 	public void testDeleteProjectWithSharedConfig() throws Exception {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("DeleteSharedConfig"); //$NON-NLS-1$
 		try {
-			assertFalse("project should not exist yet", project.exists()); //$NON-NLS-1$
+			assertFalse(project.exists(), "project should not exist yet"); //$NON-NLS-1$
 			project.create(null);
-			assertTrue("project should now exist", project.exists()); //$NON-NLS-1$
+			assertTrue(project.exists(), "project should now exist"); //$NON-NLS-1$
 			project.open(null);
-			assertTrue("project should be open", project.isOpen()); //$NON-NLS-1$
+			assertTrue(project.isOpen(), "project should be open"); //$NON-NLS-1$
 			ILaunchConfigurationWorkingCopy wc = newConfiguration(project, "ToBeDeleted"); //$NON-NLS-1$
 
 			addConfigListener();
@@ -1029,49 +1029,49 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 		IPath location = wc.getLocation();
 		ILaunchConfiguration handle = wc.doSave();
 		File file = location.toFile();
-		assertTrue("Configuration file should exist", file.exists()); //$NON-NLS-1$
+		assertTrue(file.exists(), "Configuration file should exist"); //$NON-NLS-1$
 
 		// retrieve attributes
-		assertEquals("String1 should be String1", handle.getAttribute("String1", "Missing"), "String1"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		assertEquals("Int1 should be 1", handle.getAttribute("Int1", 0), 1); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean1 should be true", handle.getAttribute("Boolean1", false)); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean2 should be false", !handle.getAttribute("Boolean2", true)); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals(handle.getAttribute("String1", "Missing"), "String1", "String1 should be String1"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		assertEquals(handle.getAttribute("Int1", 0), 1, "Int1 should be 1"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(handle.getAttribute("Boolean1", false), "Boolean1 should be true"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(!handle.getAttribute("Boolean2", true), "Boolean2 should be false"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		// ensure new handle is the index
 		ILaunchConfiguration[] configs = getLaunchManager().getLaunchConfigurations();
-		assertTrue("Configuration should exist in project index", existsIn(configs, handle)); //$NON-NLS-1$
+		assertTrue(existsIn(configs, handle), "Configuration should exist in project index"); //$NON-NLS-1$
 
 		// get a working copy
 		wc = handle.getWorkingCopy();
 		ILaunchConfigurationWorkingCopy nested = wc.getWorkingCopy();
 
 		// verify nested is same as original
-		assertEquals("String1 should be String1", nested.getAttribute("String1", "Missing"), "String1"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		assertEquals("Int1 should be 1", nested.getAttribute("Int1", 0), 1); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean1 should be true", nested.getAttribute("Boolean1", false)); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean2 should be false", !nested.getAttribute("Boolean2", true)); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals(nested.getAttribute("String1", "Missing"), "String1", "String1 should be String1"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		assertEquals(nested.getAttribute("Int1", 0), 1, "Int1 should be 1"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(nested.getAttribute("Boolean1", false), "Boolean1 should be true"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(!nested.getAttribute("Boolean2", true), "Boolean2 should be false"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		// change an attribute in the nested working copy
 		nested.setAttribute("String1", "StringOne"); //$NON-NLS-1$ //$NON-NLS-2$
-		assertEquals("Wrong attribute value", nested.getAttribute("String1", "Missing"), "StringOne"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		assertEquals("Wrong attribute value", wc.getAttribute("String1", "Missing"), "String1"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		assertEquals("Wrong attribute value", handle.getAttribute("String1", "Missing"), "String1"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		assertEquals(nested.getAttribute("String1", "Missing"), "StringOne", "Wrong attribute value"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		assertEquals(wc.getAttribute("String1", "Missing"), "String1", "Wrong attribute value"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		assertEquals(handle.getAttribute("String1", "Missing"), "String1", "Wrong attribute value"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
 		// save back to parent
 		ILaunchConfigurationWorkingCopy parent = nested.getParent();
-		assertEquals("Wrong parent", wc, parent); //$NON-NLS-1$
-		assertNull("Should have no parent", wc.getParent()); //$NON-NLS-1$
+		assertEquals(wc, parent, "Wrong parent"); //$NON-NLS-1$
+		assertNull(wc.getParent(), "Should have no parent"); //$NON-NLS-1$
 		nested.doSave();
-		assertEquals("Wrong attribute value", wc.getAttribute("String1", "Missing"), "StringOne");  //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$
-		assertEquals("Wrong attribute value", handle.getAttribute("String1", "Missing"), "String1"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		assertEquals(wc.getAttribute("String1", "Missing"), "StringOne", "Wrong attribute value");  //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$
+		assertEquals(handle.getAttribute("String1", "Missing"), "String1", "Wrong attribute value"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
 		// check originals
-		assertEquals("Wrong original config" , handle, wc.getOriginal()); //$NON-NLS-1$
-		assertEquals("Wrong original config" , handle, nested.getOriginal()); //$NON-NLS-1$
+		assertEquals(handle , wc.getOriginal(), "Wrong original config"); //$NON-NLS-1$
+		assertEquals(handle , nested.getOriginal(), "Wrong original config"); //$NON-NLS-1$
 
 		// cleanup
 		handle.delete();
-		assertTrue("Config should not exist after deletion", !handle.exists()); //$NON-NLS-1$
+		assertTrue(!handle.exists(), "Config should not exist after deletion"); //$NON-NLS-1$
 	}
 
 	/**
@@ -1081,7 +1081,7 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 	@Test
 	public void testCreateDeleteEFS() throws CoreException, URISyntaxException {
 		IFileSystem fileSystem = EFS.getFileSystem("debug"); //$NON-NLS-1$
-		assertNotNull("Missing debug EFS", fileSystem); //$NON-NLS-1$
+		assertNotNull(fileSystem, "Missing debug EFS"); //$NON-NLS-1$
 
 		// create folder in EFS
 		IFolder folder = getProject().getFolder("efs"); //$NON-NLS-1$
@@ -1090,17 +1090,17 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 		// create configuration
 		ILaunchConfigurationWorkingCopy wc = newConfiguration(folder, "efsConfig"); //$NON-NLS-1$
 		ILaunchConfiguration handle = wc.doSave();
-		assertTrue("Configuration should exist", handle.exists()); //$NON-NLS-1$
+		assertTrue(handle.exists(), "Configuration should exist"); //$NON-NLS-1$
 
 		// retrieve attributes
-		assertTrue("String1 should be String1", handle.getAttribute("String1", "Missing").equals("String1")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		assertTrue("Int1 should be 1", handle.getAttribute("Int1", 0) == 1); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean1 should be true", handle.getAttribute("Boolean1", false)); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean2 should be false", !handle.getAttribute("Boolean2", true)); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(handle.getAttribute("String1", "Missing").equals("String1"), "String1 should be String1"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		assertTrue(handle.getAttribute("Int1", 0) == 1, "Int1 should be 1"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(handle.getAttribute("Boolean1", false), "Boolean1 should be true"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(!handle.getAttribute("Boolean2", true), "Boolean2 should be false"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		// delete configuration
 		handle.delete();
-		assertTrue("Configuration should not exist", !handle.exists()); //$NON-NLS-1$
+		assertTrue(!handle.exists(), "Configuration should not exist"); //$NON-NLS-1$
 
 		// cleanup
 		folder.delete(IResource.NONE, null);
@@ -1113,7 +1113,7 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 	@Test
 	public void testCreateDeleteEFSLink() throws CoreException, URISyntaxException {
 		IFileSystem fileSystem = EFS.getFileSystem("debug"); //$NON-NLS-1$
-		assertNotNull("Missing debug EFS", fileSystem); //$NON-NLS-1$
+		assertNotNull(fileSystem, "Missing debug EFS"); //$NON-NLS-1$
 
 		// create folder in EFS
 		IFolder folder = getProject().getFolder("efs2"); //$NON-NLS-1$
@@ -1122,17 +1122,17 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 		// create configuration
 		ILaunchConfigurationWorkingCopy wc = newConfiguration(folder, "efsConfig"); //$NON-NLS-1$
 		ILaunchConfiguration handle = wc.doSave();
-		assertTrue("Configuration should exist", handle.exists()); //$NON-NLS-1$
+		assertTrue(handle.exists(), "Configuration should exist"); //$NON-NLS-1$
 
 		// retrieve attributes
-		assertTrue("String1 should be String1", handle.getAttribute("String1", "Missing").equals("String1")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		assertTrue("Int1 should be 1", handle.getAttribute("Int1", 0) == 1); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean1 should be true", handle.getAttribute("Boolean1", false)); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean2 should be false", !handle.getAttribute("Boolean2", true)); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(handle.getAttribute("String1", "Missing").equals("String1"), "String1 should be String1"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		assertTrue(handle.getAttribute("Int1", 0) == 1, "Int1 should be 1"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(handle.getAttribute("Boolean1", false), "Boolean1 should be true"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(!handle.getAttribute("Boolean2", true), "Boolean2 should be false"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		// cleanup
 		folder.delete(IResource.NONE, null);
-		assertTrue("Configuration should not exist", !handle.exists()); //$NON-NLS-1$
+		assertTrue(!handle.exists(), "Configuration should not exist"); //$NON-NLS-1$
 	}
 
 	/**
@@ -1150,7 +1150,7 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 		IProject project = TestsPlugin.createProject("RenameEFS"); //$NON-NLS-1$
 
 		IFileSystem fileSystem = EFS.getFileSystem("debug"); //$NON-NLS-1$
-		assertNotNull("Missing debug EFS", fileSystem); //$NON-NLS-1$
+		assertNotNull(fileSystem, "Missing debug EFS"); //$NON-NLS-1$
 
 		// create folder in EFS
 		IFolder folder = project.getFolder("efs2"); //$NON-NLS-1$
@@ -1159,13 +1159,13 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 		// create configuration
 		ILaunchConfigurationWorkingCopy wc = newConfiguration(folder, "efsConfig"); //$NON-NLS-1$
 		ILaunchConfiguration handle = wc.doSave();
-		assertTrue("Configuration should exist", handle.exists()); //$NON-NLS-1$
+		assertTrue(handle.exists(), "Configuration should exist"); //$NON-NLS-1$
 
 		// retrieve attributes
-		assertTrue("String1 should be String1", handle.getAttribute("String1", "Missing").equals("String1")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		assertTrue("Int1 should be 1", handle.getAttribute("Int1", 0) == 1); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean1 should be true", handle.getAttribute("Boolean1", false)); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean2 should be false", !handle.getAttribute("Boolean2", true)); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(handle.getAttribute("String1", "Missing").equals("String1"), "String1 should be String1"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		assertTrue(handle.getAttribute("Int1", 0) == 1, "Int1 should be 1"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(handle.getAttribute("Boolean1", false), "Boolean1 should be true"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(!handle.getAttribute("Boolean2", true), "Boolean2 should be false"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		// rename project
 		IProjectDescription description = project.getDescription();
@@ -1173,28 +1173,28 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 		project.move(description, IResource.SHALLOW, null);
 
 		// original configuration should no longer exist - handle out of date
-		assertTrue("Configuration should not exist", !handle.exists()); //$NON-NLS-1$
+		assertTrue(!handle.exists(), "Configuration should not exist"); //$NON-NLS-1$
 
 		// get the new handle
 		project = ResourcesPlugin.getWorkspace().getRoot().getProject("SFEemaneR"); //$NON-NLS-1$
-		assertTrue("Project should exist", project.exists()); //$NON-NLS-1$
+		assertTrue(project.exists(), "Project should exist"); //$NON-NLS-1$
 		IFile file = project.getFile(IPath.fromOSString("efs2/efsConfig.launch")); //$NON-NLS-1$
-		assertTrue("launch config file should exist", file.exists()); //$NON-NLS-1$
+		assertTrue(file.exists(), "launch config file should exist"); //$NON-NLS-1$
 		handle = getLaunchManager().getLaunchConfiguration(file);
-		assertTrue("launch config should exist", handle.exists()); //$NON-NLS-1$
+		assertTrue(handle.exists(), "launch config should exist"); //$NON-NLS-1$
 
 		// retrieve attributes
-		assertTrue("String1 should be String1", handle.getAttribute("String1", "Missing").equals("String1")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		assertTrue("Int1 should be 1", handle.getAttribute("Int1", 0) == 1); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean1 should be true", handle.getAttribute("Boolean1", false)); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean2 should be false", !handle.getAttribute("Boolean2", true)); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(handle.getAttribute("String1", "Missing").equals("String1"), "String1 should be String1"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		assertTrue(handle.getAttribute("Int1", 0) == 1, "Int1 should be 1"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(handle.getAttribute("Boolean1", false), "Boolean1 should be true"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(!handle.getAttribute("Boolean2", true), "Boolean2 should be false"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		// validate shared location
-		assertEquals("Shared location should be updated", file, handle.getFile()); //$NON-NLS-1$
+		assertEquals(file, handle.getFile(), "Shared location should be updated"); //$NON-NLS-1$
 
 		// cleanup
 		project.delete(IResource.NONE, null);
-		assertTrue("Configuration should not exist", !handle.exists()); //$NON-NLS-1$
+		assertTrue(!handle.exists(), "Configuration should not exist"); //$NON-NLS-1$
 
 	}
 
@@ -1206,10 +1206,10 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 		// create a shared configuration "Import4" in the workspace to be overwritten on import
 		ILaunchConfigurationWorkingCopy wc = newConfiguration(getProject(), "Import4"); //$NON-NLS-1$
 		ILaunchConfiguration handle = wc.doSave();
-		assertTrue("Configuration should exist", handle.exists()); //$NON-NLS-1$
+		assertTrue(handle.exists(), "Configuration should exist"); //$NON-NLS-1$
 
 		File dir = TestsPlugin.getFileInPlugin("test-import"); //$NON-NLS-1$
-		assertTrue("Import directory does not exist", dir.exists()); //$NON-NLS-1$
+		assertTrue(dir.exists(), "Import directory does not exist"); //$NON-NLS-1$
 		LaunchManager manager = (LaunchManager) getLaunchManager();
 
 		Listener listener = new Listener();
@@ -1222,26 +1222,26 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 
 			// should be one removed
 			List<ILaunchConfiguration> removed = listener.getRemoved();
-			assertEquals("Should be one removed config", 1, removed.size()); //$NON-NLS-1$
-			assertTrue("Import4 should be removed", removed.contains(handle)); //$NON-NLS-1$
+			assertEquals(1, removed.size(), "Should be one removed config"); //$NON-NLS-1$
+			assertTrue(removed.contains(handle), "Import4 should be removed"); //$NON-NLS-1$
 
 			// should be 5 added
 			List<ILaunchConfiguration> added = listener.getAdded();
-			assertEquals("Should be 5 added configs", 5, added.size()); //$NON-NLS-1$
+			assertEquals(5, added.size(), "Should be 5 added configs"); //$NON-NLS-1$
 			Set<String> names = new HashSet<>();
 			for (ILaunchConfiguration lc : added) {
 				names.add(lc.getName());
 			}
-			assertTrue("Missing Name", names.contains("Import1")); //$NON-NLS-1$ //$NON-NLS-2$
-			assertTrue("Missing Name", names.contains("Import2")); //$NON-NLS-1$ //$NON-NLS-2$
-			assertTrue("Missing Name", names.contains("Import3")); //$NON-NLS-1$ //$NON-NLS-2$
-			assertTrue("Missing Name", names.contains("Import4")); //$NON-NLS-1$ //$NON-NLS-2$
-			assertTrue("Missing Name", names.contains("Import5")); //$NON-NLS-1$ //$NON-NLS-2$
+			assertTrue(names.contains("Import1"), "Missing Name"); //$NON-NLS-1$ //$NON-NLS-2$
+			assertTrue(names.contains("Import2"), "Missing Name"); //$NON-NLS-1$ //$NON-NLS-2$
+			assertTrue(names.contains("Import3"), "Missing Name"); //$NON-NLS-1$ //$NON-NLS-2$
+			assertTrue(names.contains("Import4"), "Missing Name"); //$NON-NLS-1$ //$NON-NLS-2$
+			assertTrue(names.contains("Import5"), "Missing Name"); //$NON-NLS-1$ //$NON-NLS-2$
 
 			// should be one changed
 			List<ILaunchConfiguration> changed = listener.getChanged();
-			assertEquals("Should be 1 changed config", 1, changed.size()); //$NON-NLS-1$
-			assertEquals("Wrong changed config", "Import4", changed.get(0).getName()); //$NON-NLS-1$ //$NON-NLS-2$
+			assertEquals(1, changed.size(), "Should be 1 changed config"); //$NON-NLS-1$
+			assertEquals("Import4", changed.get(0).getName(), "Wrong changed config"); //$NON-NLS-1$ //$NON-NLS-2$
 		} finally {
 			manager.removeLaunchConfigurationListener(listener);
 		}
@@ -1255,7 +1255,7 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 	public void testWorkingCopyGetLocation() throws CoreException {
 		ILaunchConfigurationWorkingCopy workingCopy = newConfiguration(null, "test-get-location"); //$NON-NLS-1$
 		IPath location = workingCopy.getLocation();
-		assertEquals("Wrong path for local working copy", LaunchManager.LOCAL_LAUNCH_CONFIGURATION_CONTAINER_PATH.append("test-get-location.launch"), location); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals(LaunchManager.LOCAL_LAUNCH_CONFIGURATION_CONTAINER_PATH.append("test-get-location.launch"), location, "Wrong path for local working copy"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
@@ -1267,9 +1267,9 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 		ILaunch launch = workingCopy.launch(ILaunchManager.DEBUG_MODE, null);
 		try {
 			String stamp = launch.getAttribute(DebugPlugin.ATTR_LAUNCH_TIMESTAMP);
-			assertNotNull("missing time stamp", stamp); //$NON-NLS-1$
+			assertNotNull(stamp, "missing time stamp"); //$NON-NLS-1$
 			long lstamp = Long.parseLong(stamp); // should be a long - will throw NumberFormatException if not
-			assertTrue("Time travel launch", lstamp <= System.currentTimeMillis());
+			assertTrue(lstamp <= System.currentTimeMillis(), "Time travel launch");
 		} finally {
 			if (launch != null) {
 				getLaunchManager().removeLaunch(launch);
@@ -1312,9 +1312,9 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 							"launch termination state is \"" + launch.isTerminated() + "\" " +
 							"and " + terminatedLaunches.size() + " launches have terminated");
 			String launchTerminateTimestampUntyped = launch.getAttribute(DebugPlugin.ATTR_TERMINATE_TIMESTAMP);
-			assertNotNull("Time stamp is missing", launchTerminateTimestampUntyped);
+			assertNotNull(launchTerminateTimestampUntyped, "Time stamp is missing");
 			long launchTerminateTimestamp = Long.parseLong(launchTerminateTimestampUntyped);
-			assertTrue("Launch time is before current time", launchTerminateTimestamp <= System.currentTimeMillis());
+			assertTrue(launchTerminateTimestamp <= System.currentTimeMillis(), "Launch time is before current time");
 		} finally {
 			DebugPlugin.getDefault().getLaunchManager().removeLaunchListener(listener);
 			if (launch != null) {
@@ -1445,7 +1445,7 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 				long msecToWaitForProcessToStart = 500;
 				long startTimeMsec = System.currentTimeMillis();
 				while (System.currentTimeMillis() - startTimeMsec < msecToWaitForProcessToStart) {
-					assertFalse("Process started before registering launch for notifications", processStarted.get());
+					assertFalse(processStarted.get(), "Process started before registering launch for notifications");
 				}
 				super.addProcess(process);
 			}
@@ -1633,7 +1633,7 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 			// i.e. expected code path
 			return;
 		}
-		assertTrue("Should be an illegal argument - cannot nest local configurations", false); //$NON-NLS-1$
+		assertTrue(false, "Should be an illegal argument - cannot nest local configurations"); //$NON-NLS-1$
 	}
 
 	/**
@@ -1646,7 +1646,7 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 		try {
 			newConfiguration(getProject(), IPath.fromOSString("some").append("nested").append("config").toOSString()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		} catch (CoreException e) {
-			assertTrue("Should *not* be an illegal argument - can nest shared cofigurations", false); //$NON-NLS-1$
+			assertTrue(false, "Should *not* be an illegal argument - can nest shared cofigurations"); //$NON-NLS-1$
 		}
 	}
 
@@ -1661,7 +1661,7 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 			// expected code path
 			return;
 		}
-		assertTrue("Should be an illegal argument - illegal character used in name", false); //$NON-NLS-1$
+		assertTrue(false, "Should be an illegal argument - illegal character used in name"); //$NON-NLS-1$
 	}
 
 	/**
@@ -1683,8 +1683,8 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 		wc.rename("end-here"); //$NON-NLS-1$
 		ILaunchConfiguration next = wc.doSave();
 
-		assertFalse("Original should not exist", orig.exists()); //$NON-NLS-1$
-		assertTrue("Renamed and moved config should exist", next.exists()); //$NON-NLS-1$
+		assertFalse(orig.exists(), "Original should not exist"); //$NON-NLS-1$
+		assertTrue(next.exists(), "Renamed and moved config should exist"); //$NON-NLS-1$
 
 	}
 
@@ -1698,8 +1698,8 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 	@Test
 	public void testGetTypeImageFromURI() throws Exception {
 		ImageDescriptor descriptor = DebugUITools.getImageDescriptor("org.eclipse.debug.tests.launch.type1"); //$NON-NLS-1$
-		assertNotNull("The image descriptior type.image.1 must exist", descriptor); //$NON-NLS-1$
-		assertNotSame("The image descriptor is not type.image.1", ImageDescriptor.getMissingImageDescriptor(), descriptor); //$NON-NLS-1$
+		assertNotNull(descriptor, "The image descriptior type.image.1 must exist"); //$NON-NLS-1$
+		assertNotSame(ImageDescriptor.getMissingImageDescriptor(), descriptor, "The image descriptor is not type.image.1"); //$NON-NLS-1$
 	}
 
 	/**
@@ -1708,8 +1708,8 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 	@Test
 	public void testGetTyeImage() throws Exception {
 		ImageDescriptor descriptor = DebugUITools.getImageDescriptor("org.eclipse.debug.tests.launch.type"); //$NON-NLS-1$
-		assertNotNull("The image descriptior type.image.2 must exist", descriptor); //$NON-NLS-1$
-		assertNotSame("The image descriptor is not type.image.2", ImageDescriptor.getMissingImageDescriptor(), descriptor); //$NON-NLS-1$
+		assertNotNull(descriptor, "The image descriptior type.image.2 must exist"); //$NON-NLS-1$
+		assertNotSame(ImageDescriptor.getMissingImageDescriptor(), descriptor, "The image descriptor is not type.image.2"); //$NON-NLS-1$
 	}
 
 	/**
@@ -1723,10 +1723,10 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 		ILaunchConfiguration lc = newConfiguration(null, "test.project.resource.mapping"); //$NON-NLS-1$
 		try {
 			ILaunchConfigurationWorkingCopy wc = lc.getWorkingCopy();
-			assertNotNull("Should have a working copy of the testig launch configuration", wc); //$NON-NLS-1$
+			assertNotNull(wc, "Should have a working copy of the testig launch configuration"); //$NON-NLS-1$
 			setResourceMappings(wc, new ResourceItem[] { new ResourceItem("test.project", Integer.valueOf(IResource.PROJECT)) }); //$NON-NLS-1$
 			IResource[] res = wc.getMappedResources();
-			assertNotNull("There should be mapped resources", res); //$NON-NLS-1$
+			assertNotNull(res, "There should be mapped resources"); //$NON-NLS-1$
 			assertThat(res).hasSize(1);
 		}
 		finally {
@@ -1745,10 +1745,10 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 		ILaunchConfiguration lc = newConfiguration(null, "test.project.resource.mapping"); //$NON-NLS-1$
 		try {
 			ILaunchConfigurationWorkingCopy wc = lc.getWorkingCopy();
-			assertNotNull("Should have a working copy of the testig launch configuration", wc); //$NON-NLS-1$
+			assertNotNull(wc, "Should have a working copy of the testig launch configuration"); //$NON-NLS-1$
 			setResourceMappings(wc, new ResourceItem[] { new ResourceItem("test/project", Integer.valueOf(IResource.PROJECT)) }); //$NON-NLS-1$
 			IResource[] res = wc.getMappedResources();
-			assertNull("There should be no mapped resources", res); //$NON-NLS-1$
+			assertNull(res, "There should be no mapped resources"); //$NON-NLS-1$
 		}
 		finally {
 			lc.delete();
@@ -1766,14 +1766,14 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 		ILaunchConfiguration lc = newConfiguration(null, "test.project.resource.mapping"); //$NON-NLS-1$
 		try {
 			ILaunchConfigurationWorkingCopy wc = lc.getWorkingCopy();
-			assertNotNull("Should have a working copy of the testig launch configuration", wc); //$NON-NLS-1$
+			assertNotNull(wc, "Should have a working copy of the testig launch configuration"); //$NON-NLS-1$
 			setResourceMappings(wc, new ResourceItem[] { new ResourceItem("test\\project", Integer.valueOf(IResource.PROJECT)) }); //$NON-NLS-1$
 			IResource[] res = wc.getMappedResources();
 			if(Platform.OS_WIN32.equals(Platform.getOS())) {
-				assertNull("There should be no mapped resources", res); //$NON-NLS-1$
+				assertNull(res, "There should be no mapped resources"); //$NON-NLS-1$
 			}
 			else {
-				assertNotNull("There should be mapped resources", res); //$NON-NLS-1$
+				assertNotNull(res, "There should be mapped resources"); //$NON-NLS-1$
 			}
 		}
 		finally {
@@ -1792,10 +1792,10 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 		ILaunchConfiguration lc = newConfiguration(null, "test.project.resource.mapping"); //$NON-NLS-1$
 		try {
 			ILaunchConfigurationWorkingCopy wc = lc.getWorkingCopy();
-			assertNotNull("Should have a working copy of the testig launch configuration", wc); //$NON-NLS-1$
+			assertNotNull(wc, "Should have a working copy of the testig launch configuration"); //$NON-NLS-1$
 			setResourceMappings(wc, new ResourceItem[] { new ResourceItem("/project", Integer.valueOf(IResource.PROJECT)) }); //$NON-NLS-1$
 			IResource[] res = wc.getMappedResources();
-			assertNotNull("There should be mapped resources", res); //$NON-NLS-1$
+			assertNotNull(res, "There should be mapped resources"); //$NON-NLS-1$
 		}
 		finally {
 			lc.delete();
@@ -1815,7 +1815,7 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 		LaunchManager lm = (LaunchManager) DebugPlugin.getDefault().getLaunchManager();
 		// find the external tools UI bundle and make sure it is started
 		Bundle b = Platform.getBundle("org.eclipse.ui.externaltools"); //$NON-NLS-1$
-		assertNotNull("Must have found the external tools bundle", b); //$NON-NLS-1$
+		assertNotNull(b, "Must have found the external tools bundle"); //$NON-NLS-1$
 		if (b.getState() != Bundle.ACTIVE) {
 			b.start();
 		}
@@ -1854,10 +1854,10 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 		ILaunchConfigurationWorkingCopy source = newPrototype(null, "test-copy-attributes-source"); //$NON-NLS-1$
 		ILaunchConfigurationWorkingCopy dest = newEmptyConfiguration(null, "test-copy-attributes-dest"); //$NON-NLS-1$
 		dest.copyAttributes(source);
-		assertTrue("String1 should be String1", dest.getAttribute("String1", "Missing").equals("String1"));  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		assertTrue("Int1 should be 1", dest.getAttribute("Int1", 0) == 1); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean1 should be true", dest.getAttribute("Boolean1", false)); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Boolean2 should be false", !dest.getAttribute("Boolean2", true)); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(dest.getAttribute("String1", "Missing").equals("String1"), "String1 should be String1");  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		assertTrue(dest.getAttribute("Int1", 0) == 1, "Int1 should be 1"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(dest.getAttribute("Boolean1", false), "Boolean1 should be true"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue(!dest.getAttribute("Boolean2", true), "Boolean2 should be false"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
@@ -1872,8 +1872,8 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 
 		ILaunchConfigurationWorkingCopy config = type.newInstance(null, "test-scopes"); //$NON-NLS-1$
 		config.setPrototype(prototype, true);
-		assertNotNull("Made from wrong prototype", config.getAttribute("TEMPLATE", (String)null)); //$NON-NLS-1$ //$NON-NLS-2$
-		assertEquals("Should refer to creation prototype", prototype, config.getPrototype()); //$NON-NLS-1$
+		assertNotNull(config.getAttribute("TEMPLATE", (String)null), "Made from wrong prototype"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals(prototype, config.getPrototype(), "Should refer to creation prototype"); //$NON-NLS-1$
 	}
 
 	/**
@@ -1883,12 +1883,12 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 	public void testIsPrototype() throws CoreException {
 		ILaunchConfigurationWorkingCopy wc = newPrototype(null, "test-is-prototype"); //$NON-NLS-1$
 		ILaunchConfiguration prototype = wc.doSave();
-		assertTrue("Should be a prototype", prototype.isPrototype()); //$NON-NLS-1$
+		assertTrue(prototype.isPrototype(), "Should be a prototype"); //$NON-NLS-1$
 		ILaunchConfiguration[] prototypes = wc.getType().getPrototypes();
 		List<ILaunchConfiguration> list = new ArrayList<>();
 		Collections.addAll(list, prototypes);
-		assertFalse("Expecting at least prototype", list.isEmpty()); //$NON-NLS-1$
-		assertTrue("Missing created prototype", list.contains(prototype)); //$NON-NLS-1$
+		assertFalse(list.isEmpty(), "Expecting at least prototype"); //$NON-NLS-1$
+		assertTrue(list.contains(prototype), "Missing created prototype"); //$NON-NLS-1$
 	}
 
 	/**
@@ -1913,9 +1913,9 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 		for (ILaunchConfiguration child : children) {
 			list.add(child);
 		}
-		assertEquals("Wrong number of prototype children", 2, list.size()); //$NON-NLS-1$
-		assertTrue("Missing reference", list.contains(s1)); //$NON-NLS-1$
-		assertTrue("Missing reference", list.contains(s2)); //$NON-NLS-1$
+		assertEquals(2, list.size(), "Wrong number of prototype children"); //$NON-NLS-1$
+		assertTrue(list.contains(s1), "Missing reference"); //$NON-NLS-1$
+		assertTrue(list.contains(s2), "Missing reference"); //$NON-NLS-1$
 	}
 
 	/**
@@ -1937,7 +1937,7 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 		wc.removeAttribute("String1"); //$NON-NLS-1$
 		assertEquals("TEMPLATE-1", wc.getAttribute("COMMON", (String)null)); //$NON-NLS-1$ //$NON-NLS-2$
 		assertEquals("T1", wc.getAttribute("T1", (String)null)); //$NON-NLS-1$ //$NON-NLS-2$
-		assertNull(wc.getAttribute("String1", (String)null)); //$NON-NLS-1$
+		assertNull(wc.getAttribute("String1", (String) null)); //$NON-NLS-1$
 
 	}
 
@@ -1977,7 +1977,7 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 		} catch (CoreException e) {
 			return;
 		}
-		assertTrue("Shoud not be able to nest prototypes", false); //$NON-NLS-1$
+		assertTrue(false, "Shoud not be able to nest prototypes"); //$NON-NLS-1$
 	}
 
 	/**
@@ -1994,7 +1994,7 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 			// expected
 			return;
 		}
-		assertTrue("Should not be able to set configration as prototype", false); //$NON-NLS-1$
+		assertTrue(false, "Should not be able to set configration as prototype"); //$NON-NLS-1$
 	}
 
 	/**

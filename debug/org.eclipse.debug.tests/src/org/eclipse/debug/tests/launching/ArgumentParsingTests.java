@@ -14,7 +14,7 @@
 package org.eclipse.debug.tests.launching;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -61,20 +61,16 @@ public class ArgumentParsingTests {
 
 	private static void execute(String commandLine, String[] expectedArgs, String expectedRendered) throws Exception {
 		String[] arguments = DebugPlugin.parseArguments(commandLine);
-		assertEquals("unexpected parseArguments result;", //$NON-NLS-1$
-				Arrays.asList(expectedArgs).toString(),
-				Arrays.asList(arguments).toString());
+		assertEquals(Arrays.asList(expectedArgs).toString(), Arrays.asList(arguments).toString(), "unexpected parseArguments result;");
 
 		runCommandLine(commandLine, arguments);
 
 		String rendered = DebugPlugin.renderArguments(arguments, null);
-		assertEquals("unexpected renderArguments result;", expectedRendered, rendered); //$NON-NLS-1$
+		assertEquals(expectedRendered, rendered, "unexpected renderArguments result;");
 
 		if (!commandLine.equals(rendered)) {
 			String[] arguments2 = DebugPlugin.parseArguments(rendered);
-			assertEquals("parsing rendered command line doesn't yield original arguments;", //$NON-NLS-1$
-					Arrays.asList(expectedArgs).toString(),
-					Arrays.asList(arguments2).toString());
+			assertEquals(Arrays.asList(expectedArgs).toString(), Arrays.asList(arguments2).toString(), "parsing rendered command line doesn't yield original arguments;");
 		}
 
 		String[] splitArguments = DebugPlugin.splitArguments(commandLine);
@@ -98,16 +94,12 @@ public class ArgumentParsingTests {
 
 		ArrayList<String> resultArgs = runCommandLine(execArgs);
 
-		assertEquals("unexpected exec result;", //$NON-NLS-1$
-				Arrays.asList(arguments).toString(),
-				resultArgs.toString());
+		assertEquals(Arrays.asList(arguments).toString(), resultArgs.toString(), "unexpected exec result;");
 
 		if (! Platform.getOS().equals(Constants.OS_WIN32)) {
 			execArgs = new String[] { "sh", "-c", execArgs[0] + " " + execArgs[1] + " " + execArgs[2] + " " + execArgs[3] + " " + commandLine }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
 			resultArgs = runCommandLine(execArgs);
-			assertEquals("unexpected sh exec result;", //$NON-NLS-1$
-					Arrays.asList(arguments).toString(),
-					resultArgs.toString());
+			assertEquals(Arrays.asList(arguments).toString(), resultArgs.toString(), "unexpected sh exec result;");
 		}
 	}
 
@@ -206,9 +198,9 @@ public class ArgumentParsingTests {
 		};
 		String rendered = DebugPlugin.renderArguments(arguments, null);
 		if (Platform.getOS().equals(Constants.OS_WIN32)) {
-			assertEquals("unexpected renderArguments result;", "-Dfoo=\\\"abc\\def\\ghi\\\"", rendered); //$NON-NLS-1$ //$NON-NLS-2$
+			assertEquals("-Dfoo=\\\"abc\\def\\ghi\\\"", rendered, "unexpected renderArguments result;");
 		} else {
-			assertEquals("unexpected renderArguments result;", "-Dfoo=\\\"abc\\\\def\\\\ghi\\\"", rendered); //$NON-NLS-1$ //$NON-NLS-2$
+			assertEquals("-Dfoo=\\\"abc\\\\def\\\\ghi\\\"", rendered, "unexpected renderArguments result;");
 		}
 	}
 
