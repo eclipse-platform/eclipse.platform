@@ -65,19 +65,24 @@ import org.eclipse.team.internal.core.importing.BundleImporterExtension;
  */
 public final class Team {
 
+	@SuppressWarnings("removal")
+	@Deprecated
 	private static class StringMappingWrapper implements IFileTypeInfo {
 
 		private final IStringMapping fMapping;
 
+		@Deprecated
 		public StringMappingWrapper(IStringMapping mapping) {
 			fMapping= mapping;
 		}
 
+		@Deprecated
 		@Override
 		public String getExtension() {
 			return fMapping.getString();
 		}
 
+		@Deprecated
 		@Override
 		public int getType() {
 			return fMapping.getType();
@@ -190,6 +195,7 @@ public final class Team {
 	 * @return all known file types
 	 * @deprecated Use <code>getFileContentManager().getExtensionMappings()</code> instead.
 	 */
+	@SuppressWarnings("removal")
 	@Deprecated(forRemoval = true, since = "2025-03")
 	public static IFileTypeInfo[] getAllTypes() {
 		final IStringMapping [] mappings= fFileContentManager.getExtensionMappings();
@@ -542,11 +548,13 @@ public final class Team {
 	 * @since 3.0
 	 * @deprecated Use Team.getFileContentManager().getDefaultExtensionMappings() instead.
 	 */
+	@SuppressWarnings("removal")
 	@Deprecated(forRemoval = true, since = "2025-03")
 	public static IFileTypeInfo[] getDefaultTypes() {
 		return asFileTypeInfo(getFileContentManager().getDefaultExtensionMappings());
 	}
 
+	@SuppressWarnings("removal")
 	private static IFileTypeInfo [] asFileTypeInfo(IStringMapping [] mappings) {
 		final IFileTypeInfo [] infos= new IFileTypeInfo[mappings.length];
 		for (int i = 0; i < infos.length; i++) {
