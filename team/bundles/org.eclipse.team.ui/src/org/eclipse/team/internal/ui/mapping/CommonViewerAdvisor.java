@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2025 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -74,8 +74,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.SubActionBars;
 import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.navigator.CommonViewer;
+import org.eclipse.ui.navigator.CommonViewerComparator;
 import org.eclipse.ui.navigator.CommonViewerSiteFactory;
-import org.eclipse.ui.navigator.CommonViewerSorter;
 import org.eclipse.ui.navigator.ICommonViewerSite;
 import org.eclipse.ui.navigator.INavigatorContentExtension;
 import org.eclipse.ui.navigator.INavigatorContentServiceListener;
@@ -270,8 +270,8 @@ public class CommonViewerAdvisor extends AbstractTreeViewerAdvisor implements IN
 	 */
 	private static CommonViewer createViewer(Composite parent, final ISynchronizePageConfiguration configuration, IEmptyTreeListener listener) {
 		final CommonViewer v = new NavigableCommonViewer(configuration.getViewerId(), parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL, listener);
-		v.setComparator(new CommonViewerSorter());
-		v.setComparator(new TeamViewerSorter((CommonViewerSorter) v.getSorter()));
+		v.setComparator(new CommonViewerComparator());
+		v.setComparator(new TeamViewerComparator((CommonViewerComparator) v.getComparator()));
 		ISynchronizationScope scope = getScope(configuration);
 		bindTeamContentProviders(v);
 		scope.addScopeChangeListener((scope1, newMappings, newTraversals) -> {

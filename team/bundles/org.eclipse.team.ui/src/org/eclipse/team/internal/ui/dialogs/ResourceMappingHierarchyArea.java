@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2025 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -24,11 +24,11 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.team.core.mapping.ISynchronizationContext;
 import org.eclipse.team.core.mapping.ISynchronizationScope;
-import org.eclipse.team.internal.ui.mapping.TeamViewerSorter;
+import org.eclipse.team.internal.ui.mapping.TeamViewerComparator;
 import org.eclipse.team.ui.TeamUI;
 import org.eclipse.team.ui.mapping.ITeamContentProviderManager;
 import org.eclipse.ui.navigator.CommonViewer;
-import org.eclipse.ui.navigator.CommonViewerSorter;
+import org.eclipse.ui.navigator.CommonViewerComparator;
 import org.eclipse.ui.navigator.INavigatorContentExtension;
 import org.eclipse.ui.navigator.INavigatorContentServiceListener;
 
@@ -63,8 +63,8 @@ public class ResourceMappingHierarchyArea extends DialogArea implements INavigat
 		}
 
 		viewer = new CommonViewer(TEAM_NAVIGATOR_CONTENT, composite, SWT.BORDER);
-		viewer.setComparator(new CommonViewerSorter());
-		viewer.setComparator(new TeamViewerSorter((CommonViewerSorter) viewer.getSorter()));
+		viewer.setComparator(new CommonViewerComparator());
+		viewer.setComparator(new TeamViewerComparator((CommonViewerComparator) viewer.getComparator()));
 		viewer.getNavigatorContentService().bindExtensions(TeamUI.getTeamContentProviderManager().getContentProviderIds(scope), true);
 		viewer.getNavigatorContentService().getActivationService().activateExtensions(TeamUI.getTeamContentProviderManager().getContentProviderIds(scope), true);
 		GridData data = new GridData(GridData.FILL_BOTH);
