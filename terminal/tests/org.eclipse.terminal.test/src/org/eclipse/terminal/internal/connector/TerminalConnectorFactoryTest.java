@@ -16,6 +16,12 @@
  *******************************************************************************/
 package org.eclipse.terminal.internal.connector;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 
@@ -27,10 +33,9 @@ import org.eclipse.terminal.connector.ITerminalControl;
 import org.eclipse.terminal.connector.TerminalState;
 import org.eclipse.terminal.connector.provider.AbstractTerminalConnector;
 import org.eclipse.terminal.control.TerminalTitleRequestor;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
-
-public class TerminalConnectorFactoryTest extends TestCase {
+public class TerminalConnectorFactoryTest {
 	public class SettingsMock implements ISettingsStore {
 
 		@Override
@@ -180,6 +185,7 @@ public class TerminalConnectorFactoryTest extends TestCase {
 		return c;
 	}
 
+	@Test
 	public void testGetInitializationErrorMessage() {
 		TerminalConnector c = makeTerminalConnector();
 		c.connect(new TerminalControlMock());
@@ -196,12 +202,14 @@ public class TerminalConnectorFactoryTest extends TestCase {
 
 	}
 
+	@Test
 	public void testGetIdAndName() {
 		TerminalConnector c = makeTerminalConnector();
 		assertEquals("xID", c.getId());
 		assertEquals("xName", c.getName());
 	}
 
+	@Test
 	public void testIsInitialized() {
 		TerminalConnector c = makeTerminalConnector();
 		assertFalse(c.isInitialized());
@@ -223,6 +231,7 @@ public class TerminalConnectorFactoryTest extends TestCase {
 		assertFalse(c.isInitialized());
 	}
 
+	@Test
 	public void testConnect() {
 		TerminalConnector c = makeTerminalConnector();
 		assertFalse(c.isInitialized());
@@ -231,6 +240,7 @@ public class TerminalConnectorFactoryTest extends TestCase {
 
 	}
 
+	@Test
 	public void testDisconnect() {
 		ConnectorMock mock = new ConnectorMock();
 		TerminalConnector c = makeTerminalConnector(mock);
@@ -240,6 +250,7 @@ public class TerminalConnectorFactoryTest extends TestCase {
 		assertTrue(mock.fDisconnect);
 	}
 
+	@Test
 	public void testGetTerminalToRemoteStream() {
 		ConnectorMock mock = new ConnectorMock();
 		TerminalConnector c = makeTerminalConnector(mock);
@@ -248,6 +259,7 @@ public class TerminalConnectorFactoryTest extends TestCase {
 		assertSame(mock.fTerminalControl, control);
 	}
 
+	@Test
 	public void testGetSettingsSummary() {
 		TerminalConnector c = makeTerminalConnector();
 		assertEquals("Not Initialized", c.getSettingsSummary());
@@ -255,6 +267,7 @@ public class TerminalConnectorFactoryTest extends TestCase {
 		assertEquals("Summary", c.getSettingsSummary());
 	}
 
+	@Test
 	public void testIsLocalEcho() {
 		ConnectorMock mock = new ConnectorMock();
 		TerminalConnector c = makeTerminalConnector(mock);
@@ -263,6 +276,7 @@ public class TerminalConnectorFactoryTest extends TestCase {
 		assertTrue(c.isLocalEcho());
 	}
 
+	@Test
 	public void testLoad() {
 		ConnectorMock mock = new ConnectorMock();
 		TerminalConnector c = makeTerminalConnector(mock);
@@ -274,6 +288,7 @@ public class TerminalConnectorFactoryTest extends TestCase {
 		assertSame(s, mock.fLoadStore);
 	}
 
+	@Test
 	public void testSave() {
 		ConnectorMock mock = new ConnectorMock();
 		TerminalConnector c = makeTerminalConnector(mock);
@@ -285,12 +300,14 @@ public class TerminalConnectorFactoryTest extends TestCase {
 		assertSame(s, mock.fSaveStore);
 	}
 
+	@Test
 	public void testSetDefaultSettings() {
 		ConnectorMock mock = new ConnectorMock();
 		TerminalConnector c = makeTerminalConnector(mock);
 		c.setDefaultSettings();
 	}
 
+	@Test
 	public void testSetTerminalSize() {
 		ConnectorMock mock = new ConnectorMock();
 		TerminalConnector c = makeTerminalConnector(mock);
@@ -298,6 +315,7 @@ public class TerminalConnectorFactoryTest extends TestCase {
 
 	}
 
+	@Test
 	public void testGetAdapter() {
 		if (!Platform.isRunning())
 			return;

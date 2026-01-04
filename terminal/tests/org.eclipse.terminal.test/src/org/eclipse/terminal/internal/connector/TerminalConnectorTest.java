@@ -16,6 +16,12 @@
  *******************************************************************************/
 package org.eclipse.terminal.internal.connector;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 
@@ -27,10 +33,9 @@ import org.eclipse.terminal.connector.TerminalState;
 import org.eclipse.terminal.connector.provider.AbstractTerminalConnector;
 import org.eclipse.terminal.control.TerminalTitleRequestor;
 import org.eclipse.terminal.internal.connector.TerminalConnector.Factory;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
-
-public class TerminalConnectorTest extends TestCase {
+public class TerminalConnectorTest {
 	public class SettingsMock implements ISettingsStore {
 
 		@Override
@@ -181,11 +186,11 @@ public class TerminalConnectorTest extends TestCase {
 
 		@Override
 		public AbstractTerminalConnector makeConnector() throws Exception {
-			// TODO Auto-generated method stub
 			return fConnector;
 		}
 	}
 
+	@Test
 	public void testGetInitializationErrorMessage() {
 		TerminalConnector c = new TerminalConnector(new SimpleFactory(new ConnectorMock()), "xID", "xName", false);
 		c.connect(new TerminalControlMock());
@@ -202,12 +207,14 @@ public class TerminalConnectorTest extends TestCase {
 
 	}
 
+	@Test
 	public void testGetIdAndName() {
 		TerminalConnector c = new TerminalConnector(new SimpleFactory(new ConnectorMock()), "xID", "xName", false);
 		assertEquals("xID", c.getId());
 		assertEquals("xName", c.getName());
 	}
 
+	@Test
 	public void testConnect() {
 		TerminalConnector c = new TerminalConnector(new SimpleFactory(new ConnectorMock()), "xID", "xName", false);
 		assertFalse(c.isInitialized());
@@ -216,6 +223,7 @@ public class TerminalConnectorTest extends TestCase {
 
 	}
 
+	@Test
 	public void testDisconnect() {
 		ConnectorMock mock = new ConnectorMock();
 		TerminalConnector c = new TerminalConnector(new SimpleFactory(mock), "xID", "xName", false);
@@ -225,6 +233,7 @@ public class TerminalConnectorTest extends TestCase {
 		assertTrue(mock.fDisconnect);
 	}
 
+	@Test
 	public void testGetTerminalToRemoteStream() {
 		ConnectorMock mock = new ConnectorMock();
 		TerminalConnector c = new TerminalConnector(new SimpleFactory(mock), "xID", "xName", false);
@@ -233,6 +242,7 @@ public class TerminalConnectorTest extends TestCase {
 		assertSame(mock.fTerminalControl, control);
 	}
 
+	@Test
 	public void testGetSettingsSummary() {
 		TerminalConnector c = new TerminalConnector(new SimpleFactory(new ConnectorMock()), "xID", "xName", false);
 		assertEquals("Not Initialized", c.getSettingsSummary());
@@ -240,6 +250,7 @@ public class TerminalConnectorTest extends TestCase {
 		assertEquals("Summary", c.getSettingsSummary());
 	}
 
+	@Test
 	public void testIsLocalEcho() {
 		ConnectorMock mock = new ConnectorMock();
 		TerminalConnector c = new TerminalConnector(new SimpleFactory(mock), "xID", "xName", false);
@@ -248,6 +259,7 @@ public class TerminalConnectorTest extends TestCase {
 		assertTrue(c.isLocalEcho());
 	}
 
+	@Test
 	public void testLoad() {
 		ConnectorMock mock = new ConnectorMock();
 		TerminalConnector c = new TerminalConnector(new SimpleFactory(mock), "xID", "xName", false);
@@ -259,6 +271,7 @@ public class TerminalConnectorTest extends TestCase {
 		assertSame(s, mock.fLoadStore);
 	}
 
+	@Test
 	public void testSave() {
 		ConnectorMock mock = new ConnectorMock();
 		TerminalConnector c = new TerminalConnector(new SimpleFactory(mock), "xID", "xName", false);
@@ -270,12 +283,14 @@ public class TerminalConnectorTest extends TestCase {
 		assertSame(s, mock.fSaveStore);
 	}
 
+	@Test
 	public void testSetDefaultSettings() {
 		ConnectorMock mock = new ConnectorMock();
 		TerminalConnector c = new TerminalConnector(new SimpleFactory(mock), "xID", "xName", false);
 		c.setDefaultSettings();
 	}
 
+	@Test
 	public void testSetTerminalSize() {
 		ConnectorMock mock = new ConnectorMock();
 		TerminalConnector c = new TerminalConnector(new SimpleFactory(mock), "xID", "xName", false);

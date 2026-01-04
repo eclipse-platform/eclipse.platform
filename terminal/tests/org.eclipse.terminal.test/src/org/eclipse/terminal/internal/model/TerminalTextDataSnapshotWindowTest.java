@@ -10,13 +10,16 @@
  *******************************************************************************/
 package org.eclipse.terminal.internal.model;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.eclipse.terminal.model.ITerminalTextData;
 import org.eclipse.terminal.model.ITerminalTextDataReadOnly;
 import org.eclipse.terminal.model.ITerminalTextDataSnapshot;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
-
-public class TerminalTextDataSnapshotWindowTest extends TestCase {
+public class TerminalTextDataSnapshotWindowTest {
 	String toMultiLineText(ITerminalTextDataReadOnly term) {
 		return TerminalTextTestHelper.toMultiLineText(term);
 	}
@@ -52,6 +55,7 @@ public class TerminalTextDataSnapshotWindowTest extends TestCase {
 		assertEquals(expected, buffer.toString());
 	}
 
+	@Test
 	public void testSetInterestWindow() {
 		ITerminalTextData term = makeITerminalTextData();
 		ITerminalTextDataSnapshot snapshot = snapshotSimple("0123456789", term);
@@ -64,6 +68,7 @@ public class TerminalTextDataSnapshotWindowTest extends TestCase {
 		assertChangedLines(snapshot, "0011100000");
 	}
 
+	@Test
 	public void testSetChar() {
 		ITerminalTextData term = makeITerminalTextData();
 		ITerminalTextDataSnapshot snapshot = snapshotSimple("0123456789", term);
@@ -108,6 +113,7 @@ public class TerminalTextDataSnapshotWindowTest extends TestCase {
 		assertChangedLines(snapshot, "0011100000");
 	}
 
+	@Test
 	public void testSetChars() {
 		ITerminalTextData term = makeITerminalTextData();
 		ITerminalTextDataSnapshot snapshot = snapshotSimple("0123456789", term);
@@ -151,6 +157,7 @@ public class TerminalTextDataSnapshotWindowTest extends TestCase {
 		assertChangedLines(snapshot, "0011100000");
 	}
 
+	@Test
 	public void testSetChars2() {
 		ITerminalTextData term = makeITerminalTextData();
 		ITerminalTextDataSnapshot snapshot = snapshotSimple("0123456789", term);

@@ -13,11 +13,17 @@
  *******************************************************************************/
 package org.eclipse.terminal.internal.model;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 
 import org.eclipse.terminal.model.ITerminalTextData;
 import org.eclipse.terminal.model.LineSegment;
 import org.eclipse.terminal.model.TerminalStyle;
+import org.junit.jupiter.api.Test;
 
 public class TerminalTextDataWindowTest extends AbstractITerminalTextDataTest {
 	int fOffset;
@@ -100,6 +106,7 @@ public class TerminalTextDataWindowTest extends AbstractITerminalTextDataTest {
 	}
 
 	@Override
+	@Test
 	public void testAddLine() {
 		String s = "111\n" + "222\n" + "333\n" + "444\n" + "555";
 		ITerminalTextData term = makeITerminalTextData();
@@ -109,6 +116,7 @@ public class TerminalTextDataWindowTest extends AbstractITerminalTextDataTest {
 	}
 
 	@Override
+	@Test
 	public void testMaxSize() {
 		String s = "111\n" + "222\n" + "333\n" + "444\n" + "555";
 		ITerminalTextData term = makeITerminalTextData();
@@ -135,6 +143,7 @@ public class TerminalTextDataWindowTest extends AbstractITerminalTextDataTest {
 	}
 
 	@Override
+	@Test
 	public void testGetLineSegments() {
 		TerminalStyle s1 = getDefaultStyle();
 		TerminalStyle s2 = s1.setBold(true);
@@ -184,6 +193,7 @@ public class TerminalTextDataWindowTest extends AbstractITerminalTextDataTest {
 	}
 
 	@Override
+	@Test
 	public void testGetChar() {
 		String s = "12345\n" + "abcde\n" + "ABCDE";
 		ITerminalTextData term = makeITerminalTextData();
@@ -206,6 +216,7 @@ public class TerminalTextDataWindowTest extends AbstractITerminalTextDataTest {
 	}
 
 	@Override
+	@Test
 	public void testGetStyle() {
 		ITerminalTextData term = makeITerminalTextData();
 		TerminalStyle style = getDefaultStyle();
@@ -229,6 +240,7 @@ public class TerminalTextDataWindowTest extends AbstractITerminalTextDataTest {
 	}
 
 	@Override
+	@Test
 	public void testSetChar() {
 		ITerminalTextData term = makeITerminalTextData();
 		term.setDimensions(6, 3);
@@ -249,6 +261,7 @@ public class TerminalTextDataWindowTest extends AbstractITerminalTextDataTest {
 	}
 
 	@Override
+	@Test
 	public void testSetChars() {
 		ITerminalTextData term = makeITerminalTextData();
 		term.setDimensions(6, 3);
@@ -278,6 +291,7 @@ public class TerminalTextDataWindowTest extends AbstractITerminalTextDataTest {
 	}
 
 	@Override
+	@Test
 	public void testSetCharsLen() {
 		ITerminalTextData term = makeITerminalTextData();
 		String s = "ZYXWVU\n" + "abcdef\n" + "ABCDEF";
@@ -306,6 +320,7 @@ public class TerminalTextDataWindowTest extends AbstractITerminalTextDataTest {
 	}
 
 	@Override
+	@Test
 	public void testSetCopyLines() {
 		ITerminalTextData term = new TerminalTextDataStore();
 		String s = "012345";
@@ -349,6 +364,7 @@ public class TerminalTextDataWindowTest extends AbstractITerminalTextDataTest {
 	}
 
 	@Override
+	@Test
 	public void testScrollNegative() {
 		scrollTest(0, 2, -1, "  23  ", "  23  ");
 		scrollTest(0, 1, -1, "  23  ", "  23  ");
@@ -364,6 +380,7 @@ public class TerminalTextDataWindowTest extends AbstractITerminalTextDataTest {
 	}
 
 	@Override
+	@Test
 	public void testScrollAll() {
 		scrollTest(0, 6, 1, "  2345", "   2  ");
 		scrollTest(0, 6, -1, "  2345", "  3   ");
@@ -372,6 +389,7 @@ public class TerminalTextDataWindowTest extends AbstractITerminalTextDataTest {
 	}
 
 	@Override
+	@Test
 	public void testCopyLineWithOffset() {
 		ITerminalTextData term = makeITerminalTextData();
 		String s = "111\n" + "222\n" + "333\n" + "444\n" + "555";
@@ -399,6 +417,7 @@ public class TerminalTextDataWindowTest extends AbstractITerminalTextDataTest {
 		assertEqualsTerm(sCopy, toMultiLineText(dest));
 	}
 
+	@Test
 	public void testCopy() {
 		ITerminalTextData term = makeITerminalTextData();
 		term.setDimensions(3, 1);
@@ -408,6 +427,7 @@ public class TerminalTextDataWindowTest extends AbstractITerminalTextDataTest {
 	}
 
 	@Override
+	@Test
 	public void testWrappedLines() {
 		ITerminalTextData term = makeITerminalTextData();
 		term.setDimensions(4, 4);

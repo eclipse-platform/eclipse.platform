@@ -10,13 +10,20 @@
  *******************************************************************************/
 package org.eclipse.terminal.model;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class StyleTest extends TestCase {
+import org.junit.jupiter.api.Test;
+
+public class StyleTest {
 	final TerminalColor c1 = TerminalColor.getIndexedTerminalColor(1);
 	final TerminalColor c2 = TerminalColor.getIndexedTerminalColor(2);
 	final TerminalColor c3 = TerminalColor.getIndexedTerminalColor(3);
 
+	@Test
 	public void testGetStyle() {
 		TerminalStyle s1 = TerminalStyle.getStyle(c1, c2, true, false, true, false);
 		TerminalStyle s2 = TerminalStyle.getStyle(c1, c2, true, false, true, false);
@@ -29,6 +36,7 @@ public class StyleTest extends TestCase {
 		assertSame(s1, s2);
 	}
 
+	@Test
 	public void testSetForeground() {
 		TerminalStyle s1 = TerminalStyle.getStyle(c1, c2, true, false, true, false);
 		TerminalStyle s2 = s1;
@@ -43,6 +51,7 @@ public class StyleTest extends TestCase {
 		assertSame(s1, s2);
 	}
 
+	@Test
 	public void testSetBackground() {
 		TerminalStyle s1 = TerminalStyle.getStyle(c1, c2, true, false, true, false);
 		TerminalStyle s2 = s1;
@@ -57,6 +66,7 @@ public class StyleTest extends TestCase {
 		assertSame(s1, s2);
 	}
 
+	@Test
 	public void testSetBold() {
 		TerminalStyle s1 = getDefaultStyle();
 		TerminalStyle s2 = s1;
@@ -70,6 +80,7 @@ public class StyleTest extends TestCase {
 		assertFalse(s2.isBold());
 	}
 
+	@Test
 	public void testSetBlink() {
 		TerminalStyle s1 = getDefaultStyle();
 		TerminalStyle s2 = s1;
@@ -83,6 +94,7 @@ public class StyleTest extends TestCase {
 		assertFalse(s2.isBlink());
 	}
 
+	@Test
 	public void testSetUnderline() {
 		TerminalStyle s1 = getDefaultStyle();
 		TerminalStyle s2 = s1;
@@ -96,6 +108,7 @@ public class StyleTest extends TestCase {
 		assertFalse(s2.isUnderline());
 	}
 
+	@Test
 	public void testSetReverse() {
 		TerminalStyle s1 = getDefaultStyle();
 		TerminalStyle s2 = s1;

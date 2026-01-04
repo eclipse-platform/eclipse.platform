@@ -12,15 +12,18 @@
  *******************************************************************************/
 package org.eclipse.terminal.internal.connector;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class TerminalToRemoteInjectionOutputStreamTest extends TestCase {
+public class TerminalToRemoteInjectionOutputStreamTest {
 	final static Charset ENCODING = StandardCharsets.UTF_8;
 
 	/**
@@ -53,6 +56,7 @@ public class TerminalToRemoteInjectionOutputStreamTest extends TestCase {
 	class NullInterceptor extends TerminalToRemoteInjectionOutputStream.Interceptor {
 	}
 
+	@Test
 	public void testClose() throws IOException {
 		ByteArrayOutputStream bs = new ByteArrayOutputStream();
 		try (TerminalToRemoteInjectionOutputStream s = new TerminalToRemoteInjectionOutputStream(bs)) {
@@ -88,9 +92,11 @@ public class TerminalToRemoteInjectionOutputStreamTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testFlush() {
 	}
 
+	@Test
 	public void testWriteInt() throws IOException {
 		ByteArrayOutputStream bs = new ByteArrayOutputStream();
 		TerminalToRemoteInjectionOutputStream s = new TerminalToRemoteInjectionOutputStream(bs);
@@ -106,12 +112,15 @@ public class TerminalToRemoteInjectionOutputStreamTest extends TestCase {
 
 	}
 
+	@Test
 	public void testWriteByteArray() {
 	}
 
+	@Test
 	public void testWriteByteArrayIntInt() {
 	}
 
+	@Test
 	public void testGrabOutput() throws IOException {
 		ByteArrayOutputStream bs = new ByteArrayOutputStream();
 		try (TerminalToRemoteInjectionOutputStream s = new TerminalToRemoteInjectionOutputStream(bs)) {
@@ -140,6 +149,7 @@ public class TerminalToRemoteInjectionOutputStreamTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testGrabOutputWithCleverInterceptor() throws IOException {
 		ByteArrayOutputStream bs = new ByteArrayOutputStream();
 		try (TerminalToRemoteInjectionOutputStream s = new TerminalToRemoteInjectionOutputStream(bs)) {
@@ -163,6 +173,7 @@ public class TerminalToRemoteInjectionOutputStreamTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testGrabOutputWithNullInterceptor() throws IOException {
 		ByteArrayOutputStream bs = new ByteArrayOutputStream();
 		try (TerminalToRemoteInjectionOutputStream s = new TerminalToRemoteInjectionOutputStream(bs)) {

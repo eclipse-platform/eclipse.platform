@@ -18,16 +18,20 @@ package org.eclipse.terminal.internal.emulator;
 
 import static org.eclipse.terminal.model.TerminalColor.BLACK;
 import static org.eclipse.terminal.model.TerminalColor.WHITE;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.terminal.internal.model.TerminalTextDataStore;
 import org.eclipse.terminal.internal.model.TerminalTextTestHelper;
 import org.eclipse.terminal.model.ITerminalTextData;
 import org.eclipse.terminal.model.ITerminalTextDataReadOnly;
 import org.eclipse.terminal.model.TerminalStyle;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
-
-public class VT100EmulatorBackendTest extends TestCase {
+public class VT100EmulatorBackendTest {
 
 	protected IVT100EmulatorBackend makeBakend(ITerminalTextData term) {
 		return new VT100EmulatorBackend(term);
@@ -72,6 +76,7 @@ public class VT100EmulatorBackendTest extends TestCase {
 		assertEquals(expected, actual);
 	}
 
+	@Test
 	public void testClearAll() {
 		ITerminalTextData term = makeITerminalTextData();
 		IVT100EmulatorBackend vt100 = makeBakend(term);
@@ -81,6 +86,7 @@ public class VT100EmulatorBackendTest extends TestCase {
 		assertEqualsTerm("    \n" + "    \n" + "    ", toMultiLineText(term));
 	}
 
+	@Test
 	public void testSetDimensions() {
 		ITerminalTextData term = makeITerminalTextData();
 		IVT100EmulatorBackend vt100 = makeBakend(term);
@@ -109,18 +115,20 @@ public class VT100EmulatorBackendTest extends TestCase {
 		assertEquals(1, vt100.getCursorColumn());
 	}
 
+	@Test
 	public void testToAbsoluteLine() {
 		ITerminalTextData term = makeITerminalTextData();
 		VT100EmulatorBackend vt100 = new VT100EmulatorBackend(term);
 		vt100.setDimensions(2, 3);
 		assertEquals(vt100.toAbsoluteLine(0), 0);
-		// TODO
+
 		term = makeITerminalTextData();
 		vt100 = new VT100EmulatorBackend(term);
 		vt100.setDimensions(1, 10);
 		assertEquals(vt100.toAbsoluteLine(0), 0);
 	}
 
+	@Test
 	public void testInsertCharacters() {
 		ITerminalTextData term = makeITerminalTextData();
 		IVT100EmulatorBackend vt100 = makeBakend(term);
@@ -175,6 +183,7 @@ public class VT100EmulatorBackendTest extends TestCase {
 		assertEqualsTerm("012  34567", toMultiLineText(term));
 	}
 
+	@Test
 	public void testEraseToEndOfScreen() {
 		ITerminalTextData term = makeITerminalTextData();
 		IVT100EmulatorBackend vt100 = makeBakend(term);
@@ -239,6 +248,7 @@ public class VT100EmulatorBackendTest extends TestCase {
 				toMultiLineText(term));
 	}
 
+	@Test
 	public void testEraseToCursor() {
 		ITerminalTextData term = makeITerminalTextData();
 		IVT100EmulatorBackend vt100 = makeBakend(term);
@@ -301,6 +311,7 @@ public class VT100EmulatorBackendTest extends TestCase {
 				toMultiLineText(term));
 	}
 
+	@Test
 	public void testEraseAll() {
 		ITerminalTextData term = makeITerminalTextData();
 		IVT100EmulatorBackend vt100 = makeBakend(term);
@@ -310,6 +321,7 @@ public class VT100EmulatorBackendTest extends TestCase {
 		assertEqualsTerm("0000\n" + "1111\n" + "2222\n" + "    \n" + "    \n" + "    ", toMultiLineText(term));
 	}
 
+	@Test
 	public void testEraseLine() {
 		String s = "abcde\n" + "fghij\n" + "klmno\n" + "pqrst\n" + "uvwxy\n" + "zABCD\n" + "EFGHI";
 
@@ -335,6 +347,7 @@ public class VT100EmulatorBackendTest extends TestCase {
 				toMultiLineText(term));
 	}
 
+	@Test
 	public void testEraseLineToEnd() {
 		String s = "abcde\n" + "fghij\n" + "klmno\n" + "pqrst\n" + "uvwxy\n" + "zABCD\n" + "EFGHI";
 
@@ -386,6 +399,7 @@ public class VT100EmulatorBackendTest extends TestCase {
 
 	}
 
+	@Test
 	public void testEraseLineToCursor() {
 		String s = "abcde\n" + "fghij\n" + "klmno\n" + "pqrst\n" + "uvwxy\n" + "zABCD\n" + "EFGHI";
 
@@ -437,6 +451,7 @@ public class VT100EmulatorBackendTest extends TestCase {
 
 	}
 
+	@Test
 	public void testInsertLines() {
 		ITerminalTextData term = makeITerminalTextData();
 		IVT100EmulatorBackend vt100 = makeBakend(term);
@@ -487,6 +502,7 @@ public class VT100EmulatorBackendTest extends TestCase {
 		assertEqualsTerm("    \n" + "    \n" + "    \n" + "    \n" + "    \n" + "0000", toMultiLineText(term));
 	}
 
+	@Test
 	public void testDeleteCharacters() {
 		ITerminalTextData term = makeITerminalTextData();
 		IVT100EmulatorBackend vt100 = makeBakend(term);
@@ -542,6 +558,7 @@ public class VT100EmulatorBackendTest extends TestCase {
 
 	}
 
+	@Test
 	public void testDeleteLines() {
 		ITerminalTextData term = makeITerminalTextData();
 		IVT100EmulatorBackend vt100 = makeBakend(term);
@@ -592,6 +609,7 @@ public class VT100EmulatorBackendTest extends TestCase {
 		assertEqualsTerm("5555\n" + "    \n" + "    \n" + "    \n" + "    \n" + "    ", toMultiLineText(term));
 	}
 
+	@Test
 	public void testGetDefaultStyle() {
 		ITerminalTextData term = makeITerminalTextData();
 		IVT100EmulatorBackend vt100 = makeBakend(term);
@@ -603,6 +621,7 @@ public class VT100EmulatorBackendTest extends TestCase {
 		assertSame(style2, vt100.getDefaultStyle());
 	}
 
+	@Test
 	public void testGetStyle() {
 		ITerminalTextData term = makeITerminalTextData();
 		IVT100EmulatorBackend vt100 = makeBakend(term);
@@ -614,6 +633,7 @@ public class VT100EmulatorBackendTest extends TestCase {
 		assertSame(style2, vt100.getStyle());
 	}
 
+	@Test
 	public void testAppendString() {
 		ITerminalTextData term = makeITerminalTextData();
 		IVT100EmulatorBackend vt100 = makeBakend(term);
@@ -673,6 +693,7 @@ public class VT100EmulatorBackendTest extends TestCase {
 		assertEquals(1, vt100.getCursorColumn());
 	}
 
+	@Test
 	public void testProcessNewline() {
 		ITerminalTextData term = makeITerminalTextData();
 		IVT100EmulatorBackend vt100 = makeBakend(term);
@@ -704,6 +725,7 @@ public class VT100EmulatorBackendTest extends TestCase {
 		assertEquals(3, vt100.getCursorColumn());
 	}
 
+	@Test
 	public void testSetCursorLine() {
 		ITerminalTextData term = makeITerminalTextData();
 		IVT100EmulatorBackend vt100 = makeBakend(term);
@@ -726,6 +748,7 @@ public class VT100EmulatorBackendTest extends TestCase {
 		assertEquals(3, vt100.getCursorColumn());
 	}
 
+	@Test
 	public void testSetCursorAndSetDimensions() {
 		ITerminalTextData term = makeITerminalTextData();
 		IVT100EmulatorBackend vt100 = makeBakend(term);
@@ -743,6 +766,7 @@ public class VT100EmulatorBackendTest extends TestCase {
 		assertEquals(3, vt100.getCursorColumn());
 	}
 
+	@Test
 	public void testSetCursorColumn() {
 		ITerminalTextData term = makeITerminalTextData();
 		IVT100EmulatorBackend vt100 = makeBakend(term);
@@ -764,6 +788,7 @@ public class VT100EmulatorBackendTest extends TestCase {
 		assertEquals(3, vt100.getCursorColumn());
 	}
 
+	@Test
 	public void testSetCursor() {
 		ITerminalTextData term = makeITerminalTextData();
 		IVT100EmulatorBackend vt100 = makeBakend(term);
@@ -785,6 +810,7 @@ public class VT100EmulatorBackendTest extends TestCase {
 		assertEquals(3, vt100.getCursorColumn());
 	}
 
+	@Test
 	public void testVT100LineWrappingOn() {
 		ITerminalTextData term = makeITerminalTextData();
 		IVT100EmulatorBackend vt100 = makeBakend(term);
@@ -800,6 +826,7 @@ public class VT100EmulatorBackendTest extends TestCase {
 		assertEquals(2, vt100.getCursorLine());
 	}
 
+	@Test
 	public void testVT100LineWrappingOff() {
 		ITerminalTextData term = makeITerminalTextData();
 		IVT100EmulatorBackend vt100 = makeBakend(term);
@@ -815,6 +842,7 @@ public class VT100EmulatorBackendTest extends TestCase {
 		assertEquals(4, vt100.getCursorLine());
 	}
 
+	@Test
 	public void testWrappedLines() {
 		ITerminalTextData term = makeITerminalTextData();
 		IVT100EmulatorBackend vt100 = makeBakend(term);
@@ -835,6 +863,7 @@ public class VT100EmulatorBackendTest extends TestCase {
 		assertTrue(term.isWrappedLine(3));
 	}
 
+	@Test
 	public void testInsertMode() {
 		ITerminalTextData term = makeITerminalTextData();
 		IVT100EmulatorBackend vt100 = makeBakend(term);
@@ -856,6 +885,7 @@ public class VT100EmulatorBackendTest extends TestCase {
 		assertEquals("abc123", new String(term.getChars(0)));
 	}
 
+	@Test
 	public void testScrollRegion() {
 		ITerminalTextData term = makeITerminalTextData();
 		IVT100EmulatorBackend vt100 = makeBakend(term);
@@ -926,6 +956,7 @@ public class VT100EmulatorBackendTest extends TestCase {
 		assertEquals("ghi", new String(term.getChars(5)));
 	}
 
+	@Test
 	public void testEraseCharacters() {
 		ITerminalTextData term = makeITerminalTextData();
 		IVT100EmulatorBackend vt100 = makeBakend(term);
