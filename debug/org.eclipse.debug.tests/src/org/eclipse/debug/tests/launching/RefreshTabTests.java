@@ -14,8 +14,9 @@
 package org.eclipse.debug.tests.launching;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
 
@@ -53,17 +54,17 @@ public class RefreshTabTests {
 	 */
 	protected void setSelection(IResource resource) {
 		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-		assertNotNull("The active workbench page should not be null", page); //$NON-NLS-1$
+		assertNotNull(page, "The active workbench page should not be null"); //$NON-NLS-1$
 		IViewPart part;
 		try {
 			part = page.showView(IPageLayout.ID_PROJECT_EXPLORER);
 			IWorkbenchPartSite site = part.getSite();
-			assertNotNull("The part site for Project Explorere should not be null ", site); //$NON-NLS-1$
+			assertNotNull(site, "The part site for Project Explorere should not be null "); //$NON-NLS-1$
 			ISelectionProvider provider = site.getSelectionProvider();
-			assertNotNull("the selection provider should not be null for Project Explorer view", provider); //$NON-NLS-1$
+			assertNotNull(provider, "the selection provider should not be null for Project Explorer view"); //$NON-NLS-1$
 			provider.setSelection(new StructuredSelection(resource));
 		} catch (PartInitException e) {
-			assertNotNull("Failed to open project explorer view", null); //$NON-NLS-1$
+			fail("Failed to open project explorer view"); //$NON-NLS-1$
 		}
 	}
 
@@ -159,25 +160,25 @@ public class RefreshTabTests {
 	public void testRefreshScopeComparator() {
 		String oldStyle = "${working_set:<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<launchConfigurationWorkingSet factoryID=\"org.eclipse.ui.internal.WorkingSetFactory\" name=\"workingSet\" editPageId=\"org.eclipse.ui.resourceWorkingSetPage\">\n<item factoryID=\"org.eclipse.ui.internal.model.ResourceFactory\" path=\"/RefreshTabTests/some.file\" type=\"1\"/>\n</launchConfigurationWorkingSet>}"; //$NON-NLS-1$
 		String newStyle = "${working_set:<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<resources>\n<item path=\"/RefreshTabTests/some.file\" type=\"1\"/>\n</resources>}"; //$NON-NLS-1$
-		assertEquals("Comparator should return 0", 0, new RefreshScopeComparator().compare(oldStyle, newStyle)); //$NON-NLS-1$
+		assertEquals(0, new RefreshScopeComparator().compare(oldStyle, newStyle), "Comparator should return 0"); //$NON-NLS-1$
 		String s1 = "${working_set:<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<resources>\n<item path=\"/RefreshTabTests/some.file1\" type=\"1\"/>\n</resources>}"; //$NON-NLS-1$
 		String s2 = "${working_set:<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<resources>\n<item path=\"/RefreshTabTests/some.file2\" type=\"1\"/>\n</resources>}"; //$NON-NLS-1$
-		assertEquals("Comparator should return 0", 0, new RefreshScopeComparator().compare(s1, s1)); //$NON-NLS-1$
-		assertEquals("Comparator should return 0", 0, new RefreshScopeComparator().compare(s2, s2)); //$NON-NLS-1$
-		assertEquals("Comparator should return -1", -1, new RefreshScopeComparator().compare(s1, s2)); //$NON-NLS-1$
-		assertEquals("Comparator should return 1", 1, new RefreshScopeComparator().compare(s2, s1)); //$NON-NLS-1$
-		assertEquals("Comparator should return 1", 1, new RefreshScopeComparator().compare(s1, null)); //$NON-NLS-1$
-		assertEquals("Comparator should return -1", -1, new RefreshScopeComparator().compare(null, s1)); //$NON-NLS-1$
-		assertEquals("Comparator should return 0", 0, new RefreshScopeComparator().compare(null, null)); //$NON-NLS-1$
+		assertEquals(0, new RefreshScopeComparator().compare(s1, s1), "Comparator should return 0"); //$NON-NLS-1$
+		assertEquals(0, new RefreshScopeComparator().compare(s2, s2), "Comparator should return 0"); //$NON-NLS-1$
+		assertEquals(-1, new RefreshScopeComparator().compare(s1, s2), "Comparator should return -1"); //$NON-NLS-1$
+		assertEquals(1, new RefreshScopeComparator().compare(s2, s1), "Comparator should return 1"); //$NON-NLS-1$
+		assertEquals(1, new RefreshScopeComparator().compare(s1, null), "Comparator should return 1"); //$NON-NLS-1$
+		assertEquals(-1, new RefreshScopeComparator().compare(null, s1), "Comparator should return -1"); //$NON-NLS-1$
+		assertEquals(0, new RefreshScopeComparator().compare(null, null), "Comparator should return 0"); //$NON-NLS-1$
 		String o1 = "${working_set:<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<launchConfigurationWorkingSet factoryID=\"org.eclipse.ui.internal.WorkingSetFactory\" name=\"workingSet\" editPageId=\"org.eclipse.ui.resourceWorkingSetPage\">\n<item factoryID=\"org.eclipse.ui.internal.model.ResourceFactory\" path=\"/RefreshTabTests/some.file1\" type=\"1\"/>\n</launchConfigurationWorkingSet>}"; //$NON-NLS-1$
 		String o2 = "${working_set:<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<launchConfigurationWorkingSet factoryID=\"org.eclipse.ui.internal.WorkingSetFactory\" name=\"workingSet\" editPageId=\"org.eclipse.ui.resourceWorkingSetPage\">\n<item factoryID=\"org.eclipse.ui.internal.model.ResourceFactory\" path=\"/RefreshTabTests/some.file2\" type=\"1\"/>\n</launchConfigurationWorkingSet>}"; //$NON-NLS-1$
-		assertEquals("Comparator should return 0", 0, new SourceLocatorMementoComparator().compare(o1, o1)); //$NON-NLS-1$
-		assertEquals("Comparator should return 0", 0, new SourceLocatorMementoComparator().compare(o2, o2)); //$NON-NLS-1$
-		assertEquals("Comparator should return -1", -1, new SourceLocatorMementoComparator().compare(o1, o2)); //$NON-NLS-1$
-		assertEquals("Comparator should return 1", 1, new SourceLocatorMementoComparator().compare(o2, o1)); //$NON-NLS-1$
-		assertEquals("Comparator should return 1", 1, new SourceLocatorMementoComparator().compare(o1, null)); //$NON-NLS-1$
-		assertEquals("Comparator should return -1", -1, new SourceLocatorMementoComparator().compare(null, o1)); //$NON-NLS-1$
-		assertEquals("Comparator should return 0", 0, new SourceLocatorMementoComparator().compare(null, null)); //$NON-NLS-1$
+		assertEquals(0, new SourceLocatorMementoComparator().compare(o1, o1), "Comparator should return 0"); //$NON-NLS-1$
+		assertEquals(0, new SourceLocatorMementoComparator().compare(o2, o2), "Comparator should return 0"); //$NON-NLS-1$
+		assertEquals(-1, new SourceLocatorMementoComparator().compare(o1, o2), "Comparator should return -1"); //$NON-NLS-1$
+		assertEquals(1, new SourceLocatorMementoComparator().compare(o2, o1), "Comparator should return 1"); //$NON-NLS-1$
+		assertEquals(1, new SourceLocatorMementoComparator().compare(o1, null), "Comparator should return 1"); //$NON-NLS-1$
+		assertEquals(-1, new SourceLocatorMementoComparator().compare(null, o1), "Comparator should return -1"); //$NON-NLS-1$
+		assertEquals(0, new SourceLocatorMementoComparator().compare(null, null), "Comparator should return 0"); //$NON-NLS-1$
 	}
 
 	/**

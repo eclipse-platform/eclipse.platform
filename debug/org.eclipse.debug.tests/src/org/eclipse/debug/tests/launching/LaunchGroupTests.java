@@ -17,8 +17,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.debug.tests.TestUtil.getLaunchConfiguration;
 import static org.eclipse.debug.tests.TestUtil.getLaunchConfigurationManager;
 import static org.eclipse.debug.tests.TestUtil.getLaunchManager;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -169,7 +169,7 @@ public class LaunchGroupTests {
 		LaunchHistory runHistory = getRunLaunchHistory();
 		grp.launch(ILaunchManager.RUN_MODE, new NullProgressMonitor());
 
-		assertTrue("delay was not awaited", (System.currentTimeMillis() - start) >= 2000); //$NON-NLS-1$
+		assertTrue((System.currentTimeMillis() - start) >= 2000, "delay was not awaited"); //$NON-NLS-1$
 
 		ILaunchConfiguration[] history = runHistory.getHistory();
 		assertThat(history).hasSize(3).satisfiesExactly(//
@@ -212,7 +212,7 @@ public class LaunchGroupTests {
 		LaunchHistory runHistory = getRunLaunchHistory();
 		grp.launch(ILaunchManager.RUN_MODE, new NullProgressMonitor());
 
-		assertTrue("returned before termination of Test1", (System.currentTimeMillis() - start) >= 2000); //$NON-NLS-1$
+		assertTrue((System.currentTimeMillis() - start) >= 2000, "returned before termination of Test1"); //$NON-NLS-1$
 
 		// is there a way to assert that the group waited for test1 to
 		// terminate? don't think so - at least run the code path to have it
@@ -240,7 +240,7 @@ public class LaunchGroupTests {
 		assertThat(history).hasSize(2).satisfiesExactly(//
 				first -> assertThat(first).matches(it -> it.contentsEqual(grp), "is Test Group"), //
 				second -> assertThat(second).matches(it -> it.contentsEqual(t1), "is Test1"));
-		assertEquals("Test1 should be launched only once", 1, launchCount.get()); //$NON-NLS-1$
+		assertEquals(1, launchCount.get(), "Test1 should be launched only once"); //$NON-NLS-1$
 	}
 
 	@Test
@@ -265,13 +265,13 @@ public class LaunchGroupTests {
 		grp3.launch(ILaunchManager.RUN_MODE, new NullProgressMonitor());
 
 		ILaunchConfiguration[] history = runHistory.getHistory();
-		assertTrue("post launch should not be run", (System.currentTimeMillis() - startTime) < 9_000); //$NON-NLS-1$
+		assertTrue((System.currentTimeMillis() - startTime) < 9_000, "post launch should not be run"); //$NON-NLS-1$
 		assertThat(history).hasSize(4).satisfiesExactly( //
 				first -> assertThat(first).matches(it -> it.contentsEqual(grp3), "is Test Group 3"), //
 				second -> assertThat(second).matches(it -> it.contentsEqual(grp2), "is Test Group 2"), //
 				third -> assertThat(third).matches(it -> it.contentsEqual(grp), "is Test Group 1"), //
 				fourth -> assertThat(fourth).matches(it -> it.contentsEqual(t1), "is Test1"));
-		assertEquals("Test1 should be launched only once", 1, launchCount.get()); //$NON-NLS-1$
+		assertEquals(1, launchCount.get(), "Test1 should be launched only once"); //$NON-NLS-1$
 	}
 
 	@Test
@@ -318,8 +318,8 @@ public class LaunchGroupTests {
 			getLaunchManager().removeLaunchListener(attachListener);
 		}
 
-		assertTrue("thread did not finish", finished.get()); //$NON-NLS-1$
-		assertTrue("output was not awaited", (System.currentTimeMillis() - start) >= 2000); //$NON-NLS-1$
+		assertTrue(finished.get(), "thread did not finish"); //$NON-NLS-1$
+		assertTrue((System.currentTimeMillis() - start) >= 2000, "output was not awaited"); //$NON-NLS-1$
 
 		ILaunchConfiguration[] history = runHistory.getHistory();
 		assertThat(history).hasSize(3).satisfiesExactly(//
@@ -338,13 +338,13 @@ public class LaunchGroupTests {
 		workingCopy.rename("AnotherTest"); //$NON-NLS-1$
 		workingCopy.doSave();
 
-		assertTrue("name should not be transiently updated", grp.getName().equals(DEF_GRP_NAME)); //$NON-NLS-1$
+		assertTrue(grp.getName().equals(DEF_GRP_NAME), "name should not be transiently updated"); //$NON-NLS-1$
 
 		// need to re-fetch configuration
 		grp = getLaunchConfiguration(DEF_GRP_NAME);
 		List<GroupLaunchElement> elements = GroupLaunchConfigurationDelegate.createLaunchElements(grp);
 
-		assertTrue("group element should be updated", elements.get(0).name.equals("AnotherTest")); //$NON-NLS-1$//$NON-NLS-2$
+		assertTrue(elements.get(0).name.equals("AnotherTest"), "group element should be updated"); //$NON-NLS-1$//$NON-NLS-2$
 	}
 
 	/**
@@ -378,13 +378,13 @@ public class LaunchGroupTests {
 
 			DebugUIPlugin.getDefault().getPreferenceStore().setValue(IDebugUIConstants.PREF_BUILD_BEFORE_LAUNCH, false);
 			group.launch(ILaunchManager.RUN_MODE, new NullProgressMonitor(), false);
-			assertEquals("Element not launched.", 1, launched.get()); //$NON-NLS-1$
-			assertEquals("Build even though it was disabled.", 0, buildRequested.get()); //$NON-NLS-1$
+			assertEquals(1, launched.get(), "Element not launched."); //$NON-NLS-1$
+			assertEquals(0, buildRequested.get(), "Build even though it was disabled."); //$NON-NLS-1$
 
 			DebugUIPlugin.getDefault().getPreferenceStore().setValue(IDebugUIConstants.PREF_BUILD_BEFORE_LAUNCH, true);
 			group.launch(ILaunchManager.RUN_MODE, new NullProgressMonitor(), true);
-			assertEquals("Element not launched.", 2, launched.get()); //$NON-NLS-1$
-			assertEquals("Requested build was ignored.", 1, buildRequested.get()); //$NON-NLS-1$
+			assertEquals(2, launched.get(), "Element not launched."); //$NON-NLS-1$
+			assertEquals(1, buildRequested.get(), "Requested build was ignored."); //$NON-NLS-1$
 		} finally {
 			testLaunchDelegate.setDelegate(null);
 			DebugUIPlugin.getDefault().getPreferenceStore().setValue(IDebugUIConstants.PREF_BUILD_BEFORE_LAUNCH, oldBuildBeforePref);

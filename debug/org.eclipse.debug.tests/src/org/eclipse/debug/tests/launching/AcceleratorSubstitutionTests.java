@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.launching;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.tests.DebugTestExtension;
@@ -21,23 +21,19 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Tests accelerator adjustments for DBCS languages.
- * See bug 186921.
+ * Tests accelerator adjustments for DBCS languages. See bug 186921.
  *
  * @since 3.3
  */
 @ExtendWith(DebugTestExtension.class)
 public class AcceleratorSubstitutionTests {
 
-
 	/**
 	 * tests a string with "..."
 	 */
 	@Test
 	public void testWithEllipses() {
-		assertEquals("incorrect DBCS accelerator substitution", //$NON-NLS-1$
-				"Open Run Dialog(&R)...", //$NON-NLS-1$
-				DebugUIPlugin.adjustDBCSAccelerator("Open Run(&R) Dialog...")); //$NON-NLS-1$
+		assertEquals("Open Run Dialog(&R)...", DebugUIPlugin.adjustDBCSAccelerator("Open Run(&R) Dialog..."), "incorrect DBCS accelerator substitution");
 	}
 
 	/**
@@ -45,9 +41,7 @@ public class AcceleratorSubstitutionTests {
 	 */
 	@Test
 	public void testWithoutEllipses() {
-		assertEquals("incorrect DBCS accelerator substitution", //$NON-NLS-1$
-				"Open Run Dialog(&R)", //$NON-NLS-1$
-				DebugUIPlugin.adjustDBCSAccelerator("Open Run(&R) Dialog")); //$NON-NLS-1$
+		assertEquals("Open Run Dialog(&R)", DebugUIPlugin.adjustDBCSAccelerator("Open Run(&R) Dialog"), "incorrect DBCS accelerator substitution");
 	}
 
 	/**
@@ -55,8 +49,6 @@ public class AcceleratorSubstitutionTests {
 	 */
 	@Test
 	public void testWithoutDBCSAcclerator() {
-		assertEquals("incorrect DBCS accelerator substitution", //$NON-NLS-1$
-				"Open &Run Dialog...", //$NON-NLS-1$
-				DebugUIPlugin.adjustDBCSAccelerator("Open &Run Dialog...")); //$NON-NLS-1$
+		assertEquals("Open &Run Dialog...", DebugUIPlugin.adjustDBCSAccelerator("Open &Run Dialog..."), "incorrect DBCS accelerator substitution");
 	}
 }
