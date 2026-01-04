@@ -16,8 +16,8 @@ package org.eclipse.debug.tests.console;
 import static java.nio.file.Files.readAllBytes;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.debug.tests.TestUtil.waitWhile;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -140,7 +140,7 @@ public class ProcessConsoleTests {
 	private File createTmpFile(String filename) throws IOException {
 		File file = DebugUIPlugin.getDefault().getStateLocation().addTrailingSeparator().append(filename).toFile();
 		boolean fileCreated = file.createNewFile();
-		assertTrue("Failed to prepare temporary test file.", fileCreated);
+		assertTrue(fileCreated, "Failed to prepare temporary test file.");
 		tmpFiles.add(file);
 		return file;
 	}
@@ -259,7 +259,7 @@ public class ProcessConsoleTests {
 	public void testProcessTerminationNotificationWithInputFile() throws Exception {
 		File inFile = DebugUIPlugin.getDefault().getStateLocation().addTrailingSeparator().append("testStdin.txt").toFile();
 		boolean fileCreated = inFile.createNewFile();
-		assertTrue("Failed to prepare input file.", fileCreated);
+		assertTrue(fileCreated, "Failed to prepare input file.");
 		try {
 			ILaunchConfigurationType launchType = DebugPlugin.getDefault().getLaunchManager().getLaunchConfigurationType(LaunchConfigurationTests.ID_TEST_LAUNCH_TYPE);
 			ILaunchConfigurationWorkingCopy launchConfiguration = launchType.newInstance(null, testInfo.getDisplayName());
@@ -354,19 +354,19 @@ public class ProcessConsoleTests {
 		launchConfigAttributes.put(IDebugUIConstants.ATTR_CAPTURE_IN_CONSOLE, false);
 		IOConsole console = doConsoleOutputTest(testContent.getBytes(), launchConfigAttributes);
 		assertThat(readAllBytes(outFile.toPath())).as("content redirected to file").containsExactly(testContent.getBytes());
-		assertEquals("Output in console.", 2, console.getDocument().getNumberOfLines());
+		assertEquals(2, console.getDocument().getNumberOfLines(), "Output in console.");
 
 		outFile = createTmpFile("exhaustive[128-32].out");
 		launchConfigAttributes.put(IDebugUIConstants.ATTR_CAPTURE_IN_FILE, outFile.getCanonicalPath());
 		console = doConsoleOutputTest(testContent.getBytes(), launchConfigAttributes);
 		assertThat(readAllBytes(outFile.toPath())).as("content redirected to file").containsExactly(testContent.getBytes());
-		assertEquals("Output in console.", 2, console.getDocument().getNumberOfLines());
+		assertEquals(2, console.getDocument().getNumberOfLines(), "Output in console.");
 
 		outFile = createTmpFile("ug(ly.out");
 		launchConfigAttributes.put(IDebugUIConstants.ATTR_CAPTURE_IN_FILE, outFile.getCanonicalPath());
 		console = doConsoleOutputTest(testContent.getBytes(), launchConfigAttributes);
 		assertThat(readAllBytes(outFile.toPath())).as("content redirected to file").containsExactly(testContent.getBytes());
-		assertEquals("Output in console.", 2, console.getDocument().getNumberOfLines());
+		assertEquals(2, console.getDocument().getNumberOfLines(), "Output in console.");
 	}
 
 	/**
@@ -407,11 +407,11 @@ public class ProcessConsoleTests {
 
 			if (outFile != null) {
 				String expectedPathMsg = MessageFormat.format(org.eclipse.debug.internal.ui.views.console.ConsoleMessages.ProcessConsole_1, outFile.getAbsolutePath());
-				assertEquals("No or wrong output of redirect file path in console.", expectedPathMsg, doc.get(doc.getLineOffset(0), doc.getLineLength(0)));
+				assertEquals(expectedPathMsg, doc.get(doc.getLineOffset(0), doc.getLineLength(0)), "No or wrong output of redirect file path in console.");
 				assertThat(console.getHyperlinks()).as("check redirect file path is linked").hasSize(1);
 			}
 			if (checkOutput) {
-				assertEquals("Output not found in console.", new String(testContent), doc.get(doc.getLineOffset(1), doc.getLineLength(1)));
+				assertEquals(new String(testContent), doc.get(doc.getLineOffset(1), doc.getLineLength(1)), "Output not found in console.");
 			}
 			return console;
 		} finally {
@@ -472,7 +472,7 @@ public class ProcessConsoleTests {
 					for (int i = 0; i < lines.length; i++) {
 						IRegion lineInfo = console.getDocument().getLineInformation(i);
 						String line = console.getDocument().get(lineInfo.getOffset(), lineInfo.getLength());
-						assertEquals("Wrong content in line " + i, lines[i], line);
+						assertEquals(lines[i], line, "Wrong content in line " + i);
 					}
 				} finally {
 					console.destroy();

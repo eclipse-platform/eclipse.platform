@@ -15,8 +15,8 @@ package org.eclipse.debug.tests.console;
 
 import static java.util.stream.Collectors.joining;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -105,7 +105,7 @@ public class ProcessConsoleManagerTests {
 	public void testBug546710_ConsoleCreationRaceCondition(TestInfo testInfo) throws Exception {
 		final ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
 		for (ILaunch existingLaunch : launchManager.getLaunches()) {
-			assertTrue("Found existing not terminated launch. This should not happen and can interfere this test. Check for leakages in previous run tests.", existingLaunch.isTerminated());
+			assertTrue(existingLaunch.isTerminated(), "Found existing not terminated launch. This should not happen and can interfere this test. Check for leakages in previous run tests.");
 			launchManager.removeLaunch(existingLaunch);
 		}
 
@@ -147,7 +147,7 @@ public class ProcessConsoleManagerTests {
 		}
 		removeAction.run();
 		TestUtil.waitForJobs(testInfo.getDisplayName(), ProcessConsoleManager.class, 0, 10000);
-		assertNull("First console not removed.", processConsoleManager.getConsole(process1));
-		assertNull("Second console not removed.", processConsoleManager.getConsole(process1));
+		assertNull(processConsoleManager.getConsole(process1), "First console not removed.");
+		assertNull(processConsoleManager.getConsole(process1), "Second console not removed.");
 	}
 }

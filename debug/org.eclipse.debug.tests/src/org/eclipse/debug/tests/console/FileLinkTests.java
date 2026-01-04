@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.console;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.UnsupportedEncodingException;
@@ -86,7 +86,7 @@ public class FileLinkTests {
 		link.linkActivated();
 		assertEquals(testFile.getName(), getActiveEditorFilename());
 		ITextSelection selection = getCurrentTextSelection();
-		assertNotNull("No selection.", selection);
+		assertNotNull(selection, "No selection.");
 		assertEquals(4, selection.getOffset());
 		assertEquals(0, selection.getLength());
 		assertEquals(0, selection.getStartLine());
@@ -99,7 +99,7 @@ public class FileLinkTests {
 		link.linkActivated();
 		assertEquals(testFile.getName(), getActiveEditorFilename());
 		ITextSelection selection = getCurrentTextSelection();
-		assertNotNull("No selection.", selection);
+		assertNotNull(selection, "No selection.");
 		assertEquals(7, selection.getOffset());
 		assertEquals(5, selection.getLength());
 		assertEquals(0, selection.getStartLine());
@@ -110,7 +110,7 @@ public class FileLinkTests {
 		link.linkActivated();
 		assertEquals(testFile.getName(), getActiveEditorFilename());
 		selection = getCurrentTextSelection();
-		assertNotNull("No selection.", selection);
+		assertNotNull(selection, "No selection.");
 		assertEquals(7, selection.getOffset());
 		assertEquals(5, selection.getLength());
 		assertEquals(0, selection.getStartLine());
@@ -123,7 +123,7 @@ public class FileLinkTests {
 		link.linkActivated();
 		assertEquals(testFile.getName(), getActiveEditorFilename());
 		ITextSelection selection = getCurrentTextSelection();
-		assertNotNull("No selection.", selection);
+		assertNotNull(selection, "No selection.");
 		assertEquals(10, selection.getOffset());
 		assertEquals(11, selection.getLength());
 		assertEquals(1, selection.getStartLine());
