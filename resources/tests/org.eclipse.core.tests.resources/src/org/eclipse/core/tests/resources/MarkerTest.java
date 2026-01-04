@@ -690,6 +690,7 @@ public class MarkerTest {
 		listener.reset();
 		resource.delete(true, createTestMonitor());
 		assertMarkerDoesNotExist(marker);
+		listener.assertNumberOfAffectedResources(1);
 		listener.assertChanges(resource, null, new IMarker[] { marker }, null);
 	}
 
@@ -929,14 +930,18 @@ public class MarkerTest {
 		folder.move(destFolder.getFullPath(), IResource.FORCE, createTestMonitor());
 
 		// verify marker deltas
+		listener.assertNumberOfAffectedResources(4);
 		listener.assertChanges(folder, null, new IMarker[] { folderMarker }, null);
 		IMarker[] folderMarkers = destFolder.findMarkers(null, true, IResource.DEPTH_ZERO);
 		assertSingleMarkerWithId(folderMarkers, folderMarker.getId());
+		listener.assertNumberOfAffectedResources(4);
 		listener.assertChanges(destFolder, new IMarker[] { folderMarkers[0] }, null, null);
 
+		listener.assertNumberOfAffectedResources(4);
 		listener.assertChanges(subFile, null, new IMarker[] { subFileMarker }, null);
 		IMarker[] subFolderMarkers = destSubFile.findMarkers(null, true, IResource.DEPTH_ZERO);
 		assertSingleMarkerWithId(subFolderMarkers, subFileMarker.getId());
+		listener.assertNumberOfAffectedResources(4);
 		listener.assertChanges(destSubFile, new IMarker[] { subFolderMarkers[0] }, null, null);
 	}
 
@@ -969,14 +974,18 @@ public class MarkerTest {
 		subFile.move(destSubFile.getFullPath(), IResource.FORCE, createTestMonitor());
 
 		// verify marker deltas
+		listener.assertNumberOfAffectedResources(4);
 		listener.assertChanges(file, null, new IMarker[] { fileMarker }, null);
 		IMarker[] markers = destFile.findMarkers(null, true, IResource.DEPTH_ZERO);
 		assertSingleMarkerWithId(markers, fileMarker.getId());
+		listener.assertNumberOfAffectedResources(4);
 		listener.assertChanges(destFile, new IMarker[] { markers[0] }, null, null);
 
+		listener.assertNumberOfAffectedResources(4);
 		listener.assertChanges(subFile, null, new IMarker[] { subFileMarker }, null);
 		markers = destSubFile.findMarkers(null, true, IResource.DEPTH_ZERO);
 		assertSingleMarkerWithId(markers, subFileMarker.getId());
+		listener.assertNumberOfAffectedResources(4);
 		listener.assertChanges(destSubFile, new IMarker[] { markers[0] }, null, null);
 	}
 
