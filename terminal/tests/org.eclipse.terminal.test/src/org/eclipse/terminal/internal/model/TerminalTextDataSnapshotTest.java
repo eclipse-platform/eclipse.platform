@@ -10,14 +10,18 @@
  *******************************************************************************/
 package org.eclipse.terminal.internal.model;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.eclipse.terminal.model.ITerminalTextData;
 import org.eclipse.terminal.model.ITerminalTextDataReadOnly;
 import org.eclipse.terminal.model.ITerminalTextDataSnapshot;
 import org.eclipse.terminal.model.TerminalStyle;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
-
-public class TerminalTextDataSnapshotTest extends TestCase {
+public class TerminalTextDataSnapshotTest {
 	String toMultiLineText(ITerminalTextDataReadOnly term) {
 		return TerminalTextTestHelper.toMultiLineText(term);
 	}
@@ -26,6 +30,7 @@ public class TerminalTextDataSnapshotTest extends TestCase {
 		return new TerminalTextData();
 	}
 
+	@Test
 	public void testTerminalTextDataSnapshot() {
 		ITerminalTextData term = makeITerminalTextData();
 		String s = "12345\n" + "abcde\n" + "ABCDE\n" + "vwxzy\n" + "VWXYZ";
@@ -46,6 +51,7 @@ public class TerminalTextDataSnapshotTest extends TestCase {
 		assertEquals(0, snapshot.getScrollWindowSize());
 	}
 
+	@Test
 	public void testDetach() {
 		ITerminalTextData term = makeITerminalTextData();
 		String s = "12345\n" + "abcde\n" + "ABCDE\n" + "vwxzy\n" + "VWXYZ";
@@ -63,6 +69,7 @@ public class TerminalTextDataSnapshotTest extends TestCase {
 		assertEquals(s, toMultiLineText(snapshot));
 	}
 
+	@Test
 	public void testIsOutOfDate() {
 		ITerminalTextData term = makeITerminalTextData();
 		String s = "12345\n" + "abcde\n" + "ABCDE\n" + "vwxzy\n" + "VWXYZ";
@@ -141,6 +148,7 @@ public class TerminalTextDataSnapshotTest extends TestCase {
 
 	}
 
+	@Test
 	public void testUpdateSnapshot() {
 		ITerminalTextData term = makeITerminalTextData();
 		String s = "12345\n" + "abcde\n" + "ABCDE\n" + "vwxzy\n" + "VWXYZ";
@@ -220,6 +228,7 @@ public class TerminalTextDataSnapshotTest extends TestCase {
 		assertEquals(termString, toMultiLineText(snapshot));
 	}
 
+	@Test
 	public void testMaxSize() {
 		String s = "111\n" + "222\n" + "333\n" + "444\n" + "555";
 		ITerminalTextData term = makeITerminalTextData();
@@ -252,9 +261,9 @@ public class TerminalTextDataSnapshotTest extends TestCase {
 		assertTrue(snapshot.isOutOfDate());
 		snapshot.updateSnapshot(false);
 		assertEquals(toMultiLineText(term), toMultiLineText(snapshot));
-
 	}
 
+	@Test
 	public void testGetChar() {
 		ITerminalTextData term = makeITerminalTextData();
 		String s = "12345\n" + "abcde\n" + "ABCDE\n" + "vwxzy\n" + "VWXYZ";
@@ -285,9 +294,9 @@ public class TerminalTextDataSnapshotTest extends TestCase {
 				assertEquals(term.getChar(line, column), snapshot.getChar(line, column));
 			}
 		}
-
 	}
 
+	@Test
 	public void testGetHeight() {
 		ITerminalTextData term = makeITerminalTextData();
 		String s = "12345\n" + "abcde\n" + "ABCDE\n" + "vwxzy\n" + "VWXYZ";
@@ -310,10 +319,7 @@ public class TerminalTextDataSnapshotTest extends TestCase {
 	}
 
 	//
-	//	public void testGetLineSegments() {
-	//		fail("Not yet implemented");
-	//	}
-	//
+	@Test
 	public void testGetStyle() {
 		ITerminalTextData term = makeITerminalTextData();
 		TerminalStyle style = TerminalStyle.getDefaultStyle();
@@ -333,9 +339,9 @@ public class TerminalTextDataSnapshotTest extends TestCase {
 				assertSame(style.setForeground(c), snapshot.getStyle(line, column));
 			}
 		}
-
 	}
 
+	@Test
 	public void testGetWidth() {
 		ITerminalTextData term = makeITerminalTextData();
 		String s = "12345\n" + "abcde\n" + "ABCDE\n" + "vwxzy\n" + "VWXYZ";
@@ -357,6 +363,7 @@ public class TerminalTextDataSnapshotTest extends TestCase {
 		assertEquals(expectedWidth, snapshot.getWidth());
 	}
 
+	@Test
 	public void testGetFirstChangedLine() {
 		ITerminalTextData term = makeITerminalTextData();
 		String s = "12345\n" + "abcde\n" + "ABCDE\n" + "vwxzy\n" + "VWXYZ";
@@ -401,9 +408,9 @@ public class TerminalTextDataSnapshotTest extends TestCase {
 		term.setChar(1, 0, 'x', null);
 		snapshot.updateSnapshot(true);
 		assertEquals(1, snapshot.getFirstChangedLine());
-
 	}
 
+	@Test
 	public void testGetLastChangedLine() {
 		ITerminalTextData term = makeITerminalTextData();
 		String s = "12345\n" + "abcde\n" + "ABCDE\n" + "vwxzy\n" + "VWXYZ";
@@ -453,7 +460,6 @@ public class TerminalTextDataSnapshotTest extends TestCase {
 		term.setChar(1, 0, 'x', null);
 		snapshot.updateSnapshot(true);
 		assertEquals(3, snapshot.getLastChangedLine());
-
 	}
 
 	/**
@@ -472,6 +478,7 @@ public class TerminalTextDataSnapshotTest extends TestCase {
 		assertEquals(expected, buffer.toString());
 	}
 
+	@Test
 	public void testHasLineChangedScroll() {
 		ITerminalTextData term = makeITerminalTextData();
 		String s = "00\n" + "11\n" + "22\n" + "33\n" + "44\n" + "55\n" + "66\n" + "77\n" + "88\n" + "99";
@@ -524,6 +531,7 @@ public class TerminalTextDataSnapshotTest extends TestCase {
 		assertChangedLines(snapshot, "0011110000");
 	}
 
+	@Test
 	public void testMultiScrollWithDifferentSizes() {
 		ITerminalTextData term = makeITerminalTextData();
 		String s = "00\n" + "11\n" + "22\n" + "33\n" + "44\n" + "55\n" + "66\n" + "77\n" + "88\n" + "99";
@@ -554,6 +562,7 @@ public class TerminalTextDataSnapshotTest extends TestCase {
 		assertEquals(0, snapshot.getScrollWindowStartLine());
 	}
 
+	@Test
 	public void testHasLineChanged() {
 		ITerminalTextData term = makeITerminalTextData();
 		String s = "000000\n" + "111111\n" + "222222\n" + "333333\n" + "444444\n" + "555555\n" + "666666\n" + "777777\n"
@@ -593,9 +602,9 @@ public class TerminalTextDataSnapshotTest extends TestCase {
 		term.scroll(2, 7, -2);
 		snapshot.updateSnapshot(false);
 		assertChangedLines(snapshot, "0011111110");
-
 	}
 
+	@Test
 	public void testScroll() {
 		ITerminalTextData term = makeITerminalTextData();
 		String s = "00\n" + "11\n" + "22\n" + "33\n" + "44\n" + "55\n" + "66\n" + "77\n" + "88\n" + "99";
@@ -634,9 +643,9 @@ public class TerminalTextDataSnapshotTest extends TestCase {
 		assertEquals(0, snapshot.getScrollWindowShift());
 		assertEquals(2, snapshot.getFirstChangedLine());
 		assertEquals(4, snapshot.getLastChangedLine());
-
 	}
 
+	@Test
 	public void testDisjointScroll() {
 		ITerminalTextData term = makeITerminalTextData();
 		String s = "000000\n" + "111111\n" + "222222\n" + "333333\n" + "444444\n" + "555555\n" + "666666\n" + "777777\n"
@@ -691,6 +700,7 @@ public class TerminalTextDataSnapshotTest extends TestCase {
 		assertEquals(0, snapshot.getScrollWindowShift());
 	}
 
+	@Test
 	public void testResize() {
 		ITerminalTextData term = makeITerminalTextData();
 		String s = "000000\n" + "111111\n" + "222222\n" + "333333";
@@ -735,9 +745,9 @@ public class TerminalTextDataSnapshotTest extends TestCase {
 		assertEquals(0, snapshot.getScrollWindowStartLine());
 		assertEquals(0, snapshot.getScrollWindowSize());
 		assertEquals(0, snapshot.getScrollWindowShift());
-
 	}
 
+	@Test
 	public void testResizeAfterScroll() {
 		ITerminalTextData term = makeITerminalTextData();
 		String s = "000000\n" + "111111\n" + "222222\n" + "333333\n" + "444444\n" + "555555\n" + "666666\n" + "777777\n"
@@ -773,6 +783,7 @@ public class TerminalTextDataSnapshotTest extends TestCase {
 		assertEquals(0, snapshot.getScrollWindowShift());
 	}
 
+	@Test
 	public void testScrollAfterResize() {
 		ITerminalTextData term = makeITerminalTextData();
 		String s = "000000\n" + "111111\n" + "222222\n" + "333333\n" + "444444\n" + "555555\n" + "666666\n" + "777777\n"
@@ -802,6 +813,7 @@ public class TerminalTextDataSnapshotTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testAddListener() {
 		ITerminalTextData term = makeITerminalTextData();
 		String s = "12345\n" + "abcde\n" + "ABCDE\n" + "vwxzy\n" + "VWXYZ";
@@ -888,6 +900,7 @@ public class TerminalTextDataSnapshotTest extends TestCase {
 		assertFalse(snapshot.isOutOfDate());
 	}
 
+	@Test
 	public void testRemoveListener() {
 		ITerminalTextData term = makeITerminalTextData();
 		String s = "12345\n" + "abcde\n" + "ABCDE\n" + "vwxzy\n" + "VWXYZ";
@@ -1051,6 +1064,7 @@ public class TerminalTextDataSnapshotTest extends TestCase {
 		assertFalse(snapshot.isOutOfDate());
 	}
 
+	@Test
 	public void testWindowOfInterest() {
 		ITerminalTextData term = makeITerminalTextData();
 		TerminalTextTestHelper.fillSimple(term, "0123456789");
@@ -1061,6 +1075,7 @@ public class TerminalTextDataSnapshotTest extends TestCase {
 		snapshot.updateSnapshot(false);
 	}
 
+	@Test
 	public void testWindowOfInterest2() {
 		ITerminalTextData term = makeITerminalTextData();
 		TerminalTextTestHelper.fillSimple(term, "0123456789");
@@ -1071,6 +1086,7 @@ public class TerminalTextDataSnapshotTest extends TestCase {
 		snapshot.updateSnapshot(false);
 	}
 
+	@Test
 	public void testAddLine() {
 		ITerminalTextData term = makeITerminalTextData();
 		TerminalTextTestHelper.fillSimple(term, "0123456789");
@@ -1100,6 +1116,7 @@ public class TerminalTextDataSnapshotTest extends TestCase {
 		assertEquals(20, term.getMaxHeight());
 	}
 
+	@Test
 	public void testHasDimensionsChanged() {
 		ITerminalTextData term = makeITerminalTextData();
 		TerminalTextTestHelper.fillSimple(term, "0123456789");
@@ -1132,6 +1149,7 @@ public class TerminalTextDataSnapshotTest extends TestCase {
 		assertEquals(20, term.getMaxHeight());
 	}
 
+	@Test
 	public void testCursor() {
 		ITerminalTextData term = makeITerminalTextData();
 		TerminalTextTestHelper.fillSimple(term, "0123456789");
@@ -1151,6 +1169,7 @@ public class TerminalTextDataSnapshotTest extends TestCase {
 		assertEquals(2, snapshot.getCursorColumn());
 	}
 
+	@Test
 	public void testCursor2() {
 		ITerminalTextData term = makeITerminalTextData();
 		TerminalTextTestHelper.fillSimple(term, "0123456789");
@@ -1165,6 +1184,7 @@ public class TerminalTextDataSnapshotTest extends TestCase {
 		assertTrue(snapshot.isOutOfDate());
 	}
 
+	@Test
 	public void testHasTerminalChanged() {
 		ITerminalTextData term = makeITerminalTextData();
 		String s = "12345\n" + "abcde\n" + "ABCDE\n" + "vwxzy\n" + "VWXYZ";
@@ -1226,6 +1246,7 @@ public class TerminalTextDataSnapshotTest extends TestCase {
 		assertFalse(snapshot.hasTerminalChanged());
 	}
 
+	@Test
 	public void testGetTerminalTextData() {
 		ITerminalTextData term = makeITerminalTextData();
 		ITerminalTextDataSnapshot snapshot = term.makeSnapshot();

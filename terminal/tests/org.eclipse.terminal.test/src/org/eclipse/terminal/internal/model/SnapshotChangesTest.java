@@ -12,11 +12,14 @@
  *******************************************************************************/
 package org.eclipse.terminal.internal.model;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.eclipse.terminal.model.ITerminalTextData;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
-
-public class SnapshotChangesTest extends TestCase {
+public class SnapshotChangesTest {
 	/**
 	 * @param change
 	 * @param expected a string of 0 and 1 (1 means changed)
@@ -32,18 +35,21 @@ public class SnapshotChangesTest extends TestCase {
 		assertEquals(expected, buffer.toString());
 	}
 
+	@Test
 	public void testSnapshotChanges() {
 		SnapshotChanges changes = new SnapshotChanges(1);
 		assertEquals(0, changes.getInterestWindowStartLine());
 		assertEquals(0, changes.getInterestWindowSize());
 	}
 
+	@Test
 	public void testSnapshotChangesWithWindow() {
 		SnapshotChanges changes = new SnapshotChanges(2, 5);
 		assertEquals(2, changes.getInterestWindowStartLine());
 		assertEquals(5, changes.getInterestWindowSize());
 	}
 
+	@Test
 	public void testIsInInterestWindowIntInt() {
 		SnapshotChanges changes = new SnapshotChanges(2, 5);
 		assertFalse(changes.isInInterestWindow(0, 1));
@@ -62,6 +68,7 @@ public class SnapshotChangesTest extends TestCase {
 		assertFalse(changes.isInInterestWindow(8, 10));
 	}
 
+	@Test
 	public void testIsInInterestWindowIntIntNoWindow() {
 		SnapshotChanges changes = new SnapshotChanges(3);
 		for (int i = 0; i < 5; i++) {
@@ -71,6 +78,7 @@ public class SnapshotChangesTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testIsInInterestWindowInt() {
 		SnapshotChanges changes = new SnapshotChanges(3, 1);
 		assertFalse(changes.isInInterestWindow(0));
@@ -81,6 +89,7 @@ public class SnapshotChangesTest extends TestCase {
 		assertFalse(changes.isInInterestWindow(5));
 	}
 
+	@Test
 	public void testIsInInterestWindowIntNoWindow() {
 		SnapshotChanges changes = new SnapshotChanges(3);
 		for (int i = 0; i < 10; i++) {
@@ -88,6 +97,7 @@ public class SnapshotChangesTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testFitLineToWindow() {
 		SnapshotChanges changes = new SnapshotChanges(2, 5);
 		assertEquals(2, changes.fitLineToWindow(0));
@@ -113,6 +123,7 @@ public class SnapshotChangesTest extends TestCase {
 		assertEquals(8, changes.fitLineToWindow(8));
 	}
 
+	@Test
 	public void testFitLineToWindowNoWindow() {
 		SnapshotChanges changes = new SnapshotChanges(5);
 		assertEquals(0, changes.fitLineToWindow(0));
@@ -125,6 +136,7 @@ public class SnapshotChangesTest extends TestCase {
 		assertEquals(7, changes.fitLineToWindow(7));
 	}
 
+	@Test
 	public void testFitSizeToWindow() {
 		SnapshotChanges changes = new SnapshotChanges(2, 3);
 		assertFalse(changes.isInInterestWindow(0, 1));
@@ -150,9 +162,9 @@ public class SnapshotChangesTest extends TestCase {
 		assertEquals(1, changes.fitSizeToWindow(4, 1));
 		assertEquals(1, changes.fitSizeToWindow(4, 2));
 		assertFalse(changes.isInInterestWindow(5, 1));
-
 	}
 
+	@Test
 	public void testFitSizeToWindowNoWindow() {
 		SnapshotChanges changes = new SnapshotChanges(3);
 		assertEquals(1, changes.fitSizeToWindow(0, 1));
@@ -167,6 +179,7 @@ public class SnapshotChangesTest extends TestCase {
 		assertEquals(10, changes.fitSizeToWindow(5, 10));
 	}
 
+	@Test
 	public void testMarkLineChanged() {
 		SnapshotChanges changes = new SnapshotChanges(2, 3);
 		assertFalse(changes.hasChanged());
@@ -213,6 +226,7 @@ public class SnapshotChangesTest extends TestCase {
 
 	}
 
+	@Test
 	public void testMarkLinesChanged() {
 		SnapshotChanges changes = new SnapshotChanges(2, 3);
 		assertFalse(changes.hasChanged());
@@ -291,6 +305,7 @@ public class SnapshotChangesTest extends TestCase {
 		assertChangedLines(changes, "00000000000");
 	}
 
+	@Test
 	public void testMarkLinesChangedNoWindow() {
 		SnapshotChanges changes = new SnapshotChanges(10);
 		assertFalse(changes.hasChanged());
@@ -323,9 +338,9 @@ public class SnapshotChangesTest extends TestCase {
 		assertEquals(5, changes.getFirstChangedLine());
 		assertEquals(10, changes.getLastChangedLine());
 		assertChangedLines(changes, "0000011111");
-
 	}
 
+	@Test
 	public void testHasChanged() {
 		SnapshotChanges changes = new SnapshotChanges(0);
 		assertFalse(changes.hasChanged());
@@ -335,6 +350,7 @@ public class SnapshotChangesTest extends TestCase {
 		assertFalse(changes.hasChanged());
 	}
 
+	@Test
 	public void testSetAllChanged() {
 		SnapshotChanges changes;
 		changes = new SnapshotChanges(2, 3);
@@ -373,6 +389,7 @@ public class SnapshotChangesTest extends TestCase {
 		assertChangedLines(changes, "00111000000");
 	}
 
+	@Test
 	public void testSetAllChangedNoWindow() {
 		SnapshotChanges changes;
 		changes = new SnapshotChanges(5);
@@ -391,6 +408,7 @@ public class SnapshotChangesTest extends TestCase {
 
 	}
 
+	@Test
 	public void testConvertScrollingIntoChanges() {
 		SnapshotChanges changes;
 		changes = new SnapshotChanges(2, 3);
@@ -406,6 +424,7 @@ public class SnapshotChangesTest extends TestCase {
 		assertChangedLines(changes, "001100");
 	}
 
+	@Test
 	public void testConvertScrollingIntoChangesNoWindow() {
 		SnapshotChanges changes;
 		changes = new SnapshotChanges(7);
@@ -421,6 +440,7 @@ public class SnapshotChangesTest extends TestCase {
 		assertChangedLines(changes, "111100");
 	}
 
+	@Test
 	public void testScrollNoWindow() {
 		SnapshotChanges changes;
 		changes = new SnapshotChanges(7);
@@ -466,9 +486,9 @@ public class SnapshotChangesTest extends TestCase {
 		assertEquals(0, changes.getScrollWindowShift());
 		assertTrue(changes.hasChanged());
 		assertChangedLines(changes, "1111111");
-
 	}
 
+	@Test
 	public void testScroll() {
 		SnapshotChanges changes;
 		changes = new SnapshotChanges(2, 3);
@@ -492,6 +512,7 @@ public class SnapshotChangesTest extends TestCase {
 		assertChangedLines(changes, "0001100000");
 	}
 
+	@Test
 	public void testScrollNergative() {
 		SnapshotChanges changes;
 		changes = new SnapshotChanges(2, 3);
@@ -504,9 +525,9 @@ public class SnapshotChangesTest extends TestCase {
 		assertEquals(-2, changes.getScrollWindowShift());
 		assertTrue(changes.hasChanged());
 		assertChangedLines(changes, "0001100000");
-
 	}
 
+	@Test
 	public void testScrollPositive() {
 		SnapshotChanges changes;
 		changes = new SnapshotChanges(2, 3);
@@ -565,6 +586,7 @@ public class SnapshotChangesTest extends TestCase {
 		assertChangedLines(changes, "0001100000");
 	}
 
+	@Test
 	public void testCopyChangedLines() {
 		SnapshotChanges changes;
 		changes = new SnapshotChanges(2, 3);
@@ -599,6 +621,7 @@ public class SnapshotChangesTest extends TestCase {
 		assertEquals("abcd4fghijk", TerminalTextTestHelper.toSimple(dest));
 	}
 
+	@Test
 	public void testCopyChangedLinesWithSmallSource() {
 		SnapshotChanges changes;
 		changes = new SnapshotChanges(2, 3);
@@ -610,6 +633,7 @@ public class SnapshotChangesTest extends TestCase {
 		changes.copyChangedLines(dest, source);
 	}
 
+	@Test
 	public void testCopyChangedLinesWithSmallSource1() {
 		SnapshotChanges changes;
 		changes = new SnapshotChanges(2, 3);
@@ -620,6 +644,7 @@ public class SnapshotChangesTest extends TestCase {
 		changes.copyChangedLines(dest, source);
 	}
 
+	@Test
 	public void testSetInterestWindowSize() {
 		SnapshotChanges changes;
 		changes = new SnapshotChanges(2, 3);
@@ -666,6 +691,7 @@ public class SnapshotChangesTest extends TestCase {
 		assertChangedLines(changes, "0000011000");
 	}
 
+	@Test
 	public void testSetInterestWindowSize2() {
 		SnapshotChanges changes;
 		changes = new SnapshotChanges(2, 3);

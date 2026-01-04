@@ -15,14 +15,15 @@ import static org.eclipse.terminal.model.TerminalColor.MAGENTA;
 import static org.eclipse.terminal.model.TerminalColor.RED;
 import static org.eclipse.terminal.model.TerminalColor.WHITE;
 import static org.eclipse.terminal.model.TerminalColor.YELLOW;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.eclipse.swt.widgets.Display;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * This is a UI test because {@link TerminalColor#convertColor(boolean, boolean)}
@@ -32,7 +33,7 @@ public class TerminalColorUITest {
 
 	private static Display display = null;
 
-	@BeforeClass
+	@BeforeAll
 	public static void createDisplay() {
 		Display current = Display.getCurrent();
 		if (current == null) {
@@ -40,7 +41,7 @@ public class TerminalColorUITest {
 		}
 	}
 
-	@AfterClass
+	@AfterAll
 	public static void disposeDisplay() {
 		if (display != null) {
 			display.dispose();
@@ -121,34 +122,34 @@ public class TerminalColorUITest {
 		}
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testIndexesOutOfRange_m1TerminalColor() {
-		assertNotNull(TerminalColor.getIndexedTerminalColor(-1));
+		assertThrows(IllegalArgumentException.class, () -> TerminalColor.getIndexedTerminalColor(-1));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testIndexesOutOfRange_m1RGBColor() {
-		assertNotNull(TerminalColor.getIndexedRGBColor(-1));
+		assertThrows(IllegalArgumentException.class, () -> TerminalColor.getIndexedRGBColor(-1));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testIndexesOutOfRange_16() {
-		assertNotNull(TerminalColor.getIndexedTerminalColor(16));
+		assertThrows(IllegalArgumentException.class, () -> TerminalColor.getIndexedTerminalColor(16));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testIndexesOutOfRange_15() {
-		assertNotNull(TerminalColor.getIndexedRGBColor(15));
+		assertThrows(IllegalArgumentException.class, () -> TerminalColor.getIndexedRGBColor(15));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testIndexesOutOfRange_256TerminalColor() {
-		assertNotNull(TerminalColor.getIndexedTerminalColor(256));
+		assertThrows(IllegalArgumentException.class, () -> TerminalColor.getIndexedTerminalColor(256));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testIndexesOutOfRange_256RGBColor() {
-		assertNotNull(TerminalColor.getIndexedRGBColor(256));
+		assertThrows(IllegalArgumentException.class, () -> TerminalColor.getIndexedRGBColor(256));
 	}
 
 }

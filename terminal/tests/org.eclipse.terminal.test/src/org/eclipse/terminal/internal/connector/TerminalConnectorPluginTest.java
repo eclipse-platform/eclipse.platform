@@ -14,18 +14,22 @@
 
 package org.eclipse.terminal.internal.connector;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.terminal.internal.connector.TerminalConnectorTest.ConnectorMock;
 import org.eclipse.terminal.internal.connector.TerminalConnectorTest.SimpleFactory;
 import org.eclipse.terminal.internal.connector.TerminalConnectorTest.TerminalControlMock;
-
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 /**
  * Testcase for TerminalConnector that must run as a JUnit plug-in test.
  */
-public class TerminalConnectorPluginTest extends TestCase {
+public class TerminalConnectorPluginTest {
 
+	@Test
 	public void testIsInitialized() {
 		if (!Platform.isRunning())
 			return;
@@ -49,6 +53,7 @@ public class TerminalConnectorPluginTest extends TestCase {
 		assertFalse(c.isInitialized());
 	}
 
+	@Test
 	public void testGetAdapter() {
 		if (!Platform.isRunning())
 			return;
