@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2019 IBM Corporation and others.
+ * Copyright (c) 2005, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -22,6 +22,8 @@ import java.util.Map;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.DecorationOverlayIcon;
+import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -152,8 +154,8 @@ public class TreeLabelProvider extends LabelProvider {
 
 	private void createImageWithOverlay(int state, String imagePath, ImageSet images, ImageDescriptor baseDescriptor) {
 		ImageDescriptor descriptor = createImageDescriptor(imagePath);
-		OverlayIcon icon = new OverlayIcon(baseDescriptor, new ImageDescriptor[][] {
-				{}, { descriptor } });
+		DecorationOverlayIcon icon = new DecorationOverlayIcon(baseDescriptor.createImage(), descriptor,
+				IDecoration.BOTTOM_RIGHT);
 		images.put(state, icon.createImage());
 	}
 
