@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007-2018 Wind River Systems, Inc. and others.
+ * Copyright (c) 2007, 2026 Wind River Systems, Inc. and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,21 +21,10 @@ import org.eclipse.terminal.model.ITerminalTextData;
 import org.eclipse.terminal.model.ITerminalTextDataReadOnly;
 import org.eclipse.terminal.model.LineSegment;
 import org.eclipse.terminal.model.TerminalStyle;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 abstract public class AbstractITerminalTextDataTest {
 	abstract protected ITerminalTextData makeITerminalTextData();
-
-	@BeforeEach
-	protected void setUp() throws Exception {
-		try {
-			assert false;
-			throw new Error("No Assertions! Run this code with assertions enabled! (vmargs: -ea)");
-		} catch (AssertionError e) {
-			// OK, assertions are enabled!
-		}
-	}
 
 	protected String toSimple(ITerminalTextData term) {
 		return TerminalTextTestHelper.toSimple(term);
