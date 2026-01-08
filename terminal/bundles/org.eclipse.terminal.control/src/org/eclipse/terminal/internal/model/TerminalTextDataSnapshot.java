@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2018 Wind River Systems, Inc. and others.
+ * Copyright (c) 2007, 2026 Wind River Systems, Inc. and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -62,15 +62,6 @@ class TerminalTextDataSnapshot implements ITerminalTextDataSnapshot {
 		fFutureChanges.markLinesChanged(0, fTerminal.getHeight());
 		fListenersNeedNotify = true;
 		fInterestWindowSize = -1;
-	}
-
-	/**
-	 * This is used in asserts to throw an {@link RuntimeException}.
-	 * This is useful for tests.
-	 * @return never -- throws an exception
-	 */
-	private boolean throwRuntimeException() {
-		throw new RuntimeException();
 	}
 
 	@Override
@@ -285,8 +276,12 @@ class TerminalTextDataSnapshot implements ITerminalTextDataSnapshot {
 
 	@Override
 	public void setInterestWindow(int startLine, int size) {
-		assert startLine >= 0 || throwRuntimeException();
-		assert size >= 0 || throwRuntimeException();
+		if (startLine < 0) {
+			throw new IllegalArgumentException("Parameter 'startLine' can't be negative value:" + startLine); //$NON-NLS-1$
+		}
+		if (size < 0) {
+			throw new IllegalArgumentException("Parameter 'size' can't be negative value:" + size); //$NON-NLS-1$
+		}
 		fInterestWindowStartLine = startLine;
 		fInterestWindowSize = size;
 		fSnapshot.setWindow(startLine, size);
