@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2018 Wind River Systems, Inc. and others.
+ * Copyright (c) 2007, 2026 Wind River Systems, Inc. and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -37,7 +37,7 @@ public class TerminalTextDataFastScroll implements ITerminalTextData {
 		fData = data;
 		fData.setDimensions(maxHeight, fData.getWidth());
 		if (maxHeight > 2) {
-			assert shiftOffset(-2) || throwRuntimeException();
+			moveOffset(-2);
 		}
 	}
 
@@ -47,15 +47,6 @@ public class TerminalTextDataFastScroll implements ITerminalTextData {
 
 	public TerminalTextDataFastScroll() {
 		this(new TerminalTextDataStore(), 1);
-	}
-
-	/**
-	 * This is used in asserts to throw an {@link RuntimeException}.
-	 * This is useful for tests.
-	 * @return never -- throws an exception
-	 */
-	private boolean throwRuntimeException() {
-		throw new RuntimeException();
 	}
 
 	/**
@@ -72,19 +63,12 @@ public class TerminalTextDataFastScroll implements ITerminalTextData {
 	 * @param delta
 	 */
 	void moveOffset(int delta) {
-		assert Math.abs(delta) < fMaxHeight || throwRuntimeException();
+		if (Math.abs(delta) >= fMaxHeight) {
+			throw new IllegalArgumentException(
+					"Parameter 'delta' absolute value (" + delta + ") must be less than maxHeight(" + fMaxHeight + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		}
 		fOffset = (fMaxHeight + fOffset + delta) % fMaxHeight;
 
-	}
-
-	/**
-	 * Test method to shift the offset for testing (if assert ==true)
-	 * @param shift TODO
-	 * @return true
-	 */
-	private boolean shiftOffset(int shift) {
-		moveOffset(shift);
-		return true;
 	}
 
 	@Override
@@ -117,7 +101,12 @@ public class TerminalTextDataFastScroll implements ITerminalTextData {
 
 	@Override
 	public void copyRange(ITerminalTextData source, int sourceStartLine, int destStartLine, int length) {
-		assert (destStartLine >= 0 && destStartLine + length <= fHeight) || throwRuntimeException();
+		if (destStartLine < 0 || destStartLine + length > fHeight) {
+			throw new IllegalArgumentException(
+					"Value of 'destStartLine'+'length' parameters must be valid line (range [0-" //$NON-NLS-1$
+							+ getHeight() + "). Parameter values: 'destStartLine'=" + destStartLine + ", 'size'=" //$NON-NLS-1$//$NON-NLS-2$
+							+ length);
+		}
 		for (int i = 0; i < length; i++) {
 			fData.copyLine(source, i + sourceStartLine, getPositionOfLine(i + destStartLine));
 		}
@@ -125,13 +114,12 @@ public class TerminalTextDataFastScroll implements ITerminalTextData {
 
 	@Override
 	public char getChar(int line, int column) {
-		assert (line >= 0 && line < fHeight) || throwRuntimeException();
+		validateLineParameter(line);
 		return fData.getChar(getPositionOfLine(line), column);
 	}
 
 	@Override
 	public char[] getChars(int line) {
-		assert (line >= 0 && line < fHeight) || throwRuntimeException();
 		return fData.getChars(getPositionOfLine(line));
 	}
 
@@ -142,7 +130,7 @@ public class TerminalTextDataFastScroll implements ITerminalTextData {
 
 	@Override
 	public LineSegment[] getLineSegments(int line, int startCol, int numberOfCols) {
-		assert (line >= 0 && line < fHeight) || throwRuntimeException();
+		validateLineParameter(line);
 		return fData.getLineSegments(getPositionOfLine(line), startCol, numberOfCols);
 	}
 
@@ -153,13 +141,13 @@ public class TerminalTextDataFastScroll implements ITerminalTextData {
 
 	@Override
 	public TerminalStyle getStyle(int line, int column) {
-		assert (line >= 0 && line < fHeight) || throwRuntimeException();
+		validateLineParameter(line);
 		return fData.getStyle(getPositionOfLine(line), column);
 	}
 
 	@Override
 	public TerminalStyle[] getStyles(int line) {
-		assert (line >= 0 && line < fHeight) || throwRuntimeException();
+		validateLineParameter(line);
 		return fData.getStyles(getPositionOfLine(line));
 	}
 
@@ -181,7 +169,10 @@ public class TerminalTextDataFastScroll implements ITerminalTextData {
 
 	@Override
 	public void scroll(int startLine, int size, int shift) {
-		assert (startLine >= 0 && startLine + size <= fHeight) || throwRuntimeException();
+		if (startLine + size > getHeight()) {
+			throw new IllegalArgumentException("Value of 'startLine'+'size' parameters must be valid line (range [0-" //$NON-NLS-1$
+					+ getHeight() + "). Parameter values: 'startLine'=" + startLine + ", 'size'=" + size); //$NON-NLS-1$ //$NON-NLS-2$
+		}
 		if (shift >= fMaxHeight || -shift >= fMaxHeight) {
 			cleanLines(startLine, fMaxHeight - startLine);
 			return;
@@ -216,26 +207,30 @@ public class TerminalTextDataFastScroll implements ITerminalTextData {
 
 	@Override
 	public void setChar(int line, int column, char c, TerminalStyle style) {
-		assert (line >= 0 && line < fHeight) || throwRuntimeException();
+		validateLineParameter(line);
 		fData.setChar(getPositionOfLine(line), column, c, style);
 	}
 
 	@Override
 	public void setChars(int line, int column, char[] chars, int start, int len, TerminalStyle style) {
-		assert (line >= 0 && line < fHeight) || throwRuntimeException();
+		validateLineParameter(line);
 		fData.setChars(getPositionOfLine(line), column, chars, start, len, style);
 	}
 
 	@Override
 	public void setChars(int line, int column, char[] chars, TerminalStyle style) {
-		assert (line >= 0 && line < fHeight) || throwRuntimeException();
+		validateLineParameter(line);
 		fData.setChars(getPositionOfLine(line), column, chars, style);
 	}
 
 	@Override
 	public void setDimensions(int height, int width) {
-		assert height >= 0 || throwRuntimeException();
-		assert width >= 0 || throwRuntimeException();
+		if (height < 0) {
+			throw new IllegalArgumentException("Parameter 'height' can't be negative value:" + height); //$NON-NLS-1$
+		}
+		if (width < 0) {
+			throw new IllegalArgumentException("Parameter 'width' can't be negative value:" + width); //$NON-NLS-1$
+		}
 		if (height > fMaxHeight) {
 			setMaxHeight(height);
 		}
@@ -247,7 +242,10 @@ public class TerminalTextDataFastScroll implements ITerminalTextData {
 
 	@Override
 	public void setMaxHeight(int maxHeight) {
-		assert maxHeight >= fHeight || throwRuntimeException();
+		if (maxHeight < fHeight) {
+			throw new IllegalArgumentException("Parameter 'maxHeight' (value '" + maxHeight //$NON-NLS-1$
+					+ "') must't be less than 'fHeight' (value '" + fHeight + "')"); //$NON-NLS-1$ //$NON-NLS-2$
+		}
 		// move everything to offset0
 		int start = getPositionOfLine(0);
 		if (start != 0) {
@@ -264,7 +262,7 @@ public class TerminalTextDataFastScroll implements ITerminalTextData {
 			}
 			// copy the buffer back to our data
 			fData.copy(buffer);
-			shiftOffset(-start);
+			moveOffset(-start);
 		} else {
 			fData.setDimensions(maxHeight, fData.getWidth());
 		}
@@ -293,13 +291,20 @@ public class TerminalTextDataFastScroll implements ITerminalTextData {
 
 	@Override
 	public boolean isWrappedLine(int line) {
-		assert (line >= 0 && line < fHeight) || throwRuntimeException();
+		validateLineParameter(line);
 		return fData.isWrappedLine(getPositionOfLine(line));
+	}
+
+	private void validateLineParameter(int line) {
+		if (line < 0 || line >= fHeight) {
+			throw new IllegalArgumentException(
+					"Parameter 'line' must be >= 0 and less than 'width' (current value '" + fHeight + "')"); //$NON-NLS-1$ //$NON-NLS-2$
+		}
 	}
 
 	@Override
 	public void setWrappedLine(int line) {
-		assert (line >= 0 && line < fHeight) || throwRuntimeException();
+		validateLineParameter(line);
 		fData.setWrappedLine(getPositionOfLine(line));
 	}
 

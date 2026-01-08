@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2018 Wind River Systems, Inc. and others.
+ * Copyright (c) 2007, 2026 Wind River Systems, Inc. and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -35,15 +35,6 @@ public class TerminalTextDataWindow implements ITerminalTextData {
 
 	public TerminalTextDataWindow() {
 		this(new TerminalTextDataStore());
-	}
-
-	/**
-	 * This is used in asserts to throw an {@link RuntimeException}.
-	 * This is useful for tests.
-	 * @return never -- throws an exception
-	 */
-	private boolean throwRuntimeException() {
-		throw new RuntimeException();
 	}
 
 	/**
@@ -161,7 +152,10 @@ public class TerminalTextDataWindow implements ITerminalTextData {
 
 	@Override
 	public void scroll(int startLine, int size, int shift) {
-		assert (startLine >= 0 && startLine + size <= fHeight) || throwRuntimeException();
+		if (startLine < 0 || startLine + size > fHeight) {
+			throw new IllegalArgumentException("Value of 'startLine'+'size' parameters must be valid line (range [0-" //$NON-NLS-1$
+					+ fHeight + "). Parameter values: 'startLine'=" + startLine + ", 'size'=" + size); //$NON-NLS-1$ //$NON-NLS-2$
+		}
 		int n = size;
 		int start = startLine - fWindowStartLine;
 		// if start outside our range, cut the length to copy
@@ -202,7 +196,9 @@ public class TerminalTextDataWindow implements ITerminalTextData {
 
 	@Override
 	public void setDimensions(int height, int width) {
-		assert height >= 0 || throwRuntimeException();
+		if (height < 0) {
+			throw new IllegalArgumentException("Parameter 'height' can't be negative value:" + height); //$NON-NLS-1$
+		}
 		fData.setDimensions(fWindowSize, width);
 		fHeight = height;
 	}

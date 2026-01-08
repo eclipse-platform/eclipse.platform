@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2018 Wind River Systems, Inc. and others.
+ * Copyright (c) 2007, 2026 Wind River Systems, Inc. and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -64,15 +64,6 @@ public class SnapshotChanges implements ISnapshotChanges {
 		fInterestWindowStartLine = windowStart;
 		fInterestWindowSize = windowSize;
 
-	}
-
-	/**
-	 * This is used in asserts to throw an {@link RuntimeException}.
-	 * This is useful for tests.
-	 * @return never -- throws an exception
-	 */
-	private boolean throwRuntimeException() {
-		throw new RuntimeException();
 	}
 
 	/**
@@ -299,7 +290,9 @@ public class SnapshotChanges implements ISnapshotChanges {
 	 * @param shift must be negative!
 	 */
 	private void scrollChangesLinesWithNegativeShift(int line, int n, int shift) {
-		assert shift < 0 || throwRuntimeException();
+		if (shift >= 0) {
+			throw new IllegalArgumentException("Shift parameter value must be negative, actual value:" + shift); //$NON-NLS-1$
+		}
 		// scroll the region
 		// don't run out of bounds!
 		int m = Math.min(line + n + shift, getChangedLineLength() + shift);
