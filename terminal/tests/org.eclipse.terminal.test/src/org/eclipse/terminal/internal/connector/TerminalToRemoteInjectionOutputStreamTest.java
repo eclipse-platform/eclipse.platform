@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2018 Wind River Systems, Inc. and others.
+ * Copyright (c) 2008, 2026 Wind River Systems, Inc. and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,7 @@
 package org.eclipse.terminal.internal.connector;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -72,20 +72,12 @@ public class TerminalToRemoteInjectionOutputStreamTest {
 			s.write('-');
 			OutputStream os = s.grabOutput();
 			// make sure the closed output does not inject anything
-			try {
-				os1.write('k');
-				fail("...");
-			} catch (Exception e) {
-			}
+			assertThrows(IOException.class, () -> os1.write('k'));
 			os.write('X');
 			s.write('a');
 			os.write('Y');
 			// make sure the closed output does not inject anything
-			try {
-				os1.write('l');
-				fail("...");
-			} catch (Exception e) {
-			}
+			assertThrows(IOException.class, () -> os1.write('l'));
 			s.write('b');
 			os.close();
 			assertEquals("begin:xyAB-XYab", new String(bs.toByteArray(), ENCODING));
@@ -127,14 +119,9 @@ public class TerminalToRemoteInjectionOutputStreamTest {
 			s.write("begin:".getBytes(ENCODING));
 			assertEquals("begin:", new String(bs.toByteArray(), ENCODING));
 			OutputStream os1 = s.grabOutput();
-			OutputStream os2;
-			try {
-				os2 = s.grabOutput();
-				fail("should fail until the foirst output is closed");
-			} catch (IOException e) {
-			}
+			assertThrows(IOException.class, () -> s.grabOutput(), "should fail until the first output is closed");
 			os1.close();
-			os2 = s.grabOutput();
+			OutputStream os2 = s.grabOutput();
 			assertEquals("begin:", new String(bs.toByteArray(), ENCODING));
 			os2.write("Test".getBytes(ENCODING));
 			assertEquals("begin:Test", new String(bs.toByteArray(), ENCODING));
@@ -147,6 +134,7 @@ public class TerminalToRemoteInjectionOutputStreamTest {
 			s.write('!');
 			assertEquals("begin:Test the west!", new String(bs.toByteArray(), ENCODING));
 		}
+
 	}
 
 	@Test
