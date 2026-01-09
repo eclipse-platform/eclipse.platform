@@ -14,8 +14,8 @@ package org.eclipse.terminal.internal.model;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import org.eclipse.terminal.model.ITerminalTextData;
 import org.eclipse.terminal.model.ITerminalTextDataReadOnly;
@@ -188,12 +188,7 @@ abstract public class AbstractITerminalTextDataTest {
 		String s = "12345\n" + "abcde\n" + "ABCDE";
 		fill(term, 0, 0, s);
 		assertEqualsTerm(s, toMultiLineText(term));
-		try {
-			term.setDimensions(-3, 4);
-			fail();
-		} catch (RuntimeException e) {
-			// OK
-		}
+		assertThrows(IllegalArgumentException.class, () -> term.setDimensions(-3, 4));
 		//		assertEquals(5, term.getWidth());
 		//		assertEquals(3, term.getHeight());
 		//		assertEquals(s, toSimpleText(term));
@@ -303,36 +298,12 @@ abstract public class AbstractITerminalTextDataTest {
 		assertEquals('C', term.getChar(2, 2));
 		assertEquals('D', term.getChar(2, 3));
 		assertEquals('E', term.getChar(2, 4));
-		try {
-			term.getChar(0, -1);
-			fail();
-		} catch (RuntimeException e) {
-		}
-		try {
-			term.getChar(-1, -1);
-			fail();
-		} catch (RuntimeException e) {
-		}
-		try {
-			term.getChar(-1, 0);
-			fail();
-		} catch (RuntimeException e) {
-		}
-		try {
-			term.getChar(0, 5);
-			fail();
-		} catch (RuntimeException e) {
-		}
-		try {
-			term.getChar(3, 5);
-			fail();
-		} catch (RuntimeException e) {
-		}
-		try {
-			term.getChar(3, 0);
-			fail();
-		} catch (RuntimeException e) {
-		}
+		assertThrows(IllegalArgumentException.class, () -> term.getChar(0, -1));
+		assertThrows(IllegalArgumentException.class, () -> term.getChar(-1, -1));
+		assertThrows(IllegalArgumentException.class, () -> term.getChar(-1, 0));
+		assertThrows(IllegalArgumentException.class, () -> term.getChar(0, 5));
+		assertThrows(IllegalArgumentException.class, () -> term.getChar(3, 5));
+		assertThrows(IllegalArgumentException.class, () -> term.getChar(3, 0));
 	}
 
 	@Test
@@ -398,12 +369,9 @@ abstract public class AbstractITerminalTextDataTest {
 
 		term.setChars(3, 1, new char[] { '1', '2' }, null);
 		assertEqualsTerm("abc\n" + "bcd\n" + "cde\n" + "d12\n" + "efg\n" + "fgh", toMultiLineText(term));
-		try {
-			// check if we cannot exceed the range
-			term.setChars(4, 1, new char[] { '1', '2', '3', '4', '5' }, null);
-			fail();
-		} catch (RuntimeException e) {
-		}
+		// check if we cannot exceed the range
+		assertThrows(IllegalArgumentException.class,
+				() -> term.setChars(4, 1, new char[] { '1', '2', '3', '4', '5' }, null));
 
 	}
 
@@ -433,33 +401,12 @@ abstract public class AbstractITerminalTextDataTest {
 		assertEqualsTerm("ZYXWVU\n" + "ab4567\n" + "ABCDEF", toMultiLineText(term));
 
 		fill(term, s);
-		try {
-			term.setChars(1, 0, chars, 7, 10, null);
-			fail();
-		} catch (RuntimeException e) {
-		}
+		assertThrows(IllegalArgumentException.class, () -> term.setChars(1, 0, chars, 7, 10, null));
 		fill(term, s);
-		try {
-			term.setChars(1, -1, chars, 0, 2, null);
-			fail();
-		} catch (RuntimeException e) {
-		}
-		try {
-			term.setChars(-1, 1, chars, 0, 2, null);
-			fail();
-		} catch (RuntimeException e) {
-		}
-		try {
-			term.setChars(1, 10, chars, 0, 2, null);
-			fail();
-		} catch (RuntimeException e) {
-		}
-		try {
-			term.setChars(10, 1, chars, 0, 2, null);
-			fail();
-		} catch (RuntimeException e) {
-		}
-		//		assertEquals(s, toSimpleText(term));
+		assertThrows(IllegalArgumentException.class, () -> term.setChars(1, -1, chars, 0, 2, null));
+		assertThrows(IllegalArgumentException.class, () -> term.setChars(-1, 1, chars, 0, 2, null));
+		assertThrows(IllegalArgumentException.class, () -> term.setChars(1, 10, chars, 0, 2, null));
+		assertThrows(IllegalArgumentException.class, () -> term.setChars(10, 1, chars, 0, 2, null));
 	}
 
 	@Test
@@ -527,30 +474,14 @@ abstract public class AbstractITerminalTextDataTest {
 		assertEqualsSimple(s, toSimple(term));
 		assertEqualsSimple("a2345", toSimple(termCopy));
 
-		try {
-			fillSimple(termCopy, sCopy);
-			termCopy.copyRange(term, 1, 1, 5);
-			fail();
-		} catch (RuntimeException e) {
-		}
-		try {
-			fillSimple(termCopy, sCopy);
-			termCopy.copyRange(term, 0, 0, 6);
-			fail();
-		} catch (RuntimeException e) {
-		}
-		try {
-			fillSimple(termCopy, sCopy);
-			termCopy.copyRange(term, 7, 0, 1);
-			fail();
-		} catch (RuntimeException e) {
-		}
-		try {
-			fillSimple(termCopy, sCopy);
-			termCopy.copyRange(term, 0, 7, 1);
-			fail();
-		} catch (RuntimeException e) {
-		}
+		fillSimple(termCopy, sCopy);
+		assertThrows(IllegalArgumentException.class, () -> termCopy.copyRange(term, 1, 1, 5));
+		fillSimple(termCopy, sCopy);
+		assertThrows(IllegalArgumentException.class, () -> termCopy.copyRange(term, 0, 0, 6));
+		fillSimple(termCopy, sCopy);
+		assertThrows(IllegalArgumentException.class, () -> termCopy.copyRange(term, 7, 0, 1));
+		fillSimple(termCopy, sCopy);
+		assertThrows(IllegalArgumentException.class, () -> termCopy.copyRange(term, 0, 7, 1));
 	}
 
 	@Test
@@ -690,16 +621,8 @@ abstract public class AbstractITerminalTextDataTest {
 
 	@Test
 	public void testScrollFail() {
-		try {
-			scrollTest(5, 2, -1, "012345", "012345");
-			fail();
-		} catch (RuntimeException e) {
-		}
-		try {
-			scrollTest(0, 7, 1, "012345", "      ");
-			fail();
-		} catch (RuntimeException e) {
-		}
+		assertThrows(IllegalArgumentException.class, () -> scrollTest(5, 2, -1, "012345", "012345"));
+		assertThrows(IllegalArgumentException.class, () -> scrollTest(0, 7, 1, "012345", "      "));
 	}
 
 	/**
