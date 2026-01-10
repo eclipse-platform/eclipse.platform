@@ -25,8 +25,8 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
           
-      - name: Set up Maven 3.9.11
+      - name: Set up Maven 3.9.1
         uses: stCarolas/setup-maven@v5
         with:
-          maven-version: '3.9.11'
+          maven-version: '3.9.12'
 

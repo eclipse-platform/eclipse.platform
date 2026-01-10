@@ -8,7 +8,7 @@ This repository contains the core Eclipse Platform components that form the basi
 
 **Key Technologies:**
 - Language: Java (JDK 21)
-- Build: Maven 3.9.11 with Eclipse Tycho (OSGi/RCP build tooling)
+- Build: Maven 3.9.12 with Eclipse Tycho (OSGi/RCP build tooling)
 - Architecture: OSGi bundles organized as Eclipse plugins
 - Testing: JUnit with Tycho Surefire plugin
 
