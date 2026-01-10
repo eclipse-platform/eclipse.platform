@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2006, 2012 IBM Corporation and others.
+ *  Copyright (c) 2006, 2026 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -62,7 +62,7 @@ public final class LaunchConfigurationFilteredTree extends FilteredTree {
 	 * @param filters the initial group of filters
 	 */
 	public LaunchConfigurationFilteredTree(Composite parent, int treeStyle, PatternFilter filter, ILaunchGroup group, ViewerFilter[] filters) {
-		super(parent, treeStyle, filter, true);
+		super(parent, treeStyle, filter, true, true);
 		fLaunchGroup = group;
 		fFilters = filters;
 		fPatternFilter = filter;
