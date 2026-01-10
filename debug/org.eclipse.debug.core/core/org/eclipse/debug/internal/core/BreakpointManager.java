@@ -32,11 +32,14 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
+import org.eclipse.core.resources.IResourceRuleFactory;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ISafeRunnable;
@@ -45,6 +48,7 @@ import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
@@ -527,7 +531,7 @@ public class BreakpointManager implements IBreakpointManager, IResourceChangeLis
 					}
 				}
 			};
-			getWorkspace().run(r, null, 0, null);
+			runBreakpointModification("Removing breakpoints", BreakpointManager.class, r); //$NON-NLS-1$
 		}
 	}
 
@@ -1403,6 +1407,83 @@ public class BreakpointManager implements IBreakpointManager, IResourceChangeLis
 			ResourcesPlugin.getWorkspace().run(runnable, null, IWorkspace.AVOID_UPDATE, null);
 		} catch (CoreException e) {
 			DebugPlugin.log(e);
+		}
+	}
+
+	/**
+	 * Run an operation that modifies a breakpoint or its marker. Synchronized
+	 * with a workspace modification rule, to prevent concurrent marker access
+	 * such as one job accessing a marker and another job deleting it.
+	 *
+	 * If the caller already holds a rule that matches workspace root
+	 * modification, the call to this method will run in the same thread. If
+	 * not, the operation will be executed in a job.
+	 *
+	 * @param jobName If running in a job, will use this name.
+	 * @param jobFamily If running in a job, the job will use this family.
+	 * @param runnable The operation to run.
+	 * @throws CoreException If an exception occurs while running the operation.
+	 */
+	private static void runBreakpointModification(String jobName, Object jobFamily, ICoreRunnable runnable) throws CoreException {
+		final ISchedulingRule modifyWorkspaceRule = modifyWorkspaceRule();
+
+		ISchedulingRule currentRule = Job.getJobManager().currentRule();
+		if (currentRule != null && currentRule.contains(modifyWorkspaceRule)) {
+			ResourcesPlugin.getWorkspace().run(runnable, null, 0, null);
+		} else {
+			UpdateBreakpointJob updateBreakpointMessagesJob = new UpdateBreakpointJob(jobName, jobFamily, modifyWorkspaceRule, runnable);
+			updateBreakpointMessagesJob.schedule();
+		}
+	}
+
+	/**
+	 * @return A workspace root modification rule, to use when modifying
+	 *         breakpoint markers.
+	 */
+	private static ISchedulingRule modifyWorkspaceRule() {
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		IWorkspaceRoot workspaceRoot = workspace.getRoot();
+		IResourceRuleFactory rootFactory = workspace.getRuleFactory();
+		ISchedulingRule modifyWorkspaceRule = rootFactory.modifyRule(workspaceRoot);
+		return modifyWorkspaceRule;
+	}
+
+	/**
+	 * Job to use when modifying breakpoints, to avoid inconsistent breakpoint
+	 * marker state caused by concurrency (e.g. accessing a marker that another
+	 * job deleted).
+	 */
+	private static class UpdateBreakpointJob extends Job {
+
+		private final Object family;
+		private final ISchedulingRule rule;
+		private final ICoreRunnable runnable;
+
+		UpdateBreakpointJob(String name, Object family, ISchedulingRule rule, ICoreRunnable runnable) {
+			super(name);
+			this.family = family;
+			this.rule = rule;
+			this.runnable = runnable;
+		}
+
+		@Override
+		protected IStatus run(IProgressMonitor monitor) {
+			if (monitor.isCanceled()) {
+				return Status.CANCEL_STATUS;
+			}
+			try {
+				ResourcesPlugin.getWorkspace().run(runnable, rule, 0, monitor);
+			} catch (CoreException e) {
+				String errorMessage = "Failed to update breakpoint messages"; //$NON-NLS-1$
+				IStatus errorStatus = new Status(IStatus.ERROR, DebugPlugin.getUniqueIdentifier(), errorMessage, e);
+				return errorStatus;
+			}
+			return Status.OK_STATUS;
+		}
+
+		@Override
+		public boolean belongsTo(Object family) {
+			return this.family == family;
 		}
 	}
 }
