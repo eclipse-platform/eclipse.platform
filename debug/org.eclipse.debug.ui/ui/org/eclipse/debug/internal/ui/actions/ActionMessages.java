@@ -254,5 +254,11 @@ public class ActionMessages extends NLS {
 	public static String EnableAllBreakpointsAction_3;
 	public static String BreakpointLabelDialog;
 	public static String RemoveFromFavoritesAction;
+	public static String PasteWatchExpressionsActionLabel;
+	public static String ExpressionPasteTitle;
+	public static String ExpressionPasteMultiButton;
+	public static String ExpressionPasteSingleButton;
+	public static String ExpressionPasteDialog;
+	public static String ExpressionPasteRemember;
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2020 IBM Corporation and others.
+ *  Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -17,11 +17,14 @@ import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.IDebugHelpContextIds;
 import org.eclipse.debug.internal.ui.IInternalDebugUIConstants;
 import org.eclipse.debug.internal.ui.SWTFactory;
+import org.eclipse.debug.internal.ui.actions.ActionMessages;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.ColorFieldEditor;
+import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
@@ -69,6 +72,18 @@ public class DebugPreferencePage extends FieldEditorPreferencePage implements IW
 				DebugPreferencesMessages.DebugPreferencePage_32, SWT.NONE, getFieldEditorParent()));
 		addField(new BooleanFieldEditor(IInternalDebugUIConstants.PREF_SKIP_ALL_BREAKPOINTS_PROMPT,
 				DebugPreferencesMessages.DebugPreferencePage_PromptSkipBreakpoints, SWT.NONE, getFieldEditorParent()));
+
+		FieldEditor edit = new RadioGroupFieldEditor(IDebugPreferenceConstants.PREF_PROMPT_PASTE_MULTILINE_EXPRESSIONS,
+				DebugPreferencesMessages.DebugPreferencePage_PromptMultiExpressions, 3,
+				new String[][] {
+						{ ActionMessages.ExpressionPasteMultiButton,
+								IInternalDebugUIConstants.EXPRESSION_PASTE_AS_MUTLY },
+						{ ActionMessages.ExpressionPasteSingleButton,
+								IInternalDebugUIConstants.EXPRESSION_PASTE_AS_SINGLE },
+						{ DebugPreferencesMessages.LaunchingPreferencePage_5,
+								IInternalDebugUIConstants.EXPRESSION_PASTE_PROMPT } },
+				getFieldEditorParent(), true);
+		addField(edit);
 
 		SWTFactory.createHorizontalSpacer(getFieldEditorParent(), 2);
 		ColorFieldEditor mem= new ColorFieldEditor(IDebugUIConstants.PREF_CHANGED_DEBUG_ELEMENT_COLOR, DebugPreferencesMessages.DebugPreferencePage_4, getFieldEditorParent());
