@@ -123,7 +123,7 @@ public class BuildFilesResolver implements IDynamicVariableResolver
 						// the filename so they don't conflict with these
 						// special quotes.
 						//
-						osPath = osPath.replaceAll("\"", "\\\\\""); //$NON-NLS-1$ //$NON-NLS-2$
+						osPath = osPath.replace("\"", "\\\""); //$NON-NLS-1$ //$NON-NLS-2$
 						fileList.append("\"" + osPath + "\""); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 				}

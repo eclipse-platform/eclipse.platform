@@ -326,7 +326,7 @@ public class EmbeddedBrowser {
 
 		// Text
 		browser.addStatusTextListener(event -> {
-			event.text = event.text.replaceAll("&", "&&"); //$NON-NLS-1$ //$NON-NLS-2$
+			event.text = event.text.replace("&", "&&"); //$NON-NLS-1$ //$NON-NLS-2$
 			if (!event.text.equals(statusText)) {
 				statusText = event.text;
 				statusBarText.setText(statusText);
