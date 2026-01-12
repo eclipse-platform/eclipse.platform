@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2018 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -29,12 +29,15 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.IBasicPropertyConstants;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -123,6 +126,9 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 	private boolean fScrollLock;
 	private boolean fWordWrap;
 
+	private Image currentIcon, defaultIcon;
+	private LocalResourceManager localResManager;
+
 	private boolean isAvailable() {
 		return getPageBook() != null && !getPageBook().isDisposed();
 	}
@@ -184,6 +190,7 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 		}
 		updateTitle();
 		updateHelp();
+		updateIcon();
 		// update console actions
 		if (fPinAction != null) {
 			fPinAction.update();
@@ -267,6 +274,30 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 			helpContextId = IConsoleHelpContextIds.CONSOLE_VIEW;
 		}
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(getPageBook().getParent(), helpContextId);
+	}
+
+	protected void updateIcon() {
+		IConsole console = getConsole();
+		if (console == null) {
+			return;
+		}
+		Image newImage = null;
+
+		if (console != null) {
+			ImageDescriptor desc = console.getImageDescriptor();
+			if (desc != null) {
+				newImage = localResManager.create(desc);
+			}
+		}
+
+		if (newImage == null) {
+			newImage = defaultIcon;
+		}
+
+		if (!newImage.equals(currentIcon)) {
+			currentIcon = newImage;
+			setTitleImage(currentIcon);
+		}
 	}
 
 	@Override
@@ -375,6 +406,10 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 		if (fOpenConsoleAction != null) {
 			fOpenConsoleAction.dispose();
 			fOpenConsoleAction = null;
+		}
+		if (localResManager != null) {
+			localResManager.dispose();
+			localResManager = null;
 		}
 	}
 
@@ -575,6 +610,9 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, IConsoleHelpContextIds.CONSOLE_VIEW);
 		getViewSite().getPage().addPartListener((IPartListener2)this);
 		initPageSwitcher();
+		localResManager = new LocalResourceManager(JFaceResources.getResources(), parent);
+		defaultIcon = ConsolePluginImages.getImage(IConsoleConstants.IMG_VIEW_CONSOLE);
+		currentIcon = defaultIcon;
 	}
 
 	/**
