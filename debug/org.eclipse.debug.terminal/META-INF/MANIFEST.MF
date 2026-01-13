@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.debug.terminal;singleton:=true
 Bundle-Vendor: %providerName
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.100.qualifier
 Import-Package: org.eclipse.terminal.connector;version="[1.0.0,2.0.0)",
  org.eclipse.terminal.control;version="[1.0.0,2.0.0)"
 Require-Bundle: org.eclipse.core.runtime,
