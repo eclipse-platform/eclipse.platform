@@ -24,5 +24,15 @@
             label="Terminal">
       </consoleFactory>
    </extension>
+   <extension
+         point="org.eclipse.ui.console.consolePageParticipants">
+      <consolePageParticipant
+            class="org.eclipse.debug.terminal.TerminalConsolePageParticipant"
+            id="org.eclipse.debug.terminal.consolePageParticipant">
+         <enablement>
+            <test property="org.eclipse.ui.console.consoleTypeTest" value="terminalConsole"/>
+         </enablement>
+      </consolePageParticipant>
+   </extension>
 
 </plugin>

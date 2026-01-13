@@ -13,10 +13,12 @@
  *******************************************************************************/
 package org.eclipse.debug.terminal.ui;
 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.terminal.connector.ITerminalConnector;
 import org.eclipse.ui.console.AbstractConsole;
 import org.eclipse.ui.console.IConsoleView;
 import org.eclipse.ui.part.IPageBookViewPage;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 class TerminalConsole extends AbstractConsole {
 
@@ -24,13 +26,20 @@ class TerminalConsole extends AbstractConsole {
 	private final ITerminalConnector terminalConnector;
 
 	TerminalConsole(ITerminalConnector terminalConnector) {
-		super("Terminal", TYPE, null, true);
+		super("Terminal", TYPE, getImageDescriptorFromBundle(), true);
 		this.terminalConnector = terminalConnector;
 	}
 
 	@Override
 	public IPageBookViewPage createPage(IConsoleView view) {
 		return new TerminalConsolePage(terminalConnector, null);
+	}
+	
+	private static ImageDescriptor getImageDescriptorFromBundle() {
+		return AbstractUIPlugin.imageDescriptorFromPlugin(
+			"org.eclipse.debug.terminal", //$NON-NLS-1$
+			"icons/console_view.svg" //$NON-NLS-1$
+		);
 	}
 
 }
