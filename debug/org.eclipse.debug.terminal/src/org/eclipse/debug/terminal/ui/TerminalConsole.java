@@ -34,7 +34,7 @@ class TerminalConsole extends AbstractConsole {
 	public IPageBookViewPage createPage(IConsoleView view) {
 		return new TerminalConsolePage(terminalConnector, null);
 	}
-	
+
 	private static ImageDescriptor getImageDescriptorFromBundle() {
 		return AbstractUIPlugin.imageDescriptorFromPlugin(
 			"org.eclipse.debug.terminal", //$NON-NLS-1$
