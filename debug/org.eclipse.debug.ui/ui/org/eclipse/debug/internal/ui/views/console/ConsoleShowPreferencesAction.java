@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -33,6 +33,7 @@ public class ConsoleShowPreferencesAction extends Action implements IViewActionD
 	private static final String PREF_PAGE_NAME = "org.eclipse.debug.ui.ConsolePreferencePage"; //$NON-NLS-1$
 	private static final String[] PREFS_PAGES_TO_SHOW = {
 			PREF_PAGE_NAME,
+			"org.eclipse.ui.preferencePages.ColorsAndFonts", //$NON-NLS-1$
 			"org.eclipse.debug.ui.DebugPreferencePage", //$NON-NLS-1$
 			"org.eclipse.ui.internal.console.ansi.preferences.AnsiConsolePreferencePage" //$NON-NLS-1$
 	};
