@@ -23,7 +23,7 @@ import org.eclipse.ui.part.IPageBookViewPage;
 public class TerminalConsolePageParticipant implements IConsolePageParticipant {
 
 	private CloseConsoleAction closeAction;
-	
+
 	@Override
 	public <T> T getAdapter(Class<T> adapter) {
 		return null;
