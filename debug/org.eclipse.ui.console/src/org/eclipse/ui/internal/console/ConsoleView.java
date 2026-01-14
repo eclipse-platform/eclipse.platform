@@ -279,18 +279,19 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 	protected void updateIcon() {
 		IConsole console = getConsole();
 		if (console == null) {
+			// Check and restore default console icon if last page is closed
+			if (currentIcon != defaultIcon) {
+				currentIcon = defaultIcon;
+				setTitleImage(currentIcon);
+			}
 			return;
 		}
-		Image newImage = null;
+		Image newImage;
 
-		if (console != null) {
-			ImageDescriptor desc = console.getImageDescriptor();
-			if (desc != null) {
-				newImage = localResManager.create(desc);
-			}
-		}
-
-		if (newImage == null) {
+		ImageDescriptor desc = console.getImageDescriptor();
+		if (desc != null) {
+			newImage = localResManager.create(desc);
+		} else {
 			newImage = defaultIcon;
 		}
 
