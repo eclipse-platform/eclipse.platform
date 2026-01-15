@@ -3374,6 +3374,9 @@ M4 = Platform-specific fourth key
             lightweight="true"
             location="TOP_RIGHT"
             state="true">
+         <description>
+            %prototype.decorator.description
+         </description>
          <enablement>
             <objectClass
                   name="org.eclipse.debug.internal.core.LaunchConfiguration">
