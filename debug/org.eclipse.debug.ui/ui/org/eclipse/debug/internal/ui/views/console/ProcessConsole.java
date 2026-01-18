@@ -106,7 +106,6 @@ import org.eclipse.ui.console.TextConsole;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.IPageBookViewPage;
-import org.eclipse.ui.progress.UIJob;
 
 /**
  * A console for a system process with standard I/O streams.
@@ -115,7 +114,7 @@ import org.eclipse.ui.progress.UIJob;
  */
 @SuppressWarnings("deprecation")
 public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSetListener, IPropertyChangeListener {
-	private IProcess fProcess = null;
+	private IProcess fProcess;
 
 	private final List<StreamListener> fStreamListeners = new ArrayList<>();
 
@@ -136,9 +135,9 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 	private FileOutputStream fFileOutputStream;
 
 	private boolean fAllocateConsole = true;
-	private String fStdInFile = null;
+	private String fStdInFile;
 
-	private volatile boolean fStreamsClosed = false;
+	private volatile boolean fStreamsClosed;
 
 	/**
 	 * Create process console with default encoding.
@@ -649,18 +648,12 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 		final String newName = computeName();
 		String name = getName();
 		if (!name.equals(newName)) {
-			UIJob job = new UIJob("Update console title") { //$NON-NLS-1$
-				@Override
-				public IStatus runInUIThread(IProgressMonitor monitor) {
-					ProcessConsole.this.setName(newName);
-					if (changed) {
-						warnOfContentChange();
-					}
-					return Status.OK_STATUS;
+			DebugUIPlugin.getStandardDisplay().execute(() -> {
+				setName(newName);
+				if (changed) {
+					warnOfContentChange();
 				}
-			};
-			job.setSystem(true);
-			job.schedule();
+			});
 		}
 	}
 
