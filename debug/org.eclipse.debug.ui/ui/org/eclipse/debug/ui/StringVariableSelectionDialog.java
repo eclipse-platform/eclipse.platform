@@ -165,7 +165,7 @@ public class StringVariableSelectionDialog extends ElementListSelectionDialog {
 		final Display display = DebugUIPlugin.getStandardDisplay();
 		BusyIndicator.showWhile(display, () -> {
 			final IStringVariable[] elements = VariablesPlugin.getDefault().getStringVariableManager().getVariables();
-			display.asyncExec(() -> setListElements(elements));
+			display.asyncExec(() -> setListElements((Object[]) elements));
 		});
 	}
 
@@ -180,7 +180,7 @@ public class StringVariableSelectionDialog extends ElementListSelectionDialog {
 	}
 
 	@Override
-	protected void setListElements(Object[] elements) {
+	protected void setListElements(Object... elements) {
 		ArrayList<Object> filtered = new ArrayList<>();
 		filtered.addAll(Arrays.asList(elements));
 		if(!fFilters.isEmpty() && !fShowAllSelected) {
@@ -303,7 +303,7 @@ public class StringVariableSelectionDialog extends ElementListSelectionDialog {
 			if (showVariablesPage()) {
 				final IStringVariable[] elements = VariablesPlugin.getDefault().getStringVariableManager()
 						.getVariables();
-				display.asyncExec(() -> setListElements(elements));
+				display.asyncExec(() -> setListElements((Object[]) elements));
 			}
 		});
 	}
