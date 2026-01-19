@@ -114,7 +114,7 @@ import org.eclipse.ui.part.IPageBookViewPage;
  */
 @SuppressWarnings("deprecation")
 public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSetListener, IPropertyChangeListener {
-	private IProcess fProcess;
+	private final IProcess fProcess;
 
 	private final List<StreamListener> fStreamListeners = new ArrayList<>();
 
