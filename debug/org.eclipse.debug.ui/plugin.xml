@@ -1586,7 +1586,7 @@
                icon="$nl$/icons/full/elcl16/rem_all_co.svg"
                helpContextId="remove_all_expressions_action_context"
                class="org.eclipse.debug.internal.ui.actions.expressions.RemoveAllExpressionsAction"
-               menubarPath="expressionGroup"
+               menubarPath="expressionRemoveGroup"
                id="org.eclipse.debug.ui.debugview.popupMenu.removeAllExpressionsAction">
          </action>
          <action
@@ -1594,7 +1594,7 @@
                icon="$nl$/icons/full/elcl16/rem_co.svg"
                helpContextId="remove_expression_action_context"
                class="org.eclipse.debug.internal.ui.actions.expressions.RemoveExpressionAction"
-               menubarPath="expressionGroup"
+               menubarPath="expressionRemoveGroup"
                id="org.eclipse.debug.ui.debugview.popupMenu.removeExpressionAction">
             <selection
                   class="org.eclipse.debug.core.model.IExpression">

@@ -230,4 +230,6 @@ public class DebugPreferencesMessages extends NLS {
 
 	public static Object ConsoleDisableElapsedTime;
 
+	public static String DebugPreferencePage_PromptMultiExpressions;
+
 }

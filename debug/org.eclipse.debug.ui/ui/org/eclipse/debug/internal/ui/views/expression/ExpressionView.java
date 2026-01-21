@@ -16,6 +16,8 @@
 package org.eclipse.debug.internal.ui.views.expression;
 
 
+import java.util.LinkedHashMap;
+
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.debug.core.DebugPlugin;
@@ -24,7 +26,10 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IDebugElement;
 import org.eclipse.debug.core.model.IWatchExpression;
 import org.eclipse.debug.internal.ui.DebugPluginImages;
+import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.IDebugHelpContextIds;
+import org.eclipse.debug.internal.ui.IInternalDebugUIConstants;
+import org.eclipse.debug.internal.ui.actions.ActionMessages;
 import org.eclipse.debug.internal.ui.actions.expressions.EditWatchExpressinInPlaceAction;
 import org.eclipse.debug.internal.ui.actions.expressions.PasteWatchExpressionsAction;
 import org.eclipse.debug.internal.ui.actions.variables.ChangeVariableValueAction;
@@ -42,6 +47,10 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.MessageDialogWithToggle;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -86,6 +95,9 @@ public class ExpressionView extends VariablesView {
 			action = getAction(FIND_ACTION);
 			action.setImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_FIND_ACTION));
 			menu.add(action);
+		}
+		if (!getClipboardText().isEmpty()) {
+			menu.appendToGroup(IDebugUIConstants.EXPRESSION_GROUP, fPasteAction);
 		}
 		ChangeVariableValueAction changeValueAction = (ChangeVariableValueAction)getAction("ChangeVariableValue"); //$NON-NLS-1$
 		if (changeValueAction.isApplicable()) {
@@ -207,15 +219,61 @@ public class ExpressionView extends VariablesView {
 	 */
 	public boolean performPaste() {
 		String clipboardText = getClipboardText();
+
 		if (clipboardText != null && clipboardText.length() > 0) {
-			IExpressionManager expressionManager = DebugPlugin.getDefault().getExpressionManager();
-			IWatchExpression watchExpression = expressionManager
-					.newWatchExpression(clipboardText);
-			expressionManager.addExpression(watchExpression);
-			watchExpression.setExpressionContext(getContext());
+			if (clipboardText.matches("(?s).*\\R.*")) { //$NON-NLS-1$
+				IPreferenceStore store = DebugUIPlugin.getDefault().getPreferenceStore();
+				String pref = store.getString(IDebugPreferenceConstants.PREF_PROMPT_PASTE_MULTILINE_EXPRESSIONS);
+				if (pref.equals(IInternalDebugUIConstants.EXPRESSION_PASTE_PROMPT)) {
+					LinkedHashMap<String, Integer> buttons = new LinkedHashMap<>();
+					buttons.put(ActionMessages.ExpressionPasteMultiButton, IDialogConstants.YES_ID);
+					buttons.put(ActionMessages.ExpressionPasteSingleButton, IDialogConstants.NO_ID);
+					MessageDialogWithToggle dialog = new MessageDialogWithToggle(DebugUIPlugin.getShell(),
+							ActionMessages.ExpressionPasteTitle, null,
+							ActionMessages.ExpressionPasteDialog,
+							MessageDialog.QUESTION, buttons, 0, ActionMessages.ExpressionPasteRemember, false);
+					dialog.open();
+					if (dialog.getReturnCode() == IDialogConstants.YES_ID) {
+						for (String expression : clipboardText.split("\n")) { //$NON-NLS-1$
+							createExpression(expression);
+						}
+						store.setValue(IDebugPreferenceConstants.PREF_PROMPT_PASTE_MULTILINE_EXPRESSIONS,
+								dialog.getToggleState() ? IInternalDebugUIConstants.EXPRESSION_PASTE_AS_MUTLY
+										: IInternalDebugUIConstants.EXPRESSION_PASTE_PROMPT);
+					} else {
+						createExpression(clipboardText);
+						store.setValue(IDebugPreferenceConstants.PREF_PROMPT_PASTE_MULTILINE_EXPRESSIONS,
+								dialog.getToggleState() ? IInternalDebugUIConstants.EXPRESSION_PASTE_AS_SINGLE
+										: IInternalDebugUIConstants.EXPRESSION_PASTE_PROMPT);
+					}
+				} else if (pref.equals(IInternalDebugUIConstants.EXPRESSION_PASTE_AS_SINGLE)) {
+					createExpression(clipboardText);
+				} else {
+					for (String expression : clipboardText.split("\n")) { //$NON-NLS-1$
+						createExpression(expression);
+					}
+				}
+				return true;
+			}
+			createExpression(clipboardText);
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Creates an expression in <b>Expression's View</b> for the given snippet
+	 *
+	 * @param expression snippet to be converted as expression
+	 */
+	private void createExpression(String expression) {
+		if (expression.isEmpty() || expression.matches("[\\t\\n\\r]+")) { //$NON-NLS-1$
+			return;
+		}
+		IExpressionManager expressionManager = DebugPlugin.getDefault().getExpressionManager();
+		IWatchExpression watchExpression = expressionManager.newWatchExpression(expression);
+		expressionManager.addExpression(watchExpression);
+		watchExpression.setExpressionContext(getContext());
 	}
 
 	// TODO: duplicate code from WatchExpressionAction

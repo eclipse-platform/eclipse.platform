@@ -465,4 +465,22 @@ public interface IInternalDebugUIConstants {
 	 */
 	String PREF_SKIP_ALL_BREAKPOINTS_PROMPT = IDebugUIConstants.PLUGIN_ID + ".DisableSkipAllBreakpointsOnLaunch"; //$NON-NLS-1$
 
+	/**
+	 * String indicating always prompt on pasting multi-line expression
+	 *
+	 */
+	String EXPRESSION_PASTE_PROMPT = "org.eclipse.debug.ui.expression.paste.prompt"; //$NON-NLS-1$
+
+	/**
+	 * String indicating always paste as combined single expression
+	 *
+	 */
+	String EXPRESSION_PASTE_AS_SINGLE = "org.eclipse.debug.ui.expression.paste.single"; //$NON-NLS-1$
+
+	/**
+	 * String indicating always paste as multiple expressions
+	 *
+	 */
+	String EXPRESSION_PASTE_AS_MUTLY = "org.eclipse.debug.ui.expression.paste.multi"; //$NON-NLS-1$
+
 }
