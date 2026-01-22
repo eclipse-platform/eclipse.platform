@@ -129,6 +129,8 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 	private Image currentIcon, defaultIcon;
 	private LocalResourceManager localResManager;
 
+	private boolean updateConsoleIcon;
+
 	private boolean isAvailable() {
 		return getPageBook() != null && !getPageBook().isDisposed();
 	}
@@ -141,7 +143,15 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 				updateTitle();
 			}
 		}
+		if (IConsoleConstants.UPDATE_CONSOLE_ICON.equals(event.getProperty())) {
+			updateConsoleIcon = shouldUpdateConsoleIcon();
+			updateIcon();
+		}
 
+	}
+
+	private boolean shouldUpdateConsoleIcon() {
+		return ConsolePlugin.getDefault().getPreferenceStore().getBoolean(IConsoleConstants.UPDATE_CONSOLE_ICON);
 	}
 
 	@Override
@@ -277,6 +287,13 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 	}
 
 	protected void updateIcon() {
+		if (!updateConsoleIcon) {
+			if (currentIcon != defaultIcon) {
+				currentIcon = defaultIcon;
+				setTitleImage(currentIcon);
+			}
+			return;
+		}
 		IConsole console = getConsole();
 		if (console == null) {
 			// Check and restore default console icon if last page is closed
@@ -412,6 +429,7 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 			localResManager.dispose();
 			localResManager = null;
 		}
+		ConsolePlugin.getDefault().getPreferenceStore().removePropertyChangeListener(this);
 	}
 
 	/**
@@ -612,8 +630,10 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 		getViewSite().getPage().addPartListener((IPartListener2)this);
 		initPageSwitcher();
 		localResManager = new LocalResourceManager(JFaceResources.getResources(), parent);
+		updateConsoleIcon = shouldUpdateConsoleIcon();
 		defaultIcon = ConsolePluginImages.getImage(IConsoleConstants.IMG_VIEW_CONSOLE);
 		currentIcon = defaultIcon;
+		ConsolePlugin.getDefault().getPreferenceStore().addPropertyChangeListener(this);
 	}
 
 	/**

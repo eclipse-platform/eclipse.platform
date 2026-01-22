@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2020 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -196,5 +196,12 @@ public interface IConsoleConstants {
 	 * @since 3.13
 	 */
 	String COMMAND_ID_CLEAR_CONSOLE = "org.eclipse.debug.ui.commands.console.clear"; //$NON-NLS-1$
+
+	/**
+	 * The preference for updating console icon based on active console page
+	 *
+	 * @since 3.16
+	 */
+	String UPDATE_CONSOLE_ICON = ConsolePlugin.getUniqueIdentifier() + ".PREF_DYNAMIC_CONSOLE_ICON"; //$NON-NLS-1$
 
 }

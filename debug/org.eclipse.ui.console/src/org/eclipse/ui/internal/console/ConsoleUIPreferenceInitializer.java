@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 Andrey Loskutov <loskutov@gmx.de> and others.
+ * Copyright (c) 2018, 2026 Andrey Loskutov <loskutov@gmx.de> and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -31,6 +31,7 @@ public class ConsoleUIPreferenceInitializer extends AbstractPreferenceInitialize
 		prefs.setDefault(IConsoleConstants.P_CONSOLE_WORD_WRAP, false);
 		prefs.setDefault(IConsoleConstants.AUTO_PIN_ENABLED_PREF_NAME, true);
 		prefs.setDefault(IConsoleConstants.REMEMBER_AUTO_PIN_DECISION_PREF_NAME, false);
+		prefs.setDefault(IConsoleConstants.UPDATE_CONSOLE_ICON, true);
 	}
 
 }
