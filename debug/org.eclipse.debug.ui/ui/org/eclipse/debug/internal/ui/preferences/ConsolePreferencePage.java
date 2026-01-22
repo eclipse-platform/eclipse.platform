@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2025 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -181,6 +181,10 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 				DebugPreferencesMessages.ConsolePreferencePage_ConsoleAutoPinEnable, SWT.NONE, getFieldEditorParent());
 		autoPinEditor.setPreferenceStore(ConsolePlugin.getDefault().getPreferenceStore());
 		addField(autoPinEditor);
+		BooleanFieldEditor consoleIconUpdate = new BooleanFieldEditor(IConsoleConstants.UPDATE_CONSOLE_ICON,
+				DebugPreferencesMessages.ConsolePreferencePage_ConsoleIconUpdate, SWT.NONE, getFieldEditorParent());
+		consoleIconUpdate.setPreferenceStore(ConsolePlugin.getDefault().getPreferenceStore());
+		addField(consoleIconUpdate);
 		Label comboLabel = new Label(getFieldEditorParent(), SWT.NONE);
 		comboLabel.setText(DebugPreferencesMessages.ConsoleElapsedTimeLabel);
 		fElapsedFormat = new ComboViewer(getFieldEditorParent(), SWT.DROP_DOWN | SWT.BORDER);
