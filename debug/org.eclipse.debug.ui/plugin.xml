@@ -756,6 +756,17 @@
                menubarPath="additions">
          </action>
       </viewContribution>
+      <viewContribution
+            targetID="org.eclipse.ui.console.ConsoleView"
+            id="org.eclipse.ui.console.ConsoleView.viewActions">
+         <action
+               label="%ConsolePreferencesAction.label"
+               tooltip="%ConsolePreferencesAction.tooltip"
+               class="org.eclipse.debug.internal.ui.views.console.ConsoleShowPreferencesAction"
+               menubarPath="additions"
+               id="org.eclipse.debug.ui.consolePreferencesAction.viewAction">
+         </action>
+      </viewContribution>
 <!-- Contributions to Debug View Toolbar -->
       <viewContribution
             targetID="org.eclipse.debug.ui.DebugView"
