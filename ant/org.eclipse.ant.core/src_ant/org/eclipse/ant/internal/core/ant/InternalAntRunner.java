@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2022 IBM Corporation and others.
+ *  Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -702,8 +702,6 @@ public class InternalAntRunner {
 				printArguments(getCurrentProject());
 			}
 			if (IS_SECURITY_MANAGER_SUPPORTED) {
-				// TODO: call SecurityManagerUtil.isSecurityManagerAllowed() once it's more fine-grained,
-				// i.e. once https://github.com/apache/ant/pull/216 is available.
 				System.setSecurityManager(new AntSecurityManager(originalSM, Thread.currentThread()));
 			}
 			if (targets == null) {
