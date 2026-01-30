@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2015 IBM Corporation and others.
+ * Copyright (c) 2008, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -217,7 +217,7 @@ public class VirtualFolderTest {
 		IFile childFile = folder.getFile(createUniqueString());
 		IResource[] oldResources = new IResource[] {existingProject, file, folder, childFile};
 
-		assertDoesNotExistInWorkspace(new IResource[] { folder, file, childFile });
+		assertDoesNotExistInWorkspace(folder, file, childFile);
 
 		createInFileSystem(fileLocation);
 		folderLocation.toFile().mkdir();

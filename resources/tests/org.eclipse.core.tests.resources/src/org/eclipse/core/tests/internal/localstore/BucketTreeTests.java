@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2004, 2015 IBM Corporation and others.
+ *  Copyright (c) 2004, 2026 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -174,36 +174,25 @@ public class BucketTreeTests {
 				Set.of(IPath.ROOT, proj1.getFullPath(), proj2.getFullPath()));
 		verify(tree, IPath.ROOT, BucketTree.DEPTH_INFINITE, Set.of(IPath.ROOT, proj1.getFullPath(),
 				file1.getFullPath(), folder1.getFullPath(), file2.getFullPath(), proj2.getFullPath()));
-		verify(tree, proj1.getFullPath(), BucketTree.DEPTH_ZERO,
-				Arrays.asList(new IPath[] { proj1.getFullPath() }));
+		verify(tree, proj1.getFullPath(), BucketTree.DEPTH_ZERO, Arrays.asList(proj1.getFullPath()));
 		verify(tree, proj1.getFullPath(), BucketTree.DEPTH_ONE,
-				Arrays.asList(new IPath[] { proj1.getFullPath(), file1.getFullPath(), folder1.getFullPath() }));
-		verify(tree, proj1.getFullPath(), BucketTree.DEPTH_INFINITE, Arrays.asList(
-				new IPath[] { proj1.getFullPath(), file1.getFullPath(), folder1.getFullPath(), file2.getFullPath() }));
-		verify(tree, file1.getFullPath(), BucketTree.DEPTH_ZERO,
-				Arrays.asList(new IPath[] { file1.getFullPath() }));
-		verify(tree, file1.getFullPath(), BucketTree.DEPTH_ONE,
-				Arrays.asList(new IPath[] { file1.getFullPath() }));
-		verify(tree, file1.getFullPath(), BucketTree.DEPTH_INFINITE,
-				Arrays.asList(new IPath[] { file1.getFullPath() }));
-		verify(tree, folder1.getFullPath(), BucketTree.DEPTH_ZERO,
-				Arrays.asList(new IPath[] { folder1.getFullPath() }));
+				Arrays.asList(proj1.getFullPath(), file1.getFullPath(), folder1.getFullPath()));
+		verify(tree, proj1.getFullPath(), BucketTree.DEPTH_INFINITE,
+				Arrays.asList(proj1.getFullPath(), file1.getFullPath(), folder1.getFullPath(), file2.getFullPath()));
+		verify(tree, file1.getFullPath(), BucketTree.DEPTH_ZERO, Arrays.asList(file1.getFullPath()));
+		verify(tree, file1.getFullPath(), BucketTree.DEPTH_ONE, Arrays.asList(file1.getFullPath()));
+		verify(tree, file1.getFullPath(), BucketTree.DEPTH_INFINITE, Arrays.asList(file1.getFullPath()));
+		verify(tree, folder1.getFullPath(), BucketTree.DEPTH_ZERO, Arrays.asList(folder1.getFullPath()));
 		verify(tree, folder1.getFullPath(), BucketTree.DEPTH_ONE,
-				Arrays.asList(new IPath[] { folder1.getFullPath(), file2.getFullPath() }));
+				Arrays.asList(folder1.getFullPath(), file2.getFullPath()));
 		verify(tree, folder1.getFullPath(), BucketTree.DEPTH_INFINITE,
-				Arrays.asList(new IPath[] { folder1.getFullPath(), file2.getFullPath() }));
-		verify(tree, file2.getFullPath(), BucketTree.DEPTH_ZERO,
-				Arrays.asList(new IPath[] { file2.getFullPath() }));
-		verify(tree, file2.getFullPath(), BucketTree.DEPTH_ONE,
-				Arrays.asList(new IPath[] { file2.getFullPath() }));
-		verify(tree, file2.getFullPath(), BucketTree.DEPTH_INFINITE,
-				Arrays.asList(new IPath[] { file2.getFullPath() }));
-		verify(tree, proj2.getFullPath(), BucketTree.DEPTH_ZERO,
-				Arrays.asList(new IPath[] { proj2.getFullPath() }));
-		verify(tree, proj2.getFullPath(), BucketTree.DEPTH_ONE,
-				Arrays.asList(new IPath[] { proj2.getFullPath() }));
-		verify(tree, proj2.getFullPath(), BucketTree.DEPTH_INFINITE,
-				Arrays.asList(new IPath[] { proj2.getFullPath() }));
+				Arrays.asList(folder1.getFullPath(), file2.getFullPath()));
+		verify(tree, file2.getFullPath(), BucketTree.DEPTH_ZERO, Arrays.asList(file2.getFullPath()));
+		verify(tree, file2.getFullPath(), BucketTree.DEPTH_ONE, Arrays.asList(file2.getFullPath()));
+		verify(tree, file2.getFullPath(), BucketTree.DEPTH_INFINITE, Arrays.asList(file2.getFullPath()));
+		verify(tree, proj2.getFullPath(), BucketTree.DEPTH_ZERO, Arrays.asList(proj2.getFullPath()));
+		verify(tree, proj2.getFullPath(), BucketTree.DEPTH_ONE, Arrays.asList(proj2.getFullPath()));
+		verify(tree, proj2.getFullPath(), BucketTree.DEPTH_INFINITE, Arrays.asList(proj2.getFullPath()));
 	}
 
 	public void verify(BucketTree tree, IPath root, int depth, final Collection<IPath> expected)

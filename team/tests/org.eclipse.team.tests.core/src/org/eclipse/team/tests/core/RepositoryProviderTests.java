@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2013 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -230,7 +230,8 @@ public class RepositoryProviderTests {
 		};
 		bicProvider.setMoveDeleteHook(hook);
 
-		IResource[] resources = buildResources(project, new String[] {"deleteFile.txt", "moveFile.txt", "deletedFolder/", "moveFolder/"});
+		IResource[] resources = buildResources(project, "deleteFile.txt", "moveFile.txt", "deletedFolder/",
+				"moveFolder/");
 		createInWorkspace(resources);
 		resources[0].delete(false, null);
 		resources[1].move(resources[1].getFullPath().removeLastSegments(1).append("movedFile_NEW"), false, null);
@@ -328,7 +329,7 @@ public class RepositoryProviderTests {
 		});
 
 		// test that moving files/folders between two projects with providers calls the destination
-		IResource[] resources = buildResources(projectA, new String[] {"moveFile.txt", "moveFolder/"});
+		IResource[] resources = buildResources(projectA, "moveFile.txt", "moveFolder/");
 		createInWorkspace(resources);
 		resources[0].move(projectB.getFullPath().append("moveFile_new.txt"), false, null);
 		resources[1].move(projectB.getFullPath().append("movedFolder"), false, null);
@@ -340,7 +341,7 @@ public class RepositoryProviderTests {
 		// hooks for the source
 		calledProjectA[0] = false; calledProjectA[1] = false;
 		calledProjectB[0] = false; calledProjectB[1] = false;
-		resources = buildResources(projectA, new String[] {"anotherMovedFiled.txt", "anotherMovedFolder/"});
+		resources = buildResources(projectA, "anotherMovedFiled.txt", "anotherMovedFolder/");
 		createInWorkspace(resources);
 		resources[0].move(projectC.getFullPath().append("moveFileOther_new.txt"), false, null);
 		resources[1].move(projectC.getFullPath().append("movedFolderOther"), false, null);
@@ -352,8 +353,7 @@ public class RepositoryProviderTests {
 	@Test
 	public void testMapSuccess() throws CoreException, TeamException {
 		IProject project = createTestProject("testLinkSuccess");
-		IResource[] contents = buildResources(project,
-				new String[] { "changed.txt", "deleted.txt", "folder1/", "folder1/a.txt" });
+		IResource[] contents = buildResources(project, "changed.txt", "deleted.txt", "folder1/", "folder1/a.txt");
 		createInWorkspace(contents);
 
 		// Test shallow link when URI not allowed
@@ -385,8 +385,7 @@ public class RepositoryProviderTests {
 	@Test
 	public void testLinkSuccess() throws CoreException, TeamException {
 		IProject project = createTestProject("testLinkSuccess");
-		IResource[] contents = buildResources(project,
-				new String[] { "changed.txt", "deleted.txt", "folder1/", "folder1/a.txt" });
+		IResource[] contents = buildResources(project, "changed.txt", "deleted.txt", "folder1/", "folder1/a.txt");
 		createInWorkspace(contents);
 
 		RepositoryProviderWithLinking.setCanHandleLinking(true);
@@ -409,8 +408,7 @@ public class RepositoryProviderTests {
 	@Test
 	public void testMapFailure() throws CoreException, TeamException {
 		IProject project = createTestProject("testMapFailure");
-		IResource[] contents = buildResources(project,
-				new String[] { "changed.txt", "deleted.txt", "folder1/", "folder1/a.txt" });
+		IResource[] contents = buildResources(project, "changed.txt", "deleted.txt", "folder1/", "folder1/a.txt");
 		createInWorkspace(contents);
 
 		IFolder folder = project.getFolder("link");
@@ -447,8 +445,7 @@ public class RepositoryProviderTests {
 	@Test
 	public void testLinkFailure() throws CoreException, TeamException {
 		IProject project = createTestProject("testLinkFailure");
-		IResource[] contents = buildResources(project,
-				new String[] { "changed.txt", "deleted.txt", "folder1/", "folder1/a.txt" });
+		IResource[] contents = buildResources(project, "changed.txt", "deleted.txt", "folder1/", "folder1/a.txt");
 		createInWorkspace(contents);
 
 		RepositoryProviderWithLinking.setCanHandleLinking(false);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2021 IBM Corporation and others.
+ *  Copyright (c) 2021, 2026 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -44,7 +44,7 @@ public class TestProjectDeletion {
 	@BeforeEach
 	public void setUp() throws Exception {
 		project = getWorkspace().getRoot().getProject("Project");
-		IResource[] resources = buildResources(project, new String[] { "a/", "a/b/", "a/c/", "a/d", "a/b/e", "a/b/f" });
+		IResource[] resources = buildResources(project, "a/", "a/b/", "a/c/", "a/d", "a/b/e", "a/b/f");
 		createInWorkspace(resources);
 		assertExistsInWorkspace(resources);
 		factory = ResourceChangeValidator.getValidator().createDeltaFactory();

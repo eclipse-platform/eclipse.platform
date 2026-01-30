@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2017 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -284,9 +284,9 @@ public class MoveTest {
 		createInWorkspace(folderSource);
 
 		// create hierarchy
-		String[] hierarchy = new String[] { "/", "/file1", "/file2", "/folder1/", "/folder1/file3",
-				"/folder1/file4", "/folder2/", "/folder2/file5", "/folder2/file6", "/folder1/folder3/",
-				"/folder1/folder3/file7", "/folder1/folder3/file8" };
+		String[] hierarchy = { "/", "/file1", "/file2", "/folder1/", "/folder1/file3", "/folder1/file4", "/folder2/",
+				"/folder2/file5", "/folder2/file6", "/folder1/folder3/", "/folder1/folder3/file7",
+				"/folder1/folder3/file8" };
 		IResource[] resources = buildResources(folderSource, hierarchy);
 		createInWorkspace(resources);
 
@@ -359,8 +359,8 @@ public class MoveTest {
 		createInWorkspace(folderSource);
 
 		// build hierarchy
-		String[] hierarchy = new String[] { "/", "/file1", "/file2", "/folder1/", "/folder1/file3", "/folder1/file4",
-				"/folder2/", "/folder2/file5", "/folder2/file6", "/folder1/folder3/", "/folder1/folder3/file7",
+		String[] hierarchy = { "/", "/file1", "/file2", "/folder1/", "/folder1/file3", "/folder1/file4", "/folder2/",
+				"/folder2/file5", "/folder2/file6", "/folder1/folder3/", "/folder1/folder3/file7",
 				"/folder1/folder3/file8" };
 		IResource[] resources = buildResources(folderSource, hierarchy);
 		createInWorkspace(resources);

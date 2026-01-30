@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2025 Vector Informatik GmbH and others.
+ * Copyright (c) 2023, 2026 Vector Informatik GmbH and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -262,21 +262,13 @@ public final class ResourceTestUtil {
 	}
 
 	/**
-	 * Assert whether or not the given resource exists in the workspace resource
-	 * info tree.
-	 */
-	public static void assertExistsInWorkspace(IResource resource) {
-		assertTrue(existsInWorkspace(resource),
-				resource.getFullPath() + " unexpectedly does not exist in the workspace");
-	}
-
-	/**
 	 * Assert that each element of the resource array exists in the workspace
 	 * resource info tree.
 	 */
-	public static void assertExistsInWorkspace(IResource[] resources) {
+	public static void assertExistsInWorkspace(IResource... resources) {
 		for (IResource resource : resources) {
-			assertExistsInWorkspace(resource);
+			assertTrue(existsInWorkspace(resource),
+					resource.getFullPath() + " unexpectedly does not exist in the workspace");
 		}
 	}
 
@@ -321,39 +313,24 @@ public final class ResourceTestUtil {
 	}
 
 	/**
-	 * Assert that the given resource does not exist in the workspace resource info
-	 * tree.
-	 */
-	public static void assertDoesNotExistInWorkspace(IResource resource) {
-		assertFalse(existsInWorkspace(resource), resource.getFullPath() + " unexpectedly exists in the workspace");
-	}
-
-	/**
 	 * Assert that each element of the resource array does not exist in the
 	 * workspace resource info tree.
 	 */
-	public static void assertDoesNotExistInWorkspace(IResource[] resources) {
+	public static void assertDoesNotExistInWorkspace(IResource... resources) {
 		for (IResource resource : resources) {
-			assertDoesNotExistInWorkspace(resource);
+			assertFalse(existsInWorkspace(resource), resource.getFullPath() + " unexpectedly exists in the workspace");
 		}
 	}
 
 	/**
-	 * Assert whether or not the given resource exists in the local store. Use the
-	 * resource manager to ensure that we have a correct Path -&gt; File mapping.
+	 * Assert that each element in the resource array exists in the local store. Use
+	 * the resource manager to ensure that we have a correct Path -&gt; File
+	 * mapping.
 	 */
-	public static void assertExistsInFileSystem(IResource resource) {
-		assertTrue(existsInFileSystem(resource),
-				resource.getFullPath() + " unexpectedly does not exist in the file system");
-	}
-
-
-	/**
-	 * Assert that each element in the resource array exists in the local store.
-	 */
-	public static void assertExistsInFileSystem(IResource[] resources) {
+	public static void assertExistsInFileSystem(IResource... resources) {
 		for (IResource resource : resources) {
-			assertExistsInFileSystem(resource);
+			assertTrue(existsInFileSystem(resource),
+					resource.getFullPath() + " unexpectedly does not exist in the file system");
 		}
 	}
 
@@ -379,19 +356,13 @@ public final class ResourceTestUtil {
 	}
 
 	/**
-	 * Assert that the given resource does not exist in the local store.
-	 */
-	public static void assertDoesNotExistInFileSystem(IResource resource) {
-		assertFalse(existsInFileSystem(resource), resource.getFullPath() + " unexpectedly exists in the file system");
-	}
-
-	/**
 	 * Assert that each element of the resource array does not exist in the
 	 * local store.
 	 */
-	public static void assertDoesNotExistInFileSystem(IResource[] resources) {
+	public static void assertDoesNotExistInFileSystem(IResource... resources) {
 		for (IResource resource : resources) {
-			assertDoesNotExistInFileSystem(resource);
+			assertFalse(existsInFileSystem(resource),
+					resource.getFullPath() + " unexpectedly exists in the file system");
 		}
 	}
 
@@ -464,7 +435,7 @@ public final class ResourceTestUtil {
 	 * Return a collection of resources for the given hierarchy at
 	 * the given root.
 	 */
-	public static IResource[] buildResources(IContainer root, String[] hierarchy) throws CoreException {
+	public static IResource[] buildResources(IContainer root, String... hierarchy) throws CoreException {
 		IResource[] result = new IResource[hierarchy.length];
 		for (int i = 0; i < hierarchy.length; i++) {
 			IPath path = IPath.fromOSString(hierarchy[i]);

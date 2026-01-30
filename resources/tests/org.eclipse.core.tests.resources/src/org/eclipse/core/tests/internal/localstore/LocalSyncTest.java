@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2015 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -65,8 +65,7 @@ public class LocalSyncTest implements ICoreConstants {
 		TestingSupport.waitForSnapshot();
 
 		// create resources
-		IResource[] resources = buildResources(project,
-				new String[] { "/File1", "/Folder1/", "/Folder1/File1", "/Folder1/Folder2/" });
+		IResource[] resources = buildResources(project, "/File1", "/Folder1/", "/Folder1/File1", "/Folder1/Folder2/");
 		createInWorkspace(resources);
 
 		// delete project's default directory

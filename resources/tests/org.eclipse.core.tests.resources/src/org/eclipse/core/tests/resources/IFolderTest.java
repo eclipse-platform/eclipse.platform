@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2015 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -220,7 +220,7 @@ public class IFolderTest {
 	@Test
 	public void testFolderDeletion() throws Throwable {
 		IProject project = getWorkspace().getRoot().getProject("Project");
-		IResource[] before = buildResources(project, new String[] {"c/", "c/b/", "c/x", "c/b/y", "c/b/z"});
+		IResource[] before = buildResources(project, "c/", "c/b/", "c/x", "c/b/y", "c/b/z");
 		createInWorkspace(before);
 		//
 		assertExistsInWorkspace(before);
@@ -231,8 +231,8 @@ public class IFolderTest {
 	@Test
 	public void testFolderMove() throws Throwable {
 		IProject project = getWorkspace().getRoot().getProject("Project");
-		IResource[] before = buildResources(project, new String[] {"b/", "b/b/", "b/x", "b/b/y", "b/b/z"});
-		IResource[] after = buildResources(project, new String[] {"a/", "a/b/", "a/x", "a/b/y", "a/b/z"});
+		IResource[] before = buildResources(project, "b/", "b/b/", "b/x", "b/b/y", "b/b/z");
+		IResource[] after = buildResources(project, "a/", "a/b/", "a/x", "a/b/y", "a/b/z");
 
 		// create the resources and set some content in a file that will be moved.
 		createInWorkspace(before);

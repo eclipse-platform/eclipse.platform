@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2006, 2015 IBM Corporation and others.
+ *  Copyright (c) 2006, 2026 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -108,7 +108,7 @@ public class ChangeValidationTest {
 	public void setUp() throws Exception {
 		TestModelProvider.enabled = true;
 		project = getWorkspace().getRoot().getProject("Project");
-		IResource[] before = buildResources(project, new String[] {"c/", "c/b/", "c/a/", "c/x", "c/b/y", "c/b/z"});
+		IResource[] before = buildResources(project, "c/", "c/b/", "c/a/", "c/x", "c/b/y", "c/b/z");
 		createInWorkspace(before);
 		assertExistsInWorkspace(before);
 		factory = createEmptyChangeDescription();

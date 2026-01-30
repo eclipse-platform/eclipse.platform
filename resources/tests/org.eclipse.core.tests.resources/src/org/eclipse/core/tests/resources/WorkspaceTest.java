@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2017 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -150,7 +150,7 @@ public class WorkspaceTest {
 	@Test
 	public void testFolderDeletion() throws Throwable {
 		IProject project = getTestProject();
-		IResource[] before = buildResources(project, new String[] {"c/", "c/b/", "c/x", "c/b/y", "c/b/z"});
+		IResource[] before = buildResources(project, "c/", "c/b/", "c/x", "c/b/y", "c/b/z");
 		createInWorkspace(before);
 		//
 		assertExistsInWorkspace(before);
@@ -163,8 +163,8 @@ public class WorkspaceTest {
 	@Test
 	public void testFolderMove() throws Throwable {
 		IProject project = getTestProject();
-		IResource[] before = buildResources(project, new String[] {"b/", "b/b/", "b/x", "b/b/y", "b/b/z"});
-		IResource[] after = buildResources(project, new String[] {"a/", "a/b/", "a/x", "a/b/y", "a/b/z"});
+		IResource[] before = buildResources(project, "b/", "b/b/", "b/x", "b/b/y", "b/b/z");
+		IResource[] after = buildResources(project, "a/", "a/b/", "a/x", "a/b/y", "a/b/z");
 
 		// create the resources and set some content in a file that will be moved.
 		createInWorkspace(before);
@@ -218,7 +218,7 @@ public class WorkspaceTest {
 	@Test
 	public void testMultiCreation() throws Throwable {
 		final IProject project = getWorkspace().getRoot().getProject("bar");
-		final IResource[] resources = buildResources(project, new String[] {"a/", "a/b"});
+		final IResource[] resources = buildResources(project, "a/", "a/b");
 		IWorkspaceRunnable body = monitor -> {
 			if (!project.exists()) {
 				project.create(null);
@@ -251,7 +251,7 @@ public class WorkspaceTest {
 	@Test
 	public void testMultiDeletion() throws Throwable {
 		IProject project = getTestProject();
-		IResource[] before = buildResources(project, new String[] {"c/", "c/b/", "c/x", "c/b/y", "c/b/z"});
+		IResource[] before = buildResources(project, "c/", "c/b/", "c/x", "c/b/y", "c/b/z");
 		createInWorkspace(before);
 		//
 		assertExistsInWorkspace(before);

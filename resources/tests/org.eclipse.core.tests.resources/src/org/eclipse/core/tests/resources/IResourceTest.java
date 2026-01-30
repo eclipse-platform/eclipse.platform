@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2023 IBM Corporation and others.
+ *  Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -238,7 +238,7 @@ public class IResourceTest {
 		IProject fullProject = getWorkspace().getRoot().getProject("FullProject");
 		//resource pattern is: empty file, empty folder, full folder, repeat
 		// with full folder
-		IResource[] resources = buildResources(fullProject, new String[] {"1", "2/", "3/", "3/1", "3/2/"});
+		IResource[] resources = buildResources(fullProject, "1", "2/", "3/", "3/1", "3/2/");
 
 		IResource[] result = new IResource[resources.length + 3];
 		result[0] = getWorkspace().getRoot();
@@ -252,21 +252,21 @@ public class IResourceTest {
 	private IResource[] buildSampleResources(IContainer root) throws Exception {
 		// do not change the example resources unless you change references to
 		// specific indices in setUp()
-		IResource[] result = buildResources(root, new String[] {"1/", "1/1/", "1/1/1/", "1/1/1/1", "1/1/2/", "1/1/2/1/", "1/1/2/2/", "1/1/2/3/", "1/2/", "1/2/1", "1/2/2", "1/2/3/", "1/2/3/1", "1/2/3/2", "1/2/3/3", "1/2/3/4", "2", "2"});
+		IResource[] result = buildResources(root, "1/", "1/1/", "1/1/1/", "1/1/1/1", "1/1/2/", "1/1/2/1/", "1/1/2/2/", "1/1/2/3/", "1/2/", "1/2/1", "1/2/2", "1/2/3/", "1/2/3/1", "1/2/3/2", "1/2/3/3", "1/2/3/4", "2", "2");
 		createInWorkspace(result);
 		result[result.length - 1] = root.getFolder(IPath.fromOSString("2/"));
 		nonExistingResources.add(result[result.length - 1]);
 
-		IResource[] deleted = buildResources(root, new String[] {"1/1/2/1/", "1/2/3/1"});
+		IResource[] deleted = buildResources(root, "1/1/2/1/", "1/2/3/1");
 		removeFromWorkspace(deleted);
 		nonExistingResources.addAll(Arrays.asList(deleted));
 		//out of sync
-		IResource[] unsynchronized = buildResources(root, new String[] {"1/2/3/3"});
+		IResource[] unsynchronized = buildResources(root, "1/2/3/3");
 		ensureOutOfSync((IFile) unsynchronized[0]);
 		unsynchronizedResources.add(unsynchronized[0]);
 
 		//file system only
-		unsynchronized = buildResources(root, new String[] {"1/1/2/2/1"});
+		unsynchronized = buildResources(root, "1/1/2/2/1");
 		removeFromWorkspace(unsynchronized);
 		for (IResource resource : unsynchronized) {
 			createInFileSystem(resource);
@@ -764,7 +764,7 @@ public class IResourceTest {
 
 		createInWorkspace(new IResource[] {project, a, a1, a2, b, b1, b2, c, c1, c2});
 
-		toVisit.addAll(Arrays.asList(new IResource[] {a}));
+		toVisit.addAll(Arrays.asList(a));
 		toVisitCount[0] = 1;
 		a.accept(visitor, IResource.DEPTH_ZERO, IResource.NONE);
 		assertTrue(toVisit.isEmpty());
@@ -1607,7 +1607,7 @@ public class IResourceTest {
 		getWorkspace().getRoot().delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, createTestMonitor());
 
 		// setup
-		IResource[] resources = buildResources(getWorkspace().getRoot(), new String[] {"/1/", "/1/1", "/1/2", "/1/3", "/2/", "/2/1"});
+		IResource[] resources = buildResources(getWorkspace().getRoot(), "/1/", "/1/1", "/1/2", "/1/3", "/2/", "/2/1");
 		final Map<IPath, Long> table = new HashMap<>(resources.length);
 
 		for (IResource resource : resources) {
@@ -2120,7 +2120,7 @@ public class IResourceTest {
 	@Test
 	public void testMultiCreation() throws CoreException {
 		final IProject project = getWorkspace().getRoot().getProject("bar");
-		final IResource[] resources = buildResources(project, new String[] {"a/", "a/b"});
+		final IResource[] resources = buildResources(project, "a/", "a/b");
 		// create the project. Have to do this outside the resource operation
 		// to ensure that things are setup properly (e.g., add the delta
 		// listener)
