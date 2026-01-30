@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2025 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -909,8 +909,6 @@ public class AntCorePreferences implements IPropertyChangeListener {
 
 	/**
 	 * Returns the <code>IAntClasspathEntry</code>s for the jars from ${user.home}/.ant/lib May return <code>null</code> if jars are found.
-	 *
-	 * TODO Should be promoted to API post 3.1
 	 *
 	 * @return the collection of <code>IAntClasspathEntry</code> found at ${user.home}/.ant/lib or <code>null</code> if none found of location does
 	 *         not exist

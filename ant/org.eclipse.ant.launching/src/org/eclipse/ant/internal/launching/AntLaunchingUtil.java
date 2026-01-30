@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2016 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -142,7 +142,6 @@ public final class AntLaunchingUtil {
 	 *             if unable to access the associated attribute
 	 */
 	public static Map<String, String> getProperties(ILaunchConfiguration configuration) throws CoreException {
-		// TODO PLATFORM DEBUG 1.5 API
 		Map<String, String> map = configuration.getAttribute(IAntLaunchConstants.ATTR_ANT_PROPERTIES, (Map<String, String>) null);
 		return map;
 	}
