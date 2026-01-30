@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2017 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -96,13 +96,13 @@ public class Bug_192631 {
 		IFolder linkB = projectB.getFolder("link_to_commonB");
 		linkB.createLink(commonB, IResource.NONE, createTestMonitor());
 
-		toVisit.addAll(Arrays.asList(new URI[] {projectA.getLocationURI(), commonA, folderA, projectA.getFile(".project").getLocationURI()}));
+		toVisit.addAll(Arrays.asList(projectA.getLocationURI(), commonA, folderA, projectA.getFile(".project").getLocationURI()));
 		toVisitCount[0] = 6;
 		projectA.accept(visitor);
 		assertThat(toVisit).isEmpty();
 		assertEquals(0, toVisitCount[0]);
 
-		toVisit.addAll(Arrays.asList(new URI[] {projectB.getLocationURI(), commonB, folderB, projectB.getFile(".project").getLocationURI()}));
+		toVisit.addAll(Arrays.asList(projectB.getLocationURI(), commonB, folderB, projectB.getFile(".project").getLocationURI()));
 		toVisitCount[0] = 6;
 		projectB.accept(visitor);
 		assertThat(toVisit).isEmpty();
@@ -142,13 +142,13 @@ public class Bug_192631 {
 		IFolder linkB = projectB.getFolder("link_to_commonB");
 		linkB.createLink(commonB, IResource.NONE, createTestMonitor());
 
-		toVisit.addAll(Arrays.asList(new URI[] {projectA.getLocationURI(), commonA, folderA, projectA.getFile(".project").getLocationURI()}));
+		toVisit.addAll(Arrays.asList(projectA.getLocationURI(), commonA, folderA, projectA.getFile(".project").getLocationURI()));
 		toVisitCount[0] = 6;
 		projectA.accept(visitor);
 		assertThat(toVisit).isEmpty();
 		assertEquals(0, toVisitCount[0]);
 
-		toVisit.addAll(Arrays.asList(new URI[] {projectB.getLocationURI(), commonB, folderB, projectB.getFile(".project").getLocationURI()}));
+		toVisit.addAll(Arrays.asList(projectB.getLocationURI(), commonB, folderB, projectB.getFile(".project").getLocationURI()));
 		toVisitCount[0] = 6;
 		projectB.accept(visitor);
 		assertThat(toVisit).isEmpty();
@@ -188,13 +188,13 @@ public class Bug_192631 {
 		IFolder linkB = projectB.getFolder("link_to_commonB");
 		linkB.createLink(commonB, IResource.NONE, createTestMonitor());
 
-		toVisit.addAll(Arrays.asList(new URI[] {projectA.getLocationURI(), commonA, folderA, projectA.getFile(".project").getLocationURI()}));
+		toVisit.addAll(Arrays.asList(projectA.getLocationURI(), commonA, folderA, projectA.getFile(".project").getLocationURI()));
 		toVisitCount[0] = 6;
 		projectA.accept(visitor);
 		assertThat(toVisit).isEmpty();
 		assertEquals(0, toVisitCount[0]);
 
-		toVisit.addAll(Arrays.asList(new URI[] {projectB.getLocationURI(), commonB, folderB, projectB.getFile(".project").getLocationURI()}));
+		toVisit.addAll(Arrays.asList(projectB.getLocationURI(), commonB, folderB, projectB.getFile(".project").getLocationURI()));
 		toVisitCount[0] = 6;
 		projectB.accept(visitor);
 		assertThat(toVisit).isEmpty();

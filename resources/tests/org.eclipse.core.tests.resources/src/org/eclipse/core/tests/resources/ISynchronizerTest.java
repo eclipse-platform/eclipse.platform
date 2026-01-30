@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2017 IBM Corporation and others.
+ *  Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -101,8 +101,8 @@ public class ISynchronizerTest {
 
 	@BeforeEach
 	public void setUp() throws Exception {
-		resources = buildResources(getWorkspace().getRoot(),
-				new String[] { "/", "1/", "1/1", "1/2/", "1/2/1", "1/2/2/", "2/", "2/1", "2/2/", "2/2/1", "2/2/2/" });
+		resources = buildResources(getWorkspace().getRoot(), "/", "1/", "1/1", "1/2/", "1/2/1", "1/2/2/", "2/", "2/1",
+				"2/2/", "2/2/1", "2/2/2/");
 		createInWorkspace(resources);
 	}
 
@@ -276,7 +276,7 @@ public class ISynchronizerTest {
 		getWorkspace().getRoot().delete(true, createTestMonitor());
 
 		// setup
-		IResource[] testResources = buildResources(getWorkspace().getRoot(), new String[] { "/Foo", "/Foo/file.txt" });
+		IResource[] testResources = buildResources(getWorkspace().getRoot(), "/Foo", "/Foo/file.txt");
 		IProject project = (IProject) testResources[0];
 		IFile source = (IFile) testResources[1];
 		// create in workspace
@@ -307,7 +307,7 @@ public class ISynchronizerTest {
 		getWorkspace().getRoot().delete(true, createTestMonitor());
 
 		// setup
-		IResource[] toTest = buildResources(getWorkspace().getRoot(), new String[] {"/Foo", "/Foo/file.txt"});
+		IResource[] toTest = buildResources(getWorkspace().getRoot(), "/Foo", "/Foo/file.txt");
 		IProject sourceProject = (IProject) toTest[0];
 		IFile sourceFile = (IFile) toTest[1];
 		// create in workspace

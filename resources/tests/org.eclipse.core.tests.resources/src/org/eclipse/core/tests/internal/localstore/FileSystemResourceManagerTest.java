@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2022 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -190,8 +190,8 @@ public class FileSystemResourceManagerTest implements ICoreConstants {
 	@Deprecated // Explicitly tests deprecated API
 	public void testIsLocal() throws CoreException {
 		// create resources
-		IResource[] resources = buildResources(project, new String[] { "/Folder1/", "/Folder1/File1",
-				"/Folder1/Folder2/", "/Folder1/Folder2/File2", "/Folder1/Folder2/Folder3/" });
+		IResource[] resources = buildResources(project, "/Folder1/", "/Folder1/File1", "/Folder1/Folder2/",
+				"/Folder1/Folder2/File2", "/Folder1/Folder2/Folder3/");
 		createInWorkspace(resources);
 		for (IResource resource : resources) {
 			removeFromFileSystem(resource);

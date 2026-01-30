@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2022 IBM Corporation and others.
+ *  Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -84,8 +84,7 @@ import org.osgi.framework.ServiceReference;
 public class IWorkspaceTest {
 
 	private IResource[] buildResourceHierarchy() throws CoreException {
-		return buildResources(getWorkspace().getRoot(),
-				new String[] { "/", "/Project/", "/Project/Folder/", "/Project/Folder/File", });
+		return buildResources(getWorkspace().getRoot(), "/", "/Project/", "/Project/Folder/", "/Project/Folder/File");
 	}
 
 	private void ensureResourceHierarchyExist() throws CoreException {
@@ -638,7 +637,7 @@ public class IWorkspaceTest {
 	@Test
 	public void testMultiCreation() throws Throwable {
 		final IProject project = getWorkspace().getRoot().getProject("bar");
-		final IResource[] resources = buildResources(project, new String[] {"a/", "a/b"});
+		final IResource[] resources = buildResources(project, "a/", "a/b");
 		IWorkspaceRunnable body = monitor -> {
 			project.create(null);
 			project.open(null);
@@ -665,7 +664,7 @@ public class IWorkspaceTest {
 	@Test
 	public void testMultiDeletion() throws Throwable {
 		IProject project = getWorkspace().getRoot().getProject("testProject");
-		IResource[] before = buildResources(project, new String[] {"c/", "c/b/", "c/x", "c/b/y", "c/b/z"});
+		IResource[] before = buildResources(project, "c/", "c/b/", "c/x", "c/b/y", "c/b/z");
 		createInWorkspace(before);
 		//
 		assertExistsInWorkspace(before);

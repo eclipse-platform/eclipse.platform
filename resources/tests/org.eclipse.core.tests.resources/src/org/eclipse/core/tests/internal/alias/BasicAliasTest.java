@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2022 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -175,7 +175,7 @@ public class BasicAliasTest {
 		//project with no overlap
 		pNoOverlap = root.getProject("NoOverlap");
 		createInWorkspace(pNoOverlap);
-		createInWorkspace(buildResources(pNoOverlap, new String[] {"/1/", "/1/1", "/1/2", "/2/", "/2/1"}));
+		createInWorkspace(buildResources(pNoOverlap, "/1/", "/1/1", "/1/2", "/2/", "/2/1"));
 
 		//project with overlap
 		pOverlap = root.getProject("Overlap");
@@ -186,9 +186,9 @@ public class BasicAliasTest {
 		lChildOverlap = fOverlap.getFile("lChildOverlap");
 		createInWorkspace(new IResource[] {fOverlap, f2, lOverlap, lChildOverlap});
 		//create some other random child elements
-		createInWorkspace(buildResources(pOverlap, new String[] {"/1/", "/1/1", "/1/2"}));
-		createInWorkspace(buildResources(f2, new String[] {"/1/", "/1/1", "/1/2"}));
-		createInWorkspace(buildResources(fOverlap, new String[] {"/1/", "/1/1", "/1/2"}));
+		createInWorkspace(buildResources(pOverlap, "/1/", "/1/1", "/1/2"));
+		createInWorkspace(buildResources(f2, "/1/", "/1/1", "/1/2"));
+		createInWorkspace(buildResources(fOverlap, "/1/", "/1/1", "/1/2"));
 
 		//create links
 		pLinked = root.getProject("LinkProject");
@@ -201,8 +201,8 @@ public class BasicAliasTest {
 		fLinked.createLink(fOverlap.getLocation(), IResource.NONE, null);
 		lLinked.createLink(lOverlap.getLocation(), IResource.NONE, null);
 		createInWorkspace(lChildLinked);
-		createInWorkspace(buildResources(pLinked, new String[] {"/a/", "/a/a", "/a/b"}));
-		createInWorkspace(buildResources(fLinked, new String[] {"/a/", "/a/a", "/a/b"}));
+		createInWorkspace(buildResources(pLinked, "/a/", "/a/a", "/a/b"));
+		createInWorkspace(buildResources(fLinked, "/a/", "/a/a", "/a/b"));
 
 		linkOverlapLocation = wrapInCanonicalIPath(tempDirectory);
 		linkOverlapLocation.toFile().mkdirs();
@@ -803,10 +803,9 @@ public class BasicAliasTest {
 		//delete the overlapping project - it should delete the children of the linked folder
 		//but leave the actual links intact in the resource tree
 		pOverlap.delete(IResource.ALWAYS_DELETE_PROJECT_CONTENT, createTestMonitor());
-		assertDoesNotExistInWorkspace(new IResource[] { pOverlap, fOverlap, lOverlap, lChildOverlap, lChildLinked });
-		assertDoesNotExistInFileSystem(
-				new IResource[] { pOverlap, fOverlap, lOverlap, lChildOverlap, lChildLinked, lLinked, fLinked });
-		assertExistsInWorkspace(new IResource[] { pLinked, fLinked, lLinked });
+		assertDoesNotExistInWorkspace(pOverlap, fOverlap, lOverlap, lChildOverlap, lChildLinked);
+		assertDoesNotExistInFileSystem(pOverlap, fOverlap, lOverlap, lChildOverlap, lChildLinked, lLinked, fLinked);
+		assertExistsInWorkspace(pLinked, fLinked, lLinked);
 	}
 
 	@Test

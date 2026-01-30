@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2022 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -295,8 +295,8 @@ public class TeamPrivateMemberTest {
 		createInWorkspace(destProject);
 		setTeamPrivateMember(folder, true, IResource.DEPTH_ZERO);
 		folder.copy(destFolder.getFullPath(), flags, createTestMonitor());
-		assertExistsInWorkspace(new IResource[] { folder, subFile });
-		assertExistsInWorkspace(new IResource[] { destFolder, destSubFile });
+		assertExistsInWorkspace(folder, subFile);
+		assertExistsInWorkspace(destFolder, destSubFile);
 
 		// set all the resources to be team private
 		// copy the project
@@ -313,8 +313,8 @@ public class TeamPrivateMemberTest {
 		createInWorkspace(destProject);
 		setTeamPrivateMember(project, true, IResource.DEPTH_INFINITE);
 		folder.copy(destFolder.getFullPath(), flags, createTestMonitor());
-		assertExistsInWorkspace(new IResource[] { folder, subFile });
-		assertExistsInWorkspace(new IResource[] { destFolder, destSubFile });
+		assertExistsInWorkspace(folder, subFile);
+		assertExistsInWorkspace(destFolder, destSubFile);
 	}
 
 	@Test
@@ -349,8 +349,8 @@ public class TeamPrivateMemberTest {
 		createInWorkspace(destProject);
 		setTeamPrivateMember(folder, true, IResource.DEPTH_ZERO);
 		folder.move(destFolder.getFullPath(), flags, createTestMonitor());
-		assertDoesNotExistInWorkspace(new IResource[] { folder, subFile });
-		assertExistsInWorkspace(new IResource[] { destFolder, destSubFile });
+		assertDoesNotExistInWorkspace(folder, subFile);
+		assertExistsInWorkspace(destFolder, destSubFile);
 
 		// set all the resources to be team private
 		// move the project
@@ -367,8 +367,8 @@ public class TeamPrivateMemberTest {
 		createInWorkspace(destProject);
 		setTeamPrivateMember(project, true, IResource.DEPTH_INFINITE);
 		folder.move(destFolder.getFullPath(), flags, createTestMonitor());
-		assertDoesNotExistInWorkspace(new IResource[] { folder, subFile });
-		assertExistsInWorkspace(new IResource[] { destFolder, destSubFile });
+		assertDoesNotExistInWorkspace(folder, subFile);
+		assertExistsInWorkspace(destFolder, destSubFile);
 	}
 
 	@Test
@@ -390,12 +390,12 @@ public class TeamPrivateMemberTest {
 		createInWorkspace(resources);
 		file.delete(flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(file);
-		assertExistsInWorkspace(new IResource[] { project, folder, subFile });
+		assertExistsInWorkspace(project, folder, subFile);
 		// delete a folder
 		createInWorkspace(resources);
 		folder.delete(flags, createTestMonitor());
-		assertDoesNotExistInWorkspace(new IResource[] { folder, subFile });
-		assertExistsInWorkspace(new IResource[] { project, file });
+		assertDoesNotExistInWorkspace(folder, subFile);
+		assertExistsInWorkspace(project, file);
 
 		// set one child to be team private
 		createInWorkspace(resources);
@@ -407,8 +407,8 @@ public class TeamPrivateMemberTest {
 		createInWorkspace(resources);
 		setTeamPrivateMember(folder, true, IResource.DEPTH_ZERO);
 		folder.delete(flags, createTestMonitor());
-		assertDoesNotExistInWorkspace(new IResource[] { folder, subFile });
-		assertExistsInWorkspace(new IResource[] { project, file });
+		assertDoesNotExistInWorkspace(folder, subFile);
+		assertExistsInWorkspace(project, file);
 
 		// set all resources to be team private
 		createInWorkspace(resources);
@@ -421,13 +421,13 @@ public class TeamPrivateMemberTest {
 		setTeamPrivateMember(project, true, IResource.DEPTH_INFINITE);
 		file.delete(flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(file);
-		assertExistsInWorkspace(new IResource[] { project, folder, subFile });
+		assertExistsInWorkspace(project, folder, subFile);
 		// delete a folder
 		createInWorkspace(resources);
 		setTeamPrivateMember(project, true, IResource.DEPTH_INFINITE);
 		folder.delete(flags, createTestMonitor());
-		assertDoesNotExistInWorkspace(new IResource[] { folder, subFile });
-		assertExistsInWorkspace(new IResource[] { project, file });
+		assertDoesNotExistInWorkspace(folder, subFile);
+		assertExistsInWorkspace(project, file);
 	}
 
 	@Test

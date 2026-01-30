@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2022 IBM Corporation and others.
+ *  Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -304,8 +304,8 @@ public class HiddenResourceTest {
 		createInWorkspace(destProject);
 		setHidden(folder, true, IResource.DEPTH_ZERO);
 		folder.copy(destFolder.getFullPath(), flags, createTestMonitor());
-		assertExistsInWorkspace(new IResource[] { folder, subFile });
-		assertExistsInWorkspace(new IResource[] { destFolder, destSubFile });
+		assertExistsInWorkspace(folder, subFile);
+		assertExistsInWorkspace(destFolder, destSubFile);
 
 		// set all the resources to be hidden
 		// copy the project
@@ -322,8 +322,8 @@ public class HiddenResourceTest {
 		createInWorkspace(destProject);
 		setHidden(project, true, IResource.DEPTH_INFINITE);
 		folder.copy(destFolder.getFullPath(), flags, createTestMonitor());
-		assertExistsInWorkspace(new IResource[] { folder, subFile });
-		assertExistsInWorkspace(new IResource[] { destFolder, destSubFile });
+		assertExistsInWorkspace(folder, subFile);
+		assertExistsInWorkspace(destFolder, destSubFile);
 	}
 
 	@Test
@@ -358,8 +358,8 @@ public class HiddenResourceTest {
 		createInWorkspace(destProject);
 		setHidden(folder, true, IResource.DEPTH_ZERO);
 		folder.move(destFolder.getFullPath(), flags, createTestMonitor());
-		assertDoesNotExistInWorkspace(new IResource[] { folder, subFile });
-		assertExistsInWorkspace(new IResource[] { destFolder, destSubFile });
+		assertDoesNotExistInWorkspace(folder, subFile);
+		assertExistsInWorkspace(destFolder, destSubFile);
 
 		// set all the resources to be hidden
 		// move the project
@@ -376,8 +376,8 @@ public class HiddenResourceTest {
 		createInWorkspace(destProject);
 		setHidden(project, true, IResource.DEPTH_INFINITE);
 		folder.move(destFolder.getFullPath(), flags, createTestMonitor());
-		assertDoesNotExistInWorkspace(new IResource[] { folder, subFile });
-		assertExistsInWorkspace(new IResource[] { destFolder, destSubFile });
+		assertDoesNotExistInWorkspace(folder, subFile);
+		assertExistsInWorkspace(destFolder, destSubFile);
 	}
 
 	@Test
@@ -399,12 +399,12 @@ public class HiddenResourceTest {
 		createInWorkspace(resources);
 		file.delete(flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(file);
-		assertExistsInWorkspace(new IResource[] { project, folder, subFile });
+		assertExistsInWorkspace(project, folder, subFile);
 		// delete a folder
 		createInWorkspace(resources);
 		folder.delete(flags, createTestMonitor());
-		assertDoesNotExistInWorkspace(new IResource[] { folder, subFile });
-		assertExistsInWorkspace(new IResource[] { project, file });
+		assertDoesNotExistInWorkspace(folder, subFile);
+		assertExistsInWorkspace(project, file);
 
 		// set one child to be hidden
 		createInWorkspace(resources);
@@ -416,8 +416,8 @@ public class HiddenResourceTest {
 		createInWorkspace(resources);
 		setHidden(folder, true, IResource.DEPTH_ZERO);
 		folder.delete(flags, createTestMonitor());
-		assertDoesNotExistInWorkspace(new IResource[] { folder, subFile });
-		assertExistsInWorkspace(new IResource[] { project, file });
+		assertDoesNotExistInWorkspace(folder, subFile);
+		assertExistsInWorkspace(project, file);
 
 		// set all resources to be hidden
 		createInWorkspace(resources);
@@ -430,13 +430,13 @@ public class HiddenResourceTest {
 		setHidden(project, true, IResource.DEPTH_INFINITE);
 		file.delete(flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(file);
-		assertExistsInWorkspace(new IResource[] { project, folder, subFile });
+		assertExistsInWorkspace(project, folder, subFile);
 		// delete a folder
 		createInWorkspace(resources);
 		setHidden(project, true, IResource.DEPTH_INFINITE);
 		folder.delete(flags, createTestMonitor());
-		assertDoesNotExistInWorkspace(new IResource[] { folder, subFile });
-		assertExistsInWorkspace(new IResource[] { project, file });
+		assertDoesNotExistInWorkspace(folder, subFile);
+		assertExistsInWorkspace(project, file);
 	}
 
 	@Test

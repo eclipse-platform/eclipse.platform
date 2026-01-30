@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2010, 2015 Broadcom Corporation and others.
+ *  Copyright (c) 2010, 2026 Broadcom Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -565,7 +565,7 @@ public class RelaxedSchedRuleBuilderTest {
 	private void invokeTestBug343256(IProject project, ISchedulingRule[] getRules, ISchedulingRule[] buildRules, TestBarrier2 tb1, TestBarrier2 tb2, Job j) {
 		// Test 1 - build project sched rule
 		getRules[0] = getRules[1] = project;
-		buildRules[0] = buildRules[1] = new MultiRule(new ISchedulingRule[] {getRules[0]});
+		buildRules[0] = buildRules[1] = new MultiRule(getRules[0]);
 		tb1.setStatus(TestBarrier2.STATUS_START);
 		tb2.setStatus(TestBarrier2.STATUS_START);
 		j.schedule();

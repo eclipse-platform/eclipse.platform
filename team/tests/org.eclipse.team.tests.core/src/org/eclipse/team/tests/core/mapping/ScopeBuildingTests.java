@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2009 IBM Corporation and others.
+ * Copyright (c) 2005, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -114,8 +114,8 @@ public class ScopeBuildingTests {
 	public void testAdditionalResources() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		createInWorkspace(project);
-		IResource[] contents = buildResources(project,
-				new String[] { "file.txt", "folder1/file2.txt", "folder1/folder2/file3.txt", "folder3/" });
+		IResource[] contents = buildResources(project, "file.txt", "folder1/file2.txt", "folder1/folder2/file3.txt",
+				"folder3/");
 		createInWorkspace(contents);
 
 		ResourceMapping[] mappings = new ResourceMapping[] {
