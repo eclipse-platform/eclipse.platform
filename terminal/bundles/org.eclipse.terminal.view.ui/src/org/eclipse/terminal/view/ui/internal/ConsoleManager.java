@@ -47,6 +47,7 @@ import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PerspectiveAdapter;
 import org.eclipse.ui.PlatformUI;
@@ -156,13 +157,21 @@ public final class ConsoleManager implements ITerminalConsoleViewManager {
 	public ConsoleManager() {
 		perspectiveListener = new ConsoleManagerPerspectiveListener();
 		partListener = new ConsoleManagerPartListener();
+	}
 
-		if (PlatformUI.isWorkbenchRunning() && PlatformUI.getWorkbench() != null
-				&& PlatformUI.getWorkbench().getActiveWorkbenchWindow() != null) {
-			PlatformUI.getWorkbench().getActiveWorkbenchWindow().addPerspectiveListener(perspectiveListener);
-
-			IPartService service = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getPartService();
+	public void addWindowAndPerspectiveListeners(IWorkbenchWindow window) {
+		if (PlatformUI.isWorkbenchRunning() && window != null) {
+			window.addPerspectiveListener(perspectiveListener);
+			IPartService service = window.getPartService();
 			service.addPartListener(partListener);
+		}
+	}
+
+	public void removeWindowAndPerspectiveListeners(IWorkbenchWindow window) {
+		if (PlatformUI.isWorkbenchRunning() && window != null) {
+			window.removePerspectiveListener(perspectiveListener);
+			IPartService service = window.getPartService();
+			service.removePartListener(partListener);
 		}
 	}
 

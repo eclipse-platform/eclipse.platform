@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.terminal.view.ui.internal.listeners;
 
+import org.eclipse.terminal.view.ui.internal.ConsoleManager;
+import org.eclipse.terminal.view.ui.launcher.ITerminalConsoleViewManager;
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IPartService;
 import org.eclipse.ui.IPerspectiveListener;
@@ -85,6 +87,8 @@ public abstract class AbstractWindowListener implements IWindowListener {
 			if (perspectiveListener != null) {
 				window.removePerspectiveListener(perspectiveListener);
 			}
+			ConsoleManager consoleViewManager = (ConsoleManager) window.getService(ITerminalConsoleViewManager.class);
+			consoleViewManager.removeWindowAndPerspectiveListeners(window);
 		}
 	}
 
@@ -119,6 +123,8 @@ public abstract class AbstractWindowListener implements IWindowListener {
 				}
 			}
 
+			ConsoleManager consoleViewManager = (ConsoleManager) window.getService(ITerminalConsoleViewManager.class);
+			consoleViewManager.addWindowAndPerspectiveListeners(window);
 			initialized = true;
 		}
 	}
