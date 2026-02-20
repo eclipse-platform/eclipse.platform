@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 IBM Corporation and others.
+ * Copyright (c) 2007, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IExpressionManager;
 import org.eclipse.debug.core.ILaunch;
@@ -40,6 +41,8 @@ import org.eclipse.debug.ui.actions.IWatchExpressionFactoryAdapter2;
 import org.eclipse.debug.ui.actions.IWatchExpressionFactoryAdapterExtension;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.TreePath;
+import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
@@ -373,19 +376,28 @@ public class ExpressionDropAdapter extends ViewerDropAdapter {
 	 */
 	private boolean performVariableOrWatchAdaptableDrop(IStructuredSelection selection) {
 		List<IExpression> expressions = new ArrayList<>(selection.size());
-		for (Iterator<?> itr = selection.iterator(); itr.hasNext();) {
-			Object element = itr.next();
-			String expressionText = createExpressionString(element);
-			if (expressionText != null){
-				IExpression expression = createExpression(expressionText);
-				if (expression != null){
-					expressions.add(expression);
+		IExpression expression;
+		if (selection instanceof TreeSelection treeSelection) {
+			for (TreePath path : treeSelection.getPaths()) {
+				if (path.getSegmentCount() > 1) {
+					StringBuilder expressionString = new StringBuilder();
+					for (int e = 0; e < path.getSegmentCount(); e++) {
+						IVariable variable = (IVariable) path.getSegment(e);
+						try {
+							expressionString.append(variable.getName());
+							expressionString.append("."); //$NON-NLS-1$
+						} catch (DebugException e1) {
+							DebugUIPlugin.log(e1);
+						}
+					}
+					expressionString.deleteCharAt(expressionString.length() - 1);
+					expression = createExpression(expressionString.toString());
 				} else {
-					DebugUIPlugin.log(new Status(IStatus.ERROR,DebugUIPlugin.getUniqueIdentifier(),"Drop failed.  Watch expression could not be created for the text " + expressionText)); //$NON-NLS-1$
-					return false;
+					Object element = path.getFirstSegment();
+					String expressionText = createExpressionString(element);
+					expression = createExpression(expressionText);
 				}
-			} else {
-				return false;
+				expressions.add(expression);
 			}
 		}
 		if (expressions.size() == selection.size()){
