@@ -194,11 +194,17 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 			if (fActive && oldActiveConsole != null) {
 				deactivateParticipants(oldActiveConsole);
 			}
+
+			setConsole(recConsole);
+
+			if (oldActiveConsole != null) {
+				getConsoleManager().consoleHidden(oldActiveConsole);
+			}
 			if (recConsole != null) {
 				activateParticipants(recConsole);
+				getConsoleManager().consoleShown(recConsole);
 			}
 		}
-		setConsole(recConsole);
 		// bring active console on top of stack
 		if (recConsole != null && !fStack.isEmpty() && !recConsole.equals(fStack.get(0))) {
 			fStack.remove(recConsole);
@@ -818,10 +824,22 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 
 	@Override
 	public void partHidden(IWorkbenchPartReference partRef) {
+		if (isThisPart(partRef)) {
+			IConsole console = getConsole();
+			if (console != null) {
+				getConsoleManager().consoleHidden(console);
+			}
+		}
 	}
 
 	@Override
 	public void partVisible(IWorkbenchPartReference partRef) {
+		if (isThisPart(partRef)) {
+			IConsole console = getConsole();
+			if (console != null) {
+				getConsoleManager().consoleShown(console);
+			}
+		}
 	}
 
 	@Override

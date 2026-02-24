@@ -19,6 +19,7 @@ import org.eclipse.debug.tests.breakpoint.BreakpointOrderingTests;
 import org.eclipse.debug.tests.breakpoint.BreakpointTests;
 import org.eclipse.debug.tests.breakpoint.SerialExecutorTest;
 import org.eclipse.debug.tests.console.ConsoleDocumentAdapterTests;
+import org.eclipse.debug.tests.console.ConsoleShowHideTests;
 import org.eclipse.debug.tests.console.ConsoleManagerTests;
 import org.eclipse.debug.tests.console.ConsoleTests;
 import org.eclipse.debug.tests.console.FileLinkTests;
@@ -117,6 +118,7 @@ import org.junit.platform.suite.api.Suite;
 
 		// Console view
 		ConsoleDocumentAdapterTests.class, //
+		ConsoleShowHideTests.class, //
 		ConsoleManagerTests.class, //
 		ConsoleTests.class, //
 		IOConsoleTests.class, //

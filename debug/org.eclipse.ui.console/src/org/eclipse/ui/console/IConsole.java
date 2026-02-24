@@ -97,4 +97,40 @@ public interface IConsole {
 	 */
 	String getType();
 
+	/**
+	 * Notifies this console that its page has been shown in the UI. This method is
+	 * called when this console page is shown on top of other console pages in at
+	 * least one <b>visible</b> console view.
+	 * <p>
+	 * Default implementation does nothing.
+	 * </p>
+	 * <p>
+	 * Subclasses may override this method to be notified when the console page for
+	 * this console is visible to user.
+	 * </p>
+	 *
+	 * @since 3.17
+	 */
+	default void pageShown() {
+		// Subclasses may override
+	}
+
+	/**
+	 * Notifies this console that its page has been hidden in the UI. This method is
+	 * called when this console page is not shown on top of other console pages in
+	 * any of <b>visible</b> console views.
+	 * <p>
+	 * Default implementation does nothing.
+	 * </p>
+	 * <p>
+	 * Subclasses may override this method to be notified when the console page for
+	 * this console is not longer visible to user.
+	 * </p>
+	 *
+	 * @since 3.17
+	 */
+	default void pageHidden() {
+		// Subclasses may override
+	}
+
 }

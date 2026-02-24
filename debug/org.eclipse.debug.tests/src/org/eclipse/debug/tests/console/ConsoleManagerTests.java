@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2017 Andrey Loskutov and others.
+ * Copyright (c) 2016, 2026 Andrey Loskutov and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -21,14 +21,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.debug.tests.DebugTestExtension;
 import org.eclipse.debug.tests.TestUtil;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -36,10 +31,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
-import org.eclipse.ui.console.IConsoleView;
 import org.eclipse.ui.internal.console.ConsoleManager;
-import org.eclipse.ui.part.IPageBookViewPage;
-import org.eclipse.ui.part.MessagePage;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,7 +39,8 @@ import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Tests console manager
+ * Tests console manager behavior when multiple consoles are shown at the same
+ * time.
  */
 @ExtendWith(DebugTestExtension.class)
 public class ConsoleManagerTests {
@@ -58,6 +51,8 @@ public class ConsoleManagerTests {
 	private CountDownLatch latch;
 	private ConsoleMock[] consoles;
 	ConsoleMock firstConsole;
+	private IViewPart consoleView;
+	private IWorkbenchPage activePage;
 
 	@BeforeEach
 	public void setUp(TestInfo testInfo) throws Exception {
@@ -66,7 +61,7 @@ public class ConsoleManagerTests {
 		latch = new CountDownLatch(count);
 		executorService = Executors.newFixedThreadPool(count);
 		manager = ConsolePlugin.getDefault().getConsoleManager();
-		IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+		activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		TestUtil.processUIEvents(100);
 		consoles = new ConsoleMock[count];
 		for (int i = 0; i < count; i++) {
@@ -76,7 +71,7 @@ public class ConsoleManagerTests {
 		// register consoles (this does *not* show anything)
 		manager.addConsoles(consoles);
 
-		IViewPart consoleView = activePage.showView("org.eclipse.ui.console.ConsoleView"); //$NON-NLS-1$
+		consoleView = activePage.showView("org.eclipse.ui.console.ConsoleView");
 		activePage.activate(consoleView);
 		TestUtil.processUIEvents(100);
 
@@ -96,6 +91,7 @@ public class ConsoleManagerTests {
 		executorService.shutdownNow();
 		manager.removeConsoles(consoles);
 		manager.removeConsoles(new ConsoleMock[] { firstConsole });
+		activePage.hideView(consoleView);
 		TestUtil.processUIEvents(100);
 	}
 
@@ -166,75 +162,6 @@ public class ConsoleManagerTests {
 				Thread.interrupted();
 			}
 		});
-	}
-
-	/**
-	 * Dummy console page showing mock number and counting the numbers its
-	 * control was shown in the console view.
-	 */
-	static final class ConsoleMock implements IConsole {
-		MessagePage page;
-		final AtomicInteger showCalled;
-		final int number;
-		final static AtomicInteger allShownConsoles = new AtomicInteger();
-
-		public ConsoleMock(int number) {
-			this.number = number;
-			showCalled = new AtomicInteger();
-		}
-
-		@Override
-		public void removePropertyChangeListener(IPropertyChangeListener listener) {
-		}
-
-		@Override
-		public String getType() {
-			return null;
-		}
-
-		@Override
-		public String getName() {
-			return toString();
-		}
-
-		@Override
-		public ImageDescriptor getImageDescriptor() {
-			return null;
-		}
-
-		@Override
-		public void addPropertyChangeListener(IPropertyChangeListener listener) {
-		}
-
-		/**
-		 * Just a page showing the mock console name
-		 */
-		@Override
-		public IPageBookViewPage createPage(IConsoleView view) {
-			page = new MessagePage() {
-				@Override
-				public void createControl(Composite parent) {
-					super.createControl(parent);
-					// This listener is get called if the page is really shown
-					// in the console view
-					getControl().addListener(SWT.Show, event -> {
-						int count = showCalled.incrementAndGet();
-						if (count == 1) {
-							count = allShownConsoles.incrementAndGet();
-							System.out.println("Shown: " + ConsoleMock.this + ", overall: " + count); //$NON-NLS-1$ //$NON-NLS-2$
-						}
-					});
-				}
-
-			};
-			page.setMessage(toString());
-			return page;
-		}
-
-		@Override
-		public String toString() {
-			return "mock #" + number; //$NON-NLS-1$
-		}
 	}
 
 }
