@@ -109,29 +109,21 @@ public class ConsoleManager implements IConsoleManager {
 
 		@Override
 		protected void workWith(IConsole console, IProgressMonitor monitor) {
-			IWorkbenchWindow[] workbenchWindows = PlatformUI.getWorkbench().getWorkbenchWindows();
-			for (IWorkbenchWindow window : workbenchWindows) {
-				if (window != null) {
-					IWorkbenchPage page = window.getActivePage();
-					if (page != null) {
-						IViewPart part = page.findView(IConsoleConstants.ID_CONSOLE_VIEW);
-						if (part != null && part instanceof IConsoleView) {
-							ConsoleView view = (ConsoleView) part;
-							if (console.equals(view.getConsole())) {
-								IPage currentPage = view.getCurrentPage();
-								if (currentPage == null) {
-									continue;
-								}
-								Control control = currentPage.getControl();
-								if (control != null && !control.isDisposed()) {
-									control.redraw();
-								}
-							}
+			synchronized (fConsoleViews) {
+				for (ConsoleView view : fConsoleViews) {
+					if (console.equals(view.getConsole())) {
+						IPage currentPage = view.getCurrentPage();
+						if (currentPage == null) {
+							continue;
+						}
+						Control control = currentPage.getControl();
+						if (control != null && !control.isDisposed()) {
+							control.redraw();
 						}
 					}
-				}
-				if (monitor.isCanceled()) {
-					return;
+					if (monitor.isCanceled()) {
+						return;
+					}
 				}
 			}
 		}
