@@ -1203,6 +1203,16 @@ public class IOConsolePartitioner
 					if (truncateToOffsetLineStart) {
 						int cutoffLine = document.getLineOfOffset(truncateOffset);
 						cutOffset = document.getLineOffset(cutoffLine);
+						// deal with case of one long line
+						int offset = Math.max(cutOffset, truncateOffset);
+						char c = document.getChar(offset);
+						if (c == '\n' && offset > 0 && document.getChar(offset - 1) == '\r') {
+							cutOffset = offset - 1;
+						} else if (!Character.isLowSurrogate(c)) {
+							cutOffset = offset;
+						} else if (offset > 1) {
+							cutOffset = offset - 1;
+						}
 					}
 					if (cutOffset >= length) {
 						updateType = DocUpdateType.TRIM;
