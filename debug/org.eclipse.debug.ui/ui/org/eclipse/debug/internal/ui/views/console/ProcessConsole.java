@@ -37,10 +37,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
@@ -143,9 +142,11 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 
 	private volatile boolean fStreamsClosed;
 	private volatile boolean disposed;
+	private volatile boolean isVisible;
+	private volatile boolean isPeriodicNameUpdateRequired;
 
-	private final ScheduledExecutorService consoleNameUpdateExecutor;
-	private volatile ScheduledFuture<?> pendingNameUpdate;
+	private final ExecutorService consoleNameUpdateExecutor;
+	private final AtomicBoolean updateRunning;
 
 	/**
 	 * Create process console with default encoding.
@@ -166,11 +167,12 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 	 */
 	public ProcessConsole(IProcess process, IConsoleColorProvider colorProvider, String encoding) {
 		super(IInternalDebugCoreConstants.EMPTY_STRING, IDebugUIConstants.ID_PROCESS_CONSOLE_TYPE, null, encoding, true);
+		updateRunning = new AtomicBoolean();
 		fStreamListeners = new ArrayList<>();
 		fAllocateConsole = true;
 		fProcess = process;
 		fUserInput = getInputStream();
-		consoleNameUpdateExecutor = Executors.newSingleThreadScheduledExecutor(r -> {
+		consoleNameUpdateExecutor = Executors.newSingleThreadExecutor(r -> {
 			Thread t = new Thread(r, "Console name updater"); //$NON-NLS-1$
 			t.setDaemon(true);
 			return t;
@@ -309,9 +311,14 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 	/**
 	 * Computes and returns the current name of this console.
 	 *
+	 * @param triggerAsyncUpdate if <code>true</code> and process is still running,
+	 *                           triggers asynchronous update of console name every
+	 *                           second to update elapsed time display in console
+	 *                           name
+	 *
 	 * @return a name for this console
 	 */
-	protected String computeName() {
+	protected String computeName(boolean triggerAsyncUpdate) {
 		if (disposed) {
 			return getName();
 		}
@@ -332,7 +339,9 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 
 		// Process is still running, so trigger async update of console name every
 		// second to keep elapsed time updated.
-		triggerAsyncConsoleNameUpdate();
+		if (triggerAsyncUpdate) {
+			triggerAsyncConsoleNameUpdate(label);
+		}
 		return label;
 	}
 
@@ -408,29 +417,45 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 		return procLabel;
 	}
 
-	private void triggerAsyncConsoleNameUpdate() {
-		if (disposed) {
+	private void triggerAsyncConsoleNameUpdate(String newName) {
+		if (!canUpdateConsoleName()) {
 			return;
 		}
+		// update console name immediately to show elapsed time right after launch and
+		// then start async update every second
+		showName(false, newName);
 
-		// refresh every second, but only if not already scheduled:
-		ScheduledFuture<?> currentPending = pendingNameUpdate;
-		if (currentPending == null || currentPending.isDone()) {
-			currentPending = consoleNameUpdateExecutor.schedule(() -> {
-				pendingNameUpdate = null;
-				if (disposed) {
-					return;
-				}
-				resetName(false);
-			}, 1, TimeUnit.SECONDS);
+		if (!updateRunning.compareAndSet(false, true)) {
+			return;
 		}
+		consoleNameUpdateExecutor.submit(() -> {
+			try {
+				while (!disposed) {
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// ignore and continue to update name
+					}
+					if (!canUpdateConsoleName()) {
+						break;
+					}
+					showName(false, computeName(false));
+				}
+			} finally {
+				updateRunning.set(false);
+			}
+		});
+	}
+
+	private boolean canUpdateConsoleName() {
+		return !disposed && isVisible && isPeriodicNameUpdateRequired && !fProcess.isTerminated();
 	}
 
 	private static String computeElapsedTimeLabel(Date launchTime, Date terminateTime) {
 		String elapsedString;
 		IPreferenceStore store = DebugUIPlugin.getDefault().getPreferenceStore();
 		String elapsedTimeFormat = store.getString(IDebugPreferenceConstants.CONSOLE_ELAPSED_FORMAT);
-		if (!elapsedTimeFormat.equals(DebugPreferencesMessages.ConsoleDisableElapsedTime)) {
+		if (!isElapsedTimeDisabled(elapsedTimeFormat)) {
 			Duration elapsedTime = Duration.between(launchTime != null ? launchTime.toInstant() : Instant.now(),
 					terminateTime != null ? terminateTime.toInstant() : Instant.now());
 			String elapsedFormat = "elapsed " + convertElapsedFormat(elapsedTimeFormat); //$NON-NLS-1$
@@ -440,6 +465,10 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 			elapsedString = ""; //$NON-NLS-1$
 		}
 		return elapsedString;
+	}
+
+	private static boolean isElapsedTimeDisabled(String elapsedTimeFormatValue) {
+		return DebugPreferencesMessages.ConsoleDisableElapsedTime.equals(elapsedTimeFormatValue);
 	}
 
 	private static String computeTerminatedTimeLabel(Date launchTime, Date terminateTime, DateFormat dateTimeFormat) {
@@ -542,6 +571,10 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 			setHandleControlCharacters(store.getBoolean(IDebugPreferenceConstants.CONSOLE_INTERPRET_CONTROL_CHARACTERS));
 		} else if (property.equals(IDebugPreferenceConstants.CONSOLE_INTERPRET_CR_AS_CONTROL_CHARACTER)) {
 			setCarriageReturnAsControlCharacter(store.getBoolean(IDebugPreferenceConstants.CONSOLE_INTERPRET_CR_AS_CONTROL_CHARACTER));
+		} else if (property.equals(IDebugPreferenceConstants.CONSOLE_ELAPSED_FORMAT)) {
+			String elapsedTimeFormat = store.getString(IDebugPreferenceConstants.CONSOLE_ELAPSED_FORMAT);
+			isPeriodicNameUpdateRequired = !isElapsedTimeDisabled(elapsedTimeFormat);
+			showName(false, computeName(isPeriodicNameUpdateRequired));
 		}
 	}
 
@@ -566,6 +599,7 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 	@Override
 	protected void dispose() {
 		super.dispose();
+		disposed = true;
 		consoleNameUpdateExecutor.shutdownNow();
 		fColorProvider.disconnect();
 		DebugPlugin.getDefault().removeDebugEventListener(this);
@@ -573,7 +607,6 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 		JFaceResources.getFontRegistry().removeListener(this);
 		closeStreams();
 		disposeStreams();
-		disposed = true;
 	}
 
 	/**
@@ -624,16 +657,19 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 	@Override
 	protected void init() {
 		super.init();
+		IPreferenceStore store = DebugUIPlugin.getDefault().getPreferenceStore();
+		String elapsedTimeFormat = store.getString(IDebugPreferenceConstants.CONSOLE_ELAPSED_FORMAT);
+		isPeriodicNameUpdateRequired = !isElapsedTimeDisabled(elapsedTimeFormat);
+
 		DebugPlugin.getDefault().addDebugEventListener(this);
 		// computeName() after addDebugEventListener()
 		// see https://github.com/eclipse-jdt/eclipse.jdt.debug/issues/390
-		setName(computeName());
+		setName(computeName(false));
 		if (fProcess.isTerminated()) {
 			closeStreams();
 			resetName(true);
 			DebugPlugin.getDefault().removeDebugEventListener(this);
 		}
-		IPreferenceStore store = DebugUIPlugin.getDefault().getPreferenceStore();
 		store.addPropertyChangeListener(this);
 		JFaceResources.getFontRegistry().addListener(this);
 		if (store.getBoolean(IDebugPreferenceConstants.CONSOLE_WRAP)) {
@@ -680,12 +716,17 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 	}
 
 	/**
-	 * Compute & update console name, notify listeners if content has changed. Note,
-	 * the {@link #computeName()} method may call this method again asynchronously
-	 * if process is till running to update elapsed time display
+	 * Compute & update console name, notify listeners if content has changed.
+	 *
+	 * @param contentChanged whether the content of console has changed since last
+	 *                       name update.
 	 */
-	private synchronized void resetName(boolean changed) {
-		final String newName = computeName();
+	private synchronized void resetName(boolean contentChanged) {
+		final String newName = computeName(false);
+		showName(contentChanged, newName);
+	}
+
+	private void showName(boolean contentChanged, final String newName) {
 		String name = getName();
 		if (!name.equals(newName)) {
 			DebugUIPlugin.getStandardDisplay().execute(() -> {
@@ -693,7 +734,7 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 					return;
 				}
 				setName(newName);
-				if (changed) {
+				if (contentChanged) {
 					warnOfContentChange();
 				}
 			});
@@ -1213,5 +1254,16 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 		}
 
 		return format.toString();
+	}
+
+	@Override
+	public void pageShown() {
+		isVisible = true;
+		computeName(true);
+	}
+
+	@Override
+	public void pageHidden() {
+		isVisible = false;
 	}
 }

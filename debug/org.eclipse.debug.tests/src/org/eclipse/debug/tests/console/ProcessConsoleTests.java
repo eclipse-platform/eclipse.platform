@@ -17,6 +17,7 @@ import static java.nio.file.Files.readAllBytes;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.debug.tests.TestUtil.waitWhile;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -64,6 +65,9 @@ import org.eclipse.debug.ui.console.ConsoleColorProvider;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.ui.IPerspectiveDescriptor;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleConstants;
@@ -71,6 +75,7 @@ import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.IOConsole;
 import org.eclipse.ui.console.IOConsoleInputStream;
 import org.eclipse.ui.internal.console.ConsoleManager;
+import org.eclipse.ui.internal.console.ConsoleView;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -575,5 +580,139 @@ public class ProcessConsoleTests {
 
 		byte[] receivedInput = mockProcess.getReceivedInput();
 		assertThat(receivedInput).as("received input").isEqualTo(input);
+	}
+
+	/**
+	 * Test that console name updates (elapsed time) only happen for visible
+	 * consoles. Hidden consoles should not update their name. When a hidden
+	 * console is brought to front, it should start updating. When the console
+	 * view is hidden/minimized, no console should update its name. When the
+	 * view is shown again, the visible console should resume updates.
+	 */
+	@Test
+	public void testConsoleNameUpdateForVisibleAndHiddenConsoles() throws Exception {
+		final IConsoleManager consoleManager = ConsolePlugin.getDefault().getConsoleManager();
+		final IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+
+		// Make sure we only see exact one console view during the test,
+		// otherwise it may interfere with visibility and name update checks.
+		IPerspectiveDescriptor currentPerspective = activePage.getPerspective();
+		activePage.closeAllPerspectives(false, false);
+		TestUtil.processUIEvents();
+		activePage.setPerspective(currentPerspective);
+		TestUtil.processUIEvents();
+
+		// Create two silent mock processes (no output, run forever)
+		final MockProcess mockProcess1 = new MockProcess(MockProcess.RUN_FOREVER);
+		final MockProcess mockProcess2 = new MockProcess(MockProcess.RUN_FOREVER);
+		try {
+			final IProcess process1 = mockProcess1.toRuntimeProcess("Process1");
+			final IProcess process2 = mockProcess2.toRuntimeProcess("Process2");
+			process1.setAttribute(DebugPlugin.ATTR_LAUNCH_TIMESTAMP, Long.toString(System.currentTimeMillis()));
+			process2.setAttribute(DebugPlugin.ATTR_LAUNCH_TIMESTAMP, Long.toString(System.currentTimeMillis()));
+			final ProcessConsole console1 = new ProcessConsole(process1, new ConsoleColorProvider());
+			final ProcessConsole console2 = new ProcessConsole(process2, new ConsoleColorProvider());
+			ConsoleView consoleView = (ConsoleView) activePage.showView(IConsoleConstants.ID_CONSOLE_VIEW);
+			try {
+				// Open console view and add both consoles
+				activePage.activate(consoleView);
+				TestUtil.processUIEvents();
+
+				consoleManager.addConsoles(new IConsole[] { console1, console2 });
+
+				// Display console2 (visible) - console1 is hidden
+				consoleView.display(console2);
+				TestUtil.waitForJobs(testInfo.getDisplayName(), ConsoleManager.CONSOLE_JOB_FAMILY, 200, 10000);
+
+				// Record initial names
+				String console2NameBefore = console2.getName();
+				String console1NameBefore = console1.getName();
+
+				// Wait >1 second for the elapsed time update to trigger
+				TestUtil.processUIEvents(1500);
+
+				// Visible console (console2) should have updated name
+				String console2NameAfter = console2.getName();
+				assertNotEquals(console2NameBefore, console2NameAfter, "Visible console name should have been updated (elapsed time changed)");
+
+				// Hidden console (console1) should NOT have updated name
+				String console1NameAfter = console1.getName();
+				assertEquals(console1NameBefore, console1NameAfter, "Hidden console name should not be updated");
+
+				// Bring hidden console1 to front (visible) - console2 becomes
+				// hidden
+				consoleView.display(console1);
+				TestUtil.processUIEvents(200);
+
+				// Record names after switch
+				String console1NameAfterSwitch = console1.getName();
+				String console2NameAfterSwitch = console2.getName();
+
+				// Wait >1 second for the elapsed time update
+				TestUtil.processUIEvents(2000);
+
+				// Now console1 (visible) should update
+				String console1NameAfterWait = console1.getName();
+				assertNotEquals(console1NameAfterSwitch, console1NameAfterWait, "Console brought to front should start updating its name");
+
+				// console2 (now hidden) should stop updating
+				String console2NameAfterWait = console2.getName();
+				assertEquals(console2NameAfterSwitch, console2NameAfterWait, "Console moved to background should stop updating its name");
+
+				// Minimize the console view - neither console should update
+				activePage.setPartState(activePage.getReference(consoleView), IWorkbenchPage.STATE_MINIMIZED);
+				TestUtil.processUIEvents(200);
+
+				// Record names after minimizing
+				String console1NameBeforeHide = console1.getName();
+				String console2NameBeforeHide = console2.getName();
+
+				// Wait >1 second
+				TestUtil.processUIEvents(2000);
+
+				// Neither console should update when view is minimized
+				assertEquals(console1NameBeforeHide, console1.getName(), "Console name should not update when console view is minimized");
+				assertEquals(console2NameBeforeHide, console2.getName(), "Console name should not update when console view is minimized");
+
+				// Restore the console view - console1 should resume
+				// updating, console2 should still not update because it's
+				// hidden in the view
+				activePage.setPartState(activePage.getReference(consoleView), IWorkbenchPage.STATE_RESTORED);
+				activePage.activate(consoleView);
+				TestUtil.processUIEvents(200);
+
+				String console1NameAfterReshow = console1.getName();
+				String console2NameAfterReshow = console2.getName();
+
+				// Wait >1 second for update
+				TestUtil.processUIEvents(2000);
+
+				// Visible console should resume updating
+				assertNotEquals(console1NameAfterReshow, console1.getName(), "Visible console should resume name updates after view is shown again");
+				assertEquals(console2NameAfterReshow, console2.getName(), "Hidden console name should not update after view is restored");
+
+				console1NameAfterReshow = console1.getName();
+				console2NameAfterReshow = console2.getName();
+
+				activePage.hideView(consoleView);
+
+				// Wait >1 second for update
+				TestUtil.processUIEvents(2000);
+				assertEquals(console1NameAfterReshow, console1.getName(), "Console name should not update when console view is minimized");
+				assertEquals(console2NameAfterReshow, console2.getName(), "Console name should not update when console view is minimized");
+
+				mockProcess1.destroy();
+				mockProcess2.destroy();
+			} finally {
+				activePage.hideView(consoleView);
+				consoleManager.removeConsoles(List.of(console1, console2).toArray(new IConsole[0]));
+				waitForConsoleRelatedJobs();
+				console1.destroy();
+				console2.destroy();
+			}
+		} finally {
+			mockProcess1.destroy();
+			mockProcess2.destroy();
+		}
 	}
 }

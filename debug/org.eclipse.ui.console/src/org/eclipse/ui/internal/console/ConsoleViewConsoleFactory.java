@@ -64,7 +64,7 @@ public class ConsoleViewConsoleFactory implements IConsoleFactory {
 	 * If the remember auto-pin decision state is <b>true</b> it gathers the auto
 	 * pin preference value and sets this to the current view.
 	 */
-	private boolean handleAutoPin() {
+	protected boolean handleAutoPin() {
 		if (currentConsoleView == null) {
 			return false;
 		}
@@ -92,7 +92,7 @@ public class ConsoleViewConsoleFactory implements IConsoleFactory {
 	/**
 	 * Sets the console view, on which the open new console action was called.
 	 */
-	void setConsoleView(ConsoleView consoleView) {
+	public void setConsoleView(ConsoleView consoleView) {
 		this.currentConsoleView = consoleView;
 	}
 

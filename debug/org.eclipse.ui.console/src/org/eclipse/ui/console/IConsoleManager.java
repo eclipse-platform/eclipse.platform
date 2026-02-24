@@ -107,4 +107,37 @@ public interface IConsoleManager {
 	 */
 	void refresh(IConsole console);
 
+	/**
+	 * Notifies that given console has been shown in the UI (either the view with
+	 * given console on top has been shown or the console has been switched to the
+	 * top console in at least one view).
+	 *
+	 * <p>
+	 * Note, there could be multiple views showing the same console, so the page
+	 * with given console can be still hidden in some views.
+	 * </p>
+	 *
+	 * @param console the top console from view that has been shown
+	 *
+	 * @since 3.17
+	 */
+	default void consoleShown(IConsole console) {
+	}
+
+	/**
+	 * Notifies that given console that was on top of at least one view has been
+	 * hidden in the UI (either the console is not the top page in the view or the
+	 * view with given console on top has been hidden).
+	 * <p>
+	 * Note, there could be multiple views showing the same console, so the page
+	 * with given console can be still shown in some views.
+	 * </p>
+	 *
+	 * @param console the console that has been hidden
+	 *
+	 * @since 3.17
+	 */
+	default void consoleHidden(IConsole console) {
+	}
+
 }

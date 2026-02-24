@@ -488,4 +488,54 @@ public class ConsoleManager implements IConsoleManager {
 		redrawConsoleJob.schedule(50);
 	}
 
+	@Override
+	public void consoleShown(IConsole console) {
+		if (isConsoleViewNotVisibleAnywhere(console)) {
+			// if no view with console is visible, ignore
+			return;
+		}
+		console.pageShown();
+	}
+
+	@Override
+	public void consoleHidden(IConsole console) {
+		if (isConsoleVisibleSomewhere(console)) {
+			// if console is still shown in some other view, then there is no need to call
+			// pageHidden() on the console, since user can still see the console
+			return;
+		}
+		console.pageHidden();
+	}
+
+	private boolean isConsoleVisibleSomewhere(IConsole console) {
+		synchronized (fConsoleViews) {
+			for (ConsoleView view : fConsoleViews) {
+				IWorkbenchPartSite site = view.getSite();
+				if (site == null) {
+					continue;
+				}
+				boolean viewVisible = site.getPage().isPartVisible(view);
+				if (viewVisible && view.getConsole() == console) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private boolean isConsoleViewNotVisibleAnywhere(IConsole console) {
+		synchronized (fConsoleViews) {
+			for (ConsoleView view : fConsoleViews) {
+				IWorkbenchPartSite site = view.getSite();
+				if (site == null) {
+					continue;
+				}
+				boolean viewVisible = site.getPage().isPartVisible(view);
+				if (viewVisible && view.getConsole() == console) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 }
