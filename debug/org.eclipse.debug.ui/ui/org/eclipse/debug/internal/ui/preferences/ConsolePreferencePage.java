@@ -92,6 +92,10 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 	private BooleanFieldEditor2 fUseBufferSize;
 	private ConsoleIntegerFieldEditor fBufferSizeEditor;
 
+	private BooleanFieldEditor2 fLimitLines;
+	private BooleanFieldEditor2 fLimitLineWrap;
+	private ConsoleIntegerFieldEditor fLimitLineLength;
+
 	private ConsoleIntegerFieldEditor fTabSizeEditor;
 	private BooleanFieldEditor autoScrollLockEditor;
 
@@ -164,6 +168,24 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 				}
 			}
 		);
+
+		fLimitLines = new BooleanFieldEditor2(IDebugPreferenceConstants.CONSOLE_LIMIT_LINES, DebugPreferencesMessages.ConsolePreferencePage_Limit_console_lines, SWT.NONE, getFieldEditorParent());
+		addField(fLimitLines);
+		fLimitLines.getChangeControl(getFieldEditorParent()).addSelectionListener(
+				new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						updateLineLimitControls();
+					}
+				}
+			);
+
+		fLimitLineWrap = new BooleanFieldEditor2(IDebugPreferenceConstants.CONSOLE_LIMIT_LINES_WRAP, DebugPreferencesMessages.ConsolePreferencePage_Limit_console_lines_wrap, SWT.NONE, getFieldEditorParent());
+		addField(fLimitLineWrap);
+
+		fLimitLineLength = new ConsoleIntegerFieldEditor(IDebugPreferenceConstants.CONSOLE_LIMIT_LINES_LENGTH, DebugPreferencesMessages.ConsolePreferencePage_Limit_console_lines_length, getFieldEditorParent());
+		fLimitLineLength.setValidRange(1, Integer.MAX_VALUE - 100000);
+		addField(fLimitLineLength);
 
 		fTabSizeEditor = new ConsoleIntegerFieldEditor(IDebugPreferenceConstants.CONSOLE_TAB_WIDTH, DebugPreferencesMessages.ConsolePreferencePage_12, getFieldEditorParent());
 		addField(fTabSizeEditor);
@@ -277,6 +299,7 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 		updateWidthEditor();
 		updateAutoScrollLockEditor();
 		updateBufferSizeEditor();
+		updateLineLimitControls();
 		updateInterpretCrAsControlCharacterEditor();
 		updateWordWrapEditorFromConsolePreferences();
 	}
@@ -309,6 +332,17 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 	}
 
 	/**
+	 * Update enablement for line length limits based on enablement of 'limit
+	 * console lines' editor.
+	 */
+	protected void updateLineLimitControls() {
+		Button b = fLimitLines.getChangeControl(getFieldEditorParent());
+		fLimitLineWrap.setEnabled(b.getSelection(), getFieldEditorParent());
+		fLimitLineLength.getTextControl(getFieldEditorParent()).setEnabled(b.getSelection());
+		fLimitLineLength.getLabelControl(getFieldEditorParent()).setEnabled(b.getSelection());
+	}
+
+	/**
 	 * Update enablement of carriage return interpretation based on general control
 	 * character interpretation.
 	 */
@@ -333,6 +367,7 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 		super.performDefaults();
 		updateWidthEditor();
 		updateBufferSizeEditor();
+		updateLineLimitControls();
 		updateInterpretCrAsControlCharacterEditor();
 		updateElapsedTimePreferences();
 
@@ -360,6 +395,9 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 				}
 				if (fBufferSizeEditor != null && event.getSource() != fBufferSizeEditor) {
 					fBufferSizeEditor.refreshValidState();
+				}
+				if (fLimitLineLength != null && event.getSource() != fLimitLineLength) {
+					fLimitLineLength.refreshValidState();
 				}
 				if (fTabSizeEditor != null && event.getSource() != fTabSizeEditor) {
 					fTabSizeEditor.refreshValidState();

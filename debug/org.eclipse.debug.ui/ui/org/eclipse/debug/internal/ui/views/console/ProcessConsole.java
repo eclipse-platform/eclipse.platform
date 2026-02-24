@@ -534,6 +534,15 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 			} else {
 				setWaterMarks(-1, -1);
 			}
+		} else if (property.equals(IDebugPreferenceConstants.CONSOLE_LIMIT_LINES) || property.equals(IDebugPreferenceConstants.CONSOLE_LIMIT_LINES_LENGTH) || property.equals(IDebugPreferenceConstants.CONSOLE_LIMIT_LINES_WRAP)) {
+			boolean limitLines = store.getBoolean(IDebugPreferenceConstants.CONSOLE_LIMIT_LINES);
+			if (limitLines) {
+				boolean wrap = store.getBoolean(IDebugPreferenceConstants.CONSOLE_LIMIT_LINES_WRAP);
+				int length = store.getInt(IDebugPreferenceConstants.CONSOLE_LIMIT_LINES_LENGTH);
+				setLimitLineLength(wrap, length);
+			} else {
+				setLimitLineLength(false, -1);
+			}
 		} else if (property.equals(IDebugPreferenceConstants.CONSOLE_TAB_WIDTH)) {
 			int tabWidth = store.getInt(IDebugPreferenceConstants.CONSOLE_TAB_WIDTH);
 			setTabWidth(tabWidth);
@@ -685,6 +694,12 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 			int highWater = store.getInt(IDebugPreferenceConstants.CONSOLE_HIGH_WATER_MARK);
 			int lowWater = store.getInt(IDebugPreferenceConstants.CONSOLE_LOW_WATER_MARK);
 			setWaterMarks(lowWater, highWater);
+		}
+
+		if (store.getBoolean(IDebugPreferenceConstants.CONSOLE_LIMIT_LINES)) {
+			boolean lineWrap = store.getBoolean(IDebugPreferenceConstants.CONSOLE_LIMIT_LINES_WRAP);
+			int lineLimitLength = store.getInt(IDebugPreferenceConstants.CONSOLE_LIMIT_LINES_LENGTH);
+			setLimitLineLength(lineWrap, lineLimitLength);
 		}
 
 		setHandleControlCharacters(store.getBoolean(IDebugPreferenceConstants.CONSOLE_INTERPRET_CONTROL_CHARACTERS));

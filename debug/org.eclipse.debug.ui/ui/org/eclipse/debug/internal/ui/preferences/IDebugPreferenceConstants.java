@@ -74,6 +74,14 @@ public interface IDebugPreferenceConstants {
 	String CONSOLE_HIGH_WATER_MARK = "Console.highWaterMark"; //$NON-NLS-1$
 
 	/**
+	 * Limit for long lines, lines longer than the limit can be truncated or
+	 * wrapped.
+	 */
+	String CONSOLE_LIMIT_LINES = "Console.limitLongLines"; //$NON-NLS-1$
+	String CONSOLE_LIMIT_LINES_WRAP = "Console.limitLongLinesWrap"; //$NON-NLS-1$
+	String CONSOLE_LIMIT_LINES_LENGTH = "Console.limitLongLinesLength"; //$NON-NLS-1$
+
+	/**
 	 * Integer preference specifying the number of spaces composing a
 	 * tab in the console.
 	 *

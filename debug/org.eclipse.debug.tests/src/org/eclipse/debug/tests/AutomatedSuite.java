@@ -19,8 +19,10 @@ import org.eclipse.debug.tests.breakpoint.BreakpointOrderingTests;
 import org.eclipse.debug.tests.breakpoint.BreakpointTests;
 import org.eclipse.debug.tests.breakpoint.SerialExecutorTest;
 import org.eclipse.debug.tests.console.ConsoleDocumentAdapterTests;
-import org.eclipse.debug.tests.console.ConsoleShowHideTests;
 import org.eclipse.debug.tests.console.ConsoleManagerTests;
+import org.eclipse.debug.tests.console.ConsoleOutputLineTruncateTest;
+import org.eclipse.debug.tests.console.ConsoleOutputLineWrapTest;
+import org.eclipse.debug.tests.console.ConsoleShowHideTests;
 import org.eclipse.debug.tests.console.ConsoleTests;
 import org.eclipse.debug.tests.console.FileLinkTests;
 import org.eclipse.debug.tests.console.IOConsoleFixedWidthTests;
@@ -122,6 +124,8 @@ import org.junit.platform.suite.api.Suite;
 		ConsoleManagerTests.class, //
 		ConsoleTests.class, //
 		IOConsoleTests.class, //
+		ConsoleOutputLineWrapTest.class, //
+		ConsoleOutputLineTruncateTest.class, //
 		IOConsoleFixedWidthTests.class, //
 		ProcessConsoleManagerTests.class, //
 		ProcessConsoleTests.class, //
