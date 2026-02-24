@@ -18,21 +18,25 @@
 # and applies the changes required individually for Eclipse-Platform.
 # The calling pipeline also defines environment variables usable in this script.
 
-pushd 'platform/org.eclipse.platform'
+pushd 'platform'
+brandingPlugins=('org.eclipse.platform' 'org.eclipse.sdk')
+for plugin  in "${brandingPlugins[@]}"; do
+	
+	if [ ! -f "${plugin}/splash.png" ] || [ ! -f "${plugin}/eclipse_lg.png" ] || [ ! -f "${plugin}/eclipse_lg@2x.png" ]; then
+		echo "Expected target Splash-screen or branding images are missing for plugin ${plugin}"
+		# Probably the naming or file format of any of these files has changed and this script wasn't adapted.
+		exit 1
+	fi
 
-if [ ! -f splash.png ] || [ ! -f eclipse_lg.png ] || [ ! -f eclipse_lg@2x.png ]; then
-	echo 'Expected target Splash-screen or branding images are missing'
-	# Probably the naming or file format of any of these files has changed and this script wasn't adapted.
-	exit 1
-fi
-
-# Update splash-screen
-mv -f futureSplashScreens/splash_${NEXT_RELEASE_NAME}.png splash.png
-if [ -f 'futureSplashScreens/eclipse_lg.png' ]; then
-	# About-dialog image is usally the same for multiple releases
-	mv -f futureSplashScreens/eclipse_lg.png eclipse_lg.png
-	mv -f futureSplashScreens/eclipse_lg@2x.png eclipse_lg@2x.png
-fi
+	# Update splash-screen
+	cp -f "org.eclipse.platform/futureSplashScreens/splash_${NEXT_RELEASE_NAME}.png" "${plugin}/splash.png"
+	if [ -f 'org.eclipse.platform/futureSplashScreens/eclipse_lg.png' ]; then
+		# About-dialog image is usally the same for multiple releases
+		cp -f org.eclipse.platform/futureSplashScreens/eclipse_lg*.png ${plugin}
+	fi
+done
+rm "org.eclipse.platform/futureSplashScreens/splash_${NEXT_RELEASE_NAME}.png"
+rm org.eclipse.platform/futureSplashScreens/eclipse_lg*.png
 popd
 
 git commit --all --message "Splash Screen for ${NEXT_RELEASE_VERSION} (${NEXT_RELEASE_NAME})"
