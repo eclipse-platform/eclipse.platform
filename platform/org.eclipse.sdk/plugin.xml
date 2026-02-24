@@ -45,17 +45,17 @@
 				value="ffffff"/>
           <property
                 name="startupMessageRect"
-                value="7,265,320,25"/>
+                value="7,265,250,25"/>
           <property
                 name="startupProgressRect"
                 value="2,290,450,10"/>
           <property
                 name="buildIdLocation"
-                value="108,222">
+                value="257,265">
           </property>
           <property
                 name="buildIdSize"
-                value="293,40">
+                value="188,25">
           </property>
 
        </product>
