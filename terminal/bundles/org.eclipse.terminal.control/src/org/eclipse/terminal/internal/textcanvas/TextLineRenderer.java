@@ -18,6 +18,7 @@ package org.eclipse.terminal.internal.textcanvas;
 
 import java.util.Map;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
@@ -63,6 +64,7 @@ public class TextLineRenderer implements ILinelRenderer {
 		}
 		Image buffer = new Image(gc.getDevice(), width, height);
 		GC doubleBufferGC = new GC(buffer);
+		doubleBufferGC.setAntialias(SWT.ON);
 		if (line < 0 || line >= getTerminalText().getHeight() || colFirst >= getTerminalText().getWidth()
 				|| colFirst - colLast == 0) {
 			fillBackground(doubleBufferGC, 0, 0, width, height);
