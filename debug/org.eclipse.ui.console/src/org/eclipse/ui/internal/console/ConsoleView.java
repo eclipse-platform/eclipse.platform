@@ -80,17 +80,17 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 	/**
 	 * Whether this console is pinned.
 	 */
-	private boolean fPinned = false;
+	private boolean fPinned;
 
 	/**
 	 * Stack of consoles in MRU order
 	 */
-	private final List<IConsole> fStack = new ArrayList<>();
+	private final List<IConsole> fStack;
 
 	/**
 	 * The console being displayed, or <code>null</code> if none
 	 */
-	private IConsole fActiveConsole = null;
+	private IConsole fActiveConsole;
 
 	/**
 	 * Map of consoles to dummy console parts (used to close pages)
@@ -110,7 +110,7 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 	/**
 	 * Whether this view is active
 	 */
-	private boolean fActive = false;
+	private boolean fActive;
 
 	/**
 	 * 'In Console View' context
@@ -118,10 +118,10 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 	private IContextActivation fActivatedContext;
 
 	// actions
-	private PinConsoleAction fPinAction = null;
-	private ConsoleDropDownAction fDisplayConsoleAction = null;
+	private PinConsoleAction fPinAction;
+	private ConsoleDropDownAction fDisplayConsoleAction;
 
-	private OpenConsoleAction fOpenConsoleAction = null;
+	private OpenConsoleAction fOpenConsoleAction;
 
 	private boolean fScrollLock;
 	private boolean fWordWrap;
@@ -132,7 +132,8 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 	private boolean updateConsoleIcon;
 
 	private boolean isAvailable() {
-		return getPageBook() != null && !getPageBook().isDisposed();
+		PageBook pageBook = getPageBook();
+		return pageBook != null && !pageBook.isDisposed();
 	}
 
 	@Override
@@ -165,11 +166,16 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 		return fActiveConsole;
 	}
 
+	private void setConsole(IConsole recConsole) {
+		fActiveConsole = recConsole;
+	}
+
 	@Override
 	protected void showPageRec(PageRec pageRec) {
+		IConsole oldActiveConsole = getConsole();
 		// don't show the page when pinned, unless this is the first console to be added
 		// or its the default page
-		if (fActiveConsole != null && pageRec.page != getDefaultPage() && fPinned && fConsoleToPart.size() > 1) {
+		if (oldActiveConsole != null && pageRec.page != getDefaultPage() && fPinned && fConsoleToPart.size() > 1) {
 			IConsole console = fPartToConsole.get(pageRec.part);
 			if (!fStack.contains(console)) {
 				fStack.add(console);
@@ -178,25 +184,25 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 		}
 
 		IConsole recConsole = fPartToConsole.get(pageRec.part);
-		if (recConsole!=null && recConsole.equals(fActiveConsole)) {
+		if (recConsole != null && recConsole.equals(oldActiveConsole)) {
 			return;
 		}
 
 		super.showPageRec(pageRec);
 
-		if (fActiveConsole != recConsole) {
-			if (fActive && fActiveConsole != null) {
-				deactivateParticipants(fActiveConsole);
+		if (oldActiveConsole != recConsole) {
+			if (fActive && oldActiveConsole != null) {
+				deactivateParticipants(oldActiveConsole);
 			}
 			if (recConsole != null) {
 				activateParticipants(recConsole);
 			}
 		}
-		fActiveConsole = recConsole;
+		setConsole(recConsole);
 		// bring active console on top of stack
-		if (fActiveConsole != null && !fStack.isEmpty() && !fActiveConsole.equals(fStack.get(0))) {
-			fStack.remove(fActiveConsole);
-			fStack.add(0, fActiveConsole);
+		if (recConsole != null && !fStack.isEmpty() && !recConsole.equals(fStack.get(0))) {
+			fStack.remove(recConsole);
+			fStack.add(0, recConsole);
 		}
 		updateTitle();
 		updateHelp();
@@ -206,8 +212,8 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 			fPinAction.update();
 		}
 		IPage page = getCurrentPage();
-		if (page instanceof IOConsolePage) {
-			((IOConsolePage) page).setWordWrap(fWordWrap);
+		if (page instanceof IOConsolePage consolePage) {
+			consolePage.setWordWrap(fWordWrap);
 		}
 		/*
 		 * Bug 268608: cannot invoke find/replace after opening console
@@ -215,8 +221,8 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 		 * Global actions of TextConsolePage must be updated here,
 		 * but they are only updated on a selection change.
 		 */
-		if (page instanceof TextConsolePage) {
-			TextConsoleViewer viewer = ((TextConsolePage) page).getViewer();
+		if (page instanceof TextConsolePage consolePage) {
+			TextConsoleViewer viewer = consolePage.getViewer();
 			viewer.setSelection(viewer.getSelection());
 		}
 	}
@@ -268,7 +274,7 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 		} else {
 			String newName = console.getName();
 			String oldName = getContentDescription();
-			if (newName!=null && !(newName.equals(oldName))) {
+			if (newName != null && !(newName.equals(oldName))) {
 				setContentDescription(console.getName());
 			}
 		}
@@ -349,7 +355,7 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 		fPartToConsole.remove(part);
 		fConsoleToPart.remove(console);
 		if (fPartToConsole.isEmpty()) {
-			fActiveConsole = null;
+			setConsole(null);
 		}
 
 		// update console actions
@@ -377,7 +383,7 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 		console.addPropertyChangeListener(this);
 
 		// initialize page participants
-		IConsolePageParticipant[] consoleParticipants = ((ConsoleManager)getConsoleManager()).getPageParticipants(console);
+		IConsolePageParticipant[] consoleParticipants = getConsoleManager().getPageParticipants(console);
 		final ListenerList<IConsolePageParticipant> participants = new ListenerList<>();
 		for (IConsolePageParticipant consoleParticipant : consoleParticipants) {
 			participants.add(consoleParticipant);
@@ -414,7 +420,7 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 			site.getPage().removePartListener((IPartListener2)this);
 		}
 		super.dispose();
-		ConsoleManager consoleManager = (ConsoleManager) ConsolePlugin.getDefault().getConsoleManager();
+		ConsoleManager consoleManager = getConsoleManager();
 		consoleManager.removeConsoleListener(this);
 		consoleManager.unregisterConsoleView(this);
 		if (fDisplayConsoleAction != null) {
@@ -429,16 +435,18 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 			localResManager.dispose();
 			localResManager = null;
 		}
+		fConsoleToPageParticipants.clear();
+		fStack.clear();
+		fConsoleToPart.clear();
+		fPartToConsole.clear();
 		ConsolePlugin.getDefault().getPreferenceStore().removePropertyChangeListener(this);
 	}
 
 	/**
-	 * Returns the console manager.
-	 *
 	 * @return the console manager
 	 */
-	private IConsoleManager getConsoleManager() {
-		return ConsolePlugin.getDefault().getConsoleManager();
+	private ConsoleManager getConsoleManager() {
+		return (ConsoleManager) ConsolePlugin.getDefault().getConsoleManager();
 	}
 
 	@Override
@@ -502,18 +510,17 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 	 */
 	public ConsoleView() {
 		super();
+		fStack = new ArrayList<>();
 		fConsoleToPart = new HashMap<>();
 		fPartToConsole = new HashMap<>();
 		fConsoleToPageParticipants = new HashMap<>();
-
-		ConsoleManager consoleManager = (ConsoleManager) ConsolePlugin.getDefault().getConsoleManager();
-		consoleManager.registerConsoleView(this);
+		getConsoleManager().registerConsoleView(this);
 	}
 
 	protected void createActions() {
 		fPinAction = new PinConsoleAction(this);
 		fDisplayConsoleAction = new ConsoleDropDownAction(this);
-		ConsoleFactoryExtension[] extensions = ((ConsoleManager)ConsolePlugin.getDefault().getConsoleManager()).getConsoleFactoryExtensions();
+		ConsoleFactoryExtension[] extensions = getConsoleManager().getConsoleFactoryExtensions();
 		if (extensions.length > 0) {
 			fOpenConsoleAction = new OpenConsoleAction(this);
 		}
@@ -534,8 +541,7 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 					public void mouseDown(MouseEvent e) {
 						ToolItem ti= tb.getItem(new Point(e.x, e.y));
 						if (ti != null) {
-							if (ti.getData() instanceof ActionContributionItem) {
-								ActionContributionItem actionContributionItem= (ActionContributionItem) ti.getData();
+							if (ti.getData() instanceof ActionContributionItem actionContributionItem) {
 								IAction action= actionContributionItem.getAction();
 								if (action == fOpenConsoleAction) {
 									Event event= new Event();
@@ -554,10 +560,11 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 
 	@Override
 	public void display(IConsole console) {
-		if (fPinned && fActiveConsole != null) {
+		IConsole activeConsole = getConsole();
+		if (fPinned && activeConsole != null) {
 			return;
 		}
-		if (console.equals(fActiveConsole)) {
+		if (console.equals(activeConsole)) {
 			return;
 		}
 		ConsoleWorkbenchPart part = fConsoleToPart.get(console);
@@ -590,8 +597,8 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 	}
 
 	/**
-	 * Registers the given runnable with the display associated with this view's
-	 * control, if any.
+	 * Runs the given runnable with the display associated with this view's control,
+	 * if any.
 	 *
 	 * @param r the runnable
 	 * @see org.eclipse.swt.widgets.Display#asyncExec(java.lang.Runnable)
@@ -622,12 +629,12 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 	public void createPartControl(Composite parent) {
 		super.createPartControl(parent);
 		createActions();
-		IToolBarManager tbm= getViewSite().getActionBars().getToolBarManager();
-		configureToolBar(tbm);
+		IViewSite viewSite = getViewSite();
+		configureToolBar(viewSite.getActionBars().getToolBarManager());
 		updateForExistingConsoles();
-		getViewSite().getActionBars().updateActionBars();
+		viewSite.getActionBars().updateActionBars();
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, IConsoleHelpContextIds.CONSOLE_VIEW);
-		getViewSite().getPage().addPartListener((IPartListener2)this);
+		viewSite.getPage().addPartListener((IPartListener2) this);
 		initPageSwitcher();
 		localResManager = new LocalResourceManager(JFaceResources.getResources(), parent);
 		updateConsoleIcon = shouldUpdateConsoleIcon();
@@ -701,8 +708,8 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getAdapter(Class<T> key) {
-		Object adpater = super.getAdapter(key);
-		if (adpater == null) {
+		Object adapter = super.getAdapter(key);
+		if (adapter == null) {
 			IConsole console = getConsole();
 			if (console != null) {
 				ListenerList<IConsolePageParticipant> listeners = getParticipants(console);
@@ -710,15 +717,15 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 				if (listeners != null) {
 					for (IConsolePageParticipant iConsolePageParticipant : listeners) {
 						IConsolePageParticipant participant = iConsolePageParticipant;
-						adpater = participant.getAdapter(key);
-						if (adpater != null) {
-							return (T) adpater;
+						adapter = participant.getAdapter(key);
+						if (adapter != null) {
+							return (T) adapter;
 						}
 					}
 				}
 			}
 		}
-		return (T) adpater;
+		return (T) adapter;
 	}
 
 	@Override
@@ -728,7 +735,7 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 			IContextService contextService = getSite().getService(IContextService.class);
 			if(contextService != null) {
 				fActivatedContext = contextService.activateContext(IConsoleConstants.ID_CONSOLE_VIEW);
-				activateParticipants(fActiveConsole);
+				activateParticipants(getConsole());
 			}
 		}
 	}
@@ -748,7 +755,7 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 			IContextService contextService = getSite().getService(IContextService.class);
 			if(contextService != null) {
 				contextService.deactivateContext(fActivatedContext);
-				deactivateParticipants(fActiveConsole);
+				deactivateParticipants(getConsole());
 			}
 		}
 	}
@@ -765,8 +772,8 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 			if (getViewSite() != null && viewRef.getId().equals(getViewSite().getId())) {
 				String secId = viewRef.getSecondaryId();
 				String mySec = null;
-				if (getSite() instanceof IViewSite) {
-					mySec = ((IViewSite)getSite()).getSecondaryId();
+				if (getSite() instanceof IViewSite site) {
+					mySec = site.getSecondaryId();
 				}
 				if (mySec == null) {
 					return secId == null;
@@ -826,8 +833,8 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 		fScrollLock = scrollLock;
 
 		IPage page = getCurrentPage();
-		if (page instanceof IOConsolePage) {
-			((IOConsolePage)page).setAutoScroll(!scrollLock);
+		if (page instanceof IOConsolePage consolePage) {
+			consolePage.setAutoScroll(!scrollLock);
 		}
 	}
 
@@ -841,10 +848,10 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 		fWordWrap = wordWrap;
 
 		IWorkbenchPart part = getSite().getPart();
-		if (part instanceof PageBookView) {
-			Control control = ((PageBookView) part).getCurrentPage().getControl();
-			if (control instanceof StyledText) {
-				((StyledText) control).setWordWrap(wordWrap);
+		if (part instanceof PageBookView pagebookView) {
+			Control control = pagebookView.getCurrentPage().getControl();
+			if (control instanceof StyledText styledText) {
+				styledText.setWordWrap(wordWrap);
 			}
 		}
 	}
@@ -870,8 +877,8 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 	@Override
 	public void setAutoScrollLock(boolean scrollLock) {
 		IPage page = getCurrentPage();
-		if (page instanceof IOConsolePage) {
-			((IOConsolePage) page).setAutoScroll(!scrollLock);
+		if (page instanceof IOConsolePage consolePage) {
+			consolePage.setAutoScroll(!scrollLock);
 		}
 
 	}
@@ -879,8 +886,8 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 	@Override
 	public boolean getAutoScrollLock() {
 		IPage page = getCurrentPage();
-		if (page instanceof IOConsolePage) {
-			return !((IOConsolePage) page).isAutoScroll();
+		if (page instanceof IOConsolePage consolePage) {
+			return !consolePage.isAutoScroll();
 		}
 		return fScrollLock;
 	}
