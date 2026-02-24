@@ -784,7 +784,7 @@ public class IOConsolePartitioner
 		 * update partitioning.
 		 */
 		private void processPendingPartitions() {
-			final List<PendingPartition> pendingCopy = new ArrayList<>();
+			List<PendingPartition> pendingCopy = new ArrayList<>();
 			// draining the whole buffer here is important - this way we get as much data as
 			// available and may skip to draw text that exceeds the Console buffer size
 			// anyway (see checkBufferSize()).
@@ -793,12 +793,40 @@ public class IOConsolePartitioner
 			if (pendingCopy.isEmpty()) {
 				return;
 			}
+			int pendingSize = 0;
 			IOConsoleOutputStream stream = pendingCopy.get(0).stream;
 			for (PendingPartition p : pendingCopy) {
 				if (p.stream != stream) {
-					break;
+					sizeHint += p.text.length();
 				}
-				sizeHint += p.text.length();
+				pendingSize += p.text.length();
+			}
+			/*
+			 * Check if the output we want to process is over the console limit. If so, trim
+			 * the output before passing it to SWT.
+			 */
+			int limit = highWaterMark;
+			if (limit > 0 && pendingSize > limit) {
+				sizeHint = Math.min(sizeHint, limit);
+				int n = pendingCopy.size();
+				// check at which pending change we need to cut the output, to comply with the character limit
+				int index = 0;
+				int characters = 0;
+				for (int i = n - 1; i >= 0; --i) {
+					PendingPartition p = pendingCopy.get(i);
+					characters += p.text.length();
+					index = i;
+					if (characters > limit) {
+						break;
+					}
+				}
+				// copy from that index onward
+				List<PendingPartition> trimmedCopy = new ArrayList<>(n - index);
+				for (int i = index; i < n; ++i) {
+					PendingPartition p = pendingCopy.get(i);
+					trimmedCopy.add(p);
+				}
+				pendingCopy = trimmedCopy;
 			}
 			synchronized (partitions) {
 				if (document != null) {
