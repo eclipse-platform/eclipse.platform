@@ -83,28 +83,27 @@ public abstract class TextConsole extends AbstractConsole {
 	/**
 	 * indication that the console's partitioner is not expecting more input
 	 */
-	private volatile boolean fPartitionerFinished = false;
+	private volatile boolean fPartitionerFinished;
 
 	/**
 	 * Indication that the console's pattern matcher has finished.
 	 * (all matches have been found and all listeners notified)
 	 */
-	private volatile boolean fMatcherFinished = false;
+	private volatile boolean fMatcherFinished;
 
 	/**
 	 * indication that the console output complete property has been fired
 	 */
-	private boolean fCompleteFired = false;
+	private boolean fCompleteFired;
 
-	private volatile boolean fConsoleAutoScrollLock = true;
-
+	private volatile boolean fConsoleAutoScrollLock;
 
 	/**
 	 * Map of client defined attributes
 	 */
-	private final HashMap<String, Object> fAttributes = new HashMap<>();
+	private final HashMap<String, Object> fAttributes;
 
-	private final IConsoleManager fConsoleManager = ConsolePlugin.getDefault().getConsoleManager();
+	private final IConsoleManager fConsoleManager;
 	private ScopedPreferenceStore store;
 	private IPropertyChangeListener propListener;
 
@@ -119,6 +118,7 @@ public abstract class TextConsole extends AbstractConsole {
 			store.removePropertyChangeListener(propListener);
 		}
 	}
+
 	/**
 	 * Constructs a console with the given name, image descriptor, and lifecycle
 	 *
@@ -130,6 +130,9 @@ public abstract class TextConsole extends AbstractConsole {
 	 */
 	public TextConsole(String name, String consoleType, ImageDescriptor imageDescriptor, boolean autoLifecycle) {
 		super(name, consoleType, imageDescriptor, autoLifecycle);
+		fConsoleAutoScrollLock = true;
+		fAttributes = new HashMap<>();
+		fConsoleManager = ConsolePlugin.getDefault().getConsoleManager();
 		fDocument = new ConsoleDocument();
 		fDocument.addPositionCategory(ConsoleHyperlinkPosition.HYPER_LINK_CATEGORY);
 		fPatternMatcher = new ConsolePatternMatcher(this);

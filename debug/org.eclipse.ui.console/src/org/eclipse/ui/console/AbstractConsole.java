@@ -39,17 +39,17 @@ public abstract class AbstractConsole implements IConsole {
 	/**
 	 * Console name
 	 */
-	private String fName = null;
+	private String fName;
 
 	/**
 	 * Console image descriptor
 	 */
-	private ImageDescriptor fImageDescriptor = null;
+	private ImageDescriptor fImageDescriptor;
 
 	/**
 	 * Console type identifier
 	 */
-	private String fType = null;
+	private String fType;
 
 	/**
 	 * Used to notify this console of lifecycle methods <code>init()</code>
@@ -314,6 +314,11 @@ public abstract class AbstractConsole implements IConsole {
 	 */
 	public String getHelpContextId() {
 		return null;
+	}
+
+	@Override
+	public String toString() {
+		return "Console [" + fName + "]"; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 }

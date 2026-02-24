@@ -54,7 +54,7 @@ public class IOConsole extends TextConsole {
 	/**
 	 * A collection of open streams connected to this console.
 	 */
-	private final List<Closeable> openStreams = Collections.synchronizedList(new ArrayList<>());
+	private final List<Closeable> openStreams;
 
 	/**
 	 * The encoding used to for displaying console output.
@@ -113,10 +113,9 @@ public class IOConsole extends TextConsole {
 	public IOConsole(String name, String consoleType, ImageDescriptor imageDescriptor, Charset charset, boolean autoLifecycle) {
 		super(name, consoleType, imageDescriptor, autoLifecycle);
 		this.charset = charset;
-		synchronized (openStreams) {
-			inputStream = new IOConsoleInputStream(this);
-			openStreams.add(inputStream);
-		}
+		openStreams = Collections.synchronizedList(new ArrayList<>());
+		inputStream = new IOConsoleInputStream(this);
+		openStreams.add(inputStream);
 		partitioner = new IOConsolePartitioner(this);
 		final IDocument document = getDocument();
 		if (document != null) {
@@ -313,7 +312,7 @@ public class IOConsole extends TextConsole {
 				try {
 					closable.close();
 				} catch (IOException e) {
-					// e.printStackTrace();
+					// ignore
 				}
 			}
 			inputStream = null;
@@ -321,8 +320,9 @@ public class IOConsole extends TextConsole {
 
 		final IDocument document = partitioner.getDocument();
 		partitioner.disconnect();
-		document.setDocumentPartitioner(null);
-
+		if (document != null) {
+			document.setDocumentPartitioner(null);
+		}
 		super.dispose();
 	}
 
