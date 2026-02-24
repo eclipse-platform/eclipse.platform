@@ -37,9 +37,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Shell;
@@ -92,6 +94,9 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 	private BooleanFieldEditor2 fUseBufferSize;
 	private ConsoleIntegerFieldEditor fBufferSizeEditor;
 
+	private BooleanFieldEditor2 fLimitLines;
+	private ConsoleIntegerFieldEditor fLimitLineLength;
+
 	private ConsoleIntegerFieldEditor fTabSizeEditor;
 	private BooleanFieldEditor autoScrollLockEditor;
 
@@ -103,6 +108,10 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 	private ComboViewer fElapsedFormat;
 
 	private Label fElapsedFormatPreviewLabel;
+
+	private Group lineLimitGroup;
+	private Button cutConsoleLineButton;
+	private Button wrapConsoleLineButton;
 
 	@SuppressWarnings("nls")
 	private static final String[] ELAPSED_FORMATS = new String[] { "H:MM:SS", "HH:MM:SS", "HH:MM:SS.mmm", "MM:SS.mmm",
@@ -164,6 +173,44 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 				}
 			}
 		);
+
+		lineLimitGroup = new Group(getFieldEditorParent(), SWT.LEFT);
+		GridLayout layout = new GridLayout(2, false);
+		lineLimitGroup.setLayout(layout);
+		GridData data = new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL);
+		data.horizontalSpan = 2;
+		lineLimitGroup.setLayoutData(data);
+		lineLimitGroup.setText(DebugPreferencesMessages.ConsolePreferencePage_Limit_console_group);
+
+		fLimitLines = new BooleanFieldEditor2(IDebugPreferenceConstants.CONSOLE_LIMIT_LINES,
+				DebugPreferencesMessages.ConsolePreferencePage_Limit_console_lines, SWT.NONE, lineLimitGroup);
+		addField(fLimitLines);
+		fLimitLines.getChangeControl(lineLimitGroup).addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				updateLineLimitControls();
+			}
+		});
+		fLimitLineLength = new ConsoleIntegerFieldEditor(IDebugPreferenceConstants.CONSOLE_LIMIT_LINES_LENGTH,
+				DebugPreferencesMessages.ConsolePreferencePage_Limit_console_lines_length, lineLimitGroup);
+		fLimitLineLength.setValidRange(1, Integer.MAX_VALUE - 100000);
+		addField(fLimitLineLength);
+
+		boolean hardWrapLines = getPreferenceStore().getBoolean(IDebugPreferenceConstants.CONSOLE_LIMIT_LINES_WRAP);
+		String label;
+
+		label = DebugPreferencesMessages.ConsolePreferencePage_Limit_console_lines_cut;
+		cutConsoleLineButton = SWTFactory.createRadioButton(lineLimitGroup, label);
+		cutConsoleLineButton.setSelection(!hardWrapLines);
+
+		label = DebugPreferencesMessages.ConsolePreferencePage_Limit_console_lines_wrap;
+		wrapConsoleLineButton = SWTFactory.createRadioButton(lineLimitGroup, label);
+		wrapConsoleLineButton.setSelection(hardWrapLines);
+
+		// Restore margins after field editor constructors overwrote them with 0
+		GridLayout groupLayout = (GridLayout) lineLimitGroup.getLayout();
+		groupLayout.marginWidth = 5;
+		groupLayout.marginHeight = 5;
 
 		fTabSizeEditor = new ConsoleIntegerFieldEditor(IDebugPreferenceConstants.CONSOLE_TAB_WIDTH, DebugPreferencesMessages.ConsolePreferencePage_12, getFieldEditorParent());
 		addField(fTabSizeEditor);
@@ -255,8 +302,10 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 	@Override
 	public boolean performOk() {
 		boolean ok= super.performOk();
-		// update high water mark to be (about) 100 lines (100 * 80 chars) greater than low water mark
 		IPreferenceStore store = DebugUIPlugin.getDefault().getPreferenceStore();
+		store.setValue(IDebugPreferenceConstants.CONSOLE_LIMIT_LINES_WRAP, wrapConsoleLineButton.getSelection());
+
+		// update high water mark to be (about) 100 lines (100 * 80 chars) greater than low water mark
 		int low = store.getInt(IDebugPreferenceConstants.CONSOLE_LOW_WATER_MARK);
 		int high = low + 8000;
 		store.setValue(IDebugPreferenceConstants.CONSOLE_HIGH_WATER_MARK, high);
@@ -277,6 +326,7 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 		updateWidthEditor();
 		updateAutoScrollLockEditor();
 		updateBufferSizeEditor();
+		updateLineLimitControls();
 		updateInterpretCrAsControlCharacterEditor();
 		updateWordWrapEditorFromConsolePreferences();
 	}
@@ -309,6 +359,18 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 	}
 
 	/**
+	 * Update enablement for line length limits based on enablement of 'limit
+	 * console lines' editor.
+	 */
+	protected void updateLineLimitControls() {
+		boolean enableLimit = fLimitLines.getBooleanValue();
+		wrapConsoleLineButton.setEnabled(enableLimit);
+		cutConsoleLineButton.setEnabled(enableLimit);
+		fLimitLineLength.getTextControl(lineLimitGroup).setEnabled(enableLimit);
+		fLimitLineLength.getLabelControl(lineLimitGroup).setEnabled(enableLimit);
+	}
+
+	/**
 	 * Update enablement of carriage return interpretation based on general control
 	 * character interpretation.
 	 */
@@ -331,8 +393,15 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 	@Override
 	protected void performDefaults() {
 		super.performDefaults();
+
+		boolean hardWrapLines = getPreferenceStore()
+				.getDefaultBoolean(IDebugPreferenceConstants.CONSOLE_LIMIT_LINES_WRAP);
+		wrapConsoleLineButton.setSelection(hardWrapLines);
+		cutConsoleLineButton.setSelection(!hardWrapLines);
+
 		updateWidthEditor();
 		updateBufferSizeEditor();
+		updateLineLimitControls();
 		updateInterpretCrAsControlCharacterEditor();
 		updateElapsedTimePreferences();
 
@@ -341,7 +410,8 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 	}
 
 	protected boolean canClearErrorMessage() {
-		return fWidthEditor.isValid() && fBufferSizeEditor.isValid() && fTabSizeEditor.isValid();
+		return fWidthEditor.isValid() && fBufferSizeEditor.isValid() && fTabSizeEditor.isValid()
+				&& fLimitLineLength.isValid();
 	}
 
 	/**
@@ -360,6 +430,9 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 				}
 				if (fBufferSizeEditor != null && event.getSource() != fBufferSizeEditor) {
 					fBufferSizeEditor.refreshValidState();
+				}
+				if (fLimitLineLength != null && event.getSource() != fLimitLineLength) {
+					fLimitLineLength.refreshValidState();
 				}
 				if (fTabSizeEditor != null && event.getSource() != fTabSizeEditor) {
 					fTabSizeEditor.refreshValidState();
@@ -435,4 +508,5 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 		link.setLayoutData(gridData);
 		SWTFactory.createVerticalSpacer(getFieldEditorParent(), 2);
 	}
+
 }
