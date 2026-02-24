@@ -385,15 +385,26 @@ public class ConsoleManager implements IConsoleManager {
 
 		@Override
 		protected void workWith(IConsole console, IProgressMonitor monitor) {
-			IWorkbenchWindow window= PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-			if (window != null) {
-				IWorkbenchPage page= window.getActivePage();
-				if (page != null) {
-					IConsoleView consoleView= (IConsoleView)page.findView(IConsoleConstants.ID_CONSOLE_VIEW);
-					if (consoleView != null) {
-						consoleView.warnOfContentChange(console);
+			List<ConsoleView> viewsToUpdate = new ArrayList<>();
+			synchronized (fConsoleViews) {
+				for (ConsoleView view : fConsoleViews) {
+					IWorkbenchPartSite site = view.getSite();
+					if (site == null) {
+						continue;
 					}
+					boolean viewVisible = site.getPage().isPartVisible(view);
+					if (viewVisible && view.getConsole() == console) {
+						// No need to update the UI if the console is already on top, since
+						// user will already see content changes. This also prevents unnecessary
+						// redraws which can cause flickering.
+						viewsToUpdate.clear();
+						break;
+					}
+					viewsToUpdate.add(view);
 				}
+			}
+			for (ConsoleView view : viewsToUpdate) {
+				view.warnOfContentChange(console);
 			}
 		}
 	}
