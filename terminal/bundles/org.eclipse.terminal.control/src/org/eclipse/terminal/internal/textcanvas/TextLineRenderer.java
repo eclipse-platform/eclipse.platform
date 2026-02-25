@@ -21,7 +21,6 @@ import java.util.Map;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.terminal.connector.Logger;
@@ -61,21 +60,19 @@ public class TextLineRenderer implements ILinelRenderer {
 		if (width <= 0 || height <= 0) {
 			return;
 		}
-		Image buffer = new Image(gc.getDevice(), width, height);
-		GC doubleBufferGC = new GC(buffer);
 		if (line < 0 || line >= getTerminalText().getHeight() || colFirst >= getTerminalText().getWidth()
 				|| colFirst - colLast == 0) {
-			fillBackground(doubleBufferGC, 0, 0, width, height);
+			fillBackground(gc, x, y, width, height);
 		} else {
 			colLast = Math.min(colLast, getTerminalText().getWidth());
 			LineSegment[] segments = getTerminalText().getLineSegments(line, colFirst, colLast - colFirst);
 			for (int i = 0; i < segments.length; i++) {
 				LineSegment segment = segments[i];
 				TerminalStyle style = segment.getStyle();
-				setupGC(doubleBufferGC, style);
+				setupGC(gc, style);
 				String text = segment.getText();
-				drawText(doubleBufferGC, 0, 0, colFirst, segment.getColumn(), text);
-				drawCursor(model, doubleBufferGC, line, 0, 0, colFirst);
+				drawText(gc, x, y, colFirst, segment.getColumn(), text);
+				drawCursor(model, gc, line, x, y, colFirst);
 			}
 			if (fModel.hasHoverSelection(line)) {
 				if (DEBUG_HOVER) {
@@ -87,14 +84,14 @@ public class TextLineRenderer implements ILinelRenderer {
 				int colEnd = line == hsEnd.y ? hsEnd.x : getTerminalText().getWidth();
 				if (colStart < colEnd) {
 					RGB defaultFg = fStyleMap.getForegrondRGB(null);
-					doubleBufferGC.setForeground(new Color(doubleBufferGC.getDevice(), defaultFg));
-					drawUnderline(doubleBufferGC, colStart, colEnd);
+					gc.setForeground(new Color(gc.getDevice(), defaultFg));
+					drawUnderline(gc, x, y, colStart, colEnd);
 				}
 			}
 			if (fModel.hasLineSelection(line)) {
 				TerminalStyle style = TerminalStyle.getStyle(TerminalColor.SELECTION_FOREGROUND,
 						TerminalColor.SELECTION_BACKGROUND);
-				setupGC(doubleBufferGC, style);
+				setupGC(gc, style);
 				Point start = model.getSelectionStart();
 				Point end = model.getSelectionEnd();
 				char[] chars = model.getTerminalText().getChars(line);
@@ -113,14 +110,11 @@ public class TextLineRenderer implements ILinelRenderer {
 					len = Math.min(len, chars.length - offset);
 					if (len > 0) {
 						String text = new String(chars, offset, len);
-						drawText(doubleBufferGC, 0, 0, colFirst, offset, text);
+						drawText(gc, x, y, colFirst, offset, text);
 					}
 				}
 			}
 		}
-		gc.drawImage(buffer, x, y);
-		doubleBufferGC.dispose();
-		buffer.dispose();
 	}
 
 	private void fillBackground(GC gc, int x, int y, int width, int height) {
@@ -186,9 +180,9 @@ public class TextLineRenderer implements ILinelRenderer {
 	 * @param colStart Starting text column to underline (inclusive)
 	 * @param colEnd Ending text column to underline (inclusive)
 	 */
-	private void drawUnderline(GC gc, int colStart, int colEnd) {
-		int y = getCellHeight() - 1;
-		int x = getCellWidth() * colStart;
+	private void drawUnderline(GC gc, int xOffset, int yOffset, int colStart, int colEnd) {
+		int y = yOffset + getCellHeight() - 1;
+		int x = xOffset + getCellWidth() * colStart;
 
 		// x2 is the right side of last column being underlined.
 		int x2 = (colEnd + 1) * getCellWidth() - 1;
