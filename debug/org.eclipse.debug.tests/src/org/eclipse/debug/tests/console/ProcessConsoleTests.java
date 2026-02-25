@@ -109,12 +109,18 @@ public class ProcessConsoleTests {
 	@AfterEach
 	public void tearDown() throws Exception {
 		Platform.removeLogListener(errorLogListener);
+		waitForConsoleRelatedJobs();
 		for (File tmpFile : tmpFiles) {
 			tmpFile.delete();
 		}
 		tmpFiles.clear();
 
 		assertThat(errorsToStrings()).as("logged errors").isEmpty();
+	}
+
+	private void waitForConsoleRelatedJobs() {
+		TestUtil.waitForJobs(testInfo.getDisplayName(), ConsoleManager.CONSOLE_JOB_FAMILY, 100, 10000);
+		TestUtil.waitForJobs(testInfo.getDisplayName(), ProcessConsole.class, 0, 10000);
 	}
 
 	private Stream<String> errorsToStrings() {
@@ -301,7 +307,7 @@ public class ProcessConsoleTests {
 			waitWhile(() -> !terminationSignaled.get(), () -> "No console complete notification received.");
 		} finally {
 			consoleManager.removeConsoles(new IConsole[] { console });
-			TestUtil.waitForJobs(testInfo.getDisplayName(), ConsoleManager.CONSOLE_JOB_FAMILY, 0, 10000);
+			waitForConsoleRelatedJobs();
 		}
 	}
 
@@ -419,7 +425,7 @@ public class ProcessConsoleTests {
 				process.terminate();
 			}
 			consoleManager.removeConsoles(new IConsole[] { console });
-			TestUtil.waitForJobs(testInfo.getDisplayName(), ConsoleManager.CONSOLE_JOB_FAMILY, 0, 1000);
+			waitForConsoleRelatedJobs();
 		}
 	}
 
