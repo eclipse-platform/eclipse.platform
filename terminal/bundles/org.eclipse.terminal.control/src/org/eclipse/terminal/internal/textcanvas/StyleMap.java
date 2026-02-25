@@ -21,8 +21,10 @@ package org.eclipse.terminal.internal.textcanvas;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.swt.graphics.Drawable;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
@@ -41,6 +43,7 @@ import org.eclipse.terminal.model.TerminalStyle;
 public class StyleMap {
 
 	String fFontName = ITerminalConstants.FONT_DEFINITION;
+	private final Supplier<Drawable> fUsageContextProvider;
 	private Point fCharSize;
 	private final TerminalStyle fDefaultStyle;
 	private boolean fInvertColors;
@@ -48,8 +51,9 @@ public class StyleMap {
 	private final int[] fOffsets = new int[256];
 	private final Map<TerminalColor, RGB> fColorMap = new EnumMap<>(TerminalColor.class);
 
-	public StyleMap() {
+	public StyleMap(Supplier<Drawable> usageContextProvider) {
 		fDefaultStyle = TerminalStyle.getDefaultStyle();
+		fUsageContextProvider = usageContextProvider;
 		initFont();
 		initColors();
 	}
@@ -171,8 +175,8 @@ public class StyleMap {
 	 * @since 3.2
 	 */
 	public void updateFont(String fontName) {
-		Display display = Display.getCurrent();
-		GC gc = new GC(display);
+		Drawable usageContext = fUsageContextProvider.get();
+		GC gc = new GC(usageContext != null ? usageContext : Display.getCurrent());
 		if (JFaceResources.getFontRegistry().hasValueFor(fontName)) {
 			fFontName = fontName;
 		} else {
