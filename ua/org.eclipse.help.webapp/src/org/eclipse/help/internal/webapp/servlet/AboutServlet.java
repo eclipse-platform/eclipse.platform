@@ -22,6 +22,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
+import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -33,11 +34,17 @@ import org.eclipse.help.internal.webapp.data.UrlUtil;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletName;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletPattern;
 
 /**
  * A servlet that provides an informational page about the plugins that make up
  * the web application.
  */
+@Component(service = Servlet.class)
+@HttpWhiteboardServletName("about")
+@HttpWhiteboardServletPattern("/about.html")
 public class AboutServlet extends HttpServlet {
 
 	protected static final int NUMBER_OF_COLUMNS = 4;

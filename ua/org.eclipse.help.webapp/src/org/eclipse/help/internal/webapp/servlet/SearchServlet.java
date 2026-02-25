@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -34,6 +35,9 @@ import org.eclipse.help.internal.search.SearchHit;
 import org.eclipse.help.internal.search.SearchQuery;
 import org.eclipse.help.internal.webapp.data.UrlUtil;
 import org.eclipse.help.internal.webapp.utils.SearchXMLGenerator;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletName;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletPattern;
 
 /*
  * Returns the search hits for the query provided in the phrase parameter.
@@ -41,6 +45,9 @@ import org.eclipse.help.internal.webapp.utils.SearchXMLGenerator;
  * This is called on infocenters by client workbenches configured for remote
  * help in order to retrieve search hits from the remote help server.
  */
+@Component(service = Servlet.class)
+@HttpWhiteboardServletName("search")
+@HttpWhiteboardServletPattern("/search")
 public class SearchServlet extends HttpServlet {
 
 	private final class HitCollector implements ISearchHitCollector {

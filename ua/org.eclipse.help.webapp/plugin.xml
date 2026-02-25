@@ -48,61 +48,6 @@
    <extension
          point="org.eclipse.equinox.http.registry.servlets">
       <servlet
-            alias="/control"
-            class="org.eclipse.help.internal.webapp.servlet.ControlServlet"
-            httpcontextId="help">
-      </servlet>
-      <servlet
-            alias="/livehelp"
-            class="org.eclipse.help.internal.webapp.servlet.LiveHelpServlet"
-            httpcontextId="help">
-      </servlet>
-      <servlet
-            alias="/toc"
-            class="org.eclipse.help.internal.webapp.servlet.TocServlet"
-            httpcontextId="help">
-      </servlet>
-      <servlet
-            alias="/advanced/tocfragment"
-            class="org.eclipse.help.internal.webapp.servlet.TocFragmentServlet"
-            httpcontextId="help">
-      </servlet>
-      <servlet
-            alias="/index"
-            class="org.eclipse.help.internal.webapp.servlet.IndexServlet"
-            httpcontextId="help">
-      </servlet>
-      <servlet
-            alias="/advanced/indexfragment"
-            class="org.eclipse.help.internal.webapp.servlet.IndexFragmentServlet"
-            httpcontextId="help">
-      </servlet>
-      <servlet
-            alias="/search"
-            class="org.eclipse.help.internal.webapp.servlet.SearchServlet"
-            httpcontextId="help">
-      </servlet>
-      <servlet
-            alias="/context"
-            class="org.eclipse.help.internal.webapp.servlet.ContextServlet"
-            httpcontextId="help">
-      </servlet>
-      <servlet
-            alias="/extension"
-            class="org.eclipse.help.internal.webapp.servlet.ExtensionServlet"
-            httpcontextId="help">
-      </servlet>
-      <servlet
-            alias="/about.html"
-            class="org.eclipse.help.internal.webapp.servlet.AboutServlet"
-            httpcontextId="help">
-      </servlet>
-      <servlet
-            alias="/m/index.js"
-            class="org.eclipse.help.internal.webapp.HelpUiJs"
-            httpcontextId="help">
-      </servlet>
-      <servlet
             alias="/*.jsp"
             class="org.eclipse.equinox.jsp.jasper.registry.JSPFactory:/"
             httpcontextId="help">
@@ -130,11 +75,6 @@
       <serviceSelector
             filter="(other.info=org.eclipse.help)">
       </serviceSelector>
-      <servlet
-            alias="/vs"
-            class="org.eclipse.help.internal.webapp.servlet.ValidatorServlet"
-            httpcontextId="help">
-      </servlet>
    </extension>
    <extension
          id="org.eclipse.help.webapp.remoteStatusProducer"

@@ -19,6 +19,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -35,6 +36,9 @@ import org.eclipse.help.internal.webapp.data.IconFinder;
 import org.eclipse.help.internal.webapp.data.RequestScope;
 import org.eclipse.help.internal.webapp.data.TocData;
 import org.eclipse.help.internal.webapp.data.UrlUtil;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletName;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletPattern;
 
 /*
  * Creates xml representing selected parts of one or more TOCs  depending on the parameters
@@ -42,6 +46,9 @@ import org.eclipse.help.internal.webapp.data.UrlUtil;
  * With parameter "href" the node and all its ancestors and siblings is included, corresponds to show in toc
  * With parameter "toc" and optionally "path" the node, its ancestors and children are included
  */
+@Component(service = Servlet.class)
+@HttpWhiteboardServletName("tocfragment")
+@HttpWhiteboardServletPattern("/advanced/tocfragment")
 public class TocFragmentServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;

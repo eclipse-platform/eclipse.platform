@@ -14,6 +14,8 @@
 package org.eclipse.help.internal.webapp.servlet;
 
 import java.io.IOException;
+
+import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
@@ -22,10 +24,16 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.help.internal.base.BaseHelpSystem;
 import org.eclipse.help.internal.webapp.data.WebappPreferences;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletName;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletPattern;
 
 /**
  * Servlet to handle live help action requests
  */
+@Component(service = Servlet.class)
+@HttpWhiteboardServletName("livehelp")
+@HttpWhiteboardServletPattern("/livehelp")
 public class LiveHelpServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	@Override
