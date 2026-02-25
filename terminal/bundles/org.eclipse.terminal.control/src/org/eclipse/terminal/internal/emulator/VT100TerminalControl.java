@@ -762,7 +762,7 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 		snapshot.updateSnapshot(false);
 		fPollingTextCanvasModel = new PollingTextCanvasModel(snapshot);
 		fCtlText = new TextCanvas(fWndParent, fPollingTextCanvasModel, SWT.NONE,
-				new TextLineRenderer(fCtlText, fPollingTextCanvasModel));
+				new TextLineRenderer(() -> fCtlText, fPollingTextCanvasModel));
 
 		fCtlText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		fCtlText.addResizeHandler((lines, columns) -> fTerminalText.setDimensions(lines, columns));
