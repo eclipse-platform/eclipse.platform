@@ -18,6 +18,7 @@ import java.io.PrintWriter;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +29,9 @@ import org.eclipse.help.internal.HelpPlugin;
 import org.eclipse.help.internal.dynamic.DocumentWriter;
 import org.eclipse.help.internal.extension.ContentExtension;
 import org.eclipse.help.internal.webapp.data.UrlUtil;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletName;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletPattern;
 
 /*
  * Sends all topic extensions available on this host in XML form.
@@ -35,6 +39,9 @@ import org.eclipse.help.internal.webapp.data.UrlUtil;
  * This is called on infocenters by client workbenches configured for remote
  * help in order to gather all the pieces of a document.
  */
+@Component(service = Servlet.class)
+@HttpWhiteboardServletName("extension")
+@HttpWhiteboardServletPattern("/extension")
 public class ExtensionServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;

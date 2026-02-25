@@ -26,6 +26,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
 
+import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -42,6 +43,9 @@ import org.eclipse.help.internal.webapp.HelpWebappPlugin;
 import org.eclipse.help.internal.webapp.WebappResources;
 import org.eclipse.help.internal.webapp.data.UrlUtil;
 import org.eclipse.help.internal.webapp.utils.Utils;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletName;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletPattern;
 
 /*
  * Class is responsible for implementing security protection.  All servlets
@@ -54,6 +58,9 @@ import org.eclipse.help.internal.webapp.utils.Utils;
  * results here for validation.  If there are no malicious threats detected,
  * this class will return the output to the client.
  */
+@Component(service = Servlet.class)
+@HttpWhiteboardServletName("vs")
+@HttpWhiteboardServletPattern("/vs/*")
 public class ValidatorServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -3783758607845176051L;

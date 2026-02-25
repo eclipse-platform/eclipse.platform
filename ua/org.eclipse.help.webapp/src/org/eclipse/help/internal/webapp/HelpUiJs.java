@@ -14,6 +14,7 @@ import java.io.PrintWriter;
 import java.net.URL;
 import java.util.Scanner;
 
+import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +22,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletName;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletPattern;
 
+@Component(service = Servlet.class)
+@HttpWhiteboardServletName("helpuijs")
+@HttpWhiteboardServletPattern("/m/index.js")
 public class HelpUiJs extends HttpServlet {
 
     private static final long serialVersionUID = 1L;

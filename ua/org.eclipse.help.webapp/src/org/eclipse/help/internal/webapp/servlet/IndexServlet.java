@@ -18,6 +18,7 @@ import java.io.PrintWriter;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +31,9 @@ import org.eclipse.help.internal.base.BaseHelpSystem;
 import org.eclipse.help.internal.dynamic.DocumentWriter;
 import org.eclipse.help.internal.index.Index;
 import org.eclipse.help.internal.webapp.data.UrlUtil;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletName;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletPattern;
 
 /*
  * Sends all available keyword index data in XML form. The data is sent as one
@@ -40,6 +44,9 @@ import org.eclipse.help.internal.webapp.data.UrlUtil;
  * help in order to gather all the index keywords and assemble them into a
  * complete index.
  */
+@Component(service = Servlet.class)
+@HttpWhiteboardServletName("index")
+@HttpWhiteboardServletPattern("/index")
 public class IndexServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;

@@ -16,6 +16,7 @@ package org.eclipse.help.internal.webapp.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -29,6 +30,9 @@ import org.eclipse.help.internal.Topic;
 import org.eclipse.help.internal.base.BaseHelpSystem;
 import org.eclipse.help.internal.context.Context;
 import org.eclipse.help.internal.webapp.data.UrlUtil;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletName;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletPattern;
 
 /*
  * Returns a context help entry with the id specified in the id parameter.
@@ -36,6 +40,9 @@ import org.eclipse.help.internal.webapp.data.UrlUtil;
  * This is called on infocenters by client workbenches configured for remote
  * help in order to retrieve context help stored on the remote help server.
  */
+@Component(service = Servlet.class)
+@HttpWhiteboardServletName("context")
+@HttpWhiteboardServletPattern("/context")
 public class ContextServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;

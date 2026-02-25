@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -41,6 +42,9 @@ import org.eclipse.help.internal.webapp.data.ActivitiesData;
 import org.eclipse.help.internal.webapp.data.RequestScope;
 import org.eclipse.help.internal.webapp.data.UrlUtil;
 import org.eclipse.osgi.util.NLS;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletName;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletPattern;
 
 /*
  * Creates xml representing selected parts of the index
@@ -50,6 +54,9 @@ import org.eclipse.osgi.util.NLS;
  * letters should be displayed.
  * Parameter "offset" represents the starting point relative to the start
  */
+@Component(service = Servlet.class)
+@HttpWhiteboardServletName("indexfragment")
+@HttpWhiteboardServletPattern("/advanced/indexfragment")
 public class IndexFragmentServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;

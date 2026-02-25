@@ -18,6 +18,7 @@ import java.io.PrintWriter;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +31,9 @@ import org.eclipse.help.internal.dynamic.DocumentWriter;
 import org.eclipse.help.internal.toc.Toc;
 import org.eclipse.help.internal.toc.TocContribution;
 import org.eclipse.help.internal.webapp.data.UrlUtil;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletName;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletPattern;
 
 /*
  * Sends all toc contributions available on this host in XML form. The toc
@@ -40,6 +44,9 @@ import org.eclipse.help.internal.webapp.data.UrlUtil;
  * help in order to gather all the toc fragments and assemble them into a
  * complete toc.
  */
+@Component(service = Servlet.class)
+@HttpWhiteboardServletName("toc")
+@HttpWhiteboardServletPattern("/toc")
 public class TocServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
