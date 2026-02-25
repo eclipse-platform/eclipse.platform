@@ -37,6 +37,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
@@ -140,6 +144,8 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 	private volatile boolean fStreamsClosed;
 	private volatile boolean disposed;
 
+	private final ScheduledExecutorService consoleNameUpdateExecutor;
+	private volatile ScheduledFuture<?> pendingNameUpdate;
 
 	/**
 	 * Create process console with default encoding.
@@ -164,6 +170,11 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 		fAllocateConsole = true;
 		fProcess = process;
 		fUserInput = getInputStream();
+		consoleNameUpdateExecutor = Executors.newSingleThreadScheduledExecutor(r -> {
+			Thread t = new Thread(r, "Console name updater"); //$NON-NLS-1$
+			t.setDaemon(true);
+			return t;
+		});
 
 		ILaunchConfiguration configuration = process.getLaunch().getLaunchConfiguration();
 		String file = null;
@@ -401,13 +412,18 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 		if (disposed) {
 			return;
 		}
-		DebugUIPlugin.getStandardDisplay().asyncExec(() -> {
-			if (disposed) {
-				return;
-			}
-			// refresh every second:
-			DebugUIPlugin.getStandardDisplay().timerExec(1000, () -> resetName(false));
-		});
+
+		// refresh every second, but only if not already scheduled:
+		ScheduledFuture<?> currentPending = pendingNameUpdate;
+		if (currentPending == null || currentPending.isDone()) {
+			currentPending = consoleNameUpdateExecutor.schedule(() -> {
+				pendingNameUpdate = null;
+				if (disposed) {
+					return;
+				}
+				resetName(false);
+			}, 1, TimeUnit.SECONDS);
+		}
 	}
 
 	private static String computeElapsedTimeLabel(Date launchTime, Date terminateTime) {
@@ -550,6 +566,7 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 	@Override
 	protected void dispose() {
 		super.dispose();
+		consoleNameUpdateExecutor.shutdownNow();
 		fColorProvider.disconnect();
 		DebugPlugin.getDefault().removeDebugEventListener(this);
 		DebugUIPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(this);
