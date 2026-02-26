@@ -48,7 +48,6 @@ package org.eclipse.terminal.internal.emulator;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.lang.reflect.Field;
 import java.net.SocketException;
 import java.nio.charset.Charset;
 import java.util.EnumMap;
@@ -1242,18 +1241,7 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 					cmdEvent.widget = event.widget;
 					cmdEvent.character = event.character;
 					cmdEvent.keyCode = event.keyCode;
-					////Bug - KeyEvent.keyLocation was introduced in Eclipse 3.6
-					////Use reflection for now to remain backward compatible down to Eclipse 3.4
-					//cmdEvent.keyLocation = event.keyLocation;
-					try {
-						Field f1 = event.getClass().getField("keyLocation"); //$NON-NLS-1$
-						Field f2 = cmdEvent.getClass().getField("keyLocation"); //$NON-NLS-1$
-						f2.set(cmdEvent, f1.get(event));
-					} catch (NoSuchFieldException nsfe) {
-						/* ignore, this is Eclipse 3.5 or earlier */
-					} catch (Throwable t) {
-						t.printStackTrace();
-					}
+					cmdEvent.keyLocation = event.keyLocation;
 					cmdEvent.stateMask = event.stateMask;
 					event.doit = false;
 					try {
