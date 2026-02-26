@@ -23,6 +23,7 @@ import java.util.EnumMap;
 import java.util.Map;
 
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
@@ -46,7 +47,7 @@ public class StyleMap {
 	private boolean fInvertColors;
 	private boolean fProportional;
 	private final int[] fOffsets = new int[256];
-	private final Map<TerminalColor, RGB> fColorMap = new EnumMap<>(TerminalColor.class);
+	private final Map<TerminalColor, Color> fColorMap = new EnumMap<>(TerminalColor.class);
 
 	public StyleMap() {
 		fDefaultStyle = TerminalStyle.getDefaultStyle();
@@ -55,11 +56,11 @@ public class StyleMap {
 	}
 
 	private void initColors() {
-		Map<TerminalColor, RGB> map = new EnumMap<>(TerminalColor.class);
+		Map<TerminalColor, Color> map = new EnumMap<>(TerminalColor.class);
 		TerminalColor[] values = TerminalColor.values();
 		for (TerminalColor terminalColor : values) {
-			RGB rgb = TerminalColorPresets.INSTANCE.getDefaultPreset().getRGB(terminalColor);
-			map.put(terminalColor, rgb);
+			Color color = new Color(TerminalColorPresets.INSTANCE.getDefaultPreset().getRGB(terminalColor));
+			map.put(terminalColor, color);
 		}
 		updateColors(map);
 	}
@@ -68,11 +69,11 @@ public class StyleMap {
 		updateFont(ITerminalConstants.FONT_DEFINITION);
 	}
 
-	private RGB getRGB(TerminalColor color) {
+	private Color getColor(TerminalColor color) {
 		return fColorMap.get(color);
 	}
 
-	public RGB getForegrondRGB(TerminalStyle style) {
+	public Color getForegroundColor(TerminalStyle style) {
 		style = defaultIfNull(style);
 		RGB foregroundRGB;
 		if (style.isReverse()) {
@@ -81,7 +82,7 @@ public class StyleMap {
 			foregroundRGB = style.getForegroundRGB();
 		}
 		if (foregroundRGB != null) {
-			return foregroundRGB;
+			return new Color(foregroundRGB);
 		}
 
 		TerminalColor color;
@@ -96,10 +97,10 @@ public class StyleMap {
 		}
 
 		color = color.convertColor(fInvertColors, style.isBold());
-		return getRGB(color);
+		return getColor(color);
 	}
 
-	public RGB getBackgroundRGB(TerminalStyle style) {
+	public Color getBackgroundColor(TerminalStyle style) {
 		style = defaultIfNull(style);
 		RGB backgroundRGB;
 		if (style.isReverse()) {
@@ -108,7 +109,7 @@ public class StyleMap {
 			backgroundRGB = style.getBackgroundRGB();
 		}
 		if (backgroundRGB != null) {
-			return backgroundRGB;
+			return new Color(backgroundRGB);
 		}
 
 		TerminalColor color;
@@ -123,7 +124,7 @@ public class StyleMap {
 		}
 
 		color = color.convertColor(fInvertColors, style.isBold());
-		return getRGB(color);
+		return getColor(color);
 	}
 
 	private TerminalStyle defaultIfNull(TerminalStyle style) {
@@ -267,7 +268,7 @@ public class StyleMap {
 		return fOffsets[c];
 	}
 
-	public void updateColors(Map<TerminalColor, RGB> colorMap) {
+	public void updateColors(Map<TerminalColor, Color> colorMap) {
 		fColorMap.putAll(colorMap);
 	}
 }

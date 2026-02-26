@@ -40,7 +40,6 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.terminal.control.ITerminalMouseListener;
@@ -650,7 +649,7 @@ public class TextCanvas extends GridCanvas {
 		calculateGrid();
 	}
 
-	public void updateColors(Map<TerminalColor, RGB> map) {
+	public void updateColors(Map<TerminalColor, Color> map) {
 		fCellRenderer.updateColors(map);
 		redraw();
 	}
