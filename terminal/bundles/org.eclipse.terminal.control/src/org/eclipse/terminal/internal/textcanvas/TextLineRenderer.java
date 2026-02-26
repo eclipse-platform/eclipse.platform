@@ -22,7 +22,6 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.terminal.connector.Logger;
 import org.eclipse.terminal.internal.control.impl.TerminalPlugin;
 import org.eclipse.terminal.model.ITerminalTextDataReadOnly;
@@ -83,8 +82,8 @@ public class TextLineRenderer implements ILinelRenderer {
 				int colStart = line == hsStart.y ? hsStart.x : 0;
 				int colEnd = line == hsEnd.y ? hsEnd.x : getTerminalText().getWidth();
 				if (colStart < colEnd) {
-					RGB defaultFg = fStyleMap.getForegrondRGB(null);
-					gc.setForeground(new Color(gc.getDevice(), defaultFg));
+					Color defaultFg = fStyleMap.getForegroundColor(null);
+					gc.setForeground(defaultFg);
 					drawUnderline(gc, x, y, colStart, colEnd);
 				}
 			}
@@ -127,8 +126,7 @@ public class TextLineRenderer implements ILinelRenderer {
 
 	@Override
 	public Color getDefaultBackgroundColor() {
-		RGB backgroundRGB = fStyleMap.getBackgroundRGB(null);
-		return new Color(backgroundRGB);
+		return fStyleMap.getBackgroundColor(null);
 	}
 
 	private void drawCursor(ITextCanvasModel model, GC gc, int row, int x, int y, int colFirst) {
@@ -190,10 +188,10 @@ public class TextLineRenderer implements ILinelRenderer {
 	}
 
 	private void setupGC(GC gc, TerminalStyle style) {
-		RGB foregrondColor = fStyleMap.getForegrondRGB(style);
-		gc.setForeground(new Color(gc.getDevice(), foregrondColor));
-		RGB backgroundColor = fStyleMap.getBackgroundRGB(style);
-		gc.setBackground(new Color(gc.getDevice(), backgroundColor));
+		Color foregroundColor = fStyleMap.getForegroundColor(style);
+		gc.setForeground(foregroundColor);
+		Color backgroundColor = fStyleMap.getBackgroundColor(style);
+		gc.setBackground(backgroundColor);
 
 		Font f = fStyleMap.getFont(style);
 		if (f != gc.getFont()) {
@@ -211,7 +209,7 @@ public class TextLineRenderer implements ILinelRenderer {
 	}
 
 	@Override
-	public void updateColors(Map<TerminalColor, RGB> map) {
+	public void updateColors(Map<TerminalColor, Color> map) {
 		fStyleMap.updateColors(map);
 	}
 
