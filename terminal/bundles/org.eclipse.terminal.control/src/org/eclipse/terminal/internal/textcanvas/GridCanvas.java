@@ -45,6 +45,7 @@ abstract public class GridCanvas extends VirtualCanvas {
 	 */
 	@Override
 	protected void paint(GC gc) {
+		gc.setAdvanced(true);
 		Rectangle clipping = gc.getClipping();
 		if (clipping.width == 0 || clipping.height == 0) {
 			return;
