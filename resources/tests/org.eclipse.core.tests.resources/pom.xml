@@ -15,7 +15,7 @@
   <parent>
     <artifactId>eclipse.platform.resources.tests</artifactId>
     <groupId>org.eclipse.platform</groupId>
-    <version>4.39.0-SNAPSHOT</version>
+    <version>4.40.0-SNAPSHOT</version>
   </parent>
   <artifactId>org.eclipse.core.tests.resources</artifactId>
   <version>3.11.1200-SNAPSHOT</version>
