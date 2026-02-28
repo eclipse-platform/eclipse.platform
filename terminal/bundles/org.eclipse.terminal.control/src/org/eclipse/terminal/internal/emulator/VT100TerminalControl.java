@@ -84,6 +84,7 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
@@ -678,7 +679,7 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 	}
 
 	private void onTerminalColorsChanged() {
-		Map<TerminalColor, RGB> map = new EnumMap<>(TerminalColor.class);
+		Map<TerminalColor, Color> map = new EnumMap<>(TerminalColor.class);
 		TerminalColor[] values = TerminalColor.values();
 		for (TerminalColor terminalColor : values) {
 			RGB rgb = null;
@@ -694,7 +695,7 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 			if (rgb == null) {
 				rgb = TerminalColorPresets.INSTANCE.getDefaultPreset().getRGB(terminalColor);
 			}
-			map.put(terminalColor, rgb);
+			map.put(terminalColor, new Color(rgb));
 		}
 		fCtlText.updateColors(map);
 	}
