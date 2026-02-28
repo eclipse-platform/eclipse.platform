@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2006, 2019 IBM Corporation and others.
+ *  Copyright (c) 2006, 2025 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -82,6 +82,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseEvent;
@@ -591,18 +592,46 @@ public class DefaultDetailPane extends AbstractDetailPane implements IDetailPane
 	 * Creates the actions to add to the context menu
 	 */
 	private void createActions() {
-		TextViewerAction textAction= new TextViewerAction(fSourceViewer, ISourceViewer.CONTENTASSIST_PROPOSALS);
-		textAction.setActionDefinitionId(ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
-		textAction.configureAction(DetailMessages.DefaultDetailPane_Co_ntent_Assist_3, IInternalDebugCoreConstants.EMPTY_STRING,IInternalDebugCoreConstants.EMPTY_STRING);
-		textAction.setImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_ELCL_CONTENT_ASSIST));
-		textAction.setDisabledImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_DLCL_CONTENT_ASSIST));
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(textAction, IDebugHelpContextIds.DETAIL_PANE_CONTENT_ASSIST_ACTION);
-		ActionHandler actionHandler = new ActionHandler(textAction);
-		IHandlerService handlerService = getViewSite().getService(IHandlerService.class);
-		fContentAssistActivation = handlerService.activateHandler(textAction.getActionDefinitionId(), actionHandler);
-		setAction(DETAIL_CONTENT_ASSIST_ACTION, textAction);
+		TextViewerAction contAssistTextViewer = new TextViewerAction(fSourceViewer, ISourceViewer.CONTENTASSIST_PROPOSALS);
 
-		textAction= new TextViewerAction(fSourceViewer, ITextOperationTarget.SELECT_ALL);
+		contAssistTextViewer.setActionDefinitionId(ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
+		contAssistTextViewer.configureAction(DetailMessages.DefaultDetailPane_Co_ntent_Assist_3,
+				IInternalDebugCoreConstants.EMPTY_STRING, IInternalDebugCoreConstants.EMPTY_STRING);
+		contAssistTextViewer.setImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_ELCL_CONTENT_ASSIST));
+		contAssistTextViewer.setDisabledImageDescriptor(
+				DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_DLCL_CONTENT_ASSIST));
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(contAssistTextViewer,
+				IDebugHelpContextIds.DETAIL_PANE_CONTENT_ASSIST_ACTION);
+		ActionHandler actionHandler = new ActionHandler(contAssistTextViewer);
+		setAction(DETAIL_CONTENT_ASSIST_ACTION, contAssistTextViewer);
+
+		StyledText text = fSourceViewer.getTextWidget();
+
+		text.addCaretListener(event -> {
+			if (text.isFocusControl()) {
+				if (fContentAssistActivation == null) {
+					IHandlerService handlerService = getViewSite().getService(IHandlerService.class);
+					fContentAssistActivation = handlerService.activateHandler(contAssistTextViewer.getActionDefinitionId(),
+							actionHandler);
+				}
+			}
+		});
+
+		text.addFocusListener(new FocusListener() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				if (fContentAssistActivation != null) {
+					IHandlerService handlerService = getViewSite().getService(IHandlerService.class);
+					handlerService.deactivateHandler(fContentAssistActivation);
+					fContentAssistActivation = null;
+				}
+			}
+			@Override
+			public void focusGained(FocusEvent e) {
+			}
+		});
+
+		TextViewerAction textAction = new TextViewerAction(fSourceViewer, ITextOperationTarget.SELECT_ALL);
 		textAction.configureAction(DetailMessages.DefaultDetailPane_Select__All_5, IInternalDebugCoreConstants.EMPTY_STRING,IInternalDebugCoreConstants.EMPTY_STRING);
 		textAction.setActionDefinitionId(IWorkbenchCommandConstants.EDIT_SELECT_ALL);
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(textAction, IDebugHelpContextIds.DETAIL_PANE_SELECT_ALL_ACTION);
