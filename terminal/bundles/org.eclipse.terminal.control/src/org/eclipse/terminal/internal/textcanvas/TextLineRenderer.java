@@ -17,8 +17,10 @@
 package org.eclipse.terminal.internal.textcanvas;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Drawable;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
@@ -39,9 +41,9 @@ public class TextLineRenderer implements ILinelRenderer {
 	private final ITextCanvasModel fModel;
 	private final StyleMap fStyleMap;
 
-	public TextLineRenderer(TextCanvas c, ITextCanvasModel model) {
+	public TextLineRenderer(Supplier<Drawable> usageContextProvider, ITextCanvasModel model) {
 		fModel = model;
-		fStyleMap = new StyleMap();
+		fStyleMap = new StyleMap(usageContextProvider);
 	}
 
 	@Override
