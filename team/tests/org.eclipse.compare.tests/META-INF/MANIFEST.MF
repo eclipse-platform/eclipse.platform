@@ -13,7 +13,9 @@ Require-Bundle: org.eclipse.compare,
  org.eclipse.core.tests.resources,
  org.eclipse.core.tests.harness,
  org.eclipse.core.filesystem,
- org.eclipse.team.ui
+ org.eclipse.team.ui,
+ org.eclipse.platform.testing,
+ org.eclipse.ui.ide.application;bundle-version="1.5.900"
 Import-Package: org.assertj.core.api,
  org.assertj.core.api.iterable,
  org.junit.jupiter.api;version="[5.14.0,6.0.0)",

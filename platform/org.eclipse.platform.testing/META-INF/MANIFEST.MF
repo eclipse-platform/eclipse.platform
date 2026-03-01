@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Testing Support for Eclipse Applications
+Bundle-SymbolicName: org.eclipse.platform.testing
+Bundle-Version: 1.0.0.qualifier
+Automatic-Module-Name: org.eclipse.platform.testing
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-21
+Import-Package: org.eclipse.osgi.service.runnable;version="[1.1.0,2.0.0)",
+ org.junit.jupiter.api.extension;version="[5.14.0,6.0.0)",
+ org.junit.platform.launcher;version="[1.14.0,2.0.0)",
+ org.osgi.framework;version="[1.10.0,2.0.0)",
+ org.osgi.util.tracker;version="[1.5.0,2.0.0)"
+Require-Bundle: org.eclipse.equinox.common;bundle-version="3.20.300",
+ org.eclipse.e4.ui.workbench3,
+ org.eclipse.equinox.app
+Export-Package: org.eclipse.platform.testing
