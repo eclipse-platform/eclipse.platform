@@ -1182,9 +1182,10 @@ public class TreeModelContentProvider implements ITreeModelContentProvider, ICon
 		Assert.isTrue( getViewer().getDisplay().getThread() == Thread.currentThread() );
 
 		Object parent = getElement(parentPath);
+		Object viewerInput = getViewer().getInput();
 		IElementContentProvider contentAdapter = ViewerAdapterService.getContentProvider(parent);
-		if (contentAdapter != null) {
-			ChildrenUpdate request = new ChildrenUpdate(this, getViewer().getInput(), parentPath, parent, modelIndex, contentAdapter);
+		if (viewerInput != null && contentAdapter != null) {
+			ChildrenUpdate request = new ChildrenUpdate(this, viewerInput, parentPath, parent, modelIndex, contentAdapter);
 			schedule(request);
 		}
 	}
