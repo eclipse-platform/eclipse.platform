@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2015 IBM Corporation and others.
+ *  Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -21,6 +21,7 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.IDebugElement;
 import org.eclipse.debug.core.model.IDebugTarget;
+import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IValue;
 import org.eclipse.debug.core.model.IWatchExpression;
 import org.eclipse.debug.core.model.IWatchExpressionDelegate;
@@ -39,6 +40,7 @@ public class WatchExpression implements IWatchExpression {
 	protected IDebugElement fCurrentContext;
 	private boolean fEnabled= true;
 	private boolean fPending= false;
+	private IDebugElement fPinnedContext;
 
 	/**
 	 * Creates a new watch expression with the given expression
@@ -299,6 +301,33 @@ public class WatchExpression implements IWatchExpression {
 			return new String[0];
 		}
 		return fResult.getErrorMessages();
+	}
+
+	/**
+	 * @see org.eclipse.debug.core.model.IWatchExpression#setPinnedContext(IDebugElement)
+	 */
+	@Override
+	public void setPinnedContext(IDebugElement context) {
+		fPinnedContext = context;
+	}
+
+	/**
+	 * @see org.eclipse.debug.core.model.IWatchExpression#getPinnedContext()
+	 */
+	@Override
+	public IDebugElement getPinnedContext() {
+		if (fPinnedContext instanceof IStackFrame) {
+			return fPinnedContext;
+		}
+		return null;
+	}
+
+	/**
+	 * @see org.eclipse.debug.core.model.IWatchExpression#removePinnedContext()
+	 */
+	@Override
+	public void removePinnedContext() {
+		fPinnedContext = null;
 	}
 
 }

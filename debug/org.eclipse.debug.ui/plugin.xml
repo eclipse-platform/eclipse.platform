@@ -1317,6 +1317,19 @@
                id="org.eclipse.debug.ui.watchExpressionActions.EditWatchExpression">
          </action>
       </viewerContribution>
+       <viewerContribution
+            targetID="org.eclipse.debug.ui.ExpressionView"
+            id="org.eclipse.debug.ui.WatchExpressionActions22">
+          <action
+               label="%PinExpressionWithCurrentAction.label"
+               helpContextId="pin_current_evaluation_context"
+               class="org.eclipse.debug.internal.ui.actions.expressions.PinWatchContextAction"
+               tooltip="%PinExpressionWithCurrentAction.tooltip"
+               menubarPath="additions"
+               enablesFor="1"
+               id="org.eclipse.debug.ui.watchExpressionActions.PinCurrentContext">
+         </action>
+      </viewerContribution>
       <viewerContribution
             targetID="org.eclipse.debug.ui.ExpressionView"
             id="org.eclipse.debug.ui.WatchExpressionActions">

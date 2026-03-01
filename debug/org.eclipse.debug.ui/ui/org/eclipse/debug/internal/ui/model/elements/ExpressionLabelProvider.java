@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2014 IBM Corporation and others.
+ * Copyright (c) 2006, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -23,7 +23,10 @@ import org.eclipse.debug.core.model.IWatchExpression;
 import org.eclipse.debug.internal.ui.DebugUIMessages;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.IPresentationContext;
 import org.eclipse.debug.ui.IDebugUIConstants;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.TreePath;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 
 /**
@@ -161,6 +164,21 @@ protected String getLabel(TreePath elementPath, IPresentationContext context, St
 			return getValueText(null, value, context);
 		}
 		return null;
+	}
+
+	@Override
+	protected FontData getFontData(TreePath elementPath, IPresentationContext presentationContext, String columnId)
+			throws CoreException {
+		Object element = elementPath.getLastSegment();
+		if (element instanceof IWatchExpression watchExp) {
+			if (watchExp.getPinnedContext() != null) {
+				var fontNew = JFaceResources.getFontDescriptor(IDebugUIConstants.PREF_VARIABLE_TEXT_FONT)
+						.getFontData()[0];
+				return new FontData(fontNew.getName(), fontNew.getHeight(),
+						fontNew.getStyle() ^ (SWT.BOLD | SWT.ITALIC));
+			}
+		}
+		return JFaceResources.getFontDescriptor(IDebugUIConstants.PREF_VARIABLE_TEXT_FONT).getFontData()[0];
 	}
 
 }
