@@ -715,9 +715,48 @@ public class IOConsoleTests {
 
 				c.getConsole().setWaterMarks(50, 100);
 				c.waitForScheduledJobs();
-				c.verifyContentByOffset("0123456789", 0);
+				c.verifyContentByOffset("0123456789", 1);
 				assertTrue(c.getDocument().getNumberOfLines() < 15, "Document not trimmed.");
 			}
+			closeConsole(c);
+		}
+	}
+
+	/**
+	 * Check that trimming within a line doesn't split '\r\t'.
+	 */
+	@Test
+	public void testTrimNewline() throws Exception {
+		final IOConsoleTestUtil c = getTestUtil("Test trim newline");
+		try (IOConsoleOutputStream out = c.getDefaultOutputStream()) {
+			c.writeFast("first\n");
+			c.writeFast("0123456789\r\n", out);
+			c.write("last\n");
+			c.verifyContentByLine("first", 0).verifyContentByLine("last", -2);
+			assertTrue(c.getDocument().getNumberOfLines() > 2, "Document not filled.");
+			c.getConsole().setWaterMarks(6, 16);
+			c.waitForScheduledJobs();
+			c.verifyContent("\r\nlast\n");
+			closeConsole(c);
+		}
+	}
+
+	/**
+	 * Check that trimming within a line doesn't split surrogate pairs, e.g.
+	 * emoji symbols.
+	 */
+	@Test
+	public void testTrimSurrogateCharacters() throws Exception {
+		final IOConsoleTestUtil c = getTestUtil("Test trim newline");
+		try (IOConsoleOutputStream out = c.getDefaultOutputStream()) {
+			c.writeFast("first\n");
+			c.writeFast("1😀2😀3\n", out);
+			c.write("last\n");
+			c.verifyContentByLine("first", 0).verifyContentByLine("last", -2);
+			assertTrue(c.getDocument().getNumberOfLines() > 2, "Document not filled.");
+			c.getConsole().setWaterMarks(8, 16);
+			c.waitForScheduledJobs();
+			c.verifyContentByOffset("😀3\nlas", 0);
 			closeConsole(c);
 		}
 	}
