@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.team.core.ITeamStatus;
 import org.eclipse.team.core.TeamException;
 import org.eclipse.team.core.TeamStatus;
@@ -110,17 +110,20 @@ public class SubscriberSyncInfoEventHandler extends SubscriberEventHandler {
 			int depth,
 			IProgressMonitor monitor) {
 
-		monitor.beginTask(null, IProgressMonitor.UNKNOWN);
+		SubMonitor subMonitor = SubMonitor.convert(monitor);
 		try {
 
 			// Create a monitor that will handle preemption and dispatch if required
-			IProgressMonitor collectionMonitor = new SubProgressMonitor(monitor, IProgressMonitor.UNKNOWN) {
-				boolean dispatching = false;
+			IProgressMonitor collectionMonitor = new IProgressMonitor() {
+				private final SubMonitor delegate = subMonitor.split(IProgressMonitor.UNKNOWN);
+				private boolean dispatching = false;
+
 				@Override
 				public void subTask(String name) {
 					dispatch();
-					super.subTask(name);
+					delegate.subTask(name);
 				}
+
 				private void dispatch() {
 					if (dispatching) {
 						return;
@@ -133,10 +136,42 @@ public class SubscriberSyncInfoEventHandler extends SubscriberEventHandler {
 						dispatching = false;
 					}
 				}
+
 				@Override
 				public void worked(int work) {
 					dispatch();
-					super.worked(work);
+					delegate.worked(work);
+				}
+
+				@Override
+				public void beginTask(String name, int totalWork) {
+					delegate.setTaskName(name);
+					delegate.setWorkRemaining(totalWork);
+				}
+
+				@Override
+				public void done() {
+					delegate.done();
+				}
+
+				@Override
+				public void internalWorked(double work) {
+					delegate.internalWorked(work);
+				}
+
+				@Override
+				public boolean isCanceled() {
+					return delegate.isCanceled();
+				}
+
+				@Override
+				public void setCanceled(boolean value) {
+					delegate.setCanceled(value);
+				}
+
+				@Override
+				public void setTaskName(String name) {
+					delegate.setTaskName(name);
 				}
 			};
 
@@ -173,7 +208,7 @@ public class SubscriberSyncInfoEventHandler extends SubscriberEventHandler {
 			syncSetInput.getSubscriber().collectOutOfSync(new IResource[] { resource }, depth, collectionSet, collectionMonitor);
 
 		} finally {
-			monitor.done();
+			subMonitor.done();
 		}
 	}
 
