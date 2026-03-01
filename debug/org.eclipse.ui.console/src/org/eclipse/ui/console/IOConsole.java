@@ -254,8 +254,21 @@ public class IOConsole extends TextConsole {
 	}
 
 	/**
-	 * Check if all streams connected to this console are closed. If so,
-	 * notify the partitioner that this console is finished.
+	 * Sets a line character length limit for the console. If the length limit is
+	 * non-negative, lines are wrapped or truncated at this length.
+	 *
+	 * @param length The length at which lines are wrapped or truncated. Negative if
+	 *               the line should be left unchanged.
+	 * @param wrap   {@code true} if the line should be wrapped, {@code false} if it
+	 *               should be truncated. No effect if {@code length} is negative.
+	 */
+	public void setLimitLineLength(int length, boolean wrap) {
+		partitioner.setLimitLineLength(length, wrap);
+	}
+
+	/**
+	 * Check if all streams connected to this console are closed. If so, notify the
+	 * partitioner that this console is finished.
 	 */
 	private void checkFinished() {
 		if (openStreams.isEmpty()) {

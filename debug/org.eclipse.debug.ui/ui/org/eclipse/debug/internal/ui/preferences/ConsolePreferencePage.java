@@ -92,6 +92,9 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 	private BooleanFieldEditor2 fUseBufferSize;
 	private ConsoleIntegerFieldEditor fBufferSizeEditor;
 
+	private BooleanFieldEditor2 fLimitLineWrap;
+	private ConsoleIntegerFieldEditor fLimitLine;
+
 	private ConsoleIntegerFieldEditor fTabSizeEditor;
 	private BooleanFieldEditor autoScrollLockEditor;
 
@@ -164,6 +167,13 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 				}
 			}
 		);
+
+		fLimitLine = new ConsoleIntegerFieldEditor(IDebugPreferenceConstants.CONSOLE_LIMIT_LINE_LENGTH, DebugPreferencesMessages.ConsolePreferencePage_Limit_console_line_length, getFieldEditorParent());
+		addField(fLimitLine);
+
+		fLimitLineWrap = new BooleanFieldEditor2(IDebugPreferenceConstants.CONSOLE_LIMIT_LINE_LENGTH_WRAP, DebugPreferencesMessages.ConsolePreferencePage_Limit_console_line_length_wrap, SWT.NONE, getFieldEditorParent());
+		addField(fLimitLineWrap);
+
 
 		fTabSizeEditor = new ConsoleIntegerFieldEditor(IDebugPreferenceConstants.CONSOLE_TAB_WIDTH, DebugPreferencesMessages.ConsolePreferencePage_12, getFieldEditorParent());
 		addField(fTabSizeEditor);
@@ -360,6 +370,9 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 				}
 				if (fBufferSizeEditor != null && event.getSource() != fBufferSizeEditor) {
 					fBufferSizeEditor.refreshValidState();
+				}
+				if (fLimitLine != null && event.getSource() != fLimitLine) {
+					fLimitLine.refreshValidState();
 				}
 				if (fTabSizeEditor != null && event.getSource() != fTabSizeEditor) {
 					fTabSizeEditor.refreshValidState();
