@@ -52,6 +52,7 @@ import org.junit.platform.suite.api.Suite;
 		TeamPrivateMemberTest.class, //
 		VirtualFolderTest.class, //
 		WorkspaceTest.class, //
+		ProjectLinksTest.class, //
 })
 public class AllResourcesTests {
 
