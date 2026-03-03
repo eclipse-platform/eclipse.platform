@@ -11,12 +11,11 @@ Bundle-Localization: plugin
 Export-Package: org.eclipse.unittest.launcher,
  org.eclipse.unittest.model,
  org.eclipse.unittest.ui
-Require-Bundle: 
- org.eclipse.ui.ide;bundle-version="[3.5.0,4.0.0)",
- org.eclipse.jface.text;bundle-version="[3.5.0,4.0.0)",
+Require-Bundle: org.eclipse.ui.ide;bundle-version="[3.23.0.v20260103-1639,4.0.0)",
+ org.eclipse.jface.text;bundle-version="[3.30.0.v20260203-0841,4.0.0)",
  org.eclipse.ui;bundle-version="[3.5.0,4.0.0)",
  org.eclipse.debug.ui;bundle-version="[3.5.0,4.0.0)",
- org.eclipse.core.runtime;bundle-version="[3.29.0,4.0.0)",
+ org.eclipse.core.runtime;bundle-version="[3.34.200.v20251220-0953,4.0.0)",
  org.eclipse.compare;bundle-version="[3.5.0,4.0.0)"
 Bundle-RequiredExecutionEnvironment: JavaSE-21
 Require-Capability: eclipse.swt;filter:="(image.format=svg)"
