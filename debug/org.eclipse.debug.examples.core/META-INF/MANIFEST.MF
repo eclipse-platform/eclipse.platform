@@ -4,11 +4,11 @@ Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.debug.examples.core;singleton:=true
 Bundle-Version: 1.6.600.qualifier
 Bundle-Activator: org.eclipse.debug.examples.core.pda.DebugCorePlugin
-Require-Bundle: org.eclipse.core.runtime,
+Require-Bundle: org.eclipse.core.runtime;bundle-version="[3.34.200.v20251220-0953,4)",
  org.eclipse.core.resources,
  org.eclipse.core.variables;bundle-version="3.2.800",
  org.eclipse.debug.core;bundle-version="3.9.0",
- org.apache.ant;bundle-version="1.9.2";resolution:=optional
+ org.apache.ant;bundle-version="[1.10.15.v20240901-1000,null)";resolution:=optional
 Export-Package: org.eclipse.debug.examples.ant.tasks;x-friends:="org.eclipse.debug.examples.ui",
  org.eclipse.debug.examples.core.midi.launcher;x-friends:="org.eclipse.debug.examples.ui",
  org.eclipse.debug.examples.core.pda;x-friends:="org.eclipse.debug.examples.ui",
