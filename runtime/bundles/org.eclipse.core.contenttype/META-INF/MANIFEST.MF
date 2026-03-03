@@ -6,8 +6,8 @@ Bundle-Version: 3.9.800.qualifier
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.equinox.preferences;bundle-version="[3.2.0,4.0.0)",
- org.eclipse.equinox.registry;bundle-version="[3.2.0,4.0.0)",
- org.eclipse.equinox.common;bundle-version="[3.13.0,4.0.0)"
+ org.eclipse.equinox.registry;bundle-version="[3.12.600.v20250906-0651,4.0.0)",
+ org.eclipse.equinox.common;bundle-version="[3.20.300.v20251111-0312,4.0.0)"
 Export-Package: org.eclipse.core.internal.content;x-internal:=true,
  org.eclipse.core.runtime.content
 Bundle-ActivationPolicy: lazy
