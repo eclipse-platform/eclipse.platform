@@ -17,7 +17,9 @@ import static java.nio.file.Files.readAllBytes;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.debug.tests.TestUtil.waitWhile;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -66,6 +68,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.IPerspectiveDescriptor;
+import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.console.ConsolePlugin;
@@ -691,15 +694,21 @@ public class ProcessConsoleTests {
 				assertNotEquals(console1NameAfterReshow, console1.getName(), "Visible console should resume name updates after view is shown again");
 				assertEquals(console2NameAfterReshow, console2.getName(), "Hidden console name should not update after view is restored");
 
+				activePage.hideView(consoleView);
+				TestUtil.processUIEvents(1000);
+
 				console1NameAfterReshow = console1.getName();
 				console2NameAfterReshow = console2.getName();
 
-				activePage.hideView(consoleView);
-
 				// Wait >1 second for update
 				TestUtil.processUIEvents(2000);
-				assertEquals(console1NameAfterReshow, console1.getName(), "Console name should not update when console view is minimized");
-				assertEquals(console2NameAfterReshow, console2.getName(), "Console name should not update when console view is minimized");
+
+				IViewReference ref = activePage.findViewReference(IConsoleConstants.ID_CONSOLE_VIEW);
+				assertNull(ref, "Console view reference should be null after hiding the view");
+				assertFalse(activePage.isPartVisible(consoleView), "Console view should be hidden");
+
+				assertEquals(console1NameAfterReshow, console1.getName(), "Console name should not update when console view is hidden");
+				assertEquals(console2NameAfterReshow, console2.getName(), "Console name should not update when console view is hidden");
 
 				mockProcess1.destroy();
 				mockProcess2.destroy();
