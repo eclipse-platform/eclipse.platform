@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.core.resources.IBuildConfiguration;
@@ -427,7 +427,7 @@ public class ParallelBuildChainTest {
 		List<IProject> projects = getAllProjects();
 		TimerBuilder.setExpectedNumberOfBuilds(projects.size());
 		JobGroup jobGroup = new JobGroup("Build Group", numberOfParallelBuilds, projects.size());
-		Map<IProject, TestBarrier2> waitForRunningJobBarriers = new HashMap<>();
+		Map<IProject, TestBarrier2> waitForRunningJobBarriers = new Hashtable<>();
 		for (IProject project : projects) {
 			waitForRunningJobBarriers.put(project, new TestBarrier2());
 			Job job = new Job("Building " + project.getName()) {
