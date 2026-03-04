@@ -8,22 +8,29 @@
      https://www.eclipse.org/legal/epl-2.0/
 
      SPDX-License-Identifier: EPL-2.0
-    
+
      Contributors:
          IBM Corporation - initial API and implementation
  -->
 
 <project name="Build Ant support JAR" default="build" basedir="..">
 
-	<target name="build" description="Cleans, builds and refreshes the impacted resources" depends="clean, lib/antsupportlib.jar"/>
+	<target name="build" description="Builds and refreshes the impacted resources" depends="lib/antsupportlib.jar"/>
 
 	<target name="init">
 		<property name="temp.folder" value="${basedir}/temp.folder"/>
 		<property name="build.result.folder" value="${basedir}"/>
 	</target>
 
-	<target name="lib/antsupportlib.jar" depends="init" description="Creates the lib/antsupportlib.jar">
+	<target name="checkSourceUpToDate" depends="init">
+		<uptodate property="jarUpToDate" targetfile="${build.result.folder}/lib/antsupportlib.jar">
+			<srcfiles dir="${basedir}/src_ant/"  includes="**/*"/>
+		</uptodate>
+	</target>
+
+	<target name="lib/antsupportlib.jar" depends="init, checkSourceUpToDate" unless="jarUpToDate" description="Creates the lib/antsupportlib.jar">
 		<property name="destdir" value="${temp.folder}/lib/antsupportlib.jar.bin"/>
+		<delete dir="${temp.folder}"/>
 		<delete dir="${destdir}"/>
 		<mkdir dir="${destdir}"/>
 		<!-- copy necessary resources -->

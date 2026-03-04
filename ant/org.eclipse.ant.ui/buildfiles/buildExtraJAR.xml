@@ -8,22 +8,29 @@
     https://www.eclipse.org/legal/epl-2.0/
 
     SPDX-License-Identifier: EPL-2.0
-   
+
     Contributors:
          IBM Corporation - initial API and implementation
  -->
 
 <project name="Build AntUI Ant support JAR" default="build" basedir="..">
-	
-	<target name="build" description="Cleans, builds and refreshes" depends="clean, lib/antrunnerlib.jar"/>
+
+	<target name="build" description="Builds the JAR if needed" depends="lib/antrunnerlib.jar"/>
 
 	<target name="init">
 		<property name="temp.folder" value="${basedir}/temp.folder"/>
 		<property name="build.result.folder" value="${basedir}"/>
 	</target>
 
-	<target name="lib/antrunnerlib.jar" description= "Creates the antrunner.jar" depends="init">
+	<target name="checkSourceUpToDate" depends="init">
+		<uptodate property="jarUpToDate" targetfile="${build.result.folder}/lib/antrunner.jar">
+			<srcfiles dir="${basedir}/Ant Runner Support/"  includes="**/*"/>
+		</uptodate>
+	</target>
+
+	<target name="lib/antrunnerlib.jar" description="Creates the antrunner.jar" depends="init, checkSourceUpToDate" unless="jarUpToDate">
 		<property name="destdir" value="${temp.folder}/lib/antrunner.jar.bin"/>
+		<delete dir="${temp.folder}"/>
 		<delete dir="${destdir}"/>
 		<mkdir dir="${destdir}"/>
 		<!-- copy necessary resources -->

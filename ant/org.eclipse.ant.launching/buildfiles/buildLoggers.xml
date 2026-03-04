@@ -8,22 +8,29 @@
      https://www.eclipse.org/legal/epl-2.0/
 
      SPDX-License-Identifier: EPL-2.0
-    
+
      Contributors:
          IBM Corporation - initial API and implementation
  -->
 
 <project name="Build Ant loggers support JAR" default="build" basedir="..">
-	
-	<target name="build" description="Cleans, builds and refreshes" depends="clean, lib/loggerslib.jar"/>
+
+	<target name="build" description="Cleans, builds and refreshes" depends="lib/loggerslib.jar"/>
 
 	<target name="init">
 		<property name="temp.folder" value="${basedir}/temp.folder"/>
 		<property name="build.result.folder" value="${basedir}"/>
 	</target>
 
-	<target name="lib/loggerslib.jar" description= "Creates the loggers.jar" depends="init">
+	<target name="checkSourceUpToDate">
+		<uptodate property="jarUpToDate" targetfile="${build.result.folder}/lib/loggers.jar">
+			<srcfiles dir="${basedir}/loggers/" includes="**/*"/>
+		</uptodate>
+	</target>
+
+	<target name="lib/loggerslib.jar" description= "Creates the loggers.jar" depends="init, checkSourceUpToDate" unless="jarUpToDate">
 		<property name="destdir" value="${temp.folder}/lib/loggers.jar.bin"/>
+		<delete dir="${temp.folder}"/>
 		<delete dir="${destdir}"/>
 		<mkdir dir="${destdir}"/>
 		<!-- copy necessary class files resources -->
