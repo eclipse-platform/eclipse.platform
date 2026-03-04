@@ -28,6 +28,8 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
@@ -35,6 +37,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IProcess;
+import org.eclipse.debug.internal.ui.views.console.ProcessConsole;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.text.BadLocationException;
@@ -45,6 +48,9 @@ import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.jface.text.Position;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.console.ConsolePlugin;
+import org.eclipse.ui.console.IConsole;
+import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.IHyperlink;
 import org.eclipse.ui.internal.console.ConsoleHyperlinkPosition;
 import org.eclipse.ui.internal.console.IOConsolePartition;
@@ -85,6 +91,7 @@ public final class AntUITestUtil {
 		ILaunch launch = configuration.launch(ILaunchManager.RUN_MODE, null);
 		Object suspendee = waiter.waitForEvent();
 		if (suspendee == null) {
+			logProcessConsoleContents();
 			try {
 				launch.terminate();
 			}
@@ -333,5 +340,24 @@ public final class AntUITestUtil {
 
 	public static void activateLink(final IHyperlink link) {
 		Display.getDefault().asyncExec(() -> link.linkActivated());
+	}
+
+	public static void logProcessConsoleContents() {
+		try {
+			StringBuilder buf = new StringBuilder();
+			IConsoleManager manager = ConsolePlugin.getDefault().getConsoleManager();
+			for (IConsole console : manager.getConsoles()) {
+				if (console instanceof ProcessConsole) {
+					ProcessConsole processConsole = (ProcessConsole) console;
+					String string = processConsole.getDocument().get();
+					buf.append("Console output for \"" + processConsole.getName() + "\" follows:\n"); //$NON-NLS-1$ //$NON-NLS-2$
+					buf.append(string);
+				}
+			}
+			buf.append("\n"); //$NON-NLS-1$
+			AntUIPlugin.log(new Status(IStatus.INFO, "org.eclipse.jdt.debug.ui.tests", buf.toString())); //$NON-NLS-1$
+		} catch (Throwable t) {
+			AntUIPlugin.log(t);
+		}
 	}
 }
