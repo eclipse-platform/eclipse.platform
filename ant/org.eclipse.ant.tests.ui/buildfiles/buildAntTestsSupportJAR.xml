@@ -8,22 +8,29 @@
      https://www.eclipse.org/legal/epl-2.0/
 
      SPDX-License-Identifier: EPL-2.0
-    
+
      Contributors:
          IBM Corporation - initial API and implementation
  -->
 
 <project name="build tests support jar" default="build" basedir="..">
 
-	<target name="build" description="Removes all build artifacts, recreates the support jar, and refreshes this plugin's resources" depends="clean, lib/antUITestsSupport.jar"/>
+	<target name="build" description="Builds the support jar if needed" depends="lib/antUITestsSupport.jar"/>
 
 	<target name="init">
 		<property name="temp.folder" value="${basedir}/temp.folder"/>
 		<property name="build.result.folder" value="${basedir}"/>
 	</target>
 
-	<target name="lib/antUITestsSupport.jar" depends="init" description= "Builds the support JAR">
+	<target name="checkSourceUpToDate" depends="init" description="Checks if the JAR is up to date with the source">
+		<uptodate property="jarUpToDate" targetfile="${build.result.folder}/lib/antUITestsSupport.jar">
+			<srcfiles dir="${basedir}/test support/" includes="**/*"/>
+		</uptodate>
+	</target>
+
+	<target name="lib/antUITestsSupport.jar" depends="init, checkSourceUpToDate" unless="jarUpToDate" description="Builds the support JAR">
 		<property name="destdir" value="${temp.folder}/lib/antUITestsSupport.jar.bin"/>
+		<delete dir="${temp.folder}"/>
 		<delete dir="${destdir}"/>
 		<mkdir dir="${destdir}"/>
 		<!-- copy necessary resources -->

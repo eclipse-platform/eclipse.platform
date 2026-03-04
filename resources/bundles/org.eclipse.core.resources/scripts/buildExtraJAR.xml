@@ -8,14 +8,14 @@
     https://www.eclipse.org/legal/epl-2.0/
 
     SPDX-License-Identifier: EPL-2.0
-   
+
     Contributors:
         IBM Corporation - initial API and implementation
  -->
 
 <project name="org.eclipse.core.resources" default="main" basedir="..">
 
-	<target name="main" depends="clean, ant_tasks/resources-ant.jar">
+	<target name="main" depends="ant_tasks/resources-ant.jar">
 	</target>
 
 	<target name="init" depends="properties">
@@ -30,8 +30,9 @@
 		<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
 	</target>
 
-	<target name="ant_tasks/resources-ant.jar" depends="init" unless="ant_tasks/resources-ant.jar">
+	<target name="ant_tasks/resources-ant.jar" depends="init, checkSourceUpToDate" unless="jarUpToDate">
 		<property name="destdir" value="${temp.folder}/ant_tasks/resources-ant.jar.bin"/>
+		<delete dir="${temp.folder}"/>
 		<delete dir="${destdir}"/>
 		<mkdir dir="${destdir}"/>
 		<!-- copy necessary resources -->
@@ -46,5 +47,11 @@
 	<target name="clean" depends="init">
 		<delete file="${build.result.folder}/resources-ant.jar"/>
 		<delete dir="${temp.folder}"/>
+	</target>
+
+	<target name="checkSourceUpToDate" depends="init">
+		<uptodate property="jarUpToDate" targetfile="${build.result.folder}/resources-ant.jar">
+			<srcfiles dir="${basedir}/src_ant/" includes="**/*"/>
+		</uptodate>
 	</target>
 </project>
