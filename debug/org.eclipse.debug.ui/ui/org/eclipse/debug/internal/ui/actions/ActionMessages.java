@@ -254,5 +254,7 @@ public class ActionMessages extends NLS {
 	public static String EnableAllBreakpointsAction_3;
 	public static String BreakpointLabelDialog;
 	public static String RemoveFromFavoritesAction;
+	public static String ExpressionsPinContext;
+	public static String ExpressionsRemovePin;
 
 }
