@@ -127,15 +127,15 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 	 * The input stream which can supply user input in console to the system process
 	 * stdin.
 	 */
-	private IOConsoleInputStream fUserInput;
+	private final IOConsoleInputStream fUserInput;
 	/**
 	 * The stream connected to the system processe's stdin. May be the
 	 * <i>fUserInput</i> stream to supply user input or a FileInputStream to supply
 	 * input from a file.
 	 */
-	private volatile InputStream fInput;
+	private final InputStream fInput;
 
-	private FileOutputStream fFileOutputStream;
+	private final FileOutputStream fFileOutputStream;
 
 	private boolean fAllocateConsole;
 	private String fStdInFile;
@@ -200,6 +200,7 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 			}
 		}
 
+		FileOutputStream outputStream = null;
 		if (file != null && configuration != null) {
 			IWorkspace workspace = ResourcesPlugin.getWorkspace();
 			IWorkspaceRoot root = workspace.getRoot();
@@ -221,7 +222,7 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 				}
 
 				File outputFile = new File(file);
-				fFileOutputStream = new FileOutputStream(outputFile, append);
+				outputStream = new FileOutputStream(outputFile, append);
 				fileLoc = outputFile.getAbsolutePath();
 
 				message = MessageFormat.format(ConsoleMessages.ProcessConsole_1, fileLoc);
@@ -243,12 +244,14 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 			} catch (CoreException e) {
 			}
 		}
+		fFileOutputStream = outputStream;
+		InputStream inputStream = null;
 		if (fStdInFile != null && configuration != null) {
 			String message = null;
 			try {
-				fInput = new FileInputStream(new File(fStdInFile));
-				if (fInput != null) {
-					setInputStream(fInput);
+				inputStream = new FileInputStream(new File(fStdInFile));
+				if (inputStream != null) {
+					setInputStream(inputStream);
 				}
 
 			} catch (FileNotFoundException e) {
@@ -263,9 +266,10 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 			}
 		}
 		fColorProvider = colorProvider;
-		if (fInput == null) {
-			fInput = getInputStream();
+		if (inputStream == null) {
+			inputStream = getInputStream();
 		}
+		fInput = inputStream;
 
 		colorProvider.connect(fProcess, this);
 
@@ -560,8 +564,8 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 				stream.setColor(fColorProvider.getColor(IDebugUIConstants.ID_STANDARD_ERROR_STREAM));
 			}
 		} else if (property.equals(IDebugPreferenceConstants.CONSOLE_SYS_IN_COLOR)) {
-			if (fInput != null && fInput instanceof IOConsoleInputStream) {
-				((IOConsoleInputStream) fInput).setColor(fColorProvider.getColor(IDebugUIConstants.ID_STANDARD_INPUT_STREAM));
+			if (fInput instanceof IOConsoleInputStream inputStream) {
+				inputStream.setColor(fColorProvider.getColor(IDebugUIConstants.ID_STANDARD_INPUT_STREAM));
 			}
 		} else if (property.equals(IDebugUIConstants.PREF_CONSOLE_FONT)) {
 			setFont(JFaceResources.getFont(IDebugUIConstants.PREF_CONSOLE_FONT));
@@ -616,29 +620,32 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 		if (fStreamsClosed) {
 			return;
 		}
-		for (StreamListener listener : fStreamListeners) {
-			listener.closeStream();
-		}
-		if (fFileOutputStream != null) {
-			synchronized (fFileOutputStream) {
+		fStreamsClosed = true;
+		try {
+			for (StreamListener listener : fStreamListeners) {
+				listener.closeStream();
+			}
+		} finally {
+			if (fFileOutputStream != null) {
+				synchronized (fFileOutputStream) {
+					try {
+						fFileOutputStream.flush();
+						fFileOutputStream.close();
+					} catch (IOException e) {
+					}
+				}
+			}
+			try {
+				fInput.close();
+			} catch (IOException e) {
+			}
+			if (fInput != fUserInput) {
 				try {
-					fFileOutputStream.flush();
-					fFileOutputStream.close();
+					fUserInput.close();
 				} catch (IOException e) {
 				}
 			}
 		}
-		try {
-			fInput.close();
-		} catch (IOException e) {
-		}
-		if (fInput != fUserInput) {
-			try {
-				fUserInput.close();
-			} catch (IOException e) {
-			}
-		}
-		fStreamsClosed = true;
 	}
 
 	/**
@@ -649,9 +656,6 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 		for (StreamListener listener : fStreamListeners) {
 			listener.dispose();
 		}
-		fFileOutputStream = null;
-		fInput = null;
-		fUserInput = null;
 	}
 
 	@Override
@@ -961,17 +965,24 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 		 * The {@link InputStream} this job is currently reading from or maybe blocking
 		 * on. May be <code>null</code>.
 		 */
-		private InputStream readingStream;
+		private final InputStream readingStream;
+		private volatile boolean streamClosed;
 
 		InputReadJob(IStreamsProxy streamsProxy) {
 			super("Process Console Input Job"); //$NON-NLS-1$
 			this.streamsProxy = streamsProxy;
+			readingStream = fInput;
+		}
+
+		private boolean isStreamClosed() {
+			return fStreamsClosed || streamClosed;
 		}
 
 		@Override
 		protected void canceling() {
 			super.canceling();
 			if (readingStream != null) {
+				streamClosed = true;
 				// Close stream or job may not be able to cancel.
 				// This is primary for IOConsoleInputStream because there is no guarantee an
 				// arbitrary InputStream will release a blocked read() on close.
@@ -990,48 +1001,41 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 
 		@Override
 		protected IStatus run(IProgressMonitor monitor) {
-			if (fInput == null || fStreamsClosed) {
+			if (readingStream == null || isStreamClosed()) {
 				return monitor.isCanceled() ? Status.CANCEL_STATUS : Status.OK_STATUS;
 			}
-			if (streamsProxy instanceof IBinaryStreamsProxy) {
+			if (streamsProxy instanceof IBinaryStreamsProxy proxy) {
 				// Pass data without processing. The preferred variant. There is no need for
 				// this job to know about encodings.
 				try {
 					byte[] buffer = new byte[1024];
 					int bytesRead = 0;
 					while (bytesRead >= 0 && !monitor.isCanceled()) {
-						if (fInput == null || fStreamsClosed) {
+						if (isStreamClosed()) {
 							break;
-						}
-						if (fInput != readingStream) {
-							readingStream = fInput;
 						}
 						bytesRead = readingStream.read(buffer);
 						if (bytesRead > 0) {
-							((IBinaryStreamsProxy) streamsProxy).write(buffer, 0, bytesRead);
+							proxy.write(buffer, 0, bytesRead);
 						}
 					}
 				} catch (IOException e) {
-					DebugUIPlugin.log(e);
+					if (!isStreamClosed()) {
+						DebugUIPlugin.log(e);
+					}
 				}
 			} else {
 				// Decode data to strings. The legacy variant used if the proxy does not
 				// implement the binary API.
 				Charset encoding = getCharset();
-				readingStream = fInput;
 				InputStreamReader streamReader = (encoding == null ? new InputStreamReader(readingStream)
 						: new InputStreamReader(readingStream, encoding));
 				try {
 					char[] cbuf = new char[1024];
 					int charRead = 0;
 					while (charRead >= 0 && !monitor.isCanceled()) {
-						if (fInput == null || fStreamsClosed) {
+						if (isStreamClosed()) {
 							break;
-						}
-						if (fInput != readingStream) {
-							readingStream = fInput;
-							streamReader = (encoding == null ? new InputStreamReader(readingStream)
-									: new InputStreamReader(readingStream, encoding));
 						}
 
 						charRead = streamReader.read(cbuf);
@@ -1041,10 +1045,11 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 						}
 					}
 				} catch (IOException e) {
-					DebugUIPlugin.log(e);
+					if (!isStreamClosed()) {
+						DebugUIPlugin.log(e);
+					}
 				}
 			}
-			readingStream = null;
 			return monitor.isCanceled() ? Status.CANCEL_STATUS : Status.OK_STATUS;
 		}
 	}
