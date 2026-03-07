@@ -2,24 +2,24 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.core.tools; singleton:=true
-Bundle-Version: 1.10.0.qualifier
+Bundle-Version: 1.10.100.qualifier
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Export-Package: org.eclipse.core.tools;x-internal:=true,
  org.eclipse.core.tools.metadata;x-internal:=true,
  org.eclipse.core.tools.runtime;x-internal:=true
-Require-Bundle: org.eclipse.core.resources;bundle-version="[3.1.0,4.0.0)";resolution:=optional,
- org.eclipse.core.runtime;bundle-version="[3.29.0,4.0.0)",
- org.eclipse.jface.text,
+Require-Bundle: org.eclipse.core.resources;bundle-version="[3.21.0.v20240805-1607,4.0.0)";resolution:=optional,
+ org.eclipse.core.runtime;bundle-version="[3.34.200.v20251220-0953,4.0.0)",
+ org.eclipse.jface.text;bundle-version="[3.30.0.v20260203-0841,4)",
  org.eclipse.ui,
  org.eclipse.ui.views,
  org.eclipse.jdt.core;bundle-version="[3.36.0,4.0.0)",
- org.eclipse.jdt.ui;bundle-version="[3.5.0,4.0.0)",
+ org.eclipse.jdt.ui;bundle-version="[3.5.1.r351_v20090821-0800,4.0.0)",
  org.eclipse.ltk.core.refactoring,
  org.eclipse.core.filebuffers,
- org.eclipse.ui.ide,
+ org.eclipse.ui.ide;bundle-version="[3.23.0.v20260103-1639,4)",
  org.eclipse.search,
- org.eclipse.jdt.core.manipulation
+ org.eclipse.jdt.core.manipulation;bundle-version="[1.13.0.v20191203-0859,2)"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-21
 Automatic-Module-Name: org.eclipse.core.tools
