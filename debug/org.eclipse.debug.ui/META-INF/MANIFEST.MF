@@ -80,15 +80,15 @@ Export-Package: org.eclipse.debug.internal.ui;
  org.eclipse.debug.ui.sourcelookup,
  org.eclipse.debug.ui.stringsubstitution
 Require-Bundle: org.eclipse.core.variables;bundle-version="[3.6.0,4.0.0)",
- org.eclipse.ui;bundle-version="[3.208.0,4.0.0)",
+ org.eclipse.ui;bundle-version="[3.208.100.v20260227-1923,4.0.0)",
  org.eclipse.ui.console;bundle-version="[3.17.0,4.0.0)",
  org.eclipse.help;bundle-version="[3.11.0,4.0.0)",
- org.eclipse.debug.core;bundle-version="[3.23.0,4.0.0)";visibility:=reexport,
- org.eclipse.jface.text;bundle-version="[3.30.0,4.0.0)",
- org.eclipse.ui.workbench.texteditor;bundle-version="[3.20.0,4.0.0)",
- org.eclipse.ui.ide;bundle-version="[3.23.0,4.0.0)",
- org.eclipse.ui.editors;bundle-version="[3.21.0,4.0.0)",
- org.eclipse.core.runtime;bundle-version="[3.34.0,4.0.0)",
+ org.eclipse.debug.core;bundle-version="[3.23.0.v20250509-1924,4.0.0)";visibility:=reexport,
+ org.eclipse.jface.text;bundle-version="[3.30.0.v20260203-0841,4.0.0)",
+ org.eclipse.ui.workbench.texteditor;bundle-version="[3.20.0.v20260127-1637,4.0.0)",
+ org.eclipse.ui.ide;bundle-version="[3.23.0.v20260103-1639,4.0.0)",
+ org.eclipse.ui.editors;bundle-version="[3.21.0.v20260218-1452,4.0.0)",
+ org.eclipse.core.runtime;bundle-version="[3.34.200.v20251220-0953,4.0.0)",
  org.eclipse.core.filesystem;bundle-version="[1.11.0,2.0.0)",
  org.eclipse.e4.ui.services;bundle-version="[1.6.0,2.0.0)"
 Bundle-ActivationPolicy: lazy
