@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %help_system_plugin_name
 Bundle-SymbolicName: org.eclipse.help.ui; singleton:=true
-Bundle-Version: 4.8.300.qualifier
+Bundle-Version: 4.8.400.qualifier
 Bundle-Activator: org.eclipse.help.ui.internal.HelpUIPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
@@ -17,9 +17,9 @@ Export-Package: org.eclipse.help.ui,
  org.eclipse.help.ui.internal.search;x-friends:="org.eclipse.ua.tests",
  org.eclipse.help.ui.internal.util;x-friends:="org.eclipse.ua.tests",
  org.eclipse.help.ui.internal.views;x-friends:="org.eclipse.ui.cheatsheets,org.eclipse.ua.tests"
-Require-Bundle: org.eclipse.help.base;bundle-version="[4.0.0,5.0.0)";visibility:=reexport,
+Require-Bundle: org.eclipse.help.base;bundle-version="[4.5.100.v20250528-1830,5.0.0)";visibility:=reexport,
  org.eclipse.ui;bundle-version="[3.206.200,4.0.0)";visibility:=reexport,
- org.eclipse.core.runtime;bundle-version="[3.29.0,4.0.0)";visibility:=reexport,
+ org.eclipse.core.runtime;bundle-version="[3.34.200.v20251220-0953,4.0.0)";visibility:=reexport,
  org.eclipse.ui.forms;bundle-version="[3.5.0,4.0.0)"
 Bundle-RequiredExecutionEnvironment: JavaSE-21
 Bundle-ActivationPolicy: lazy
