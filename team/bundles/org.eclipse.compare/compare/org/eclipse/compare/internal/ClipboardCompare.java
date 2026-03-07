@@ -22,10 +22,13 @@ import java.nio.charset.StandardCharsets;
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.compare.CompareUI;
+import org.eclipse.compare.IEditableContent;
 import org.eclipse.compare.IEncodedStreamContentAccessor;
 import org.eclipse.compare.ITypedElement;
+import org.eclipse.compare.ResourceNode;
 import org.eclipse.compare.structuremergeviewer.DiffNode;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IAction;
@@ -43,7 +46,7 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.forms.editor.FormEditor;
+import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 public class ClipboardCompare extends BaseCompareAction implements IObjectActionDelegate {
@@ -51,15 +54,26 @@ public class ClipboardCompare extends BaseCompareAction implements IObjectAction
 	private final String clipboard = "Clipboard"; //$NON-NLS-1$
 	private final String compareFailed = "Comparision Failed"; //$NON-NLS-1$
 
+	private IFile currentResouce;
+
 	private IWorkbenchPart activePart;
+
+	private int offSet;
+	private int len;
+
+	private boolean partialSelection;
 
 	@Override
 	protected void run(ISelection selection) {
+		offSet = -1;
+		len = -1;
+		partialSelection = false;
 		IFile[] files = Utilities.getFiles(selection);
 		Shell parentShell = CompareUIPlugin.getShell();
 		for (IFile file : files) {
+			currentResouce = file;
 			try {
-				processComparison(file, parentShell);
+				processComparison(parentShell);
 			} catch (Exception e) {
 				MessageDialog.openError(parentShell, compareFailed, e.getMessage());
 			}
@@ -74,32 +88,38 @@ public class ClipboardCompare extends BaseCompareAction implements IObjectAction
 	 * Process comparison with selection or entire editor contents with contents in
 	 * clipboard
 	 *
-	 * @param file        Editor file
 	 * @param parentShell The shell containing this window's controls
 	 * @throws IOException, CoreException
 	 */
-	private void processComparison(IFile file, Shell parentShell) throws IOException, CoreException {
+	private void processComparison(Shell parentShell) throws IOException, CoreException {
 		String cb = getClipboard().toString();
-		String fileName = file.getName();
+		String fileName = currentResouce.getName();
 		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		IEditorPart editor = page.getActiveEditor();
 		if (activePart instanceof IViewPart) {
-			String fileContents = new String(file.getContents().readAllBytes(), file.getCharset());
+			String fileContents = new String(currentResouce.getContents().readAllBytes(), currentResouce.getCharset());
 			showComparison(fileContents, fileName, cb, parentShell);
 			return;
 		}
 		final String selectionContents;
-		if (editor instanceof FormEditor fromEditor) {
-			editor = fromEditor.getActiveEditor();
+		if (editor instanceof MultiPageEditorPart mpe) {
+			Object page2 = mpe.getSelectedPage();
+			if (page2 instanceof IEditorPart e) {
+				editor = e;
+			}
 		}
 		if (editor instanceof ITextEditor txtEditor) {
 			ISelection selection = txtEditor.getSelectionProvider().getSelection();
 			if (selection instanceof ITextSelection textSelection) {
 				selectionContents = textSelection.getText();
 				if (selectionContents.isEmpty()) {
-					String fileContents = new String(file.getContents().readAllBytes(), file.getCharset());
+					String fileContents = new String(currentResouce.getContents().readAllBytes(),
+							currentResouce.getCharset());
 					showComparison(fileContents, fileName, cb, parentShell);
 				} else {
+					offSet = textSelection.getOffset();
+					len = textSelection.getLength();
+					partialSelection = true;
 					showComparison(selectionContents, fileName, cb, parentShell);
 				}
 				return;
@@ -109,7 +129,8 @@ public class ClipboardCompare extends BaseCompareAction implements IObjectAction
 			ISelection selection = existingCompare.getSite().getSelectionProvider().getSelection();
 			if (selection instanceof ITextSelection textSelection) {
 				String selectedText = textSelection.getText();
-				String fileContents = new String(file.getContents().readAllBytes(), file.getCharset());
+				String fileContents = new String(currentResouce.getContents().readAllBytes(),
+						currentResouce.getCharset());
 				showComparison(fileContents, fileName, selectedText, parentShell);
 			}
 		}
@@ -160,6 +181,65 @@ public class ClipboardCompare extends BaseCompareAction implements IObjectAction
 			}
 
 		}
+		class EditableFileNode extends ResourceNode implements IEditableContent {
+
+			private final int selectionOffset;
+			private final int selectionLength;
+
+			public EditableFileNode(IFile file, int selectionOffset, int selectionLength) {
+				super(file);
+				this.selectionOffset = selectionOffset;
+				this.selectionLength = selectionLength;
+			}
+
+			@Override
+			public InputStream getContents() throws CoreException {
+				IFile file = (IFile) getResource();
+				if (!partialSelection) {
+					return new ByteArrayInputStream(file.readAllBytes());
+				}
+				try {
+					String content = new String(file.getContents().readAllBytes(), file.getCharset());
+					int start = Math.max(0, Math.min(selectionOffset, content.length()));
+					int end = Math.max(start, Math.min(selectionOffset + selectionLength, content.length()));
+					String selectedPart = content.substring(start, end);
+					return new ByteArrayInputStream(selectedPart.getBytes(file.getCharset()));
+				} catch (IOException e) {
+					MessageDialog.openError(CompareUIPlugin.getShell(), compareFailed, e.getMessage());
+				}
+				return new ByteArrayInputStream(file.readAllBytes());
+			}
+
+			@Override
+			public void setContent(byte[] newContent) {
+				try {
+					if (selectionLength <= 1) {
+						((IFile) getResource()).setContents(new ByteArrayInputStream(newContent),
+								IResource.FORCE | IResource.KEEP_HISTORY, null);
+					} else {
+						IFile file = (IFile) getResource();
+						String charset = file.getCharset();
+						String original = new String(file.getContents().readAllBytes(), charset);
+						String updatedSelection = new String(newContent, charset);
+						int offset = Math.max(0, Math.min(selectionOffset, original.length()));
+						int end = Math.max(offset, Math.min(offset + selectionLength, original.length()));
+						String newFileContent = original.substring(0, offset) + updatedSelection
+								+ original.substring(end);
+						ByteArrayInputStream updatedStream = new ByteArrayInputStream(newFileContent.getBytes(charset));
+						file.setContents(updatedStream, IResource.FORCE | IResource.KEEP_HISTORY, null);
+					}
+
+				} catch (Exception e) {
+					MessageDialog.openError(CompareUIPlugin.getShell(), compareFailed, e.getMessage());
+				}
+			}
+
+			@Override
+			public boolean isEditable() {
+				return true;
+			}
+		}
+
 		if (source == null) {
 			MessageDialog.openInformation(parentShell, compareFailed, "Failed to process selected file"); //$NON-NLS-1$
 			return;
@@ -173,12 +253,20 @@ public class ClipboardCompare extends BaseCompareAction implements IObjectAction
 			@Override
 			protected Object prepareInput(IProgressMonitor monitor)
 					throws InvocationTargetException, InterruptedException {
-				return new DiffNode(new ClipboardTypedElement(fileName, source),
-						new ClipboardTypedElement(clipboard, clipboardContents));
+				ITypedElement left;
+				if (offSet >= 0 && len >= 0) {
+					left = new EditableFileNode(currentResouce, offSet, len);
+				} else {
+					left = new EditableFileNode(currentResouce, 0, Integer.MAX_VALUE);
+				}
+				ITypedElement right = new ClipboardTypedElement(clipboard, clipboardContents);
+				return new DiffNode(left, right);
 
 			}
 		};
+		compareInput.setTitle(currentResouce.getName());
 		CompareUI.openCompareEditor(compareInput);
+
 	}
 
 	/**
