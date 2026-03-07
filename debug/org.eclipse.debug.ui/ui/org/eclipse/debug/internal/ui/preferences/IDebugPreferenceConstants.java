@@ -72,6 +72,8 @@ public interface IDebugPreferenceConstants {
 	String CONSOLE_LIMIT_CONSOLE_OUTPUT = "Console.limitConsoleOutput"; //$NON-NLS-1$
 	String CONSOLE_LOW_WATER_MARK = "Console.lowWaterMark"; //$NON-NLS-1$
 	String CONSOLE_HIGH_WATER_MARK = "Console.highWaterMark"; //$NON-NLS-1$
+	String CONSOLE_LIMIT_LINE_LENGTH = "Console.limitLongLinesLength"; //$NON-NLS-1$
+	String CONSOLE_LIMIT_LINE_LENGTH_WRAP = "Console.limitLongLinesWrap"; //$NON-NLS-1$
 
 	/**
 	 * Integer preference specifying the number of spaces composing a

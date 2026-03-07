@@ -162,6 +162,25 @@ public class IOConsolePartitioner
 	 * this many characters are remain in console.
 	 */
 	private int lowWaterMark = -1;
+	/**
+	 * Line limit length, lines longer than this are either wrapped or truncated.
+	 */
+	private int lineLengthLimit = 0;
+	/**
+	 * If {@link #lineLengthLimit} is non-negative, will either wrap or cut lines
+	 * depending on this value.
+	 */
+	private boolean lineLimitWrap = true;
+	/**
+	 * Add line breaks to console output if {@link #lineLengthLimit} is positive and
+	 * {@link #lineLimitWrap} is {@code true}.
+	 */
+	private final ConsoleOutputLineBreak lineBreak;
+	/**
+	 * Truncate console output if {@link #lineLengthLimit} is positive and
+	 * {@link #lineLimitWrap} is {@code false}.
+	 */
+	private final ConsoleOutputTruncate truncate;
 
 	/** The partitioned {@link IOConsole}. */
 	private final IOConsole console;
@@ -197,6 +216,8 @@ public class IOConsolePartitioner
 		this.console = Objects.requireNonNull(console);
 		queueJob.setRule(console.getSchedulingRule());
 		trimJob.setRule(console.getSchedulingRule());
+		lineBreak = new ConsoleOutputLineBreak();
+		truncate = new ConsoleOutputTruncate();
 	}
 
 	/**
@@ -267,6 +288,21 @@ public class IOConsolePartitioner
 		lowWaterMark = low;
 		highWaterMark = high;
 		ConsolePlugin.getStandardDisplay().asyncExec(this::checkBufferSize);
+	}
+
+	/**
+	 * Set handling for long lines. Lines can be wrapped, truncated or left
+	 * unchanged.
+	 *
+	 * @param length length at which to wrap or truncate lines, negative to disable
+	 * @param wrap   whether to wrap the line or truncate line limit
+	 * @see IOConsole#setLimitLineLength(int, boolean)
+	 */
+	public void setLimitLineLength(int length, boolean wrap) {
+		lineLengthLimit = length;
+		lineLimitWrap = wrap;
+		lineBreak.reset();
+		truncate.reset();
 	}
 
 	/**
@@ -784,7 +820,7 @@ public class IOConsolePartitioner
 		 * update partitioning.
 		 */
 		private void processPendingPartitions() {
-			final List<PendingPartition> pendingCopy = new ArrayList<>();
+			List<PendingPartition> pendingCopy = new ArrayList<>();
 			// draining the whole buffer here is important - this way we get as much data as
 			// available and may skip to draw text that exceeds the Console buffer size
 			// anyway (see checkBufferSize()).
@@ -793,12 +829,16 @@ public class IOConsolePartitioner
 			if (pendingCopy.isEmpty()) {
 				return;
 			}
-			IOConsoleOutputStream stream = pendingCopy.get(0).stream;
-			for (PendingPartition p : pendingCopy) {
-				if (p.stream != stream) {
-					break;
+			int lineLimit = lineLengthLimit;
+			if (lineLimit > 0) {
+				IConsoleOutputModifier modifier = lineLimitWrap ? lineBreak : truncate;
+				List<PendingPartition> modified = new ArrayList<>(pendingCopy.size());
+				for (PendingPartition partition : pendingCopy) {
+					CharSequence t = modifier.modify(partition.text, lineLimit);
+					PendingPartition m = new PendingPartition(partition.stream, t);
+					modified.add(m);
 				}
-				sizeHint += p.text.length();
+				pendingCopy = modified;
 			}
 			synchronized (partitions) {
 				if (document != null) {
