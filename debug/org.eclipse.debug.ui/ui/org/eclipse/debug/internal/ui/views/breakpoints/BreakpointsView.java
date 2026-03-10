@@ -202,8 +202,10 @@ public class BreakpointsView extends VariablesView implements IBreakpointManager
 			menu.add(action);
 		}
 		action = getAction(FIND_ACTION);
-		action.setImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_FIND_ACTION));
-		menu.add(action);
+		if (action != null && action.isEnabled()) {
+			action.setImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_FIND_ACTION));
+			menu.add(action);
+		}
 		action = getAction(ACTION_REMOVE_FROM_GROUP);
 		if (action != null && action.isEnabled()) {
 			menu.add(action);
