@@ -21,7 +21,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -43,13 +45,18 @@ import java.util.stream.Stream;
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.compare.IResourceProvider;
+import org.eclipse.compare.ISharedDocumentAdapter;
 import org.eclipse.compare.IStreamContentAccessor;
 import org.eclipse.compare.IStreamMerger;
 import org.eclipse.compare.ITypedElement;
 import org.eclipse.compare.internal.core.CompareSettings;
+import org.eclipse.compare.internal.merge.DocumentMerger.IDocumentMergerInput;
 import org.eclipse.compare.structuremergeviewer.ICompareInput;
 import org.eclipse.compare.structuremergeviewer.IStructureCreator;
+import org.eclipse.compare.structuremergeviewer.SharedDocumentAdapterWrapper;
 import org.eclipse.compare.structuremergeviewer.StructureDiffViewer;
+import org.eclipse.compare.unifieddiff.UnifiedDiff;
+import org.eclipse.compare.unifieddiff.UnifiedDiff.UnifiedDiffMode;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Adapters;
@@ -62,12 +69,14 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.content.IContentDescription;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.content.IContentTypeManager;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -76,6 +85,7 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osgi.service.debug.DebugOptions;
 import org.eclipse.osgi.service.debug.DebugOptionsListener;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -91,8 +101,10 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.texteditor.ITextEditor;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
@@ -560,6 +572,10 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		CompareConfiguration configuration = input.getCompareConfiguration();
 		if (configuration != null) {
 			IPreferenceStore ps= configuration.getPreferenceStore();
+			boolean unifiedDiffEnabled = ps.getBoolean(ComparePreferencePage.UNIFIED_DIFF);
+			if (unifiedDiffEnabled && openUnifiedDiffInEditor(input, page, editor, activate)) {
+				return;
+			}
 			if (ps != null) {
 				configuration.setProperty(
 						CompareConfiguration.USE_OUTLINE_VIEW,
@@ -575,9 +591,155 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		}
 	}
 
-	private void openEditorInBackground(final CompareEditorInput input,
-			final IWorkbenchPage page, final IReusableEditor editor,
-			final boolean activate) {
+	private boolean openUnifiedDiffInEditor(final CompareEditorInput input, final IWorkbenchPage page,
+			IReusableEditor editor, boolean activate) {
+		var unifiedDiffInput = canShowInUnifiedDiff(input);
+		if (unifiedDiffInput!=null) {
+			try {
+				IWorkbenchPage wpage = page != null ? page : getActivePage();
+				IEditorPart rightEditor = wpage.openEditor(unifiedDiffInput.right,
+						getEditorId(unifiedDiffInput.right, unifiedDiffInput.rightElement));
+				if (rightEditor instanceof ITextEditor rightTextEditor) {
+					Action openTwoWayCompare = new Action("Open in 2-way Compare Editor", SWT.PUSH) {
+						@Override
+						public void run() {
+							if (input.canRunAsJob()) {
+								openEditorInBackground(input, page, editor, activate);
+							} else {
+								if (compareResultOK(input, null)) {
+									internalOpenEditor(input, page, editor, activate);
+								}
+							}
+						}
+					};
+					UnifiedDiff
+							.create(rightTextEditor, getSourceOf(unifiedDiffInput.leftAcessor()),
+									UnifiedDiffMode.OVERLAY_READ_ONLY_MODE)
+							.additionalActions(Arrays.asList(openTwoWayCompare))
+							.ignoreWhitespaceContributorFactory(
+									t -> unifiedDiffInput.documentMergerInput != null
+											? unifiedDiffInput.documentMergerInput.createIgnoreWhitespaceContributor(t)
+											: Optional.empty())
+							.tokenComparatorFactory(t -> unifiedDiffInput.documentMergerInput != null
+									? unifiedDiffInput.documentMergerInput.createTokenComparator(t)
+									: null)
+							.ignoreWhiteSpace(Utilities.getBoolean(input.getCompareConfiguration(),
+									CompareConfiguration.IGNORE_WHITESPACE, false))
+							.open();
+				}
+				return true;
+			} catch (PartInitException e) {
+				CompareUIPlugin.log(e);
+			}
+		}
+		return false;
+	}
+
+	private String getSourceOf(IStreamContentAccessor right) {
+		try {
+			if (right == null) {
+				return ""; //$NON-NLS-1$
+			}
+			String result = toString(right.getContents());
+			return result;
+		} catch (CoreException | IOException e) {
+			CompareUIPlugin.log(e);
+		}
+		return null;
+	}
+
+	private static String toString(InputStream inputStream) throws IOException {
+		if (inputStream == null) {
+			return ""; //$NON-NLS-1$
+		}
+		try (inputStream) {
+			return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+		}
+	}
+
+	private static String getEditorId(IEditorInput editorInput, ITypedElement element) {
+		String fileName = editorInput.getName();
+		IEditorRegistry registry = PlatformUI.getWorkbench().getEditorRegistry();
+		IContentType type = getContentType(element);
+		IEditorDescriptor descriptor = registry.getDefaultEditor(fileName, type);
+		IDE.overrideDefaultEditorAssociation(editorInput, type, descriptor);
+		String id;
+		if (descriptor == null || descriptor.isOpenExternal()) {
+			id = "org.eclipse.ui.DefaultTextEditor"; //$NON-NLS-1$
+		} else {
+			id = descriptor.getId();
+		}
+		return id;
+	}
+
+	private static record LeftEditorInputAndRightStreamContentAccessor(IEditorInput left, ITypedElement leftElement,
+			IStreamContentAccessor leftAcessor, IEditorInput right, ITypedElement rightElement,
+			IStreamContentAccessor rightAcessor, IDocumentMergerInput documentMergerInput) {
+	}
+
+	private LeftEditorInputAndRightStreamContentAccessor canShowInUnifiedDiff(CompareEditorInput input) {
+		IDocumentMergerInput documentMergerInput = null;
+		try {
+			input.run(new NullProgressMonitor());
+			Object res = input.getCompareResult();
+			if (!(res instanceof ICompareInput compareInput)) {
+				return null;
+			}
+			ITypedElement ancestor = compareInput.getAncestor();
+			if (ancestor != null) {
+				return null;
+			}
+			// TODO (tm) do not support if one side is editable?
+			ITypedElement left = compareInput.getLeft();
+			if (left == null) {
+				return null;
+			}
+			ISharedDocumentAdapter leftSda = SharedDocumentAdapterWrapper.getAdapter(left);
+			if (leftSda == null) {
+				return null;
+			}
+			IEditorInput leftEditorInput = leftSda.getDocumentKey(left);
+			if (leftEditorInput == null) {
+				return null;
+			}
+			if (!(left instanceof IStreamContentAccessor leftSa)) {
+				return null;
+			}
+			ITypedElement right = compareInput.getRight();
+			if (right == null) {
+				return null;
+			}
+			ISharedDocumentAdapter rightSda = SharedDocumentAdapterWrapper.getAdapter(right);
+			if (rightSda == null) {
+				return null;
+			}
+			IEditorInput rightEditorInput = rightSda.getDocumentKey(right);
+			if (rightEditorInput == null) {
+				return null;
+			}
+			if (!(right instanceof IStreamContentAccessor rightSa)) {
+				return null;
+			}
+			var invisibleParent = new Shell();
+			try {
+				invisibleParent.setVisible(false);
+				var viewer = input.findContentViewer(new NullViewer(getShell()), compareInput, invisibleParent);
+				if (viewer instanceof IAdaptable adaptable) {
+					documentMergerInput = adaptable.getAdapter(IDocumentMergerInput.class);
+				}
+			} finally {
+				invisibleParent.dispose();
+			}
+			return new LeftEditorInputAndRightStreamContentAccessor(leftEditorInput, left, leftSa, rightEditorInput,
+					right, rightSa, documentMergerInput);
+		} catch (InvocationTargetException | InterruptedException e) {
+			CompareUIPlugin.log(e);
+		}
+		return null;
+	}
+
+	private void openEditorInBackground(final CompareEditorInput input, final IWorkbenchPage page,
+			final IReusableEditor editor, final boolean activate) {
 		internalOpenEditor(input, page, editor, activate);
 	}
 

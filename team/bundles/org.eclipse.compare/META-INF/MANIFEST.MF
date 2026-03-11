@@ -12,7 +12,8 @@ Export-Package: org.eclipse.compare,
  org.eclipse.compare.internal.merge;x-internal:=true,
  org.eclipse.compare.internal.patch;x-friends:="org.eclipse.team.ui",
  org.eclipse.compare.patch,
- org.eclipse.compare.structuremergeviewer
+ org.eclipse.compare.structuremergeviewer,
+ org.eclipse.compare.unifieddiff
 Require-Bundle: org.eclipse.ui;bundle-version="[3.206.0,4.0.0)",
  org.eclipse.core.resources;bundle-version="[3.4.0,4.0.0)",
  org.eclipse.jface.text;bundle-version="[3.8.0,4.0.0)",
