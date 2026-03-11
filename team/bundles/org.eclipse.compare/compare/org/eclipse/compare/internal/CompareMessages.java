@@ -134,6 +134,21 @@ public final class CompareMessages extends NLS {
 	public static String ReaderCreator_fileIsNotAccessible;
 	public static String CompareWithClipboardTitle;
 
+	public static String UnifiedDiff_acceptAll;
+	public static String UnifiedDiff_hideAllDiffs;
+	public static String UnifiedDiff_keepAll;
+	public static String UnifiedDiff_undoAll;
+	public static String UnifiedDiff_next;
+	public static String UnifiedDiff_previous;
+	public static String UnifiedDiff_accept;
+	public static String UnifiedDiff_hideDiff;
+	public static String UnifiedDiff_keep;
+	public static String UnifiedDiff_undo;
+	public static String UnifiedDiff_revert;
+	public static String UnifiedDiff_openTwoWayCompare_tooltip;
+	public static String UnifiedDiff_cannotEditFile_title;
+	public static String UnifiedDiff_cannotEditFile_message;
+
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, CompareMessages.class);
 	}

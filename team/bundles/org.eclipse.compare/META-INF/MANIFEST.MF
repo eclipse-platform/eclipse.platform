@@ -64,7 +64,8 @@ Export-Package: org.eclipse.compare;
    org.eclipse.swt.widgets,
    org.eclipse.ui,
    org.eclipse.ui.services,
-   org.eclipse.ui.texteditor"
+   org.eclipse.ui.texteditor",
+ org.eclipse.compare.unifieddiff;x-internal:=true
 Require-Bundle: org.eclipse.ui;bundle-version="[3.206.0,4.0.0)",
  org.eclipse.core.resources;bundle-version="[3.4.0,4.0.0)",
  org.eclipse.jface.text;bundle-version="[3.8.0,4.0.0)",

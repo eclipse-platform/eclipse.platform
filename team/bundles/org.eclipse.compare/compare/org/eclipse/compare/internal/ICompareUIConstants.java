@@ -23,6 +23,8 @@ public interface ICompareUIConstants {
 	public static final String ETOOL_PREV = "elcl16/prev_nav.svg"; //$NON-NLS-1$
 	public static final String CTOOL_PREV= ETOOL_PREV;
 
+	public static final String TWO_WAY_COMPARE = "elcl16/twowaycompare_co.svg"; //$NON-NLS-1$
+
 	public static final String HUNK_OBJ = "obj16/hunk_obj.svg"; //$NON-NLS-1$
 
 	public static final String ERROR_OVERLAY = "ovr16/error_ov.svg"; //$NON-NLS-1$
