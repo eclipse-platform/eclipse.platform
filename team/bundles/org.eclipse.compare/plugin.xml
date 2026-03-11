@@ -451,5 +451,150 @@
          </editorInputEnablement>
       </linkHelper>
    </extension>
-
+   <extension point="org.eclipse.ui.workbench.texteditor.codeMiningProviders">
+     <codeMiningProvider
+       class="org.eclipse.compare.unifieddiff.internal.UnifiedDiffCodeMiningProvider"
+       id="org.eclipse.compare.unifieddiff.internal.UnifiedDiffCodeMiningProvider"
+       label="Code mining provider rendering the additions/deletions via line header code minings of a diff">
+     </codeMiningProvider>
+   </extension>
+<extension point="org.eclipse.ui.editors.annotationTypes">
+<type
+  name="org.eclipse.compare.unifieddiff.internal.addition"
+  markerType="org.eclipse.core.resources.problemmarker"
+  markerSeverity="0">
+</type>
+<type
+  name="org.eclipse.compare.unifieddiff.internal.deletion"
+  markerType="org.eclipse.core.resources.problemmarker"
+  markerSeverity="0">
+</type>
+</extension>
+<extension point="org.eclipse.ui.editors.markerAnnotationSpecification">
+<specification
+      annotationType="org.eclipse.compare.unifieddiff.internal.addition"
+      colorPreferenceKey="inlineDiffColor"
+      colorPreferenceValue="229,242,229"
+      contributesToHeader="false"
+      highlightPreferenceKey="inlineDiffIndicationHighlighting"
+      highlightPreferenceValue="true"
+      isGoToNextNavigationTarget="false"
+      isGoToNextNavigationTargetKey="inlineDiffGoToNextNavigationTarget"
+      isGoToPreviousNavigationTarget="false"
+      isGoToPreviousNavigationTargetKey="inlineDiffGoToPreviousNavigationTarget"
+      label="Inline Diff Addition"
+      overviewRulerPreferenceKey="inlineDiffIndicationInOverviewRuler"
+      overviewRulerPreferenceValue="false"
+      presentationLayer="1"
+      showInNextPrevDropdownToolbarAction="false"
+      showInNextPrevDropdownToolbarActionKey="showInlineDiffInNextPrevDropdownToolbarAction"
+      symbolicIcon="info"
+      textPreferenceKey="inlineDiffIndication"
+      textPreferenceValue="true"
+      textStylePreferenceKey="inlineDiffTextStyle"
+      textStylePreferenceValue="NONE"
+      verticalRulerPreferenceKey="inlineDiffIndicationInVerticalRuler"
+      verticalRulerPreferenceValue="false">
+</specification>
+<specification
+      annotationType="org.eclipse.compare.unifieddiff.internal.deletion"
+      colorPreferenceKey="deletionInlineDiffColor"
+      colorPreferenceValue="255,229,229"
+      contributesToHeader="false"
+      highlightPreferenceKey="deletionInlineDiffIndicationHighlighting"
+      highlightPreferenceValue="true"
+      isGoToNextNavigationTarget="false"
+      isGoToNextNavigationTargetKey="deletionInlineDiffGoToNextNavigationTarget"
+      isGoToPreviousNavigationTarget="false"
+      isGoToPreviousNavigationTargetKey="deletionInlineDiffGoToPreviousNavigationTarget"
+      label="Inline Diff Deletion"
+      overviewRulerPreferenceKey="deletionInlineDiffIndicationInOverviewRuler"
+      overviewRulerPreferenceValue="false"
+      presentationLayer="1"
+      showInNextPrevDropdownToolbarAction="false"
+      showInNextPrevDropdownToolbarActionKey="showDeletionInlineDiffInNextPrevDropdownToolbarAction"
+      symbolicIcon="info"
+      textPreferenceKey="deletionInlineDiffIndication"
+      textPreferenceValue="true"
+      textStylePreferenceKey="deletionInlineDiffTextStyle"
+      textStylePreferenceValue="NONE"
+      verticalRulerPreferenceKey="deletionInlineDiffIndicationInVerticalRuler"
+      verticalRulerPreferenceValue="false">
+</specification>
+<specification
+      annotationType="org.eclipse.compare.unifieddiff.internal.detailedAddition"
+      colorPreferenceKey="detailedInlineDiffColor"
+      colorPreferenceValue="204,229,204"
+      contributesToHeader="false"
+      highlightPreferenceKey="detailedInlineDiffIndicationHighlighting"
+      highlightPreferenceValue="true"
+      isGoToNextNavigationTarget="false"
+      isGoToNextNavigationTargetKey="detailedInlineDiffGoToNextNavigationTarget"
+      isGoToPreviousNavigationTarget="false"
+      isGoToPreviousNavigationTargetKey="detailedInlineDiffGoToPreviousNavigationTarget"
+      label="Inline Diff Detailed Addition"
+      overviewRulerPreferenceKey="detailedInlineDiffIndicationInOverviewRuler"
+      overviewRulerPreferenceValue="false"
+      presentationLayer="2"
+      showInNextPrevDropdownToolbarAction="false"
+      showInNextPrevDropdownToolbarActionKey="showDetailedInlineDiffInNextPrevDropdownToolbarAction"
+      symbolicIcon="info"
+      textPreferenceKey="detailedInlineDiffIndication"
+      textPreferenceValue="true"
+      textStylePreferenceKey="detailedInlineDiffTextStyle"
+      textStylePreferenceValue="NONE"
+      verticalRulerPreferenceKey="detailedInlineDiffIndicationInVerticalRuler"
+      verticalRulerPreferenceValue="false">
+</specification>
+<specification
+      annotationType="org.eclipse.compare.unifieddiff.internal.detailedDeletion"
+      colorPreferenceKey="detailedDeletionInlineDiffColor"
+      colorPreferenceValue="255,204,204"
+      contributesToHeader="false"
+      highlightPreferenceKey="detailedDeletionInlineDiffIndicationHighlighting"
+      highlightPreferenceValue="true"
+      isGoToNextNavigationTarget="false"
+      isGoToNextNavigationTargetKey="detailedDeletionInlineDiffGoToNextNavigationTarget"
+      isGoToPreviousNavigationTarget="false"
+      isGoToPreviousNavigationTargetKey="detailedDeletionInlineDiffGoToPreviousNavigationTarget"
+      label="Inline Diff Detailed Deletion"
+      overviewRulerPreferenceKey="detailedDeletionInlineDiffIndicationInOverviewRuler"
+      overviewRulerPreferenceValue="false"
+      presentationLayer="2"
+      showInNextPrevDropdownToolbarAction="false"
+      showInNextPrevDropdownToolbarActionKey="showDetailedDeletionInlineDiffInNextPrevDropdownToolbarAction"
+      symbolicIcon="info"
+      textPreferenceKey="detailedDeletionInlineDiffIndication"
+      textPreferenceValue="true"
+      textStylePreferenceKey="detailedDeletionInlineDiffTextStyle"
+      textStylePreferenceValue="NONE"
+      verticalRulerPreferenceKey="detailedDeletionInlineDiffIndicationInVerticalRuler"
+      verticalRulerPreferenceValue="false">
+</specification>
+</extension>
+  <!-- Command for testing the unidiff functionality -->
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            categoryId="org.eclipse.compare.ui.category.compare"
+            defaultHandler="org.eclipse.compare.unifieddiff.internal.TestUnidiffCommandReplaceMode"
+            description="Test Universal Diff Replace Mode"
+            id="org.eclipse.compare.testInlineCompareReplaceMode"
+            name="Test Universal Diff Replace Mode">
+      </command>
+      <command
+            categoryId="org.eclipse.compare.ui.category.compare"
+            defaultHandler="org.eclipse.compare.unifieddiff.internal.TestUnidiffCommandOverlayMode"
+            description="Test Universal Diff Overlay Mode"
+            id="org.eclipse.compare.testInlineCompareOverlayMode"
+            name="Test Universal Diff Overlay Mode">
+      </command>
+      <command
+            categoryId="org.eclipse.compare.ui.category.compare"
+            defaultHandler="org.eclipse.compare.unifieddiff.internal.TestUnidiffCommandOverlayReadOnlyMode"
+            description="Test Universal Diff Overlay Read Only Mode"
+            id="org.eclipse.compare.testInlineCompareOverlayReadOnlyMode"
+            name="Test Universal Diff Overlay Read Only Mode">
+      </command>
+   </extension>
 </plugin>
