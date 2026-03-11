@@ -2131,9 +2131,15 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		fBirdsEyeCanvas= null;
 		fSummaryHeader= null;
 
-		fAncestorContributor.unsetDocument(fAncestor);
-		fLeftContributor.unsetDocument(fLeft);
-		fRightContributor.unsetDocument(fRight);
+		if (fAncestorContributor != null) {
+			fAncestorContributor.unsetDocument(fAncestor);
+		}
+		if (fLeftContributor != null) {
+			fLeftContributor.unsetDocument(fLeft);
+		}
+		if (fRightContributor != null) {
+			fRightContributor.unsetDocument(fRight);
+		}
 
 		disconnect(fLeftContributor);
 		disconnect(fRightContributor);
@@ -5637,6 +5643,12 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 					return fMerger.changesCount();
 				}
 			};
+		}
+		if (adapter == IDocumentMergerInput.class) {
+			if (fMerger == null) {
+				return null;
+			}
+			return (T) fMerger.getInput();
 		}
 		if (adapter == OutlineViewerCreator.class) {
 			if (fOutlineViewerCreator == null) {

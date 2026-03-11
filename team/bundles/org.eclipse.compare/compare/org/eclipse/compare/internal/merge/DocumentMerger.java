@@ -1403,4 +1403,7 @@ public class DocumentMerger {
 		return null;
 	}
 
+	public IDocumentMergerInput getInput() {
+		return fInput;
+	}
 }
