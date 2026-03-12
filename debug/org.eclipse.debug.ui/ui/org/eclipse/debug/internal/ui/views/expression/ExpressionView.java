@@ -84,8 +84,10 @@ public class ExpressionView extends VariablesView {
 		IAction action;
 		if (DebugPlugin.getDefault().getExpressionManager().getExpressions().length > 0) {
 			action = getAction(FIND_ACTION);
-			action.setImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_FIND_ACTION));
-			menu.add(action);
+			if (action != null && action.isEnabled()) {
+				action.setImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_FIND_ACTION));
+				menu.add(action);
+			}
 		}
 		ChangeVariableValueAction changeValueAction = (ChangeVariableValueAction)getAction("ChangeVariableValue"); //$NON-NLS-1$
 		if (changeValueAction.isApplicable()) {
