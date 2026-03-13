@@ -170,7 +170,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		store.setDefault(PREF_SAVE_ALL_EDITORS, false);
 		store.setDefault(ADDED_LINES_REGEX, ""); //$NON-NLS-1$
 		store.setDefault(REMOVED_LINES_REGEX, ""); //$NON-NLS-1$
-		store.setDefault(USE_SINGLE_LINE, true);
+		store.setDefault(USE_SINGLE_LINE, false);
 		store.setDefault(HIGHLIGHT_TOKEN_CHANGES, true);
 		store.setDefault(CAPPING_DISABLED, false);
 		store.setDefault(PATH_FILTER, ""); //$NON-NLS-1$
