@@ -106,11 +106,11 @@ public class MirroredMergeViewerContentProvider extends MergeViewerContentProvid
 
 	@Override
 	public void setLeftError(String errorMessage) {
-		delegate.setLeftError(errorMessage);
+		delegate.setRightError(errorMessage);
 	}
 
 	@Override
 	public void setRightError(String errorMessage) {
-		delegate.setRightError(errorMessage);
+		delegate.setLeftError(errorMessage);
 	}
 }
