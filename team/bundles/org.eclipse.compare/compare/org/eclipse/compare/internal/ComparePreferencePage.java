@@ -176,7 +176,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		store.setDefault(PATH_FILTER, ""); //$NON-NLS-1$
 		store.setDefault(ICompareUIConstants.PREF_NAVIGATION_END_ACTION, ICompareUIConstants.PREF_VALUE_PROMPT);
 		store.setDefault(ICompareUIConstants.PREF_NAVIGATION_END_ACTION_LOCAL, ICompareUIConstants.PREF_VALUE_LOOP);
-		store.setDefault(SWAPPED, false);
+		store.setDefault(SWAPPED, true);
 	}
 
 	public ComparePreferencePage() {
