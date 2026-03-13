@@ -123,6 +123,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 	public static final String ADDED_LINES_REGEX= PREFIX + "AddedLinesRegex"; //$NON-NLS-1$
 	public static final String REMOVED_LINES_REGEX= PREFIX + "RemovedLinesRegex"; //$NON-NLS-1$
 	public static final String SWAPPED = PREFIX + "Swapped"; //$NON-NLS-1$
+	public static final String UNIFIED_DIFF = PREFIX + "UnitifedDiff"; //$NON-NLS-1$
 
 
 	private IPropertyChangeListener fPreferenceChangeListener;
@@ -154,6 +155,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, ICompareUIConstants.PREF_NAVIGATION_END_ACTION),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, ICompareUIConstants.PREF_NAVIGATION_END_ACTION_LOCAL),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, SWAPPED),
+		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, UNIFIED_DIFF),
 	};
 	private final List<FieldEditor> editors = new ArrayList<>();
 	private CTabItem fTextCompareTab;
@@ -177,6 +179,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		store.setDefault(ICompareUIConstants.PREF_NAVIGATION_END_ACTION, ICompareUIConstants.PREF_VALUE_PROMPT);
 		store.setDefault(ICompareUIConstants.PREF_NAVIGATION_END_ACTION_LOCAL, ICompareUIConstants.PREF_VALUE_LOOP);
 		store.setDefault(SWAPPED, false);
+		store.setDefault(UNIFIED_DIFF, false);
 	}
 
 	public ComparePreferencePage() {
@@ -286,6 +289,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		addCheckBox(composite, "ComparePreferencePage.structureCompare.label", OPEN_STRUCTURE_COMPARE, 0);	//$NON-NLS-1$
 		addCheckBox(composite, "ComparePreferencePage.structureOutline.label", USE_OUTLINE_VIEW, 0);	//$NON-NLS-1$
 		addCheckBox(composite, "ComparePreferencePage.ignoreWhitespace.label", IGNORE_WHITESPACE, 0);	//$NON-NLS-1$
+		addCheckBox(composite, "ComparePreferencePage.unifiedDiff.label", UNIFIED_DIFF, 0); //$NON-NLS-1$
 
 		// a spacer
 		new Label(composite, SWT.NONE);
