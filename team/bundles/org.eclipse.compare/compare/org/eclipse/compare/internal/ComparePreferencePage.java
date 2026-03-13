@@ -162,7 +162,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 
 	public static void initDefaults(IPreferenceStore store) {
 		store.setDefault(OPEN_STRUCTURE_COMPARE, true);
-		store.setDefault(USE_OUTLINE_VIEW, false);
+		store.setDefault(USE_OUTLINE_VIEW, true);
 		store.setDefault(SYNCHRONIZE_SCROLLING, true);
 		store.setDefault(SHOW_PSEUDO_CONFLICTS, false);
 		store.setDefault(INITIALLY_SHOW_ANCESTOR_PANE, false);
