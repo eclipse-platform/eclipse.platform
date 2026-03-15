@@ -969,9 +969,13 @@ public class MarkerTest {
 		IMarker subFileMarker = subFile.createMarker(IMarker.BOOKMARK);
 		listener.reset();
 
-		// move the files
-		file.move(destFile.getFullPath(), IResource.FORCE, createTestMonitor());
-		subFile.move(destSubFile.getFullPath(), IResource.FORCE, createTestMonitor());
+		// move the files in one atomic workspace operation to prevent background jobs
+		// (e.g. charset/encoding validation) from running between the two moves and
+		// adding unexpected marker changes to the listener
+		getWorkspace().run(monitor -> {
+			file.move(destFile.getFullPath(), IResource.FORCE, monitor);
+			subFile.move(destSubFile.getFullPath(), IResource.FORCE, monitor);
+		}, createTestMonitor());
 
 		// verify marker deltas
 		listener.assertNumberOfAffectedResources(4);
