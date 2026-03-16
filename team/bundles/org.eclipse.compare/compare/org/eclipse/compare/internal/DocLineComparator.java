@@ -183,7 +183,19 @@ public class DocLineComparator implements ITokenComparator {
 			int olen= other.getTokenLength(otherIndex);
 			if (tlen == olen) {
 				String[] linesToCompare = extract(thisIndex, otherIndex, other, false);
-				return linesToCompare[0].equals(linesToCompare[1]);
+				String s1 = linesToCompare[0];
+				String s2 = linesToCompare[1];
+				if (s1.isEmpty() && s2.isEmpty()) {
+					return true;
+				}
+				if (s1.isEmpty() || s2.isEmpty()) {
+					return false;
+				}
+				if (s1.length() != s2.length() || s1.charAt(0) != s2.charAt(0)
+						|| s1.charAt(s1.length() - 1) != s2.charAt(s2.length() - 1)) {
+					return false;
+				}
+				return s1.equals(s2);
 			} else if (fCompareFilters != null && fCompareFilters.length > 0) {
 				String[] linesToCompare = extract(thisIndex, otherIndex, other, true);
 				return linesToCompare[0].equals(linesToCompare[1]);
