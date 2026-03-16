@@ -33,6 +33,7 @@ import org.eclipse.compare.CompareViewerSwitchingPane;
 import org.eclipse.compare.ITypedElement;
 import org.eclipse.compare.contentmergeviewer.TextMergeViewer;
 import org.eclipse.compare.internal.CompareEditor;
+import org.eclipse.compare.internal.ComparePreferencePage;
 import org.eclipse.compare.internal.CompareUIPlugin;
 import org.eclipse.compare.internal.MergeSourceViewer;
 import org.eclipse.compare.structuremergeviewer.Differencer;
@@ -47,6 +48,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Image;
@@ -214,8 +216,8 @@ public class SaveableCompareEditorInputTest {
 		protected ICompareInput prepareCompareInput(IProgressMonitor monitor)
 				throws InvocationTargetException, InterruptedException {
 			input = createCompareInput();
-			getCompareConfiguration().setLeftEditable(true);
-			getCompareConfiguration().setRightEditable(false);
+			getCompareConfiguration().setLeftEditable(leftIsChanged());
+			getCompareConfiguration().setRightEditable(rightIsChanged());
 			return null;
 		}
 
@@ -229,6 +231,15 @@ public class SaveableCompareEditorInputTest {
 		}
 	}
 
+	static boolean rightIsChanged() {
+		IPreferenceStore store = CompareUIPlugin.getDefault().getPreferenceStore();
+		return store.getBoolean(ComparePreferencePage.SWAPPED);
+	}
+
+	static boolean leftIsChanged() {
+		return !rightIsChanged();
+	}
+
 	private void verifyDirtyStateChanges(
 			TestSaveableEditorInput compareEditorInput)
 			throws IllegalArgumentException, SecurityException,
@@ -240,10 +251,14 @@ public class SaveableCompareEditorInputTest {
 				.findContentViewer(null, compareEditorInput.input, shell);
 		viewer.setInput(compareEditorInput.getCompareResult());
 
-		MergeSourceViewer left = (MergeSourceViewer) ReflectionUtils.getField(
-				viewer, "fLeft");
+		MergeSourceViewer changed;
+		if (leftIsChanged()) {
+			changed = (MergeSourceViewer) ReflectionUtils.getField(viewer, "fLeft");
+		} else {
+			changed = (MergeSourceViewer) ReflectionUtils.getField(viewer, "fRight");
+		}
 
-		StyledText leftText = left.getSourceViewer().getTextWidget();
+		StyledText leftText = changed.getSourceViewer().getTextWidget();
 
 		// modify the left side of editor
 		leftText.append(appendFileContents);
@@ -270,7 +285,6 @@ public class SaveableCompareEditorInputTest {
 		ITypedElement el2 = new TestFileElement(file2);
 
 		CompareConfiguration conf = new CompareConfiguration();
-		conf.setLeftEditable(true);
 		TestSaveableEditorInput compareEditorInput = new TestSaveableEditorInput(
 				el1, el2, conf);
 
@@ -293,7 +307,6 @@ public class SaveableCompareEditorInputTest {
 		ITypedElement el2 = new TestFileElement(file2);
 
 		CompareConfiguration conf = new CompareConfiguration();
-		conf.setLeftEditable(true);
 		TestSaveableEditorInput compareEditorInput = new TestSaveableEditorInput(
 				el1, el2, conf);
 
@@ -321,7 +334,6 @@ public class SaveableCompareEditorInputTest {
 		ITypedElement el2 = null;
 
 		CompareConfiguration conf = new CompareConfiguration();
-		conf.setLeftEditable(true);
 		TestSaveableEditorInput compareEditorInput = new TestSaveableEditorInput(
 				el1, el2, conf);
 
@@ -344,7 +356,6 @@ public class SaveableCompareEditorInputTest {
 		ITypedElement el2 = null;
 
 		CompareConfiguration conf = new CompareConfiguration();
-		conf.setLeftEditable(true);
 		TestSaveableEditorInput compareEditorInput = new TestSaveableEditorInput(
 				el1, el2, conf);
 
