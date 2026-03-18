@@ -97,6 +97,9 @@ public class ConsoleManager implements IConsoleManager {
 		fConsoleViews = new ArrayList<>();
 		redrawConsoleJob = new RedrawJob();
 		showConsoleJob = new ShowConsoleViewJob();
+		// Start ConsoleZoomHandler which installs a listener on this console
+		// manager to keep consoles added later in sync with the current zoom level.
+		ConsoleZoomHandler.startup(this);
 		warnAboutContentChangeJob = new WarnAboutContentChangedJob();
 	}
 
