@@ -441,6 +441,7 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 			localResManager.dispose();
 			localResManager = null;
 		}
+
 		fConsoleToPageParticipants.clear();
 		fStack.clear();
 		fConsoleToPart.clear();
