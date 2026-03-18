@@ -34,9 +34,13 @@ import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.IBasicPropertyConstants;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
@@ -130,6 +134,28 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 	private LocalResourceManager localResManager;
 
 	private boolean updateConsoleIcon;
+
+	/**
+	 * Data key used to store a custom zoom font on a StyledText widget. The font
+	 * stored under this key is managed per-widget and disposed via a
+	 * DisposeListener on that widget.
+	 */
+	private static final String ZOOM_FONT_KEY = ConsoleView.class.getName() + ".zoomFont"; //$NON-NLS-1$
+
+	/**
+	 * Minimum font size for console zoom.
+	 */
+	private static final int MIN_FONT_SIZE = 6;
+
+	/**
+	 * Maximum font size for console zoom.
+	 */
+	private static final int MAX_FONT_SIZE = 72;
+
+	/**
+	 * Font size change step for zoom in/out.
+	 */
+	private static final int FONT_SIZE_STEP = 1;
 
 	private boolean isAvailable() {
 		PageBook pageBook = getPageBook();
@@ -410,6 +436,18 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 			});
 		}
 
+		// Install font zoom key listener on the StyledText widget
+		StyledText textWidget = null;
+		if (page instanceof TextConsolePage textPage) {
+			TextConsoleViewer viewer = textPage.getViewer();
+			if (viewer != null) {
+				textWidget = viewer.getTextWidget();
+			}
+		}
+		if (textWidget != null) {
+			installFontZoomKeyListener(textWidget);
+		}
+
 		PageRec rec = new PageRec(dummyPart, page);
 		return rec;
 	}
@@ -441,6 +479,7 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 			localResManager.dispose();
 			localResManager = null;
 		}
+
 		fConsoleToPageParticipants.clear();
 		fStack.clear();
 		fConsoleToPart.clear();
@@ -908,5 +947,131 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 			return !consolePage.isAutoScroll();
 		}
 		return fScrollLock;
+	}
+
+	/**
+	 * Installs the font zoom key listener on the given control.
+	 *
+	 * @param control the control to install the key listener on
+	 */
+	private void installFontZoomKeyListener(Control control) {
+		control.addKeyListener(KeyListener.keyPressedAdapter(event -> {
+			// Check for Ctrl key first.
+			if ((event.stateMask & SWT.MOD1) == 0) {
+				return;
+			}
+
+			// Check for + or - keys (including numpad)
+			boolean isPlus = event.character == '+' || event.keyCode == SWT.KEYPAD_ADD
+					|| (event.character == '=' && (event.stateMask & SWT.SHIFT) != 0);
+			boolean isMinus = event.character == '-' || event.keyCode == SWT.KEYPAD_SUBTRACT;
+
+			if (isPlus) {
+				increaseFontSize();
+				event.doit = false;
+			} else if (isMinus) {
+				decreaseFontSize();
+				event.doit = false;
+			}
+		}));
+	}
+
+	/**
+	 * Increases the font size of the console by one step.
+	 */
+	private void increaseFontSize() {
+		changeFontSize(FONT_SIZE_STEP);
+	}
+
+	/**
+	 * Decreases the font size of the console by one step.
+	 */
+	private void decreaseFontSize() {
+		changeFontSize(-FONT_SIZE_STEP);
+	}
+
+	/**
+	 * Changes the font size of the console by the given delta.
+	 *
+	 * @param delta the amount to change the font size (positive to increase,
+	 *              negative to decrease)
+	 */
+	private void changeFontSize(int delta) {
+		StyledText styledText = getConsoleStyledText();
+		if (styledText == null || styledText.isDisposed()) {
+			return;
+		}
+
+		Font currentFont = styledText.getFont();
+		if (currentFont == null || currentFont.isDisposed()) {
+			return;
+		}
+
+		FontData[] fontData = currentFont.getFontData();
+		if (fontData == null || fontData.length == 0) {
+			return;
+		}
+
+		int currentHeight = fontData[0].getHeight();
+		int newHeight = Math.max(MIN_FONT_SIZE, Math.min(MAX_FONT_SIZE, currentHeight + delta));
+
+		if (newHeight == currentHeight) {
+			return;
+		}
+
+		// Create new font data with the new height
+		FontData[] newFontData = new FontData[fontData.length];
+		for (int i = 0; i < fontData.length; i++) {
+			newFontData[i] = new FontData(fontData[i].getName(), newHeight, fontData[i].getStyle());
+		}
+
+		// Get any existing zoom font for this specific StyledText
+		Font oldZoomFont = (Font) styledText.getData(ZOOM_FONT_KEY);
+
+		// Create and set the new font
+		Font newZoomFont = new Font(styledText.getDisplay(), newFontData);
+		styledText.setFont(newZoomFont);
+
+		// Store the new zoom font on this specific StyledText
+		styledText.setData(ZOOM_FONT_KEY, newZoomFont);
+
+		// Install DisposeListener if this is the first zoom font for this widget
+		if (oldZoomFont == null) {
+			styledText.addDisposeListener(e -> {
+				Font zoomFont = (Font) styledText.getData(ZOOM_FONT_KEY);
+				if (zoomFont != null && !zoomFont.isDisposed()) {
+					zoomFont.dispose();
+				}
+			});
+		}
+
+		// Dispose the old zoom font for this widget after setting the new one
+		if (oldZoomFont != null && !oldZoomFont.isDisposed()) {
+			oldZoomFont.dispose();
+		}
+	}
+
+	/**
+	 * Returns the StyledText control of the current console page, or null if not
+	 * available.
+	 *
+	 * @return the StyledText control or null
+	 */
+	private StyledText getConsoleStyledText() {
+		IPage page = getCurrentPage();
+		if (page != null) {
+			Control control = page.getControl();
+			if (control instanceof StyledText styledText) {
+				return styledText;
+			}
+			// For TextConsolePage, get the viewer's text widget
+			if (page instanceof TextConsolePage textPage) {
+				TextConsoleViewer viewer = textPage.getViewer();
+				if (viewer != null) {
+					return viewer.getTextWidget();
+				}
+			}
+		}
+		return null;
 	}
 }
