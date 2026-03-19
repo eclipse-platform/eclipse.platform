@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2025 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -742,8 +742,6 @@ protected Control createContents(Composite parent){
 					}
 				}
 
-				kpair.setPassphrase(pass);
-
 				String home=ssh2HomeText.getText();
 
 				File _home=new File(home);
@@ -777,7 +775,8 @@ protected Control createContents(Composite parent){
 
 				boolean ok=true;
 				try{
-					kpair.writePrivateKey(file);
+					byte[] passBytes = pass.isEmpty() ? null : pass.getBytes();
+					kpair.writePrivateKey(file, passBytes);
 					kpair.writePublicKey(file+".pub", kpairComment); //$NON-NLS-1$
 				}
 				catch(Exception ee){
