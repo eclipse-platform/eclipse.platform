@@ -1,12 +1,12 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.eclipse.e4.core.contexts
-Bundle-Version: 1.13.200.qualifier
+Bundle-Version: 1.13.300.qualifier
 Bundle-Name: %pluginName
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.eclipse.e4.core.di
+Require-Bundle: org.eclipse.e4.core.di;bundle-version="[1.9.200.v20231105-0754,2)"
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Import-Package: jakarta.inject;version="[2.0.0,3.0.0)",
  org.osgi.framework;version="[1.6.0,2)",
