@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.Vector;
 
@@ -45,7 +46,9 @@ import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.MultiRule;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IBreakpointListener;
@@ -387,7 +390,7 @@ public class BreakpointManager implements IBreakpointManager, IResourceChangeLis
 	 * Convenience method to get the workspace
 	 * @return the default {@link IWorkspace}
 	 */
-	private IWorkspace getWorkspace() {
+	private static IWorkspace getWorkspace() {
 		return ResourcesPlugin.getWorkspace();
 	}
 
@@ -527,7 +530,12 @@ public class BreakpointManager implements IBreakpointManager, IResourceChangeLis
 					}
 				}
 			};
-			getWorkspace().run(r, null, 0, null);
+			ISchedulingRule rule = MultiRule.combine(remove.stream()
+					.map(IBreakpoint::getMarker).filter(Objects::nonNull)
+					.map(IMarker::getResource).filter(Objects::nonNull)
+					.map(BreakpointManager::getMarkerRule)
+					.toArray(ISchedulingRule[]::new));
+			getWorkspace().run(r, rule, 0, null);
 		}
 	}
 
@@ -1404,6 +1412,10 @@ public class BreakpointManager implements IBreakpointManager, IResourceChangeLis
 		} catch (CoreException e) {
 			DebugPlugin.log(e);
 		}
+	}
+
+	private static ISchedulingRule getMarkerRule(IResource resource) {
+		return getWorkspace().getRuleFactory().modifyRule(resource);
 	}
 }
 
