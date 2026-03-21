@@ -2532,7 +2532,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		}
 		@Override
 		public void mouseMove(MouseEvent e) {
-			if (!fIsDown && fUseSingleLine && isAnySideEditable() && handleMouseMoveOverCenter(fCanvas, e.x, e.y)) {
+			if (!fIsDown && isAnySideEditable() && handleMouseMoveOverCenter(fCanvas, e.x, e.y)) {
 				return;
 			}
 			super.mouseMove(e);
