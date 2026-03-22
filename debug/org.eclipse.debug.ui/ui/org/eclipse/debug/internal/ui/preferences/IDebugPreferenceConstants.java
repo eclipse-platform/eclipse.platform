@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2025 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -336,6 +336,19 @@ public interface IDebugPreferenceConstants {
 	 */
 	String DEBUG_VIEW_TOOLBAR_HIDDEN_PERSPECTIVES = "org.eclipse.debug.ui.Debug_view.debug_toolbar_hidden_perspectives"; //$NON-NLS-1$
 	String CONSOLE_ELAPSED_FORMAT = "org.eclipse.console.elapsedTimeFormat"; //$NON-NLS-1$
+
+	/**
+	 * Stores the preference controlling how to handle pasting multi-line
+	 * expressions.
+	 * <p>
+	 * The value is stored as a {@link String} and is expected to match one of the
+	 * expression paste mode constants (for example {@code prompt}, {@code single},
+	 * or {@code multi}), such as
+	 * {@code IInternalDebugUIConstants.EXPRESSION_PASTE_PROMPT}. The default value
+	 * is {@code IInternalDebugUIConstants.EXPRESSION_PASTE_PROMPT}.
+	 * </p>
+	 */
+	String PREF_PROMPT_PASTE_MULTILINE_EXPRESSIONS = IDebugUIConstants.PLUGIN_ID + ".paste_multiline_exp_prompt"; //$NON-NLS-1$
 }
 
 
