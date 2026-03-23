@@ -17,6 +17,7 @@ package org.eclipse.core.tests.resources;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.IPath;
+import org.junit.jupiter.api.Assertions;
 
 /**
  * A support class for the marker tests.
@@ -41,31 +43,44 @@ public class MarkersChangeListener implements IResourceChangeListener {
 	}
 
 	/**
-	 * Asserts whether the changes for the given resource (or null for the workspace)
-	 * are exactly the added, removed and changed markers given. The arrays may be null.
+	 * Asserts whether the changes for the given resource (or null for the
+	 * workspace) are exactly the added, removed and changed markers given. The
+	 * arrays may be null.
 	 */
 	public void assertChanges(IResource resource, IMarker[] added, IMarker[] removed, IMarker[] changed) {
 		IPath path = resource == null ? IPath.ROOT : resource.getFullPath();
 		Supplier<List<IMarkerDelta>> changesRetriever = () -> changes.getOrDefault(path, Collections.emptyList());
-		int numChanges = (added == null ? 0 : added.length) + (removed == null ? 0 : removed.length) + (changed == null ? 0 : changed.length);
-		TestUtil.waitForCondition(() -> changesRetriever.get().size() == numChanges, 5000);
-		assertThat(numChanges).as("number of markers for resource %s", path).isEqualTo(changesRetriever.get().size());
 
-		for (IMarkerDelta delta : changesRetriever.get()) {
-			switch (delta.getKind()) {
-			case IResourceDelta.ADDED:
-				assertThat(added).as("check added markers contain resource %s", path).contains(delta.getMarker());
-				break;
-			case IResourceDelta.REMOVED:
-				assertThat(removed).as("check removed markers contain resource %s", path).contains(delta.getMarker());
-				break;
-			case IResourceDelta.CHANGED:
-				assertThat(changed).as("check changed markers contain resource %s", path).contains(delta.getMarker());
-				break;
-			default:
-				throw new IllegalArgumentException("delta with unsupported kind: " + delta);
-			}
-		}
+		int expectedTotal = (added == null ? 0 : added.length) + (removed == null ? 0 : removed.length)
+				+ (changed == null ? 0 : changed.length);
+
+		TestUtil.waitForCondition(() -> changesRetriever.get().size() == expectedTotal, 5000);
+
+		List<IMarkerDelta> deltas = new ArrayList<>(changesRetriever.get());
+
+		List<IMarker> actualAdded = deltas.stream().filter(d -> d.getKind() == IResourceDelta.ADDED)
+				.map(IMarkerDelta::getMarker).toList();
+		List<IMarker> actualRemoved = deltas.stream().filter(d -> d.getKind() == IResourceDelta.REMOVED)
+				.map(IMarkerDelta::getMarker).toList();
+		List<IMarker> actualChanged = deltas.stream().filter(d -> d.getKind() == IResourceDelta.CHANGED)
+				.map(IMarkerDelta::getMarker).toList();
+
+		List<IMarker> expectedAdded = added == null ? Collections.emptyList() : Arrays.asList(added);
+		List<IMarker> expectedRemoved = removed == null ? Collections.emptyList() : Arrays.asList(removed);
+		List<IMarker> expectedChanged = changed == null ? Collections.emptyList() : Arrays.asList(changed);
+
+		List<IMarkerDelta> unsupported = deltas.stream().filter(d -> d.getKind() != IResourceDelta.ADDED
+				&& d.getKind() != IResourceDelta.REMOVED && d.getKind() != IResourceDelta.CHANGED).toList();
+
+		Assertions.assertAll(String.format("marker delta assertions for resource %s", path),
+				() -> assertThat(deltas).as("number of marker deltas for resource %s", path).hasSize(expectedTotal),
+				() -> assertThat(actualAdded).as("added markers for resource %s", path)
+						.containsExactlyInAnyOrderElementsOf(expectedAdded),
+				() -> assertThat(actualRemoved).as("removed markers for resource %s", path)
+						.containsExactlyInAnyOrderElementsOf(expectedRemoved),
+				() -> assertThat(actualChanged).as("changed markers for resource %s", path)
+						.containsExactlyInAnyOrderElementsOf(expectedChanged),
+				() -> assertThat(unsupported).as("unsupported delta kinds for resource %s", path).isEmpty());
 	}
 
 	/**
