@@ -1395,7 +1395,7 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 		IStatus reason;
 		InternalJob blockingJob = blockingJobs.stream().sorted(Comparator.comparing(InternalJob::isSystem)).findFirst()
 				.orElse(null);
-		if (blockingJob == null || blockingJob instanceof ThreadJob || blockingJob.isSystem()) {
+		if (blockingJob == null || blockingJob instanceof ThreadJob) {
 			reason = new Status(IStatus.INFO, JobManager.PI_JOBS, 1, JobMessages.jobs_blocked0, null);
 		} else {
 			String msg = NLS.bind(JobMessages.jobs_blocked1, blockingJob.getName());
