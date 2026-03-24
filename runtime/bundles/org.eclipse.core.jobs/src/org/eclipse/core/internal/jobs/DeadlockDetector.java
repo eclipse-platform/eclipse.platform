@@ -245,10 +245,10 @@ public class DeadlockDetector {
 			}
 		}
 		if ((blocking.isEmpty()) && (JobManager.DEBUG_LOCKS)) {
-			System.out.println("Lock " + rule + " is involved in deadlock but is not owned by any thread."); //$NON-NLS-1$ //$NON-NLS-2$
+			JobManager.debug("Lock " + rule + " is involved in deadlock but is not owned by any thread."); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		if ((blocking.size() > 1) && (rule instanceof ILock) && (JobManager.DEBUG_LOCKS)) {
-			System.out.println("Lock " + rule + " is owned by more than 1 thread, but it is not a rule."); //$NON-NLS-1$ //$NON-NLS-2$
+			JobManager.debug("Lock " + rule + " is owned by more than 1 thread, but it is not a rule."); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		return blocking.toArray(new Thread[blocking.size()]);
 	}
@@ -354,13 +354,13 @@ public class DeadlockDetector {
 		//make sure the lock and thread exist in the graph
 		if (threadIndex < 0) {
 			if (JobManager.DEBUG_LOCKS) {
-				System.out.println("[lockReleased] Lock " + lock + " was already released by thread " + owner.getName()); //$NON-NLS-1$ //$NON-NLS-2$
+				JobManager.debug("[lockReleased] Lock " + lock + " was already released by thread " + owner.getName()); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 			return;
 		}
 		if (lockIndex < 0) {
 			if (JobManager.DEBUG_LOCKS) {
-				System.out.println("[lockReleased] Thread " + owner.getName() + " already released lock " + lock); //$NON-NLS-1$ //$NON-NLS-2$
+				JobManager.debug("[lockReleased] Thread " + owner.getName() + " already released lock " + lock); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 			return;
 		}
@@ -376,7 +376,8 @@ public class DeadlockDetector {
 					|| lock.isConflicting(locks.get(j)))) {
 				if (graph[threadIndex][j] == NO_STATE) {
 					if (JobManager.DEBUG_LOCKS) {
-						System.out.println("[lockReleased] More releases than acquires for thread " + owner.getName() + " and lock " + lock); //$NON-NLS-1$ //$NON-NLS-2$
+						JobManager.debug("[lockReleased] More releases than acquires for thread " + owner.getName() //$NON-NLS-1$
+								+ " and lock " + lock); //$NON-NLS-1$
 					}
 				} else {
 					graph[threadIndex][j]--;
@@ -399,13 +400,15 @@ public class DeadlockDetector {
 		//need to make sure that the given thread and rule were not already removed from the graph
 		if (threadIndex < 0) {
 			if (JobManager.DEBUG_LOCKS) {
-				System.out.println("[lockReleasedCompletely] Lock " + rule + " was already released by thread " + owner.getName()); //$NON-NLS-1$ //$NON-NLS-2$
+				JobManager.debug(
+						"[lockReleasedCompletely] Lock " + rule + " was already released by thread " + owner.getName()); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 			return;
 		}
 		if (ruleIndex < 0) {
 			if (JobManager.DEBUG_LOCKS) {
-				System.out.println("[lockReleasedCompletely] Thread " + owner.getName() + " already released lock " + rule); //$NON-NLS-1$ //$NON-NLS-2$
+				JobManager
+						.debug("[lockReleasedCompletely] Thread " + owner.getName() + " already released lock " + rule); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 			return;
 		}
@@ -464,20 +467,20 @@ public class DeadlockDetector {
 		//make sure the thread and lock exist in the graph
 		if (threadIndex < 0) {
 			if (JobManager.DEBUG_LOCKS) {
-				System.out.println("Thread " + owner.getName() + " was already removed."); //$NON-NLS-1$ //$NON-NLS-2$
+				JobManager.debug("Thread " + owner.getName() + " was already removed."); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 			return;
 		}
 		if (lockIndex < 0) {
 			if (JobManager.DEBUG_LOCKS) {
-				System.out.println("Lock " + lock + " was already removed."); //$NON-NLS-1$ //$NON-NLS-2$
+				JobManager.debug("Lock " + lock + " was already removed."); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 			return;
 		}
 		if (graph[threadIndex][lockIndex] != WAITING_FOR_LOCK) {
 			// Lock has already been granted, nothing to do...
 			if (JobManager.DEBUG_LOCKS) {
-				System.out.println("Lock " + lock + " already granted to depth: " + graph[threadIndex][lockIndex]); //$NON-NLS-1$ //$NON-NLS-2$
+				JobManager.debug("Lock " + lock + " already granted to depth: " + graph[threadIndex][lockIndex]); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 			return;
 		}
