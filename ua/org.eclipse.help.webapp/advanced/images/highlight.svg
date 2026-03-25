@@ -2,20 +2,16 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="16"
    height="16"
    id="svg2"
    version="1.1"
-   inkscape:version="0.92.3 (2405546, 2018-03-11)"
-   sodipodi:docname="highlight.svg">
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs4">
     <linearGradient
@@ -76,7 +72,6 @@
          id="stop4956" />
     </linearGradient>
     <linearGradient
-       inkscape:collect="always"
        xlink:href="#linearGradient4952"
        id="linearGradient4958"
        x1="26.461384"
@@ -86,7 +81,6 @@
        gradientUnits="userSpaceOnUse"
        gradientTransform="translate(-2.1397741,4.8953347e-7)" />
     <linearGradient
-       inkscape:collect="always"
        xlink:href="#linearGradient4976"
        id="linearGradient4982"
        x1="26.544964"
@@ -96,7 +90,6 @@
        gradientUnits="userSpaceOnUse"
        gradientTransform="translate(0,-14.978419)" />
     <linearGradient
-       inkscape:collect="always"
        xlink:href="#linearGradient4994"
        id="linearGradient4992"
        x1="29.5947"
@@ -106,30 +99,6 @@
        gradientUnits="userSpaceOnUse"
        gradientTransform="translate(0,-14.978419)" />
   </defs>
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="32.000001"
-     inkscape:cx="12.308583"
-     inkscape:cy="8.8724808"
-     inkscape:document-units="px"
-     inkscape:current-layer="g8472"
-     showgrid="true"
-     inkscape:window-width="1920"
-     inkscape:window-height="1018"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
-     inkscape:window-maximized="1"
-     showguides="true"
-     inkscape:guide-bbox="true">
-    <inkscape:grid
-       type="xygrid"
-       id="grid844" />
-  </sodipodi:namedview>
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -138,13 +107,11 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
      id="layer1"
      style="display:inline"
      transform="translate(0,-1036.3622)">
@@ -165,20 +132,15 @@
       <path
          style="fill:url(#linearGradient4958);fill-opacity:1;stroke:#c2c1c1;stroke-width:1.06988704px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
          d="m 25.874196,1042.866 -5.532085,5.3903 c 0,0 -0.425545,1.3948 0.33098,1.9858 0.756524,0.5911 5.933987,0.2601 5.933987,0.2601 l 3.90083,-3.8299 z"
-         id="path4950"
-         inkscape:connector-curvature="0" />
+         id="path4950" />
       <path
          style="fill:url(#linearGradient4982);fill-opacity:1;stroke:#c2c1c1;stroke-width:1.06988704px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
          d="m 30.106004,1047.3342 -4.633711,-4.3499 3.889236,-3.8893 4.468222,4.3027 z"
-         id="path4972"
-         inkscape:connector-curvature="0"
-         sodipodi:nodetypes="ccccc" />
+         id="path4972" />
       <path
          style="fill:url(#linearGradient4992);fill-opacity:1;stroke:#c2c1c1;stroke-width:1.06988704px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
          d="m 30.36606,1044.5919 c -0.532814,-0.6954 -1.460212,-1.6094 -2.245932,-2.1042 -0.785721,-0.4947 -1.820388,-0.6616 -1.820388,-0.6616 0,0 0.09457,-0.993 1.205712,-1.9859 l 8.700031,-8.854 0,12.542 -2.742401,2.3641 c -0.898374,0.5438 -2.316857,0.662 -2.316857,0.662 0.127896,-0.6188 -0.247352,-1.267 -0.780165,-1.9624 z"
-         id="path4974"
-         inkscape:connector-curvature="0"
-         sodipodi:nodetypes="zzccccccz" />
+         id="path4974" />
     </g>
   </g>
 </svg>

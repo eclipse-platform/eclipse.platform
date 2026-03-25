@@ -2,24 +2,19 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="8"
    height="8"
    id="svg2"
    version="1.1"
-   inkscape:version="0.91 r13725"
-   sodipodi:docname="dirty_ov.svg">
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs4">
     <linearGradient
-       inkscape:collect="always"
        id="linearGradient4234">
       <stop
          style="stop-color:#1d1407;stop-opacity:1"
@@ -31,7 +26,6 @@
          id="stop4238" />
     </linearGradient>
     <linearGradient
-       inkscape:collect="always"
        xlink:href="#linearGradient4234"
        id="linearGradient4240"
        x1="5"
@@ -40,7 +34,6 @@
        y2="1045.3622"
        gradientUnits="userSpaceOnUse" />
     <linearGradient
-       inkscape:collect="always"
        xlink:href="#linearGradient4234"
        id="linearGradient4240-3"
        x1="5"
@@ -49,35 +42,6 @@
        y2="1045.3622"
        gradientUnits="userSpaceOnUse" />
   </defs>
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="51.411765"
-     inkscape:cx="-0.30549199"
-     inkscape:cy="3.8055008"
-     inkscape:document-units="px"
-     inkscape:current-layer="layer1"
-     showgrid="true"
-     inkscape:window-width="1440"
-     inkscape:window-height="852"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:snap-bbox="true"
-     inkscape:bbox-nodes="true"
-     inkscape:snap-global="true">
-    <inkscape:grid
-       type="xygrid"
-       id="grid2985"
-       empspacing="5"
-       visible="true"
-       enabled="true"
-       snapvisiblegridlinesonly="true" />
-  </sodipodi:namedview>
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -86,13 +50,11 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
      id="layer1"
      transform="translate(0,-1044.3622)">
     <rect
@@ -114,8 +76,7 @@
     <path
        style="fill:none;fill-rule:evenodd;stroke:#faface;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 4.5,1046.3622 0,5"
-       id="path4199"
-       inkscape:connector-curvature="0" />
+       id="path4199" />
     <rect
        style="display:inline;fill:none;fill-opacity:1;stroke:url(#linearGradient4240-3);stroke-width:1;stroke-opacity:1"
        id="rect4244-5"
@@ -126,27 +87,22 @@
     <path
        style="fill:none;fill-rule:evenodd;stroke:#faface;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 6,1048.8622 -3,0"
-       id="path4199-4"
-       inkscape:connector-curvature="0" />
+       id="path4199-4" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#faface;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 3,1047.8622 -1,0"
-       id="path4199-4-7"
-       inkscape:connector-curvature="0" />
+       id="path4199-4-7" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#faface;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 3,1049.8622 -1,0"
-       id="path4199-4-7-3"
-       inkscape:connector-curvature="0" />
+       id="path4199-4-7-3" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#faface;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 7,1047.8622 -1,0"
-       id="path4199-4-7-9"
-       inkscape:connector-curvature="0" />
+       id="path4199-4-7-9" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#faface;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 7,1049.8622 -1,0"
-       id="path4199-4-7-0"
-       inkscape:connector-curvature="0" />
+       id="path4199-4-7-0" />
   </g>
 </svg>
