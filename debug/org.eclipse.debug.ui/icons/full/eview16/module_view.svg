@@ -2,24 +2,19 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="16"
    height="16"
    id="svg2"
    version="1.1"
-   inkscape:version="0.91 r13725"
-   sodipodi:docname="classpath.svg">
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs4">
     <linearGradient
-       inkscape:collect="always"
        xlink:href="#linearGradient4918-5"
        id="linearGradient4975-9"
        gradientUnits="userSpaceOnUse"
@@ -40,7 +35,6 @@
          id="stop4922-9" />
     </linearGradient>
     <linearGradient
-       inkscape:collect="always"
        xlink:href="#linearGradient4907-9"
        id="linearGradient4977-3"
        gradientUnits="userSpaceOnUse"
@@ -61,7 +55,6 @@
          id="stop4911-0" />
     </linearGradient>
     <linearGradient
-       inkscape:collect="always"
        xlink:href="#linearGradient4928-4"
        id="linearGradient4979-8"
        gradientUnits="userSpaceOnUse"
@@ -111,20 +104,8 @@
        gradientTransform="translate(-4.625,0)"
        gradientUnits="userSpaceOnUse"
        id="linearGradient5020"
-       xlink:href="#linearGradient4961-6"
-       inkscape:collect="always" />
+       xlink:href="#linearGradient4961-6" />
     <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient4961-6"
-       id="linearGradient9855"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="translate(-4.625,0)"
-       x1="15.073242"
-       y1="1040.0764"
-       x2="18.744612"
-       y2="1049.2014" />
-    <linearGradient
-       inkscape:collect="always"
        xlink:href="#linearGradient4938-8"
        id="linearGradient9955"
        x1="-0.81249988"
@@ -134,33 +115,6 @@
        gradientUnits="userSpaceOnUse"
        gradientTransform="translate(5.9999999,-2.0001051)" />
   </defs>
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="32.194078"
-     inkscape:cx="0.70258481"
-     inkscape:cy="7.5860216"
-     inkscape:document-units="px"
-     inkscape:current-layer="g4969"
-     showgrid="true"
-     inkscape:window-width="1920"
-     inkscape:window-height="1036"
-     inkscape:window-x="1440"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     showguides="true"
-     inkscape:guide-bbox="true"
-     inkscape:snap-bbox="true"
-     inkscape:bbox-nodes="true"
-     inkscape:snap-global="true">
-    <inkscape:grid
-       type="xygrid"
-       id="grid3948" />
-  </sodipodi:namedview>
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -174,8 +128,6 @@
     </rdf:RDF>
   </metadata>
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
      id="layer1"
      style="display:inline"
      transform="translate(0,-1036.3622)">
@@ -198,7 +150,6 @@
          id="rect4926"
          style="fill:#78b87c;fill-opacity:1;stroke:url(#linearGradient4979-8);stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       <path
-         inkscape:connector-curvature="0"
          id="path4949"
          d="m 9.635742,1039.5901 c 0.08839,-0.044 1.569658,-0.9063 1.569658,-0.9063 l 3.976711,10.3859 -1.956435,0.5243 z"
          style="fill:#f0c028;fill-opacity:1;stroke:url(#linearGradient5020);stroke-width:0.80000001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
