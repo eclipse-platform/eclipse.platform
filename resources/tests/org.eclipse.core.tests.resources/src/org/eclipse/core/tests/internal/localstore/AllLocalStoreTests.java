@@ -35,6 +35,7 @@ import org.junit.platform.suite.api.Suite;
 		SafeFileInputOutputStreamTest.class, //
 		SymlinkResourceTest.class, //
 		UnifiedTreeTest.class, //
+		DisableHistoryTests.class, //
 })
 public class AllLocalStoreTests {
 
