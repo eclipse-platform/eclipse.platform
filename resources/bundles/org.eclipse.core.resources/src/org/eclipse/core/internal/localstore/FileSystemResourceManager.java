@@ -84,6 +84,8 @@ import org.xml.sax.InputSource;
  */
 public class FileSystemResourceManager implements ICoreConstants, IManager {
 
+	private static final String DISABLE_RESTRICTED_FILE_HISTORY_PREFERENCE = "disableRestrictedFileHistory"; //$NON-NLS-1$
+
 	/**
 	 * The history store is initialized lazily - always use the accessor method
 	 */
@@ -91,11 +93,15 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 	protected Workspace workspace;
 
 	private volatile boolean lightweightAutoRefreshEnabled;
+	private volatile boolean disableRestrictedFileHistory;
 
-	private final IPreferenceChangeListener lightweightAutoRefreshPrefListener = event -> {
-		if (ResourcesPlugin.PREF_LIGHTWEIGHT_AUTO_REFRESH.equals(event.getKey())) {
+	private final IPreferenceChangeListener prefListener = event -> {
+		String preferenceName = event.getKey();
+		if (ResourcesPlugin.PREF_LIGHTWEIGHT_AUTO_REFRESH.equals(preferenceName)) {
 			lightweightAutoRefreshEnabled = Platform.getPreferencesService().getBoolean(ResourcesPlugin.PI_RESOURCES,
 					ResourcesPlugin.PREF_LIGHTWEIGHT_AUTO_REFRESH, false, null);
+		} else if (DISABLE_RESTRICTED_FILE_HISTORY_PREFERENCE.equals(preferenceName)) {
+			setDisableRestrictedFileHistory();
 		}
 	};
 
@@ -1203,15 +1209,16 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 			_historyStore.shutdown(monitor);
 		}
 		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES)
-				.removePreferenceChangeListener(lightweightAutoRefreshPrefListener);
+				.removePreferenceChangeListener(prefListener);
 	}
 
 	@Override
 	public void startup(IProgressMonitor monitor) {
 		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES)
-				.addPreferenceChangeListener(lightweightAutoRefreshPrefListener);
+				.addPreferenceChangeListener(prefListener);
 		lightweightAutoRefreshEnabled = Platform.getPreferencesService().getBoolean(ResourcesPlugin.PI_RESOURCES,
 				ResourcesPlugin.PREF_LIGHTWEIGHT_AUTO_REFRESH, false, null);
+		setDisableRestrictedFileHistory();
 	}
 
 	/**
@@ -1497,7 +1504,31 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 
 	public boolean storeHistory(IResource file) {
 		WorkspaceDescription description = workspace.internalGetDescription();
-		return description.isKeepDerivedState() || !file.isDerived();
+		return (description.isKeepDerivedState() || !file.isDerived()) && !disableHistory(file);
 	}
 
+	private void setDisableRestrictedFileHistory() {
+		disableRestrictedFileHistory = Platform.getPreferencesService().getBoolean(ResourcesPlugin.PI_RESOURCES,
+				DISABLE_RESTRICTED_FILE_HISTORY_PREFERENCE, false, null);
+	}
+
+	private boolean disableHistory(IResource resource) {
+		if (disableRestrictedFileHistory) {
+			if (resource instanceof IFile file) {
+				try {
+					return file.isContentRestricted();
+				} catch (CoreException e) {
+					Policy.log(e.getStatus());
+					/*
+					 * The preference 'disableRestrictedFileHistory' indicates we should skip
+					 * restricted files, but we ran into an exception while checking if the file is
+					 * restricted. Disable history for the file, since we don't know if the file is
+					 * restricted or not.
+					 */
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }
