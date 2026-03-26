@@ -2737,7 +2737,8 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 				createSourceViewer(parent, getDirection()),
 				getResourceBundle(), getCompareConfiguration().getContainer());
 		final StyledText te= viewer.getSourceViewer().getTextWidget();
-
+		// Clear cached line heights upon zoom changes, as they are no longer valid
+		te.addListener(SWT.ZoomChanged, e -> resetCachedLineHeights(viewer));
 		if (!fConfirmSave) {
 			viewer.hideSaveAction();
 		}
@@ -4398,13 +4399,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			lineHeights = new ArrayList<>();
 			lineHeights.addAll(Collections.nCopies(w.getLineCount(), null));
 			this.lineHeightsByViewer.put(tp, lineHeights);
-			tp.getSourceViewer().addTextListener(event -> {
-				List<Integer> lineHeightsList = lineHeightsByViewer.get(tp);
-				if (lineHeightsList != null) {
-					lineHeightsList.clear();
-					lineHeightsList.addAll(Collections.nCopies(w.getLineCount(), null));
-				}
-			});
+			tp.getSourceViewer().addTextListener(event -> resetCachedLineHeights(tp));
 		}
 
 		int lineSpacing = w.getLineSpacing();
@@ -4427,6 +4422,15 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			height += heightAtLine;
 		}
 		return height;
+	}
+
+	private void resetCachedLineHeights(MergeSourceViewer mergeViewer) {
+		StyledText styledText = mergeViewer.getSourceViewer().getTextWidget();
+		List<Integer> lineHeightsList = lineHeightsByViewer.get(mergeViewer);
+		if (lineHeightsList != null) {
+			lineHeightsList.clear();
+			lineHeightsList.addAll(Collections.nCopies(styledText.getLineCount(), null));
+		}
 	}
 
 	private void invalidateLines() {
