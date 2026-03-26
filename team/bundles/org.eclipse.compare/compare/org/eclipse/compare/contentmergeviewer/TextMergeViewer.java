@@ -4593,12 +4593,12 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 	}
 
 	private int[] getCenterCurvePoints(int startx, int starty, int endx, int endy) {
-		if (fBasicCenterCurve == null) {
-			buildBaseCenterCurve(endx-startx);
+		int width = endx - startx;
+		if (fBasicCenterCurve == null || fBasicCenterCurve.length != width) {
+			fBasicCenterCurve = buildBaseCenterCurve(width);
 		}
 		double height= endy - starty;
 		height= height/2;
-		int width= endx-startx;
 		int[] points= new int[width];
 		for (int i= 0; i < width; i++) {
 			points[i]= (int) (-height * fBasicCenterCurve[i] + height + starty);
@@ -4606,13 +4606,12 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		return points;
 	}
 
-	private void buildBaseCenterCurve(int w) {
-		double width= w;
-		fBasicCenterCurve= new double[getCenterWidth()];
-		for (int i= 0; i < getCenterWidth(); i++) {
-			double r= i / width;
-			fBasicCenterCurve[i]= Math.cos(Math.PI * r);
+	private double[] buildBaseCenterCurve(int width) {
+		double[] curve = new double[width];
+		for (int x = 0; x < width; x++) {
+			curve[x] = Math.cos(Math.PI * x / width);
 		}
+		return curve;
 	}
 
 	private int calculateShift(MergeSourceViewer tp) {
