@@ -21,6 +21,7 @@ import org.eclipse.core.filesystem.*;
 import org.eclipse.core.filesystem.provider.FileInfo;
 import org.eclipse.core.internal.resources.ICoreConstants;
 import org.eclipse.core.internal.resources.Resource;
+import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.internal.utils.Policy;
 import org.eclipse.core.resources.*;
@@ -126,7 +127,7 @@ public class DeleteVisitor implements IUnifiedTreeVisitor, ICoreConstants {
 			if (info == null) {
 				info = new FileInfo(node.getLocalName());
 			}
-			if (FileSystemResourceManager.storeHistory(node.getResource())) {
+			if (((Workspace) target.getWorkspace()).getFileSystemManager().storeHistory(target)) {
 				store.addState(target.getFullPath(), node.getStore(), info, true);
 			}
 		}

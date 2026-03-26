@@ -61,7 +61,7 @@ class ResourceTree implements IResourceTree {
 	 */
 	@Override
 	public void addToLocalHistory(IFile file) {
-		if (!FileSystemResourceManager.storeHistory(file)) {
+		if (!localManager.storeHistory(file)) {
 			return;
 		}
 		Assert.isLegal(isValid);

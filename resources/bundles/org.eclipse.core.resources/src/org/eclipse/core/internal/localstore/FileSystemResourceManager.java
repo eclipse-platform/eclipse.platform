@@ -1357,7 +1357,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 		}
 		// add entry to History Store.
 		if (BitMask.isSet(updateFlags, IResource.KEEP_HISTORY) && fileInfo.exists()
-				&& FileSystemResourceManager.storeHistory(target)) {
+				&& storeHistory(target)) {
 			// never move to the history store, because then the file is missing if write
 			// fails
 			getHistoryStore().addState(target.getFullPath(), store, fileInfo, false);
@@ -1495,8 +1495,8 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 		getWorkspace().getMetaArea().clearOldDescription(target);
 	}
 
-	public static boolean storeHistory(IResource file) {
-		WorkspaceDescription description = ((Workspace) file.getWorkspace()).internalGetDescription();
+	public boolean storeHistory(IResource file) {
+		WorkspaceDescription description = workspace.internalGetDescription();
 		return description.isKeepDerivedState() || !file.isDerived();
 	}
 
