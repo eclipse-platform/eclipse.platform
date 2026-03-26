@@ -73,6 +73,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -84,6 +85,8 @@ import org.xml.sax.InputSource;
  */
 public class FileSystemResourceManager implements ICoreConstants, IManager {
 
+	private static final String DISABLE_HISTORY_PREFERENCE_NAME = "disable_history_property"; //$NON-NLS-1$
+
 	/**
 	 * The history store is initialized lazily - always use the accessor method
 	 */
@@ -91,11 +94,15 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 	protected Workspace workspace;
 
 	private volatile boolean lightweightAutoRefreshEnabled;
+	private volatile QualifiedName disableHistoryProperty;
 
-	private final IPreferenceChangeListener lightweightAutoRefreshPrefListener = event -> {
-		if (ResourcesPlugin.PREF_LIGHTWEIGHT_AUTO_REFRESH.equals(event.getKey())) {
+	private final IPreferenceChangeListener prefListener = event -> {
+		String preferenceName = event.getKey();
+		if (ResourcesPlugin.PREF_LIGHTWEIGHT_AUTO_REFRESH.equals(preferenceName)) {
 			lightweightAutoRefreshEnabled = Platform.getPreferencesService().getBoolean(ResourcesPlugin.PI_RESOURCES,
 					ResourcesPlugin.PREF_LIGHTWEIGHT_AUTO_REFRESH, false, null);
+		} else if (DISABLE_HISTORY_PREFERENCE_NAME.equals(preferenceName)) {
+			setDisableHistoryProperty();
 		}
 	};
 
@@ -1203,15 +1210,16 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 			_historyStore.shutdown(monitor);
 		}
 		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES)
-				.removePreferenceChangeListener(lightweightAutoRefreshPrefListener);
+				.removePreferenceChangeListener(prefListener);
 	}
 
 	@Override
 	public void startup(IProgressMonitor monitor) {
 		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES)
-				.addPreferenceChangeListener(lightweightAutoRefreshPrefListener);
+				.addPreferenceChangeListener(prefListener);
 		lightweightAutoRefreshEnabled = Platform.getPreferencesService().getBoolean(ResourcesPlugin.PI_RESOURCES,
 				ResourcesPlugin.PREF_LIGHTWEIGHT_AUTO_REFRESH, false, null);
+		setDisableHistoryProperty();
 	}
 
 	/**
@@ -1497,7 +1505,31 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 
 	public boolean storeHistory(IResource file) {
 		WorkspaceDescription description = workspace.internalGetDescription();
-		return description.isKeepDerivedState() || !file.isDerived();
+		return (description.isKeepDerivedState() || !file.isDerived()) && !disableHistory(file);
 	}
 
+	private void setDisableHistoryProperty() {
+		String propertyName = Platform.getPreferencesService().getString(ResourcesPlugin.PI_RESOURCES,
+				DISABLE_HISTORY_PREFERENCE_NAME, "", null); //$NON-NLS-1$
+		disableHistoryProperty = propertyName.isEmpty() ? null : new QualifiedName(null, propertyName);
+	}
+
+	private boolean disableHistory(IResource resource) {
+		if (resource.getType() == IResource.FILE) {
+			QualifiedName property = disableHistoryProperty;
+			if (property != null) {
+				try {
+					return resource.getSessionProperty(property) != null;
+				} catch (CoreException e) {
+					Policy.log(e);
+					/*
+					 * Assume history is disabled for the file, since the preference for disabling
+					 * is set but we cannot determine the set of properties for the file.
+					 */
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }
