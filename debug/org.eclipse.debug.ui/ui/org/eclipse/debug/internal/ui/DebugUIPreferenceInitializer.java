@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2004, 2025 IBM Corporation and others.
+ *  Copyright (c) 2004, 2026 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -69,7 +69,8 @@ public class DebugUIPreferenceInitializer extends AbstractPreferenceInitializer 
 		prefs.setDefault(IInternalDebugUIConstants.PREF_LAUNCH_LAST_IF_NOT_LAUNCHABLE, true);
 
 		prefs.setDefault(IInternalDebugUIConstants.PREF_TERMINATE_AND_RELAUNCH_LAUNCH_ACTION, false);
-		prefs.setDefault(IInternalDebugUIConstants.PREF_BREAKPOINT_SORTING_ORDER, IInternalDebugUIConstants.BREAKPOINT_SORTING_ORDER_NAME);
+		prefs.setDefault(IInternalDebugUIConstants.PREF_BREAKPOINT_SORTING_ORDER,
+				IInternalDebugUIConstants.BREAKPOINT_SORTING_ORDER_CREATION_TIME);
 
 		//View Management preference page
 		prefs.setDefault(IDebugUIConstants.PREF_MANAGE_VIEW_PERSPECTIVES, IDebugUIConstants.PREF_MANAGE_VIEW_PERSPECTIVES_DEFAULT);
