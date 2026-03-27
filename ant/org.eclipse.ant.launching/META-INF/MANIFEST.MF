@@ -5,12 +5,12 @@ Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.ant.launching;singleton:=true
 Bundle-Version: 1.4.1100.qualifier
 Bundle-Activator: org.eclipse.ant.internal.launching.AntLaunching
-Require-Bundle: org.eclipse.core.runtime;bundle-version="[3.29.0,4.0.0)",
+Require-Bundle: org.eclipse.core.runtime;bundle-version="[3.34.200.v20251220-0953,4.0.0)",
  org.eclipse.debug.core;bundle-version="[3.12.0,4.0.0)",
  org.eclipse.jdt.launching;bundle-version="[3.12.0,4.0.0)",
  org.eclipse.core.variables;bundle-version="[3.2.0,4.0.0)",
  org.eclipse.ant.core;bundle-version="[3.2.0,4.0.0)",
- org.apache.ant;bundle-version="1.9.4",
+ org.apache.ant;bundle-version="[1.10.15.v20240901-1000,null)",
  org.eclipse.core.externaltools;bundle-version="[1.0.0,2.0.0)",
  org.eclipse.text;bundle-version="[3.5.0,4.0.0)",
  org.eclipse.jdt.core;bundle-version="[3.36.0,4.0.0)",
