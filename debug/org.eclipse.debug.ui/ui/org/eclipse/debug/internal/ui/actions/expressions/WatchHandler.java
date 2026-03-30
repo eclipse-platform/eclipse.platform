@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2015 Wind River Systems and others.
+ * Copyright (c) 2008, 2026 Wind River Systems and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -10,10 +10,12 @@
  *
  * Contributors:
  *     Wind River Systems - initial API and implementation
+ *     IBM Corporation - Improved expression creation
  *******************************************************************************/
 package org.eclipse.debug.internal.ui.actions.expressions;
 
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -33,6 +35,8 @@ import org.eclipse.debug.ui.actions.IWatchExpressionFactoryAdapter;
 import org.eclipse.debug.ui.actions.IWatchExpressionFactoryAdapter2;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.TreePath;
+import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
@@ -49,12 +53,39 @@ public class WatchHandler extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		ISelection selection = HandlerUtil.getCurrentSelection(event);
-		if (selection instanceof IStructuredSelection) {
-			Iterator<?> iter = ((IStructuredSelection)selection).iterator();
-			while (iter.hasNext()) {
-				Object element = iter.next();
-				createExpression(element);
+		if (selection instanceof IStructuredSelection structuredSelection) {
+			if (structuredSelection instanceof TreeSelection treeSelection) {
+				for (TreePath path : treeSelection.getPaths()) {
+					List<IVariable> variables = new ArrayList<>();
+					if (path.getSegmentCount() > 1) {
+						for (int e = 0; e < path.getSegmentCount(); e++) {
+							IVariable variable = (IVariable) path.getSegment(e);
+							variables.add(variable);
+						}
+						IWatchExpressionFactoryAdapter2 factory = getFactory2(variables);
+						if (factory != null) {
+							boolean canCreate = factory.canCreateWatchExpression(variables);
+							if (canCreate) {
+								try {
+									String expression = factory.createWatchExpression(variables);
+									createWatchExpression(expression);
+								} catch (CoreException e) {
+									DebugPlugin.log(e);
+									break;
+								}
+							}
+						}
+					} else {
+						Object element = path.getFirstSegment();
+						createExpression(element);
+					}
+				}
+			} else {
+				for (Object element : structuredSelection.toArray()) {
+					createExpression(element);
+				}
 			}
+			showExpressionsView();
 		}
 		return null;
 	}
@@ -96,9 +127,12 @@ public class WatchHandler extends AbstractHandler {
 			DebugUIPlugin.errorDialog(DebugUIPlugin.getShell(), ActionMessages.WatchAction_0, ActionMessages.WatchAction_1, e); //
 			return;
 		}
+		createWatchExpression(expressionString);
+	}
 
+	private void createWatchExpression(String expressionString) {
 		IWatchExpression expression;
-			expression = DebugPlugin.getDefault().getExpressionManager().newWatchExpression(expressionString);
+		expression = DebugPlugin.getDefault().getExpressionManager().newWatchExpression(expressionString);
 		DebugPlugin.getDefault().getExpressionManager().addExpression(expression);
 		IAdaptable object = DebugUITools.getDebugContext();
 		IDebugElement context = null;
@@ -108,9 +142,7 @@ public class WatchHandler extends AbstractHandler {
 			context = ((ILaunch) object).getDebugTarget();
 		}
 		expression.setExpressionContext(context);
-		showExpressionsView();
 	}
-
 
 	/**
 	 * Returns the factory adapter for the given variable or <code>null</code> if none.
@@ -131,6 +163,16 @@ public class WatchHandler extends AbstractHandler {
 	static IWatchExpressionFactoryAdapter2 getFactory2(Object element) {
 		if (element instanceof IAdaptable) {
 			return ((IAdaptable)element).getAdapter(IWatchExpressionFactoryAdapter2.class);
+		}
+		if (element instanceof List<?> ExpressionList) {
+			for (Object obj : ExpressionList) {
+				if (!(obj instanceof IAdaptable)) {
+					return null;
+				}
+			}
+			if (ExpressionList.getFirst() instanceof IVariable variable) {
+				return variable.getAdapter(IWatchExpressionFactoryAdapter2.class);
+			}
 		}
 		return null;
 	}
