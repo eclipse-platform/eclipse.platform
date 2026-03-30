@@ -41,6 +41,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -60,6 +61,12 @@ import org.eclipse.osgi.util.NLS;
  * The standard implementation of {@link IFile}.
  */
 public class File extends Resource implements IFile {
+
+	/**
+	 * Session property used to mark a file as containing restricted content
+	 */
+	private static final QualifiedName RESTRICTED_CONTENT =
+			new QualifiedName(ResourcesPlugin.PI_RESOURCES, "restrictedContent"); //$NON-NLS-1$
 
 	protected File(IPath path, Workspace container) {
 		super(path, container);
@@ -670,4 +677,14 @@ public class File extends Resource implements IFile {
 		return checkParent ? getProject().getDefaultLineSeparator() : null;
 	}
 
+	@Override
+	public boolean isContentRestricted() throws CoreException {
+		Object sessionProperty = getSessionProperty(RESTRICTED_CONTENT);
+		return Boolean.TRUE.equals(sessionProperty);
+	}
+
+	@Override
+	public void setContentRestricted(boolean restricted) throws CoreException {
+		setSessionProperty(RESTRICTED_CONTENT, restricted ? Boolean.TRUE : null);
+	}
 }
