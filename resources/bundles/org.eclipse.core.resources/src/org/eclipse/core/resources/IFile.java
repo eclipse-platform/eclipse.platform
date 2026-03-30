@@ -53,6 +53,14 @@ import org.eclipse.core.runtime.content.IContentTypeManager;
  * @noextend This interface is not intended to be extended by clients.
  */
 public interface IFile extends IResource, IEncodedStorage, IAdaptable {
+
+	/**
+	 * Session property used to mark a file as containing restricted content
+	 *
+	 * @since 3.24
+	 */
+	QualifiedName RESTRICTED_CONTENT = new QualifiedName(ResourcesPlugin.PI_RESOURCES, "restrictedContent"); //$NON-NLS-1$
+
 	/**
 	 * Character encoding constant (value 0) which identifies
 	 * files that have an unknown character encoding scheme.
@@ -1413,5 +1421,31 @@ public interface IFile extends IResource, IEncodedStorage, IAdaptable {
 	 */
 	public default String getLineSeparator(boolean checkParent) throws CoreException {
 		return getProject().getDefaultLineSeparator();
+	}
+
+	/**
+	 * Returns whether the current file is marked as containing restricted
+	 * (sensitive) content, where some IDE functionality related to the file content
+	 * might be limited.
+	 *
+	 * @return whether the current file is marked as containing sensitive content.
+	 *         This flag is not persisted and is {@code false} by default.
+	 * @since 3.24
+	 */
+	default boolean isContentRestricted() throws CoreException {
+		return getWorkspace().getDescription().isRestrictedContentEnabled()
+				&& getSessionProperty(RESTRICTED_CONTENT) != null;
+	}
+
+	/**
+	 * Marks the current file as containing restricted (sensitive) content. Some IDE
+	 * functionality related to the file content might be limited as long as the
+	 * file is marked as restricted. This flag is not persisted and is {@code false}
+	 * by default.
+	 *
+	 * @since 3.24
+	 */
+	default void setContentRestricted(boolean restricted) throws CoreException {
+		setSessionProperty(RESTRICTED_CONTENT, Boolean.toString(restricted));
 	}
 }

@@ -115,6 +115,18 @@ public interface IWorkspaceDescription {
 	boolean isApplyFileStatePolicy();
 
 	/**
+	 * Returns whether certain IDE functionality should be disabled for restricted
+	 * (sensitive) files. Examples are file history and search.
+	 *
+	 * @return <code>true</code> if restricted (sensitive) files handling is enabled
+	 *         by the IDE, <code>false</code> otherwise
+	 * @see IFile#setContentRestricted(boolean)
+	 * @see IFile#isContentRestricted()
+	 * @since 3.24
+	 */
+	boolean isRestrictedContentEnabled();
+
+	/**
 	 * Returns the interval between automatic workspace snapshots.
 	 *
 	 * @return the amount of time in milliseconds between automatic workspace snapshots
@@ -301,6 +313,18 @@ public interface IWorkspaceDescription {
 	 * @since 3.13
 	 */
 	void setMaxConcurrentBuilds(int n);
+
+	/**
+	 * Specifies whether certain IDE functionality should be disabled for restricted
+	 * (sensitive) files. Examples are file history and search.
+	 *
+	 * @param enabled <code>true</code> to enable restricted (sensitive) files
+	 *                handling, <code>false</code> otherwise
+	 * @see IFile#setContentRestricted(boolean)
+	 * @see IFile#isContentRestricted()
+	 * @since 3.24
+	 */
+	void setRestrictedContentEnabled(boolean enabled);
 
 	/**
 	 * @return the max number of builds that can happen concurrently during workspace build. 1 means no job (current thread).
