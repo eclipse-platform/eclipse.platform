@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2015 IBM Corporation and others.
+ *  Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -21,7 +21,9 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.net.URI;
 import java.util.Objects;
+import org.eclipse.core.internal.resources.ResourceException;
 import org.eclipse.core.internal.utils.FileUtil;
+import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
@@ -32,6 +34,7 @@ import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.content.IContentDescription;
 import org.eclipse.core.runtime.content.IContentTypeManager;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * Files are leaf resources which contain data.
@@ -1413,5 +1416,38 @@ public interface IFile extends IResource, IEncodedStorage, IAdaptable {
 	 */
 	public default String getLineSeparator(boolean checkParent) throws CoreException {
 		return getProject().getDefaultLineSeparator();
+	}
+
+	/**
+	 * Returns whether the current file is marked as containing restricted
+	 * (sensitive) content, where some IDE functionality related to the file content
+	 * might be limited. The file must exist.
+	 *
+	 * @return whether the current file is marked as containing sensitive content.
+	 *         This flag is not persisted and is {@code false} by default
+	 * @throws CoreException if the file doesn't exist or if this method fails
+	 * @since 3.24
+	 */
+	default boolean isContentRestricted() throws CoreException {
+		if (!exists()) {
+			String message = NLS.bind(Messages.resources_mustExist, getFullPath());
+			throw new ResourceException(IResourceStatus.RESOURCE_NOT_FOUND, getFullPath(), message, null);
+		}
+		return false;
+	}
+
+	/**
+	 * Marks the current file as containing restricted (sensitive) content. Some IDE
+	 * functionality related to the file content might be limited as long as the
+	 * file is marked as restricted. The file must exist. This flag is not persisted
+	 * and is {@code false} by default.
+	 *
+	 * @param restricted <code>true</code> if the file should be marked restricted,
+	 *                   <code>false</code> if the file should be unmarked
+	 * @throws CoreException if the file doesn't exist or if this method fails
+	 * @since 3.24
+	 */
+	default void setContentRestricted(boolean restricted) throws CoreException {
+		throw new CoreException(Status.error("Not implemented")); //$NON-NLS-1$
 	}
 }
