@@ -34,6 +34,7 @@ public class WorkspaceDescription extends ModelObject implements IWorkspaceDescr
 	protected int operationsPerSnapshot;
 	protected long deltaExpiration;
 	private int parallelBuildsCount;
+	private boolean enableRestrictedContent;
 
 	public WorkspaceDescription(String name) {
 		super(name);
@@ -51,6 +52,8 @@ public class WorkspaceDescription extends ModelObject implements IWorkspaceDescr
 		operationsPerSnapshot = node.getInt(PreferenceInitializer.PREF_OPERATIONS_PER_SNAPSHOT, PreferenceInitializer.PREF_OPERATIONS_PER_SNAPSHOT_DEFAULT);
 		deltaExpiration = node.getLong(PreferenceInitializer.PREF_DELTA_EXPIRATION, PreferenceInitializer.PREF_DELTA_EXPIRATION_DEFAULT);
 		parallelBuildsCount = node.getInt(ResourcesPlugin.PREF_MAX_CONCURRENT_BUILDS, PreferenceInitializer.PREF_MAX_CONCURRENT_BUILDS_DEFAULT);
+		// set at runtime:
+		enableRestrictedContent = false;
 	}
 
 	/**
@@ -226,5 +229,15 @@ public class WorkspaceDescription extends ModelObject implements IWorkspaceDescr
 	@Override
 	public void setKeepDerivedState(boolean keepDerivedState) {
 		this.keepDerivedState = keepDerivedState;
+	}
+
+	@Override
+	public boolean isRestrictedContentEnabled() {
+		return enableRestrictedContent;
+	}
+
+	@Override
+	public void setRestrictedContentEnabled(boolean enabled) {
+		this.enableRestrictedContent = enabled;
 	}
 }
