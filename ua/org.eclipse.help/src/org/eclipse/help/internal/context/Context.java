@@ -27,6 +27,7 @@ import org.eclipse.help.internal.Topic;
 import org.eclipse.help.internal.UAElement;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 public class Context extends UAElement implements IContext3 {
@@ -53,27 +54,37 @@ public class Context extends UAElement implements IContext3 {
 		if (getText() == null || getText().length() == 0) {
 			setText(text);
 		}
-		if (src instanceof IContext2 && getTitle() == null) {
-			String title  = ((IContext2)src).getTitle();
+		if (src instanceof IContext2 icontext2 && getTitle() == null) {
+			String title = icontext2.getTitle();
 			if (title != null) {
 				setAttribute(ATTRIBUTE_TITLE, title);
 			}
 		}
-		if (src instanceof IContext3) {
-			ICommandLink[] commands = ((IContext3)src).getRelatedCommands();
-			for (int i=0;i<commands.length;++i) {
-				appendChild(new CommandLink(commands[i]));
+		if (src instanceof IContext3 icontext3) {
+			ICommandLink[] commands = icontext3.getRelatedCommands();
+			for (ICommandLink command : commands) {
+				appendChild(new CommandLink(command));
 			}
 		}
-		IHelpResource[] topics = src.getRelatedTopics();
-		for (int i=0;i<topics.length;++i) {
-			if (topics[i] instanceof ITopic) {
-				appendChild(new Topic((ITopic)topics[i]));
+		if (src instanceof UAElement uaelement) {
+			NamedNodeMap attributes = uaelement.getElement().getAttributes();
+			for (int i = 0; i < attributes.getLength(); i++) {
+				Node attribute = attributes.item(i);
+				String attributeName = attribute.getNodeName();
+				String attributeValue = attribute.getNodeValue();
+				if (getAttribute(attributeName) == null) {
+					setAttribute(attributeName, attributeValue);
+				}
 			}
-			else {
+		}
+		IHelpResource[] relatedTopics = src.getRelatedTopics();
+		for (IHelpResource relatedTopic : relatedTopics) {
+			if (relatedTopic instanceof ITopic) {
+				appendChild(new Topic((ITopic) relatedTopic));
+			} else {
 				Topic topic = new Topic();
-				topic.setHref(topics[i].getHref());
-				topic.setLabel(topics[i].getLabel());
+				topic.setHref(relatedTopic.getHref());
+				topic.setLabel(relatedTopic.getLabel());
 				appendChild(topic);
 			}
 		}

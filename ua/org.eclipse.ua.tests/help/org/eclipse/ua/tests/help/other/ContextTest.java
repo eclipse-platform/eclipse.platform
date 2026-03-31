@@ -420,7 +420,7 @@ public class ContextTest {
 		assertEquals("Context Description", context3.getText());
 	}
 
-	/*
+	@Test
 	public void testCopyContextWithAttribute() {
 		final String contextSource = CONTEXT_HEAD_WITH_ATTRIBUTE +
 			CONTEXT_DESCRIPTION +
@@ -432,6 +432,5 @@ public class ContextTest {
 		assertEquals("abc", context1.getAttribute("att"));
 		assertEquals("abc", context2.getAttribute("att"));
 	}
-	*/
 
 }
