@@ -18,10 +18,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.times;
 
 import java.net.URL;
 import java.util.AbstractCollection;
@@ -33,8 +32,9 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.osgi.framework.FrameworkUtil;
 
 import org.w3c.dom.Document;
@@ -72,7 +72,13 @@ import org.eclipse.core.runtime.Platform;
 @SuppressWarnings("restriction")
 public class ExpressionTests {
 
-	private static final int TYPE_ITERATIONS = 100000;
+	/**
+	 * Used exclusively by {@link #testSubTypeTiming()} to provide a cache key type
+	 * unique to this test, avoiding interference with other tests.
+	 */
+	private static class CachingTestSet extends HashSet<Object> {
+		private static final long serialVersionUID = 1L;
+	}
 
 	public static class CollectionWrapper {
 		public Collection<String> collection;
@@ -1014,28 +1020,32 @@ public class ExpressionTests {
 	}
 
 	@Test
-	@Disabled("CI test environment too unstable for performance tests")
 	public void testSubTypeTiming() throws Exception {
-		HashSet<?> o1 = new HashSet<>();
+		CachingTestSet o = new CachingTestSet();
 
-		System.gc();
-		long cachedStart= System.currentTimeMillis();
-		for (int i= 0; i < TYPE_ITERATIONS; i++) {
-			assertTrue(Expressions.isInstanceOf(o1, "java.util.Set"));
-			assertFalse(Expressions.isInstanceOf(o1, "java.util.List"));
+		try (MockedStatic<Expressions> expressionsMock = Mockito.mockStatic(Expressions.class,
+				Mockito.CALLS_REAL_METHODS)) {
+			// First call (positive): cache miss — isSubtype must traverse the class
+			// hierarchy
+			assertThat(Expressions.isInstanceOf(o, "java.util.Set")).isTrue();
+			expressionsMock.verify(() -> Expressions.uncachedIsSubtype(CachingTestSet.class, "java.util.Set"),
+					times(1));
+			// Second call (positive): cache hit — uncachedIsSubtype must NOT be invoked
+			// again
+			assertThat(Expressions.isInstanceOf(o, "java.util.Set")).isTrue();
+			expressionsMock.verify(() -> Expressions.uncachedIsSubtype(CachingTestSet.class, "java.util.Set"),
+					times(1));
+			// First call (negative): cache miss — isSubtype must traverse the class
+			// hierarchy
+			assertThat(Expressions.isInstanceOf(o, "java.util.List")).isFalse();
+			expressionsMock.verify(() -> Expressions.uncachedIsSubtype(CachingTestSet.class, "java.util.List"),
+					times(1));
+			// Second call (negative): cache hit — uncachedIsSubtype must NOT be invoked
+			// again
+			assertThat(Expressions.isInstanceOf(o, "java.util.List")).isFalse();
+			expressionsMock.verify(() -> Expressions.uncachedIsSubtype(CachingTestSet.class, "java.util.List"),
+					times(1));
 		}
-		long cachedDelta= System.currentTimeMillis() - cachedStart;
-
-		System.gc();
-		long instanceStart= System.currentTimeMillis();
-		for (int i= 0; i < TYPE_ITERATIONS; i++) {
-			assertTrue(Expressions.uncachedIsSubtype(o1.getClass(), "java.util.Set"));
-			assertFalse(Expressions.uncachedIsSubtype(o1.getClass(), "java.util.List"));
-		}
-		long instanceDelta= System.currentTimeMillis() - instanceStart;
-
-		assertThat(cachedDelta).as("assert cachedDelta is less than instanceDelta" + instanceDelta)
-				.isLessThan(instanceDelta);
 	}
 
 }
