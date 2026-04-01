@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -45,6 +45,7 @@ public final class ExpressionMessages extends NLS {
 
 	public static String ResolveExpression_variable_not_defined;
 
+	public static String PropertyTesterDescriptor_invalid;
 	public static String PropertyTesterDescriptor_no_namespace;
 	public static String PropertyTesterDescritpri_no_properties;
 
