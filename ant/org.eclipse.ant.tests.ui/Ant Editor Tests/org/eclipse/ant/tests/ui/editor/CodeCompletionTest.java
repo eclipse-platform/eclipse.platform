@@ -692,7 +692,7 @@ public class CodeCompletionTest {
 		assertEquals("classpath", proposal.getDisplayString()); //$NON-NLS-1$
 
 		// "<project><target><mk"
-		proposals = processor.getTaskProposals("<project><target><mk", "target", "mk"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		proposals = processor.getTaskProposals("<project><target><mkd", "target", "mkd"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		assertThat(proposals).hasSize(1);
 		proposal = proposals[0];
 		assertEquals("mkdir", proposal.getDisplayString()); //$NON-NLS-1$
