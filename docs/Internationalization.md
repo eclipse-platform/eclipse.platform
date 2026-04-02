@@ -9,7 +9,7 @@ This work involves translating strings into other languages (often called NLS fo
 Tools Used
 ----------
 
-Some Eclipse plug-ins use ICU4J APIs when working with locale-specific content.
+Eclipse plug-ins use standard Java APIs (such as `java.text` and `java.util`) when working with locale-specific content.
 
 Most Eclipse plug-ins use a special [Eclipse message bundle](http://www.eclipse.org/eclipse/platform-core/documents/3.1/message_bundles.html) mechanism for working with translated strings. This mechanism uses traditional Java message.properties files, but without using String-based keys. This has much better memory usage characteristics than traditional approaches.
 
