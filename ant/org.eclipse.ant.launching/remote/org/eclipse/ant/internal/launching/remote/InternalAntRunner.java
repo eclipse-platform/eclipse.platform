@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2025 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  * Portions Copyright  2000-2005 The Apache Software Foundation
  *
  * This program and the accompanying materials are made
@@ -29,20 +29,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.NoSuchElementException;
 import java.util.Properties;
-import java.util.StringTokenizer;
 import java.util.Vector;
 
 import org.apache.tools.ant.AntTypeDefinition;
-import org.apache.tools.ant.BuildEvent;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.BuildListener;
 import org.apache.tools.ant.BuildLogger;
 import org.apache.tools.ant.ComponentHelper;
 import org.apache.tools.ant.DefaultLogger;
+import org.apache.tools.ant.DemuxInputStream;
 import org.apache.tools.ant.DemuxOutputStream;
 import org.apache.tools.ant.Diagnostics;
+import org.apache.tools.ant.Executor;
 import org.apache.tools.ant.Main;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectHelper;
@@ -96,10 +95,6 @@ public class InternalAntRunner {
 	private Map<String, String> eclipseSpecifiedTasks;
 	private Map<String, String> eclipseSpecifiedTypes;
 
-	/**
-	 * Cache of the Ant version number when it has been loaded
-	 */
-	private String antVersionNumber = null;
 
 	/** Our current message output status. Follows Project.MSG_XXX */
 	private int messageOutputLevel = Project.MSG_INFO;
@@ -224,21 +219,9 @@ public class InternalAntRunner {
 					buildFile.getAbsolutePath()));
 		}
 
-		if (!isVersionCompatible("1.5")) { //$NON-NLS-1$
-			parseBuildFile(project, buildFile);
-		} else {
-			ProjectHelper helper = ProjectHelper.getProjectHelper();
-			project.addReference("ant.projectHelper", helper); //$NON-NLS-1$
-			helper.parse(project, buildFile);
-		}
-	}
-
-	/**
-	 * @deprecated support for Ant older than 1.5
-	 */
-	@Deprecated
-	private void parseBuildFile(Project project, File buildFile) {
-		ProjectHelper.configureProject(project, buildFile);
+		ProjectHelper helper = ProjectHelper.getProjectHelper();
+		project.addReference("ant.projectHelper", helper); //$NON-NLS-1$
+		helper.parse(project, buildFile);
 	}
 
 	private void printArguments(Project project) {
@@ -356,9 +339,8 @@ public class InternalAntRunner {
 	@SuppressWarnings("removal") // SecurityManager
 	private void run(List<String> argList) {
 		setCurrentProject(new Project());
-		if (isVersionCompatible("1.6.3")) { //$NON-NLS-1$
-			new ExecutorSetter().setExecutor(getCurrentProject());
-		}
+		Executor executor = new EclipseDefaultExecutor();
+		getCurrentProject().setExecutor(executor);
 		Throwable error = null;
 		PrintStream originalErr = System.err;
 		PrintStream originalOut = System.out;
@@ -385,12 +367,12 @@ public class InternalAntRunner {
 
 			addInputHandler(getCurrentProject());
 
-			remapSystemIn();
+			System.setIn(new DemuxInputStream(getCurrentProject()));
 			System.setOut(new PrintStream(new DemuxOutputStream(getCurrentProject(), false)));
 			System.setErr(new PrintStream(new DemuxOutputStream(getCurrentProject(), true)));
 
 			if (!projectHelp) {
-				fireBuildStarted(getCurrentProject());
+				getCurrentProject().fireBuildStarted();
 			}
 
 			if (fEarlyErrorMessage != null) {
@@ -422,14 +404,12 @@ public class InternalAntRunner {
 
 			// needs to occur after processCommandLine(List)
 			if (allowInput && (inputHandlerClassname != null && inputHandlerClassname.length() > 0)) {
-				if (isVersionCompatible("1.6")) { //$NON-NLS-1$
-					getCurrentProject().setDefaultInputStream(originalIn);
-				}
+				getCurrentProject().setDefaultInputStream(originalIn);
 			} else {
 				// set the system property that any input handler
 				// can check to see if handling input is allowed
 				System.setProperty("eclipse.ant.noInput", "true"); //$NON-NLS-1$//$NON-NLS-2$
-				if (isVersionCompatible("1.5") && (inputHandlerClassname == null || inputHandlerClassname.length() == 0)) { //$NON-NLS-1$
+				if (inputHandlerClassname == null || inputHandlerClassname.length() == 0) {
 					InputHandlerSetter setter = new InputHandlerSetter();
 					setter.setInputHandler(getCurrentProject(), "org.eclipse.ant.internal.launching.remote.inputhandler.FailInputHandler"); //$NON-NLS-1$
 				}
@@ -440,9 +420,7 @@ public class InternalAntRunner {
 			setTasks();
 			setTypes();
 
-			if (isVersionCompatible("1.6")) { //$NON-NLS-1$
-				getCurrentProject().setKeepGoingMode(keepGoing);
-			}
+			getCurrentProject().setKeepGoingMode(keepGoing);
 
 			parseBuildFile(getCurrentProject());
 
@@ -468,9 +446,6 @@ public class InternalAntRunner {
 			}
 			if (targets.isEmpty() && getCurrentProject().getDefaultTarget() != null) {
 				targets.add(getCurrentProject().getDefaultTarget());
-			}
-			if (!isVersionCompatible("1.6.3")) { //$NON-NLS-1$
-				getCurrentProject().addReference(IAntCoreConstants.TARGET_VECTOR_NAME, targets);
 			}
 			getCurrentProject().executeTargets(targets);
 		}
@@ -510,25 +485,13 @@ public class InternalAntRunner {
 				taskName = entry.getKey();
 				taskClassName = entry.getValue();
 
-				if (isVersionCompatible("1.6")) { //$NON-NLS-1$
-					AntTypeDefinition def = new AntTypeDefinition();
-					def.setName(taskName);
-					def.setClassName(taskClassName);
-					def.setClassLoader(this.getClass().getClassLoader());
-					def.setAdaptToClass(Task.class);
-					def.setAdapterClass(TaskAdapter.class);
-					ComponentHelper.getComponentHelper(getCurrentProject()).addDataTypeDefinition(def);
-				} else {
-					try {
-						Class<?> taskClass = Class.forName(taskClassName);
-						getCurrentProject().addTaskDefinition(taskName, taskClass);
-					}
-					catch (ClassNotFoundException e) {
-						String message = MessageFormat.format(RemoteAntMessages.getString("InternalAntRunner.161"), taskClassName, //$NON-NLS-1$
-														taskName);
-						getCurrentProject().log(message, Project.MSG_WARN);
-					}
-				}
+				AntTypeDefinition def = new AntTypeDefinition();
+				def.setName(taskName);
+				def.setClassName(taskClassName);
+				def.setClassLoader(this.getClass().getClassLoader());
+				def.setAdaptToClass(Task.class);
+				def.setAdapterClass(TaskAdapter.class);
+				ComponentHelper.getComponentHelper(getCurrentProject()).addDataTypeDefinition(def);
 			}
 		}
 	}
@@ -540,33 +503,13 @@ public class InternalAntRunner {
 			for (Entry<String, String> entry : eclipseSpecifiedTypes.entrySet()) {
 				typeName = entry.getKey();
 				typeClassName = entry.getValue();
-				if (isVersionCompatible("1.6")) { //$NON-NLS-1$
-					AntTypeDefinition def = new AntTypeDefinition();
-					def.setName(typeName);
-					def.setClassName(typeClassName);
-					def.setClassLoader(this.getClass().getClassLoader());
-					ComponentHelper.getComponentHelper(getCurrentProject()).addDataTypeDefinition(def);
-				} else {
-					try {
-						Class<?> typeClass = Class.forName(typeClassName);
-						getCurrentProject().addDataTypeDefinition(typeName, typeClass);
-					}
-					catch (ClassNotFoundException e) {
-						String message = MessageFormat.format(RemoteAntMessages.getString("InternalAntRunner.162"), typeClassName, //$NON-NLS-1$
-														typeName);
-						getCurrentProject().log(message, Project.MSG_WARN);
-					}
-				}
+				AntTypeDefinition def = new AntTypeDefinition();
+				def.setName(typeName);
+				def.setClassName(typeClassName);
+				def.setClassLoader(this.getClass().getClassLoader());
+				ComponentHelper.getComponentHelper(getCurrentProject()).addDataTypeDefinition(def);
 			}
 		}
-	}
-
-	private void remapSystemIn() {
-		if (!isVersionCompatible("1.6")) { //$NON-NLS-1$
-			return;
-		}
-		DemuxInputStreamSetter setter = new DemuxInputStreamSetter();
-		setter.remapSystemIn(getCurrentProject());
 	}
 
 	/**
@@ -606,33 +549,11 @@ public class InternalAntRunner {
 		return buildLogger;
 	}
 
-	/**
-	 * Project.fireBuildStarted is protected in Ant earlier than 1.5.*. Provides backwards compatibility with old Ant installs.
-	 */
-	private void fireBuildStarted(Project project) {
-		if (!isVersionCompatible("1.5")) { //$NON-NLS-1$
-			BuildEvent event = new BuildEvent(project);
-			for (BuildListener listener : project.getBuildListeners()) {
-				listener.buildStarted(event);
-			}
-		} else {
-			project.fireBuildStarted();
-		}
-	}
-
 	private void fireBuildFinished(Project project, Throwable error) {
 		if (error == null && scriptExecuted) {
 			logMessage(project, RemoteAntMessages.getString("InternalAntRunner.BUILD_SUCCESSFUL_1"), messageOutputLevel); //$NON-NLS-1$
 		}
-		if (!isVersionCompatible("1.5")) { //$NON-NLS-1$
-			BuildEvent event = new BuildEvent(project);
-			event.setException(error);
-			for (BuildListener listener : project.getBuildListeners()) {
-				listener.buildFinished(event);
-			}
-		} else {
-			project.fireBuildFinished(error);
-		}
+		project.fireBuildFinished(error);
 	}
 
 	private void logMessage(Project project, String message, int priority) {
@@ -671,128 +592,6 @@ public class InternalAntRunner {
 		messageOutputLevel = level;
 		if (buildLogger != null) {
 			buildLogger.setMessageOutputLevel(level);
-		}
-	}
-
-	/**
-	 * @return a String representation of the Ant version number as specified in the version.txt file
-	 */
-	private String getAntVersionNumber() throws BuildException {
-		if (antVersionNumber == null) {
-			try {
-				InputStream in = Main.class.getResourceAsStream("/org/apache/tools/ant/version.txt");//$NON-NLS-1$
-				Properties props = new Properties();
-				props.load(in);
-				String versionNumber = props.getProperty("VERSION"); //$NON-NLS-1$
-				antVersionNumber = versionNumber;
-			}
-			catch (IOException ioe) {
-				throw new BuildException(MessageFormat.format(RemoteAntMessages.getString("InternalAntRunner.Could_not_load_the_version_information._{0}_9"), ioe.getMessage()), ioe); //$NON-NLS-1$
-			}
-			catch (NullPointerException npe) {
-				throw new BuildException(RemoteAntMessages.getString("InternalAntRunner.Could_not_load_the_version_information._10"), npe); //$NON-NLS-1$
-			}
-		}
-		return antVersionNumber;
-	}
-
-	/**
-	 * Returns whether the given version is compatible with the current Ant version. A version is compatible if it is less than or equal to the
-	 * current version.
-	 */
-	private boolean isVersionCompatible(String comparison) {
-		String version = getAntVersionNumber();
-		Version osgiVersion = new Version(version);
-		Version osgiComparison = new Version(comparison);
-		return osgiVersion.compareTo(osgiComparison) >= 0;
-	}
-
-	/**
-	 * Copy of org.osgi.framework.Version.
-	 * <p>
-	 * We can't know how Ant version numbers will evolve in the future, but the OSGi version number format looks like a good bet.
-	 */
-	private static class Version {
-		private final int major;
-		private final int minor;
-		private final int micro;
-		private final String qualifier;
-		private static final String SEPARATOR = "."; //$NON-NLS-1$
-
-		public int compareTo(Version other) {
-			if (other == this) { // quick test
-				return 0;
-			}
-
-			int result = major - other.major;
-			if (result != 0) {
-				return result;
-			}
-
-			result = minor - other.minor;
-			if (result != 0) {
-				return result;
-			}
-
-			result = micro - other.micro;
-			if (result != 0) {
-				return result;
-			}
-
-			return qualifier.compareTo(other.qualifier);
-		}
-
-		public Version(String version) {
-			int maj = 0;
-			int min = 0;
-			int mic = 0;
-			String qual = ""; //$NON-NLS-1$
-
-			try {
-				StringTokenizer st = new StringTokenizer(version, SEPARATOR, true);
-				maj = parseInt(st.nextToken(), version);
-
-				if (st.hasMoreTokens()) { // minor
-					st.nextToken(); // consume delimiter
-					min = parseInt(st.nextToken(), version);
-
-					if (st.hasMoreTokens()) { // micro
-						st.nextToken(); // consume delimiter
-						mic = parseInt(st.nextToken(), version);
-
-						if (st.hasMoreTokens()) { // qualifier separator
-							st.nextToken(); // consume delimiter
-							qual = st.nextToken(""); // remaining string //$NON-NLS-1$
-
-							if (st.hasMoreTokens()) { // fail safe
-								throw new IllegalArgumentException("invalid version \"" + version + "\": invalid format"); //$NON-NLS-1$ //$NON-NLS-2$
-							}
-						}
-					}
-				}
-			}
-			catch (NoSuchElementException e) {
-				IllegalArgumentException iae = new IllegalArgumentException("invalid version \"" + version + "\": invalid format");//$NON-NLS-1$ //$NON-NLS-2$
-				iae.initCause(e);
-				throw iae;
-			}
-
-			major = maj;
-			minor = min;
-			micro = mic;
-			qualifier = qual;
-			// validate();
-		}
-
-		private int parseInt(String value, String version) {
-			try {
-				return Integer.parseInt(value);
-			}
-			catch (NumberFormatException e) {
-				IllegalArgumentException iae = new IllegalArgumentException("invalid version \"" + version + "\": non-numeric \"" + value + "\""); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
-				iae.initCause(e);
-				throw iae;
-			}
 		}
 	}
 
@@ -871,9 +670,6 @@ public class InternalAntRunner {
 		}
 
 		if (commands.remove("-diagnostics")) { //$NON-NLS-1$
-			if (!isVersionCompatible("1.5")) { //$NON-NLS-1$
-				throw new BuildException(RemoteAntMessages.getString("InternalAntRunner.The_diagnositics_options_is_an_Ant_1.5.*_feature._Please_update_your_Ant_classpath_to_include_an_Ant_version_greater_than_this._4")); //$NON-NLS-1$
-			}
 			try {
 				Diagnostics.doReport(System.out);
 			}
@@ -921,18 +717,16 @@ public class InternalAntRunner {
 			setBuildFileLocation(arg);
 		}
 
-		if (isVersionCompatible("1.6")) { //$NON-NLS-1$
-			if (commands.remove("-k") || commands.remove("-keep-going")) { //$NON-NLS-1$ //$NON-NLS-2$
-				keepGoing = true;
-			}
-			if (commands.remove("-noinput")) { //$NON-NLS-1$
-				allowInput = false;
-			}
-			arg = getArgument(commands, "-lib"); //$NON-NLS-1$
-			if (arg != null) {
-				logMessage(currentProject, RemoteAntMessages.getString("InternalAntRunner.157"), Project.MSG_ERR); //$NON-NLS-1$
-				return false;
-			}
+		if (commands.remove("-k") || commands.remove("-keep-going")) { //$NON-NLS-1$ //$NON-NLS-2$
+			keepGoing = true;
+		}
+		if (commands.remove("-noinput")) { //$NON-NLS-1$
+			allowInput = false;
+		}
+		arg = getArgument(commands, "-lib"); //$NON-NLS-1$
+		if (arg != null) {
+			logMessage(currentProject, RemoteAntMessages.getString("InternalAntRunner.157"), Project.MSG_ERR); //$NON-NLS-1$
+			return false;
 		}
 
 		arg = getArgument(commands, "-find"); //$NON-NLS-1$
@@ -1071,10 +865,6 @@ public class InternalAntRunner {
 		// MULTIPLE property files are allowed
 		String arg = getArgument(commands, "-propertyfile"); //$NON-NLS-1$
 		while (arg != null) {
-			if (!isVersionCompatible("1.5")) { //$NON-NLS-1$
-				fEarlyErrorMessage = RemoteAntMessages.getString("InternalAntRunner.Specifying_property_files_is_a_Ant_1.5.*_feature._Please_update_your_Ant_classpath._6"); //$NON-NLS-1$
-				break;
-			}
 			if (arg.length() == 0) {
 				fEarlyErrorMessage = RemoteAntMessages.getString("InternalAntRunner.You_must_specify_a_property_filename_when_using_the_-propertyfile_argument_3"); //$NON-NLS-1$
 				exceptionToBeThrown = true;
@@ -1313,9 +1103,6 @@ public class InternalAntRunner {
 	 * @exception BuildException if a specified InputHandler implementation could not be loaded.
 	 */
 	private void addInputHandler(Project project) {
-		if (!isVersionCompatible("1.5")) { //$NON-NLS-1$
-			return;
-		}
 		InputHandlerSetter setter = new InputHandlerSetter();
 		setter.setInputHandler(project, inputHandlerClassname);
 	}
