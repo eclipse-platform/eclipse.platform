@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 GEBIT Gesellschaft fuer EDV-Beratung
+ * Copyright (c) 2002, 2026 GEBIT Gesellschaft fuer EDV-Beratung
  * und Informatik-Technologien mbH,
  * Berlin, Duesseldorf, Frankfurt (Germany) and others.
  *
@@ -691,8 +691,8 @@ public class CodeCompletionTest {
 		proposal = proposals[0];
 		assertEquals("classpath", proposal.getDisplayString()); //$NON-NLS-1$
 
-		// "<project><target><mk"
-		proposals = processor.getTaskProposals("<project><target><mk", "target", "mk"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		// "<project><target><mkd"
+		proposals = processor.getTaskProposals("<project><target><mkd", "target", "mkd"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		assertThat(proposals).hasSize(1);
 		proposal = proposals[0];
 		assertEquals("mkdir", proposal.getDisplayString()); //$NON-NLS-1$
