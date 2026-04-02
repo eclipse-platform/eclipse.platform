@@ -57,10 +57,13 @@ public class WatchHandler extends AbstractHandler {
 			if (structuredSelection instanceof TreeSelection treeSelection) {
 				for (TreePath path : treeSelection.getPaths()) {
 					List<IVariable> variables = new ArrayList<>();
-					if (path.getSegmentCount() > 1) {
-						for (int e = 0; e < path.getSegmentCount(); e++) {
-							IVariable variable = (IVariable) path.getSegment(e);
-							variables.add(variable);
+					int segments = path.getSegmentCount();
+					if (segments > 1) {
+						for (int e = 0; e < segments; e++) {
+							Object sel = path.getSegment(e);
+							if (sel instanceof IVariable variable) {
+								variables.add(variable);
+							}
 						}
 						IWatchExpressionFactoryAdapter2 factory = getFactory2(variables);
 						if (factory != null) {
