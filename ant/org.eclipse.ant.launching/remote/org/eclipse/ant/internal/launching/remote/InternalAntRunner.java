@@ -64,6 +64,9 @@ public class InternalAntRunner {
 	private static boolean isSecurityManagerAllowed() {
 		String sm = System.getProperty("java.security.manager"); //$NON-NLS-1$
 		if (sm == null) { // default is 'disallow' since 18 and was 'allow' before
+			// There is a circularity problem if JavaEnvUtils is initialized before FileUtils on Windows
+			// https://github.com/eclipse-platform/eclipse.platform/issues/2605
+			FileUtils.getFileUtils();
 			return !JavaEnvUtils.isAtLeastJavaVersion("18"); //$NON-NLS-1$
 		}
 		// Value is either 'disallow' or 'allow' or specifies the SecurityManager class to set
