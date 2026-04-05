@@ -55,6 +55,10 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IWorkspaceRunnable;
@@ -62,6 +66,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -74,6 +79,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(WorkspaceResetExtension.class)
 public class MarkerTest {
+
+	private static final IResourceChangeListener LOG_RESOURCE_DELTA = MarkerTest::logDeltaEvent;
 
 	public static final String TRANSIENT_MARKER = "org.eclipse.core.tests.resources.transientmarker";
 	public static final String TEST_PROBLEM_MARKER = "org.eclipse.core.tests.resources.testproblem";
@@ -211,6 +218,7 @@ public class MarkerTest {
 		}
 		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES);
 		prefs.putBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, originalRefreshSetting);
+		ResourcesPlugin.getWorkspace().removeResourceChangeListener(LOG_RESOURCE_DELTA);
 	}
 
 	/**
@@ -950,6 +958,7 @@ public class MarkerTest {
 	 */
 	@Test
 	public void testMarkerDeltasMoveFile(TestInfo testInfo) throws CoreException {
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(LOG_RESOURCE_DELTA);
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		final IProject project = root.getProject("MyProject");
 		IFolder folder = project.getFolder("folder");
@@ -1384,4 +1393,50 @@ public class MarkerTest {
 		}
 	}
 
+	private static void logDeltaEvent(IResourceChangeEvent event) {
+		StringBuilder s = new StringBuilder();
+		s.append("Logging resource change event");
+		s.append(System.lineSeparator());
+		s.append("thread: ");
+		s.append(Thread.currentThread().getName());
+		s.append(System.lineSeparator());
+		s.append("type: ");
+		s.append(event.getType());
+		s.append(System.lineSeparator());
+		s.append("buildKind: ");
+		s.append(event.getBuildKind());
+		s.append(System.lineSeparator());
+		s.append("resource: ");
+		s.append(event.getResource());
+		s.append(System.lineSeparator());
+		s.append("source: ");
+		s.append(event.getSource());
+		IResourceDelta delta = event.getDelta();
+		if (delta != null) {
+			s.append(System.lineSeparator());
+			s.append("Delta:");
+			IResourceDeltaVisitor visitor = d -> {
+				s.append(System.lineSeparator());
+				s.append("\tkind: ");
+				s.append(d.getKind());
+				s.append(", resource: ");
+				s.append(d.getResource());
+				return true;
+			};
+			try {
+				delta.accept(visitor);
+			} catch (CoreException e) {
+				logError("Error occurred while visiting delta", e);
+			}
+			logInfo(s.toString());
+		}
+	}
+
+	private static void logError(String errorMessage, CoreException e) {
+		ResourcesPlugin.getPlugin().getLog().log(Status.error(errorMessage, e));
+	}
+
+	private static void logInfo(String message) {
+		ResourcesPlugin.getPlugin().getLog().log(Status.info(message));
+	}
 }
