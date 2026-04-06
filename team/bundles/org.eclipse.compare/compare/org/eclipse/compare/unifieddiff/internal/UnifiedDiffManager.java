@@ -1,3 +1,16 @@
+/*******************************************************************************
+ * Copyright (c) 2026 SAP
+ *
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ * SAP - initial implementation
+ *******************************************************************************/
 package org.eclipse.compare.unifieddiff.internal;
 
 import java.util.ArrayList;
@@ -17,7 +30,7 @@ import org.eclipse.compare.rangedifferencer.RangeDifference;
 import org.eclipse.compare.rangedifferencer.RangeDifferencer;
 import org.eclipse.compare.unifieddiff.UnifiedDiff.IgnoreWhitespaceContributorFactory;
 import org.eclipse.compare.unifieddiff.UnifiedDiff.TokenComparatorFactory;
-import org.eclipse.compare.unifieddiff.UnifiedDiff.UnifiedDiffMode;
+import org.eclipse.compare.unifieddiff.UnifiedDiffMode;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffCodeMiningProvider.UnifiedDiffLineHeaderCodeMining;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRunnable;
@@ -221,7 +234,7 @@ public class UnifiedDiffManager {
 		}
 
 		Map<Annotation, UnifiedDiff> diffByAnno = new HashMap<>();
-		if (mode.equals(UnifiedDiffMode.REPLACE_MODE)) {
+		if (UnifiedDiffMode.REPLACE_MODE.equals(mode)) {
 			// modify document
 			int delta = 0;
 			for (UnifiedDiff unifiedDiff : unifiedDiffs) {

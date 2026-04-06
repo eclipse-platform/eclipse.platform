@@ -1,3 +1,16 @@
+/*******************************************************************************
+ * Copyright (c) 2026 SAP
+ *
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ * SAP - initial implementation
+ *******************************************************************************/
 package org.eclipse.compare.unifieddiff;
 
 import java.util.List;
@@ -15,24 +28,6 @@ import org.eclipse.ui.texteditor.ITextEditor;
 public final class UnifiedDiff {
 
 	private UnifiedDiff() {
-	}
-
-	public static enum UnifiedDiffMode {
-		/**
-		 * Diffs are directly applied in the editor. Users have the possibility to keep
-		 * or undo the applied diffs.
-		 */
-		REPLACE_MODE,
-		/**
-		 * The source in the editor is not modified. Diffs are shown as code mining and
-		 * users have the possibility to apply or cancel individual diffs.
-		 */
-		OVERLAY_MODE,
-		/**
-		 * The source in the editor is not modified. Diffs are shown as code mining and
-		 * users cannot apply or dismiss the diffs (read-only mode).
-		 */
-		OVERLAY_READ_ONLY_MODE
 	}
 
 	@FunctionalInterface

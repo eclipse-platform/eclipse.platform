@@ -1,7 +1,7 @@
 package org.eclipse.compare.unifieddiff.internal;
 
 import org.eclipse.compare.unifieddiff.UnifiedDiff;
-import org.eclipse.compare.unifieddiff.UnifiedDiff.UnifiedDiffMode;
+import org.eclipse.compare.unifieddiff.UnifiedDiffMode;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;

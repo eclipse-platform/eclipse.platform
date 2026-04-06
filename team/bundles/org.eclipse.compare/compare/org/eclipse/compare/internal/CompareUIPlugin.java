@@ -56,7 +56,7 @@ import org.eclipse.compare.structuremergeviewer.IStructureCreator;
 import org.eclipse.compare.structuremergeviewer.SharedDocumentAdapterWrapper;
 import org.eclipse.compare.structuremergeviewer.StructureDiffViewer;
 import org.eclipse.compare.unifieddiff.UnifiedDiff;
-import org.eclipse.compare.unifieddiff.UnifiedDiff.UnifiedDiffMode;
+import org.eclipse.compare.unifieddiff.UnifiedDiffMode;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Adapters;
