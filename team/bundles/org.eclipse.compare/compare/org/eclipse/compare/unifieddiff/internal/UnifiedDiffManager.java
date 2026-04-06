@@ -1,6 +1,5 @@
 package org.eclipse.compare.unifieddiff.internal;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -19,7 +18,6 @@ import org.eclipse.compare.rangedifferencer.RangeDifferencer;
 import org.eclipse.compare.unifieddiff.UnifiedDiff.IgnoreWhitespaceContributorFactory;
 import org.eclipse.compare.unifieddiff.UnifiedDiff.TokenComparatorFactory;
 import org.eclipse.compare.unifieddiff.UnifiedDiff.UnifiedDiffMode;
-import org.eclipse.compare.unifieddiff.internal.UnifiedDiffCodeMiningProvider.UnifiedDiffFooterCodeMining;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffCodeMiningProvider.UnifiedDiffLineHeaderCodeMining;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRunnable;
@@ -34,8 +32,6 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
-import org.eclipse.jface.internal.text.codemining.CodeMiningDocumentFooterAnnotation;
-import org.eclipse.jface.internal.text.codemining.CodeMiningLineHeaderAnnotation;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
@@ -49,6 +45,7 @@ import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.IAnnotationModelListener;
 import org.eclipse.jface.text.source.IAnnotationModelListenerExtension;
 import org.eclipse.jface.text.source.ISourceViewerExtension5;
+import org.eclipse.jface.text.source.inlined.AbstractInlinedAnnotation;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.jface.util.Geometry;
 import org.eclipse.swt.SWT;
@@ -110,6 +107,9 @@ public class UnifiedDiffManager {
 			pv.doOperation(ProjectionViewer.EXPAND_ALL);
 		}
 		IAnnotationModel model = editor.getDocumentProvider().getAnnotationModel(editor.getEditorInput());
+		if (model == null) {
+			return;
+		}
 		clearAll(viewer, model);
 
 		IDocument leftDocument = editor.getDocumentProvider().getDocument(editor.getEditorInput());
@@ -877,31 +877,10 @@ public class UnifiedDiffManager {
 			return da.getUnifiedDiff();
 		} else if (anno instanceof UnifiedDiffAnnotation a) {
 			return a.getUnifiedDiff();
-		} else if (anno instanceof CodeMiningLineHeaderAnnotation h) {
-			try {
-				// TODO (tm) eclipse API needed to access the minings
-				Field f = h.getClass().getDeclaredField("fMinings"); //$NON-NLS-1$
-				f.setAccessible(true);
-				@SuppressWarnings("unchecked")
-				List<ICodeMining> m = (List<ICodeMining>) f.get(h);
-				if (m != null && m.size() == 1 && m.get(0) instanceof UnifiedDiffLineHeaderCodeMining idlhcm) {
-					return idlhcm.getUnifiedDiff();
-				}
-			} catch (NoSuchFieldException | SecurityException | IllegalAccessException ex) {
-				error(ex);
-			}
-		} else if (anno instanceof CodeMiningDocumentFooterAnnotation footer) {
-			try {
-				// TODO (tm) eclipse API needed to access the minings
-				Field f = footer.getClass().getDeclaredField("fMinings"); //$NON-NLS-1$
-				f.setAccessible(true);
-				@SuppressWarnings("unchecked")
-				List<ICodeMining> m = (List<ICodeMining>) f.get(footer);
-				if (m != null && m.size() == 1 && m.get(0) instanceof UnifiedDiffFooterCodeMining idlhcm) {
-					return idlhcm.getUnifiedDiff();
-				}
-			} catch (NoSuchFieldException | SecurityException | IllegalAccessException ex) {
-				error(ex);
+		} else if (anno instanceof AbstractInlinedAnnotation inlineAnno) {
+			List<ICodeMining> minings = inlineAnno.getMinings();
+			if (minings.size() == 1 && minings.get(0) instanceof UnifiedDiffLineHeaderCodeMining idlhcm) {
+				return idlhcm.getUnifiedDiff();
 			}
 		}
 		return null;
@@ -1131,31 +1110,10 @@ public class UnifiedDiffManager {
 	private static Annotation getUnifiedDiffAnnotationFromIterator(Iterator<Annotation> it) {
 		boolean doit = false;
 		Annotation anno = it.next();
-		if (anno instanceof CodeMiningLineHeaderAnnotation h) {
-			try {
-				// TODO (tm) eclipse API needed to access the minings
-				Field f = h.getClass().getDeclaredField("fMinings"); //$NON-NLS-1$
-				f.setAccessible(true);
-				@SuppressWarnings("unchecked")
-				List<ICodeMining> m = (List<ICodeMining>) f.get(h);
-				if (m != null && m.size() == 1 && m.get(0) instanceof UnifiedDiffLineHeaderCodeMining) {
-					doit = true;
-				}
-			} catch (NoSuchFieldException | SecurityException | IllegalAccessException ex) {
-				error(ex);
-			}
-		} else if (anno instanceof CodeMiningDocumentFooterAnnotation footer) {
-			try {
-				// TODO (tm) eclipse API needed to access the minings
-				Field f = footer.getClass().getDeclaredField("fMinings"); //$NON-NLS-1$
-				f.setAccessible(true);
-				@SuppressWarnings("unchecked")
-				List<ICodeMining> m = (List<ICodeMining>) f.get(footer);
-				if (m != null && m.size() == 1 && m.get(0) instanceof UnifiedDiffFooterCodeMining idlhcm) {
-					doit = true;
-				}
-			} catch (NoSuchFieldException | SecurityException | IllegalAccessException ex) {
-				error(ex);
+		if (anno instanceof AbstractInlinedAnnotation inlineAnno) {
+			List<ICodeMining> minings = inlineAnno.getMinings();
+			if (minings.size() == 1 && minings.get(0) instanceof UnifiedDiffLineHeaderCodeMining) {
+				doit = true;
 			}
 		} else if (ADDITION_ANNO_TYPE.equals(anno.getType()) || DELETION_ANNO_TYPE.equals(anno.getType())
 				|| DETAILED_ADDITION_ANNO_TYPE.equals(anno.getType())

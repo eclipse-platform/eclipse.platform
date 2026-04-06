@@ -15,8 +15,6 @@ import java.util.function.Consumer;
 import org.eclipse.compare.unifieddiff.UnifiedDiff.UnifiedDiffMode;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager.UnifiedDiff;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.internal.text.codemining.CodeMiningDocumentFooterAnnotation;
-import org.eclipse.jface.internal.text.codemining.CodeMiningLineHeaderAnnotation;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.BadLocationException;
@@ -44,6 +42,8 @@ import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
+import org.eclipse.jface.text.source.inlined.LineFooterAnnotation;
+import org.eclipse.jface.text.source.inlined.LineHeaderAnnotation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
@@ -104,12 +104,9 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			Iterator<Annotation> it = model.getAnnotationIterator();
 			while (it.hasNext()) {
 				Annotation next = it.next();
-				if (next instanceof CodeMiningLineHeaderAnnotation n) {
+				if (next instanceof LineHeaderAnnotation n) {
 					try {
-						Field f = n.getClass().getDeclaredField("fMinings"); //$NON-NLS-1$
-						f.setAccessible(true);
-						@SuppressWarnings("unchecked")
-						List<ICodeMining> m = (List<ICodeMining>) f.get(n);
+						List<ICodeMining> m = n.getMinings();
 						if (m != null && m.size() == 1 && m.get(0) instanceof UnifiedDiffLineHeaderCodeMining idlhcm) {
 							Position p = n.getPosition();
 							IDocument doc = sv.getDocument();
@@ -120,24 +117,15 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 																					// beginning of the line
 							existingMinings.add(idlhcm);
 						}
-					} catch (BadLocationException | NoSuchFieldException | SecurityException
-							| IllegalAccessException e) {
+					} catch (BadLocationException e) {
 						error(e);
 					}
-				} else if (next instanceof CodeMiningDocumentFooterAnnotation footer) {
-					try {
-						Field f = footer.getClass().getDeclaredField("fMinings"); //$NON-NLS-1$
-						f.setAccessible(true);
-						@SuppressWarnings("unchecked")
-						List<ICodeMining> m = (List<ICodeMining>) f.get(footer);
-						if (m != null && m.size() == 1 && m.get(0) instanceof UnifiedDiffFooterCodeMining idlhcm) {
-							IDocument doc = sv.getDocument();
-							idlhcm.getPosition().offset = doc.getLength();
-							existingMinings.add(idlhcm);
-						}
-					} catch (NoSuchFieldException | SecurityException
-							| IllegalAccessException e) {
-						error(e);
+				} else if (next instanceof LineFooterAnnotation footer) {
+					List<ICodeMining> m = footer.getMinings();
+					if (m != null && m.size() == 1 && m.get(0) instanceof UnifiedDiffFooterCodeMining idlhcm) {
+						IDocument doc = sv.getDocument();
+						idlhcm.getPosition().offset = doc.getLength();
+						existingMinings.add(idlhcm);
 					}
 				}
 			}
@@ -723,15 +711,6 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		}
 		return new RGB(128, 128, 128); // a gray
 	}
-
-//	private static String getStringFromLastLine(String str) {
-//		int idx = str.lastIndexOf("\n"); //$NON-NLS-1$
-//		if (idx < 0) {
-//			return str;
-//		}
-//		str = str.substring(idx + 1);
-//		return str;
-//	}
 
 	private static String replaceTabWithSpaces(String leftStr, int tabWidth) {
 		if (leftStr == null) {
