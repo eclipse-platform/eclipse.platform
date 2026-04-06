@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2007, 2012 IBM Corporation and others.
+ *  Copyright (c) 2007, 2026 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -31,6 +31,7 @@ public class ContextMessages extends NLS {
 	public static String ContextRunner_7;
 	public static String LaunchingResourceManager_0;
 	public static String LaunchingResourceManager_1;
+	public static String OpenLaunchConfigButton;
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, ContextMessages.class);
