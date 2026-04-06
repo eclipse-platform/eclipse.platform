@@ -41,7 +41,6 @@ import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewer;
-import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.jface.text.source.inlined.LineFooterAnnotation;
 import org.eclipse.jface.text.source.inlined.LineHeaderAnnotation;
 import org.eclipse.swt.SWT;
@@ -58,14 +57,8 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
-import org.eclipse.ui.texteditor.AbstractTextEditor;
 
 public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 
@@ -151,46 +144,11 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 				return tabWidth;
 			}
 		}
-		AbstractTextEditor ate = getAbstractTextEditor();
-		if (viewer != null && ate != null) {
-			ITextViewer a = ate.getAdapter(ITextViewer.class);
-			if (a == viewer && viewer instanceof ISourceViewer sv) {
-				try {
-					Field f = AbstractTextEditor.class.getDeclaredField("fConfiguration"); //$NON-NLS-1$
-					f.setAccessible(true);
-					var config = (SourceViewerConfiguration) f.get(ate);
-					tabWidth = config.getTabWidth(sv);
-				} catch (IllegalAccessException | IllegalArgumentException | NoSuchFieldException
-						| SecurityException e) {
-					error(e);
-				}
-			}
-		}
 		if (tabWidth == -1) {
 			IPreferenceStore store = EditorsUI.getPreferenceStore();
 			tabWidth = store.getInt(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
 		}
 		return tabWidth;
-	}
-
-	private AbstractTextEditor getAbstractTextEditor() {
-		IWorkbench wb = PlatformUI.getWorkbench();
-		if (wb == null) {
-			return null;
-		}
-		IWorkbenchWindow aww = wb.getActiveWorkbenchWindow();
-		if (aww == null) {
-			return null;
-		}
-		IWorkbenchPage ap = aww.getActivePage();
-		if (ap == null) {
-			return null;
-		}
-		IEditorPart ae = ap.getActiveEditor();
-		if (ae instanceof AbstractTextEditor ate) {
-			return ate;
-		}
-		return null;
 	}
 
 	private void createLineHeaderCodeMinings(List<UnifiedDiff> diffs, List<ICodeMining> minings, ITextViewer tv,
