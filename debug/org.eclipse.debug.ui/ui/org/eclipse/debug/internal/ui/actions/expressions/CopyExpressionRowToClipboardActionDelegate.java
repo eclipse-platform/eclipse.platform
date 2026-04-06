@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2017, 2025 Bachmann electronic GmbH and others.
+ *  Copyright (c) 2017, 2026 Bachmann electronic GmbH and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -14,11 +14,18 @@
  *******************************************************************************/
 package org.eclipse.debug.internal.ui.actions.expressions;
 
+import java.util.Iterator;
+
+import org.eclipse.debug.core.ILaunch;
+import org.eclipse.debug.core.model.IDebugElement;
 import org.eclipse.debug.internal.core.WatchExpression;
 import org.eclipse.debug.internal.ui.DebugUIMessages;
 import org.eclipse.debug.internal.ui.viewers.model.VirtualCopyToClipboardActionDelegate;
+import org.eclipse.debug.internal.ui.viewers.model.provisional.TreeModelViewer;
+import org.eclipse.debug.ui.DebugUITools;
+import org.eclipse.jface.viewers.IStructuredSelection;
 
-public class CopyExpressionsToClipboardActionDelegate extends VirtualCopyToClipboardActionDelegate {
+public class CopyExpressionRowToClipboardActionDelegate extends VirtualCopyToClipboardActionDelegate {
 
 	private static final String QUOTE = "\""; //$NON-NLS-1$
 	@Override
@@ -56,5 +63,41 @@ public class CopyExpressionsToClipboardActionDelegate extends VirtualCopyToClipb
 			}
 		}
 		return label;
+	}
+
+	@Override
+	protected boolean getEnableStateForSelection(IStructuredSelection selection) {
+		if (selection.size() == 0) {
+			return false;
+		}
+
+		if (getViewer() instanceof TreeModelViewer treeViewer) {
+			if (!treeViewer.isShowColumns()) {
+				return false;
+			}
+		}
+
+		Object object = DebugUITools.getDebugContext();
+		IDebugElement context = null;
+		if (object == null) {
+			return false;
+		}
+		if (object instanceof IDebugElement debugElement) {
+			context = debugElement;
+		} else if (object instanceof ILaunch launch) {
+			context = launch.getDebugTarget();
+		}
+		if (context != null && context.getLaunch().isTerminated()) {
+			return false;
+		}
+
+		Iterator<?> itr = selection.iterator();
+		while (itr.hasNext()) {
+			Object element = itr.next();
+			if (!isEnabledFor(element)) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

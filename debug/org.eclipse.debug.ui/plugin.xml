@@ -1569,13 +1569,22 @@
             id="org.eclipse.debug.ui.variablesView.popupMenu">
       <!-- Variable Group -->
          <action
-               label="%CopyVariablesToClipboardAction.label"
+               label="%CopyVariableRowToClipboardAction.label"
                icon="$nl$/icons/full/elcl16/copy_edit_co.svg"
                definitionId="org.eclipse.ui.edit.copy"
                helpContextId="copy_variables_to_clipboard_action_context"
-               class="org.eclipse.debug.internal.ui.viewers.model.VirtualCopyToClipboardActionDelegate"
+               class="org.eclipse.debug.internal.ui.actions.expressions.CopyVariableRowToClipboardActionDelegate"
                menubarPath="variableGroup"
-               id="org.eclipse.debug.ui.debugview.popupMenu.copyVariablesToClipboard">
+               id="org.eclipse.debug.ui.debugview.popupMenu.copyVariableRowToClipboard">
+         </action>
+         <action
+               label="%CopyVariableToClipboardAction.label"
+               icon="$nl$/icons/full/elcl16/copy_edit_co.svg"
+               definitionId="org.eclipse.ui.edit.copy"
+               helpContextId="copy_variables_to_clipboard_action_context"
+               class="org.eclipse.debug.internal.ui.actions.expressions.CopyVariableToClipboardActionDelegate"
+               menubarPath="variableGroup"
+               id="org.eclipse.debug.ui.debugview.popupMenu.copyVariableToClipboard">
          </action>
          <action
                label="%SelectAll.label"
@@ -1615,13 +1624,25 @@
             </selection>
          </action>
          <action
-               label="%CopyExpressionsToClipboardAction.label"
+               label="%CopyExpressionRowToClipboardAction.label"
                icon="$nl$/icons/full/elcl16/copy_edit_co.svg"
                definitionId="org.eclipse.ui.edit.copy"
                helpContextId="copy_variables_to_clipboard_action_context"
-               class="org.eclipse.debug.internal.ui.actions.expressions.CopyExpressionsToClipboardActionDelegate"
+               class="org.eclipse.debug.internal.ui.actions.expressions.CopyExpressionRowToClipboardActionDelegate"
                menubarPath="expressionGroup"
-               id="org.eclipse.debug.ui.debugview.popupMenu.copyVariablesToClipboard">
+               id="org.eclipse.debug.ui.debugview.popupMenu.copyExpressionsRowToClipboard">
+            <selection
+                  class="org.eclipse.debug.core.model.IDebugElement">
+            </selection>
+         </action>
+         <action
+               label="%CopyExpressionToClipboardAction.label"
+               icon="$nl$/icons/full/elcl16/copy_edit_co.svg"
+               definitionId="org.eclipse.ui.edit.copy"
+               helpContextId="copy_variables_to_clipboard_action_context"
+               class="org.eclipse.debug.internal.ui.actions.expressions.CopyExpressionToClipboardActionDelegate"
+               menubarPath="expressionGroup"
+               id="org.eclipse.debug.ui.debugview.popupMenu.copyExpressionToClipboard">
             <selection
                   class="org.eclipse.debug.core.model.IDebugElement">
             </selection>
