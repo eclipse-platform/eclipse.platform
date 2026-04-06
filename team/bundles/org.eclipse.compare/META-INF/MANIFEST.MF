@@ -8,12 +8,12 @@ Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Export-Package: org.eclipse.compare,
  org.eclipse.compare.contentmergeviewer,
- org.eclipse.compare.internal;x-friends:="org.eclipse.team.ui, org.eclipse.team.tests.core",
+ org.eclipse.compare.internal;x-friends:="org.eclipse.team.ui,org.eclipse.team.tests.core",
  org.eclipse.compare.internal.merge;x-internal:=true,
  org.eclipse.compare.internal.patch;x-friends:="org.eclipse.team.ui",
  org.eclipse.compare.patch,
  org.eclipse.compare.structuremergeviewer,
- org.eclipse.compare.unifieddiff
+ org.eclipse.compare.unifieddiff;x-internal:=true
 Require-Bundle: org.eclipse.ui;bundle-version="[3.206.0,4.0.0)",
  org.eclipse.core.resources;bundle-version="[3.4.0,4.0.0)",
  org.eclipse.jface.text;bundle-version="[3.8.0,4.0.0)",
