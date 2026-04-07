@@ -169,8 +169,20 @@ public class TextLineRenderer implements ILinelRenderer {
 				}
 			}
 		} else {
-			text = text.replace('\000', ' ');
-			gc.drawString(text, x + offset, y, false);
+			// Draw each character individually aligned to its grid cell.
+			// Since Eclipse 2024-06, SWT on Windows uses Direct2D by default.
+			// D2D uses sub-pixel glyph advances, so drawing a whole string at
+			// once makes it render 1-2 pixels wider than charWidth * length.
+			// By drawing each character at its exact integer grid position we
+			// avoid the accumulated sub-pixel drift.
+			int cellWidth = getCellWidth();
+			for (int i = 0; i < text.length(); i++) {
+				char c = text.charAt(i);
+				if (c == '\000') {
+					c = ' ';
+				}
+				gc.drawString(String.valueOf(c), x + offset + i * cellWidth, y, false);
+			}
 		}
 	}
 
