@@ -16,7 +16,6 @@ package org.eclipse.compare.unifieddiff.internal;
 import static org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager.error;
 import static org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager.isOverlay;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -33,23 +32,15 @@ import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IDocumentExtension3;
-import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
-import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.Region;
-import org.eclipse.jface.text.TextPresentation;
-import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.jface.text.codemining.AbstractCodeMiningProvider;
 import org.eclipse.jface.text.codemining.DocumentFooterCodeMining;
 import org.eclipse.jface.text.codemining.ICodeMining;
 import org.eclipse.jface.text.codemining.ICodeMiningProvider;
 import org.eclipse.jface.text.codemining.LineHeaderCodeMining;
-import org.eclipse.jface.text.presentation.IPresentationReconciler;
-import org.eclipse.jface.text.presentation.IPresentationReconcilerExtension;
-import org.eclipse.jface.text.presentation.IPresentationRepairer;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -345,7 +336,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			gc.fillRectangle(0, y, textWidget.getBounds().width /* result.x */, result.y);
 
 			String label = getLabel();
-			List<StyleRange> ranges = getStyleRanges(viewer, label);
+			List<StyleRange> ranges = computeStyleRanges(viewer, label);
 			HashMap<Font, Map<Integer /* style */, Font>> styledFonts = new HashMap<>();
 
 			// draw darker background for detailed diff
@@ -498,7 +489,8 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			Point result = null;
 			var before = gc.getFont();
 			try {
-				for (var range : ranges) {
+				for (int i = 0; i < ranges.size(); i++) {
+					var range = ranges.get(i);
 					if (range.start <= offset) {
 						int rangeEnd = range.start + range.length;
 						if (rangeEnd > offset) {
@@ -512,8 +504,12 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 						}
 						int lfIdx = sub.lastIndexOf("\n"); //$NON-NLS-1$
 						if (lfIdx > 0) {
-							sub = sub.substring(lfIdx + 1);
-							result = null;
+							if (lfIdx == sub.length() - 1 && isLastForCurrentOffset(ranges, i, offset)) {
+								sub = sub.substring(0, lfIdx);
+							} else {
+								sub = sub.substring(lfIdx + 1);
+								result = null;
+							}
 						}
 						var rangeWithFont = transformFontStyleToFont(before, range, styledFonts);
 						if (rangeWithFont.font != null) {
@@ -537,6 +533,18 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			return result;
 		}
 
+		private boolean isLastForCurrentOffset(List<StyleRange> ranges, int i, int offset) {
+			int nextIdx = i + 1;
+			if (nextIdx >= ranges.size()) {
+				return false;
+			}
+			StyleRange next = ranges.get(nextIdx);
+			if (next.start >= offset) {
+				return true;
+			}
+			return false;
+		}
+
 		private StyleRange transformFontStyleToFont(Font baseFont, StyleRange styleRange,
 				HashMap<Font, Map<Integer /* style */, Font>> styledFonts) {
 			// as per the StyleRange contract, only consider fontStyle if font is not
@@ -556,82 +564,30 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			return styleRange;
 		}
 
-		private List<StyleRange> getStyleRanges(ITextViewer v, String source) {
+		private List<StyleRange> computeStyleRanges(ITextViewer v, String source) {
 			List<StyleRange> result = new ArrayList<>();
 			if (!(v instanceof SourceViewer sv)) {
 				return result;
 			}
+			// TODO (tm) should we better cache the presentation and don't calculate it each
+			// time?
 			try {
-				// TODO (tm) API needed to access IPresentationReconciler
-				Field f = SourceViewer.class.getDeclaredField("fPresentationReconciler"); //$NON-NLS-1$
-				f.setAccessible(true);
-				var reconciler = (IPresentationReconciler) f.get(sv);
-				// TODO (tm) should we better cache the presentation and don't calculate it each
-				// time?
-				result = createPresentation(reconciler, sv.getDocument(), source);
-			} catch (IllegalAccessException | IllegalArgumentException | NoSuchFieldException | SecurityException e) {
-				error(e);
-			}
-			return result;
-		}
-
-		private List<StyleRange> createPresentation(IPresentationReconciler reconciler, IDocument originalDocument,
-				String source) {
-			try {
+				IDocument originalDocument = sv.getDocument();
 				String prefix = originalDocument.get(0, diff.leftStart);
 				IDocument document = new Document(prefix + source);
 				IRegion damage = new Region(prefix.length(), source.length());
-				String partition = IDocumentExtension3.DEFAULT_PARTITIONING;
-				if (reconciler instanceof IPresentationReconcilerExtension ext) {
-					String extPartition = ext.getDocumentPartitioning();
-					if (extPartition != null && !extPartition.isEmpty()) {
-						partition = extPartition;
-					}
-				}
-				IDocumentPartitioner partitioner = originalDocument.getDocumentPartitioner();
-				document.setDocumentPartitioner(partitioner);
-				IDocumentPartitioner originalDocumentPartitioner = null;
-				if (document instanceof IDocumentExtension3 ext
-						&& originalDocument instanceof IDocumentExtension3 originalExt) {
-					originalDocumentPartitioner = originalExt.getDocumentPartitioner(partition);
-					if (originalDocumentPartitioner != null) {
-						// set temporarily another document in partitioner so that presentation can be
-						// created for given source
-						originalDocumentPartitioner.disconnect();
-						originalDocumentPartitioner.connect(document);
-						ext.setDocumentPartitioner(partition, originalDocumentPartitioner);
-					}
-				}
-				TextPresentation presentation = new TextPresentation(damage, 1000);
-
-				ITypedRegion[] partitioning = TextUtilities.computePartitioning(document, partition, damage.getOffset(),
-						damage.getLength(), false);
-				for (ITypedRegion r : partitioning) {
-					IPresentationRepairer repairer = reconciler.getRepairer(r.getType());
-					if (repairer != null) {
-						repairer.setDocument(document);
-						repairer.createPresentation(presentation, r);
-						repairer.setDocument(originalDocument);
-					}
-				}
-				if (originalDocumentPartitioner != null) {
-					originalDocumentPartitioner.connect(originalDocument);
-				}
-				List<StyleRange> result = new ArrayList<>();
-				var it = presentation.getAllStyleRangeIterator();
+				result = sv.computeStyleRanges(document, damage);
 				int startOffset = prefix.length();
-				while (it.hasNext()) {
-					StyleRange next = it.next();
+				for (StyleRange next : result) {
 					if (next.start < startOffset) {
 						throw new IllegalStateException(
 								"Invalid presentation with style range starting before source offset"); //$NON-NLS-1$
 					}
 					next.start -= startOffset;
-					result.add(next);
 				}
 				return result;
-			} catch (BadLocationException x) {
-				return null;
+			} catch (BadLocationException e) {
+				return result;
 			}
 		}
 
