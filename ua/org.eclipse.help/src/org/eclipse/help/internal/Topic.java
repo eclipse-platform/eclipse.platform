@@ -13,9 +13,12 @@
  *******************************************************************************/
 package org.eclipse.help.internal;
 
+import java.util.Arrays;
+
 import org.eclipse.help.ICriteria;
 import org.eclipse.help.ITopic;
 import org.eclipse.help.ITopic2;
+import org.eclipse.help.IUAElement;
 import org.w3c.dom.Element;
 
 public class Topic extends UAElement implements ITopic2 {
@@ -24,7 +27,7 @@ public class Topic extends UAElement implements ITopic2 {
 	public static final String ATTRIBUTE_HREF = "href"; //$NON-NLS-1$
 	public static final String ATTRIBUTE_LABEL = "label"; //$NON-NLS-1$
 	public static final String ATTRIBUTE_ICON = "icon"; //$NON-NLS-1$
-	public static final String ATTRIBUTE_SORT= "sort"; //$NON-NLS-1$
+	public static final String ATTRIBUTE_SORT = "sort"; //$NON-NLS-1$
 
 	public Topic() {
 		super(NAME);
@@ -34,16 +37,19 @@ public class Topic extends UAElement implements ITopic2 {
 		super(NAME, src);
 		setHref(src.getHref());
 		setLabel(src.getLabel());
-		appendChildren(src.getChildren());
+		IUAElement[] copiedChildren = Arrays.stream(src.getChildren()).map(UAElementFactory::newElement)
+				.toArray(IUAElement[]::new);
+
+		appendChildren(copiedChildren);
 	}
 
 	@Override
-	public String getIcon(){
+	public String getIcon() {
 		return getAttribute(ATTRIBUTE_ICON);
 	}
 
 	@Override
-	public boolean isSorted(){
+	public boolean isSorted() {
 		return "true".equalsIgnoreCase(getAttribute(ATTRIBUTE_SORT)); //$NON-NLS-1$
 	}
 

@@ -34,6 +34,7 @@ import org.eclipse.help.internal.util.ProductPreferences;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+
 /*
  * Base class for UA model elements.
  */
@@ -59,6 +60,7 @@ public class UAElement implements IUAElement {
 			this.value = value;
 			this.isNegated = isNegated;
 		}
+
 		String name;
 		String value;
 		boolean isNegated;
@@ -82,7 +84,7 @@ public class UAElement implements IUAElement {
 	}
 
 	private void copyFilters(IUAElement src) {
-		UAElement sourceElement = (UAElement)src;
+		UAElement sourceElement = (UAElement) src;
 		String filter = sourceElement.getAttribute(ATTRIBUTE_FILTER);
 		if (filter != null && filter.length() > 0) {
 			this.setAttribute(ATTRIBUTE_FILTER, filter);
@@ -101,15 +103,14 @@ public class UAElement implements IUAElement {
 					if (node.getNodeType() == Node.ELEMENT_NODE) {
 						String elementKind = node.getNodeName();
 						if (ExpressionTagNames.ENABLEMENT.equals(elementKind)) {
-							Element enablement = (Element)node;
+							Element enablement = (Element) node;
 							try {
 								enablementExpression = ExpressionConverter.getDefault().perform(enablement);
-							}
-							catch (CoreException e) {
+							} catch (CoreException e) {
 
 							}
 						} else if (ELEMENT_FILTER.equals(elementKind)) {
-							Element filter = (Element)node;
+							Element filter = (Element) node;
 							String filterName = filter.getAttribute(ATTRIBUTE_NAME);
 							String value = filter.getAttribute(ATTRIBUTE_VALUE);
 							if (filterName.length() > 0 && value.length() > 0) {
@@ -146,14 +147,15 @@ public class UAElement implements IUAElement {
 		if (this.children == null && children.length > 0) {
 			this.children = new ArrayList<>(4);
 		}
-		for (int i=0;i<children.length;i++) {
-			appendChild(children[i] instanceof UAElement ? (UAElement)children[i] : UAElementFactory.newElement(children[i]));
+		for (IUAElement child : children) {
+			appendChild(child instanceof UAElement ? (UAElement) child : UAElementFactory.newElement(child));
 		}
 	}
 
 	/*
-	 * This method is synchronized to fix Bug 232169. When modifying this source be careful not
-	 * to introduce any logic which could possibly cause this thread to block.
+	 * This method is synchronized to fix Bug 232169. When modifying this source
+	 * be careful not to introduce any logic which could possibly cause this
+	 * thread to block.
 	 */
 	synchronized public String getAttribute(String name) {
 		String value = element.getAttribute(name);
@@ -164,9 +166,10 @@ public class UAElement implements IUAElement {
 	}
 
 	/*
-	 * This method is synchronized to fix Bug 230037. A review of the code indicated that there was no
-	 * path which could get blocked and cause deadlock. When modifying this source be careful not
-	 * to introduce any logic which could possibly cause this thread to block.
+	 * This method is synchronized to fix Bug 230037. A review of the code
+	 * indicated that there was no path which could get blocked and cause
+	 * deadlock. When modifying this source be careful not to introduce any
+	 * logic which could possibly cause this thread to block.
 	 */
 	@Override
 	public synchronized IUAElement[] getChildren() {
@@ -176,7 +179,7 @@ public class UAElement implements IUAElement {
 				Node node = element.getFirstChild();
 				while (node != null) {
 					if (node.getNodeType() == Node.ELEMENT_NODE) {
-						UAElement uaElement = UAElementFactory.newElement((Element)node);
+						UAElement uaElement = UAElementFactory.newElement((Element) node);
 						if (uaElement != null) {
 							uaElement.parent = this;
 							children.add(uaElement);
@@ -196,8 +199,7 @@ public class UAElement implements IUAElement {
 		IUAElement[] children = getChildren();
 		if (children.length > 0) {
 			List<Object> list = new ArrayList<>();
-			for (int i=0;i<children.length;++i) {
-				IUAElement child = children[i];
+			for (IUAElement child : children) {
 				if (clazz.isAssignableFrom(child.getClass())) {
 					list.add(child);
 				}
@@ -256,8 +258,8 @@ public class UAElement implements IUAElement {
 			return isEnabledByFilterAttribute(filter);
 		}
 		Filter[] filterElements = getFilterElements();
-		for (int i = 0; i < filterElements.length; i++) {
-			if (!isFilterEnabled(filterElements[i])) {
+		for (Filter filterElement : filterElements) {
+			if (!isFilterEnabled(filterElement)) {
 				return false;
 			}
 		}
@@ -291,12 +293,12 @@ public class UAElement implements IUAElement {
 	private void importElement(UAElement uaElementToImport) {
 		Element elementToImport = uaElementToImport.element;
 		Document ownerDocument = element.getOwnerDocument();
-		if (!ownerDocument.equals(elementToImport.getOwnerDocument()) ) {
-			elementToImport = (Element)ownerDocument.importNode(elementToImport, true);
+		if (!ownerDocument.equals(elementToImport.getOwnerDocument())) {
+			elementToImport = (Element) ownerDocument.importNode(elementToImport, true);
 			uaElementToImport.children = null;
-		}  else {
+		} else {
 			if (elementToImport.getParentNode() != null) {
-				elementToImport = (Element)ownerDocument.importNode(elementToImport, true);
+				elementToImport = (Element) ownerDocument.importNode(elementToImport, true);
 				uaElementToImport.children = null;
 			} else {
 			}
