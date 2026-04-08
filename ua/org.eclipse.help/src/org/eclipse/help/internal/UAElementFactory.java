@@ -74,7 +74,7 @@ public class UAElementFactory {
 		{ ICriteria.class, Criteria.class },
 		{ ICriteriaDefinition.class, CriteriaDefinition.class },
 		{ ICriterionDefinition.class, CriterionDefinition.class },
-		{ ICriterionValueDefinition.class, CriterionValueDefinition.class },
+		{ ICriterionValueDefinition.class, CriterionValueDefinition.class }
 	};
 
 	private static final Map<String, Class<?>> classByElementName;
@@ -119,9 +119,9 @@ public class UAElementFactory {
 	}
 
 	public static UAElement newElement(IUAElement src) {
-		for (int i=0;i<interfaceTable.length;++i) {
-			Class<?> interfaze = interfaceTable[i][0];
-			Class<?> clazz = interfaceTable[i][1];
+		for (Class<?>[] element : interfaceTable) {
+			Class<?> interfaze = element[0];
+			Class<?> clazz = element[1];
 			if (interfaze.isAssignableFrom(src.getClass())) {
 				try {
 					Constructor<?> constructor = clazz.getConstructor(interfaze);
@@ -131,6 +131,9 @@ public class UAElementFactory {
 					String msg = "Error creating document model element"; //$NON-NLS-1$
 					ILog.of(UAContentFilter.class).error(msg, e);
 				}
+			}
+			if (src instanceof UAElement uaElement) {
+				return new UAElement(uaElement.getElementName(), uaElement);
 			}
 		}
 		return null;

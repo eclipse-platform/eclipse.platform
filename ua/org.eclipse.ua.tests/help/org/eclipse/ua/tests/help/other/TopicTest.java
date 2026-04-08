@@ -129,8 +129,7 @@ public class TopicTest {
 		assertThat(topic2.getSubtopics()).hasSize(1);
 	}
 
-	/*
-	 * Disabled, see Bug 210024 [Help] Topic element problems constructing from an ITopic
+	@Test
 	public void testCopyTopicWithChildRemoveChild() {
 		Topic topic1;
 		topic1 = createTopic(TOPIC_WITH_CHILD);
@@ -142,14 +141,12 @@ public class TopicTest {
 		assertEquals(0, topic1.getSubtopics().length);
 		assertEquals(1, topic2.getSubtopics().length);
 	}
-	*/
 
 	/*
 	 * Test the assumption that when a topic is created from another topic not only
 	 * the topic but all the children are recursively copied
 	 */
-	/*
-	 * Disabled, see Bug 210024 [Help] Topic element problems constructing from an ITopic
+	@Test
 	public void testCopyTopicWithChildCheckParents() {
 		Topic topic1;
 		topic1 = createTopic(TOPIC_WITH_CHILD);
@@ -158,14 +155,14 @@ public class TopicTest {
 		assertEquals(ECLIPSE_HREF, topic1.getHref());
 		assertEquals(1, topic1.getSubtopics().length);
 		Topic child1 = (Topic)topic1.getSubtopics()[0];
-		assertTrue(child1.getParentElement() == topic1);
+		assertEquals(child1.getParentElement(), topic1);
 		assertEquals(ECLIPSE, topic2.getLabel());
 		assertEquals(ECLIPSE_HREF, topic2.getHref());
 		assertEquals(1, topic2.getSubtopics().length);
-		Topic child2 = (Topic)topic1.getSubtopics()[0];
-		assertTrue(child2.getParentElement() == topic2);
+		Topic child2 = (Topic) topic2.getSubtopics()[0];
+		assertEquals(child2.getParentElement(), topic2);
 	}
-	*/
+
 	@Test
 	public void testEnabledTopic() {
 		Topic topic = createTopic(TOPIC_WITH_ENABLEMENT);
