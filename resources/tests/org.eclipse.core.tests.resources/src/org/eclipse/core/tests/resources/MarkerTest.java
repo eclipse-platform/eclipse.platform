@@ -44,6 +44,7 @@ import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicReference;
 import org.assertj.core.api.ObjectAssert;
+import org.eclipse.core.internal.resources.ContentDescriptionManager;
 import org.eclipse.core.internal.resources.MarkerManager;
 import org.eclipse.core.internal.resources.MarkerReader;
 import org.eclipse.core.internal.resources.Resource;
@@ -208,6 +209,8 @@ public class MarkerTest {
 		prefs.putBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, false);
 		Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_REFRESH);
 		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, null);
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(LOG_RESOURCE_DELTA);
+		cancelAndJoin(ContentDescriptionManager.FAMILY_DESCRIPTION_CACHE_FLUSH);
 	}
 
 
@@ -958,7 +961,6 @@ public class MarkerTest {
 	 */
 	@Test
 	public void testMarkerDeltasMoveFile(TestInfo testInfo) throws CoreException {
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(LOG_RESOURCE_DELTA);
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		final IProject project = root.getProject("MyProject");
 		IFolder folder = project.getFolder("folder");
@@ -1006,7 +1008,7 @@ public class MarkerTest {
 	 * Tests the appearance of marker changes in the resource delta.
 	 */
 	@Test
-	public void testMarkerDeltasMoveProject() throws CoreException {
+	public void testMarkerDeltasMoveProject() throws Exception {
 		// Create and register a listener.
 		final MarkersChangeListener listener = new MarkersChangeListener();
 		setResourceChangeListener(listener);
@@ -1036,6 +1038,7 @@ public class MarkerTest {
 			IPath destination = IPath.fromOSString(project.getName() + "move");
 			project.move(destination, true, createTestMonitor());
 		}
+		cancelAndJoin(ContentDescriptionManager.FAMILY_DESCRIPTION_CACHE_FLUSH);
 
 		// verify marker deltas
 		IResourceVisitor visitor = resource -> {
@@ -1391,6 +1394,11 @@ public class MarkerTest {
 			assertThat(marker.getAttribute("2")).as(resourcePath).isNull();
 			assertThat(marker.getAttributes()).as(resourcePath).isNull();
 		}
+	}
+
+	private static void cancelAndJoin(Object family) throws Exception {
+		Job.getJobManager().cancel(family);
+		Job.getJobManager().join(family, null);
 	}
 
 	private static void logDeltaEvent(IResourceChangeEvent event) {
