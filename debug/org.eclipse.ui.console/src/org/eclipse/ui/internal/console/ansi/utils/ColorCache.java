@@ -23,6 +23,6 @@ public class ColorCache {
 	}
 
 	public static Color get(RGB rgb) {
-		return CACHE.computeIfAbsent(rgb, color -> new Color(null, color));
+		return CACHE.computeIfAbsent(rgb, color -> new Color(color));
 	}
 }

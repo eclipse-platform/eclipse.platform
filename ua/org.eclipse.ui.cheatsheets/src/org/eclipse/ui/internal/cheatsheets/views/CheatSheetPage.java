@@ -124,16 +124,16 @@ public class CheatSheetPage extends Page implements IMenuContributor {
 	@Override
 	protected void init(Display display) {
 		super.init(display);
-		computeColors(display);
+		computeColors();
 	}
 
-	private void computeColors(Display display) {
+	private void computeColors() {
 		RGB rgb;
 		RGB white = new RGB(255, 255, 255);
 		RGB black = new RGB(0, 0, 0);
 
 		if (isReverseVideo()) {
-			computeReverseVideoColors(display);
+			computeReverseVideoColors();
 			return;
 		}
 
@@ -159,8 +159,8 @@ public class CheatSheetPage extends Page implements IMenuContributor {
 				// blend with blue
 				rgb = FormColors.blend(rgb, new RGB(100, 100, 255), 90);
 			}
-			introColor = new Color(display, rgb);
-			inactiveColor2 = new Color(display, rgb);
+			introColor = new Color(rgb);
+			inactiveColor2 = new Color(rgb);
 		} else {
 			// colored background
 			rgb = toolkit.getColors().getSystemColor(SWT.COLOR_LIST_SELECTION);
@@ -175,26 +175,26 @@ public class CheatSheetPage extends Page implements IMenuContributor {
 			} else if (FormColors.testTwoPrimaryColors(rgb, 240, 256)) {
 				rgb = FormColors.blend(rgb, black, 30);
 			}
-			introColor = new Color(display, rgb);
-			inactiveColor2 = new Color(display, rgb);
+			introColor = new Color(rgb);
+			inactiveColor2 = new Color(rgb);
 		}
 		rgb = inactiveColor2.getRGB();
 		rgb = FormColors.blend(rgb, backgroundColor.getRGB(), 40);
-		inactiveColor1 = new Color(display, rgb);
-		activeColor = new Color(display, backgroundColor.getRGB());
+		inactiveColor1 = new Color(rgb);
+		activeColor = new Color(backgroundColor.getRGB());
 	}
 
-	private void computeReverseVideoColors(Display display) {
+	private void computeReverseVideoColors() {
 		Color background = toolkit.getColors().getBackground();
 		RGB white = new RGB(255, 255, 255);
 		// Create new colors, they will get disposed
 		RGB rgb = background.getRGB();
-		activeColor = new Color(display, rgb );
+		activeColor = new Color(rgb);
 		rgb = FormColors.blend(rgb, white, 85);
-		inactiveColor1 = new Color(display, rgb);
+		inactiveColor1 = new Color(rgb);
 		rgb = FormColors.blend(rgb, white, 85);
-		inactiveColor2 = new Color(display, rgb );
-		introColor = new Color(display, rgb );
+		inactiveColor2 = new Color(rgb);
+		introColor = new Color(rgb);
 	}
 
 	private boolean isReverseVideo() {

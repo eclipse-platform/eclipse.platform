@@ -1274,7 +1274,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 			if (fIndicatorColor != null) {
 				Display d= fSummaryHeader.getDisplay();
-				e.gc.setBackground(getColor(d, fIndicatorColor));
+				e.gc.setBackground(getColor(fIndicatorColor));
 				int min= Math.min(s.x, s.y)-2*INSET;
 				Rectangle r= new Rectangle((s.x-min)/2, (s.y-min)/2, min, min);
 				e.gc.fillRectangle(r);
@@ -1366,8 +1366,8 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		}
 
 		private StyleRange getStyleRange(Diff diff, IRegion region, boolean showAdditionRemoval) {
-			//Color cText = getColor(null, getTextColor());
-			Color cTextFill = getColor(null, getTextFillColor(diff, showAdditionRemoval));
+			//Color cText = getColor(getTextColor());
+			Color cTextFill = getColor(getTextFillColor(diff, showAdditionRemoval));
 			if (cTextFill == null) {
 				return null;
 			}
@@ -1842,7 +1842,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 		Color bgColor = null;
 		if (fBackground != null) {
-			bgColor = getColor(display, fBackground);
+			bgColor = getColor(fBackground);
 		}
 
 		if (fAncestor != null) {
@@ -1857,7 +1857,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 		Color fgColor = null;
 		if (fForeground != null) {
-			fgColor = getColor(display, fForeground);
+			fgColor = getColor(fForeground);
 		}
 
 		if (fAncestor != null) {
@@ -2435,7 +2435,6 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			return;
 		}
 
-		Display display= canvas.getDisplay();
 		int y= 0;
 		boolean allOutgoing = allOutgoing();
 		for (Iterator<Diff> iterator = fMerger.rangesIterator(); iterator.hasNext();) {
@@ -2451,12 +2450,12 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 					hh= 3;
 				}
 
-				c = getColor(display, getFillColor(diff, allOutgoing));
+				c = getColor(getFillColor(diff, allOutgoing));
 				if (c != null) {
 					gc.setBackground(c);
 					gc.fillRectangle(BIRDS_EYE_VIEW_INSET, yy, size.x-(2*BIRDS_EYE_VIEW_INSET),hh);
 				}
-				c = getColor(display, getStrokeColor(diff, allOutgoing));
+				c = getColor(getStrokeColor(diff, allOutgoing));
 				if (c != null) {
 					gc.setForeground(c);
 					r.x= BIRDS_EYE_VIEW_INSET;
@@ -2785,7 +2784,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		}
 
 		if (fBackground != null) { // not default
-			te.setBackground(getColor(parent.getDisplay(), fBackground));
+			te.setBackground(getColor(fBackground));
 		}
 
 		// Add the find action to the popup menu of the viewer
@@ -2863,8 +2862,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 							if (diff != null && updateDiffBackground(diff)) {
 								// highlights only the event line, not the
 								// whole diff
-								event.lineBackground = getColor(fComposite
-										.getDisplay(), getFillColor(diff, allOutgoing()));
+								event.lineBackground = getColor(getFillColor(diff, allOutgoing()));
 							}
 						}
 					}
@@ -4542,8 +4540,8 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 				fPts[0]= x;	fPts[1]= ly;	fPts[2]= w;	fPts[3]= ry;
 				fPts[6]= x;	fPts[7]= ly+lh;	fPts[4]= w;	fPts[5]= ry+rh;
 
-				Color fillColor = getColor(display, getFillColor(diff, allOutgoing));
-				Color strokeColor = getColor(display, getStrokeColor(diff, allOutgoing));
+				Color fillColor = getColor(getFillColor(diff, allOutgoing));
+				Color strokeColor = getColor(getStrokeColor(diff, allOutgoing));
 
 				if (fUseSingleLine) {
 					int w2= 3;
@@ -4672,7 +4670,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 					break;
 				}
 
-				g.setBackground(getColor(display, getFillColor(diff, allOutgoing)));
+				g.setBackground(getColor(getFillColor(diff, allOutgoing)));
 				if (right) {
 					g.fillRectangle(x, y, w2, h);
 				} else {
@@ -4680,7 +4678,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 				}
 
 				g.setLineWidth(0 /* LW */);
-				g.setForeground(getColor(display, getStrokeColor(diff, allOutgoing)));
+				g.setForeground(getColor(getStrokeColor(diff, allOutgoing)));
 				if (right) {
 					g.drawRectangle(x-1, y-1, w2, h);
 				} else {
@@ -4712,8 +4710,6 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		Control canvas= (Control) event.widget;
 		GC g= event.gc;
 
-		Display display= canvas.getDisplay();
-
 		int w= canvas.getSize().x;
 		int shift = calculateShift(tp) + (2 - LW);
 		int maxh= event.y+event.height; 	// visibleHeight
@@ -4742,7 +4738,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 				break;
 			}
 
-			g.setBackground(getColor(display, getStrokeColor(diff, allOutgoing)));
+			g.setBackground(getColor(getStrokeColor(diff, allOutgoing)));
 			g.fillRectangle(0, y-1, w, LW);
 			g.fillRectangle(0, y+h-1, w, LW);
 		}
@@ -4807,7 +4803,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		return selected ? palette.selected : palette.normal;
 	}
 
-	private Color getColor(Display display, RGB rgb) {
+	private Color getColor(RGB rgb) {
 		if (rgb == null) {
 			return null;
 		}
@@ -4816,7 +4812,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		}
 		Color c= fColors.get(rgb);
 		if (c == null) {
-			c= new Color(display, rgb);
+			c= new Color(rgb);
 			fColors.put(rgb, c);
 		}
 		return c;

@@ -19,7 +19,6 @@ import java.util.Map;
 import org.eclipse.jface.text.source.ISharedTextColors;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -48,7 +47,7 @@ public class ColorManager implements ISharedTextColors {
 			synchronized (fColorTable) {
 				color = fColorTable.get(rgb);
 				if (color == null) {
-					PlatformUI.getWorkbench().getDisplay().syncExec(() -> fColorTable.put(rgb, new Color(Display.getCurrent(), rgb)));
+					PlatformUI.getWorkbench().getDisplay().syncExec(() -> fColorTable.put(rgb, new Color(rgb)));
 					color = fColorTable.get(rgb);
 				}
 			}

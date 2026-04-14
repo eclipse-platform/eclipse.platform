@@ -57,10 +57,9 @@ public class UnitTestProgressBar extends Canvas {
 			}
 		});
 		addPaintListener(this::paint);
-		Display display = parent.getDisplay();
-		fFailureColor = new Color(display, 159, 63, 63);
-		fOKColor = new Color(display, 95, 191, 95);
-		fStoppedColor = new Color(display, 120, 120, 120);
+		fFailureColor = new Color(159, 63, 63);
+		fOKColor = new Color(95, 191, 95);
+		fStoppedColor = new Color(120, 120, 120);
 	}
 
 	/**

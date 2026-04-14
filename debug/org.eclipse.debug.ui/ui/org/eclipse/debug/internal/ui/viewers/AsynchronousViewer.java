@@ -365,7 +365,7 @@ public abstract class AsynchronousViewer extends StructuredViewer implements Lis
 		}
 		Color color = fColorCache.get(rgb);
 		if (color == null) {
-			color = new Color(getControl().getDisplay(), rgb);
+			color = new Color(rgb);
 			fColorCache.put(rgb, color);
 		}
 		return color;

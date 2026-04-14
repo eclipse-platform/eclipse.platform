@@ -73,7 +73,7 @@ public class MessageLine extends CLabel {
 				setText(message);
 				setImage(findImage(status));
 				if (fErrorMsgAreaBackground == null) {
-					fErrorMsgAreaBackground = new Color(getDisplay(), ERROR_BACKGROUND_RGB);
+					fErrorMsgAreaBackground = new Color(ERROR_BACKGROUND_RGB);
 				}
 				setBackground(fErrorMsgAreaBackground);
 				return;

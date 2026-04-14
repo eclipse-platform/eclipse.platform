@@ -198,7 +198,7 @@ public class TreeModelLabelProvider extends ColumnLabelProvider
 		}
 		Color color = fColorCache.get(rgb);
 		if (color == null) {
-			color = new Color(getDisplay(), rgb);
+			color = new Color(rgb);
 			fColorCache.put(rgb, color);
 		}
 		return color;
