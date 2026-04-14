@@ -40,7 +40,6 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ToolBar;
@@ -294,7 +293,7 @@ public class IntroLaunchBar {
 
 	public void createControl(Composite parent) {
 		container = new Composite(parent, SWT.NULL);
-		computeColors(parent.getDisplay());
+		computeColors();
 		container.setLayout(new BarLayout());
 		toolBarManager = new ToolBarManager(SWT.FLAT | getOrientation());
 
@@ -327,13 +326,13 @@ public class IntroLaunchBar {
 	}
 
 
-	private void computeColors(Display display) {
+	private void computeColors() {
 		if (element.getBackground() != null) {
 			String value = resolveColor(element.getBackground());
 			if (value!=null) {
 				RGB r = SharedStyleManager.parseRGB(value);
 				if (r != null) {
-					bg = new Color(display, r);
+					bg = new Color(r);
 				}
 			}
 		}

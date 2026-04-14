@@ -140,7 +140,7 @@ class BreadcrumbItemDropDown implements IBreadcrumbDropDownSite {
 
 			RGB blend= BreadcrumbViewer.blend(rgb2, rgb1, ratio);
 
-			return new Color(display, blend);
+			return new Color(blend);
 		}
 	}
 

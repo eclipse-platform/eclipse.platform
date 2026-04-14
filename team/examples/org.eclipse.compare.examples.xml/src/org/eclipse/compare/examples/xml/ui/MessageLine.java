@@ -114,7 +114,7 @@ public class MessageLine extends CLabel {
 			setMessage(fMessageText);
 		} else {
 			if (fErrorColor == null) {
-				fErrorColor= new Color(getDisplay(), fErrorRGB);
+				fErrorColor= new Color(fErrorRGB);
 			}
 			setForeground(fErrorColor);
 			setText(message);

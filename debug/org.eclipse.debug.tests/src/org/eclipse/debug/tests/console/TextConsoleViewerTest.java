@@ -53,11 +53,11 @@ public class TextConsoleViewerTest {
 			assertTrue(Modifier.isStatic(method.getModifiers()), "Required method <\" + method + \"> is not static.\"");
 
 			final List<StyleRange> styles = new ArrayList<>();
-			colorR = new Color(null, 255, 0, 0);
-			colorG = new Color(null, 0, 255, 0);
-			colorB = new Color(null, 0, 0, 255);
-			colorK = new Color(null, 0, 0, 0);
-			colorW = new Color(null, 255, 255, 255);
+			colorR = new Color(255, 0, 0);
+			colorG = new Color(0, 255, 0);
+			colorB = new Color(0, 0, 255);
+			colorK = new Color(0, 0, 0);
+			colorW = new Color(255, 255, 255);
 
 			// overwrite in empty list
 			method.invoke(null, styles, new StyleRange(5, 5, colorR, null));

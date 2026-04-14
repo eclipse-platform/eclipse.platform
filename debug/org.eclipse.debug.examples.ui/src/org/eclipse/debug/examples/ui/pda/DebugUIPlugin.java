@@ -27,7 +27,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
@@ -194,7 +193,7 @@ public class DebugUIPlugin extends AbstractUIPlugin {
 	public Color getColor(RGB rgb) {
 		Color color = fColors.get(rgb);
 		if (color == null) {
-			color= new Color(Display.getCurrent(), rgb);
+			color= new Color(rgb);
 			fColors.put(rgb, color);
 		}
 		return color;

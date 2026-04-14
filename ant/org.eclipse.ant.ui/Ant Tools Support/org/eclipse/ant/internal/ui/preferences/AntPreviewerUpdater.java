@@ -28,7 +28,6 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 
 /**
@@ -114,22 +113,22 @@ class AntPreviewerUpdater {
 
 		// ----------- foreground color --------------------
 		Color color = store.getBoolean(AbstractTextEditor.PREFERENCE_COLOR_FOREGROUND_SYSTEM_DEFAULT) ? null
-				: createColor(store, AbstractTextEditor.PREFERENCE_COLOR_FOREGROUND, styledText.getDisplay());
+				: createColor(store, AbstractTextEditor.PREFERENCE_COLOR_FOREGROUND);
 		styledText.setForeground(color);
 
 		// ---------- background color ----------------------
 		color = store.getBoolean(AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND_SYSTEM_DEFAULT) ? null
-				: createColor(store, AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND, styledText.getDisplay());
+				: createColor(store, AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND);
 		styledText.setBackground(color);
 
 		// ----------- selection foreground color --------------------
 		color = store.getBoolean(AbstractTextEditor.PREFERENCE_COLOR_SELECTION_FOREGROUND_SYSTEM_DEFAULT) ? null
-				: createColor(store, AbstractTextEditor.PREFERENCE_COLOR_SELECTION_FOREGROUND, styledText.getDisplay());
+				: createColor(store, AbstractTextEditor.PREFERENCE_COLOR_SELECTION_FOREGROUND);
 		styledText.setSelectionForeground(color);
 
 		// ---------- selection background color ----------------------
 		color = store.getBoolean(AbstractTextEditor.PREFERENCE_COLOR_SELECTION_BACKGROUND_SYSTEM_DEFAULT) ? null
-				: createColor(store, AbstractTextEditor.PREFERENCE_COLOR_SELECTION_BACKGROUND, styledText.getDisplay());
+				: createColor(store, AbstractTextEditor.PREFERENCE_COLOR_SELECTION_BACKGROUND);
 		styledText.setSelectionBackground(color);
 	}
 
@@ -140,12 +139,10 @@ class AntPreviewerUpdater {
 	 *            the store to read from
 	 * @param key
 	 *            the key used for the lookup in the preference store
-	 * @param display
-	 *            the display used create the color
 	 * @return the created color according to the specification in the preference store
 	 * @since 2.0
 	 */
-	private Color createColor(IPreferenceStore store, String key, Display display) {
+	private Color createColor(IPreferenceStore store, String key) {
 
 		RGB rgb = null;
 
@@ -158,7 +155,7 @@ class AntPreviewerUpdater {
 			}
 
 			if (rgb != null) {
-				return new Color(display, rgb);
+				return new Color(rgb);
 			}
 		}
 
