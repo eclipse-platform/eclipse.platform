@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -32,24 +32,24 @@ public class PropertyTesterDescriptor implements IPropertyTester {
 
 	private static final String PROPERTIES= "properties"; //$NON-NLS-1$
 	private static final String NAMESPACE= "namespace"; //$NON-NLS-1$
-	private static final String CLASS= "class";  //$NON-NLS-1$
+	private static final String CLASS= "class"; //$NON-NLS-1$
 
 	public PropertyTesterDescriptor(IConfigurationElement element) throws CoreException {
 		fConfigElement= element;
-		fNamespace= fConfigElement.getAttribute(NAMESPACE);
+		if (!element.isValid()) {
+			throw new CoreException(new Status(IStatus.ERROR, PropertyTesterDescriptor.class,
+					IStatus.ERROR, ExpressionMessages.PropertyTesterDescriptor_invalid, null));
+		}
+		fNamespace= element.getAttribute(NAMESPACE);
 		if (fNamespace == null) {
 			throw new CoreException(new Status(IStatus.ERROR, PropertyTesterDescriptor.class,
-				IStatus.ERROR,
-				ExpressionMessages.PropertyTesterDescriptor_no_namespace,
-				null));
+					IStatus.ERROR, ExpressionMessages.PropertyTesterDescriptor_no_namespace, null));
 		}
 		StringBuilder buffer= new StringBuilder(","); //$NON-NLS-1$
 		String properties= element.getAttribute(PROPERTIES);
 		if (properties == null) {
 			throw new CoreException(new Status(IStatus.ERROR, PropertyTesterDescriptor.class,
-				IStatus.ERROR,
-				ExpressionMessages.PropertyTesterDescritpri_no_properties,
-				null));
+					IStatus.ERROR, ExpressionMessages.PropertyTesterDescritpri_no_properties, null));
 		}
 		for (int i= 0; i < properties.length(); i++) {
 			char ch= properties.charAt(i);
@@ -62,6 +62,8 @@ public class PropertyTesterDescriptor implements IPropertyTester {
 	}
 
 	public PropertyTesterDescriptor(IConfigurationElement element, String namespace, String properties) {
+		if (!element.isValid())
+			throw new IllegalStateException(ExpressionMessages.PropertyTesterDescriptor_invalid);
 		fConfigElement= element;
 		fNamespace= namespace;
 		fProperties= properties;

@@ -13,7 +13,9 @@ Require-Bundle:
 Import-Package: org.assertj.core.api,
  org.junit.jupiter.api;version="[5.14.0,6.0.0)",
  org.junit.jupiter.api.function;version="[5.14.0,6.0.0)",
- org.junit.platform.suite.api;version="[1.14.0,2.0.0)"
+ org.junit.platform.suite.api;version="[1.14.0,2.0.0)",
+ org.mockito,
+ org.mockito.stubbing
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Eclipse-BundleShape: dir
 Bundle-ActivationPolicy: lazy
