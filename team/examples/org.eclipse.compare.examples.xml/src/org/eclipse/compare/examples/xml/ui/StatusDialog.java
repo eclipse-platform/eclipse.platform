@@ -67,7 +67,17 @@ public abstract class StatusDialog extends Dialog {
 		fLastStatus= status;
 		if (fStatusLine != null && !fStatusLine.isDisposed()) {
 			updateButtonsEnableState(status);
-			StatusUtil.applyToStatusLine(fStatusLine, status);
+			String message= status.getMessage();
+			if (status.matches(IStatus.ERROR) && !message.isEmpty()) {
+				fStatusLine.setErrorMessage(message);
+				fStatusLine.setMessage(null);
+			} else if (status.matches(IStatus.WARNING | IStatus.INFO)) {
+				fStatusLine.setErrorMessage(null);
+				fStatusLine.setMessage(message);
+			} else {
+				fStatusLine.setErrorMessage(null);
+				fStatusLine.setMessage(null);
+			}
 		}
 	}
 
