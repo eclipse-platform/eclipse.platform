@@ -459,6 +459,15 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 	}
 
 	/**
+	 * Broadcasts a per-builder build event. The {@code type} must be either
+	 * {@link IResourceChangeEvent#PRE_PROJECT_BUILD} or
+	 * {@link IResourceChangeEvent#POST_PROJECT_BUILD}.
+	 */
+	public void broadcastProjectBuildEvent(IProject project, String builderName, int type, int buildTrigger) {
+		notificationManager.broadcastProjectBuildEvent(project, builderName, type, buildTrigger);
+	}
+
+	/**
 	 * Broadcasts an internal workspace lifecycle event to interested
 	 * internal listeners.
 	 */
