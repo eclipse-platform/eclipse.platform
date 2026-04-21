@@ -15,6 +15,7 @@
 package org.eclipse.core.variables;
 
 import org.eclipse.core.internal.variables.StringVariableManager;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
@@ -96,7 +97,7 @@ public class VariablesPlugin extends Plugin {
 	 * @param status status to log
 	 */
 	public static void log(IStatus status) {
-		getDefault().getLog().log(status);
+		ILog.of(VariablesPlugin.class).log(status);
 	}
 
 	/**

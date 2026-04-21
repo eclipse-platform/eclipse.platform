@@ -22,6 +22,7 @@ import org.eclipse.ant.internal.core.AntClassLoader;
 import org.eclipse.ant.internal.core.AntCoreUtil;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
@@ -302,6 +303,6 @@ public class AntCorePlugin extends Plugin {
 	 */
 	public static void log(Throwable t) {
 		IStatus status = new Status(IStatus.ERROR, PI_ANTCORE, INTERNAL_ERROR, "Error logged from Ant Core: ", t); //$NON-NLS-1$
-		getPlugin().getLog().log(status);
+		ILog.of(AntCorePlugin.class).log(status);
 	}
 }

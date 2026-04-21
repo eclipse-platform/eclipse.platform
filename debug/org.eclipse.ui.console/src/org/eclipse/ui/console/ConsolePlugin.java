@@ -15,6 +15,7 @@
 package org.eclipse.ui.console;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -83,7 +84,7 @@ public class ConsolePlugin extends AbstractUIPlugin {
 	 * @param status status to log
 	 */
 	public static void log(IStatus status) {
-		getDefault().getLog().log(status);
+		ILog.of(ConsolePlugin.class).log(status);
 	}
 
 	/**
