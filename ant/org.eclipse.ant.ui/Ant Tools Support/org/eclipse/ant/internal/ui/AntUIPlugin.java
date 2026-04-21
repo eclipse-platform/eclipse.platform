@@ -19,6 +19,7 @@ import java.util.Locale;
 import org.eclipse.ant.internal.core.IAntCoreConstants;
 import org.eclipse.ant.internal.ui.editor.DecayCodeCompletionDataStructuresThread;
 import org.eclipse.ant.internal.ui.editor.text.AntEditorDocumentProvider;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -124,7 +125,7 @@ public class AntUIPlugin extends AbstractUIPlugin {
 	 *            status
 	 */
 	public static void log(IStatus status) {
-		getDefault().getLog().log(status);
+		ILog.of(AntUIPlugin.class).log(status);
 	}
 
 	/**

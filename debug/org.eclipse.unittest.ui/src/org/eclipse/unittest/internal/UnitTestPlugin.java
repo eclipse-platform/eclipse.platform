@@ -19,6 +19,7 @@ import org.eclipse.unittest.internal.model.UnitTestLaunchListener;
 import org.eclipse.unittest.internal.model.UnitTestModel;
 import org.eclipse.unittest.internal.ui.history.History;
 
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -73,7 +74,7 @@ public class UnitTestPlugin extends AbstractUIPlugin {
 	 * @param status the status to log
 	 */
 	public static void log(IStatus status) {
-		getDefault().getLog().log(status);
+		ILog.of(UnitTestPlugin.class).log(status);
 	}
 
 	@Override

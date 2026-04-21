@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.compare.internal.win32;
 
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
@@ -66,6 +67,6 @@ public class Activator extends Plugin {
 	}
 
 	public static void log(IStatus status) {
-		getDefault().getLog().log(status);
+		ILog.of(Activator.class).log(status);
 	}
 }
