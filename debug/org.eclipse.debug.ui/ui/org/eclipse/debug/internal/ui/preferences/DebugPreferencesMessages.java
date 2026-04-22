@@ -31,8 +31,10 @@ public class DebugPreferencesMessages extends NLS {
 	public static String ConsolePreferencePage_Console_width;
 	public static String ConsolePreferencePage_Limit_console_output_1;
 	public static String ConsolePreferencePage_Console_buffer_size__characters___2;
+	public static String ConsolePreferencePage_Limit_console_group;
 	public static String ConsolePreferencePage_Limit_console_lines;
 	public static String ConsolePreferencePage_Limit_console_lines_wrap;
+	public static String ConsolePreferencePage_Limit_console_lines_cut;
 	public static String ConsolePreferencePage_Limit_console_lines_length;
 
 	public static String ConsolePreferencePage_ConsoleAutoPinEnable;

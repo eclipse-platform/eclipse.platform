@@ -37,9 +37,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Shell;
@@ -93,7 +95,6 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 	private ConsoleIntegerFieldEditor fBufferSizeEditor;
 
 	private BooleanFieldEditor2 fLimitLines;
-	private BooleanFieldEditor2 fLimitLineWrap;
 	private ConsoleIntegerFieldEditor fLimitLineLength;
 
 	private ConsoleIntegerFieldEditor fTabSizeEditor;
@@ -107,6 +108,10 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 	private ComboViewer fElapsedFormat;
 
 	private Label fElapsedFormatPreviewLabel;
+
+	private Group lineLimitGroup;
+	private Button cutConsoleLineButton;
+	private Button wrapConsoleLineButton;
 
 	@SuppressWarnings("nls")
 	private static final String[] ELAPSED_FORMATS = new String[] { "H:MM:SS", "HH:MM:SS", "HH:MM:SS.mmm", "MM:SS.mmm",
@@ -169,23 +174,43 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 			}
 		);
 
-		fLimitLines = new BooleanFieldEditor2(IDebugPreferenceConstants.CONSOLE_LIMIT_LINES, DebugPreferencesMessages.ConsolePreferencePage_Limit_console_lines, SWT.NONE, getFieldEditorParent());
+		lineLimitGroup = new Group(getFieldEditorParent(), SWT.LEFT);
+		GridLayout layout = new GridLayout();
+		lineLimitGroup.setLayout(layout);
+		GridData data = new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL);
+		data.horizontalSpan = 2;
+		lineLimitGroup.setLayoutData(data);
+		lineLimitGroup.setText(DebugPreferencesMessages.ConsolePreferencePage_Limit_console_group);
+
+		fLimitLines = new BooleanFieldEditor2(IDebugPreferenceConstants.CONSOLE_LIMIT_LINES,
+				DebugPreferencesMessages.ConsolePreferencePage_Limit_console_lines, SWT.NONE, lineLimitGroup);
 		addField(fLimitLines);
-		fLimitLines.getChangeControl(getFieldEditorParent()).addSelectionListener(
-				new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						updateLineLimitControls();
-					}
-				}
-			);
-
-		fLimitLineWrap = new BooleanFieldEditor2(IDebugPreferenceConstants.CONSOLE_LIMIT_LINES_WRAP, DebugPreferencesMessages.ConsolePreferencePage_Limit_console_lines_wrap, SWT.NONE, getFieldEditorParent());
-		addField(fLimitLineWrap);
-
-		fLimitLineLength = new ConsoleIntegerFieldEditor(IDebugPreferenceConstants.CONSOLE_LIMIT_LINES_LENGTH, DebugPreferencesMessages.ConsolePreferencePage_Limit_console_lines_length, getFieldEditorParent());
+		fLimitLines.getChangeControl(lineLimitGroup).addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				updateLineLimitControls();
+			}
+		});
+		fLimitLineLength = new ConsoleIntegerFieldEditor(IDebugPreferenceConstants.CONSOLE_LIMIT_LINES_LENGTH,
+				DebugPreferencesMessages.ConsolePreferencePage_Limit_console_lines_length, lineLimitGroup);
 		fLimitLineLength.setValidRange(1, Integer.MAX_VALUE - 100000);
 		addField(fLimitLineLength);
+
+		boolean hardWrapLines = getPreferenceStore().getBoolean(IDebugPreferenceConstants.CONSOLE_LIMIT_LINES_WRAP);
+		String label;
+
+		label = DebugPreferencesMessages.ConsolePreferencePage_Limit_console_lines_cut;
+		cutConsoleLineButton = createRadioButton(lineLimitGroup, label);
+		cutConsoleLineButton.setSelection(!hardWrapLines);
+
+		label = DebugPreferencesMessages.ConsolePreferencePage_Limit_console_lines_wrap;
+		wrapConsoleLineButton = createRadioButton(lineLimitGroup, label);
+		wrapConsoleLineButton.setSelection(hardWrapLines);
+
+		// Restore margins after field editor constructors overwrote them with 0
+		GridLayout groupLayout = (GridLayout) lineLimitGroup.getLayout();
+		groupLayout.marginWidth = 5;
+		groupLayout.marginHeight = 5;
 
 		fTabSizeEditor = new ConsoleIntegerFieldEditor(IDebugPreferenceConstants.CONSOLE_TAB_WIDTH, DebugPreferencesMessages.ConsolePreferencePage_12, getFieldEditorParent());
 		addField(fTabSizeEditor);
@@ -277,8 +302,10 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 	@Override
 	public boolean performOk() {
 		boolean ok= super.performOk();
-		// update high water mark to be (about) 100 lines (100 * 80 chars) greater than low water mark
 		IPreferenceStore store = DebugUIPlugin.getDefault().getPreferenceStore();
+		store.setValue(IDebugPreferenceConstants.CONSOLE_LIMIT_LINES_WRAP, wrapConsoleLineButton.getSelection());
+
+		// update high water mark to be (about) 100 lines (100 * 80 chars) greater than low water mark
 		int low = store.getInt(IDebugPreferenceConstants.CONSOLE_LOW_WATER_MARK);
 		int high = low + 8000;
 		store.setValue(IDebugPreferenceConstants.CONSOLE_HIGH_WATER_MARK, high);
@@ -336,10 +363,11 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 	 * console lines' editor.
 	 */
 	protected void updateLineLimitControls() {
-		Button b = fLimitLines.getChangeControl(getFieldEditorParent());
-		fLimitLineWrap.setEnabled(b.getSelection(), getFieldEditorParent());
-		fLimitLineLength.getTextControl(getFieldEditorParent()).setEnabled(b.getSelection());
-		fLimitLineLength.getLabelControl(getFieldEditorParent()).setEnabled(b.getSelection());
+		boolean enableLimit = fLimitLines.getBooleanValue();
+		wrapConsoleLineButton.setEnabled(enableLimit);
+		cutConsoleLineButton.setEnabled(enableLimit);
+		fLimitLineLength.getTextControl(lineLimitGroup).setEnabled(enableLimit);
+		fLimitLineLength.getLabelControl(lineLimitGroup).setEnabled(enableLimit);
 	}
 
 	/**
@@ -365,6 +393,12 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 	@Override
 	protected void performDefaults() {
 		super.performDefaults();
+
+		boolean hardWrapLines = getPreferenceStore()
+				.getDefaultBoolean(IDebugPreferenceConstants.CONSOLE_LIMIT_LINES_WRAP);
+		wrapConsoleLineButton.setSelection(hardWrapLines);
+		cutConsoleLineButton.setSelection(!hardWrapLines);
+
 		updateWidthEditor();
 		updateBufferSizeEditor();
 		updateLineLimitControls();
@@ -472,5 +506,19 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 		gridData.horizontalSpan = 4;
 		link.setLayoutData(gridData);
 		SWTFactory.createVerticalSpacer(getFieldEditorParent(), 2);
+	}
+
+	/**
+	 * Utility method that creates a radio button instance and sets the default
+	 * layout data.
+	 *
+	 * @param parent the parent for the new button
+	 * @param label  the label for the new button
+	 * @return the newly-created button
+	 */
+	protected static Button createRadioButton(Composite parent, String label) {
+		Button button = new Button(parent, SWT.RADIO | SWT.LEFT);
+		button.setText(label);
+		return button;
 	}
 }
