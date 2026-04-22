@@ -31,6 +31,7 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -121,8 +122,7 @@ public class PDADebugTarget extends PDADebugElement implements IDebugTarget, IBr
 							event = PDAEvent.parseEvent(message);
 						}
 						catch (IllegalArgumentException e) {
-							DebugCorePlugin.getDefault().getLog().log(
-								new Status (IStatus.ERROR, "org.eclipse.debug.examples.core", "Error parsing PDA event", e)); //$NON-NLS-1$ //$NON-NLS-2$
+							ILog.of(PDADebugTarget.class).error("Error parsing PDA event", e); //$NON-NLS-1$
 							continue;
 						}
 						for (Object listener : fEventListeners.toArray()) {

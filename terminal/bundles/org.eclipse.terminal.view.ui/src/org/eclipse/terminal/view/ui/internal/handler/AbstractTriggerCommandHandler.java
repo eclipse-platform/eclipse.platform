@@ -17,12 +17,10 @@ import org.eclipse.core.commands.ParameterizedCommand;
 import org.eclipse.core.expressions.EvaluationContext;
 import org.eclipse.core.expressions.IEvaluationContext;
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.terminal.view.ui.internal.Messages;
-import org.eclipse.terminal.view.ui.internal.UIPlugin;
 import org.eclipse.ui.ISources;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
@@ -59,9 +57,7 @@ public abstract class AbstractTriggerCommandHandler extends AbstractHandler {
 			} catch (Exception e) {
 				// If the platform is in debug mode, we print the exception to the log view
 				if (Platform.inDebugMode()) {
-					IStatus status = new Status(IStatus.ERROR, UIPlugin.getUniqueIdentifier(),
-							Messages.AbstractTriggerCommandHandler_error_executionFailed, e);
-					UIPlugin.getDefault().getLog().log(status);
+					ILog.of(AbstractTriggerCommandHandler.class).error(Messages.AbstractTriggerCommandHandler_error_executionFailed, e);
 				}
 			}
 		}

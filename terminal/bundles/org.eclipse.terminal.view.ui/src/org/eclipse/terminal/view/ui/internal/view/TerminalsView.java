@@ -24,10 +24,9 @@ import org.eclipse.core.expressions.EvaluationContext;
 import org.eclipse.core.expressions.IEvaluationContext;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -56,7 +55,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.terminal.view.ui.ITerminalsView;
 import org.eclipse.terminal.view.ui.internal.Messages;
-import org.eclipse.terminal.view.ui.internal.UIPlugin;
 import org.eclipse.terminal.view.ui.internal.tabs.TabFolderManager;
 import org.eclipse.terminal.view.ui.internal.tabs.TabFolderMenuHandler;
 import org.eclipse.terminal.view.ui.internal.tabs.TabFolderToolbarHandler;
@@ -734,9 +732,7 @@ public class TerminalsView extends ViewPart implements ITerminalsView, IShowInTa
 						} catch (Exception e) {
 							// If the platform is in debug mode, we print the exception to the log view
 							if (Platform.inDebugMode()) {
-								IStatus status = new Status(IStatus.ERROR, UIPlugin.getUniqueIdentifier(),
-										Messages.AbstractTriggerCommandHandler_error_executionFailed, e);
-								UIPlugin.getDefault().getLog().log(status);
+								ILog.of(TerminalsView.class).error(Messages.AbstractTriggerCommandHandler_error_executionFailed, e);
 							}
 						}
 					}

@@ -16,15 +16,13 @@ import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ParameterizedCommand;
 import org.eclipse.core.expressions.EvaluationContext;
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.terminal.control.ITerminalViewControl;
 import org.eclipse.terminal.view.ui.internal.Messages;
-import org.eclipse.terminal.view.ui.internal.UIPlugin;
 import org.eclipse.terminal.view.ui.internal.tabs.TabFolderManager;
 import org.eclipse.terminal.view.ui.internal.tabs.TabFolderToolbarHandler;
 import org.eclipse.ui.ISources;
@@ -118,11 +116,10 @@ public abstract class AbstractAction extends AbstractTerminalAction {
 
 					handlerSvc.executeCommandInContext(pCmd, null, context);
 				} catch (Exception e) {
-					IStatus status = new Status(IStatus.ERROR, UIPlugin.getUniqueIdentifier(),
+					ILog.of(AbstractAction.class).error(
 							NLS.bind(Messages.AbstractAction_error_commandExecutionFailed, getCommandId(),
 									e.getLocalizedMessage()),
 							e);
-					UIPlugin.getDefault().getLog().log(status);
 				}
 			}
 		}

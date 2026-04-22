@@ -29,6 +29,7 @@ import org.eclipse.cdt.utils.pty.PTY;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
@@ -41,7 +42,6 @@ import org.eclipse.terminal.connector.ISettingsStore;
 import org.eclipse.terminal.connector.ITerminalConnector;
 import org.eclipse.terminal.connector.InMemorySettingsStore;
 import org.eclipse.terminal.connector.TerminalConnectorExtension;
-import org.eclipse.terminal.connector.local.activator.UIPlugin;
 import org.eclipse.terminal.connector.local.controls.LocalWizardConfigurationPanel;
 import org.eclipse.terminal.connector.process.ProcessSettings;
 import org.eclipse.terminal.view.core.ILineSeparatorConstants;
@@ -147,7 +147,7 @@ public class LocalLauncherDelegate extends AbstractLauncherDelegate {
 					}
 				} catch (CoreException ex) {
 					if (Platform.inDebugMode()) {
-						UIPlugin.getDefault().getLog().log(ex.getStatus());
+						ILog.of(LocalLauncherDelegate.class).log(ex.getStatus());
 					}
 				}
 			}
