@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
@@ -313,7 +314,7 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage 
 						dialog.setFilterPath(resolved);
 					} catch (CoreException ex) {
 						if (Platform.inDebugMode()) {
-							UIPlugin.getDefault().getLog().log(ex.getStatus());
+							ILog.of(PreferencePage.class).log(ex.getStatus());
 						}
 					}
 				}
@@ -676,7 +677,7 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage 
 						p.toFile().canRead() && p.toFile().isDirectory() ? text.trim() : ""); //$NON-NLS-1$
 			} catch (CoreException e) {
 				if (Platform.inDebugMode()) {
-					UIPlugin.getDefault().getLog().log(e.getStatus());
+					ILog.of(PreferencePage.class).log(e.getStatus());
 				}
 			}
 		}

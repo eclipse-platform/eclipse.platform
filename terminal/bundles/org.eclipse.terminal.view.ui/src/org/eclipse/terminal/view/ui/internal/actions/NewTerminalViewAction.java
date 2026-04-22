@@ -15,9 +15,8 @@ package org.eclipse.terminal.view.ui.internal.actions;
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ParameterizedCommand;
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.terminal.view.ui.ITerminalsView;
 import org.eclipse.terminal.view.ui.internal.ImageConsts;
@@ -64,9 +63,7 @@ public class NewTerminalViewAction extends AbstractTerminalAction {
 			} catch (Exception e) {
 				// If the platform is in debug mode, we print the exception to the log view
 				if (Platform.inDebugMode()) {
-					IStatus status = new Status(IStatus.ERROR, UIPlugin.getUniqueIdentifier(),
-							Messages.AbstractTriggerCommandHandler_error_executionFailed, e);
-					UIPlugin.getDefault().getLog().log(status);
+					ILog.of(NewTerminalViewAction.class).error(Messages.AbstractTriggerCommandHandler_error_executionFailed, e);
 				}
 			}
 		}

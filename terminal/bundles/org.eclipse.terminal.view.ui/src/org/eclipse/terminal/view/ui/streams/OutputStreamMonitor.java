@@ -18,9 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.ListenerList;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.terminal.connector.ITerminalControl;
 import org.eclipse.terminal.view.core.ILineSeparatorConstants;
@@ -220,18 +219,16 @@ public class OutputStreamMonitor implements IDisposable {
 			} catch (IOException e) {
 				// IOException received. If this is happening when already disposed -> ignore
 				if (!disposed && !disposalComing) {
-					IStatus status = new Status(IStatus.ERROR, UIPlugin.getUniqueIdentifier(),
+					ILog.of(OutputStreamMonitor.class).error(
 							NLS.bind(Messages.OutputStreamMonitor_error_readingFromStream, e.getLocalizedMessage()), e);
-					UIPlugin.getDefault().getLog().log(status);
 				}
 				break;
 			} catch (NullPointerException e) {
 				// killing the stream monitor while reading can cause an NPE
 				// when reading from the stream
 				if (!disposed && thread != null && !disposalComing) {
-					IStatus status = new Status(IStatus.ERROR, UIPlugin.getUniqueIdentifier(),
+					ILog.of(OutputStreamMonitor.class).error(
 							NLS.bind(Messages.OutputStreamMonitor_error_readingFromStream, e.getLocalizedMessage()), e);
-					UIPlugin.getDefault().getLog().log(status);
 				}
 				break;
 			}

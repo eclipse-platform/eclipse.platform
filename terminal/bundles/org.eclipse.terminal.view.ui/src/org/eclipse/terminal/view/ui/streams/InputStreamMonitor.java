@@ -19,13 +19,11 @@ import java.util.List;
 import java.util.Queue;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.terminal.connector.ITerminalControl;
 import org.eclipse.terminal.view.core.ILineSeparatorConstants;
 import org.eclipse.terminal.view.ui.internal.Messages;
-import org.eclipse.terminal.view.ui.internal.UIPlugin;
 import org.eclipse.ui.services.IDisposable;
 
 /**
@@ -265,10 +263,8 @@ public class InputStreamMonitor extends OutputStream implements IDisposable {
 				} catch (IOException e) {
 					// IOException received. If this is happening when already disposed -> ignore
 					if (!disposed && !disposalComing) {
-						IStatus status = new Status(IStatus.ERROR, UIPlugin.getUniqueIdentifier(),
-								NLS.bind(Messages.InputStreamMonitor_error_writingToStream, e.getLocalizedMessage()),
-								e);
-						UIPlugin.getDefault().getLog().log(status);
+						ILog.of(InputStreamMonitor.class).error(
+								NLS.bind(Messages.InputStreamMonitor_error_writingToStream, e.getLocalizedMessage()), e);
 					}
 				} catch (InterruptedException e) {
 					break;
