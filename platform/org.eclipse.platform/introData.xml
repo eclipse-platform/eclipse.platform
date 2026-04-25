@@ -22,7 +22,6 @@
          <extension id="org.eclipse.ui.workbench.news" importance="low"/>
          <extension id="org.eclipse.jdt" importance="low"/>
          <extension id="org.eclipse.pde.changes" importance="low"/>
-         <extension id="org.eclipse.ui.workbench.migration" importance="low"/>
       </group>
       <group path="page-content/top-right">
          <extension id="org.eclipse.ui.workbench" importance="low"/>
@@ -53,18 +52,6 @@
       <group path="page-content/top-right">
          <extension id="org.eclipse.jdt" importance="low"/>
          <extension id="org.eclipse.pde" importance="low"/>
-      </group>
-   </page>
-   <page id="migrate">
-      <group path="page-content/bottom-left" default="true">
-         <extension id="org.eclipse.jdt" importance="low"/>
-      </group>
-      <group path="page-content/bottom-right" default="true">
-      </group>
-      <group path="page-content/top-right">
-      </group>
-      <group path="page-content/top-left">
-         <extension id="org.eclipse.platform" importance="low"/>
       </group>
    </page>
 </extensions>
