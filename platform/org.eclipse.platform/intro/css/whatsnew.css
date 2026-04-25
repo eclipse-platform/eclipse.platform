@@ -8,9 +8,6 @@ a#updates:hover img { background-image : url(../../images/topiclabel/wn_updates4
 a#eclipse img { background-image : url(../../images/topiclabel/wn_eclcommunity48.svg); }
 a#eclipse:hover img { background-image : url(../../images/topiclabel/wn_eclcommunity48.svg); }
 
-a#migration img { background-image : url(../../images/topiclabel/wn_migrate48.svg); }
-a#migration:hover img { background-image : url(../../images/topiclabel/wn_migrate48.svg); }
-
 div#rss-news {
 	position: relative;
 	top: -25px;
