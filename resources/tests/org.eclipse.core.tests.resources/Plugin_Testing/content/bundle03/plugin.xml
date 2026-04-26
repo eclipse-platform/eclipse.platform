@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin>
-      <extension point="org.eclipse.core.runtime.contentTypes">
+      <extension point="org.eclipse.core.contenttype.contentTypes">
       <!-- this content type has an invalid describer, it should never be picked on content-based content type lookup -->
       <content-type
             name="Invalid Describer"
