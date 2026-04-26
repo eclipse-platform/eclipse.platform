@@ -204,7 +204,7 @@ public class IContentTypeManagerTest {
 		assertThat(selected).containsExactly(alias, derived);
 
 		// test late addition of content type
-		TestRegistryChangeListener listener = new TestRegistryChangeListener(Platform.PI_RUNTIME,
+		TestRegistryChangeListener listener = new TestRegistryChangeListener(IContentConstants.CONTENT_NAME,
 				ContentTypeBuilder.PT_CONTENTTYPES, null, null);
 		BundleTestingHelper.runWithBundles(() -> {
 			IContentType alias1 = contentTypeManager.getContentType(PI_RESOURCES_TESTS + ".alias");
@@ -761,7 +761,7 @@ public class IContentTypeManagerTest {
 		assertEquals(text[0], text[1]);
 		assertEquals(text[0], text[1]);
 		// make arbitrary dynamic changes to the contentTypes extension point
-		TestRegistryChangeListener listener = new TestRegistryChangeListener(Platform.PI_RUNTIME,
+		TestRegistryChangeListener listener = new TestRegistryChangeListener(IContentConstants.CONTENT_NAME,
 				ContentTypeBuilder.PT_CONTENTTYPES, null, null);
 		BundleTestingHelper.runWithBundles(() -> {
 			IContentType missing = manager.getContentType("org.eclipse.bundle01.missing");
@@ -1031,7 +1031,7 @@ public class IContentTypeManagerTest {
 		assertThat(finder.findContentTypesFor("invalid.missing.identifier")).isEmpty();
 		assertThat(finder.findContentTypesFor("invalid.missing.name")).isEmpty();
 		assertNull(contentTypeManager.getContentType(PI_RESOURCES_TESTS + '.' + "invalid-missing-name"));
-		TestRegistryChangeListener listener = new TestRegistryChangeListener(Platform.PI_RUNTIME,
+		TestRegistryChangeListener listener = new TestRegistryChangeListener(IContentConstants.CONTENT_NAME,
 				ContentTypeBuilder.PT_CONTENTTYPES, null, null);
 		BundleTestingHelper.runWithBundles(() -> {
 			// ensure the invalid content types are not available
@@ -1173,7 +1173,7 @@ public class IContentTypeManagerTest {
 		IContentType[] selected = manager.findContentTypesFor("file_with_no_extension");
 		assertThat(selected).isEmpty();
 
-		TestRegistryChangeListener listener = new TestRegistryChangeListener(Platform.PI_RUNTIME,
+		TestRegistryChangeListener listener = new TestRegistryChangeListener(IContentConstants.CONTENT_NAME,
 				ContentTypeBuilder.PT_CONTENTTYPES, null, null);
 		BundleTestingHelper.runWithBundles(() -> {
 			final String namespace = "org.eclipse.bundle04";
@@ -1240,7 +1240,7 @@ public class IContentTypeManagerTest {
 		assertThat(contentTypeManager.findContentTypesFor("foo.orphan2")).isEmpty();
 
 		// test late addition of content type - orphan2 should become visible
-		TestRegistryChangeListener listener = new TestRegistryChangeListener(Platform.PI_RUNTIME,
+		TestRegistryChangeListener listener = new TestRegistryChangeListener(IContentConstants.CONTENT_NAME,
 				ContentTypeBuilder.PT_CONTENTTYPES, null, null);
 
 		BundleTestingHelper.runWithBundles(() -> {
