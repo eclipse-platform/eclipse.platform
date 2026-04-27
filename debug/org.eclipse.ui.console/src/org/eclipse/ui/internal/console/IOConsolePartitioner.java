@@ -162,6 +162,21 @@ public class IOConsolePartitioner
 	 * this many characters are remain in console.
 	 */
 	private int lowWaterMark = -1;
+	/**
+	 * If {@link #lineLengthLimit} is non-negative, will either wrap or cut lines
+	 * depending on this value.
+	 */
+	private volatile boolean lineLimitWrap = false;
+	/**
+	 * Line limit length, lines longer than this are either wrapped or truncated.
+	 * Negative to disable.
+	 */
+	private volatile int lineLengthLimit = -1;
+	/**
+	 * Truncates or wraps console lines if {@link #lineLengthLimit} is positive,
+	 * depending on {@link #lineLimitWrap}.
+	 */
+	private IConsoleOutputModifier lineModifier;
 
 	/** The partitioned {@link IOConsole}. */
 	private final IOConsole console;
@@ -219,6 +234,7 @@ public class IOConsolePartitioner
 				inputPartitions = new ArrayList<>();
 				document = doc;
 				legalLineDelimiterMatcher = MultiStringMatcher.create(document.getLegalLineDelimiters());
+				setLineModifier();
 			}
 		}
 	}
@@ -267,6 +283,20 @@ public class IOConsolePartitioner
 		lowWaterMark = low;
 		highWaterMark = high;
 		ConsolePlugin.getStandardDisplay().asyncExec(this::checkBufferSize);
+	}
+
+	/**
+	 * Set handling for long lines. Lines can be wrapped, truncated or left
+	 * unchanged.
+	 *
+	 * @param wrap   whether to wrap the line or truncate line limit
+	 * @param length length at which to wrap or truncate lines, negative to disable
+	 * @see IOConsole#setLimitLineLength(boolean, int)
+	 */
+	public void setLimitLineLength(boolean wrap, int length) {
+		lineLimitWrap = wrap;
+		lineLengthLimit = length;
+		setLineModifier();
 	}
 
 	/**
@@ -793,6 +823,17 @@ public class IOConsolePartitioner
 			if (pendingCopy.isEmpty()) {
 				return;
 			}
+
+			if (lineModifier != null) {
+				List<PendingPartition> modified = new ArrayList<>(pendingCopy.size());
+				for (PendingPartition partition : pendingCopy) {
+					CharSequence t = lineModifier.modify(partition.text);
+					PendingPartition m = new PendingPartition(partition.stream, t);
+					modified.add(m);
+				}
+				pendingCopy = modified;
+			}
+
 			int pendingSize = 0;
 			IOConsoleOutputStream stream = pendingCopy.get(0).stream;
 			for (PendingPartition p : pendingCopy) {
@@ -1506,6 +1547,16 @@ public class IOConsolePartitioner
 			}
 			Assert.isTrue(offset == document.getLength());
 			Assert.isTrue(knownInputPartitions.isEmpty());
+		}
+	}
+
+	private void setLineModifier() {
+		if (document != null && lineLengthLimit > 0) {
+			String[] lineDelimiters = document.getLegalLineDelimiters();
+			lineModifier = lineLimitWrap ? new ConsoleOutputLineWrap(lineLengthLimit, lineDelimiters)
+					: new ConsoleOutputLineTruncate(lineLengthLimit, lineDelimiters);
+		} else {
+			lineModifier = null;
 		}
 	}
 }

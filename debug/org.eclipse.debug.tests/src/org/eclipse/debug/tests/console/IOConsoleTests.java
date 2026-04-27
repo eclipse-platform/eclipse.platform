@@ -80,6 +80,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  */
 @ExtendWith(DebugTestExtension.class)
 public class IOConsoleTests {
+
 	/**
 	 * The console view used for the running test. Required to obtain access to
 	 * consoles {@link StyledText} widget to simulate user input.
@@ -757,6 +758,124 @@ public class IOConsoleTests {
 			c.getConsole().setWaterMarks(8, 16);
 			c.waitForScheduledJobs();
 			c.verifyContentByOffset("😀3\nlas", 0);
+			closeConsole(c);
+		}
+	}
+
+	/**
+	 * Check trimming of long lines.
+	 */
+	@Test
+	public void testTrimLongLine() throws Exception {
+		final IOConsoleTestUtil c = getTestUtil("Test trim long line");
+		try (IOConsoleOutputStream out = c.getDefaultOutputStream()) {
+			c.getConsole().setLimitLineLength(false, 8);
+			c.writeFast("first\n");
+			c.writeFast("0123456789\n", out);
+			c.write("last\n");
+			c.verifyContentByLine("first", 0).verifyContentByLine("last", -2);
+			assertTrue(c.getDocument().getNumberOfLines() > 2, "Document not filled.");
+			c.waitForScheduledJobs();
+			c.verifyContent("first\n01234567 ...\nlast\n");
+			closeConsole(c);
+		}
+	}
+
+	/**
+	 * Check that trimming long lines doesn't split at a newline.
+	 */
+	@Test
+	public void testTrimLongLineNewline() throws Exception {
+		final IOConsoleTestUtil c = getTestUtil("Test trim long line with newline");
+		try (IOConsoleOutputStream out = c.getDefaultOutputStream()) {
+			c.getConsole().setLimitLineLength(false, 8);
+			c.writeFast("first\n");
+			c.writeFast("0123456\r\n", out);
+			c.write("last\n");
+			c.verifyContentByLine("first", 0).verifyContentByLine("last", -2);
+			assertTrue(c.getDocument().getNumberOfLines() > 2, "Document not filled.");
+			c.waitForScheduledJobs();
+			c.verifyContent("first\n0123456\r\nlast\n");
+			closeConsole(c);
+		}
+	}
+
+	/**
+	 * Check that trimming long lines doesn't split surrogate pairs, e.g.
+	 * emojis.
+	 */
+	@Test
+	public void testTrimLongLineSurrogateCharacters() throws Exception {
+		final IOConsoleTestUtil c = getTestUtil("Test trim long line with emoji");
+		try (IOConsoleOutputStream out = c.getDefaultOutputStream()) {
+			c.getConsole().setLimitLineLength(false, 8);
+			c.writeFast("first\n");
+			c.writeFast("01234😀😀😀\n", out);
+			c.write("last\n");
+			c.verifyContentByLine("first", 0).verifyContentByLine("last", -2);
+			assertTrue(c.getDocument().getNumberOfLines() > 2, "Document not filled.");
+			c.waitForScheduledJobs();
+			c.verifyContent("first\n01234😀 ...\nlast\n");
+			closeConsole(c);
+		}
+	}
+
+	/**
+	 * Check wrapping of long lines.
+	 */
+	@Test
+	public void testWrapLongLine() throws Exception {
+		final IOConsoleTestUtil c = getTestUtil("Test wrap long line");
+		try (IOConsoleOutputStream out = c.getDefaultOutputStream()) {
+			String nl = c.getConsole().getDocument().getLegalLineDelimiters()[0];
+			c.getConsole().setLimitLineLength(true, 8);
+			c.writeFast("first\n");
+			c.writeFast("0123456789\n", out);
+			c.write("last\n");
+			c.verifyContentByLine("first", 0).verifyContentByLine("last", -2);
+			assertTrue(c.getDocument().getNumberOfLines() > 2, "Document not filled.");
+			c.waitForScheduledJobs();
+			c.verifyContent("first\n01234567" + nl + "89\nlast\n");
+			closeConsole(c);
+		}
+	}
+
+	/**
+	 * Check that wrapping long lines doesn't split newlines.
+	 */
+	@Test
+	public void testWrapLongLineNewline() throws Exception {
+		final IOConsoleTestUtil c = getTestUtil("Test wrap long line with newline");
+		try (IOConsoleOutputStream out = c.getDefaultOutputStream()) {
+			c.getConsole().setLimitLineLength(true, 8);
+			c.writeFast("first\n");
+			c.writeFast("0123456\r\n", out);
+			c.write("last\n");
+			c.verifyContentByLine("first", 0).verifyContentByLine("last", -2);
+			assertTrue(c.getDocument().getNumberOfLines() > 2, "Document not filled.");
+			c.waitForScheduledJobs();
+			c.verifyContent("first\n0123456\r\nlast\n");
+			closeConsole(c);
+		}
+	}
+
+	/**
+	 * Check that wrapping long lines doesn't split surrogate pairs, e.g.
+	 * emojis.
+	 */
+	@Test
+	public void testWrapLongLineSurrogateCharacters() throws Exception {
+		final IOConsoleTestUtil c = getTestUtil("Test wrap long line with emoji");
+		try (IOConsoleOutputStream out = c.getDefaultOutputStream()) {
+			String nl = c.getConsole().getDocument().getLegalLineDelimiters()[0];
+			c.getConsole().setLimitLineLength(true, 8);
+			c.writeFast("first\n");
+			c.writeFast("0123456😀😀\n", out);
+			c.write("last\n");
+			c.verifyContentByLine("first", 0).verifyContentByLine("last", -2);
+			assertTrue(c.getDocument().getNumberOfLines() > 2, "Document not filled.");
+			c.waitForScheduledJobs();
+			c.verifyContent("first\n0123456" + nl + "😀😀\nlast\n");
 			closeConsole(c);
 		}
 	}
