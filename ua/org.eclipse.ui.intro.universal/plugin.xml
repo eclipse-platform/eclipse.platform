@@ -54,12 +54,7 @@
             <implementation
                   kind="swt">
             </implementation>
-            <launchBar
-               	location="fastview"
-            	bg="$launchbarBackground$"
-            	computed="true">
-            </launchBar>
-         </presentation>
+            </presentation>
       </config>
    </extension>
    <extension

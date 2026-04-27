@@ -42,6 +42,7 @@ public class IntroPlugin extends AbstractUIPlugin {
 
 	// We must keep track of the launch bar so that we can
 	// close it if intro is opened from the menu.
+	@SuppressWarnings("removal")
 	private IntroLaunchBar launchBar;
 
 	// used for performance logging. Time when the constructor of
@@ -88,6 +89,12 @@ public class IntroPlugin extends AbstractUIPlugin {
 	}
 
 
+	/**
+	 * @deprecated The launch bar is no longer used. This method will be removed
+	 *             in a future release.
+	 */
+	@SuppressWarnings("removal")
+	@Deprecated(forRemoval = true)
 	public void closeLaunchBar() {
 		if (launchBar != null) {
 			launchBar.close();
@@ -96,6 +103,12 @@ public class IntroPlugin extends AbstractUIPlugin {
 		IntroLaunchBar.destroyAll(PlatformUI.getWorkbench());
 	}
 
+	/**
+	 * @deprecated The launch bar is no longer used. This method will be removed
+	 *             in a future release.
+	 */
+	@SuppressWarnings("removal")
+	@Deprecated(forRemoval = true)
 	public void setLaunchBar(IntroLaunchBar launchBar) {
 		this.launchBar = launchBar;
 	}

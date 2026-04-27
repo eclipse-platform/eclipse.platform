@@ -72,7 +72,11 @@ import jakarta.inject.Inject;
  * available from the application IEclipseContext.
  *
  * @since 3.1
+ * @deprecated The intro launch bar is no longer used. The welcome screen is now treated as a
+ *             regular editor. This class will be removed in a future release.
  */
+@Deprecated(forRemoval = true)
+@SuppressWarnings("removal")
 public class IntroLaunchBar {
 
 	private static final String LAUNCHBAR_ID = "org.eclipse.ui.internal.intro.impl.presentations.IntroLaunchBar"; //$NON-NLS-1$
