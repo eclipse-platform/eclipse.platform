@@ -148,6 +148,6 @@ public class ProcessConsoleManagerTests {
 		removeAction.run();
 		TestUtil.waitForJobs(testInfo.getDisplayName(), ProcessConsoleManager.class, 0, 10000);
 		assertNull(processConsoleManager.getConsole(process1), "First console not removed.");
-		assertNull(processConsoleManager.getConsole(process1), "Second console not removed.");
+		assertNull(processConsoleManager.getConsole(process2), "Second console not removed.");
 	}
 }
