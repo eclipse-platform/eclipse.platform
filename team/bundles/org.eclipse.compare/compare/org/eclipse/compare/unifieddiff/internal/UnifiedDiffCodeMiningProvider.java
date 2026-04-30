@@ -248,6 +248,31 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		}
 	}
 
+	private static List<StyleRange> computeStyleRanges(ITextViewer v, int offset, String source) {
+		List<StyleRange> result = new ArrayList<>();
+		if (!(v instanceof SourceViewer sv)) {
+			return result;
+		}
+		try {
+			IDocument originalDocument = sv.getDocument();
+			String prefix = originalDocument.get(0, offset /* diff.leftStart */);
+			IDocument document = new Document(prefix + source);
+			IRegion damage = new Region(prefix.length(), source.length());
+			result = sv.computeStyleRanges(document, damage);
+			int startOffset = prefix.length();
+			for (StyleRange next : result) {
+				if (next.start < startOffset) {
+					throw new IllegalStateException(
+							"Invalid presentation with style range starting before source offset"); //$NON-NLS-1$
+				}
+				next.start -= startOffset;
+			}
+			return result;
+		} catch (BadLocationException e) {
+			return result;
+		}
+	}
+
 	public static class UnifiedDiffLineHeaderCodeMining extends LineHeaderCodeMining {
 		private final String unifiedDiffLabel;
 		private final Color deletionBackgroundColor;
@@ -297,9 +322,11 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 				overlay.setBounds(mining.lastRectangle);
 				overlay.setFont(st.getFont());
 				overlay.setBackground(mining.deletionBackgroundColor);
-				overlay.setText(mining.getLabel().stripTrailing());
+				String txt = mining.getLabel().stripTrailing();
+				overlay.setText(txt);
 				overlay.setFocus();
-				// TODO (tm) style ranges missing
+				overlay.setStyleRanges(
+						computeStyleRanges(viewer, mining.diff.leftStart, txt).toArray(new StyleRange[] {}));
 				// TODO (tm) common keyboard shortcuts like ctrl-a, ctrl-right are not captured
 				// by this text control if in focus
 				overlay.addFocusListener(new FocusAdapter() {
@@ -336,7 +363,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			gc.fillRectangle(0, y, textWidget.getBounds().width /* result.x */, result.y);
 
 			String label = getLabel();
-			List<StyleRange> ranges = computeStyleRanges(viewer, label);
+			List<StyleRange> ranges = computeStyleRanges(viewer, diff.leftStart, label);
 			HashMap<Font, Map<Integer /* style */, Font>> styledFonts = new HashMap<>();
 
 			// draw darker background for detailed diff
@@ -562,33 +589,6 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 				return newRange;
 			}
 			return styleRange;
-		}
-
-		private List<StyleRange> computeStyleRanges(ITextViewer v, String source) {
-			List<StyleRange> result = new ArrayList<>();
-			if (!(v instanceof SourceViewer sv)) {
-				return result;
-			}
-			// TODO (tm) should we better cache the presentation and don't calculate it each
-			// time?
-			try {
-				IDocument originalDocument = sv.getDocument();
-				String prefix = originalDocument.get(0, diff.leftStart);
-				IDocument document = new Document(prefix + source);
-				IRegion damage = new Region(prefix.length(), source.length());
-				result = sv.computeStyleRanges(document, damage);
-				int startOffset = prefix.length();
-				for (StyleRange next : result) {
-					if (next.start < startOffset) {
-						throw new IllegalStateException(
-								"Invalid presentation with style range starting before source offset"); //$NON-NLS-1$
-					}
-					next.start -= startOffset;
-				}
-				return result;
-			} catch (BadLocationException e) {
-				return result;
-			}
 		}
 
 		private int getOffsetAtLine(String str, int off) {
