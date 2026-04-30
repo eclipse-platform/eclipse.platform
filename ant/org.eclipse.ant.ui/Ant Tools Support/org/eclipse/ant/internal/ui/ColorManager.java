@@ -13,46 +13,32 @@
  *******************************************************************************/
 package org.eclipse.ant.internal.ui;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.jface.text.source.ISharedTextColors;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * Generic color manager.
  */
 public class ColorManager implements ISharedTextColors {
 
-	private static ColorManager fgColorManager;
+	private static final ColorManager fgColorManager = new ColorManager();
+
+	protected final Map<RGB, Color> fColorTable;
 
 	private ColorManager() {
+		fColorTable = new ConcurrentHashMap<>(10);
 	}
 
 	public static ColorManager getDefault() {
-		if (fgColorManager == null) {
-			fgColorManager = new ColorManager();
-		}
 		return fgColorManager;
 	}
 
-	protected Map<RGB, Color> fColorTable = new HashMap<>(10);
-
 	@Override
 	public Color getColor(RGB rgb) {
-		Color color = fColorTable.get(rgb);
-		if (color == null) {
-			synchronized (fColorTable) {
-				color = fColorTable.get(rgb);
-				if (color == null) {
-					PlatformUI.getWorkbench().getDisplay().syncExec(() -> fColorTable.put(rgb, new Color(rgb)));
-					color = fColorTable.get(rgb);
-				}
-			}
-		}
-		return color;
+		return fColorTable.computeIfAbsent(rgb, Color::new);
 	}
-
 }
