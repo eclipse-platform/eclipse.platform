@@ -15,7 +15,7 @@ Require-Bundle: org.eclipse.equinox.preferences;bundle-version="3.3.0",
  org.eclipse.e4.core.services;bundle-version="1.1.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-17
-Import-Package: jakarta.annotation;version="[2.1.0,3.0.0)",
+Import-Package: jakarta.annotation;version="[2.0.0,4.0.0)",
  jakarta.inject;version="[2.0.0,3.0.0)",
  org.assertj.core.api,
  org.eclipse.osgi.service.datalocation,
