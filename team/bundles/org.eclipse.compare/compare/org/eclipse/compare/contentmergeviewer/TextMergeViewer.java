@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2025 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -4522,11 +4522,13 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 				fLeft.getLineRange(diff.getPosition(LEFT_CONTRIBUTOR), region);
 				region.x -= fLeft.getDocumentRegionOffset();
+				int diffLines = region.y;
 				int ly = getHeightBetweenLines(fLeft, 0, region.x) + lshift;
 				int lh = getHeightBetweenLines(fLeft, region.x, region.x + region.y);
 
 				fRight.getLineRange(diff.getPosition(RIGHT_CONTRIBUTOR), region);
 				region.x -= fRight.getDocumentRegionOffset();
+				diffLines = Math.max(diffLines, region.y);
 				int ry = getHeightBetweenLines(fRight, 0, region.x) + rshift;
 				int rh = getHeightBetweenLines(fRight, region.x, region.x + region.y);
 
@@ -4579,7 +4581,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 					}
 				}
 
-				if (fUseSingleLine && isAnySideEditable()) {
+				if ((fUseSingleLine || diffLines >= 5) && isAnySideEditable()) {
 					// draw resolve state
 					int cx= (w-RESOLVE_SIZE)/2;
 					int cy= ((ly+lh/2) + (ry+rh/2) - RESOLVE_SIZE)/2;
