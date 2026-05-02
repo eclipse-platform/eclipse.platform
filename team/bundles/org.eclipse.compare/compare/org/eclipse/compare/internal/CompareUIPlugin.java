@@ -57,6 +57,7 @@ import org.eclipse.compare.structuremergeviewer.SharedDocumentAdapterWrapper;
 import org.eclipse.compare.structuremergeviewer.StructureDiffViewer;
 import org.eclipse.compare.unifieddiff.UnifiedDiff;
 import org.eclipse.compare.unifieddiff.UnifiedDiffMode;
+import org.eclipse.compare.unifieddiff.internal.CancelAllRunnable;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Adapters;
@@ -94,6 +95,7 @@ import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorRegistry;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IReusableEditor;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbench;
@@ -103,6 +105,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.model.IWorkbenchAdapter;
+import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.osgi.framework.BundleContext;
@@ -597,37 +600,85 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		if (unifiedDiffInput!=null) {
 			try {
 				IWorkbenchPage wpage = page != null ? page : getActivePage();
-				IEditorPart rightEditor = wpage.openEditor(unifiedDiffInput.right,
-						getEditorId(unifiedDiffInput.right, unifiedDiffInput.rightElement));
-				if (rightEditor instanceof ITextEditor rightTextEditor) {
-					Action openTwoWayCompare = new Action("Open in 2-way Compare Editor", SWT.PUSH) {
-						@Override
-						public void run() {
-							if (input.canRunAsJob()) {
-								openEditorInBackground(input, page, editor, activate);
-							} else {
-								if (compareResultOK(input, null)) {
-									internalOpenEditor(input, page, editor, activate);
+				if (unifiedDiffInput.left instanceof IFileEditorInput) {
+					IEditorPart leftEditor = wpage.openEditor(unifiedDiffInput.left,
+							getEditorId(unifiedDiffInput.left, unifiedDiffInput.leftElement));
+					if (leftEditor instanceof MultiPageEditorPart mpe) {
+						Object p = mpe.getSelectedPage();
+						if (p instanceof IEditorPart) {
+							leftEditor = (IEditorPart) p;
+						}
+					}
+					if (leftEditor instanceof ITextEditor leftTextEditor) {
+						ImageDescriptor image = CompareUIPlugin.getImageDescriptor(ICompareUIConstants.TWO_WAY_COMPARE);
+						Action openTwoWayCompare = new Action(null, image) {
+							@Override
+							public void run() {
+								new CancelAllRunnable(leftTextEditor).run();
+								if (input.canRunAsJob()) {
+									openEditorInBackground(input, page, editor, activate);
+								} else {
+									if (compareResultOK(input, null)) {
+										internalOpenEditor(input, page, editor, activate);
+									}
 								}
 							}
+						};
+						openTwoWayCompare.setToolTipText("Open in 2-way Compare Editor");
+						UnifiedDiff
+								.create(leftTextEditor, getSourceOf(unifiedDiffInput.rightAcessor()),
+										UnifiedDiffMode.REVERT_MODE)
+								.additionalActions(Arrays.asList(openTwoWayCompare))
+								.ignoreWhitespaceContributorFactory(t -> unifiedDiffInput.documentMergerInput != null
+										? unifiedDiffInput.documentMergerInput.createIgnoreWhitespaceContributor(t)
+										: Optional.empty())
+								.tokenComparatorFactory(t -> unifiedDiffInput.documentMergerInput != null
+										? unifiedDiffInput.documentMergerInput.createTokenComparator(t)
+										: null)
+								.ignoreWhiteSpace(Utilities.getBoolean(input.getCompareConfiguration(),
+										CompareConfiguration.IGNORE_WHITESPACE, false))
+								.open();
+						return true;
+					}
+				} else {
+					IEditorPart rightEditor = wpage.openEditor(unifiedDiffInput.right,
+							getEditorId(unifiedDiffInput.right, unifiedDiffInput.rightElement));
+					if (rightEditor instanceof MultiPageEditorPart mpe) {
+						Object p = mpe.getSelectedPage();
+						if (p instanceof IEditorPart) {
+							rightEditor = (IEditorPart) p;
 						}
-					};
-					UnifiedDiff
-							.create(rightTextEditor, getSourceOf(unifiedDiffInput.leftAcessor()),
-									UnifiedDiffMode.OVERLAY_READ_ONLY_MODE)
-							.additionalActions(Arrays.asList(openTwoWayCompare))
-							.ignoreWhitespaceContributorFactory(
-									t -> unifiedDiffInput.documentMergerInput != null
-											? unifiedDiffInput.documentMergerInput.createIgnoreWhitespaceContributor(t)
-											: Optional.empty())
-							.tokenComparatorFactory(t -> unifiedDiffInput.documentMergerInput != null
-									? unifiedDiffInput.documentMergerInput.createTokenComparator(t)
-									: null)
-							.ignoreWhiteSpace(Utilities.getBoolean(input.getCompareConfiguration(),
-									CompareConfiguration.IGNORE_WHITESPACE, false))
-							.open();
+					}
+					if (rightEditor instanceof ITextEditor rightTextEditor) {
+						Action openTwoWayCompare = new Action("Open in 2-way Compare Editor", SWT.PUSH) {
+							@Override
+							public void run() {
+								new CancelAllRunnable(rightTextEditor).run();
+								if (input.canRunAsJob()) {
+									openEditorInBackground(input, page, editor, activate);
+								} else {
+									if (compareResultOK(input, null)) {
+										internalOpenEditor(input, page, editor, activate);
+									}
+								}
+							}
+						};
+						UnifiedDiff
+								.create(rightTextEditor, getSourceOf(unifiedDiffInput.leftAcessor()),
+										UnifiedDiffMode.OVERLAY_READ_ONLY_MODE)
+								.additionalActions(Arrays.asList(openTwoWayCompare))
+								.ignoreWhitespaceContributorFactory(t -> unifiedDiffInput.documentMergerInput != null
+										? unifiedDiffInput.documentMergerInput.createIgnoreWhitespaceContributor(t)
+										: Optional.empty())
+								.tokenComparatorFactory(t -> unifiedDiffInput.documentMergerInput != null
+										? unifiedDiffInput.documentMergerInput.createTokenComparator(t)
+										: null)
+								.ignoreWhiteSpace(Utilities.getBoolean(input.getCompareConfiguration(),
+										CompareConfiguration.IGNORE_WHITESPACE, false))
+								.open();
+						return true;
+					}
 				}
-				return true;
 			} catch (PartInitException e) {
 				CompareUIPlugin.log(e);
 			}

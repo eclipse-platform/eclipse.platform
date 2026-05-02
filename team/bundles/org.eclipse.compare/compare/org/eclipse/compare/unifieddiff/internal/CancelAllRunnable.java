@@ -20,10 +20,14 @@ import static org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager.getAll
 import java.util.List;
 
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager.UnifiedDiff;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.ISourceViewerExtension5;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 public class CancelAllRunnable implements Runnable {
 
@@ -35,8 +39,21 @@ public class CancelAllRunnable implements Runnable {
 		this.model = model;
 	}
 
+	public CancelAllRunnable(ITextEditor textEditor) {
+		this.tv = textEditor.getAdapter(ITextViewer.class);
+		this.model = textEditor.getDocumentProvider().getAnnotationModel(textEditor.getEditorInput());
+	}
+
 	public String getLabel() {
-		return "Cancel All";
+		return "Cancel All"; //$NON-NLS-1$
+	}
+
+	public static ImageDescriptor getCancelImageDescriptor() {
+		return PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_ELCL_STOP);
+	}
+
+	public ImageDescriptor getImageDescriptor() {
+		return getCancelImageDescriptor();
 	}
 
 	@Override

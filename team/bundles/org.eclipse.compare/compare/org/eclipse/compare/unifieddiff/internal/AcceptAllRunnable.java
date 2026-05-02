@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager.UnifiedDiff;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager.UnifiedDiffAnnotation;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Position;
@@ -30,6 +31,8 @@ import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.ISourceViewerExtension5;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 
 public class AcceptAllRunnable implements Runnable {
 	private IAnnotationModel model;
@@ -41,7 +44,11 @@ public class AcceptAllRunnable implements Runnable {
 	}
 
 	public String getLabel() {
-		return "Accept All";
+		return "Accept All"; //$NON-NLS-1$
+	}
+
+	public static ImageDescriptor getImageDescriptor() {
+		return PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJ_ADD);
 	}
 
 	@Override

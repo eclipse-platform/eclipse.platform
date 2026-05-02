@@ -572,6 +572,11 @@
       verticalRulerPreferenceValue="false">
 </specification>
 </extension>
+<extension point="org.eclipse.e4.ui.css.swt.theme">
+  <stylesheet uri="resources/css/dark.css">
+     <themeid refid="org.eclipse.e4.ui.css.theme.e4_dark"></themeid>
+  </stylesheet>
+</extension>
   <!-- Command for testing the unidiff functionality -->
    <extension
          point="org.eclipse.ui.commands">

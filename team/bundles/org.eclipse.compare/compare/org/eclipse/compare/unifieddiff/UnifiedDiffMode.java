@@ -29,6 +29,14 @@ public class UnifiedDiffMode {
 	 * users cannot apply or dismiss the diffs (read-only mode).
 	 */
 	public static final UnifiedDiffMode OVERLAY_READ_ONLY_MODE = new UnifiedDiffMode("OVERLAY_READ_ONLY_MODE"); //$NON-NLS-1$
+	/**
+	 * The current source in the editor represents the latest/newest version, which
+	 * is compared against an older version. Diffs are shown so that they can be
+	 * reverted to the old version. Unlike the other modes, the passed source is
+	 * treated as the base (old version) and the current source as the modified (new
+	 * version).
+	 */
+	public static final UnifiedDiffMode REVERT_MODE = new UnifiedDiffMode("REVERT_MODE"); //$NON-NLS-1$
 
 	private final String name;
 

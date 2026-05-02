@@ -41,7 +41,7 @@ public class UndoAllRunnable implements Runnable {
 	}
 
 	public String getLabel() {
-		return "Undo All";
+		return "Undo All"; //$NON-NLS-1$
 	}
 
 	@Override

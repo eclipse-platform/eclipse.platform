@@ -22,8 +22,11 @@ import static org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager.unchec
 
 import java.util.List;
 
+import org.eclipse.compare.internal.CompareUIPlugin;
+import org.eclipse.compare.internal.ICompareUIConstants;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager.UnifiedDiff;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.source.Annotation;
@@ -43,7 +46,11 @@ public class PreviousRunnable implements Runnable {
 	}
 
 	public String getLabel() {
-		return "Previous";
+		return "Previous"; //$NON-NLS-1$
+	}
+
+	public ImageDescriptor getImageDescriptor() {
+		return CompareUIPlugin.getImageDescriptor(ICompareUIConstants.ETOOL_PREV);
 	}
 
 	@Override

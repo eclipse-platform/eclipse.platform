@@ -45,6 +45,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
@@ -244,8 +245,6 @@ public class UnifiedDiffManager {
 					delta += (unifiedDiff.rightLength - unifiedDiff.leftLength);
 					Annotation myAnnotation = new UnifiedDiffAnnotation(mode, unifiedDiff);
 					Position position = new Position(unifiedDiff.leftStart, unifiedDiff.rightLength);
-					// TODO (tm) question: should we better use mass API here to add all annotations
-					// in one run?
 					model.addAnnotation(myAnnotation, position);
 					for (var detailedDiff : unifiedDiff.detailedDiffs) {
 						if (detailedDiff.rightStr.trim().length() == 0) {
@@ -453,7 +452,9 @@ public class UnifiedDiffManager {
 		private final UnifiedDiff unifiedDiff;
 
 		public UnifiedDiffAnnotation(UnifiedDiffMode mode, UnifiedDiff unifiedDiff) {
-			super(UnifiedDiffMode.REPLACE_MODE.equals(mode) ? ADDITION_ANNO_TYPE : DELETION_ANNO_TYPE, false, null);
+			super(UnifiedDiffMode.REPLACE_MODE.equals(mode) || UnifiedDiffMode.REVERT_MODE.equals(mode)
+					? ADDITION_ANNO_TYPE
+					: DELETION_ANNO_TYPE, false, null);
 			this.unifiedDiff = unifiedDiff;
 		}
 
@@ -466,8 +467,9 @@ public class UnifiedDiffManager {
 		private final UnifiedDiff unifiedDiff;
 
 		public DetailedDiffAnnotation(UnifiedDiffMode mode, UnifiedDiff unifiedDiff) {
-			super(UnifiedDiffMode.REPLACE_MODE.equals(mode) ? DETAILED_ADDITION_ANNO_TYPE : DETAILED_DELETION_ANNO_TYPE,
-					false, null);
+			super(UnifiedDiffMode.REPLACE_MODE.equals(mode) || UnifiedDiffMode.REVERT_MODE.equals(mode)
+					? DETAILED_ADDITION_ANNO_TYPE
+					: DETAILED_DELETION_ANNO_TYPE, false, null);
 			this.unifiedDiff = unifiedDiff;
 		}
 
@@ -487,21 +489,26 @@ public class UnifiedDiffManager {
 		if (UnifiedDiffMode.OVERLAY_MODE.equals(mode) || UnifiedDiffMode.OVERLAY_READ_ONLY_MODE.equals(mode)) {
 			if (!isReadOnly(diffs)) {
 				var acceptAll = new AcceptAllRunnable(tv, model);
-				addToolbarAction(tm, acceptAll.getLabel(), acceptAll);
+				addToolbarAction(tm, acceptAll.getLabel(), AcceptAllRunnable.getImageDescriptor(), acceptAll);
 			}
 			var cancelAll = new CancelAllRunnable(tv, model);
-			addToolbarAction(tm, cancelAll.getLabel(), cancelAll);
+			addToolbarAction(tm, cancelAll.getLabel(), cancelAll.getImageDescriptor(), cancelAll);
+		} else if (UnifiedDiffMode.REVERT_MODE.equals(mode)) {
+			var revertAll = new AcceptAllRunnable(tv, model);
+			addToolbarAction(tm, "Revert", AcceptAllRunnable.getImageDescriptor(), revertAll); //$NON-NLS-1$
+			var cancelAll = new CancelAllRunnable(tv, model);
+			addToolbarAction(tm, cancelAll.getLabel(), cancelAll.getImageDescriptor(), cancelAll);
 		} else {
 			var keepAll = new KeepAllRunnable(tv, model);
-			addToolbarAction(tm, keepAll.getLabel(), keepAll);
+			addToolbarAction(tm, keepAll.getLabel(), null, keepAll);
 			var undoAll = new UndoAllRunnable(tv, model);
-			addToolbarAction(tm, undoAll.getLabel(), undoAll);
+			addToolbarAction(tm, undoAll.getLabel(), null, undoAll);
 		}
 
 		var previous = new PreviousRunnable(tv, model, tm);
-		addToolbarAction(tm, previous.getLabel(), previous);
+		addToolbarAction(tm, previous.getLabel(), previous.getImageDescriptor(), previous);
 		var next = new NextRunnable(tv, model, tm);
-		addToolbarAction(tm, next.getLabel(), next);
+		addToolbarAction(tm, next.getLabel(), next.getImageDescriptor(), next);
 		if (additionalActions != null) {
 			for (var additionalAction : additionalActions) {
 				addToolbarAction(tm, additionalAction);
@@ -611,11 +618,107 @@ public class UnifiedDiffManager {
 		return false;
 	}
 
+	public static boolean isRevert(List<UnifiedDiff> diffs) {
+		if (diffs != null && diffs.size() > 0) {
+			return diffs.get(0).mode.equals(UnifiedDiffMode.REVERT_MODE);
+		}
+		return false;
+	}
+
 	public static boolean isReadOnly(List<UnifiedDiff> diffs) {
 		if (diffs != null && diffs.size() > 0) {
 			return diffs.get(0).mode.equals(UnifiedDiffMode.OVERLAY_READ_ONLY_MODE);
 		}
 		return false;
+	}
+
+	private static void applyDiffRightStr(ITextViewer tv, IAnnotationModel model) {
+		StyledText tw = tv.getTextWidget();
+		Shell toolbarShellForOneDiff = getToolbarShellForOneDiff(tw);
+		if (toolbarShellForOneDiff == null) {
+			return;
+		}
+		var anno = (Annotation) toolbarShellForOneDiff.getData(CURRENT_SELECTED_UNIFIED_DIFF_ANNO_KEY);
+		if (anno == null) {
+			return;
+		}
+		UnifiedDiff diff = getUnifiedDiffForAnno(anno);
+		if (diff == null) {
+			return;
+		}
+		List<Annotation> annos = getAllAnnotationsForUnifiedDiff(model, diff);
+		List<Position> positions = new ArrayList<>();
+		List<String> replaceStrings = new ArrayList<>();
+		for (var lanno : annos) {
+			if (lanno instanceof UnifiedDiffAnnotation) {
+				Position pos = model.getPosition(lanno);
+				positions.add(pos);
+				replaceStrings.add(diff.rightStr);
+			}
+			model.removeAnnotation(lanno);
+		}
+		if (tv instanceof ISourceViewerExtension5 ext) {
+			ext.updateCodeMinings();
+		}
+		// we have to insert with delay because otherwise the line header code minings
+		// cannot be deleted
+		runAfterRepaintFinished(tw, () -> {
+			for (int i = positions.size() - 1; i >= 0; i--) {
+				Position pos = positions.get(i);
+				String replaceStr = replaceStrings.get(i);
+				try {
+					tv.getDocument().replace(pos.offset, pos.length, replaceStr);
+				} catch (BadLocationException e) {
+					error(e);
+				}
+			}
+		});
+	}
+
+	/**
+	 * Dismisses the current diff (navigates to the next one or disposes everything
+	 * when it is the last one). Used by the "Cancel" (overlay/revert) and "Keep"
+	 * (replace) toolbar actions.
+	 */
+	private static void dismissCurrentDiff(ITextViewer tv, IAnnotationModel model) {
+		StyledText tw = tv.getTextWidget();
+		Shell toolbarShellForOneDiff = getToolbarShellForOneDiff(tw);
+		if (toolbarShellForOneDiff == null) {
+			return;
+		}
+		var anno = (Annotation) toolbarShellForOneDiff.getData(CURRENT_SELECTED_UNIFIED_DIFF_ANNO_KEY);
+		UnifiedDiff diff = getUnifiedDiffForAnno(anno);
+		int idx = diff.container.indexOf(diff);
+		if (idx < 0) {
+			throw new IllegalStateException("UnifiedDiff not found in container"); //$NON-NLS-1$
+		}
+		idx++;
+		if (idx >= diff.container.size()) {
+			idx = 0;
+		}
+		UnifiedDiff next = diff.container.get(idx);
+		if (next == diff) {
+			disposeUnifiedDiff(tv, model, tw);
+		} else {
+			List<Annotation> nextAnnos = getAllAnnotationsForUnifiedDiff(model, next);
+			if (nextAnnos.size() > 0) {
+				disposeToolbarForOneDiff(toolbarShellForOneDiff, tv);
+				Position pos = getMinPosition(model, nextAnnos);
+				tv.revealRange(pos.offset, pos.length);
+				tv.setSelectedRange(pos.offset, 0);
+				// we can update the toolbar location after the line header code minings are
+				// removed
+				runAfterRepaintFinished(tw, () -> setToolbarLocationForOneDiff(tv, model, nextAnnos.get(0)));
+			}
+		}
+		diff.container.remove(diff);
+		List<Annotation> annos = getAllAnnotationsForUnifiedDiff(model, diff);
+		for (var lanno : annos) {
+			model.removeAnnotation(lanno);
+		}
+		if (tv instanceof ISourceViewerExtension5 ext) {
+			ext.updateCodeMinings();
+		}
 	}
 
 	private static void drawToolbarForOneDiff(ITextViewer tv, IAnnotationModel model) {
@@ -627,128 +730,18 @@ public class UnifiedDiffManager {
 		var tm = new ToolBarManager(SWT.FLAT | SWT.HORIZONTAL | SWT.RIGHT);
 		if (isOverlay(diffs)) {
 			if (!isReadOnly(diffs)) {
-				addToolbarAction(tm, "Accept", () -> {
-					Shell toolbarShellForOneDiff = getToolbarShellForOneDiff(tv.getTextWidget());
-					if (toolbarShellForOneDiff == null) {
-						return;
-					}
-					var anno = (Annotation) toolbarShellForOneDiff.getData(CURRENT_SELECTED_UNIFIED_DIFF_ANNO_KEY);
-					if (anno == null) {
-						return;
-					}
-					UnifiedDiff diff = getUnifiedDiffForAnno(anno);
-					if (diff == null) {
-						return;
-					}
-					List<Annotation> annos = getAllAnnotationsForUnifiedDiff(model, diff);
-					List<Position> positions = new ArrayList<>();
-					List<String> replaceStrings = new ArrayList<>();
-					for (var lanno : annos) {
-						if (lanno instanceof UnifiedDiffAnnotation) {
-							Position pos = model.getPosition(lanno);
-							positions.add(pos);
-							replaceStrings.add(diff.rightStr);
-						}
-						model.removeAnnotation(lanno);
-					}
-					if (tv instanceof ISourceViewerExtension5 ext) {
-						ext.updateCodeMinings();
-					}
-					// we have to insert with delay because otherwise the line header code minings
-					// cannot be deleted
-					runAfterRepaintFinished(tw, () -> {
-						for (int i = positions.size() - 1; i >= 0; i--) {
-							Position pos = positions.get(i);
-							String replaceStr = replaceStrings.get(i);
-							try {
-								tv.getDocument().replace(pos.offset, pos.length, replaceStr);
-							} catch (BadLocationException e) {
-								error(e);
-							}
-						}
-					});
-				});
+				addToolbarAction(tm, "Accept", AcceptAllRunnable.getImageDescriptor(), //$NON-NLS-1$
+						() -> applyDiffRightStr(tv, model));
 			}
-			addToolbarAction(tm, "Cancel", () -> {
-				Shell toolbarShellForOneDiff = getToolbarShellForOneDiff(tv.getTextWidget());
-				if (toolbarShellForOneDiff == null) {
-					return;
-				}
-				var anno = (Annotation) toolbarShellForOneDiff.getData(CURRENT_SELECTED_UNIFIED_DIFF_ANNO_KEY);
-				UnifiedDiff diff = getUnifiedDiffForAnno(anno);
-				int idx = diff.container.indexOf(diff);
-				if (idx < 0) {
-					throw new IllegalStateException("UnifiedDiff not found in container"); //$NON-NLS-1$
-				}
-				idx++;
-				if (idx >= diff.container.size()) {
-					idx = 0;
-				}
-				UnifiedDiff next = diff.container.get(idx);
-				if (next == diff) {
-					disposeUnifiedDiff(tv, model, tv.getTextWidget());
-				} else {
-					List<Annotation> nextAnnos = getAllAnnotationsForUnifiedDiff(model, next);
-					if (nextAnnos.size() > 0) {
-						disposeToolbarForOneDiff(toolbarShellForOneDiff, tv);
-						Position pos = getMinPosition(model, nextAnnos);
-						tv.revealRange(pos.offset, pos.length);
-						tv.setSelectedRange(pos.offset, 0);
-						// we can update the toolbar location after the line header code minings are
-						// removed
-						runAfterRepaintFinished(tw, () -> setToolbarLocationForOneDiff(tv, model, nextAnnos.get(0)));
-					}
-				}
-				diff.container.remove(diff);
-				List<Annotation> annos = getAllAnnotationsForUnifiedDiff(model, diff);
-				for (var lanno : annos) {
-					model.removeAnnotation(lanno);
-				}
-				if (tv instanceof ISourceViewerExtension5 ext) {
-					ext.updateCodeMinings();
-				}
-			});
+			addToolbarAction(tm, "Cancel", CancelAllRunnable.getCancelImageDescriptor(), //$NON-NLS-1$
+					() -> dismissCurrentDiff(tv, model));
+		} else if (isRevert(diffs)) {
+			addToolbarAction(tm, "Revert", AcceptAllRunnable.getImageDescriptor(), () -> applyDiffRightStr(tv, model)); //$NON-NLS-1$
+			addToolbarAction(tm, "Cancel", CancelAllRunnable.getCancelImageDescriptor(), //$NON-NLS-1$
+					() -> dismissCurrentDiff(tv, model));
 		} else {
-			addToolbarAction(tm, "Keep", () -> {
-				Shell toolbarShellForOneDiff = getToolbarShellForOneDiff(tv.getTextWidget());
-				if (toolbarShellForOneDiff == null) {
-					return;
-				}
-				var anno = (Annotation) toolbarShellForOneDiff.getData(CURRENT_SELECTED_UNIFIED_DIFF_ANNO_KEY);
-				UnifiedDiff diff = getUnifiedDiffForAnno(anno);
-				int idx = diff.container.indexOf(diff);
-				if (idx < 0) {
-					throw new IllegalStateException("UnifiedDiff not found in container"); //$NON-NLS-1$
-				}
-				idx++;
-				if (idx >= diff.container.size()) {
-					idx = 0;
-				}
-				UnifiedDiff next = diff.container.get(idx);
-				if (next == diff) {
-					disposeUnifiedDiff(tv, model, tv.getTextWidget());
-				} else {
-					List<Annotation> nextAnnos = getAllAnnotationsForUnifiedDiff(model, next);
-					if (nextAnnos.size() > 0) {
-						disposeToolbarForOneDiff(toolbarShellForOneDiff, tv);
-						Position pos = getMinPosition(model, nextAnnos);
-						tv.revealRange(pos.offset, pos.length);
-						tv.setSelectedRange(pos.offset, 0);
-						// we can update the toolbar location after the line header code minings are
-						// removed
-						runAfterRepaintFinished(tw, () -> setToolbarLocationForOneDiff(tv, model, nextAnnos.get(0)));
-					}
-				}
-				diff.container.remove(diff);
-				List<Annotation> annos = getAllAnnotationsForUnifiedDiff(model, diff);
-				for (var lanno : annos) {
-					model.removeAnnotation(lanno);
-				}
-				if (tv instanceof ISourceViewerExtension5 ext) {
-					ext.updateCodeMinings();
-				}
-			});
-			addToolbarAction(tm, "Undo", () -> {
+			addToolbarAction(tm, "Keep", null, () -> dismissCurrentDiff(tv, model)); //$NON-NLS-1$
+			addToolbarAction(tm, "Undo", null, () -> { //$NON-NLS-1$
 				var fToolbarShellForOneDiff = getToolbarShellForOneDiff(tv.getTextWidget());
 				if (fToolbarShellForOneDiff == null) {
 					return;
@@ -1006,15 +999,26 @@ public class UnifiedDiffManager {
 		return result;
 	}
 
-	private static void addToolbarAction(ToolBarManager tm, String text, Runnable runnable) {
+	private static void addToolbarAction(ToolBarManager tm, String text, ImageDescriptor image, Runnable runnable) {
 		String tooltip = text;
-		var action = new Action(text, SWT.PUSH) { // $NON-NLS-1$
-			@Override
-			public void run() {
-				setChecked(false);
-				runnable.run();
-			}
-		};
+		Action action = null;
+		if (image != null) {
+			action = new Action(null, image) { // $NON-NLS-1$
+				@Override
+				public void run() {
+					setChecked(false);
+					runnable.run();
+				}
+			};
+		} else {
+			action = new Action(text, SWT.PUSH) { // $NON-NLS-1$
+				@Override
+				public void run() {
+					setChecked(false);
+					runnable.run();
+				}
+			};
+		}
 		action.setToolTipText(tooltip);
 		var actionItem = new ActionContributionItem(action);
 		actionItem.setMode(ActionContributionItem.MODE_FORCE_TEXT);
@@ -1023,15 +1027,25 @@ public class UnifiedDiffManager {
 	}
 
 	private static void addToolbarAction(ToolBarManager tm, Action action) {
-		var a = new Action(action.getText(), SWT.PUSH) { // $NON-NLS-1$
-			@Override
-			public void run() {
-				setChecked(false);
-				action.run();
-			}
-		};
-		action.setToolTipText(action.getToolTipText());
-		action.setImageDescriptor(action.getImageDescriptor());
+		Action a = null;
+		if (action.getImageDescriptor() != null) {
+			a = new Action(null, action.getImageDescriptor()) {
+				@Override
+				public void run() {
+					setChecked(false);
+					action.run();
+				}
+			};
+		} else {
+			a = new Action(action.getText(), SWT.PUSH) { // $NON-NLS-1$
+				@Override
+				public void run() {
+					setChecked(false);
+					action.run();
+				}
+			};
+		}
+		a.setToolTipText(action.getToolTipText());
 		var actionItem = new ActionContributionItem(a);
 		actionItem.setMode(ActionContributionItem.MODE_FORCE_TEXT);
 		tm.add(actionItem);
@@ -1233,8 +1247,7 @@ public class UnifiedDiffManager {
 			} else {
 				color = JFaceResources.getColorRegistry().getRGB("ADDITION_COLOR"); //$NON-NLS-1$
 			}
-
-			RGB background = Display.getDefault().getSystemColor(SWT.COLOR_LIST_BACKGROUND).getRGB();
+			RGB background = UnifiedDiffCodeMiningProvider.getBackground();
 			RGB interpolated = UnifiedDiffCodeMiningProvider.interpolate(color, background, 0.9);
 			this.additionBackgroundColor = new Color(interpolated);
 		}

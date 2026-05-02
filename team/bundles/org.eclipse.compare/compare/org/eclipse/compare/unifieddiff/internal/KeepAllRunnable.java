@@ -35,7 +35,7 @@ public class KeepAllRunnable implements Runnable {
 	}
 
 	public String getLabel() {
-		return "Keep All";
+		return "Keep All"; //$NON-NLS-1$
 	}
 
 	@Override

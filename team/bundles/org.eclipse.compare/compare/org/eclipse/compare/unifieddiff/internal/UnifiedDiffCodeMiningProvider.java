@@ -28,6 +28,7 @@ import org.eclipse.compare.unifieddiff.UnifiedDiffMode;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager.UnifiedDiff;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
@@ -63,6 +64,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
+import org.eclipse.ui.texteditor.AbstractTextEditor;
 
 public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 
@@ -78,9 +80,9 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			return CompletableFuture.completedFuture(new ArrayList<>());
 		}
 		boolean isOverlay = isOverlay(diffs);
-		if (this.deletionBackgroundColor == null || isOverlay != lastIsOverlay) {
+		if (Display.getCurrent() != null && (this.deletionBackgroundColor == null || isOverlay != lastIsOverlay)) {
 			// check class ColorPalette
-			RGB background = Display.getDefault().getSystemColor(SWT.COLOR_LIST_BACKGROUND).getRGB();
+			RGB background = getBackground();
 			String colorName;
 			if (isOverlay) {
 				colorName = "ADDITION_COLOR"; //$NON-NLS-1$
@@ -91,9 +93,6 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			this.detailedDiffColor = new Color(interpolate(deletionColor, background, 0.9));
 			this.deletionBackgroundColor = new Color(interpolate(deletionColor, background, 0.8));
 			lastIsOverlay = isOverlay;
-			// TODO (tm) remove me - add annotation extension with color 204, 229, 204
-//			RGB additionColor = JFaceResources.getColorRegistry().getRGB("ADDITION_COLOR");
-//			additionColor = interpolate(additionColor, background, 0.9);
 		}
 		if (viewer instanceof ISourceViewer sv && UnifiedDiffManager.get(viewer) != null) {
 			List<ICodeMining> existingMinings = new ArrayList<>();
@@ -137,6 +136,30 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			createLineHeaderCodeMinings(diffs, minings, viewer, tabWidth);
 			return minings;
 		});
+	}
+
+	public static RGB getBackground() {
+		RGB background = null;
+		IPreferenceStore store = EditorsUI.getPreferenceStore();
+		boolean isUsingSystemBackground = store
+				.getBoolean(AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND_SYSTEM_DEFAULT);
+		if (!isUsingSystemBackground) {
+			background = createColor(store, AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND);
+		}
+		if (background != null) {
+			return background;
+		}
+		return Display.getDefault().getSystemColor(SWT.COLOR_LIST_BACKGROUND).getRGB();
+	}
+
+	private static RGB createColor(IPreferenceStore store, String key) {
+		if (!store.contains(key)) {
+			return null;
+		}
+		if (store.isDefault(key)) {
+			return PreferenceConverter.getDefaultColor(store, key);
+		}
+		return PreferenceConverter.getColor(store, key);
 	}
 
 	private int getTabWidth(ITextViewer viewer) {
@@ -192,6 +215,23 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 					} else {
 						mining = new UnifiedDiffLineHeaderCodeMining(new Position(diff.leftStart + diff.leftLength, 1),
 								this, diff, tabWidth, this.detailedDiffColor, this.deletionBackgroundColor, tv);
+					}
+					minings.add(mining);
+				} catch (BadLocationException e) {
+					error(e);
+				}
+			} else if (diff.mode.equals(UnifiedDiffMode.REVERT_MODE)) {
+				if (diff.rightStr.isEmpty()) {
+					continue;
+				}
+				try {
+					ICodeMining mining;
+					if (diff.leftStart == doc.getLength()) {
+						mining = new UnifiedDiffFooterCodeMining(doc, this, null, diff, tabWidth,
+								this.deletionBackgroundColor);
+					} else {
+						mining = new UnifiedDiffLineHeaderCodeMining(new Position(diff.leftStart, 1), this, diff,
+								tabWidth, this.detailedDiffColor, this.deletionBackgroundColor, tv);
 					}
 					minings.add(mining);
 				} catch (BadLocationException e) {
@@ -347,6 +387,9 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			return this.diff;
 		}
 
+		private String lastLabel;
+		private List<StyleRange> lastStyleRanges;
+
 		@Override
 		public Point draw(GC gc, StyledText textWidget, Color color, int x, int y) {
 			gc.setBackground(this.deletionBackgroundColor);
@@ -363,7 +406,14 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			gc.fillRectangle(0, y, textWidget.getBounds().width /* result.x */, result.y);
 
 			String label = getLabel();
-			List<StyleRange> ranges = computeStyleRanges(viewer, diff.leftStart, label);
+			List<StyleRange> ranges = null;
+			if (lastLabel != null && lastLabel.equals(label)) {
+				ranges = lastStyleRanges;
+			} else {
+				ranges = computeStyleRanges(viewer, diff.leftStart, label);
+				lastLabel = label;
+				lastStyleRanges = ranges;
+			}
 			HashMap<Font, Map<Integer /* style */, Font>> styledFonts = new HashMap<>();
 
 			// draw darker background for detailed diff
@@ -374,7 +424,8 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 				int detailedDiffStart = detailedDiff.leftStart;
 				int detailedDiffLength = detailedDiff.leftLength;
 				if (diff.mode.equals(UnifiedDiffMode.OVERLAY_MODE)
-						|| diff.mode.equals(UnifiedDiffMode.OVERLAY_READ_ONLY_MODE)) {
+						|| diff.mode.equals(UnifiedDiffMode.OVERLAY_READ_ONLY_MODE)
+						|| diff.mode.equals(UnifiedDiffMode.REVERT_MODE)) {
 					diffStr = this.diff.rightStr;
 					detailedDiffStr = detailedDiff.rightStr;
 					detailedDiffStart = detailedDiff.rightStart;
@@ -389,6 +440,9 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 					int toLine = diffStr.substring(0, detailedDiffStart + detailedDiffLength).split("\n").length; //$NON-NLS-1$
 					if (fromLine == toLine) {
 						int starty = getYForLine(fromLine - 1, y, gc, textWidget);
+						if (starty < 0) {
+							continue;
+						}
 						Point start = getPositionForOffset(gc, detailedDiffStart, diffStr, ranges, styledFonts);
 						Point curr = getPositionForOffset(gc, detailedDiffStart + detailedDiffLength, diffStr, ranges,
 								styledFonts);
@@ -408,6 +462,9 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 						var diffStrDoc = new Document(diffStr);
 						for (int middleLine = fromLine + 1; middleLine < toLine; middleLine++) {
 							starty = getYForLine(middleLine - 1, y, gc, textWidget);
+							if (starty < 0) {
+								continue;
+							}
 							try {
 								int currentLineEndOffset = diffStrDoc.getLineOffset(middleLine - 1)
 										+ diffStrDoc.getLineLength(middleLine - 1)
@@ -422,6 +479,9 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 						}
 						// last line
 						starty = getYForLine(toLine - 1, y, gc, textWidget);
+						if (starty < 0) {
+							continue;
+						}
 						curr = getPositionForOffset(gc, detailedDiffStart + detailedDiffLength, diffStr, ranges,
 								styledFonts);
 						if (curr.x > 0) {
@@ -596,11 +656,10 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			if (off == str.length()) {
 				doc = new Document(str);
 			} else {
-				doc = new Document(str.stripTrailing()); // TODO (tm) strange: when do we need to stripTrailing?
+				doc = new Document(str.stripTrailing());
 			}
 			try {
 				if (off > doc.getLength()) {
-					// TODO (tm) don't get it - when is this branch needed
 					int line = doc.getLineOfOffset(doc.getLength());
 					int lineOffset = doc.getLineOffset(line);
 					int resultOff = doc.getLength() - lineOffset;
