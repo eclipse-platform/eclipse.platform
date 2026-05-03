@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2010 IBM Corporation and others.
+ * Copyright (c) 2009, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -12,8 +12,6 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.e4.core.di.suppliers;
-
-import org.osgi.framework.BundleContext;
 
 /**
  * The base class for an "object supplier" - something that knows how to
@@ -39,7 +37,7 @@ abstract public class ExtendedObjectSupplier {
 	 * The OSGi service name for an object provider service. This name can be used to obtain
 	 * instances of the service.
 	 *
-	 * @see BundleContext#getServiceReference(String)
+	 * @see org.osgi.framework.BundleContext#getServiceReference(String)
 	 */
 	public static final String SERVICE_NAME = ExtendedObjectSupplier.class.getName();
 
@@ -47,7 +45,7 @@ abstract public class ExtendedObjectSupplier {
 	 * An OSGi service property used to indicate the context key this function should be registered
 	 * in.
 	 *
-	 * @see BundleContext#getServiceReference(String)
+	 * @see org.osgi.framework.BundleContext#getServiceReference(String)
 	 */
 	public static final String SERVICE_CONTEXT_KEY = "dependency.injection.annotation"; //$NON-NLS-1$
 
