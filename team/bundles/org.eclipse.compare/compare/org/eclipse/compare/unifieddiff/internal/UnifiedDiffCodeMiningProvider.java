@@ -435,6 +435,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 					continue;
 				}
 				try {
+					var rangeInfo = new RangeInfo(-1, -1, null);
 					String l = diffStr.substring(0, detailedDiffStart);
 					int fromLine = l.split("\n").length; //$NON-NLS-1$
 					int toLine = diffStr.substring(0, detailedDiffStart + detailedDiffLength).split("\n").length; //$NON-NLS-1$
@@ -443,9 +444,10 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 						if (starty < 0) {
 							continue;
 						}
-						Point start = getPositionForOffset(gc, detailedDiffStart, diffStr, ranges, styledFonts);
+						Point start = getPositionForOffset(gc, detailedDiffStart, diffStr, ranges, styledFonts,
+								rangeInfo);
 						Point curr = getPositionForOffset(gc, detailedDiffStart + detailedDiffLength, diffStr, ranges,
-								styledFonts);
+								styledFonts, rangeInfo);
 						gc.fillRectangle(x + start.x, starty, curr.x - start.x, curr.y);
 					} else {
 						// mark first line until end
@@ -453,8 +455,9 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 						String firstLine = lines[fromLine - 1];
 						int starty = getYForLine(fromLine - 1, y, gc, textWidget);
 						int idx = getOffsetAtLine(diffStr, detailedDiffStart);
-						Point start = getPositionForOffset(gc, idx, diffStr, ranges, styledFonts);
-						Point curr = getPositionForOffset(gc, firstLine.length(), diffStr, ranges, styledFonts);
+						Point start = getPositionForOffset(gc, idx, diffStr, ranges, styledFonts, rangeInfo);
+						Point curr = getPositionForOffset(gc, firstLine.length(), diffStr, ranges, styledFonts,
+								rangeInfo);
 						if (curr.x > 0) {
 							gc.fillRectangle(x + start.x, starty, curr.x - start.x, curr.y);
 						}
@@ -469,7 +472,8 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 								int currentLineEndOffset = diffStrDoc.getLineOffset(middleLine - 1)
 										+ diffStrDoc.getLineLength(middleLine - 1)
 										- getLineDelimiterLength(diffStrDoc, middleLine);
-								curr = getPositionForOffset(gc, currentLineEndOffset, diffStr, ranges, styledFonts);
+								curr = getPositionForOffset(gc, currentLineEndOffset, diffStr, ranges, styledFonts,
+										rangeInfo);
 								if (curr.x > 0) {
 									gc.fillRectangle(x, starty, curr.x, curr.y);
 								}
@@ -483,7 +487,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 							continue;
 						}
 						curr = getPositionForOffset(gc, detailedDiffStart + detailedDiffLength, diffStr, ranges,
-								styledFonts);
+								styledFonts, rangeInfo);
 						if (curr.x > 0) {
 							gc.fillRectangle(x, starty, curr.x, curr.y);
 						}
@@ -567,8 +571,20 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			return delim.length();
 		}
 
+		private static class RangeInfo {
+			int rangeIndex;
+			int offset;
+			Point position;
+
+			RangeInfo(int rangeIndex, int offset, Point position) {
+				this.rangeIndex = rangeIndex;
+				this.offset = offset;
+				this.position = position;
+			}
+		}
+
 		private Point getPositionForOffset(GC gc, int offset, String str, List<StyleRange> ranges,
-				HashMap<Font, Map<Integer, Font>> styledFonts) {
+				HashMap<Font, Map<Integer, Font>> styledFonts, RangeInfo rangeInfo) {
 			String sub = str.substring(0, offset);
 			int tabCount = sub.split("\t", -1).length - 1; //$NON-NLS-1$
 			offset += tabCount * tabWidth - tabCount;
@@ -576,12 +592,19 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			Point result = null;
 			var before = gc.getFont();
 			try {
-				for (int i = 0; i < ranges.size(); i++) {
+				int i = 0;
+				if (rangeInfo.rangeIndex != -1 && offset >= rangeInfo.offset) {
+					i = rangeInfo.rangeIndex + 1;
+					result = rangeInfo.position;
+				}
+				for (; i < ranges.size(); i++) {
 					var range = ranges.get(i);
 					if (range.start <= offset) {
+						boolean rangeEndBeforeOffset = true;
 						int rangeEnd = range.start + range.length;
 						if (rangeEnd > offset) {
 							rangeEnd = offset;
+							rangeEndBeforeOffset = false;
 						}
 						sub = str.substring(range.start, rangeEnd);
 						if (offset == rangeEnd && offset == str.length()) {
@@ -609,6 +632,11 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 							result = extent;
 						} else {
 							result.x += extent.x;
+						}
+						if (rangeEndBeforeOffset) {
+							rangeInfo.offset = rangeEnd;
+							rangeInfo.rangeIndex = i;
+							rangeInfo.position = new Point(result.x, result.y);
 						}
 					} else {
 						break;
