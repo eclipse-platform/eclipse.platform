@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2015 IBM Corporation and others.
+ * Copyright (c) 2010, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -13,11 +13,8 @@
  *******************************************************************************/
 package org.eclipse.e4.core.internal.di;
 
-import jakarta.inject.Named;
-import java.lang.reflect.Field;
 import org.eclipse.e4.core.di.IInjector;
 import org.eclipse.e4.core.di.InjectionException;
-import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.core.di.suppliers.IObjectDescriptor;
 import org.eclipse.e4.core.di.suppliers.PrimaryObjectSupplier;
 
@@ -29,11 +26,7 @@ import org.eclipse.e4.core.di.suppliers.PrimaryObjectSupplier;
  */
 public class ClassRequestor extends Requestor<Class<?>> {
 
-	@Optional
-	@Named("e4.internal.injectionLink")
-	final static public String pseudoVariable = null;
-
-	private static IObjectDescriptor[] pseudoVariableDescriptor;
+	private static IObjectDescriptor[] pseudoVariableDescriptor = {};
 
 	public ClassRequestor(Class<?> clazz, IInjector injector, PrimaryObjectSupplier primarySupplier, PrimaryObjectSupplier tempSupplier, Object requestingObject, boolean track) {
 		super(clazz, injector, primarySupplier, tempSupplier, requestingObject, track);
@@ -47,18 +40,6 @@ public class ClassRequestor extends Requestor<Class<?>> {
 
 	@Override
 	public IObjectDescriptor[] calcDependentObjects() {
-		if (pseudoVariableDescriptor == null) {
-			Field field = null;
-			try {
-				field = ClassRequestor.class.getField("pseudoVariable"); //$NON-NLS-1$
-			} catch (SecurityException | NoSuchFieldException e) {
-				e.printStackTrace(); // tested - not going to happen
-				return null;
-			}
-			pseudoVariableDescriptor = new IObjectDescriptor[] {
-					new ObjectDescriptor(field.getGenericType(), field.getAnnotations()) };
-		}
-
 		return pseudoVariableDescriptor;
 	}
 
@@ -69,7 +50,7 @@ public class ClassRequestor extends Requestor<Class<?>> {
 			tmp.append(location.getSimpleName());
 		}
 		tmp.append('.');
-		tmp.append(pseudoVariable);
+		tmp.append("pseudoVariable"); //$NON-NLS-1$
 		return tmp.toString();
 	}
 }
