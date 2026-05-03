@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.team.tests.core;
 
+import org.eclipse.team.internal.ui.synchronize.RefreshSubscriberParticipantJobProgressTests;
 import org.eclipse.team.tests.core.regression.AllTeamRegressionTests;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
@@ -20,6 +21,7 @@ import org.junit.platform.suite.api.Suite;
 @Suite
 @SelectClasses({ //
 		AllTeamRegressionTests.class, //
+		RefreshSubscriberParticipantJobProgressTests.class, //
 		RepositoryProviderTests.class, //
 		StorageMergerTests.class, //
 		StreamTests.class, //
