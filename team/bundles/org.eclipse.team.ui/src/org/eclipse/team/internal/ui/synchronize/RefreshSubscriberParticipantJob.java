@@ -16,6 +16,7 @@ package org.eclipse.team.internal.ui.synchronize;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.team.core.TeamException;
 import org.eclipse.team.core.subscribers.Subscriber;
 import org.eclipse.team.core.synchronize.SyncInfo;
@@ -119,11 +120,16 @@ public class RefreshSubscriberParticipantJob extends RefreshParticipantJob {
 		if (subscriber != null) {
 			try {
 				subscriber.addListener((RefreshChangeListener)changeListener);
-				subscriber.refresh(resources, IResource.DEPTH_INFINITE, monitor);
-				getCollector().waitForCollector(monitor);
+				SubMonitor sub = SubMonitor.convert(monitor, 100);
+				subscriber.refresh(resources, IResource.DEPTH_INFINITE, sub.split(80));
+				waitForCollector(sub.split(20));
 			} finally {
 				subscriber.removeListener((RefreshChangeListener)changeListener);
 			}
 		}
+	}
+
+	protected void waitForCollector(IProgressMonitor monitor) {
+		getCollector().waitForCollector(monitor);
 	}
 }

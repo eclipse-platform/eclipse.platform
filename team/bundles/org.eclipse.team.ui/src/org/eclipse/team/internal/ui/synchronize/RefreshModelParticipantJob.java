@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.team.core.diff.IDiff;
 import org.eclipse.team.core.diff.IDiffChangeEvent;
@@ -77,11 +78,12 @@ public class RefreshModelParticipantJob extends RefreshParticipantJob {
 		ISynchronizationContext context = ((ModelSynchronizeParticipant)getParticipant()).getContext();
 		try {
 			context.getDiffTree().addDiffChangeListener((ChangeDescription)changeListener);
+			SubMonitor sub = SubMonitor.convert(monitor, 100);
 			// TODO: finer grained refresh
-			context.refresh(mappings, monitor);
+			context.refresh(mappings, sub.split(80));
 			// Wait for any asynchronous updating to complete
 			try {
-				Job.getJobManager().join(context, monitor);
+				Job.getJobManager().join(context, sub.split(20));
 			} catch (InterruptedException e) {
 				// Ignore
 			}
