@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2015 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -17,8 +17,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.osgi.framework.Bundle;
 
@@ -26,30 +27,25 @@ import org.eclipse.core.expressions.EvaluationContext;
 import org.eclipse.core.expressions.EvaluationResult;
 import org.eclipse.core.expressions.TestExpression;
 import org.eclipse.core.internal.expressions.Property;
+import org.eclipse.core.internal.expressions.PropertyTesterDescriptor;
 import org.eclipse.core.internal.expressions.TypeExtensionManager;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Platform;
 
 @SuppressWarnings("restriction")
 public class PropertyTesterTests {
 
-	private A a;
-	private B b;
-	private I i;
-
 	private static final TypeExtensionManager fgManager= new TypeExtensionManager("propertyTesters"); //$NON-NLS-1$
 
 	// Needs additional local test plug-ins
 	private static final boolean TEST_DYNAMIC_AND_ACTIVATION= false;
 
-	@BeforeEach
-	public void setUp() throws Exception {
-		a= new A();
-		b= new B();
-		i= b;
-	}
+	private final A a= new A();
+	private final B b= new B();
+	private final I i= b;
 
 	@Test
 	public void testSimple() throws Exception {
@@ -68,13 +64,17 @@ public class PropertyTesterTests {
 	}
 
 	@Test
+	public void testInvalid() throws Exception {
+		IConfigurationElement element=
+			mock(IConfigurationElement.class);
+		when(element.isValid()).thenReturn(false);
+		var ce = assertThrows(CoreException.class, () -> new PropertyTesterDescriptor(element));
+		assertEquals("The configuration element is invalid. Tester has been disabled.", ce.getMessage());
+	}
+
+	@Test
 	public void testUnknown() throws Exception {
-		try {
-			test(a, "unknown", null, null); //$NON-NLS-1$
-		} catch (CoreException e) {
-			return;
-		}
-		assertTrue(false);
+		assertThrows(CoreException.class, () -> test(a, "unknown", null, null)); //$NON-NLS-1$
 	}
 
 	@Test
