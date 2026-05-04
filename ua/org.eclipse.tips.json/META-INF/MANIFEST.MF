@@ -4,8 +4,8 @@ Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.tips.json;singleton:=true
 Bundle-Version: 0.3.400.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-17
-Require-Bundle: org.eclipse.core.runtime;bundle-version="3.29.0",
- com.google.gson,
+Require-Bundle: org.eclipse.core.runtime;bundle-version="[3.34.200.v20251220-0953,null)",
+ com.google.gson;bundle-version="[2.11.0,3)",
  org.eclipse.tips.core;bundle-version="0.1.0"
 Export-Package: org.eclipse.tips.json,
  org.eclipse.tips.json.internal;x-internal:=true
