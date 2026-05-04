@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2015 IBM Corporation and others.
+ * Copyright (c) 2009, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -16,7 +16,9 @@ package org.eclipse.e4.core.internal.tests.contexts.inject;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
@@ -30,11 +32,12 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import jakarta.inject.Singleton;
+
 /**
  * Tests for the basic context injection functionality
  */
 public class AnnotationsInjectionTest {
-
 
 	@Test
 	public void testContextSetOneArg() {
@@ -157,7 +160,8 @@ public class AnnotationsInjectionTest {
 			// empty
 		}
 		class Injected {
-			@Inject @Named("valueField")
+			@Inject
+			@Named("valueField")
 			Object injectedField;
 			Object methodValue;
 
@@ -195,6 +199,33 @@ public class AnnotationsInjectionTest {
 		context.dispose();
 		if (error[0] != null) {
 			throw error[0];
+		}
+	}
+
+	static class OptionalAnnotations {
+		@Inject
+		@Optional
+		public Float f = null;
+
+		public Double d;
+		public String s = "ouch";
+		public Integer i;
+
+		public int methodOptionalCalled = 0;
+		public int methodRequiredCalled = 0;
+
+		@Inject
+		@Optional
+		public void methodOptional(Double d) {
+			this.d = d;
+			methodOptionalCalled++;
+		}
+
+		@Inject
+		public void methodRequired(@Optional String s, Integer i) {
+			this.s = s;
+			this.i = i;
+			methodRequiredCalled++;
 		}
 	}
 
@@ -260,7 +291,8 @@ public class AnnotationsInjectionTest {
 	}
 
 	/**
-	 * Tests that a class with multiple inherited post-construct / pre-destroy methods.
+	 * Tests that a class with multiple inherited post-construct / pre-destroy
+	 * methods.
 	 */
 	@Test
 	public void testInheritedSpecialMethods() {
@@ -361,5 +393,25 @@ public class AnnotationsInjectionTest {
 		assertEquals(1, object.preDestoryCalled);
 		assertNotNull(object.value);
 		assertNotNull(object.directFieldInjection);
+	}
+
+	@Singleton
+	public static class SingletonService {
+	}
+
+	public static class NonSingletonService {
+	}
+
+	@Test
+	public void testSingleton() {
+		IEclipseContext context = EclipseContextFactory.create();
+
+		SingletonService service1 = ContextInjectionFactory.make(SingletonService.class, context);
+		SingletonService service2 = ContextInjectionFactory.make(SingletonService.class, context);
+		assertSame(service1, service2);
+
+		NonSingletonService service3 = ContextInjectionFactory.make(NonSingletonService.class, context);
+		NonSingletonService service4 = ContextInjectionFactory.make(NonSingletonService.class, context);
+		assertNotSame(service3, service4);
 	}
 }

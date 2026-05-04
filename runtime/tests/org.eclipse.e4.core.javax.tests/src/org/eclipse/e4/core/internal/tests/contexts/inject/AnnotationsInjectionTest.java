@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2015 IBM Corporation and others.
+ * Copyright (c) 2009, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -16,13 +16,16 @@ package org.eclipse.e4.core.internal.tests.contexts.inject;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.EclipseContextFactory;
@@ -30,11 +33,11 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.junit.jupiter.api.Test;
+
 /**
  * Tests for the basic context injection functionality
  */
 public class AnnotationsInjectionTest {
-
 
 	@Test
 	public void testContextSetOneArg() {
@@ -109,6 +112,58 @@ public class AnnotationsInjectionTest {
 		assertEquals(methodValue2, object.value);
 	}
 
+	static class ObjectBasic {
+		// Injected directly
+		@Inject
+		@Optional
+		public String injectedString;
+		@Inject
+		private Integer injectedInteger;
+
+		// Injected indirectly
+		public Double d;
+		public Float f;
+		public Character c;
+		public IEclipseContext context;
+
+		// Test status
+		public boolean finalized = false;
+		public boolean disposed = false;
+		public int setMethodCalled = 0;
+		public int setMethodCalled2 = 0;
+
+		@Inject
+		public void objectViaMethod(Double d) {
+			setMethodCalled++;
+			this.d = d;
+		}
+
+		@Inject
+		public void arguments(Float f, @Optional Character c) {
+			setMethodCalled2++;
+			this.f = f;
+			this.c = c;
+		}
+
+		@PostConstruct
+		public void postCreate(IEclipseContext context) {
+			this.context = context;
+			finalized = true;
+		}
+
+		@PreDestroy
+		public void dispose(IEclipseContext context) {
+			if (this.context != context)
+				throw new IllegalArgumentException("Unexpected context");
+			this.context = null;
+			disposed = true;
+		}
+
+		public Integer getInt() {
+			return injectedInteger;
+		}
+	}
+
 	/**
 	 * Tests basic context injection
 	 */
@@ -157,7 +212,8 @@ public class AnnotationsInjectionTest {
 			// empty
 		}
 		class Injected {
-			@Inject @Named("valueField")
+			@Inject
+			@Named("valueField")
 			Object injectedField;
 			Object methodValue;
 
@@ -195,6 +251,33 @@ public class AnnotationsInjectionTest {
 		context.dispose();
 		if (error[0] != null) {
 			throw error[0];
+		}
+	}
+
+	static class OptionalAnnotations {
+		@Inject
+		@Optional
+		public Float f = null;
+
+		public Double d;
+		public String s = "ouch";
+		public Integer i;
+
+		public int methodOptionalCalled = 0;
+		public int methodRequiredCalled = 0;
+
+		@Inject
+		@Optional
+		public void methodOptional(Double d) {
+			this.d = d;
+			methodOptionalCalled++;
+		}
+
+		@Inject
+		public void methodRequired(@Optional String s, Integer i) {
+			this.s = s;
+			this.i = i;
+			methodRequiredCalled++;
 		}
 	}
 
@@ -257,37 +340,6 @@ public class AnnotationsInjectionTest {
 		result = ContextInjectionFactory.invoke(testObject, Execute.class, context, notAnObject);
 		assertEquals(string, result);
 		assertEquals(2, testObject.called);
-	}
-
-	/**
-	 * Tests that a class with multiple inherited post-construct / pre-destroy methods.
-	 */
-	@Test
-	public void testInheritedSpecialMethods() {
-		IEclipseContext context = EclipseContextFactory.create();
-		context.set(Integer.class, Integer.valueOf(123));
-		context.set(String.class, "abc");
-		context.set(Float.class, Float.valueOf(12.3f));
-
-		ObjectSubClass userObject = new ObjectSubClass();
-		ContextInjectionFactory.inject(userObject, context);
-		assertEquals(1, userObject.superPostConstructCount);
-		assertEquals(1, userObject.subPostConstructCount);
-		assertEquals(0, userObject.superPreDestroyCount);
-		assertEquals(0, userObject.subPreDestroyCount);
-		assertEquals(0, userObject.overriddenPreDestroyCount);
-
-		context.set(Float.class, Float.valueOf(45.6f));
-		assertEquals(1, userObject.superPostConstructCount);
-		assertEquals(1, userObject.subPostConstructCount);
-		assertEquals(0, userObject.superPreDestroyCount);
-		assertEquals(0, userObject.subPreDestroyCount);
-		assertEquals(0, userObject.overriddenPreDestroyCount);
-
-		context.dispose();
-		assertEquals(1, userObject.superPreDestroyCount);
-		assertEquals(1, userObject.subPreDestroyCount);
-		assertEquals(1, userObject.overriddenPreDestroyCount);
 	}
 
 	@Test
@@ -361,5 +413,25 @@ public class AnnotationsInjectionTest {
 		assertEquals(1, object.preDestoryCalled);
 		assertNotNull(object.value);
 		assertNotNull(object.directFieldInjection);
+	}
+
+	@Singleton
+	public static class SingletonService {
+	}
+
+	public static class NonSingletonService {
+	}
+
+	@Test
+	public void testSingleton() {
+		IEclipseContext context = EclipseContextFactory.create();
+
+		SingletonService service1 = ContextInjectionFactory.make(SingletonService.class, context);
+		SingletonService service2 = ContextInjectionFactory.make(SingletonService.class, context);
+		assertSame(service1, service2);
+
+		NonSingletonService service3 = ContextInjectionFactory.make(NonSingletonService.class, context);
+		NonSingletonService service4 = ContextInjectionFactory.make(NonSingletonService.class, context);
+		assertNotSame(service3, service4);
 	}
 }
