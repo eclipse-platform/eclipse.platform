@@ -68,8 +68,6 @@ import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.PaintEvent;
@@ -83,6 +81,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
@@ -90,6 +89,13 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.text.undo.DocumentUndoManagerRegistry;
 import org.eclipse.text.undo.IDocumentUndoListener;
 import org.eclipse.text.undo.IDocumentUndoManager;
+import org.eclipse.ui.IPartListener2;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchPartReference;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 public class UnifiedDiffManager {
@@ -103,6 +109,7 @@ public class UnifiedDiffManager {
 	private static final String DETAILED_DELETION_ANNO_TYPE = "org.eclipse.compare.unifieddiff.internal.detailedDeletion"; //$NON-NLS-1$
 	private static final String TOOLBAR_SHELL_FOR_ONE_DIFF_KEY = "TOOLBAR_SHELL_FOR_ONE_DIFF_KEY"; //$NON-NLS-1$
 	private static final String TOOLBAR_SHELL_FOR_ALL_DIFFS_KEY = "TOOLBAR_SHELL_FOR_ALL_DIFFS_KEY"; //$NON-NLS-1$
+	private static final String PART_LISTENER_KEY = "UNIFIED_DIFF_PART_LISTENER_KEY"; //$NON-NLS-1$
 	private static final Map<ITextViewer, List<UnifiedDiff>> diffsByViewer = new HashMap<>();
 
 	public static void put(ITextViewer viewer, List<UnifiedDiff> diffs) {
@@ -287,9 +294,7 @@ public class UnifiedDiffManager {
 		drawToolBarForAllDiffs(viewer, model, additionalActions, mode);
 		addUndoListener(viewer, leftDocument, model);
 		addAnnoModelChangeListener(viewer, model);
-		// TODO (tm) focus listener to hide toolbar might be not the best idea - part
-		// listener better?
-		addFocusListener(viewer);
+		addPartListener(viewer);
 
 		if (unifiedDiffs.size() > 0) {
 			runAfterRepaintFinished(viewer.getTextWidget(), () -> {
@@ -302,57 +307,90 @@ public class UnifiedDiffManager {
 		// again.
 	}
 
-	private static void addFocusListener(ITextViewer viewer) {
-		var tw = viewer.getTextWidget();
-		Stream<UnifiedDiffFocusListener> stream = tw.getTypedListeners(SWT.FocusIn, UnifiedDiffFocusListener.class);
-		if (stream != null && stream.count() > 0) {
+	private static void addPartListener(ITextViewer viewer) {
+		StyledText tw = viewer.getTextWidget();
+		if (tw.getData(PART_LISTENER_KEY) != null) {
+			return; // already registered
+		}
+		IWorkbench workbench = PlatformUI.getWorkbench();
+		if (workbench == null) {
 			return;
 		}
-		tw.addFocusListener(new UnifiedDiffFocusListener(viewer));
+		IWorkbenchWindow activeWorkbenchWindow = workbench.getActiveWorkbenchWindow();
+		if (activeWorkbenchWindow == null) {
+			return;
+		}
+		IWorkbenchPage page = activeWorkbenchWindow.getActivePage();
+		if (page == null) {
+			return;
+		}
+		IPartListener2 partListener = new IPartListener2() {
+
+			@Override
+			public void partVisible(IWorkbenchPartReference partRef) {
+				// Part became visible again - show toolbars if our viewer is inside
+				if (isViewerInPart(partRef)) {
+					var fToolbarShellForOneDiff = getToolbarShellForOneDiff(viewer.getTextWidget());
+					if (fToolbarShellForOneDiff != null && !fToolbarShellForOneDiff.isDisposed()) {
+						fToolbarShellForOneDiff.setVisible(true);
+					}
+					var fToolbarShellForAllDiffs = getToolbarShellForAllDiffs(viewer.getTextWidget());
+					if (fToolbarShellForAllDiffs != null && !fToolbarShellForAllDiffs.isDisposed()) {
+						fToolbarShellForAllDiffs.setVisible(true);
+					}
+				}
+			}
+
+			@Override
+			public void partHidden(IWorkbenchPartReference partRef) {
+				// Part is no longer visible - hide toolbars
+				if (isViewerInPart(partRef)) {
+					var fToolbarShellForOneDiff = getToolbarShellForOneDiff(viewer.getTextWidget());
+					if (fToolbarShellForOneDiff != null && !fToolbarShellForOneDiff.isDisposed()) {
+						fToolbarShellForOneDiff.setVisible(false);
+					}
+					var fToolbarShellForAllDiffs = getToolbarShellForAllDiffs(viewer.getTextWidget());
+					if (fToolbarShellForAllDiffs != null && !fToolbarShellForAllDiffs.isDisposed()) {
+						fToolbarShellForAllDiffs.setVisible(false);
+					}
+				}
+			}
+
+			@Override
+			public void partClosed(IWorkbenchPartReference partRef) {
+				if (isViewerInPart(partRef)) {
+					page.removePartListener(this);
+				}
+			}
+
+			private boolean isViewerInPart(IWorkbenchPartReference partRef) {
+				IWorkbenchPart part = partRef.getPart(false);
+				if (part == null) {
+					return false;
+				}
+				Control partControl = part.getAdapter(Control.class);
+				if (partControl == null) {
+					return false;
+				}
+				StyledText textWidget = viewer.getTextWidget();
+				if (textWidget == null || textWidget.isDisposed()) {
+					return false;
+				}
+				// Check if the viewer's text widget is a descendant of the part's control
+				Control current = textWidget;
+				while (current != null) {
+					if (current == partControl) {
+						return true;
+					}
+					current = current.getParent();
+				}
+				return false;
+			}
+		};
+		tw.setData(PART_LISTENER_KEY, partListener);
+		page.addPartListener(partListener);
 	}
 
-	private static final class UnifiedDiffFocusListener implements FocusListener {
-
-		private final ITextViewer tv;
-
-		public UnifiedDiffFocusListener(ITextViewer tv) {
-			this.tv = tv;
-		}
-
-		@Override
-		public void focusGained(FocusEvent e) {
-			Display.getDefault().asyncExec(() -> {
-				var fToolbarShellForOneDiff = getToolbarShellForOneDiff(tv.getTextWidget());
-				if (fToolbarShellForOneDiff != null && !fToolbarShellForOneDiff.isDisposed()
-						&& !fToolbarShellForOneDiff.isVisible()) {
-					fToolbarShellForOneDiff.setVisible(true);
-				}
-				var fToolbarShellForAllDiffs = getToolbarShellForAllDiffs(tv.getTextWidget());
-				if (fToolbarShellForAllDiffs != null && !fToolbarShellForAllDiffs.isDisposed()
-						&& !fToolbarShellForAllDiffs.isVisible()) {
-					fToolbarShellForAllDiffs.setVisible(true);
-				}
-			});
-		}
-
-		@Override
-		public void focusLost(FocusEvent e) {
-			// without asynExec the toolbar button do no not react to click events - make
-			// them invisible with a small delay
-			Display.getDefault().asyncExec(() -> {
-				var fToolbarShellForOneDiff = getToolbarShellForOneDiff(tv.getTextWidget());
-				if (fToolbarShellForOneDiff != null && !fToolbarShellForOneDiff.isDisposed()
-						&& fToolbarShellForOneDiff.isVisible()) {
-					fToolbarShellForOneDiff.setVisible(false);
-				}
-				var fToolbarShellForAllDiffs = getToolbarShellForAllDiffs(tv.getTextWidget());
-				if (fToolbarShellForAllDiffs != null && !fToolbarShellForAllDiffs.isDisposed()
-						&& fToolbarShellForAllDiffs.isVisible()) {
-					fToolbarShellForAllDiffs.setVisible(false);
-				}
-			});
-		}
-	}
 
 	static Shell getToolbarShellForOneDiff(StyledText tw) {
 		if (tw == null) {
@@ -592,6 +630,11 @@ public class UnifiedDiffManager {
 			}
 		}
 		diffs1.clear();
+		// open unified diff a second time for the same viewer; the old code minings
+		// need to be removed before adding new ones
+		if (tv instanceof ISourceViewerExtension5 ext) {
+			ext.updateCodeMinings();
+		}
 	}
 
 	static void uncheckToolbarActionItems(ToolBarManager tm) {
@@ -1208,11 +1251,6 @@ public class UnifiedDiffManager {
 		if (listener != null) {
 			tw.setData(UNIFIED_DIFF_ANNOTATION_MODEL_LISTENER_KEY, null);
 			model.removeAnnotationModelListener(listener);
-		}
-
-		Stream<UnifiedDiffFocusListener> stream = tw.getTypedListeners(SWT.FocusIn, UnifiedDiffFocusListener.class);
-		if (stream != null) {
-			stream.forEach(l -> tw.removeFocusListener(l));
 		}
 
 		diffsByViewer.remove(tv);
