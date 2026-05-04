@@ -91,6 +91,36 @@ M4 = Platform-specific fourth key
            sequence="M1+M2+Insert">
      </key>
      -->
+     <key
+           commandId="org.eclipse.ui.console.command.fontZoomIn"
+           contextId="org.eclipse.ui.console.ConsoleView"
+           schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+           sequence="M1+=">
+     </key>
+     <key
+           commandId="org.eclipse.ui.console.command.fontZoomIn"
+           contextId="org.eclipse.ui.console.ConsoleView"
+           schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+           sequence="M1++">
+     </key>
+     <key
+           commandId="org.eclipse.ui.console.command.fontZoomIn"
+           contextId="org.eclipse.ui.console.ConsoleView"
+           schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+           sequence="M1+NUMPAD_ADD">
+     </key>
+     <key
+           commandId="org.eclipse.ui.console.command.fontZoomOut"
+           contextId="org.eclipse.ui.console.ConsoleView"
+           schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+           sequence="M1+-">
+     </key>
+     <key
+           commandId="org.eclipse.ui.console.command.fontZoomOut"
+           contextId="org.eclipse.ui.console.ConsoleView"
+           schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+           sequence="M1+NUMPAD_SUBTRACT">
+     </key>
     </extension>
 
     <extension
@@ -157,6 +187,29 @@ M4 = Platform-specific fourth key
             id="org.eclipse.ui.commands.toggleState">
         </state>
       </command>
+      <command
+            id="org.eclipse.ui.console.command.fontZoomIn"
+            name="%command.console.fontZoomIn.name"
+            description="%command.console.fontZoomIn.description"
+            categoryId="org.eclipse.ui.category.edit">
+      </command>
+      <command
+            id="org.eclipse.ui.console.command.fontZoomOut"
+            name="%command.console.fontZoomOut.name"
+            description="%command.console.fontZoomOut.description"
+            categoryId="org.eclipse.ui.category.edit">
+      </command>
+    </extension>
+
+    <extension point="org.eclipse.ui.handlers">
+      <handler
+            class="org.eclipse.ui.internal.console.ConsoleZoomInHandler"
+            commandId="org.eclipse.ui.console.command.fontZoomIn">
+      </handler>
+      <handler
+            class="org.eclipse.ui.internal.console.ConsoleZoomOutHandler"
+            commandId="org.eclipse.ui.console.command.fontZoomOut">
+      </handler>
     </extension>
 
     <extension point="org.eclipse.ui.preferencePages">
