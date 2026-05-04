@@ -1502,6 +1502,9 @@
                menubarPath="breakpointGroup"
                enablesFor="1"
                id="org.eclipse.debug.ui.breakpointsView.breakpointLabel">
+           <selection
+                 class="org.eclipse.debug.core.model.IBreakpoint">
+           </selection>
         </action>
         <action
                label="%DisableAllBreakpointsAction.label"
