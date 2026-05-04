@@ -28,26 +28,21 @@ import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IActionDelegate;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.handlers.IHandlerService;
-import org.eclipse.ui.internal.intro.impl.IIntroConstants;
 import org.eclipse.ui.internal.intro.impl.IntroPlugin;
 import org.eclipse.ui.internal.intro.impl.Messages;
 import org.eclipse.ui.internal.intro.impl.model.AbstractIntroElement;
 import org.eclipse.ui.internal.intro.impl.model.AbstractIntroPage;
-import org.eclipse.ui.internal.intro.impl.model.IntroLaunchBarElement;
 import org.eclipse.ui.internal.intro.impl.model.IntroModelRoot;
 import org.eclipse.ui.internal.intro.impl.model.IntroPartPresentation;
 import org.eclipse.ui.internal.intro.impl.model.IntroURLAction;
 import org.eclipse.ui.internal.intro.impl.model.loader.ExtensionPointManager;
 import org.eclipse.ui.internal.intro.impl.model.loader.ModelLoaderUtil;
 import org.eclipse.ui.internal.intro.impl.model.util.ModelUtil;
-import org.eclipse.ui.internal.intro.impl.parts.StandbyPart;
 import org.eclipse.ui.internal.intro.impl.presentations.BrowserIntroPartImplementation;
-import org.eclipse.ui.internal.intro.impl.presentations.IntroLaunchBar;
 import org.eclipse.ui.internal.intro.impl.util.DialogUtil;
 import org.eclipse.ui.internal.intro.impl.util.Log;
 import org.eclipse.ui.internal.intro.impl.util.StringUtil;
@@ -76,7 +71,15 @@ public class IntroURL implements IIntroURL {
 	/**
 	 * Constants that represent Intro URL actions.
 	 */
+	/**
+	 * @deprecated Standby mode is no longer used.
+	 */
+	@Deprecated(forRemoval = true)
 	public static final String SET_STANDBY_MODE = "setStandbyMode"; //$NON-NLS-1$
+	/**
+	 * @deprecated Standby mode is no longer used.
+	 */
+	@Deprecated(forRemoval = true)
 	public static final String SHOW_STANDBY = "showStandby"; //$NON-NLS-1$
 	public static final String CLOSE = "close"; //$NON-NLS-1$
 	public static final String SHOW_HELP_TOPIC = "showHelpTopic"; //$NON-NLS-1$
@@ -87,6 +90,10 @@ public class IntroURL implements IIntroURL {
 	public static final String SHOW_PAGE = "showPage"; //$NON-NLS-1$
 	public static final String SHOW_MESSAGE = "showMessage"; //$NON-NLS-1$
 	public static final String NAVIGATE = "navigate"; //$NON-NLS-1$
+	/**
+	 * @deprecated The launch bar is no longer used.
+	 */
+	@Deprecated(forRemoval = true)
 	public static final String SWITCH_TO_LAUNCH_BAR = "switchToLaunchBar"; //$NON-NLS-1$
 	public static final String EXECUTE = "execute"; //$NON-NLS-1$
 
@@ -114,7 +121,15 @@ public class IntroURL implements IIntroURL {
 	public static final String VALUE_TRUE = "true"; //$NON-NLS-1$
 	public static final String VALUE_FALSE = "false"; //$NON-NLS-1$
 	public static final String VALUE_CLOSE = "close"; //$NON-NLS-1$
+	/**
+	 * @deprecated Standby mode is no longer used.
+	 */
+	@Deprecated(forRemoval = true)
 	public static final String VALUE_STANDBY = "standby"; //$NON-NLS-1$
+	/**
+	 * @deprecated The launch bar is no longer used.
+	 */
+	@Deprecated(forRemoval = true)
 	public static final String VALUE_LAUNCHBAR = "launchbar"; //$NON-NLS-1$
 
 
@@ -155,12 +170,12 @@ public class IntroURL implements IIntroURL {
 		case CLOSE:
 			return closeIntro();
 		case SET_STANDBY_MODE:
-			// Sets the state of the intro part. Does not care about passing
-			// input to the part.
+			// Standby mode is deprecated - treat as simple show/close
 			return setStandbyState(getParameter(KEY_STANDBY));
 		case SHOW_STANDBY:
-			return handleStandbyState(getParameter(KEY_PART_ID),
-					getParameter(KEY_INPUT));
+			// Standby mode is deprecated - just show the intro
+			Log.warning("showStandby action is deprecated; showing intro instead"); //$NON-NLS-1$
+			return IntroPlugin.showIntro(false) != null;
 		case SHOW_HELP:
 			// display the full Help System.
 			return showHelp();
@@ -197,7 +212,9 @@ public class IntroURL implements IIntroURL {
 		case NAVIGATE:
 			return navigate(getParameter(KEY_DIRECTION));
 		case SWITCH_TO_LAUNCH_BAR:
-			return switchToLaunchBar();
+			// Launch bar is deprecated - just close the intro
+			Log.warning("switchToLaunchBar action is deprecated; closing intro instead"); //$NON-NLS-1$
+			return closeIntro();
 		default:
 			return handleCustomAction();
 		}
@@ -207,29 +224,6 @@ public class IntroURL implements IIntroURL {
 	private boolean closeIntro() {
 		// Relies on Workbench.
 		return IntroPlugin.closeIntro();
-	}
-
-	/**
-	 * Sets the into part to standby, and shows the passed standby part, with
-	 * the given input. Forces the Intro view to open, if not yet created.
-	 */
-	private boolean handleStandbyState(String partId, String input) {
-		// set intro to standby mode. we know we have a customizable part.
-		CustomizableIntroPart introPart = (CustomizableIntroPart) IntroPlugin
-			.getIntro();
-		if (introPart == null) {
-			introPart = (CustomizableIntroPart) IntroPlugin.showIntro(true);
-		}
-		// store the flag to indicate that standbypart is needed.
-		introPart.getControl().setData(IIntroConstants.SHOW_STANDBY_PART,
-			VALUE_TRUE);
-		IntroPlugin.setIntroStandby(true);
-		StandbyPart standbyPart = introPart
-			.getAdapter(StandbyPart.class);
-
-		// We may not have a valid partId or we might fail to instantiate part or
-		// create the part content. An empty part will be shown. Signal failure.
-		return standbyPart != null && standbyPart.showContentPart(partId, input);
 	}
 
 	/**
@@ -247,7 +241,9 @@ public class IntroURL implements IIntroURL {
 		if (state.equals(VALUE_CLOSE)) {
 			return IntroPlugin.closeIntro();
 		} else if (state.equals(VALUE_LAUNCHBAR)) {
-			return switchToLaunchBar();
+			// Launch bar is deprecated - just close the intro instead
+			Log.warning("launchbar standby state is deprecated; closing intro instead"); //$NON-NLS-1$
+			return IntroPlugin.closeIntro();
 		}
 		boolean standby = state.equals(VALUE_TRUE) || state.equals(VALUE_STANDBY);
 
@@ -635,26 +631,4 @@ public class IntroURL implements IIntroURL {
 		return query.toString();
 	}
 
-
-	private boolean switchToLaunchBar() {
-		IIntroPart intro = PlatformUI.getWorkbench().getIntroManager().getIntro();
-		if (intro == null) {
-			return false;
-		}
-
-		IntroModelRoot modelRoot = IntroPlugin.getDefault().getIntroModelRoot();
-
-		IntroLaunchBarElement launchBarElement = modelRoot.getPresentation().getLaunchBarElement();
-		if (launchBarElement == null) {
-			return true;
-		}
-		IWorkbenchWindow window = intro.getIntroSite().getWorkbenchWindow();
-		IntroLaunchBar.create(window, modelRoot, launchBarElement);
-
-		PlatformUI.getWorkbench().getIntroManager().setIntroStandby(intro, true);
-
-		closeIntro();
-
-		return true;
-	}
 }

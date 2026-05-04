@@ -47,17 +47,13 @@ import org.eclipse.ui.intro.config.IStandbyContentPart;
 /**
  * Standby part is responsible for managing and creating IStandbycontent parts.
  * It knows how to create and cache content parts. It also handles saving and
- * restoring its own state. It does that by caching the id of the last content
- * part viewed and recreating that part on startup. It also manages the life
- * cycle of content parts by creating and initializing them at the right
- * moments. It also passes the momento at appropriate times to these content
- * parts to enable storing and retrieving of state by content parts. Content
- * parts are responsible for recreating there own state, including input, from
- * the passed momemnto. When the Return to Introduction link is clicked, the
- * Intro goes out of standby content mode, and the standby content parts are not
- * shown anymore until the user explicitly asks for a part again. This is
- * accomplished through a data flag on the CustomizableIntroPart control.
+ * restoring its own state.
+ *
+ * @deprecated The standby part is no longer used. The welcome screen is now
+ *             treated as a regular editor without standby mode. This class will
+ *             be removed in a future release.
  */
+@Deprecated(forRemoval = true)
 public class StandbyPart implements IIntroConstants {
 
 	private FormToolkit toolkit;
