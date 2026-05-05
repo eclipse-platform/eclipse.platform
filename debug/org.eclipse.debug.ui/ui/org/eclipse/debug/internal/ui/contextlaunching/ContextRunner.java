@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2025 IBM Corporation and others.
+ * Copyright (c) 2007, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -38,6 +38,9 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 
 /**
@@ -153,7 +156,9 @@ public final class ContextRunner {
 				else if(esize < 1) {
 					if(DebugUIPlugin.getDefault().getPreferenceStore().getBoolean(IInternalDebugUIConstants.PREF_LAUNCH_LAST_IF_NOT_LAUNCHABLE)) {
 						if (!launchLast(group, isShift)) {
-							MessageDialog.openInformation(DebugUIPlugin.getShell(), ContextMessages.ContextRunner_0, ContextMessages.ContextRunner_7);
+							openNoRecentLaunchDialog(DebugUIPlugin.getShell(), ContextMessages.ContextRunner_7, mode,
+									group.getIdentifier());
+
 						}
 					} else {
 						if(resource != null) {
@@ -166,12 +171,13 @@ public final class ContextRunner {
 								if(!resource.isAccessible()) {
 									msg = MessageFormat.format(ContextMessages.ContextRunner_13, resource.getName());
 								}
-								MessageDialog.openInformation(DebugUIPlugin.getShell(), ContextMessages.ContextRunner_0, msg);
+								openNoRecentLaunchDialog(DebugUIPlugin.getShell(), msg, mode, group.getIdentifier());
 							}
 						}
 						else {
 							if (!launchLast(group, isShift)) {
-								MessageDialog.openInformation(DebugUIPlugin.getShell(), ContextMessages.ContextRunner_0, ContextMessages.ContextRunner_7);
+								openNoRecentLaunchDialog(DebugUIPlugin.getShell(), ContextMessages.ContextRunner_7,
+										mode, group.getIdentifier());
 							}
 						}
 					}
@@ -185,6 +191,64 @@ public final class ContextRunner {
 					showConfigurationSelectionDialog(configs, mode, isShift);
 				}
 			}
+		}
+	}
+
+	/**
+	 * Returns the label for the launch configuration button based on the given
+	 * launch mode.
+	 *
+	 * @param launchMode launch mode identifier (e.g., run or debug)
+	 * @return the corresponding button label for opening the launch configuration
+	 *         dialog
+	 */
+	private String launchButtonName(String launchMode) {
+		String config = launchMode.substring(0, 1).toUpperCase() + launchMode.substring(1);
+		return NLS.bind(ContextMessages.OpenLaunchConfigButton, config);
+	}
+
+	/**
+	 * Opens a dialog informing the user that no recent launch configuration is
+	 * available. The dialog provides an option to proceed with opening launch
+	 * configuration using the given mode.
+	 *
+	 * @param shell            the parent {@link Shell} for the dialog
+	 * @param message          the message to be displayed in the dialog
+	 * @param mode             the launch mode (e.g., run or debug) used to
+	 *                         determine the button label
+	 * @param launchIdentifier an identifier associated with the launch, used for
+	 *                         handling the action
+	 */
+	private void openNoRecentLaunchDialog(Shell shell, String message, String mode, String launchIdentifier) {
+		LaunchFailedDialog launchDialog = new LaunchFailedDialog(shell,
+				ContextMessages.ContextRunner_0, null, message, MessageDialog.INFORMATION,
+				new String[] { launchButtonName(mode), IDialogConstants.OK_LABEL }, launchIdentifier);
+		launchDialog.open();
+	}
+	/**
+	 * Custom dialog shown when a launch fails with no recent configurations.
+	 * Provides an option to directly open the corresponding launch configuration
+	 * group.
+	 */
+	private static class LaunchFailedDialog extends MessageDialog {
+
+		private final String launchGroup;
+
+		LaunchFailedDialog(Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage,
+				int dialogImageType, String[] dialogButtonLabels, String launchGroup) {
+			super(parentShell, dialogTitle, dialogTitleImage, dialogMessage, dialogImageType, dialogButtonLabels, 1);
+			this.launchGroup = launchGroup;
+		}
+
+		@Override
+		protected void buttonPressed(int buttonId) {
+			if (buttonId == 0) {
+				DebugUITools.openLaunchConfigurationDialogOnGroup(getShell(), null, launchGroup);
+				setReturnCode(buttonId);
+				close();
+				return;
+			}
+			super.buttonPressed(buttonId);
 		}
 	}
 
