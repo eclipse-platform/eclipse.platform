@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2017 IBM Corporation and others.
+ * Copyright (c) 2010, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -14,10 +14,6 @@
  *******************************************************************************/
 package org.eclipse.e4.core.di;
 
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.PreDestroy;
-import jakarta.inject.Scope;
-import jakarta.inject.Singleton;
 import java.lang.annotation.Annotation;
 import org.eclipse.e4.core.di.suppliers.PrimaryObjectSupplier;
 
@@ -37,7 +33,8 @@ import org.eclipse.e4.core.di.suppliers.PrimaryObjectSupplier;
  * The injection of values is generally done as a number of calls. User objects
  * that want to finalize the injected data (for instance, to perform
  * calculations based on multiple injected values) can place such calculations
- * in a method with the {@link PostConstruct} annotation.
+ * in a method with the {@link jakarta.annotation.PostConstruct PostConstruct}
+ * annotation.
  * </p>
  * <p>
  * When injecting values, all fields are injected prior to injection of methods.
@@ -51,7 +48,8 @@ import org.eclipse.e4.core.di.suppliers.PrimaryObjectSupplier;
  * </p>
  * <p>
  * When supplier is disposed, the injector will attempt to notify all injected
- * objects by calling methods with the {@link PreDestroy} annotation.
+ * objects by calling methods with the {@link jakarta.annotation.PreDestroy
+ * PreDestroy} annotation.
  *
  * @noimplement This interface is not intended to be implemented by clients.
  * @noextend This interface is not intended to be extended by clients.
@@ -156,8 +154,8 @@ public interface IInjector {
 	 * @param objectSupplier primary object supplier for the injection
 	 * @return an instance of the specified class
 	 * @throws InjectionException if an exception occurred while performing this operation
-	 * @see Scope
-	 * @see Singleton
+	 * @see jakarta.inject.Scope
+	 * @see jakarta.inject.Singleton
 	 */
 	<T> T make(Class<T> clazz, PrimaryObjectSupplier objectSupplier) throws InjectionException;
 
@@ -174,8 +172,8 @@ public interface IInjector {
 	 * @param staticSupplier additional object supplier for the injection, changes in injected values are not tracked
 	 * @return an instance of the specified class
 	 * @throws InjectionException if an exception occurred while performing this operation
-	 * @see Scope
-	 * @see Singleton
+	 * @see jakarta.inject.Scope
+	 * @see jakarta.inject.Singleton
 	 */
 	<T> T make(Class<T> clazz, PrimaryObjectSupplier objectSupplier, PrimaryObjectSupplier staticSupplier) throws InjectionException;
 
