@@ -69,6 +69,13 @@ public class ProcessConsoleManager implements ILaunchListener {
 			if (monitor.isCanceled() || getConsoleDocument(process) != null) {
 				return Status.CANCEL_STATUS;
 			}
+			// If a launch is removed the associated console is removed too. It can happen
+			// that the launch is removed even before the console could be created.
+			// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=546710#c13
+			ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
+			if (!launchManager.isRegistered(launch)) {
+				return Status.CANCEL_STATUS;
+			}
 			IConsoleColorProvider colorProvider = getColorProvider(process.getAttribute(IProcess.ATTR_PROCESS_TYPE));
 			String encoding = launch.getAttribute(DebugPlugin.ATTR_CONSOLE_ENCODING);
 			ProcessConsole pc = new ProcessConsole(process, colorProvider, encoding);
@@ -77,10 +84,8 @@ public class ProcessConsoleManager implements ILaunchListener {
 			// add new console to console manager.
 			ConsolePlugin.getDefault().getConsoleManager().addConsoles(new IConsole[] { pc });
 
-			// If a launch is removed the associated console is removed too. It can happen
-			// that the launch is removed even before the console could be created.
-			// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=546710#c13
-			ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
+			// Check again: the launch may have been removed while the console was being
+			// created (race between console creation and launch removal).
 			if (!launchManager.isRegistered(launch)) {
 				removeLaunch(launch);
 			}
@@ -139,6 +144,13 @@ public class ProcessConsoleManager implements ILaunchListener {
 
 	protected void removeLaunch(ILaunch launch) {
 		for (IProcess process : launch.getProcesses()) {
+			// Cancel any pending ConsoleCreation jobs for this process to prevent
+			// creating a console for an already-removed launch.
+			for (Job job : Job.getJobManager().find(process)) {
+				if (job instanceof ConsoleCreation) {
+					job.cancel();
+				}
+			}
 			removeProcess(process);
 		}
 		if (fProcesses != null) {
