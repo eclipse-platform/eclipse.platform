@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 
 import org.eclipse.ui.internal.console.ConsoleOutputLineWrap;
+import org.junit.jupiter.api.Named;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -42,92 +43,92 @@ public class ConsoleOutputLineWrapTest {
 	 * @param output expected output, repeated {@code repeat} times
 	 * @param nl the newline character sequences
 	 */
-	record Parameters(int limit, int chunks, int repeat, String input, String output, String... nl) {
+	record Parameters(String name, int limit, int chunks, int repeat, String input, String output, String... nl) {
 	}
 
-	private static Parameters test(int limit, String input, String output, String... nl) {
-		return test(limit, 1, 1, input, output, nl);
+	private static Parameters test(String name, int limit, String input, String output, String... nl) {
+		return test(name, limit, 1, 1, input, output, nl);
 	}
 
-	private static Parameters test(int limit, int chunks, String input, String output, String... nl) {
-		return test(limit, chunks, chunks, input, output, nl);
+	private static Parameters test(String name, int limit, int chunks, String input, String output, String... nl) {
+		return test(name, limit, chunks, chunks, input, output, nl);
 	}
 
-	private static Parameters test(int limit, int chunks, int repeat, String input, String output, String... nl) {
-		return new Parameters(limit, chunks, repeat, input, output, nl);
+	private static Parameters test(String name, int limit, int chunks, int repeat, String input, String output, String... nl) {
+		return new Parameters(name, limit, chunks, repeat, input, output, nl);
 	}
 
 	private static final Parameters[] TESTS = {
 			// Unix newlines
-			test(4, "\n========", "\n====\n====", "\n"),
+			test("unix_nl_01", 4, "\n========", "\n====\n====", "\n"),
 
-			test(10,        "========"      , "========"  , "\n"),
-			test(10, 10, 8, "========"      , "==========", "\n"),
-			test( 4,        "========"      , "====\n====", "\n"),
-			test( 4, 10,    "========"      , "====\n====", "\n"),
-			test( 4,        "====\n===="    , "====\n====", "\n"),
-			test( 4, 10,    "====\n===="    , "====\n====", "\n"),
+			test("unix_nl_02", 10,        "========"      , "========"  , "\n"),
+			test("unix_nl_03", 10, 10, 8, "========"      , "==========", "\n"),
+			test("unix_nl_04",  4,        "========"      , "====\n====", "\n"),
+			test("unix_nl_05",  4, 10,    "========"      , "====\n====", "\n"),
+			test("unix_nl_06",  4,        "====\n===="    , "====\n====", "\n"),
+			test("unix_nl_07",  4, 10,    "====\n===="    , "====\n====", "\n"),
 
-			test( 2, 10,    "=======\n=="   , "==\n==\n==\n=\n==", "\n"),
-			test( 2,        "====\n===="    , "==\n==\n==\n=="   , "\n"),
-			test( 2, 10,    "====\n===="    , "==\n==\n==\n=="   , "\n"),
-			test( 2,        "========="     , "==\n==\n==\n==\n=", "\n"),
-			test( 2,        "=======\n=="   , "==\n==\n==\n=\n==", "\n"),
-			test( 3,        "========="     , "===\n===\n==="    , "\n"),
-			test( 3, 10,    "========="     , "===\n===\n==="    , "\n"),
-			test( 3,        "========\n="   , "===\n===\n==\n="  , "\n"),
+			test("unix_nl_08",  2, 10,    "=======\n=="   , "==\n==\n==\n=\n==", "\n"),
+			test("unix_nl_09",  2,        "====\n===="    , "==\n==\n==\n=="   , "\n"),
+			test("unix_nl_10",  2, 10,    "====\n===="    , "==\n==\n==\n=="   , "\n"),
+			test("unix_nl_11",  2,        "========="     , "==\n==\n==\n==\n=", "\n"),
+			test("unix_nl_12",  2,        "=======\n=="   , "==\n==\n==\n=\n==", "\n"),
+			test("unix_nl_13",  3,        "========="     , "===\n===\n==="    , "\n"),
+			test("unix_nl_14",  3, 10,    "========="     , "===\n===\n==="    , "\n"),
+			test("unix_nl_15",  3,        "========\n="   , "===\n===\n==\n="  , "\n"),
 
-			test( 2,        "======\n======", "==\n==\n==\n==\n==\n==", "\n"),
-			test( 2, 10,    "======\n======", "==\n==\n==\n==\n==\n==", "\n"),
+			test("unix_nl_16",  2,        "======\n======", "==\n==\n==\n==\n==\n==", "\n"),
+			test("unix_nl_17",  2, 10,    "======\n======", "==\n==\n==\n==\n==\n==", "\n"),
 
-			test( 3,  3, 1, "========\n="   , "===\n===\n==\n===\n===\n===\n===\n===\n===\n=", "\n"),
-			test( 4,  3, 1, "========\n="   , "====\n====\n====\n====\n=\n====\n====\n=\n="  , "\n"),
+			test("unix_nl_18",  3,  3, 1, "========\n="   , "===\n===\n==\n===\n===\n===\n===\n===\n===\n=", "\n"),
+			test("unix_nl_19",  4,  3, 1, "========\n="   , "====\n====\n====\n====\n=\n====\n====\n=\n="  , "\n"),
 
 			// Windows newlines
-			test(4, "\r\n========", "\r\n====\r\n====", "\r\n"),
+			test("win_nl_01", 4, "\r\n========", "\r\n====\r\n====", "\r\n"),
 
-			test(10,        "========"        , "========"    , "\r\n"),
-			test(10, 10, 8, "========"        , "=========="  , "\r\n"),
-			test( 4,        "========"        , "====\r\n====", "\r\n"),
-			test( 4, 10,    "========"        , "====\r\n====", "\r\n"),
-			test( 4,        "====\r\n===="    , "====\r\n====", "\r\n"),
-			test( 4, 10,    "====\r\n===="    , "====\r\n====", "\r\n"),
+			test("win_nl_02", 10,        "========"        , "========"    , "\r\n"),
+			test("win_nl_03", 10, 10, 8, "========"        , "=========="  , "\r\n"),
+			test("win_nl_04",  4,        "========"        , "====\r\n====", "\r\n"),
+			test("win_nl_05",  4, 10,    "========"        , "====\r\n====", "\r\n"),
+			test("win_nl_06",  4,        "====\r\n===="    , "====\r\n====", "\r\n"),
+			test("win_nl_07",  4, 10,    "====\r\n===="    , "====\r\n====", "\r\n"),
 
-			test( 2, 10,    "=======\r\n=="   , "==\r\n==\r\n==\r\n=\r\n==", "\r\n"),
-			test( 2,        "====\r\n===="    , "==\r\n==\r\n==\r\n=="     , "\r\n"),
-			test( 2, 10,    "====\r\n===="    , "==\r\n==\r\n==\r\n=="     , "\r\n"),
-			test( 2,        "========="       , "==\r\n==\r\n==\r\n==\r\n=", "\r\n"),
-			test( 2,        "=======\r\n=="   , "==\r\n==\r\n==\r\n=\r\n==", "\r\n"),
-			test( 3,        "========="       , "===\r\n===\r\n==="        , "\r\n"),
-			test( 3, 10,    "========="       , "===\r\n===\r\n==="        , "\r\n"),
-			test( 3,        "========\r\n="   , "===\r\n===\r\n==\r\n="    , "\r\n"),
+			test("win_nl_08",  2, 10,    "=======\r\n=="   , "==\r\n==\r\n==\r\n=\r\n==", "\r\n"),
+			test("win_nl_09",  2,        "====\r\n===="    , "==\r\n==\r\n==\r\n=="     , "\r\n"),
+			test("win_nl_10",  2, 10,    "====\r\n===="    , "==\r\n==\r\n==\r\n=="     , "\r\n"),
+			test("win_nl_11",  2,        "========="       , "==\r\n==\r\n==\r\n==\r\n=", "\r\n"),
+			test("win_nl_12",  2,        "=======\r\n=="   , "==\r\n==\r\n==\r\n=\r\n==", "\r\n"),
+			test("win_nl_13",  3,        "========="       , "===\r\n===\r\n==="        , "\r\n"),
+			test("win_nl_14",  3, 10,    "========="       , "===\r\n===\r\n==="        , "\r\n"),
+			test("win_nl_15",  3,        "========\r\n="   , "===\r\n===\r\n==\r\n="    , "\r\n"),
 
-			test( 2,        "======\r\n======", "==\r\n==\r\n==\r\n==\r\n==\r\n==", "\r\n"),
-			test( 2, 10,    "======\r\n======", "==\r\n==\r\n==\r\n==\r\n==\r\n==", "\r\n"),
+			test("win_nl_16",  2,        "======\r\n======", "==\r\n==\r\n==\r\n==\r\n==\r\n==", "\r\n"),
+			test("win_nl_17",  2, 10,    "======\r\n======", "==\r\n==\r\n==\r\n==\r\n==\r\n==", "\r\n"),
 
-			test( 3,  3, 1, "========\r\n="   , "===\r\n===\r\n==\r\n===\r\n===\r\n===\r\n===\r\n===\r\n===\r\n=", "\r\n"),
-			test( 4,  3, 1, "========\r\n="   , "====\r\n====\r\n====\r\n====\r\n=\r\n====\r\n====\r\n=\r\n="    , "\r\n"),
+			test("win_nl_18",  3,  3, 1, "========\r\n="   , "===\r\n===\r\n==\r\n===\r\n===\r\n===\r\n===\r\n===\r\n===\r\n=", "\r\n"),
+			test("win_nl_19",  4,  3, 1, "========\r\n="   , "====\r\n====\r\n====\r\n====\r\n=\r\n====\r\n====\r\n=\r\n="    , "\r\n"),
 
 			// multiple newlines
-			test( 3,  3, 1, "========\r\n="   , "===\r\n===\r\n==\r\n===\r\n===\r\n===\r\n===\r\n===\r\n===\r\n=", "\r\n", "\r", "\n"),
-			test( 4,  3, 1, "========\r\n="   , "====\r\n====\r\n====\r\n====\r\n=\r\n====\r\n====\r\n=\r\n="    , "\r\n", "\r", "\n"),
+			test("multi_nl_1", 3,  3, 1, "========\r\n="   , "===\r\n===\r\n==\r\n===\r\n===\r\n===\r\n===\r\n===\r\n===\r\n=", "\r\n", "\r", "\n"),
+			test("multi_nl_2",  4,  3, 1, "========\r\n="   , "====\r\n====\r\n====\r\n====\r\n=\r\n====\r\n====\r\n=\r\n="    , "\r\n", "\r", "\n"),
 
-			test( 3,  3, 1, "========\r\n="   , "===\r===\r==\r\n===\r===\r===\r\n===\r===\r===\r\n=", "\r", "\n", "\r\n"),
-			test( 4,  3, 1, "========\r\n="   , "====\r====\r\n====\r====\r=\r\n====\r====\r=\r\n="  , "\r", "\n", "\r\n"),
+			test("multi_nl_3",  3,  3, 1, "========\r\n="   , "===\r===\r==\r\n===\r===\r===\r\n===\r===\r===\r\n=", "\r", "\n", "\r\n"),
+			test("multi_nl_4",  4,  3, 1, "========\r\n="   , "====\r====\r\n====\r====\r=\r\n====\r====\r=\r\n="  , "\r", "\n", "\r\n"),
 
 			// surrogate pairs (emoji 😀 = \uD83D\uDE00, 2 chars) -- wrap must not split a surrogate pair
 			// single wrap: limit=3, "ab😀c" (5 chars) -> wrap before emoji
-			test( 3, "ab\uD83D\uDE00c"      , "ab\n\uD83D\uDE00c"           , "\n"),
+			test("surrogate_pairs_1", 3, "ab\uD83D\uDE00c"      , "ab\n\uD83D\uDE00c"           , "\n"),
 			// single wrap: limit=4, "abc😀d" (6 chars) -> wrap before emoji
-			test( 4, "abc\uD83D\uDE00d"     , "abc\n\uD83D\uDE00d"          , "\n"),
+			test("surrogate_pairs_2", 4, "abc\uD83D\uDE00d"     , "abc\n\uD83D\uDE00d"          , "\n"),
 			// second wrap also falls on a low surrogate: limit=3, "ab😀😀b" (7 chars) -> both wraps before emoji
-			test( 3, "ab\uD83D\uDE00\uD83D\uDE00b", "ab\n\uD83D\uDE00\n\uD83D\uDE00b", "\n"),
+			test("surrogate_pairs_3", 3, "ab\uD83D\uDE00\uD83D\uDE00b", "ab\n\uD83D\uDE00\n\uD83D\uDE00b", "\n"),
 			// wrap between two ASCII chars, then second wrap on low surrogate: limit=3, "abc😀😀" (7 chars)
-			test( 3, "abc\uD83D\uDE00\uD83D\uDE00", "abc\n\uD83D\uDE00\n\uD83D\uDE00", "\n"),
+			test("surrogate_pairs_4", 3, "abc\uD83D\uDE00\uD83D\uDE00", "abc\n\uD83D\uDE00\n\uD83D\uDE00", "\n"),
 	};
 
 	private static Stream<Arguments> tests() {
-		return Arrays.stream(TESTS).map(Arguments::of);
+		return Arrays.stream(TESTS).map(ConsoleOutputLineWrapTest::named);
 	}
 
 	@ParameterizedTest
@@ -146,5 +147,9 @@ public class ConsoleOutputLineWrapTest {
 
 	private static String repeat(String s, int r, String nl) {
 		return (nl + s).repeat(r).substring(nl.length());
+	}
+
+	private static Arguments named(Parameters p) {
+		return Arguments.of(Named.of(p.name, p));
 	}
 }

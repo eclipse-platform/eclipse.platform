@@ -751,13 +751,13 @@ public class IOConsoleTests {
 		final IOConsoleTestUtil c = getTestUtil("Test trim newline");
 		try (IOConsoleOutputStream out = c.getDefaultOutputStream()) {
 			c.writeFast("first\n");
-			c.writeFast("1😀2😀3\n", out);
+			c.writeFast("1\uD83D\uDE002\uD83D\uDE003\n", out);
 			c.write("last\n");
 			c.verifyContentByLine("first", 0).verifyContentByLine("last", -2);
 			assertTrue(c.getDocument().getNumberOfLines() > 2, "Document not filled.");
 			c.getConsole().setWaterMarks(8, 16);
 			c.waitForScheduledJobs();
-			c.verifyContentByOffset("😀3\nlas", 0);
+			c.verifyContentByOffset("\uD83D\uDE003\nlas", 0);
 			closeConsole(c);
 		}
 	}
@@ -810,12 +810,12 @@ public class IOConsoleTests {
 		try (IOConsoleOutputStream out = c.getDefaultOutputStream()) {
 			c.getConsole().setLimitLineLength(false, 8);
 			c.writeFast("first\n");
-			c.writeFast("01234😀😀😀\n", out);
+			c.writeFast("01234\uD83D\uDE00\uD83D\uDE00\uD83D\uDE00\n", out);
 			c.write("last\n");
 			c.verifyContentByLine("first", 0).verifyContentByLine("last", -2);
 			assertTrue(c.getDocument().getNumberOfLines() > 2, "Document not filled.");
 			c.waitForScheduledJobs();
-			c.verifyContent("first\n01234😀 ...\nlast\n");
+			c.verifyContent("first\n01234\uD83D\uDE00 ...\nlast\n");
 			closeConsole(c);
 		}
 	}
@@ -870,12 +870,12 @@ public class IOConsoleTests {
 			String nl = c.getConsole().getDocument().getLegalLineDelimiters()[0];
 			c.getConsole().setLimitLineLength(true, 8);
 			c.writeFast("first\n");
-			c.writeFast("0123456😀😀\n", out);
+			c.writeFast("0123456\uD83D\uDE00\uD83D\uDE00\n", out);
 			c.write("last\n");
 			c.verifyContentByLine("first", 0).verifyContentByLine("last", -2);
 			assertTrue(c.getDocument().getNumberOfLines() > 2, "Document not filled.");
 			c.waitForScheduledJobs();
-			c.verifyContent("first\n0123456" + nl + "😀😀\nlast\n");
+			c.verifyContent("first\n0123456" + nl + "\uD83D\uDE00\uD83D\uDE00\nlast\n");
 			closeConsole(c);
 		}
 	}
