@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2025 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -1416,13 +1416,14 @@ public class DebugUIPlugin extends AbstractUIPlugin implements ILaunchListener, 
 	 */
 	public static boolean doLaunchConfigurationFiltering(ILaunchConfiguration config) {
 		boolean ret = true;
-		if(DebugUIPlugin.getDefault().getPreferenceStore().getBoolean(IInternalDebugUIConstants.PREF_FILTER_LAUNCH_CLOSED)) {
+		IPreferenceStore store = getDefault().getPreferenceStore();
+		if (store.getBoolean(IInternalDebugUIConstants.PREF_FILTER_LAUNCH_CLOSED)) {
 			ret &= new ClosedProjectFilter().select(null, null, config);
 		}
-		if(DebugUIPlugin.getDefault().getPreferenceStore().getBoolean(IInternalDebugUIConstants.PREF_FILTER_LAUNCH_DELETED)) {
+		if (store.getBoolean(IInternalDebugUIConstants.PREF_FILTER_LAUNCH_DELETED)) {
 			ret &= new DeletedProjectFilter().select(null, null, config);
 		}
-		if(DebugUIPlugin.getDefault().getPreferenceStore().getBoolean(IInternalDebugUIConstants.PREF_FILTER_LAUNCH_TYPES)) {
+		if (store.getBoolean(IInternalDebugUIConstants.PREF_FILTER_LAUNCH_TYPES)) {
 			try {
 				ret &= new LaunchConfigurationTypeFilter().select(null, null, config.getType());
 			}
