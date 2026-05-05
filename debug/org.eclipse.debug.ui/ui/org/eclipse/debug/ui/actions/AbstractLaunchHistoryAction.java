@@ -23,6 +23,7 @@ import java.util.concurrent.CompletableFuture;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -347,8 +348,12 @@ public abstract class AbstractLaunchHistoryAction implements IActionDelegate2, I
 
 		// Add favorites
 		int accelerator = 1;
+		ILaunch[] launches = DebugPlugin.getDefault().getLaunchManager().getLaunches();
 		for (ILaunchConfiguration launch : favoriteList) {
 			LaunchAction action= new LaunchAction(launch, getMode());
+			if (checkIfLaunchActive(launch, launches)) {
+				action.setText(action.getText() + "  \u2699"); //$NON-NLS-1$
+			}
 			addToMenu(menu, action, accelerator);
 			accelerator++;
 		}
@@ -361,6 +366,9 @@ public abstract class AbstractLaunchHistoryAction implements IActionDelegate2, I
 		// Add history launches next
 		for (ILaunchConfiguration launch : historyList) {
 			LaunchAction action= new LaunchAction(launch, getMode());
+			if (checkIfLaunchActive(launch, launches)) {
+				action.setText(action.getText() + "  \u2699"); //$NON-NLS-1$
+			}
 			addToMenu(menu, action, accelerator);
 			accelerator++;
 		}
@@ -371,6 +379,24 @@ public abstract class AbstractLaunchHistoryAction implements IActionDelegate2, I
 			ActionContributionItem item= new ActionContributionItem(action);
 			item.fill(menu, -1);
 		}
+	}
+
+	/**
+	 * Returns whether the given launch configuration has been launched and active
+	 * now.
+	 *
+	 * @param launchConfiguration the launch configuration
+	 * @param launches            the current active launches
+	 * @return {@code true} if a matching launch exists, {@code false} otherwise
+	 */
+	private boolean checkIfLaunchActive(ILaunchConfiguration launchConfiguration, ILaunch[] launches) {
+		for (ILaunch launch : launches) {
+			ILaunchConfiguration activeLaunch = launch.getLaunchConfiguration();
+			if (activeLaunch != null && activeLaunch.equals(launchConfiguration) && !launch.isTerminated()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
