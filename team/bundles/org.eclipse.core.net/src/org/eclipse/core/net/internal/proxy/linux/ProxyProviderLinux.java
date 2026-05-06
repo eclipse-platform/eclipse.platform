@@ -55,7 +55,6 @@ public class ProxyProviderLinux extends AbstractProxyProvider {
 	private static boolean isGnomeLibLoaded = false;
 
 	static {
-		// Load the GSettings JNI library if org.eclipse.core.net.enableGnome is specified
 		String value = System.getProperty(ENABLE_GNOME);
 		if ("".equals(value) || "true".equals(value)) { //$NON-NLS-1$ //$NON-NLS-2$
 			initializeSettings();
