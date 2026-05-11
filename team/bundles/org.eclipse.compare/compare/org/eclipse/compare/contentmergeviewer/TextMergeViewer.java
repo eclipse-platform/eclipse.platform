@@ -25,6 +25,11 @@
  *******************************************************************************/
 package org.eclipse.compare.contentmergeviewer;
 
+import static org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants.EDITOR_SELECTION_BACKGROUND_COLOR;
+import static org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants.EDITOR_SELECTION_BACKGROUND_DEFAULT_COLOR;
+import static org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants.EDITOR_SELECTION_FOREGROUND_COLOR;
+import static org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants.EDITOR_SELECTION_FOREGROUND_DEFAULT_COLOR;
+
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
@@ -1870,6 +1875,24 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			fRight.setForegroundColor(fgColor);
 		}
 
+		Color selectionBackgroundColor = getSelectionBackgroundColor();
+		Color selectionForegroundColor = getSelectionForegroundColor();
+		StyledText ancestorSourceViewerWidget = getAncestorSourceViewerWidget();
+		if (ancestorSourceViewerWidget != null) {
+			ancestorSourceViewerWidget.setSelectionBackground(selectionBackgroundColor);
+			ancestorSourceViewerWidget.setSelectionForeground(selectionForegroundColor);
+		}
+		StyledText leftSourceViewerWidget = getLeftSourceViewerWidget();
+		if (leftSourceViewerWidget != null) {
+			leftSourceViewerWidget.setSelectionBackground(selectionBackgroundColor);
+			leftSourceViewerWidget.setSelectionForeground(selectionForegroundColor);
+		}
+		StyledText rightSourceViewerWidget = getRightSourceViewerWidget();
+		if (rightSourceViewerWidget != null) {
+			rightSourceViewerWidget.setSelectionBackground(selectionBackgroundColor);
+			rightSourceViewerWidget.setSelectionForeground(selectionForegroundColor);
+		}
+
 		ColorRegistry registry= JFaceResources.getColorRegistry();
 
 		RGB bg= getBackground(display);
@@ -1888,6 +1911,51 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 
 		updatePresentation();
+	}
+
+	private StyledText getAncestorSourceViewerWidget() {
+		if (fAncestor == null) {
+			return null;
+		}
+		SourceViewer sourceViewer = fAncestor.getSourceViewer();
+		if (sourceViewer == null) {
+			return null;
+		}
+		return sourceViewer.getTextWidget();
+	}
+
+	private StyledText getLeftSourceViewerWidget() {
+		if (fLeft == null) {
+			return null;
+		}
+		SourceViewer sourceViewer = fLeft.getSourceViewer();
+		if (sourceViewer == null) {
+			return null;
+		}
+		return sourceViewer.getTextWidget();
+	}
+
+	private StyledText getRightSourceViewerWidget() {
+		if (fRight == null) {
+			return null;
+		}
+		SourceViewer sourceViewer = fRight.getSourceViewer();
+		if (sourceViewer == null) {
+			return null;
+		}
+		return sourceViewer.getTextWidget();
+	}
+
+	private Color getSelectionBackgroundColor() {
+		RGB rgb = fPreferenceStore.getBoolean(EDITOR_SELECTION_BACKGROUND_DEFAULT_COLOR) ? null
+				: PreferenceConverter.getColor(fPreferenceStore, EDITOR_SELECTION_BACKGROUND_COLOR);
+		return getColor(rgb);
+	}
+
+	private Color getSelectionForegroundColor() {
+		RGB rgb = fPreferenceStore.getBoolean(EDITOR_SELECTION_FOREGROUND_DEFAULT_COLOR) ? null
+				: PreferenceConverter.getColor(fPreferenceStore, EDITOR_SELECTION_FOREGROUND_COLOR);
+		return getColor(rgb);
 	}
 
 	private void updatePresentation() {
@@ -4225,6 +4293,12 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		} else if (key.equals(ComparePreferencePage.SYNCHRONIZE_SCROLLING)) {
 			boolean b= fPreferenceStore.getBoolean(ComparePreferencePage.SYNCHRONIZE_SCROLLING);
 			setSyncScrolling(b);
+
+		} else if (key.equals(EDITOR_SELECTION_BACKGROUND_DEFAULT_COLOR)
+				|| key.equals(EDITOR_SELECTION_BACKGROUND_COLOR)
+				|| key.equals(EDITOR_SELECTION_FOREGROUND_DEFAULT_COLOR)
+				|| key.equals(EDITOR_SELECTION_FOREGROUND_COLOR)) {
+			updateColors(null);
 
 		} else if (key.equals(AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND)) {
 			if (!fIsUsingSystemBackground) {
