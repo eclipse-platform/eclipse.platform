@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -23,8 +23,10 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IBreakpointsListener;
 import org.eclipse.debug.core.model.IBreakpoint;
+import org.eclipse.debug.internal.ui.DebugPluginImages;
 import org.eclipse.debug.ui.AbstractBreakpointOrganizerDelegate;
 import org.eclipse.debug.ui.BreakpointTypeCategory;
+import org.eclipse.debug.ui.IDebugUIConstants;
 
 /**
  * Breakpoint organizers for breakpoint types based on breakpoint enablement
@@ -33,7 +35,8 @@ import org.eclipse.debug.ui.BreakpointTypeCategory;
 public class BreakpointEnablement extends AbstractBreakpointOrganizerDelegate implements IBreakpointsListener {
 
 	private final BreakpointTypeCategory ENABLED = new BreakpointTypeCategory("Enabled", 0); //$NON-NLS-1$
-	private final BreakpointTypeCategory DISABLED = new BreakpointTypeCategory("Disabled", 1); //$NON-NLS-1$
+	private final BreakpointTypeCategory DISABLED = new BreakpointTypeCategory("Disabled", 1, //$NON-NLS-1$
+			DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_OBJS_BREAKPOINT_GROUP_DISABLED));
 
 	private final Map<IBreakpoint, Boolean> breakpointCache;
 
