@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2013 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -68,6 +68,22 @@ public class BreakpointTypeCategory extends PlatformObject implements IBreakpoin
 		fName = name;
 		fSortable = true;
 		fSortPriority = sortPriority;
+	}
+
+	/**
+	 * Constructs a type category for the given type name with the given sort
+	 * priority and image.
+	 *
+	 * @param name         breakpoint type name
+	 * @param sortPriority used to calculate the sort order of this category
+	 * @param descriptor   image descriptor
+	 * @since 3.22
+	 */
+	public BreakpointTypeCategory(String name, int sortPriority, ImageDescriptor descriptor) {
+		this(name, sortPriority);
+		if (descriptor != null) {
+			fImageDescriptor = descriptor;
+		}
 	}
 
 	/**
