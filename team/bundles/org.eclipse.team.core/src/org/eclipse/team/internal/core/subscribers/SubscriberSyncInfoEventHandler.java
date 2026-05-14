@@ -20,7 +20,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.ProgressMonitorWrapper;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.team.core.ITeamStatus;
 import org.eclipse.team.core.TeamException;
 import org.eclipse.team.core.TeamStatus;
@@ -110,11 +111,11 @@ public class SubscriberSyncInfoEventHandler extends SubscriberEventHandler {
 			int depth,
 			IProgressMonitor monitor) {
 
-		monitor.beginTask(null, IProgressMonitor.UNKNOWN);
+		SubMonitor subMonitor = SubMonitor.convert(monitor);
 		try {
 
 			// Create a monitor that will handle preemption and dispatch if required
-			IProgressMonitor collectionMonitor = new SubProgressMonitor(monitor, IProgressMonitor.UNKNOWN) {
+			IProgressMonitor collectionMonitor = new ProgressMonitorWrapper(subMonitor) {
 				boolean dispatching = false;
 				@Override
 				public void subTask(String name) {

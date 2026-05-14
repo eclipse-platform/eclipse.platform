@@ -21,6 +21,7 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
@@ -368,12 +369,7 @@ public abstract class BackgroundEventHandler {
 	protected IStatus processEvents(IProgressMonitor monitor) {
 		errors.clear();
 		try {
-			// It's hard to know how much work is going to happen
-			// since the queue can grow. Use the current queue size as a hint to
-			// an infinite progress monitor
-			monitor.beginTask(null, IProgressMonitor.UNKNOWN);
-			IProgressMonitor subMonitor = Policy.infiniteSubMonitorFor(monitor, 90);
-			subMonitor.beginTask(null, 1024);
+			SubMonitor subMonitor = SubMonitor.convert(monitor, 1024);
 
 			Event event;
 			timeOfLastDispatch = System.currentTimeMillis();

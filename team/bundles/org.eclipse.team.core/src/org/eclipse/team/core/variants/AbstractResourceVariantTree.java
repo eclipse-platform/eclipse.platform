@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.TeamException;
 import org.eclipse.team.internal.core.Messages;
@@ -91,24 +92,18 @@ public abstract class AbstractResourceVariantTree implements IResourceVariantTre
 	 */
 	protected IResource[] refresh(IResource resource, int depth, IProgressMonitor monitor) throws TeamException {
 		IResource[] changedResources = null;
-		monitor.beginTask(null, 100);
+		SubMonitor mon = SubMonitor.convert(monitor, 100);
 		try {
-			monitor.setTaskName(NLS.bind(Messages.SynchronizationCacheRefreshOperation_0,
+			mon.setTaskName(NLS.bind(Messages.SynchronizationCacheRefreshOperation_0,
 					resource.getFullPath().makeRelative().toString()));
 
 			// build the remote tree only if an initial tree hasn't been provided
-			IResourceVariant tree = fetchVariant(resource, depth, Policy.subMonitorFor(monitor, 70));
+			IResourceVariant tree = fetchVariant(resource, depth, mon.split(70));
 
 			// update the known remote handles
-			IProgressMonitor sub = Policy.infiniteSubMonitorFor(monitor, 30);
-			try {
-				sub.beginTask(null, 64);
-				changedResources = collectChanges(resource, tree, depth, Policy.subMonitorFor(sub, 64));
-			} finally {
-				sub.done();
-			}
+			changedResources = collectChanges(resource, tree, depth, mon.split(30));
 		} finally {
-			monitor.done();
+			mon.done();
 		}
 		if (changedResources == null) {
 			return new IResource[0];
