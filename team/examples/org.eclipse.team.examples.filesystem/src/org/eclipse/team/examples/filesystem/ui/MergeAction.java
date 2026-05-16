@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2009 IBM Corporation and others.
+ * Copyright (c) 2006, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -19,8 +19,8 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.team.ui.synchronize.ModelMergeOperation;
 
 /**
- * This merge action is contributed as a a popupmenu objectContribution in
- * the plugin.xml. You can change the value return from {@link #isUseSyncFramework()}
+ * This merge action is contributed as a a popupmenu objectContribution in the
+ * plugin.xml. You can change the value return from {@code isUseSyncFramework()}
  * to try out different dialogs.
  *
  * @since 3.2
