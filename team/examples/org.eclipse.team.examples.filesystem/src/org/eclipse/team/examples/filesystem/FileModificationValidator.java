@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -58,7 +58,6 @@ public final class FileModificationValidator extends org.eclipse.core.resources.
 	/**
 	 * This method will be called by the workbench/editor before it tries to edit one or more files.
 	 * The idea is to prevent anyone from accidentally working on a file that they won't be able to check in changes to.
-	 * @see org.eclipse.core.resources.IFileModificationValidator#validateEdit(IFile[], Object)
 	 */
 	@Override
 	public IStatus validateEdit(IFile[] files, FileModificationValidationContext context) {
@@ -77,7 +76,6 @@ public final class FileModificationValidator extends org.eclipse.core.resources.
 	/**
 	 * This method will be called by the workbench before it tries to save a file.
 	 * It should not attempt to save any files that don't receive an OK status here.
-	 * @see org.eclipse.core.resources.IFileModificationValidator#validateSave(IFile)
 	 */
 	@Override
 	public IStatus validateSave(IFile file) {

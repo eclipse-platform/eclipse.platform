@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFileModificationValidator;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.team.FileModificationValidationContext;
 import org.eclipse.core.resources.team.FileModificationValidator;
@@ -40,12 +39,12 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.views.navigator.ResourceComparator;
 
 /**
- * The <code>PessimisticModificationValidator</code> is an
- * implementation of the <code>IFileModificationValidator</code> for the
+ * The <code>PessimisticModificationValidator</code> is an implementation of the
+ * <code>IFileModificationValidator</code> for the
  * <code>PessimisticFilesystemProvider</code>.
  *
  * @see PessimisticFilesystemProvider
- * @see IFileModificationValidator
+ * @see FileModificationValidator
  */
 public class PessimisticModificationValidator
 extends FileModificationValidator {
