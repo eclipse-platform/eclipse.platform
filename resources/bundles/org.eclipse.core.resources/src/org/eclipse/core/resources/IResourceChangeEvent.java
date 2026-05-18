@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 /**
  * Resource change events describe changes to resources.
  * <p>
- * There are currently five different types of resource change events:
+ * The following types of resource change events are reported:
  * <ul>
  *   <li>
  *    Before-the-fact batch reports of arbitrary creations,
