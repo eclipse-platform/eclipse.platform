@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -15,6 +15,7 @@ package org.eclipse.core.internal.events;
 
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicIntegerArray;
 import org.eclipse.core.resources.IResourceChangeListener;
 
 /**
@@ -44,22 +45,18 @@ public class ResourceChangeListenerList {
 
 		@Override
 		public String toString() {
-			StringBuilder sb = new StringBuilder();
-			sb.append("Listener [eventMask="); //$NON-NLS-1$
-			sb.append(eventMask);
-			sb.append(", "); //$NON-NLS-1$
-			sb.append(listener);
-			sb.append("]"); //$NON-NLS-1$
-			return sb.toString();
+			return "Listener [eventMask=" + eventMask + ", " + listener + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}
 	}
 
-	private volatile int count1 = 0;
-	private volatile int count2 = 0;
-	private volatile int count4 = 0;
-	private volatile int count8 = 0;
-	private volatile int count16 = 0;
-	private volatile int count32 = 0;
+	/**
+	 * Per-event-bit listener counts, indexed by
+	 * {@code Integer.numberOfTrailingZeros(eventMask)}. An
+	 * {@link AtomicIntegerArray} preserves the per-element volatile read
+	 * semantics that {@link #hasListenerFor(int)} relies on outside the
+	 * synchronized {@link #add}/{@link #remove}/{@link #clear} paths.
+	 */
+	private final AtomicIntegerArray bitCounts = new AtomicIntegerArray(Integer.SIZE);
 
 	/**
 	 * The list of listeners.
@@ -79,41 +76,20 @@ public class ResourceChangeListenerList {
 			remove(listener);
 			return;
 		}
-		ResourceChangeListenerList.ListenerEntry entry = new ResourceChangeListenerList.ListenerEntry(listener, mask);
+		ListenerEntry entry = new ListenerEntry(listener, mask);
 		final int oldSize = listeners.size();
 		// check for duplicates using identity
 		for (int i = 0; i < oldSize; ++i) {
 			ListenerEntry oldEntry = listeners.get(i);
 			if (oldEntry.listener == listener) {
-				removing(oldEntry.eventMask);
-				adding(mask);
+				adjust(oldEntry.eventMask, -1);
+				adjust(mask, +1);
 				listeners.set(i, entry);
 				return;
 			}
 		}
-		adding(mask);
+		adjust(mask, +1);
 		listeners.add(entry);
-	}
-
-	private void adding(int mask) {
-		if ((mask & 1) != 0) {
-			count1++;
-		}
-		if ((mask & 2) != 0) {
-			count2++;
-		}
-		if ((mask & 4) != 0) {
-			count4++;
-		}
-		if ((mask & 8) != 0) {
-			count8++;
-		}
-		if ((mask & 16) != 0) {
-			count16++;
-		}
-		if ((mask & 32) != 0) {
-			count32++;
-		}
 	}
 
 	/**
@@ -125,22 +101,11 @@ public class ResourceChangeListenerList {
 	}
 
 	public boolean hasListenerFor(int event) {
-		switch (event) {
-		case 1:
-			return count1 > 0;
-		case 2:
-			return count2 > 0;
-		case 4:
-			return count4 > 0;
-		case 8:
-			return count8 > 0;
-		case 16:
-			return count16 > 0;
-		case 32:
-			return count32 > 0;
-		default:
+		// event is expected to be a single bit (a power of two)
+		if (event <= 0 || Integer.bitCount(event) != 1) {
 			return false;
 		}
+		return bitCounts.get(Integer.numberOfTrailingZeros(event)) > 0;
 	}
 
 	/**
@@ -155,7 +120,7 @@ public class ResourceChangeListenerList {
 		for (int i = 0; i < oldSize; ++i) {
 			ListenerEntry oldEntry = listeners.get(i);
 			if (oldEntry.listener == listener) {
-				removing(oldEntry.eventMask);
+				adjust(oldEntry.eventMask, -1);
 				listeners.remove(i);
 				return;
 			}
@@ -164,44 +129,22 @@ public class ResourceChangeListenerList {
 
 	public synchronized void clear() {
 		listeners.clear();
-		count1 = 0;
-		count2 = 0;
-		count4 = 0;
-		count8 = 0;
-		count16 = 0;
-		count32 = 0;
+		for (int i = 0; i < bitCounts.length(); i++) {
+			bitCounts.set(i, 0);
+		}
 	}
 
-	private void removing(int mask) {
-		if ((mask & 1) != 0) {
-			count1--;
-		}
-		if ((mask & 2) != 0) {
-			count2--;
-		}
-		if ((mask & 4) != 0) {
-			count4--;
-		}
-		if ((mask & 8) != 0) {
-			count8--;
-		}
-		if ((mask & 16) != 0) {
-			count16--;
-		}
-		if ((mask & 32) != 0) {
-			count32--;
+	private void adjust(int mask, int delta) {
+		int remaining = mask;
+		while (remaining != 0) {
+			int bit = Integer.numberOfTrailingZeros(remaining);
+			bitCounts.addAndGet(bit, delta);
+			remaining &= remaining - 1;
 		}
 	}
 
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("ResourceChangeListenerList ["); //$NON-NLS-1$
-		if (listeners != null) {
-			builder.append("listeners="); //$NON-NLS-1$
-			builder.append(listeners.toString());
-		}
-		builder.append("]"); //$NON-NLS-1$
-		return builder.toString();
+		return "ResourceChangeListenerList [listeners=" + listeners + "]"; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 }
