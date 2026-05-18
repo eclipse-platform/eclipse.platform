@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2015 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -63,11 +63,8 @@ public class ResourceChangeEvent extends EventObject implements IResourceChangeE
 			return NO_MARKER_DELTAS;
 		}
 		ArrayList<IMarkerDelta> matching = new ArrayList<>();
-		Iterator<MarkerSet> deltaSets = markerDeltas.values().iterator();
-		while (deltaSets.hasNext()) {
-			MarkerSet deltas = deltaSets.next();
-			IMarkerSetElement[] elements = deltas.elements();
-			for (IMarkerSetElement element : elements) {
+		for (MarkerSet deltas : markerDeltas.values()) {
+			for (IMarkerSetElement element : deltas.elements()) {
 				MarkerDelta markerDelta = (MarkerDelta) element;
 				//our inclusion test depends on whether we are considering subtypes
 				if (findType == null || (includeSubtypes ? markerDelta.isSubtypeOf(findType) : markerDelta.getType().equals(findType))) {
@@ -75,7 +72,7 @@ public class ResourceChangeEvent extends EventObject implements IResourceChangeE
 				}
 			}
 		}
-		return matching.toArray(new IMarkerDelta[matching.size()]);
+		return matching.toArray(IMarkerDelta[]::new);
 	}
 
 	/**
