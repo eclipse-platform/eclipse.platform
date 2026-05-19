@@ -31,6 +31,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 import java.util.concurrent.atomic.AtomicLong;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -1246,16 +1247,12 @@ public class JobGroupTest extends AbstractJobTest {
 	public void testShouldCancel_4() {
 		final int NUM_JOBS = 1000;
 		final int NUM_JOBS_LIMIT = 100;
-		final int numShouldCancelCalled[] = {0};
+		final AtomicInteger numShouldCancelCalled = new AtomicInteger(0);
 		final TestBarrier2 barrier = new TestBarrier2();
 		final JobGroup jobGroup = new JobGroup("JobGroup", 10, NUM_JOBS) {
 			@Override
 			protected boolean shouldCancel(IStatus lastCompletedJobResult, int numberOfFailedJobs, int numberOfCanceledJobs) {
-				numShouldCancelCalled[0]++;
-				if (numShouldCancelCalled[0] == NUM_JOBS_LIMIT) {
-					return true;
-				}
-				return false;
+				return numShouldCancelCalled.incrementAndGet() >= NUM_JOBS_LIMIT;
 			}
 		};
 		for (int i = 0; i < NUM_JOBS; i++) {
@@ -1274,10 +1271,11 @@ public class JobGroupTest extends AbstractJobTest {
 		// Allow the jobs to proceed to run.
 		barrier.setStatus(TestBarrier2.STATUS_START);
 		waitForCompletion(jobGroup);
-		assertTrue(numShouldCancelCalled[0] >= NUM_JOBS_LIMIT);
+		int called = numShouldCancelCalled.get();
+		assertThat(called).isGreaterThanOrEqualTo(called);
 		// Verify that the group is canceled in a reasonable time,
 		// i.e only 10 jobs are allowed to run after the shouldCancel method returned true.
-		assertTrue(numShouldCancelCalled[0] < NUM_JOBS_LIMIT + 10);
+		assertThat(called).isLessThan(NUM_JOBS_LIMIT + 10);
 	}
 
 	/**
