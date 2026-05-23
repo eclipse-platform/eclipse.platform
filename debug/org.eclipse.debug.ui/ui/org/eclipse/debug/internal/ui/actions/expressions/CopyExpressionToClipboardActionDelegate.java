@@ -47,4 +47,9 @@ public class CopyExpressionToClipboardActionDelegate extends VirtualCopyToClipbo
 		}
 		return true;
 	}
+
+	@Override
+	protected String getActionId() {
+		return "org.eclipse.debug.ui.debugview.popupMenu.copyExpressionToClipboard"; //$NON-NLS-1$
+	}
 }
