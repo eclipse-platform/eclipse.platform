@@ -54,4 +54,9 @@ public class CopyVariableToClipboardActionDelegate extends VirtualCopyToClipboar
 		}
 		return true;
 	}
+
+	@Override
+	protected String getActionId() {
+		return "org.eclipse.debug.ui.debugview.popupMenu.copyVariableToClipboard"; //$NON-NLS-1$
+	}
 }

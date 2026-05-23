@@ -1583,7 +1583,6 @@
          <action
                label="%CopyVariableToClipboardAction.label"
                icon="$nl$/icons/full/elcl16/copy_edit_co.svg"
-               definitionId="org.eclipse.ui.edit.copy"
                helpContextId="copy_variables_to_clipboard_action_context"
                class="org.eclipse.debug.internal.ui.actions.expressions.CopyVariableToClipboardActionDelegate"
                menubarPath="variableGroup"
@@ -1641,7 +1640,6 @@
          <action
                label="%CopyExpressionToClipboardAction.label"
                icon="$nl$/icons/full/elcl16/copy_edit_co.svg"
-               definitionId="org.eclipse.ui.edit.copy"
                helpContextId="copy_variables_to_clipboard_action_context"
                class="org.eclipse.debug.internal.ui.actions.expressions.CopyExpressionToClipboardActionDelegate"
                menubarPath="expressionGroup"
