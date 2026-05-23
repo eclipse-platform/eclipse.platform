@@ -36,7 +36,7 @@ for plugin  in "${brandingPlugins[@]}"; do
 	fi
 done
 rm "org.eclipse.platform/futureSplashScreens/splash_${NEXT_RELEASE_NAME}.png"
-rm org.eclipse.platform/futureSplashScreens/eclipse_lg*.png
+rm -f org.eclipse.platform/futureSplashScreens/eclipse_lg*.png
 popd
 
 git commit --all --message "Splash Screen for ${NEXT_RELEASE_VERSION} (${NEXT_RELEASE_NAME})"
