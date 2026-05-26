@@ -205,9 +205,9 @@ public class CommonTab extends AbstractLaunchConfigurationTab {
 	/**
 	 * Creates the favorites control
 	 * @param parent the parent composite to add this one to
-	 * @since 3.2
+	 * @since 3.22
 	 */
-	private void createFavoritesComponent(Composite parent) {
+	protected void createFavoritesComponent(Composite parent) {
 		Group favComp = SWTFactory.createGroup(parent, LaunchConfigurationsMessages.CommonTab_Display_in_favorites_menu__10, 1, 1, GridData.FILL_BOTH);
 		fFavoritesTable = CheckboxTableViewer.newCheckList(favComp, SWT.CHECK | SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION);
 		Control table = fFavoritesTable.getControl();
@@ -222,9 +222,9 @@ public class CommonTab extends AbstractLaunchConfigurationTab {
 	/**
 	 * Creates the shared config component
 	 * @param parent the parent composite to add this component to
-	 * @since 3.2
+	 * @since 3.22
 	 */
-	private void createSharedConfigComponent(Composite parent) {
+	protected void createSharedConfigComponent(Composite parent) {
 		Group group = SWTFactory.createGroup(parent, LaunchConfigurationsMessages.CommonTab_0, 3, 2, GridData.FILL_HORIZONTAL);
 		Composite comp = SWTFactory.createComposite(group, parent.getFont(), 3, 3, GridData.FILL_BOTH, 0, 0);
 		fLocalRadioButton = createRadioButton(comp, LaunchConfigurationsMessages.CommonTab_L_ocal_3);
@@ -660,6 +660,24 @@ public class CommonTab extends AbstractLaunchConfigurationTab {
 
 	@Override
 	public void initializeFrom(ILaunchConfiguration configuration) {
+		updateSharedConfig(configuration);
+		updateFavoritesFromConfig(configuration);
+		updateLaunchInBackground(configuration);
+		updateEncoding(configuration);
+		updateConsoleOutput(configuration);
+
+		boolean terminateDescendants = getAttribute(configuration, DebugPlugin.ATTR_TERMINATE_DESCENDANTS, true);
+		fTerminateDescendantsButton.setSelection(terminateDescendants);
+	}
+
+	/**
+	 * Updates a configuration with the values set in the section for shared
+	 * configurations.
+	 *
+	 * @param configuration the configuration to update
+	 * @since 3.22
+	 */
+	protected void updateSharedConfig(ILaunchConfiguration configuration) {
 		boolean isShared = !configuration.isLocal();
 		fSharedRadioButton.setSelection(isShared);
 		fLocalRadioButton.setSelection(!isShared);
@@ -676,13 +694,6 @@ public class CommonTab extends AbstractLaunchConfigurationTab {
 			}
 			fSharedLocationText.setText(containerName);
 		}
-		updateFavoritesFromConfig(configuration);
-		updateLaunchInBackground(configuration);
-		updateEncoding(configuration);
-		updateConsoleOutput(configuration);
-
-		boolean terminateDescendants = getAttribute(configuration, DebugPlugin.ATTR_TERMINATE_DESCENDANTS, true);
-		fTerminateDescendantsButton.setSelection(terminateDescendants);
 	}
 
 	/**
@@ -802,9 +813,10 @@ public class CommonTab extends AbstractLaunchConfigurationTab {
 	/**
 	 * Updates the favorites selections from the local configuration
 	 * @param config the local configuration
+	 * @since 3.22
 	 */
 	@SuppressWarnings("deprecation")
-	private void updateFavoritesFromConfig(ILaunchConfiguration config) {
+	protected void updateFavoritesFromConfig(ILaunchConfiguration config) {
 		fFavoritesTable.setInput(config);
 		fFavoritesTable.setCheckedElements(new Object[]{});
 		List<String> groups = getAttribute(config, IDebugUIConstants.ATTR_FAVORITE_GROUPS, new ArrayList<>());
@@ -833,8 +845,9 @@ public class CommonTab extends AbstractLaunchConfigurationTab {
 	/**
 	 * Updates the configuration form the local shared config working copy
 	 * @param config the local shared config working copy
+	 * @since 3.22
 	 */
-	private void updateConfigFromLocalShared(ILaunchConfigurationWorkingCopy config) {
+	protected void updateConfigFromLocalShared(ILaunchConfigurationWorkingCopy config) {
 		if (isShared()) {
 			String containerPathString = fSharedLocationText.getText();
 			IContainer container = getContainer(containerPathString);
@@ -865,9 +878,10 @@ public class CommonTab extends AbstractLaunchConfigurationTab {
 	 *  when comparing if content is equal, since 'false' is default
 	 * 	and will be missing for older configurations.
 	 * @param config the configuration to update
+	 * @since 3.22
 	 */
 	@SuppressWarnings("deprecation")
-	private void updateConfigFromFavorites(ILaunchConfigurationWorkingCopy config) {
+	protected void updateConfigFromFavorites(ILaunchConfigurationWorkingCopy config) {
 		Object[] checked = fFavoritesTable.getCheckedElements();
 		boolean debug = getAttribute(config, IDebugUIConstants.ATTR_DEBUG_FAVORITE, false);
 		boolean run = getAttribute(config, IDebugUIConstants.ATTR_RUN_FAVORITE, false);
