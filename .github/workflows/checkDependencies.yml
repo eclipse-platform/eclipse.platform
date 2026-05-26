@@ -7,6 +7,9 @@ on:
   schedule:
     - cron:  '0 0 * * *'
 
+permissions:
+  contents: read
+
 jobs:
   check-dependencies:
     uses: eclipse-platform/eclipse.platform.releng.aggregator/.github/workflows/checkDependencies.yml@master
