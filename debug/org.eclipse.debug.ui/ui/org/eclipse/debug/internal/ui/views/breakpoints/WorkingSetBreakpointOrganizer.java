@@ -34,14 +34,17 @@ import org.eclipse.ui.PlatformUI;
  */
 public class WorkingSetBreakpointOrganizer extends AbstractBreakpointOrganizerDelegate implements IPropertyChangeListener {
 
-	IWorkingSetManager fWorkingSetManager = PlatformUI.getWorkbench().getWorkingSetManager();
+	IWorkingSetManager fWorkingSetManager;
 
 	/**
 	 * Constructs a working set breakpoint organizer. Listens for changes in
 	 * working sets and fires property change notification.
 	 */
 	public WorkingSetBreakpointOrganizer() {
-		fWorkingSetManager.addPropertyChangeListener(this);
+		IWorkingSetManager workingSetManager = getWorkingSetManager();
+		if (workingSetManager != null) {
+			workingSetManager.addPropertyChangeListener(this);
+		}
 	}
 
 	@Override
@@ -56,7 +59,11 @@ public class WorkingSetBreakpointOrganizer extends AbstractBreakpointOrganizerDe
 				parents.add(res);
 			}
 		}
-		for (IWorkingSet workingSet : fWorkingSetManager.getWorkingSets()) {
+		IWorkingSetManager workingSetManager = getWorkingSetManager();
+		if (workingSetManager == null) {
+			return result.toArray(new IAdaptable[result.size()]);
+		}
+		for (IWorkingSet workingSet : workingSetManager.getWorkingSets()) {
 			if (!IDebugUIConstants.BREAKPOINT_WORKINGSET_ID.equals(workingSet.getId())) {
 				for (IAdaptable element : workingSet.getElements()) {
 					IResource resource = element.getAdapter(IResource.class);
@@ -74,7 +81,10 @@ public class WorkingSetBreakpointOrganizer extends AbstractBreakpointOrganizerDe
 
 	@Override
 	public void dispose() {
-		fWorkingSetManager.removePropertyChangeListener(this);
+		IWorkingSetManager workingSetManager = getWorkingSetManager();
+		if (workingSetManager != null) {
+			workingSetManager.removePropertyChangeListener(this);
+		}
 		fWorkingSetManager = null;
 		super.dispose();
 	}
@@ -90,5 +100,16 @@ public class WorkingSetBreakpointOrganizer extends AbstractBreakpointOrganizerDe
 		if (set != null && !IDebugUIConstants.BREAKPOINT_WORKINGSET_ID.equals(set.getId())) {
 			fireCategoryChanged(new WorkingSetCategory(set));
 		}
+	}
+
+	private IWorkingSetManager getWorkingSetManager() {
+		if (fWorkingSetManager != null) {
+			return fWorkingSetManager;
+		}
+
+		if (PlatformUI.isWorkbenchRunning()) {
+			fWorkingSetManager = PlatformUI.getWorkbench().getWorkingSetManager();
+		}
+		return fWorkingSetManager;
 	}
 }
