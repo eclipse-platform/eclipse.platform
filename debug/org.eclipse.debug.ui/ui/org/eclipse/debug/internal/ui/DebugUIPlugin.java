@@ -601,17 +601,16 @@ public class DebugUIPlugin extends AbstractUIPlugin implements ILaunchListener, 
 				}
 			};
 			PlatformUI.getWorkbench().getThemeManager().addPropertyChangeListener(fThemeListener);
+			// do the asynchronous exec last - see bug 209920
+			getStandardDisplay().asyncExec(
+					() -> {
+						// initialize the selected resource `
+						SelectedResourceManager.getDefault();
+						// forces launch shortcuts to be initialized so their
+						// key-bindings work
+						getLaunchConfigurationManager().getLaunchShortcuts();
+					});
 		}
-
-		// do the asynchronous exec last - see bug 209920
-		getStandardDisplay().asyncExec(
-				() -> {
-					// initialize the selected resource `
-					SelectedResourceManager.getDefault();
-					// forces launch shortcuts to be initialized so their
-					// key-bindings work
-					getLaunchConfigurationManager().getLaunchShortcuts();
-				});
 
 		DebugUIPluginSaveParticipant saveParticipant = new DebugUIPluginSaveParticipant();
 		ResourcesPlugin.getWorkspace().addSaveParticipant(getUniqueIdentifier(), saveParticipant);

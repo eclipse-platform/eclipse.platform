@@ -227,12 +227,12 @@ public class DebugUIPreferenceInitializer extends AbstractPreferenceInitializer 
 		}
 
 	public static void setThemeBasedPreferences(final IPreferenceStore store, final boolean fireEvent) {
+		if (!PlatformUI.isWorkbenchRunning()) {
+			return;
+		}
 		Display display= PlatformUI.getWorkbench().getDisplay();
 		Runnable runnable = () -> {
-			ColorRegistry registry = null;
-			if (PlatformUI.isWorkbenchRunning()) {
-				registry = PlatformUI.getWorkbench().getThemeManager().getCurrentTheme().getColorRegistry();
-			}
+			ColorRegistry registry = PlatformUI.getWorkbench().getThemeManager().getCurrentTheme().getColorRegistry();
 			setDefault(store, IDebugPreferenceConstants.CONSOLE_BAKGROUND_COLOR, findRGB(registry, IInternalDebugUIConstants.THEME_CONSOLE_COLOR_BACKGROUND, new RGB(255, 255, 255)), fireEvent);
 			setDefault(store, IDebugPreferenceConstants.CONSOLE_SYS_OUT_COLOR, findRGB(registry, IInternalDebugUIConstants.THEME_CONSOLE_COLOR_STD_OUT, new RGB(0, 0, 0)), fireEvent);
 			setDefault(store, IDebugPreferenceConstants.CONSOLE_SYS_IN_COLOR, findRGB(registry, IInternalDebugUIConstants.THEME_CONSOLE_COLOR_STD_IN, new RGB(0, 200, 125)), fireEvent);

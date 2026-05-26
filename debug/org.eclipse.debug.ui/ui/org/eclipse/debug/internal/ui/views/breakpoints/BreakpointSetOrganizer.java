@@ -54,7 +54,7 @@ import org.osgi.service.prefs.BackingStoreException;
  */
 public class BreakpointSetOrganizer extends AbstractBreakpointOrganizerDelegate implements IBreakpointOrganizerDelegateExtension, IPropertyChangeListener, IBreakpointsListener {
 
-	private IWorkingSetManager fWorkingSetManager = PlatformUI.getWorkbench().getWorkingSetManager();
+	private IWorkingSetManager fWorkingSetManager;
 
 	/**
 	 * A cache for mapping markers to the working set they belong to
@@ -71,7 +71,10 @@ public class BreakpointSetOrganizer extends AbstractBreakpointOrganizerDelegate 
 	 * working sets and fires property change notification.
 	 */
 	public BreakpointSetOrganizer() {
-		fWorkingSetManager.addPropertyChangeListener(this);
+		IWorkingSetManager workingSetManager = getWorkingSetManager();
+		if (workingSetManager != null) {
+			workingSetManager.addPropertyChangeListener(this);
+		}
 		fCache = new BreakpointWorkingSetCache();
 		DebugUIPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(this);
 		DebugPlugin.getDefault().getBreakpointManager().addBreakpointListener(this);
@@ -80,8 +83,12 @@ public class BreakpointSetOrganizer extends AbstractBreakpointOrganizerDelegate 
 
 	@Override
 	public IAdaptable[] getCategories(IBreakpoint breakpoint) {
+		IWorkingSetManager workingSetManager = getWorkingSetManager();
+		if (workingSetManager == null) {
+			return new IAdaptable[0];
+		}
 		List<IAdaptable> result = new ArrayList<>();
-		IWorkingSet[] workingSets = fWorkingSetManager.getWorkingSets();
+		IWorkingSet[] workingSets = workingSetManager.getWorkingSets();
 		for (IWorkingSet set : workingSets) {
 			if (IDebugUIConstants.BREAKPOINT_WORKINGSET_ID.equals(set.getId())) {
 				IAdaptable[] elements = set.getElements();
@@ -98,7 +105,10 @@ public class BreakpointSetOrganizer extends AbstractBreakpointOrganizerDelegate 
 
 	@Override
 	public void dispose() {
-		fWorkingSetManager.removePropertyChangeListener(this);
+		IWorkingSetManager workingSetManager = getWorkingSetManager();
+		if (workingSetManager != null) {
+			workingSetManager.removePropertyChangeListener(this);
+		}
 		fWorkingSetManager = null;
 		DebugPlugin.getDefault().getBreakpointManager().removeBreakpointListener(this);
 		DebugUIPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(this);
@@ -220,7 +230,11 @@ public class BreakpointSetOrganizer extends AbstractBreakpointOrganizerDelegate 
 	@Override
 	public void breakpointsRemoved(IBreakpoint[] breakpoints,
 			IMarkerDelta[] deltas) {
-		IWorkingSet[] workingSets = fWorkingSetManager.getWorkingSets();
+		IWorkingSetManager workingSetManager = getWorkingSetManager();
+		if (workingSetManager == null) {
+			return;
+		}
+		IWorkingSet[] workingSets = workingSetManager.getWorkingSets();
 		IWorkingSet set = null;
 		for (IWorkingSet workingSet : workingSets) {
 			set = workingSet;
@@ -273,7 +287,7 @@ public class BreakpointSetOrganizer extends AbstractBreakpointOrganizerDelegate 
 	public static IWorkingSet getDefaultWorkingSet() {
 		IPreferenceStore preferenceStore = DebugUIPlugin.getDefault().getPreferenceStore();
 		String name = preferenceStore.getString(IInternalDebugUIConstants.MEMENTO_BREAKPOINT_WORKING_SET_NAME);
-		if (name != null) {
+		if (name != null && PlatformUI.isWorkbenchRunning()) {
 			return PlatformUI.getWorkbench().getWorkingSetManager().getWorkingSet(name);
 		}
 		return null;
@@ -366,7 +380,11 @@ public class BreakpointSetOrganizer extends AbstractBreakpointOrganizerDelegate 
 
 	@Override
 	public IAdaptable[] getCategories() {
-		IWorkingSet[] workingSets = fWorkingSetManager.getWorkingSets();
+		IWorkingSetManager workingSetManager = getWorkingSetManager();
+		if (workingSetManager == null) {
+			return new IAdaptable[0];
+		}
+		IWorkingSet[] workingSets = workingSetManager.getWorkingSets();
 		List<IAdaptable> all = new ArrayList<>();
 		for (IWorkingSet set : workingSets) {
 			if (IDebugUIConstants.BREAKPOINT_WORKINGSET_ID.equals(set
@@ -399,5 +417,16 @@ public class BreakpointSetOrganizer extends AbstractBreakpointOrganizerDelegate 
 			}
 			set.setElements(list.toArray(new IAdaptable[list.size()]));
 		}
+	}
+
+	private IWorkingSetManager getWorkingSetManager() {
+		if (fWorkingSetManager != null) {
+			return fWorkingSetManager;
+		}
+
+		if (PlatformUI.isWorkbenchRunning()) {
+			fWorkingSetManager = PlatformUI.getWorkbench().getWorkingSetManager();
+		}
+		return fWorkingSetManager;
 	}
 }

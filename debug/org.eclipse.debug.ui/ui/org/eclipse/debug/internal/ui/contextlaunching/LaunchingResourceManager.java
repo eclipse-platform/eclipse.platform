@@ -554,7 +554,7 @@ public class LaunchingResourceManager implements IPropertyChangeListener, IWindo
 	 * Starts up the manager
 	 */
 	public void startup() {
-		IWorkbench workbench = PlatformUI.getWorkbench();
+		IWorkbench workbench = PlatformUI.isWorkbenchRunning() ? PlatformUI.getWorkbench() : null;
 		if(workbench != null) {
 			workbench.addWindowListener(this);
 			// initialize for already open windows
