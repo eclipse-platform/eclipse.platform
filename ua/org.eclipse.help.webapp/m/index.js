@@ -378,9 +378,9 @@
                             var scopeName = decodeHtml(match[1]);
                             if (scopeName.substring(0, 1) == '\u200B') continue;
                             var li = createElement(ol, 'li');
-                            createButton(li, scopeName, 0, function(scopeName, scopeIndex) {
+                            createButton(li, 0, 0, function(scopeName, scopeIndex) {
                                 return function() { showScopesPage('operation=edit&workingSet=' + encodeURIComponent(scopeName), scopeIndex); };
-                            }(scopeName, scopeIndex), 'ba');
+                            }(scopeName, scopeIndex), 'ba', scopeName);
                             scopeIndex++;
                         }
                         createButton(scopesPage, '<%js:scopes_new_button_label%>', '<%js:scopes_new_button_description%>', function() { showScopesPage('operation=add'); });
