@@ -240,6 +240,11 @@ public class TerminalsView extends ViewPart implements ITerminalsView, IShowInTa
 					// dispose this drag-source-listener by disposing its drag-source
 					dragSource.dispose();
 
+					// Clear the transfer state so the dragged tab item is not kept
+					// referenced after the drag and drop operation finished.
+					TerminalTransfer.getInstance().setDraggedFolderItem(null);
+					TerminalTransfer.getInstance().setTabFolderManager(null);
+
 					// Inhibit the action of CTabFolder's default DragDetect-listeners,
 					// fire a mouse-click event on the widget that was dragged.
 					draggedFolder.notifyListeners(SWT.MouseUp, null);
@@ -261,12 +266,9 @@ public class TerminalsView extends ViewPart implements ITerminalsView, IShowInTa
 		target.addDropListener(new DropTargetListener() {
 			@Override
 			public void dragEnter(DropTargetEvent event) {
-				// only if the drop target is different then the drag source
-				if (TerminalTransfer.getInstance().getTabFolderManager() == tabFolderManager) {
-					event.detail = DND.DROP_NONE;
-				} else {
-					event.detail = DND.DROP_MOVE;
-				}
+				// Accept the move both for a different terminals view (the terminal is moved
+				// to the other view) and for the same view (the tab is reordered).
+				event.detail = DND.DROP_MOVE;
 			}
 
 			@Override
@@ -290,6 +292,12 @@ public class TerminalsView extends ViewPart implements ITerminalsView, IShowInTa
 				if (TerminalTransfer.getInstance().getDraggedFolderItem() != null && tabFolderManager != null) {
 					CTabItem draggedItem = TerminalTransfer.getInstance().getDraggedFolderItem();
 
+					// Drop within the same terminals view: reorder the dragged tab in place.
+					if (TerminalTransfer.getInstance().getTabFolderManager() == tabFolderManager) {
+						reorderTabItem(draggedItem, event.x, event.y);
+						return;
+					}
+
 					CTabItem item = tabFolderManager.cloneTabItemAfterDrop(draggedItem);
 					tabFolderManager.bringToTop(item);
 					switchToTabFolderControl();
@@ -311,6 +319,69 @@ public class TerminalsView extends ViewPart implements ITerminalsView, IShowInTa
 				}
 			}
 		});
+	}
+
+	/**
+	 * Reorder the dragged tab item within its own tab folder so that it is dropped at the position
+	 * the mouse points to. Only drops on the tab strip reorder, a drop on the terminal content
+	 * area is ignored.
+	 *
+	 * @param draggedItem the tab item being dragged, must not be <code>null</code>.
+	 * @param x the x coordinate of the drop, in display-relative coordinates.
+	 * @param y the y coordinate of the drop, in display-relative coordinates.
+	 */
+	private void reorderTabItem(CTabItem draggedItem, int x, int y) {
+		if (tabFolderControl == null || tabFolderControl.isDisposed()) {
+			return;
+		}
+
+		int from = tabFolderControl.indexOf(draggedItem);
+		if (from == -1) {
+			return;
+		}
+
+		// Map the display-relative drop coordinates to the tab folder and find the tab below them.
+		// A drop on the empty space next to the tabs targets the last position.
+		Point point = tabFolderControl.toControl(x, y);
+		CTabItem targetItem = tabFolderControl.getItem(point);
+
+		// Only drops on the tab strip reorder. Ignore drops on the terminal content area,
+		// keeping the previous behavior of rejecting such drops.
+		if (targetItem == null && (point.y < 0 || point.y > tabFolderControl.getTabHeight())) {
+			return;
+		}
+
+		int indexUnderCursor = targetItem != null ? tabFolderControl.indexOf(targetItem) : -1;
+
+		int to = computeReorderIndex(from, indexUnderCursor, tabFolderControl.getItemCount());
+		if (to != -1) {
+			tabFolderControl.moveItem(from, to);
+		}
+
+		// Keep the moved terminal selected and focused.
+		tabFolderManager.bringToTop(draggedItem);
+		setFocus();
+	}
+
+	/**
+	 * Computes the destination index for a tab reorder triggered by a drop.
+	 * <p>
+	 * This method is internal and only exposed for testing.
+	 * </p>
+	 *
+	 * @param from the current index of the dragged tab.
+	 * @param indexUnderCursor the index of the tab below the drop location, or <code>-1</code> if the
+	 *            drop did not happen over a tab (for example on the empty space following the last tab).
+	 * @param itemCount the total number of tabs in the folder.
+	 * @return the index the dragged tab should be moved to, or <code>-1</code> if no move is required
+	 *         because the tab would keep its position.
+	 */
+	public static int computeReorderIndex(int from, int indexUnderCursor, int itemCount) {
+		int to = indexUnderCursor != -1 ? indexUnderCursor : itemCount - 1;
+		if (to < 0 || to == from) {
+			return -1;
+		}
+		return to;
 	}
 
 	@Override
