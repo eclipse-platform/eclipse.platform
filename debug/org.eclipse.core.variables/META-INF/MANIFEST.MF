@@ -7,7 +7,7 @@ Bundle-Activator: org.eclipse.core.variables.VariablesPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Export-Package: org.eclipse.core.internal.variables;x-internal:=true,
- org.eclipse.core.variables
+ org.eclipse.core.variables;uses:="org.eclipse.core.runtime"
 Require-Bundle: org.eclipse.core.runtime;bundle-version="[3.29.0,4.0.0)"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-17
