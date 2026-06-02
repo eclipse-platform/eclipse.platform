@@ -6,7 +6,11 @@ Bundle-Version: 3.7.900.qualifier
 Bundle-Activator: org.eclipse.ant.core.AntCorePlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Export-Package: org.eclipse.ant.core,
+Export-Package: org.eclipse.ant.core;
+  uses:="org.eclipse.ant.internal.core,
+   org.eclipse.core.runtime,
+   org.eclipse.equinox.app,
+   org.osgi.framework",
  org.eclipse.ant.internal.core;
   x-friends:="org.eclipse.ant.ui,
    org.eclipse.ant.launching,
