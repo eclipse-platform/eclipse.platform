@@ -977,4 +977,113 @@ public class VT100EmulatorBackendTest {
 		vt100.eraseCharacters(2);
 		assertEqualsTerm("aaaa\n" + "bcde\n" + "1  4\n" + "5678", toMultiLineText(term));
 	}
+
+	// ---------------------------------------------------------------------------------------------
+	// Characterization tests for the scrolling behavior.
+	//
+	// These lock the current behavior before any change to how scrolling interacts with the
+	// scroll-back history. The regression guards below MUST keep passing through such a change; the
+	// "currentlyDiscards" test documents the behavior that a future fix for top-anchored scroll
+	// regions (eclipse.platform issue 2680) is expected to change.
+	// ---------------------------------------------------------------------------------------------
+
+	/**
+	 * Regression guard: a newline at the bottom of the full window (no scroll region) grows the
+	 * scroll-back history. This is what makes ordinary command output scrollable and must not change.
+	 */
+	@Test
+	public void testNewlineWithoutScrollRegionGrowsHistory() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(6);
+		vt100.setDimensions(3, 4);
+		fill(term, "0000\n" + "1111\n" + "2222");
+		assertEquals(3, term.getHeight());
+
+		vt100.setCursor(2, 0);
+		vt100.processNewline();
+
+		// the model grew by one line: the former content is kept and a blank line was appended
+		assertEquals(4, term.getHeight());
+		assertEquals("0000", new String(term.getChars(0)));
+		assertEquals("1111", new String(term.getChars(1)));
+		assertEquals("2222", new String(term.getChars(2)));
+		assertNull(term.getChars(3));
+	}
+
+	/**
+	 * Regression guard: a newline at the bottom of a scroll region whose top margin is <em>not</em>
+	 * the top of the screen scrolls in place and discards the top line of the region. The lines above
+	 * and below the region are untouched and no history is created. This must not change.
+	 */
+	@Test
+	public void testNewlineInScrollRegionWithTopMarginDiscardsTopLine() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(10);
+		vt100.setDimensions(5, 4);
+		fill(term, "0000\n" + "1111\n" + "2222\n" + "3333\n" + "4444");
+
+		vt100.setScrollRegion(1, 3); // rows 1..3, top margin is row 1 (not the top of the screen)
+		vt100.setCursorLine(3);
+		vt100.processNewline();
+
+		assertEquals(5, term.getHeight()); // no history created
+		assertEquals("0000", new String(term.getChars(0))); // header above the region is untouched
+		assertEquals("2222", new String(term.getChars(1))); // "1111" was discarded
+		assertEquals("3333", new String(term.getChars(2)));
+		assertNull(term.getChars(3)); // vacated line at the bottom of the region
+		assertEquals("4444", new String(term.getChars(4))); // footer below the region is untouched
+	}
+
+	/**
+	 * Regression guard: a reverse line feed at the top of a scroll region scrolls the region down in
+	 * place (used heavily by full screen applications such as Codex). Must not change.
+	 */
+	@Test
+	public void testReverseLineFeedAtTopOfRegionScrollsDown() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(10);
+		vt100.setDimensions(5, 4);
+		fill(term, "0000\n" + "1111\n" + "2222\n" + "3333\n" + "4444");
+
+		vt100.setScrollRegion(1, 3);
+		vt100.setCursorLine(1); // top of the region
+		vt100.processReverseLineFeed();
+
+		assertEquals(5, term.getHeight());
+		assertEquals("0000", new String(term.getChars(0))); // header untouched
+		assertNull(term.getChars(1)); // new blank line at the top of the region
+		assertEquals("1111", new String(term.getChars(2)));
+		assertEquals("2222", new String(term.getChars(3))); // "3333" was discarded
+		assertEquals("4444", new String(term.getChars(4))); // footer untouched
+	}
+
+	/**
+	 * Characterization of the <em>current</em> behavior for a scroll region anchored at the top of
+	 * the screen: a newline at the region bottom scrolls in place and discards the top line, creating
+	 * no history. This is the behavior the planned fix for eclipse.platform issue 2680 will change so
+	 * that the discarded line is added to the scroll-back instead. Until then this documents the
+	 * status quo.
+	 */
+	@Test
+	public void testNewlineInTopAnchoredScrollRegionCurrentlyDiscardsTopLine() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(10);
+		vt100.setDimensions(5, 4);
+		fill(term, "0000\n" + "1111\n" + "2222\n" + "3333\n" + "4444");
+
+		vt100.setScrollRegion(0, 3); // rows 0..3, top margin is the top of the screen; row 4 is fixed
+		vt100.setCursorLine(3);
+		vt100.processNewline();
+
+		assertEquals(5, term.getHeight()); // currently no history is created
+		assertEquals("1111", new String(term.getChars(0))); // "0000" was discarded (lost)
+		assertEquals("2222", new String(term.getChars(1)));
+		assertEquals("3333", new String(term.getChars(2)));
+		assertNull(term.getChars(3));
+		assertEquals("4444", new String(term.getChars(4))); // footer below the region is untouched
+	}
 }
