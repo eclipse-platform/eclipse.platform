@@ -62,8 +62,9 @@ public class PropertyTesterDescriptor implements IPropertyTester {
 	}
 
 	public PropertyTesterDescriptor(IConfigurationElement element, String namespace, String properties) {
-		if (!element.isValid())
+		if (!element.isValid()) {
 			throw new IllegalStateException(ExpressionMessages.PropertyTesterDescriptor_invalid);
+		}
 		fConfigElement= element;
 		fNamespace= namespace;
 		fProperties= properties;
