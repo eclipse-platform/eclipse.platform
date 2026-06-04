@@ -9,13 +9,11 @@ Require-Bundle: org.eclipse.equinox.preferences;bundle-version="[3.2.0,4.0.0)",
  org.eclipse.equinox.registry;bundle-version="[3.2.0,4.0.0)",
  org.eclipse.equinox.common;bundle-version="[3.13.0,4.0.0)"
 Export-Package: org.eclipse.core.internal.content;x-internal:=true,
- org.eclipse.core.runtime.content
+ org.eclipse.core.runtime.content;uses:="org.eclipse.core.internal.content,org.eclipse.core.runtime,org.eclipse.core.runtime.preferences"
 Bundle-ActivationPolicy: lazy
 Import-Package: javax.xml.parsers,
  org.eclipse.osgi.service.debug,
  org.eclipse.osgi.util;version="1.0.0",
- org.osgi.framework,
- org.osgi.util.tracker,
  org.xml.sax,
  org.xml.sax.ext,
  org.xml.sax.helpers
