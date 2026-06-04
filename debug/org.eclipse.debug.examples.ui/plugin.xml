@@ -443,14 +443,12 @@
             locationURI="popup:pda.dataStackView?after=additions">
          <command
                commandId="org.eclipse.debug.examples.ui.pushCommand"
-               disabledIcon="icons/full/dlcl16/push.gif"
                icon="icons/full/elcl16/push.gif"
                label="%push.command.label"
                style="push">
          </command>
          <command
                commandId="org.eclipse.debug.examples.ui.popCommand"
-               disabledIcon="icons/full/dlcl16/pop.gif"
                icon="icons/full/elcl16/pop.gif"
                label="%pop.command.label"
                style="push">
@@ -460,14 +458,12 @@
             locationURI="toolbar:pda.dataStackView?after=additions">
          <command
                commandId="org.eclipse.debug.examples.ui.pushCommand"
-               disabledIcon="icons/full/dlcl16/push.gif"
                icon="icons/full/elcl16/push.gif"
                label="%push.command.label2"
                style="push">
          </command>
          <command
                commandId="org.eclipse.debug.examples.ui.popCommand"
-               disabledIcon="icons/full/dlcl16/pop.gif"
                icon="icons/full/elcl16/pop.gif"
                label="%pop.command.label2"
                style="push">
