@@ -6,8 +6,28 @@ Bundle-Version: 3.17.100.qualifier
 Bundle-Activator: org.eclipse.ui.console.ConsolePlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Export-Package: org.eclipse.ui.console,
- org.eclipse.ui.console.actions,
+Export-Package: org.eclipse.ui.console;
+  uses:="org.eclipse.core.runtime,
+   org.eclipse.core.runtime.jobs,
+   org.eclipse.jface.action,
+   org.eclipse.jface.resource,
+   org.eclipse.jface.text,
+   org.eclipse.jface.text.source,
+   org.eclipse.jface.util,
+   org.eclipse.swt.custom,
+   org.eclipse.swt.events,
+   org.eclipse.swt.graphics,
+   org.eclipse.swt.widgets,
+   org.eclipse.ui,
+   org.eclipse.ui.console.actions,
+   org.eclipse.ui.part,
+   org.eclipse.ui.plugin,
+   org.osgi.framework",
+ org.eclipse.ui.console.actions;
+  uses:="org.eclipse.jface.action,
+   org.eclipse.jface.text,
+   org.eclipse.ui.console,
+   org.eclipse.ui.texteditor",
  org.eclipse.ui.internal.console;x-internal:=true
 Require-Bundle: org.eclipse.ui;bundle-version="[3.208.0,4.0.0)",
  org.eclipse.jface.text;bundle-version="[3.5.0,4.0.0)",
