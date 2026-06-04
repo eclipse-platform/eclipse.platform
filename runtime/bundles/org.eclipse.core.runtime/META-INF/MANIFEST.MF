@@ -1,14 +1,14 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
-Bundle-Version: 3.34.200.qualifier
+Bundle-Version: 3.35.0.qualifier
 Bundle-SymbolicName: org.eclipse.core.runtime; singleton:=true
 Bundle-Vendor: %providerName
 Bundle-Activator: org.eclipse.core.internal.runtime.PlatformActivator
 Bundle-Localization: plugin
 Export-Package: org.eclipse.core.internal.preferences.legacy;x-internal:=true,
  org.eclipse.core.internal.runtime;x-internal:=true,
- org.eclipse.core.runtime;version="3.7.0"
+ org.eclipse.core.runtime;version="3.8.0"
 Require-Bundle: org.eclipse.osgi;bundle-version="[3.23.0,4.0.0)";visibility:=reexport,
  org.eclipse.equinox.common;bundle-version="[3.20.0,4.0.0)";visibility:=reexport,
  org.eclipse.core.jobs;bundle-version="[3.15.0,4.0.0)";visibility:=reexport,
