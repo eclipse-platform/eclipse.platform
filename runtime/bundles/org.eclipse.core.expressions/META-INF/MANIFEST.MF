@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.core.expressions; singleton:=true
 Bundle-Version: 3.9.600.qualifier
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Export-Package: org.eclipse.core.expressions,
+Export-Package: org.eclipse.core.expressions;uses:="org.eclipse.core.internal.expressions,org.eclipse.core.runtime,org.w3c.dom",
  org.eclipse.core.internal.expressions;x-internal:=true,
  org.eclipse.core.internal.expressions.propertytester;x-internal:=true,
  org.eclipse.core.internal.expressions.util;x-internal:=true
