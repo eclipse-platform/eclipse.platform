@@ -67,8 +67,9 @@ public class ReadOnlyMarkerPropertySource implements IPropertySource {
 	}
 
 	private void findDeclaredPropertyDescriptorsFor(MarkerExtensionModel.MarkerInfo anInfo, List<PropertyDescriptor> descriptorList, Set<String> actualAttributeSet) {
-		if (anInfo == null)
+		if (anInfo == null) {
 			return;
+		}
 		try {
 			if (anInfo.id.equals(marker.getType())) {
 				persistentDescriptor.setCategory(anInfo.id);
@@ -96,8 +97,9 @@ public class ReadOnlyMarkerPropertySource implements IPropertySource {
 	@Override
 	public Object getPropertyValue(Object id) {
 		String name = (String) id;
-		if ("persistent".equals(name))
+		if ("persistent".equals(name)) {
 			return info.persistent ? Boolean.TRUE : Boolean.FALSE;
+		}
 		try {
 			return marker.getAttribute(name);
 		} catch (CoreException e) {
@@ -109,8 +111,9 @@ public class ReadOnlyMarkerPropertySource implements IPropertySource {
 	@Override
 	public boolean isPropertySet(Object id) {
 		String name = (String) id;
-		if ("persistent".equals(name))
+		if ("persistent".equals(name)) {
 			return info != null;
+		}
 		try {
 			return marker.getAttribute(name) != null;
 		} catch (CoreException e) {

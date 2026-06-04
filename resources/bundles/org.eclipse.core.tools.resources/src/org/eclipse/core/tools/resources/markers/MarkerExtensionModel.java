@@ -104,12 +104,14 @@ public class MarkerExtensionModel {
 					IConfigurationElement elt = configElements[j];
 					if (elt.getName().equalsIgnoreCase("super")) {
 						String sup = elt.getAttribute("type");
-						if (sup != null)
+						if (sup != null) {
 							supersList.add(sup);
+						}
 					} else if (elt.getName().equalsIgnoreCase("attribute")) {
 						String attr = elt.getAttribute("name");
-						if (attr != null)
+						if (attr != null) {
 							attributes.add(attr);
+						}
 					} else if (elt.getName().equalsIgnoreCase("persistent")) {
 						String value = elt.getAttribute("value");
 						persistent = "yes".equalsIgnoreCase(value) ? true : false;
@@ -119,8 +121,9 @@ public class MarkerExtensionModel {
 				markerMap.put(identifier, info);
 			}
 		}
-		if (DEBUG)
+		if (DEBUG) {
 			dumpMarkerTypes();
+		}
 	}
 
 	// a cruddy debugging tool. Dumps the model out in pseudo xml
@@ -146,8 +149,9 @@ public class MarkerExtensionModel {
 			if (hasAttrs) {
 				System.out.println();
 				printlnIndented(indent + 1, " attrs='" + mtype.declaredAttributes + "'" + (hasSupers ? ">" : "/>"));
-				if (!hasSupers)
+				if (!hasSupers) {
 					return;
+				}
 			} else {
 				System.out.println(">");
 			}
@@ -163,8 +167,9 @@ public class MarkerExtensionModel {
 	}
 
 	private void printIndented(int indent, Object value) {
-		for (int i = 0; i < indent; i++)
+		for (int i = 0; i < indent; i++) {
 			System.out.print("  ");
+		}
 		System.out.print(value);
 	}
 

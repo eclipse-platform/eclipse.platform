@@ -210,10 +210,9 @@ public class ResourceChangeView extends SpyView implements IResourceChangeListen
 		}
 
 		private void initialize(Object input) {
-			if (!(input instanceof IResourceChangeEvent)) {
+			if (!(input instanceof IResourceChangeEvent evt)) {
 				return;
 			}
-			IResourceChangeEvent evt = (IResourceChangeEvent) input;
 			ResourceEventNode root = new ResourceEventNode(evt);
 			invisibleRoot = new DeltaNode();
 			invisibleRoot.addChild(root);
