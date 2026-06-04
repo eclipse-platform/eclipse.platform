@@ -335,8 +335,7 @@ public class ElementTreeView extends SpyView implements IResourceChangeListener 
 			if (object instanceof Map) {
 				return basicSizeof((Map<?, ?>) object);
 			}
-			if (object instanceof QualifiedName) {
-				QualifiedName name = (QualifiedName) object;
+			if (object instanceof QualifiedName name) {
 				return 20 + sizeof(name.getQualifier()) + sizeof(name.getLocalName());
 			}
 			// unknown -- use deep size

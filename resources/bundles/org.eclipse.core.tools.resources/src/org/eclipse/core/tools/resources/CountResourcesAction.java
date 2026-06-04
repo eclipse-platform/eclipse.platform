@@ -67,8 +67,7 @@ public class CountResourcesAction implements IWorkbenchWindowActionDelegate {
 		ISelectionService selectionService = window.getSelectionService();
 		ISelection selection = selectionService.getSelection();
 
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+		if (selection instanceof IStructuredSelection structuredSelection) {
 			for (Object element : structuredSelection) {
 				IResource resource = convertToResource(element);
 				if (resource != null) {
@@ -125,8 +124,7 @@ public class CountResourcesAction implements IWorkbenchWindowActionDelegate {
 			return (IResource) object;
 		}
 
-		if (object instanceof IAdaptable) {
-			IAdaptable adaptable = (IAdaptable) object;
+		if (object instanceof IAdaptable adaptable) {
 			return adaptable.getAdapter(IResource.class);
 		}
 

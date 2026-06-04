@@ -189,12 +189,12 @@ public class LocalHistoryBrowserView extends ViewPart {
 
 		@Override
 		public Object getParent(Object child) {
-			return child instanceof Node ? ((Node) child).getParent() : null;
+			return child instanceof Node n ? n.getParent() : null;
 		}
 
 		@Override
 		public Object[] getChildren(Object parent) {
-			return parent instanceof Node ? ((Node) parent).getChildren() : new Object[0];
+			return parent instanceof Node n ? n.getChildren() : new Object[0];
 		}
 
 		@Override
@@ -306,9 +306,8 @@ public class LocalHistoryBrowserView extends ViewPart {
 			public void run() {
 				ISelection selection = viewer.getSelection();
 				Object obj = ((IStructuredSelection) selection).getFirstElement();
-				if (obj instanceof IFileState) {
+				if (obj instanceof IFileState state) {
 					// Show the file contents
-					IFileState state = (IFileState) obj;
 					IWorkbench workbench = PlatformUI.getWorkbench();
 					IEditorRegistry editorRegistry = workbench.getEditorRegistry();
 					IEditorDescriptor descriptor = editorRegistry.getDefaultEditor(state.getName());

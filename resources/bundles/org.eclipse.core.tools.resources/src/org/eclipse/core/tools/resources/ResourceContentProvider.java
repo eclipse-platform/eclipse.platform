@@ -70,13 +70,11 @@ public class ResourceContentProvider extends AbstractTreeContentProvider {
 	 */
 	protected void extractInfo(IResource selectedResource) {
 
-		if (!(selectedResource instanceof Resource)) {
+		if (!(selectedResource instanceof Resource resource)) {
 			String message = NLS.bind(Messages.resource_error_unknown_resource_impl, selectedResource.getClass().getName());
 			getRootNode().addChild(new TreeContentProviderNode(message));
 			return;
 		}
-
-		Resource resource = (Resource) selectedResource;
 
 		ResourceInfo info = resource.getResourceInfo(true, false);
 		// Resource#getResourceInfo may return null when the resource

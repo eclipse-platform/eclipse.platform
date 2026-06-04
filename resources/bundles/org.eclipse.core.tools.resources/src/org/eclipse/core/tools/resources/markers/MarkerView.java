@@ -398,8 +398,7 @@ public class MarkerView extends ViewPart implements ISelectionListener, IResourc
 		@Override
 		public String getText(Object obj) {
 			try {
-				if (obj instanceof IMarker) {
-					IMarker marker = (IMarker) obj;
+				if (obj instanceof IMarker marker) {
 					String message = (String) marker.getAttribute(IMarker.MESSAGE);
 					String type = marker.getType();
 					return message == null ? type : message + " : " + type;
@@ -482,8 +481,7 @@ public class MarkerView extends ViewPart implements ISelectionListener, IResourc
 			IStructuredSelection newSelection = emptySelection;
 			if (!sel.isEmpty() && sel.size() == 1) {
 				Object first = sel.getFirstElement();
-				if (first instanceof IMarker) {
-					IMarker marker = (IMarker) first;
+				if (first instanceof IMarker marker) {
 					propertySource.setSourceMarker(marker);
 					newSelection = new StructuredSelection(propertySource);
 				}
