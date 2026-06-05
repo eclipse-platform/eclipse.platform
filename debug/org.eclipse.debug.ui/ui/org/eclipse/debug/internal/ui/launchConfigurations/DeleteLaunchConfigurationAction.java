@@ -100,11 +100,6 @@ public class DeleteLaunchConfigurationAction extends AbstractLaunchConfiguration
 	}
 
 	@Override
-	public ImageDescriptor getDisabledImageDescriptor() {
-		return DebugUITools.getImageDescriptor(IInternalDebugUIConstants.IMG_DLCL_DELETE_CONFIG);
-	}
-
-	@Override
 	public ImageDescriptor getImageDescriptor() {
 		return DebugUITools.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_DELETE_CONFIG);
 	}

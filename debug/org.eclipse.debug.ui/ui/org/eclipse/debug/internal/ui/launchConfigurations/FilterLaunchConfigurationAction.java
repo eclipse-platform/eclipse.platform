@@ -55,11 +55,6 @@ public class FilterLaunchConfigurationAction extends Action {
 	}
 
 	@Override
-	public ImageDescriptor getDisabledImageDescriptor() {
-		return DebugUITools.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_FILTER_CONFIGS);
-	}
-
-	@Override
 	public ImageDescriptor getImageDescriptor() {
 		return DebugUITools.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_FILTER_CONFIGS);
 	}

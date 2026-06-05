@@ -60,11 +60,6 @@ public class CollapseAllLaunchConfigurationAction extends Action {
 	}
 
 	@Override
-	public ImageDescriptor getDisabledImageDescriptor() {
-		return DebugUITools.getImageDescriptor(IInternalDebugUIConstants.IMG_DLCL_COLLAPSE_ALL);
-	}
-
-	@Override
 	public void run() {
 		fViewer.collapseAll();
 	}

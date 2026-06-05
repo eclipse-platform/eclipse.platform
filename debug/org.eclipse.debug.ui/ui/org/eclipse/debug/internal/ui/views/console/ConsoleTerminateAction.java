@@ -53,7 +53,6 @@ public class ConsoleTerminateAction extends Action implements IUpdate {
 		fWindow = window;
 		setToolTipText(ConsoleMessages.ConsoleTerminateAction_1);
 		setImageDescriptor(DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_TERMINATE));
-		setDisabledImageDescriptor(DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_DLCL_TERMINATE));
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IDebugHelpContextIds.CONSOLE_TERMINATE_ACTION);
 		update();
 	}

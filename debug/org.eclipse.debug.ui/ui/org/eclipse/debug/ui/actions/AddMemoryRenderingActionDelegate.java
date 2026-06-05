@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.debug.core.model.IMemoryBlockRetrieval;
 import org.eclipse.debug.internal.ui.DebugPluginImages;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
-import org.eclipse.debug.internal.ui.IInternalDebugUIConstants;
 import org.eclipse.debug.internal.ui.actions.ActionMessages;
 import org.eclipse.debug.internal.ui.views.memory.MemoryViewUtil;
 import org.eclipse.debug.ui.DebugUITools;
@@ -303,7 +302,6 @@ public class AddMemoryRenderingActionDelegate extends Action implements IViewAct
 
 			action.setText(ActionMessages.AddMemoryRenderingActionDelegate_2);
 			action.setImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_LCL_ADD));
-			action.setDisabledImageDescriptor(DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_DLCL_MONITOR_EXPRESSION));
 		}
 	}
 

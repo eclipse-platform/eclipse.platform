@@ -15,7 +15,6 @@ package org.eclipse.debug.internal.ui.commands.actions;
 
 import org.eclipse.debug.core.commands.IDisconnectHandler;
 import org.eclipse.debug.internal.ui.DebugPluginImages;
-import org.eclipse.debug.internal.ui.IInternalDebugUIConstants;
 import org.eclipse.debug.internal.ui.actions.ActionMessages;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.debug.ui.actions.DebugCommandAction;
@@ -49,11 +48,6 @@ public class DisconnectCommandAction extends DebugCommandAction{
 	@Override
 	public String getToolTipText() {
 		return ActionMessages.DisconnectAction_3;
-	}
-
-	@Override
-	public ImageDescriptor getDisabledImageDescriptor() {
-		return DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_DLCL_DISCONNECT);
 	}
 
 	@Override

@@ -29,7 +29,6 @@ import org.eclipse.debug.internal.core.IConfigurationElementConstants;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
@@ -69,104 +68,63 @@ public class DebugPluginImages {
 		declareRegistryImage(IDebugUIConstants.IMG_FIND_ACTION, ELCL + "find.svg"); //$NON-NLS-1$
 
 		//menus
-		declareRegistryImage(IDebugUIConstants.IMG_LCL_CHANGE_VARIABLE_VALUE,
-				IInternalDebugUIConstants.IMG_DLCL_CHANGE_VARIABLE_VALUE, ELCL + "changevariablevalue_co.svg"); //$NON-NLS-1$
+		declareRegistryImage(IDebugUIConstants.IMG_LCL_CHANGE_VARIABLE_VALUE, ELCL + "changevariablevalue_co.svg"); //$NON-NLS-1$
 
 		declareRegistryImage(IDebugUIConstants.IMG_LCL_CONTENT_ASSIST, ELCL + "metharg_obj.svg"); //$NON-NLS-1$
 		declareRegistryImage(IDebugUIConstants.IMG_ELCL_CONTENT_ASSIST, IDebugUIConstants.IMG_DLCL_CONTENT_ASSIST,
 				ELCL + "metharg_obj.svg"); //$NON-NLS-1$
 
 		// Local toolbars
-		declareRegistryImage(IDebugUIConstants.IMG_LCL_DETAIL_PANE, IInternalDebugUIConstants.IMG_DLCL_DETAIL_PANE,
-				ELCL + "toggledetailpane_co.svg"); //$NON-NLS-1$
-		declareRegistryImage(IDebugUIConstants.IMG_LCL_DETAIL_PANE_UNDER,
-				IInternalDebugUIConstants.IMG_DLCL_DETAIL_PANE_UNDER, ELCL + "det_pane_under.svg"); //$NON-NLS-1$
-		declareRegistryImage(IDebugUIConstants.IMG_LCL_DETAIL_PANE_RIGHT,
-				IInternalDebugUIConstants.IMG_DLCL_DETAIL_PANE_RIGHT, ELCL + "det_pane_right.svg"); //$NON-NLS-1$
-		declareRegistryImage(IDebugUIConstants.IMG_LCL_DETAIL_PANE_HIDE,
-				IInternalDebugUIConstants.IMG_DLCL_DETAIL_PANE_HIDE, ELCL + "det_pane_hide.svg"); //$NON-NLS-1$
-		declareRegistryImage(IDebugUIConstants.IMG_LCL_LOCK, IInternalDebugUIConstants.IMG_DLCL_LOCK,
-				ELCL + "lock_co.svg"); //$NON-NLS-1$
-		declareRegistryImage(IDebugUIConstants.IMG_LCL_TYPE_NAMES, IInternalDebugUIConstants.IMG_DLCL_TYPE_NAMES,
-				ELCL + "tnames_co.svg"); //$NON-NLS-1$
-		declareRegistryImage(IDebugUIConstants.IMG_LCL_DISCONNECT, IInternalDebugUIConstants.IMG_DLCL_DISCONNECT,
-				ELCL + "disconnect_co.svg"); //$NON-NLS-1$
-		declareRegistryImage(IDebugUIConstants.IMG_LCL_REMOVE_ALL, IInternalDebugUIConstants.IMG_DLCL_REMOVE_ALL,
-				ELCL + "rem_all_co.svg"); //$NON-NLS-1$
-		declareRegistryImage(IDebugUIConstants.IMG_LCL_REMOVE, IInternalDebugUIConstants.IMG_DLCL_REMOVE,
-				ELCL + "rem_co.svg"); //$NON-NLS-1$
-		declareRegistryImage(IDebugUIConstants.IMG_LCL_ADD, IInternalDebugUIConstants.IMG_DLCL_MONITOR_EXPRESSION,
-				ELCL + "monitorexpression_tsk.svg"); //$NON-NLS-1$
+		declareRegistryImage(IDebugUIConstants.IMG_LCL_DETAIL_PANE, ELCL + "toggledetailpane_co.svg"); //$NON-NLS-1$
+		declareRegistryImage(IDebugUIConstants.IMG_LCL_DETAIL_PANE_UNDER, ELCL + "det_pane_under.svg"); //$NON-NLS-1$
+		declareRegistryImage(IDebugUIConstants.IMG_LCL_DETAIL_PANE_RIGHT, ELCL + "det_pane_right.svg"); //$NON-NLS-1$
+		declareRegistryImage(IDebugUIConstants.IMG_LCL_DETAIL_PANE_HIDE, ELCL + "det_pane_hide.svg"); //$NON-NLS-1$
+		declareRegistryImage(IDebugUIConstants.IMG_LCL_LOCK, ELCL + "lock_co.svg"); //$NON-NLS-1$
+		declareRegistryImage(IDebugUIConstants.IMG_LCL_TYPE_NAMES, ELCL + "tnames_co.svg"); //$NON-NLS-1$
+		declareRegistryImage(IDebugUIConstants.IMG_LCL_DISCONNECT, ELCL + "disconnect_co.svg"); //$NON-NLS-1$
+		declareRegistryImage(IDebugUIConstants.IMG_LCL_REMOVE_ALL, ELCL + "rem_all_co.svg"); //$NON-NLS-1$
+		declareRegistryImage(IDebugUIConstants.IMG_LCL_REMOVE, ELCL + "rem_co.svg"); //$NON-NLS-1$
+		declareRegistryImage(IDebugUIConstants.IMG_LCL_ADD, ELCL + "monitorexpression_tsk.svg"); //$NON-NLS-1$
 
 		// local toolbars
-		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_DETAIL_PANE_AUTO,
-				IInternalDebugUIConstants.IMG_DLCL_DETAIL_PANE_AUTO, ELCL + "det_pane_auto.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_DETAIL_PANE_AUTO, ELCL + "det_pane_auto.svg"); //$NON-NLS-1$
 		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_DEBUG_VIEW_COMPACT_LAYOUT,
 				ELCL + "debug_view_compact.svg"); //$NON-NLS-1$
-		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_SHOW_LOGICAL_STRUCTURE,
-				IInternalDebugUIConstants.IMG_DLCL_SHOW_LOGICAL_STRUCTURE, ELCL + "var_cntnt_prvdr.svg"); //$NON-NLS-1$
-		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_COLLAPSE_ALL,
-				IInternalDebugUIConstants.IMG_DLCL_COLLAPSE_ALL, ELCL + "collapseall.svg"); //$NON-NLS-1$
-		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_TERMINATE, IInternalDebugUIConstants.IMG_DLCL_TERMINATE,
-				ELCL + "terminate_co.svg"); //$NON-NLS-1$
-		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_RUN_TO_LINE,
-				IInternalDebugUIConstants.IMG_DLCL_RUN_TO_LINE, ELCL + "runtoline_co.svg"); //$NON-NLS-1$
-		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_REMOVE_MEMORY,
-				IInternalDebugUIConstants.IMG_DLCL_REMOVE_MEMORY, ELCL + "removememory_tsk.svg"); //$NON-NLS-1$
-		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_RESET_MEMORY,
-				IInternalDebugUIConstants.IMG_DLCL_RESET_MEMORY, ELCL + "memoryreset_tsk.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_SHOW_LOGICAL_STRUCTURE, ELCL + "var_cntnt_prvdr.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_COLLAPSE_ALL, ELCL + "collapseall.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_TERMINATE, ELCL + "terminate_co.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_RUN_TO_LINE, ELCL + "runtoline_co.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_REMOVE_MEMORY, ELCL + "removememory_tsk.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_RESET_MEMORY, ELCL + "memoryreset_tsk.svg"); //$NON-NLS-1$
 		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_COPY_VIEW_TO_CLIPBOARD,
-				IInternalDebugUIConstants.IMG_DLCL_COPY_VIEW_TO_CLIPBOARD, ELCL + "copyviewtoclipboard_tsk.svg"); //$NON-NLS-1$
-		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_PRINT_TOP_VIEW_TAB,
-				IInternalDebugUIConstants.IMG_DLCL_PRINT_TOP_VIEW_TAB, ELCL + "printview_tsk.svg"); //$NON-NLS-1$
+				ELCL + "copyviewtoclipboard_tsk.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_PRINT_TOP_VIEW_TAB, ELCL + "printview_tsk.svg"); //$NON-NLS-1$
 		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_HIERARCHICAL, ELCL + "hierarchicalLayout.svg"); //$NON-NLS-1$
-		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_FILTER_CONFIGS,
-				IInternalDebugUIConstants.IMG_DLCL_FILTER_CONFIGS, ELCL + "filter_ps.svg"); //$NON-NLS-1$
-		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_DUPLICATE_CONFIG,
-				IInternalDebugUIConstants.IMG_DLCL_DUPLICATE_CONFIG, ELCL + "copy_edit_co.svg"); //$NON-NLS-1$
-		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_NEW_CONFIG,
-				IInternalDebugUIConstants.IMG_DLCL_NEW_CONFIG, ELCL + "new_con.svg"); //$NON-NLS-1$
-		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_DELETE_CONFIG,
-				IInternalDebugUIConstants.IMG_DLCL_DELETE_CONFIG, ELCL + "delete_config.svg"); //$NON-NLS-1$
-		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_NEW_PROTO, IInternalDebugUIConstants.IMG_DLCL_NEW_PROTO,
-				ELCL + "new_proto.svg"); //$NON-NLS-1$
-		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_LINK_PROTO,
-				IInternalDebugUIConstants.IMG_DLCL_LINK_PROTO, ELCL + "link_proto.svg"); //$NON-NLS-1$
-		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_UNLINK_PROTO,
-				IInternalDebugUIConstants.IMG_DLCL_UNLINK_PROTO, ELCL + "unlink_proto.svg"); //$NON-NLS-1$
-		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_RESET_PROTO,
-				IInternalDebugUIConstants.IMG_DLCL_RESET_PROTO, ELCL + "reset_proto.svg"); //$NON-NLS-1$
-		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_SUSPEND, IInternalDebugUIConstants.IMG_DLCL_SUSPEND,
-				ELCL + "suspend_co.svg"); //$NON-NLS-1$
-		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_RESUME, IInternalDebugUIConstants.IMG_DLCL_RESUME,
-				ELCL + "resume_co.svg"); //$NON-NLS-1$
-		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_STEP_RETURN,
-				IInternalDebugUIConstants.IMG_DLCL_STEP_RETURN, ELCL + "stepreturn_co.svg"); //$NON-NLS-1$
-		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_STEP_OVER, IInternalDebugUIConstants.IMG_DLCL_STEP_OVER,
-				ELCL + "stepover_co.svg"); //$NON-NLS-1$
-		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_STEP_INTO, IInternalDebugUIConstants.IMG_DLCL_STEP_INTO,
-				ELCL + "stepinto_co.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_FILTER_CONFIGS, ELCL + "filter_ps.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_DUPLICATE_CONFIG, ELCL + "copy_edit_co.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_NEW_CONFIG, ELCL + "new_con.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_DELETE_CONFIG, ELCL + "delete_config.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_NEW_PROTO, ELCL + "new_proto.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_LINK_PROTO, ELCL + "link_proto.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_UNLINK_PROTO, ELCL + "unlink_proto.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_RESET_PROTO, ELCL + "reset_proto.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_SUSPEND, ELCL + "suspend_co.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_RESUME, ELCL + "resume_co.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_STEP_RETURN, ELCL + "stepreturn_co.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_STEP_OVER, ELCL + "stepover_co.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_STEP_INTO, ELCL + "stepinto_co.svg"); //$NON-NLS-1$
 		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_DROP_TO_FRAME, ELCL + "drop_to_frame.svg"); //$NON-NLS-1$
-		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_TERMINATE_AND_REMOVE,
-				IInternalDebugUIConstants.IMG_DLCL_TERMINATE_AND_REMOVE, ELCL + "terminate_rem_co.svg"); //$NON-NLS-1$
-		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_TERMINATE_ALL,
-				IInternalDebugUIConstants.IMG_DLCL_TERMINATE_ALL, ELCL + "terminate_all_co.svg"); //$NON-NLS-1$
-		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_TERMINATE_AND_RELAUNCH,
-				IInternalDebugUIConstants.IMG_DLCL_TERMINATE_AND_RELAUNCH, CTOOL + "term_restart.svg"); //$NON-NLS-1$
-		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_TOGGLE_STEP_FILTERS,
-				IInternalDebugUIConstants.IMG_DLCL_TOGGLE_STEP_FILTERS, ELCL + "stepbystep_co.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_TERMINATE_AND_REMOVE, ELCL + "terminate_rem_co.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_TERMINATE_ALL, ELCL + "terminate_all_co.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_TERMINATE_AND_RELAUNCH, CTOOL + "term_restart.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_TOGGLE_STEP_FILTERS, ELCL + "stepbystep_co.svg"); //$NON-NLS-1$
 		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_STANDARD_OUT, ELCL + "writeout_co.svg"); //$NON-NLS-1$
 		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_STANDARD_ERR, ELCL + "writeerr_co.svg"); //$NON-NLS-1$
-		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_NEXT_THREAD,
-				IInternalDebugUIConstants.IMG_DLCL_NEXT_THREAD, ELCL + "next_thread_nav.svg"); //$NON-NLS-1$
-		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_PREVIOUS_THREAD,
-				IInternalDebugUIConstants.IMG_DLCL_PREVIOUS_THREAD, ELCL + "prev_thread_nav.svg"); //$NON-NLS-1$
-		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_RESTART, IInternalDebugUIConstants.IMG_DLCL_RESTART,
-				ELCL + "restart_co.svg"); //$NON-NLS-1$
-		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_EXPORT_CONFIG,
-				IInternalDebugUIConstants.IMG_DLCL_EXPORT_CONFIG, ELCL + "export_wiz.svg"); //$NON-NLS-1$
-		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_IMPORT_CONFIG,
-				IInternalDebugUIConstants.IMG_DLCL_IMPORT_CONFIG, ELCL + "import_wiz.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_NEXT_THREAD, ELCL + "next_thread_nav.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_PREVIOUS_THREAD, ELCL + "prev_thread_nav.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_RESTART, ELCL + "restart_co.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_EXPORT_CONFIG, ELCL + "export_wiz.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_IMPORT_CONFIG, ELCL + "import_wiz.svg"); //$NON-NLS-1$
 
 		//Object
 		declareRegistryImage(IDebugUIConstants.IMG_OBJS_LAUNCH_DEBUG, OBJECT + "ldebug_obj.svg"); //$NON-NLS-1$
@@ -243,8 +201,7 @@ public class DebugPluginImages {
 
 		//source location
 		declareRegistryImage(IInternalDebugUIConstants.IMG_SRC_LOOKUP_MENU, ELCL + "edtsrclkup_co.svg"); //$NON-NLS-1$
-		declareRegistryImage(IInternalDebugUIConstants.IMG_SRC_LOOKUP_MENU_ELCL,
-				IInternalDebugUIConstants.IMG_SRC_LOOKUP_MENU_DLCL, ELCL + "edtsrclkup_co.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_SRC_LOOKUP_MENU_ELCL, ELCL + "edtsrclkup_co.svg"); //$NON-NLS-1$
 		declareRegistryImage(IInternalDebugUIConstants.IMG_SRC_LOOKUP_TAB, ELCL + "edtsrclkup_co.svg"); //$NON-NLS-1$
 		declareRegistryImage(IInternalDebugUIConstants.IMG_ADD_SRC_LOC_WIZ, WIZBAN + "addsrcloc_wiz.svg"); //$NON-NLS-1$
 		declareRegistryImage(IInternalDebugUIConstants.IMG_EDIT_SRC_LOC_WIZ, WIZBAN + "edtsrclkup_wiz.svg"); //$NON-NLS-1$
@@ -290,9 +247,7 @@ public class DebugPluginImages {
 		}
 		imageRegistry.put(key, imageDescriptor);
 		if (disabledKey != null) {
-			ImageDescriptor disabledImageDescriptor = ImageDescriptor.createWithFlags(imageDescriptor,
-					SWT.IMAGE_DISABLE);
-			imageRegistry.put(disabledKey, disabledImageDescriptor);
+			imageRegistry.put(disabledKey, imageDescriptor.asDisabledDescriptor());
 		}
 	}
 

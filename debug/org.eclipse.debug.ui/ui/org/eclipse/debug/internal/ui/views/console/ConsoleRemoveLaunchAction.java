@@ -19,7 +19,6 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.ILaunchesListener2;
 import org.eclipse.debug.internal.ui.DebugPluginImages;
 import org.eclipse.debug.internal.ui.IDebugHelpContextIds;
-import org.eclipse.debug.internal.ui.IInternalDebugUIConstants;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -47,7 +46,6 @@ public class ConsoleRemoveLaunchAction extends Action implements IViewActionDele
 		setToolTipText(ConsoleMessages.ConsoleRemoveTerminatedAction_1);
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IDebugHelpContextIds.CONSOLE_REMOVE_LAUNCH);
 		setImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_LCL_REMOVE));
-		setDisabledImageDescriptor(DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_DLCL_REMOVE));
 		DebugPlugin.getDefault().getLaunchManager().addLaunchListener(this);
 		ConsolePlugin.getDefault().getConsoleManager().addConsoleListener(this);
 	}

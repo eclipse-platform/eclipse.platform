@@ -103,11 +103,6 @@ public class UnlinkPrototypeAction extends AbstractLaunchConfigurationAction {
 	}
 
 	@Override
-	public ImageDescriptor getDisabledImageDescriptor() {
-		return DebugUITools.getImageDescriptor(IInternalDebugUIConstants.IMG_DLCL_UNLINK_PROTO);
-	}
-
-	@Override
 	public ImageDescriptor getImageDescriptor() {
 		return DebugUITools.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_UNLINK_PROTO);
 	}

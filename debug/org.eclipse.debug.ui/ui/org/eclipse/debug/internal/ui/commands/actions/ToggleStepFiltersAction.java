@@ -40,11 +40,6 @@ public class ToggleStepFiltersAction extends DebugCommandAction implements IPref
 	private boolean fInitialized = !DebugUITools.isUseStepFilters();
 
 	@Override
-	public ImageDescriptor getDisabledImageDescriptor() {
-		return DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_DLCL_TOGGLE_STEP_FILTERS);
-	}
-
-	@Override
 	public String getHelpContextId() {
 		return "org.eclipse.debug.ui.step_with_filters_action_context"; //$NON-NLS-1$
 	}

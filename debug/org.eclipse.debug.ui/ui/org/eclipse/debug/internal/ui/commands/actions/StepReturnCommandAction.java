@@ -33,11 +33,6 @@ public class StepReturnCommandAction extends DebugCommandAction {
 	}
 
 	@Override
-	public ImageDescriptor getDisabledImageDescriptor() {
-		return DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_DLCL_STEP_RETURN);
-	}
-
-	@Override
 	public String getHelpContextId() {
 		return "org.eclipse.debug.ui.step_return_action_context"; //$NON-NLS-1$
 	}

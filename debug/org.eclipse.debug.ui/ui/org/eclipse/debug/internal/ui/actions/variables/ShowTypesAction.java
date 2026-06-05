@@ -18,7 +18,6 @@ package org.eclipse.debug.internal.ui.actions.variables;
 import org.eclipse.debug.internal.ui.DebugPluginImages;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.IDebugHelpContextIds;
-import org.eclipse.debug.internal.ui.IInternalDebugUIConstants;
 import org.eclipse.debug.internal.ui.actions.ActionMessages;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.TreeModelViewer;
 import org.eclipse.debug.ui.IDebugModelPresentation;
@@ -44,7 +43,6 @@ public class ShowTypesAction extends Action {
 		super(ActionMessages.ShowTypesAction_Show__Type_Names_1, IAction.AS_CHECK_BOX);
 		setView(view);
 		setToolTipText(ActionMessages.ShowTypesAction_Show_Type_Names);
-		setDisabledImageDescriptor(DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_DLCL_TYPE_NAMES));
 		setImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_LCL_TYPE_NAMES));
 		setId(DebugUIPlugin.getUniqueIdentifier() + ".ShowTypesAction"); //$NON-NLS-1$
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IDebugHelpContextIds.SHOW_TYPES_ACTION);
