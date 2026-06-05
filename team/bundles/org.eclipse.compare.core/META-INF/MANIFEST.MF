@@ -9,7 +9,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.compare.internal.core;x-friends:="org.eclipse.compare",
  org.eclipse.compare.internal.core.patch;x-friends:="org.eclipse.compare,org.eclipse.team.ui",
- org.eclipse.compare.patch;core=split;mandatory:=core,
- org.eclipse.compare.rangedifferencer
+ org.eclipse.compare.patch;core=split;mandatory:=core;uses:="org.eclipse.core.runtime",
+ org.eclipse.compare.rangedifferencer;uses:="org.eclipse.core.runtime"
 Bundle-Localization: plugin
 Automatic-Module-Name: org.eclipse.compare.core
