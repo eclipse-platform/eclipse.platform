@@ -18,6 +18,7 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.commands.IDisconnectHandler;
 import org.eclipse.debug.core.commands.IDropToFrameHandler;
 import org.eclipse.debug.core.commands.IResumeHandler;
+import org.eclipse.debug.core.commands.IResumeOthersHandler;
 import org.eclipse.debug.core.commands.IStepFiltersHandler;
 import org.eclipse.debug.core.commands.IStepIntoHandler;
 import org.eclipse.debug.core.commands.IStepOverHandler;
@@ -31,6 +32,7 @@ import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IStep;
 import org.eclipse.debug.core.model.ISuspendResume;
 import org.eclipse.debug.core.model.ITerminate;
+import org.eclipse.debug.core.model.IThread;
 
 /**
  * Adapter factory for debug commands.
@@ -48,6 +50,7 @@ public class CommandAdapterFactory implements IAdapterFactory {
 	private static IDisconnectHandler fgDisconnectCommand = new DisconnectCommand();
 	private static ISuspendHandler fgSuspendCommand = new SuspendCommand();
 	private static IResumeHandler fgResumeCommand = new ResumeCommand();
+	private static IResumeOthersHandler fgResumeOthersCommand = new ResumeOthersCommand();
 	private static IStepFiltersHandler fgStepFiltersCommand = new StepFiltersCommand();
 
 	@SuppressWarnings("unchecked")
@@ -91,6 +94,11 @@ public class CommandAdapterFactory implements IAdapterFactory {
 				return (T) fgResumeCommand;
 			}
 		}
+		if (IResumeOthersHandler.class.equals(adapterType)) {
+			if (adaptableObject instanceof ISuspendResume && adaptableObject instanceof IThread) {
+				return (T) fgResumeOthersCommand;
+			}
+		}
 		if (IDisconnectHandler.class.equals(adapterType)) {
 			if (adaptableObject instanceof IDisconnect) {
 				return (T) fgDisconnectCommand;
@@ -113,6 +121,7 @@ public class CommandAdapterFactory implements IAdapterFactory {
 				IStepReturnHandler.class,
 				ISuspendHandler.class,
 				IResumeHandler.class,
+				IResumeOthersHandler.class,
 				IDropToFrameHandler.class,
 				IDisconnectHandler.class,
 				IStepFiltersHandler.class};

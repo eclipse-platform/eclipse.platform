@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2023 IBM Corporation and others.
+ * Copyright (c) 2009, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -48,6 +48,7 @@ import org.eclipse.debug.tests.sourcelookup.SourceLookupFacilityTests;
 import org.eclipse.debug.tests.statushandlers.StatusHandlerTests;
 import org.eclipse.debug.tests.stepfilters.StepFiltersTests;
 import org.eclipse.debug.tests.ui.LaunchConfigurationTabGroupViewerTest;
+import org.eclipse.debug.tests.ui.ResumeOthersCommandTests;
 import org.eclipse.debug.tests.ui.VariableValueEditorManagerTests;
 import org.eclipse.debug.tests.view.memory.MemoryRenderingTests;
 import org.eclipse.debug.tests.view.memory.TableRenderingTests;
@@ -142,6 +143,7 @@ import org.junit.platform.suite.api.Suite;
 
 		// Logical structure
 		LogicalStructureCacheTest.class, //
+		ResumeOthersCommandTests.class,
 })
 public class AutomatedSuite {
 }
