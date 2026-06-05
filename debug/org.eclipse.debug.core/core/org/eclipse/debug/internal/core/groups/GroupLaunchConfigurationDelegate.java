@@ -402,12 +402,8 @@ public class GroupLaunchConfigurationDelegate extends LaunchConfigurationDelegat
 	public static void removeLaunchElements(ILaunchConfigurationWorkingCopy configuration) {
 		try {
 			for (String attr : configuration.getAttributes().keySet()) {
-				try {
-					if (attr.startsWith(MULTI_LAUNCH_CONSTANTS_PREFIX)) {
-						configuration.removeAttribute(attr);
-					}
-				} catch (Exception e) {
-					DebugPlugin.log(e);
+				if (attr.startsWith(MULTI_LAUNCH_CONSTANTS_PREFIX)) {
+					configuration.removeAttribute(attr);
 				}
 			}
 		} catch (CoreException e) {
