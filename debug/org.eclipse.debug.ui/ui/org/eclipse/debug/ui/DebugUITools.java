@@ -716,36 +716,6 @@ public class DebugUITools {
 	}
 
 	/**
-	 * Saves all dirty editors and builds the workspace according to current
-	 * preference settings, and returns whether a launch should proceed.
-	 * <p>
-	 * The following preferences affect whether dirty editors are saved, and/or if
-	 * the user is prompted to save dirty editors:
-	 * </p>
-	 * <ul>
-	 * <li>PREF_NEVER_SAVE_DIRTY_EDITORS_BEFORE_LAUNCH</li>
-	 * <li>PREF_PROMPT_SAVE_DIRTY_EDITORS_BEFORE_LAUNCH</li>
-	 * <li>PREF_AUTOSAVE_DIRTY_EDITORS_BEFORE_LAUNCH</li>
-	 * </ul>
-	 * The following preference affects whether a build is performed before
-	 * launching (if required):
-	 * <ul>
-	 * <li>PREF_BUILD_BEFORE_LAUNCH</li>
-	 * </ul>
-	 *
-	 * @return whether a launch should proceed
-	 * @since 2.0
-	 * @deprecated Saving has been moved to the launch delegate
-	 *             <code>LaunchConfigurationDelegate</code> to allow for scoped
-	 *             saving of resources that are only involved in the current launch,
-	 *             no longer the entire workspace
-	 */
-	@Deprecated(forRemoval = true, since = "2023-12")
-	public static boolean saveAndBuildBeforeLaunch() {
-		return DebugUIPlugin.saveAndBuild();
-	}
-
-	/**
 	 * Saves all dirty editors according to current preference settings, and returns
 	 * whether a launch should proceed.
 	 * <p>

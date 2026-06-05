@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Objects;
 import java.util.ResourceBundle;
-import org.eclipse.core.internal.runtime.AuthorizationHandler;
 import org.eclipse.core.internal.runtime.InternalPlatform;
 import org.eclipse.core.internal.runtime.Messages;
 import org.eclipse.core.internal.runtime.MetaDataKeeper;
@@ -625,33 +624,6 @@ public final class Platform {
 	}
 
 	/**
-	 * Adds the specified resource to the protection space specified by the
-	 * given realm. All targets at or deeper than the depth of the last
-	 * symbolic element in the path of the given resource URL are assumed to
-	 * be in the same protection space.
-	 *
-	 * @param resourceUrl the URL identifying the resources to be added to
-	 *		the specified protection space. For example,
-	 *		"http://www.example.com/folder/".
-	 * @param realm the name of the protection space. For example,
-	 *		"realm1@example.com"
-	 * @exception CoreException if there are problems setting the
-	 *		authorization information. Reasons include:
-	 * <ul>
-	 * <li>The key ring could not be saved.</li>
-	 * </ul>
-	 * @deprecated Authorization database is superseded by the Equinox secure storage.
-	 * Use <code>org.eclipse.equinox.security.storage.SecurePreferencesFactory</code>
-	 * to obtain secure preferences and <code>org.eclipse.equinox.security.storage.ISecurePreferences</code>
-	 * for data access and modifications.
-	 * This API will be deleted in a future release. See bug 370248 for details.
-	 */
-	@Deprecated(forRemoval = true, since = "2024-03")
-	public static void addProtectionSpace(URL resourceUrl, String realm) throws CoreException {
-		AuthorizationHandler.addProtectionSpace(resourceUrl, realm);
-	}
-
-	/**
 	 * Returns a URL that is the local equivalent of the
 	 * supplied URL. This method is expected to be used with the
 	 * plug-in-relative URLs returned by IPluginDescriptor, Bundle.getEntry()
@@ -1198,31 +1170,6 @@ public final class Platform {
 	 */
 	public static String[] getApplicationArgs() {
 		return InternalPlatform.getDefault().getApplicationArgs();
-	}
-
-	/**
-	 * Returns the platform administrator for this running Eclipse.
-	 * <p>
-	 * Note: This is an internal method and <em>must not</em> be used by clients
-	 * which are not part of the Eclipse Platform. This method allows access to
-	 * classes which are not Eclipse Platform API but are part of the OSGi runtime
-	 * that the Eclipse Platform is built on. Even as the Eclipse Platform evolves
-	 * in compatible ways from release to release, the details of the OSGi
-	 * implementation might not.
-	 * </p>
-	 * <p>
-	 * Clients can also acquire the {@link PlatformAdmin} service to retrieve this
-	 * object.
-	 * </p>
-	 *
-	 * @return the platform admin for this instance of Eclipse
-	 * @deprecated only consumer is PDE and this should never be used by other
-	 *             clients, see javadoc for details.
-	 * @since 3.0
-	 */
-	@Deprecated(forRemoval = true, since = "2024-03") // 2024-03 was added later for information purposes
-	public static PlatformAdmin getPlatformAdmin() {
-		return InternalPlatform.getDefault().getPlatformAdmin();
 	}
 
 	/**
