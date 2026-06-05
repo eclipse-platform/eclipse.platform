@@ -52,11 +52,6 @@ public class DropToFrameCommandAction extends DebugCommandAction {
 	}
 
 	@Override
-	public ImageDescriptor getHoverImageDescriptor() {
-		return DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_DROP_TO_FRAME);
-	}
-
-	@Override
 	public ImageDescriptor getImageDescriptor() {
 		return DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_DROP_TO_FRAME);
 	}

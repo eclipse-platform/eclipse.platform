@@ -135,11 +135,6 @@ public class TerminateAndRelaunchAction extends DebugCommandAction {
 	}
 
 	@Override
-	public ImageDescriptor getHoverImageDescriptor() {
-		return DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_TERMINATE_AND_RELAUNCH);
-	}
-
-	@Override
 	public ImageDescriptor getImageDescriptor() {
 		return DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_TERMINATE_AND_RELAUNCH);
 	}

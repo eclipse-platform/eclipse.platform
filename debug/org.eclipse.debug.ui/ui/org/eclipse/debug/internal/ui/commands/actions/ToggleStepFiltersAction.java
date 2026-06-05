@@ -50,11 +50,6 @@ public class ToggleStepFiltersAction extends DebugCommandAction implements IPref
 	}
 
 	@Override
-	public ImageDescriptor getHoverImageDescriptor() {
-		return DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_TOGGLE_STEP_FILTERS);
-	}
-
-	@Override
 	public String getId() {
 		return "org.eclipse.debug.ui.actions.ToggleStepFilters"; //$NON-NLS-1$
 	}

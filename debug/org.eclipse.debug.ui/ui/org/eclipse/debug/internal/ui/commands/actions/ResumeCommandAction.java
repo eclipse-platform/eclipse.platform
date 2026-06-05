@@ -57,11 +57,6 @@ public class ResumeCommandAction extends DebugCommandAction{
 	}
 
 	@Override
-	public ImageDescriptor getHoverImageDescriptor() {
-		return DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_RESUME);
-	}
-
-	@Override
 	public ImageDescriptor getImageDescriptor() {
 		return DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_RESUME);
 	}

@@ -57,11 +57,6 @@ public class DisconnectCommandAction extends DebugCommandAction{
 	}
 
 	@Override
-	public ImageDescriptor getHoverImageDescriptor() {
-		return DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_LCL_DISCONNECT);
-	}
-
-	@Override
 	public ImageDescriptor getImageDescriptor() {
 		return DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_LCL_DISCONNECT);
 	}

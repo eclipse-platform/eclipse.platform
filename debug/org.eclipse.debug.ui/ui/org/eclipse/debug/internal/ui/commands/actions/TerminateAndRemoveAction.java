@@ -79,11 +79,6 @@ public class TerminateAndRemoveAction extends DebugCommandAction {
 	}
 
 	@Override
-	public ImageDescriptor getHoverImageDescriptor() {
-		return DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_TERMINATE_AND_REMOVE);
-	}
-
-	@Override
 	public ImageDescriptor getImageDescriptor() {
 		return DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_TERMINATE_AND_REMOVE);
 	}
