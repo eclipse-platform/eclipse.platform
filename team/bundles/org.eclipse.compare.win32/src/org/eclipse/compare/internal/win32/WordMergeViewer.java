@@ -151,23 +151,16 @@ public class WordMergeViewer extends AbstractMergeViewer implements IFlushable, 
 		String relPath= getString(bundle, imageKey, null);
 		if (relPath != null && relPath.trim().length() > 0) {
 
-			String dPath;
 			String ePath;
 
 			if (relPath.contains("/")) { //$NON-NLS-1$
 				String path= relPath.substring(1);
-				dPath= 'd' + path;
 				ePath= 'e' + path;
 			} else {
-				dPath= "dlcl16/" + relPath; //$NON-NLS-1$
 				ePath= "elcl16/" + relPath; //$NON-NLS-1$
 			}
 
-			ImageDescriptor id= getImageDescriptor(dPath);	// we set the disabled image first (see PR 1GDDE87)
-			if (id != null) {
-				a.setDisabledImageDescriptor(id);
-			}
-			id= getImageDescriptor(ePath);
+			ImageDescriptor id = getImageDescriptor(ePath);
 			if (id != null) {
 				a.setImageDescriptor(id);
 			}

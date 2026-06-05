@@ -44,11 +44,6 @@ public class ImportLaunchConfigurationAction extends AbstractLaunchConfiguration
 	}
 
 	@Override
-	public ImageDescriptor getDisabledImageDescriptor() {
-		return DebugUITools.getImageDescriptor(IInternalDebugUIConstants.IMG_DLCL_IMPORT_CONFIG);
-	}
-
-	@Override
 	public ImageDescriptor getImageDescriptor() {
 		return DebugUITools.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_IMPORT_CONFIG);
 	}

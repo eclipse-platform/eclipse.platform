@@ -104,11 +104,6 @@ public class ResetWithPrototypeValuesAction extends AbstractLaunchConfigurationA
 	}
 
 	@Override
-	public ImageDescriptor getDisabledImageDescriptor() {
-		return DebugUITools.getImageDescriptor(IInternalDebugUIConstants.IMG_DLCL_RESET_PROTO);
-	}
-
-	@Override
 	public ImageDescriptor getImageDescriptor() {
 		return DebugUITools.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_RESET_PROTO);
 	}

@@ -17,7 +17,6 @@ import org.eclipse.debug.internal.core.IInternalDebugCoreConstants;
 import org.eclipse.debug.internal.ui.DebugPluginImages;
 import org.eclipse.debug.internal.ui.DebugUIMessages;
 import org.eclipse.debug.internal.ui.IDebugHelpContextIds;
-import org.eclipse.debug.internal.ui.IInternalDebugUIConstants;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.PlatformUI;
@@ -35,12 +34,10 @@ class ViewPaneOrientationAction extends Action {
 			setText(DebugUIMessages.ViewPaneOrientationAction_0);
 			setToolTipText(DebugUIMessages.ViewPaneOrientationAction_1);
 			setImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_LCL_DETAIL_PANE_RIGHT));
-			setDisabledImageDescriptor(DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_DLCL_DETAIL_PANE_RIGHT));
 		} else if (orientation == MemoryView.VERTICAL_VIEW_ORIENTATION) {
 			setText(DebugUIMessages.ViewPaneOrientationAction_2);
 			setToolTipText(DebugUIMessages.ViewPaneOrientationAction_3);
 			setImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_LCL_DETAIL_PANE_UNDER));
-			setDisabledImageDescriptor(DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_DLCL_DETAIL_PANE_UNDER));
 		}
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IDebugHelpContextIds.MEMORY_VIEW_PANE_ORIENTATION_ACTION);
 	}

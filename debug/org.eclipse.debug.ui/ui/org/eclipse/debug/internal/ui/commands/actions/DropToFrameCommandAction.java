@@ -57,11 +57,6 @@ public class DropToFrameCommandAction extends DebugCommandAction {
 	}
 
 	@Override
-	public ImageDescriptor getDisabledImageDescriptor() {
-		return null;
-	}
-
-	@Override
 	protected Class<IDropToFrameHandler> getCommandType() {
 		return IDropToFrameHandler.class;
 	}

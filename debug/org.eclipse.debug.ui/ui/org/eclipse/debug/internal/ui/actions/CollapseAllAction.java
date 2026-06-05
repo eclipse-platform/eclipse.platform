@@ -31,7 +31,6 @@ public class CollapseAllAction extends Action implements IUpdate {
 	public CollapseAllAction(TreeModelViewer viewer) {
 		super(ActionMessages.CollapseAllAction_0, DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_COLLAPSE_ALL));
 		setToolTipText(ActionMessages.CollapseAllAction_0);
-		setDisabledImageDescriptor(DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_DLCL_COLLAPSE_ALL));
 		setActionDefinitionId(CollapseAllHandler.COMMAND_ID);
 		fViewer = viewer;
 	}

@@ -298,7 +298,9 @@ public abstract class DebugCommandAction extends Action implements IDebugContext
 	public abstract String getToolTipText();
 
 	@Override
-	public abstract ImageDescriptor getDisabledImageDescriptor();
+	public ImageDescriptor getDisabledImageDescriptor() {
+		return super.getDisabledImageDescriptor();
+	}
 
 	@Override
 	public ImageDescriptor getHoverImageDescriptor() {

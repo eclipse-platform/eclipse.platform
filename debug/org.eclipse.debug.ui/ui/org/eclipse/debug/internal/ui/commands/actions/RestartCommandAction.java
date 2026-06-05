@@ -38,11 +38,6 @@ public class RestartCommandAction extends DebugCommandAction {
 	}
 
 	@Override
-	public ImageDescriptor getDisabledImageDescriptor() {
-		return DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_DLCL_RESTART);
-	}
-
-	@Override
 	public String getHelpContextId() {
 		return "org.eclipse.debug.ui.restart_action_context"; //$NON-NLS-1$
 	}

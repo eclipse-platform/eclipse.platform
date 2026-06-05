@@ -38,11 +38,6 @@ public class StepOverCommandAction extends DebugCommandAction {
 	}
 
 	@Override
-	public ImageDescriptor getDisabledImageDescriptor() {
-		return DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_DLCL_STEP_OVER);
-	}
-
-	@Override
 	public String getHelpContextId() {
 		return "org.eclipse.debug.ui.step_over_action_context"; //$NON-NLS-1$
 	}
