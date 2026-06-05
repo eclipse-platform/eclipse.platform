@@ -1928,6 +1928,13 @@ M4 = Platform-specific fourth key
             id="org.eclipse.debug.ui.commands.Resume"
             defaultHandler="org.eclipse.debug.internal.ui.commands.actions.ResumeCommandHandler">
       </command>
+       <command
+            name="%ResumeOtherThreads.name"
+            categoryId="org.eclipse.debug.ui.category.run"
+            description="%ResumeOtherThreads.description"
+            id="org.eclipse.debug.ui.commands.ResumeOthers"
+            defaultHandler="org.eclipse.debug.internal.ui.commands.actions.ResumeOthersCommandHandler">
+      </command>
       <command
             categoryId="org.eclipse.debug.ui.category.run"
             description="%ActionDefinition.terminate.description"
@@ -2133,6 +2140,12 @@ M4 = Platform-specific fourth key
             contextId="org.eclipse.debug.ui.debugging"
             commandId="org.eclipse.debug.ui.commands.Resume"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+       <key
+      		sequence="M2+F8"
+	        contextId="org.eclipse.debug.ui.debugging"
+	        commandId="org.eclipse.debug.ui.commands.ResumeOthers"
+	        schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+       
        <key
             sequence="M1+F2"
             contextId="org.eclipse.debug.ui.debugging"

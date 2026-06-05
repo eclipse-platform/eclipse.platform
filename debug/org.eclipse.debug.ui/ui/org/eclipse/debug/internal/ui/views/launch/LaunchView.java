@@ -42,6 +42,7 @@ import org.eclipse.debug.core.commands.IRestartHandler;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IStackFrame;
+import org.eclipse.debug.core.model.IThread;
 import org.eclipse.debug.internal.ui.DebugPluginImages;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.DelegatingModelPresentation;
@@ -52,6 +53,7 @@ import org.eclipse.debug.internal.ui.commands.actions.DisconnectCommandAction;
 import org.eclipse.debug.internal.ui.commands.actions.DropToFrameCommandAction;
 import org.eclipse.debug.internal.ui.commands.actions.RestartCommandAction;
 import org.eclipse.debug.internal.ui.commands.actions.ResumeCommandAction;
+import org.eclipse.debug.internal.ui.commands.actions.ResumeOthersCommandAction;
 import org.eclipse.debug.internal.ui.commands.actions.StepIntoCommandAction;
 import org.eclipse.debug.internal.ui.commands.actions.StepOverCommandAction;
 import org.eclipse.debug.internal.ui.commands.actions.StepReturnCommandAction;
@@ -153,6 +155,8 @@ public class LaunchView extends AbstractDebugView
 	private static final String SUSPEND = "suspend"; //$NON-NLS-1$
 
 	private static final String RESUME = "resume"; //$NON-NLS-1$
+
+	private static final String RESUME_OTHERS = "resume_others"; //$NON-NLS-1$
 
 	private static final String STEP_RETURN = "step_return"; //$NON-NLS-1$
 
@@ -538,6 +542,7 @@ public class LaunchView extends AbstractDebugView
 		addCapabilityAction(new DisconnectCommandAction(), DISCONNECT);
 		addCapabilityAction(new SuspendCommandAction(), SUSPEND);
 		addCapabilityAction(new ResumeCommandAction(), RESUME);
+		addCapabilityAction(new ResumeOthersCommandAction(), RESUME_OTHERS);
 		addCapabilityAction(new StepReturnCommandAction(), STEP_RETURN);
 		addCapabilityAction(new StepOverCommandAction(), STEP_OVER);
 		addCapabilityAction(new StepIntoCommandAction(), STEP_INTO);
@@ -1092,6 +1097,7 @@ public class LaunchView extends AbstractDebugView
 		disposeCommandAction(DISCONNECT);
 		disposeCommandAction(SUSPEND);
 		disposeCommandAction(RESUME);
+		disposeCommandAction(RESUME_OTHERS);
 		disposeCommandAction(STEP_RETURN);
 		disposeCommandAction(STEP_OVER);
 		disposeCommandAction(STEP_INTO);
@@ -1204,8 +1210,10 @@ public class LaunchView extends AbstractDebugView
 
 		menu.appendToGroup(IDebugUIConstants.LAUNCH_GROUP, getAction(TERMINATE_AND_REMOVE));
 		menu.appendToGroup(IDebugUIConstants.LAUNCH_GROUP, getAction(TERMINATE_ALL));
-
 		menu.appendToGroup(IDebugUIConstants.THREAD_GROUP, getAction(RESUME));
+		if (element instanceof IThread) {
+			menu.appendToGroup(IDebugUIConstants.THREAD_GROUP, getAction(RESUME_OTHERS));
+		}
 		menu.appendToGroup(IDebugUIConstants.THREAD_GROUP, getAction(SUSPEND));
 		menu.appendToGroup(IDebugUIConstants.THREAD_GROUP, getAction(TERMINATE));
 		menu.appendToGroup(IDebugUIConstants.THREAD_GROUP, getAction(TERMINATE_AND_RELAUNCH));

@@ -261,5 +261,7 @@ public class ActionMessages extends NLS {
 	public static String ExpressionPasteDialog;
 	public static String ExpressionPasteRemember;
 	public static String ExpressionPastePromptButton;
+	public static String ResumeOtherThreadsAction;
+	public static String ResumeOtherThreadsActionToolTip;
 
 }
