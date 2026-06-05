@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Google, Inc and others.
+ * Copyright (c) 2017, 2026 Google, Inc and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -24,8 +24,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import org.eclipse.core.internal.jobs.JobManager;
@@ -125,8 +123,8 @@ public final class TestUtil {
 	/**
 	 * Waits while given condition is {@code true} for a given amount of
 	 * milliseconds. If the actual wait time exceeds given timeout and condition
-	 * will be still {@code true}, throws {@link junit.framework.AssertionError}
-	 * with given message.
+	 * will be still {@code true}, throws AssertionFailedError with given
+	 * message.
 	 * <p>
 	 * Will process UI events while waiting in UI thread, if called from
 	 * background thread, just waits.
@@ -163,6 +161,7 @@ public final class TestUtil {
 	 * <p>
 	 * Will process UI events while waiting in UI thread, if called from
 	 * background thread, just waits.
+	 * </p>
 	 *
 	 * @param condition function which will be evaluated while waiting
 	 * @param errorMessage message which will be used to construct the failure
@@ -175,11 +174,11 @@ public final class TestUtil {
 
 	/**
 	 * A simplified variant of
-	 * {@link #waitWhile(Predicate, Object, long, Function)}.
+	 * {@link #waitWhile(BooleanSupplier, long, Supplier)}.
 	 * <p>
 	 * Waits while given condition is {@code true} for a given amount of
 	 * milliseconds.
-	 * <p>
+	 * </p>
 	 * Will process UI events while waiting in UI thread, if called from
 	 * background thread, just waits.
 	 *
