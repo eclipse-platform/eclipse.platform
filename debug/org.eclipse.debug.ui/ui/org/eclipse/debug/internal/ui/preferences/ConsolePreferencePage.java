@@ -482,11 +482,8 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 		if (format.equals(DebugPreferencesMessages.ConsoleDisableElapsedTime)) {
 			return "Not Available"; //$NON-NLS-1$
 		}
-		String dateTimeFormated = ProcessConsole.convertElapsedFormat(format);
 		Duration elapsedTime = Duration.ofHours(1).plusMinutes(2).plusSeconds(3).plusMillis(456);
-		String elapsedString = String.format(dateTimeFormated, elapsedTime.toHours(), elapsedTime.toMinutesPart(),
-				elapsedTime.toSecondsPart(), elapsedTime.toMillisPart());
-		return elapsedString;
+		return ProcessConsole.formatElapsedTime(format, elapsedTime);
 	}
 
 	private void createHeaderLink() {

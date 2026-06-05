@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2025 IBM Corporation and others.
+ *  Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -456,19 +456,16 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 	}
 
 	private static String computeElapsedTimeLabel(Date launchTime, Date terminateTime) {
-		String elapsedString;
 		IPreferenceStore store = DebugUIPlugin.getDefault().getPreferenceStore();
 		String elapsedTimeFormat = store.getString(IDebugPreferenceConstants.CONSOLE_ELAPSED_FORMAT);
-		if (!isElapsedTimeDisabled(elapsedTimeFormat)) {
-			Duration elapsedTime = Duration.between(launchTime != null ? launchTime.toInstant() : Instant.now(),
-					terminateTime != null ? terminateTime.toInstant() : Instant.now());
-			String elapsedFormat = "elapsed " + convertElapsedFormat(elapsedTimeFormat); //$NON-NLS-1$
-			elapsedString = String.format(elapsedFormat, elapsedTime.toHours(), elapsedTime.toMinutesPart(),
-					elapsedTime.toSecondsPart(), elapsedTime.toMillisPart());
-		} else {
-			elapsedString = ""; //$NON-NLS-1$
+
+		if (isElapsedTimeDisabled(elapsedTimeFormat)) {
+			return ""; //$NON-NLS-1$
 		}
-		return elapsedString;
+		Duration elapsedTime = Duration.between(launchTime != null ? launchTime.toInstant() : Instant.now(),
+				terminateTime != null ? terminateTime.toInstant() : Instant.now());
+
+		return "elapsed " + formatElapsedTime(elapsedTimeFormat, elapsedTime); //$NON-NLS-1$
 	}
 
 	private static boolean isElapsedTimeDisabled(String elapsedTimeFormatValue) {
@@ -1274,6 +1271,33 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 		}
 
 		return format.toString();
+	}
+
+	/**
+	 * Formats elapsed time according to the specified format string.
+	 *
+	 * @param format      format string (e.g., "HH:MM:SS.mmm", "MM:SS.mmm")
+	 * @param elapsedTime the duration to format
+	 * @return formatted elapsed time string
+	 */
+	public static String formatElapsedTime(String format, Duration elapsedTime) {
+		String convertedFormat = convertElapsedFormat(format);
+
+		boolean hasHours = format.contains("H"); //$NON-NLS-1$
+		boolean hasMinutes = format.contains("M"); //$NON-NLS-1$
+		boolean hasSeconds = format.contains("S"); //$NON-NLS-1$
+
+		if (hasHours) {
+			return String.format(convertedFormat, elapsedTime.toHours(), elapsedTime.toMinutesPart(),
+					elapsedTime.toSecondsPart(), elapsedTime.toMillisPart());
+		} else if (hasMinutes) {
+			return String.format(convertedFormat, elapsedTime.toMinutesPart(), elapsedTime.toSecondsPart(),
+					elapsedTime.toMillisPart());
+		} else if (hasSeconds) {
+			return String.format(convertedFormat, elapsedTime.toSecondsPart(), elapsedTime.toMillisPart());
+		} else {
+			return String.format(convertedFormat, elapsedTime.toMillisPart());
+		}
 	}
 
 	@Override
