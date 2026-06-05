@@ -47,6 +47,14 @@
                 <message_argument value="BreakpointsViewer"/>
             </message_arguments>
         </filter>
+    </resource>    
+    <resource path="ui/org/eclipse/debug/ui/DebugUITools.java" type="org.eclipse.debug.ui.DebugUITools">
+        <filter comment="Removed as per API deprecation and removal process."  id="338792546">
+            <message_arguments>
+                <message_argument value="org.eclipse.debug.ui.DebugUITools"/>
+                <message_argument value="saveAndBuildBeforeLaunch()"/>
+            </message_arguments>
+        </filter>
     </resource>
     <resource path="ui/org/eclipse/debug/ui/actions/AbstractLaunchHistoryAction.java" type="org.eclipse.debug.ui.actions.AbstractLaunchHistoryAction">
         <filter comment="Known leaked internal types" id="576725006">

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <component id="org.eclipse.core.runtime" version="2">
     <resource path="META-INF/MANIFEST.MF">
-        <filter comment="Removed per API deprecation and removal process." id="926941240">
+        <filter comment="Removed as per API deprecation and removal process." id="926941240">
             <message_arguments>
                 <message_argument value="3.35.0"/>
                 <message_argument value="3.34.200"/>
@@ -9,10 +9,24 @@
         </filter>
     </resource>
     <resource path="META-INF/MANIFEST.MF" type="org.eclipse.core.runtime.PluginVersionIdentifier">
-        <filter comment="Removed per API deprecation and removal process." id="305422471">
+        <filter comment="Removed as per API deprecation and removal process." id="305422471">
             <message_arguments>
                 <message_argument value="org.eclipse.core.runtime.PluginVersionIdentifier"/>
                 <message_argument value="org.eclipse.core.runtime_3.34.200"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/eclipse/core/runtime/Platform.java" type="org.eclipse.core.runtime.Platform">
+        <filter comment="Removed as per API deprecation and removal process." id="338792546">
+            <message_arguments>
+                <message_argument value="org.eclipse.core.runtime.Platform"/>
+                <message_argument value="addProtectionSpace(URL, String)"/>
+            </message_arguments>
+        </filter>
+        <filter comment="Removed as per API deprecation and removal process." id="338792546">
+            <message_arguments>
+                <message_argument value="org.eclipse.core.runtime.Platform"/>
+                <message_argument value="getPlatformAdmin()"/>
             </message_arguments>
         </filter>
     </resource>
