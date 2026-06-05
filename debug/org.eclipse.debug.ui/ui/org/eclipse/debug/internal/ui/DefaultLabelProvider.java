@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2015 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -255,13 +255,13 @@ public class DefaultLabelProvider implements ILabelProvider {
 						int exit = process.getExitValue();
 						terminatedMessage = MessageFormat.format(DebugUIMessages.DefaultLabelProvider_16, Integer.toString(exit));
 					} else {
-						terminatedMessage= DebugUIMessages.DefaultLabelProvider_1;
+						terminatedMessage = DebugUIMessages.DefaultLabelProvider_1;
 					}
-					label.insert(0, terminatedMessage);
+					label.insert(0, terminatedMessage + " "); //$NON-NLS-1$
 				}
 			} else if (element instanceof IDisconnect) {
 				if (((IDisconnect) element).isDisconnected()) {
-					label.insert(0, DebugUIMessages.DefaultLabelProvider__disconnected__1);
+					label.insert(0, DebugUIMessages.DefaultLabelProvider__disconnected__1 + " "); //$NON-NLS-1$
 				}
 			}
 		} catch (DebugException e) {
