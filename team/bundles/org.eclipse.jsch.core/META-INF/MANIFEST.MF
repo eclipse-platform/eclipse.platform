@@ -9,7 +9,7 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime;bundle-version="[3.29.0,4.0.0)",
  org.eclipse.core.net;bundle-version="[1.0.0,2.0.0)"
 Bundle-ActivationPolicy: lazy
-Export-Package: org.eclipse.jsch.core;uses:="org.eclipse.core.runtime,com.jcraft.jsch",
+Export-Package: org.eclipse.jsch.core;uses:="com.jcraft.jsch,org.eclipse.core.runtime",
  org.eclipse.jsch.internal.core;x-friends:="org.eclipse.jsch.ui"
 Import-Package: com.jcraft.jsch;version="[0.1.50,3.0.0)"
 Bundle-RequiredExecutionEnvironment: JavaSE-17
