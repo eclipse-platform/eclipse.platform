@@ -6,9 +6,6 @@ on:
     types:
       - completed
 
-permissions:
-  contents: read
-
 jobs:
     check:
        uses: eclipse-platform/eclipse.platform.releng.aggregator/.github/workflows/publishTestResults.yml@master
