@@ -301,7 +301,9 @@ public abstract class DebugCommandAction extends Action implements IDebugContext
 	public abstract ImageDescriptor getDisabledImageDescriptor();
 
 	@Override
-	public abstract ImageDescriptor getHoverImageDescriptor();
+	public ImageDescriptor getHoverImageDescriptor() {
+		return super.getHoverImageDescriptor();
+	}
 
 	@Override
 	public abstract ImageDescriptor getImageDescriptor();
