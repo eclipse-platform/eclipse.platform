@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2018 IBM Corporation and others.
+ * Copyright (c) 2005, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -45,16 +45,12 @@ public class PDASourcePathComputerDelegate implements ISourcePathComputerDelegat
 		if (path != null) {
 			IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(IPath.fromOSString(path));
 			if (resource != null) {
-				//#ifdef ex4
-//#				// TODO: Exercise 4 - seed the source lookup path
-				//#else
 				IContainer container = resource.getParent();
 				if (container.getType() == IResource.PROJECT) {
 					sourceContainer = new ProjectSourceContainer((IProject)container, false);
 				} else if (container.getType() == IResource.FOLDER) {
 					sourceContainer = new FolderSourceContainer(container, false);
 				}
-				//#endif
 			}
 		}
 		if (sourceContainer == null) {

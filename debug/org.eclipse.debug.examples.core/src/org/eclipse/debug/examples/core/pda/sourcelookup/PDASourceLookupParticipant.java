@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2018 IBM Corporation and others.
+ * Copyright (c) 2005, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -27,14 +27,9 @@ public class PDASourceLookupParticipant extends AbstractSourceLookupParticipant 
 
 	@Override
 	public String getSourceName(Object object) throws CoreException {
-		//#ifdef ex4
-//#		// TODO: Exercise 4 - return the name of the source file for the given stack frame
-//#		return null;
-		//#else
 		if (object instanceof PDAStackFrame) {
 			return ((PDAStackFrame)object).getSourceName();
 		}
 		return null;
-		//#endif
 	}
 }

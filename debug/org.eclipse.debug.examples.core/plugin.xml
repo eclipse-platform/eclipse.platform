@@ -22,8 +22,6 @@
             name="perlExecutable"
             initialValue="c:\perl\bin\perl.exe"/>
    </extension>
-<!--#ifdef ex1-->
-<!--#else-->
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
@@ -34,7 +32,6 @@
             id="pda.launchType"
             modes="run, debug"/>
    </extension>
-<!--#endif-->  
 
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
@@ -45,8 +42,6 @@
             modes="run, debug"/>
    </extension>
 
-<!--#ifdef ex4-->
-<!--#else-->
    <extension
          point="org.eclipse.debug.core.sourceLocators">
       <sourceLocator
@@ -60,10 +55,7 @@
             class="org.eclipse.debug.examples.core.pda.sourcelookup.PDASourcePathComputerDelegate"
             id="pda.sourcePathComputer"/>
    </extension>
-<!--#endif-->
     
-<!--#ifdef ex3-->
-<!--#else-->    
    <extension
          point="org.eclipse.debug.core.breakpoints">
       <breakpoint
@@ -91,10 +83,7 @@
       <super type="org.eclipse.debug.examples.core.pda.markerType.lineBreakpoint"/>
       <persistent value="true"/>
    </extension>
-<!--#endif-->   
 
-<!--#ifdef ex6-->
-<!--#else--> 
    <extension
          point="org.eclipse.debug.core.logicalStructureTypes">
       <logicalStructureType
@@ -103,5 +92,4 @@
             id="pda.wordStructure"
             modelIdentifier="pda.debugModel"/>
    </extension>
-<!--#endif-->
 </plugin>
