@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2018 IBM Corporation and others.
+ * Copyright (c) 2005, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -108,11 +108,7 @@ public class PDALineBreakpoint extends LineBreakpoint implements IPDAEventListen
 	 * @throws CoreException if request creation fails
 	 */
 	protected void createRequest(PDADebugTarget target) throws CoreException {
-		//#ifdef ex3
-//#		// TODO: Exercise 3 - create breakpoint request in interpreter
-		//#else
 		target.sendCommand(new PDASetBreakpointCommand((getLineNumber() - 1), false));
-		//#endif
 	}
 
 	/**
@@ -123,11 +119,7 @@ public class PDALineBreakpoint extends LineBreakpoint implements IPDAEventListen
 	 * @throws CoreException if clearing the request fails
 	 */
 	protected void clearRequest(PDADebugTarget target) throws CoreException {
-		//#ifdef ex3
-//#		// TODO: Exercise 3 - clear breakpoint request in interpreter
-		//#else
 		target.sendCommand(new PDAClearBreakpointCommand((getLineNumber() - 1)));
-		//#endif
 	}
 
 	/**

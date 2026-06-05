@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2018 IBM Corporation and others.
+ * Copyright (c) 2005, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -191,20 +191,12 @@ public class PDAThread extends PDADebugElement implements IThread, IPDAEventList
 
 	@Override
 	public void resume() throws DebugException {
-		//#ifdef ex2
-//#		// TODO: Exercise 2 - send resume request to interpreter
-		//#else
 		sendCommand(new PDAResumeCommand(fThreadId));
-		//#endif
 	}
 
 	@Override
 	public void suspend() throws DebugException {
-		//#ifdef ex2
-//#		// TODO: Exercise 2 - send suspend request to interpreter
-		//#else
 		sendCommand(new PDASuspendCommand(fThreadId));
-		//#endif
 	}
 
 	@Override
@@ -307,31 +299,14 @@ public class PDAThread extends PDADebugElement implements IThread, IPDAEventList
 				if ("step".equals(event.fReason)) { //$NON-NLS-1$
 					setStepping(true);
 					resumed(DebugEvent.STEP_OVER);
-				//#ifdef ex2
-	//#			}
-	//#			// TODO: Exercise 2 - handle/fire "client" resume event
-				//#else
 				} else if ("client".equals(event.fReason)) { //$NON-NLS-1$
 					resumed(DebugEvent.CLIENT_REQUEST);
 				}
-				//#endif
-				//#ifdef ex5
-	//#			// TODO: Exercise 5 - handle start of drop event
-				//#else
 				else if ("drop".equals(event.fReason)) { //$NON-NLS-1$
 					resumed(DebugEvent.STEP_RETURN);
 				}
-				//#endif
 			} else if (event instanceof PDASuspendedEvent || event instanceof PDAVMSuspendedEvent) {
 				setSuspended(true);
-				//#ifdef ex2
-	//#			// TODO: Exercise 2 - handle/fire "client" suspend event
-	//#			if (event.endsWith("step")) {
-	//#				suspended(DebugEvent.STEP_END);
-	//#			} else if (event.startsWith("suspended event") && getError() != null) {
-	//#				exceptionHit();
-	//#			}
-				//#else
 				if ("client".equals(event.fReason)) { //$NON-NLS-1$
 					suspended(DebugEvent.CLIENT_REQUEST);
 				} else if ("step".equals(event.fReason)) { //$NON-NLS-1$
@@ -339,14 +314,9 @@ public class PDAThread extends PDADebugElement implements IThread, IPDAEventList
 				} else if ("event".equals(event.fReason) && getError() != null) { //$NON-NLS-1$
 					exceptionHit();
 				}
-				//#endif
-				//#ifdef ex5
-	//#			// TODO: Exercise 5 - handle end of drop event
-				//#else
 				else if ("drop".equals(event.fReason)) { //$NON-NLS-1$
 					suspended(DebugEvent.STEP_END);
 				}
-				//#endif
 			} else if (_event instanceof PDANoSuchLabelEvent ||
 					   _event instanceof PDAUnimplementedInstructionEvent)
 			{
@@ -421,11 +391,7 @@ public class PDAThread extends PDADebugElement implements IThread, IPDAEventList
 	 * @since 3.5
 	 */
 	public void popFrame() throws DebugException {
-		//#ifdef ex5
-//#		// TODO: Exercise 5 - send drop request
-		//#else
 		sendCommand(new PDADropFrameCommand(fThreadId));
-		//#endif
 	}
 
 	/**
@@ -436,14 +402,10 @@ public class PDAThread extends PDADebugElement implements IThread, IPDAEventList
 	 * @since 3.5
 	 */
 	public boolean canPopFrame() {
-		//#ifdef ex5
-//#		// TODO: Exercise 5 - allow pop if there is more than 1 frame on the stack
-		//#else
 		try {
 			return getStackFrames().length > 1;
 		} catch (DebugException e) {
 		}
-		//#endif
 		return false;
 	}
 

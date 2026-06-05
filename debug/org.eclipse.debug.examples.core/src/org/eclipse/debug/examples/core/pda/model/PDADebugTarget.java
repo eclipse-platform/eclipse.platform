@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2015 IBM Corporation and others.
+ * Copyright (c) 2005, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -276,11 +276,7 @@ public class PDADebugTarget extends PDADebugElement implements IDebugTarget, IBr
 
 	@Override
 	public void terminate() throws DebugException {
-//#ifdef ex2
-//#     // TODO: Exercise 2 - send termination request to interpreter
-//#else
 		sendCommand(new PDATerminateCommand());
-//#endif
 	}
 
 	@Override

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2018 IBM Corporation and others.
+ * Copyright (c) 2005, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -26,27 +26,18 @@ public class WordStructureDelegate implements ILogicalStructureTypeDelegate {
 
 	@Override
 	public boolean providesLogicalStructure(IValue value) {
-		//#ifdef ex6
-//#		// TODO: Exercise 6 - provide logical structures if the value has multiple words
-		//#else
 		try {
 			String string = value.getValueString();
 			String[] words = string.split("\\W+"); //$NON-NLS-1$
 			return words.length > 1;
 		} catch (DebugException e) {
 		}
-		//#endif
 		return false;
 	}
 
 	@Override
 	public IValue getLogicalStructure(IValue value) throws CoreException {
-		//#ifdef ex6
-//#		// TODO: Exercise 6 - create an array from the given value
-//#		return null;
-		//#else
 		return new PDAArray((PDAValue)value);
-		//#endif
 	}
 
 }

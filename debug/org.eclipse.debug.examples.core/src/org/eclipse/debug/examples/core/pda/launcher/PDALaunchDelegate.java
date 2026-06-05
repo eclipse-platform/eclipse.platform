@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2018 IBM Corporation and others.
+ * Copyright (c) 2005, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -46,12 +46,6 @@ import org.eclipse.debug.examples.core.pda.model.PDADebugTarget;
 public class PDALaunchDelegate extends LaunchConfigurationDelegate {
 	@Override
 	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor) throws CoreException {
-		//#ifdef ex1
-//#		// TODO: Exercise 1 - Launch a command shell as a system process to echo "foo"
-		//#elseif ex1_answer
-//#		Process process = DebugPlugin.exec(new String[]{"cmd", "/C",  "\"echo foo\""}, null);
-//#		new RuntimeProcess(launch, process, "Hello", null);
-		//#else
 
 		List<String> commandList = new ArrayList<>();
 
@@ -107,7 +101,6 @@ public class PDALaunchDelegate extends LaunchConfigurationDelegate {
 			IDebugTarget target = new PDADebugTarget(launch, p, requestPort, eventPort);
 			launch.addDebugTarget(target);
 		}
-		//#endif
 	}
 
 	/**

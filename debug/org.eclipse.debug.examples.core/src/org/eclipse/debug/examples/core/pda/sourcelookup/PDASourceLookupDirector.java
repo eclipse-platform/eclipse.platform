@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2018 IBM Corporation and others.
+ * Copyright (c) 2005, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -25,10 +25,6 @@ public class PDASourceLookupDirector extends AbstractSourceLookupDirector {
 
 	@Override
 	public void initializeParticipants() {
-		//#ifdef ex4
-//#		// TODO: Exercise 4 - add our participant to this director
-		//#else
 		addParticipants(new ISourceLookupParticipant[]{new PDASourceLookupParticipant()});
-		//#endif
 	}
 }
