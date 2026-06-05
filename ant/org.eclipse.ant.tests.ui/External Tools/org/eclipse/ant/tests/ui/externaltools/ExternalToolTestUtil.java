@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -31,13 +31,6 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.ui.externaltools.internal.model.BuilderUtils;
 
-import junit.framework.Test;
-
-/**
- * Abstract {@link Test} class for external tools
- *
- * @since 3.5.100 org.eclipse.ant.tests.ui
- */
 @SuppressWarnings("restriction")
 public final class ExternalToolTestUtil {
 
