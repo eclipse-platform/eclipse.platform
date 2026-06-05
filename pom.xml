@@ -26,6 +26,7 @@
   <properties>
     <tycho.scmUrl>scm:git:https://github.com/eclipse-platform/eclipse.platform.git</tycho.scmUrl>
     <tycho.surefire.testClassesDirectory>${project.build.outputDirectory}</tycho.surefire.testClassesDirectory>
+    <failOnJavadocErrors>true</failOnJavadocErrors>
   </properties>
 
   <!-- 
