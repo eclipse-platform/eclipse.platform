@@ -27,22 +27,27 @@ import org.eclipse.jface.text.IRegion;
  */
 public class ConsoleLineTracker implements IConsoleLineTrackerExtension {
 
+	private enum State {
+		UNINITIALIZED, INITIALIZED, CLOSED, DISPOSED,
+	}
+
+	private static final Object LOCK = new Object();
 	private static IConsole console;
 	private static List<IRegion> lines = new ArrayList<>();
 
-	private static boolean consoleClosed = true;
+	private static State state = State.UNINITIALIZED;
 
 	@Override
 	public void dispose() {
-		// do nothing
+		state = State.DISPOSED;
 	}
 
 	@Override
 	public void init(IConsole c) {
-		synchronized (lines) {
+		synchronized (LOCK) {
 			ConsoleLineTracker.console = c;
 			lines = new ArrayList<>();
-			consoleClosed = false;
+			state = State.INITIALIZED;
 		}
 	}
 
@@ -86,12 +91,12 @@ public class ConsoleLineTracker implements IConsoleLineTrackerExtension {
 	}
 
 	public static void waitForConsole() {
-		synchronized (lines) {
-			if (consoleClosed) {
+		synchronized (LOCK) {
+			if (state == State.CLOSED) {
 				return;
 			}
 			try {
-				lines.wait(20000);
+				LOCK.wait(20000);
 			}
 			catch (InterruptedException ie) {
 				// do nothing
@@ -101,15 +106,15 @@ public class ConsoleLineTracker implements IConsoleLineTrackerExtension {
 
 	@Override
 	public void consoleClosed() {
-		synchronized (lines) {
-			consoleClosed = true;
+		synchronized (LOCK) {
+			state = State.CLOSED;
 			lines.notifyAll();
 		}
 	}
 
 	public static boolean isClosed() {
-		synchronized (lines) {
-			return consoleClosed;
+		synchronized (LOCK) {
+			return state == State.CLOSED;
 		}
 	}
 }
