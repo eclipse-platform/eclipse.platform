@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -13,6 +13,10 @@
  *******************************************************************************/
 package org.eclipse.debug.internal.ui.launchConfigurations;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.jface.action.Action;
 
@@ -31,6 +35,17 @@ public class OrganizeFavoritesAction extends Action {
 		LaunchHistory history = DebugUIPlugin.getDefault().getLaunchConfigurationManager().getLaunchHistory(fGroupId);
 		FavoritesDialog dialog = new FavoritesDialog(DebugUIPlugin.getShell(), history);
 		dialog.open();
+	}
+
+	@Override
+	public boolean isEnabled() {
+		ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
+		try {
+			ILaunchConfiguration[] configs = manager.getLaunchConfigurations();
+			return configs.length > 0;
+		} catch (CoreException e) {
+		}
+		return false;
 	}
 
 }
