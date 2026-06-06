@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2016, 2017 SSI Schaefer IT Solutions GmbH and others.
+ *  Copyright (c) 2016, 2026 SSI Schaefer IT Solutions GmbH and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -31,7 +31,7 @@ import org.eclipse.debug.core.ILaunchManager;
  */
 public class GroupMemberChangeListener implements ILaunchConfigurationListener {
 
-	private static final String GROUP_TYPE_ID = "org.eclipse.debug.core.groups.GroupLaunchConfigurationType"; //$NON-NLS-1$
+	public static final String GROUP_TYPE_ID = "org.eclipse.debug.core.groups.GroupLaunchConfigurationType"; //$NON-NLS-1$
 
 	@Override
 	public void launchConfigurationAdded(ILaunchConfiguration configuration) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2025 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -89,7 +89,7 @@ public class LaunchConfigurationView extends AbstractDebugView implements ILaunc
 	private UnlinkPrototypeAction fUnlinkPrototypeAction;
 	private ResetWithPrototypeValuesAction fResetWithPrototypeValuesAction;
 	private ImportLaunchConfigurationAction fImportAction;
-
+	private QuickGroupLaunch quickGroupLaunchAction;
 	/**
 	 * Action for providing filtering to the Launch Configuration Dialog
 	 * @since 3.2
@@ -233,6 +233,10 @@ public class LaunchConfigurationView extends AbstractDebugView implements ILaunc
 
 		fResetWithPrototypeValuesAction = new ResetWithPrototypeValuesAction(getViewer(), getLaunchGroup().getMode());
 		setAction(ResetWithPrototypeValuesAction.ID_RESET_WITH_PROTOTYPE_VALUES_ACTION, fResetWithPrototypeValuesAction);
+
+		quickGroupLaunchAction = new QuickGroupLaunch(getViewer(), getLaunchGroup().getMode());
+		setAction(QuickGroupLaunch.ID_QUICK_GROUP_LAUNCH_ACTION, quickGroupLaunchAction);
+
 	}
 
 	/**
@@ -253,6 +257,7 @@ public class LaunchConfigurationView extends AbstractDebugView implements ILaunc
 		menu.add(fExportAction);
 		menu.add(fDuplicateAction);
 		menu.add(fDeleteAction);
+		menu.add(quickGroupLaunchAction);
 		menu.add(new Separator());
 		menu.add(fLinkPrototypeAction);
 		menu.add(fUnlinkPrototypeAction);
@@ -290,6 +295,7 @@ public class LaunchConfigurationView extends AbstractDebugView implements ILaunc
 		fLinkPrototypeAction.dispose();
 		fUnlinkPrototypeAction.dispose();
 		fResetWithPrototypeValuesAction.dispose();
+		quickGroupLaunchAction.dispose();
 		getLaunchManager().removeLaunchConfigurationListener(this);
 	}
 
