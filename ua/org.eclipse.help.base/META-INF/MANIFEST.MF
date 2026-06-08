@@ -7,7 +7,7 @@ Bundle-Activator: org.eclipse.help.internal.base.HelpBasePlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Export-Package: org.apache.lucene.demo.html;x-internal:=true,
- org.eclipse.help.base,
+ org.eclipse.help.base;uses:="org.eclipse.help",
  org.eclipse.help.browser,
  org.eclipse.help.internal.base;
   x-friends:="org.eclipse.help.ui,
@@ -36,7 +36,7 @@ Export-Package: org.apache.lucene.demo.html;x-internal:=true,
    org.eclipse.ua.tests,
    org.eclipse.ui.intro,
    org.eclipse.help.webapp",
- org.eclipse.help.search,
+ org.eclipse.help.search;uses:="org.eclipse.core.runtime,org.eclipse.help,org.xml.sax",
  org.eclipse.help.server,
  org.eclipse.help.standalone
 Require-Bundle: org.eclipse.ant.core;bundle-version="[3.2.200,4.0.0)";resolution:=optional,
