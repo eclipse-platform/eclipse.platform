@@ -263,5 +263,12 @@ public class ActionMessages extends NLS {
 	public static String ExpressionPastePromptButton;
 	public static String ResumeOtherThreadsAction;
 	public static String ResumeOtherThreadsActionToolTip;
+	public static String LaunchActionToolTip_Seconds;
+	public static String LaunchActionToolTip_Minutes;
+	public static String LaunchActionToolTip_OneMinute;
+	public static String LaunchActionToolTip_OneHour;
+	public static String LaunchActionToolTip_Hours;
+	public static String LaunchActionToolTip_OneDay;
+	public static String LaunchActionToolTip_Days;
 
 }
