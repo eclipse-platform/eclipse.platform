@@ -6,8 +6,12 @@ Bundle-Version: 4.8.400.qualifier
 Bundle-Activator: org.eclipse.help.ui.internal.HelpUIPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Export-Package: org.eclipse.help.ui,
- org.eclipse.help.ui.browser,
+Export-Package: org.eclipse.help.ui;uses:="org.eclipse.help.search,org.eclipse.jface.preference,org.eclipse.swt.widgets",
+ org.eclipse.help.ui.browser;
+  uses:="org.eclipse.core.runtime,
+   org.eclipse.jface.action,
+   org.eclipse.jface.viewers,
+   org.eclipse.ui",
  org.eclipse.help.ui.internal;x-friends:="org.eclipse.ua.tests",
  org.eclipse.help.ui.internal.browser;x-friends:="org.eclipse.ua.tests",
  org.eclipse.help.ui.internal.browser.embedded;x-friends:="org.eclipse.ua.tests",
