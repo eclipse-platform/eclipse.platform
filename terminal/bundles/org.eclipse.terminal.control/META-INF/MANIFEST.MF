@@ -11,14 +11,24 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="[3.33.0,4.0.0)",
 Bundle-ActivationPolicy: lazy
 Eclipse-LazyStart: true
 Bundle-RequiredExecutionEnvironment: JavaSE-21
-Export-Package: org.eclipse.terminal.connector;version="1.0.100",
- org.eclipse.terminal.connector.provider;version="1.0.100",
- org.eclipse.terminal.control;version="1.0.100",
+Export-Package: org.eclipse.terminal.connector;version="1.0.100";
+  uses:="org.eclipse.core.runtime,
+   org.eclipse.jface.dialogs,
+   org.eclipse.jface.fieldassist,
+   org.eclipse.swt.widgets,
+   org.eclipse.terminal.control",
+ org.eclipse.terminal.connector.provider;version="1.0.100";uses:="org.eclipse.terminal.connector",
+ org.eclipse.terminal.control;version="1.0.100";
+  uses:="org.eclipse.swt.dnd,
+   org.eclipse.swt.graphics,
+   org.eclipse.swt.widgets,
+   org.eclipse.terminal.connector,
+   org.eclipse.terminal.model",
  org.eclipse.terminal.internal.connector;x-internal:=true,
  org.eclipse.terminal.internal.control.impl;x-internal:=true,
  org.eclipse.terminal.internal.emulator;x-internal:=true,
  org.eclipse.terminal.internal.model;x-internal:=true,
  org.eclipse.terminal.internal.preferences;x-internal:=true,
  org.eclipse.terminal.internal.textcanvas;x-internal:=true,
- org.eclipse.terminal.model;version="1.0.100"
+ org.eclipse.terminal.model;version="1.0.100";uses:="org.eclipse.swt.graphics"
 Automatic-Module-Name: org.eclipse.terminal.control
