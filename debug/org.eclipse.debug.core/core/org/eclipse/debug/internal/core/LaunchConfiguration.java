@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2022 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -49,6 +49,8 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
@@ -62,6 +64,7 @@ import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate2;
 import org.eclipse.debug.core.model.IPersistableSourceLocator;
 import org.eclipse.debug.core.sourcelookup.IPersistableSourceLocator2;
+import org.osgi.service.prefs.BackingStoreException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
@@ -304,6 +307,15 @@ public class LaunchConfiguration extends PlatformObject implements ILaunchConfig
 	@Override
 	public void delete() throws CoreException {
 		if (exists()) {
+			if (!isLocal()) {
+				try {
+					IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(DebugPlugin.getUniqueIdentifier());
+					prefs.remove(getName());
+					prefs.flush();
+				} catch (BackingStoreException e) {
+					DebugPlugin.log(e);
+				}
+			}
 			IFile file = getFile();
 			if (file == null) {
 				IFileStore store = getFileStore();

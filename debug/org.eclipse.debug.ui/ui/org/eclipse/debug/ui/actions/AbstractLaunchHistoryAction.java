@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2016 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -22,6 +22,8 @@ import java.util.concurrent.CompletableFuture;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -50,6 +52,7 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MenuAdapter;
 import org.eclipse.swt.events.MenuEvent;
@@ -353,6 +356,8 @@ public abstract class AbstractLaunchHistoryAction implements IActionDelegate2, I
 			LaunchAction action= new LaunchAction(launch, getMode());
 			if (checkIfLaunchActive(launch, launches)) {
 				action.setText(action.getText() + "  \u2699"); //$NON-NLS-1$
+			} else {
+				addRecentLaunchTimeTooltip(launch, action);
 			}
 			addToMenu(menu, action, accelerator);
 			accelerator++;
@@ -368,6 +373,8 @@ public abstract class AbstractLaunchHistoryAction implements IActionDelegate2, I
 			LaunchAction action= new LaunchAction(launch, getMode());
 			if (checkIfLaunchActive(launch, launches)) {
 				action.setText(action.getText() + "  \u2699"); //$NON-NLS-1$
+			} else {
+				addRecentLaunchTimeTooltip(launch, action);
 			}
 			addToMenu(menu, action, accelerator);
 			accelerator++;
@@ -627,4 +634,71 @@ public abstract class AbstractLaunchHistoryAction implements IActionDelegate2, I
 	protected String getLaunchGroupIdentifier() {
 		return fLaunchGroup.getIdentifier();
 	}
+
+	/**
+	 * Adds a tooltip showing how long ago the given launch was terminated if
+	 * there's a valid terminate timestamp attribute.
+	 *
+	 * @param launch       launch configuration
+	 * @param launchAction launch action to update
+	 */
+	private void addRecentLaunchTimeTooltip(ILaunchConfiguration launch, LaunchAction launchAction) {
+		try {
+			String timeStamp;
+			if (launch.isLocal()) {
+				timeStamp = launch.getAttribute(DebugPlugin.ATTR_TERMINATE_TIMESTAMP, ""); //$NON-NLS-1$
+			} else {
+				IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(DebugPlugin.getUniqueIdentifier());
+				timeStamp = prefs.get(launch.getName(), ""); //$NON-NLS-1$
+			}
+
+			if (!timeStamp.isEmpty()) {
+				long timestamp = Long.parseLong(timeStamp);
+				launchAction.setToolTipText(getRelativeTime(timestamp));
+			}
+		} catch (CoreException | NumberFormatException e) {
+			DebugUIPlugin.log(e);
+		}
+	}
+
+	/**
+	 * Returns a human-readable relative time string for the given timestamp.
+	 *
+	 * @param timestamp timestamp in milliseconds since the epoch
+	 * @return relative time string
+	 */
+	private String getRelativeTime(long timestamp) {
+		long diffMillis = Math.max(0L, System.currentTimeMillis() - timestamp);
+		long seconds = diffMillis / 1000;
+
+		if (seconds < 60) {
+			return ActionMessages.LaunchActionToolTip_Seconds;
+		}
+
+		long minutes = seconds / 60;
+
+		if (minutes == 1) {
+			return ActionMessages.LaunchActionToolTip_OneMinute;
+		}
+		if (minutes < 60) {
+			return NLS.bind(ActionMessages.LaunchActionToolTip_Minutes, minutes);
+		}
+
+		long hours = minutes / 60;
+
+		if (hours == 1) {
+			return ActionMessages.LaunchActionToolTip_OneHour;
+		}
+		if (hours < 24) {
+			return NLS.bind(ActionMessages.LaunchActionToolTip_Hours, hours);
+		}
+
+		long days = hours / 24;
+
+		if (days == 1) {
+			return ActionMessages.LaunchActionToolTip_OneDay;
+		}
+		return NLS.bind(ActionMessages.LaunchActionToolTip_Days, days);
+	}
+
 }

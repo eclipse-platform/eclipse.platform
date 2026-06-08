@@ -2039,4 +2039,105 @@ public class LaunchConfigurationTests implements ILaunchConfigurationListener {
 
 	}
 
+	@Test
+	public void testSharedTerminateTimeStampPersistence() throws Exception {
+		IProject project = getProject();
+		ILaunchConfigurationWorkingCopy workingCopy = newConfiguration(project, "TestSharedTimestamp");
+
+		Set<ILaunch> terminatedLaunches = Collections.synchronizedSet(new HashSet<>());
+
+		ILaunchesListener2 listener = new ILaunchesListener2() {
+			@Override
+			public void launchesRemoved(ILaunch[] launches) {
+			}
+
+			@Override
+			public void launchesChanged(ILaunch[] launches) {
+			}
+
+			@Override
+			public void launchesAdded(ILaunch[] launches) {
+			}
+
+			@Override
+			public void launchesTerminated(ILaunch[] launches) {
+				terminatedLaunches.addAll(Arrays.asList(launches));
+			}
+		};
+
+		DebugPlugin.getDefault().getLaunchManager().addLaunchListener(listener);
+
+		ILaunch launch = workingCopy.launch(ILaunchManager.DEBUG_MODE, null);
+		IProcess process = null;
+
+		try {
+			process = DebugPlugin.newProcess(launch, new MockProcess(0), "test");
+			waitWhile(() -> !terminatedLaunches.contains(launch), () -> "Launch termination event did not occur");
+			IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(DebugPlugin.getUniqueIdentifier());
+			String stamp = prefs.get(workingCopy.getName(), null);
+			assertNotNull(stamp, "Missing persisted terminate timestamp");
+			long timestamp = Long.parseLong(stamp);
+			assertTrue(timestamp <= System.currentTimeMillis());
+		} finally {
+			DebugPlugin.getDefault().getLaunchManager().removeLaunchListener(listener);
+			if (launch != null) {
+				getLaunchManager().removeLaunch(launch);
+			}
+			if (process != null) {
+				process.terminate();
+			}
+		}
+	}
+
+	@Test
+	public void testLocalTerminateTimeStampPersistence() throws Exception {
+		ILaunchConfigurationWorkingCopy workingCopy = newConfiguration(null, "TestLocalTimestamp");
+		Set<ILaunch> terminatedLaunches = Collections.synchronizedSet(new HashSet<>());
+		ILaunchesListener2 listener = new ILaunchesListener2() {
+			@Override
+			public void launchesRemoved(ILaunch[] launches) {
+			}
+
+			@Override
+			public void launchesChanged(ILaunch[] launches) {
+			}
+
+			@Override
+			public void launchesAdded(ILaunch[] launches) {
+			}
+
+			@Override
+			public void launchesTerminated(ILaunch[] launches) {
+				terminatedLaunches.addAll(Arrays.asList(launches));
+			}
+		};
+
+		DebugPlugin.getDefault().getLaunchManager().addLaunchListener(listener);
+
+		ILaunch launch = workingCopy.launch(ILaunchManager.DEBUG_MODE, null);
+		IProcess process = null;
+
+		try {
+			process = DebugPlugin.newProcess(launch, new MockProcess(0), "test");
+			waitWhile(() -> !terminatedLaunches.contains(launch), () -> "Launch termination event did not occur");
+			ILaunchConfiguration config = launch.getLaunchConfiguration();
+			assertNotNull(config);
+			assertTrue(config.isLocal());
+			String timeStamp = config.getAttribute(DebugPlugin.ATTR_TERMINATE_TIMESTAMP, (String) null);
+			assertNotNull(timeStamp, "Terminate timestamp was not persisted");
+			long timestamp = Long.parseLong(timeStamp);
+
+			assertTrue(timestamp > 0);
+			assertTrue(timestamp <= System.currentTimeMillis());
+		} finally {
+			DebugPlugin.getDefault().getLaunchManager().removeLaunchListener(listener);
+			if (launch != null) {
+				getLaunchManager().removeLaunch(launch);
+			}
+			if (process != null) {
+				process.terminate();
+			}
+		}
+	}
+
 }

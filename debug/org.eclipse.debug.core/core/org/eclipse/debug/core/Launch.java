@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2018 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -25,15 +25,19 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.PlatformObject;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IDisconnect;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.ISourceLocator;
 import org.eclipse.debug.internal.core.DebugCoreMessages;
 import org.eclipse.debug.internal.core.LaunchManager;
+import org.osgi.service.prefs.BackingStoreException;
 
 /**
  * A launch is the result of launching a debug session
@@ -475,7 +479,24 @@ public class Launch extends PlatformObject implements ILaunch, IDisconnect, ILau
 	 * properly created/initialized.
 	 */
 	protected void fireTerminate() {
-		setAttribute(DebugPlugin.ATTR_TERMINATE_TIMESTAMP, Long.toString(System.currentTimeMillis()));
+		String timeStamp = Long.toString(System.currentTimeMillis());
+		setAttribute(DebugPlugin.ATTR_TERMINATE_TIMESTAMP, timeStamp);
+		ILaunchConfiguration launchConfig = getLaunchConfiguration();
+		if (launchConfig != null) {
+			try {
+				if (launchConfig.isLocal()) {
+					ILaunchConfigurationWorkingCopy launchCopy = launchConfig.getWorkingCopy();
+					launchCopy.setAttribute(DebugPlugin.ATTR_TERMINATE_TIMESTAMP, timeStamp);
+					launchCopy.doSave();
+				} else {
+					IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(DebugPlugin.getUniqueIdentifier());
+					prefs.put(launchConfig.getName(), timeStamp);
+					prefs.flush();
+				}
+			} catch (CoreException | BackingStoreException e) {
+				DebugPlugin.log(e);
+			}
+		}
 		if (!fSuppressChange) {
 			((LaunchManager)getLaunchManager()).fireUpdate(this, LaunchManager.TERMINATE);
 			((LaunchManager)getLaunchManager()).fireUpdate(new ILaunch[] {this}, LaunchManager.TERMINATE);
