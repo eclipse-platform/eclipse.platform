@@ -6,7 +6,7 @@ Bundle-Version: 3.11.100.qualifier
 Bundle-Activator: org.eclipse.help.internal.HelpPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Export-Package: org.eclipse.help,
+Export-Package: org.eclipse.help;uses:="org.eclipse.core.expressions",
  org.eclipse.help.internal;
   x-friends:="org.eclipse.help.base,
    org.eclipse.help.ui,

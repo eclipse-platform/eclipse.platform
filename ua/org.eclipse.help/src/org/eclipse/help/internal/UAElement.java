@@ -148,7 +148,7 @@ public class UAElement implements IUAElement {
 			this.children = new ArrayList<>(4);
 		}
 		for (IUAElement child : children) {
-			appendChild(child instanceof UAElement ? (UAElement) child : UAElementFactory.newElement(child));
+			appendChild(child instanceof UAElement u ? u : UAElementFactory.newElement(child));
 		}
 	}
 
