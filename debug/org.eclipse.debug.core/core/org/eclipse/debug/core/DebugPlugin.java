@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2025 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -288,8 +288,9 @@ public class DebugPlugin extends Plugin {
 	public static final String ATTR_LAUNCH_TIMESTAMP = PI_DEBUG_CORE + ".launch.timestamp";  //$NON-NLS-1$
 
 	/**
-	 * The launch attribute that stores the time stamp of when a launch configuration was
-	 * launched. Value is {@link Long#toString(long)} of {@link System#currentTimeMillis()}.
+	 * The launch attribute that stores the time stamp of when a launch
+	 * configuration was terminated. Value is {@link Long#toString(long)} of
+	 * {@link System#currentTimeMillis()}.
 	 *
 	 * @since 3.15
 	 */
