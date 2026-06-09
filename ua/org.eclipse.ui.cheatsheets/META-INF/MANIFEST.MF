@@ -6,7 +6,11 @@ Bundle-Version: 3.9.100.qualifier
 Bundle-Activator: org.eclipse.ui.internal.cheatsheets.CheatSheetPlugin
 Bundle-Vendor: %PROVIDER_NAME
 Bundle-Localization: plugin
-Export-Package: org.eclipse.ui.cheatsheets,
+Export-Package: org.eclipse.ui.cheatsheets;
+  uses:="org.eclipse.core.runtime,
+   org.eclipse.help,
+   org.eclipse.jface.action,
+   org.eclipse.swt.widgets",
  org.eclipse.ui.internal.cheatsheets;x-friends:="org.eclipse.ua.tests",
  org.eclipse.ui.internal.cheatsheets.actions;x-friends:="org.eclipse.ua.tests",
  org.eclipse.ui.internal.cheatsheets.composite.explorer;x-friends:="org.eclipse.ua.tests",
