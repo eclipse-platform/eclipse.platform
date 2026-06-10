@@ -13,5 +13,10 @@ Require-Bundle: org.eclipse.ui.intro;bundle-version="3.4.0",
 Import-Package: org.osgi.framework;version="[1.8.0,2.0.0)"
 Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
-Export-Package: org.eclipse.ui.intro.quicklinks;version="1.0.0"
+Export-Package: org.eclipse.ui.intro.quicklinks;version="1.0.0";
+  uses:="org.eclipse.jface.viewers,
+   org.eclipse.swt.graphics,
+   org.eclipse.swt.widgets,
+   org.eclipse.ui.forms.widgets,
+   org.eclipse.ui.intro.config"
 Automatic-Module-Name: org.eclipse.ui.intro.quicklinks
