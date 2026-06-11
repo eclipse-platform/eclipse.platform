@@ -729,7 +729,11 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 	private void doNewline() {
 		fWrapPending = false; // DEC STD 070: any move of the cursor forgets a pending wrap
 		if (fCursorLine == fScrollRegion.getBottomLine()) {
-			scrollUp(1);
+			if (fScrollRegion.getTopLine() == 0) {
+				scrollTopAnchoredRegionUpIntoHistory();
+			} else {
+				scrollUp(1);
+			}
 		} else if (fCursorLine + 1 >= fLines) {
 			int h = fTerminal.getHeight();
 			fTerminal.addLine();
@@ -739,6 +743,28 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 		} else {
 			setCursorLine(fCursorLine + 1);
 		}
+	}
+
+	/**
+	 * Scrolls a scroll region whose top margin is the top of the screen: the displaced top line
+	 * is moved into the scroll-back history (like xterm/VTE) instead of being discarded.
+	 * MUST be called from a synchronized block!
+	 */
+	private void scrollTopAnchoredRegionUpIntoHistory() {
+		int regionBottom = fScrollRegion.getBottomLine();
+		if (regionBottom == fLines - 1) {
+			fTerminal.addLine();
+		} else if (fTerminal.getMaxHeight() > 0 && fTerminal.getHeight() < fTerminal.getMaxHeight()) {
+			// the history grows, so the former top line stays where it is and becomes history;
+			// shift the lines below the region back down, vacating the bottom line of the region
+			fTerminal.addLine();
+			fTerminal.scroll(toAbsoluteLine(regionBottom), fLines - regionBottom, 1);
+		} else {
+			// one negative shift that snapshots can track, so selections move with the text
+			fTerminal.scroll(0, toAbsoluteLine(regionBottom) + 1, -1);
+		}
+		// the absolute line of the cursor may have changed
+		setCursorLine(fCursorLine);
 	}
 
 	@Override
