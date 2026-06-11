@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2019 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -247,7 +247,8 @@ public class IOConsole extends TextConsole {
 	public void setWaterMarks(int low, int high) {
 		if (low >= 0) {
 			if (low >= high) {
-				throw new IllegalArgumentException("High water mark must be greater than low water mark"); //$NON-NLS-1$
+				throw new IllegalArgumentException(
+						String.format("High water mark (%d) must be greater than low water mark (%d)", high, low)); //$NON-NLS-1$
 			}
 		}
 		partitioner.setWaterMarks(low, high);

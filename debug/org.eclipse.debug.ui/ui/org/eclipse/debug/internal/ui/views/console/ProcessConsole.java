@@ -91,6 +91,7 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
@@ -527,6 +528,11 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 				int lowWater = store.getInt(IDebugPreferenceConstants.CONSOLE_LOW_WATER_MARK);
 				if (highWater > lowWater) {
 					setWaterMarks(lowWater, highWater);
+				} else {
+					String msg = NLS.bind(
+							ConsoleMessages.ConsoleBufferConfigurationError,
+							highWater, lowWater);
+					DebugUIPlugin.log(new Status(IStatus.WARNING, IDebugUIConstants.PLUGIN_ID, msg));
 				}
 			} else {
 				setWaterMarks(-1, -1);
