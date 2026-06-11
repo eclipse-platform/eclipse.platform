@@ -573,6 +573,11 @@ abstract public class AbstractITerminalTextDataTest {
 		scrollTest(1, 2, -1, "012345", "02 345");
 		scrollTest(5, 1, -1, "012345", "01234 ");
 		scrollTest(5, 1, -1, "012345", "01234 ");
+		scrollTest(0, 5, -1, "012345", "1234 5");
+		scrollTest(0, 5, -2, "012345", "234  5");
+		scrollTest(0, 4, -1, "012345", "123 45");
+		scrollTest(0, 4, -3, "012345", "3   45");
+		scrollTest(0, 3, -1, "012345", "12 345");
 	}
 
 	@Test

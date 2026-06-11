@@ -186,6 +186,14 @@ public class TerminalTextDataFastScroll implements ITerminalTextData {
 			} else {
 				cleanLines(startLine, Math.min(shift, getHeight() - startLine));
 			}
+		} else if (startLine == 0 && shift < 0 && fHeight - size < size + shift && fHeight == fMaxHeight) {
+			// rotate and copy back only the fewer lines below the region; on a ring with spare
+			// slots a later addLine() would expose the rotated-out lines
+			moveOffset(-shift);
+			for (int i = fHeight - 1; i >= size; i--) {
+				fData.copyLine(fData, getPositionOfLine(i + shift), getPositionOfLine(i));
+			}
+			cleanLines(size + shift, -shift);
 		} else {
 			// we have to copy the lines.
 			if (shift < 0) {
