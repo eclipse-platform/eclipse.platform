@@ -5,10 +5,4 @@ Bundle-SymbolicName: org.eclipse.sdk;singleton:=true
 Bundle-Version: 4.41.0.qualifier
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.ui;bundle-version="[3.2.0,4.0.0)",
- org.eclipse.help.ui;bundle-version="[4.0.0,5.0.0)",
- org.eclipse.help.base;bundle-version="[4.0.0,5.0.0)",
- org.eclipse.ui.cheatsheets;bundle-version="[3.2.0,4.0.0)",
- org.eclipse.ui.ide.application;bundle-version="[1.0.0,2.0.0)",
- org.eclipse.platform;bundle-version="[4.8.0,5.0.0)"
 Eclipse-BundleShape: dir
