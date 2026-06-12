@@ -36,7 +36,7 @@ package org.eclipse.core.internal.content;
  *                Clients should use it to provide their own XML-based
  *                describers that can be referenced by the "describer"
  *                configuration element in extensions to the
- *                <code>org.eclipse.core.runtime.contentTypes</code> extension
+ *                <code>org.eclipse.core.contenttype.contentTypes</code> extension
  *                point.
  *
  * @see org.eclipse.core.runtime.content.IContentDescriber

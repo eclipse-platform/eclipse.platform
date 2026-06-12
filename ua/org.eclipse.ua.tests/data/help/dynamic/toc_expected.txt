@@ -424,7 +424,6 @@
        <topic href="reference/extension-points/org_eclipse_core_resources_teamHook.html" label="org.eclipse.core.resources.teamHook"/>
        <topic href="reference/extension-points/org_eclipse_core_runtime_adapters.html" label="org.eclipse.core.runtime.adapters"/>
        <topic href="reference/extension-points/org_eclipse_core_runtime_applications.html" label="org.eclipse.core.runtime.applications"/>
-       <topic href="reference/extension-points/org_eclipse_core_runtime_contentTypes.html" label="org.eclipse.core.runtime.contentTypes"/>
        <topic href="reference/extension-points/org_eclipse_core_runtime_preferences.html" label="org.eclipse.core.runtime.preferences"/>
        <topic href="reference/extension-points/org_eclipse_core_runtime_products.html" label="org.eclipse.core.runtime.products"/>
        <topic href="reference/extension-points/org_eclipse_core_variables_dynamicVariables.html" label="org.eclipse.core.variables.dynamicVariables"/>
