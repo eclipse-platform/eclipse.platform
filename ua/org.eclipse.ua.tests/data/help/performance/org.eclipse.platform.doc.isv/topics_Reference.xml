@@ -213,7 +213,6 @@
        <topic label="org.eclipse.core.resources.teamHook" href="reference/extension-points/org_eclipse_core_resources_teamHook.html"/>
        <topic label="org.eclipse.core.runtime.adapters" href="reference/extension-points/org_eclipse_core_runtime_adapters.html"/>
        <topic label="org.eclipse.core.runtime.applications" href="reference/extension-points/org_eclipse_core_runtime_applications.html"/>
-       <topic label="org.eclipse.core.runtime.contentTypes" href="reference/extension-points/org_eclipse_core_runtime_contentTypes.html"/>
        <topic label="org.eclipse.core.runtime.preferences" href="reference/extension-points/org_eclipse_core_runtime_preferences.html"/>
        <topic label="org.eclipse.core.runtime.products" href="reference/extension-points/org_eclipse_core_runtime_products.html"/>
        <topic label="org.eclipse.core.variables.dynamicVariables" href="reference/extension-points/org_eclipse_core_variables_dynamicVariables.html"/>
