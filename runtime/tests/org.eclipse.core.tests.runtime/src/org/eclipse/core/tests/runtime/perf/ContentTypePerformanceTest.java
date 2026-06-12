@@ -30,6 +30,7 @@ import java.io.Writer;
 import java.net.URL;
 import org.eclipse.core.internal.content.ContentTypeBuilder;
 import org.eclipse.core.internal.content.ContentTypeHandler;
+import org.eclipse.core.internal.content.IContentConstants;
 import org.eclipse.core.internal.content.Util;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
@@ -168,7 +169,7 @@ public class ContentTypePerformanceTest {
 
 	private static Bundle installContentTypes(int numberOfLevels, int nodesPerLevel)
 			throws IOException, BundleException {
-		TestRegistryChangeListener listener = new TestRegistryChangeListener(Platform.PI_RUNTIME, ContentTypeBuilder.PT_CONTENTTYPES, null, null);
+		TestRegistryChangeListener listener = new TestRegistryChangeListener(IContentConstants.CONTENT_NAME, ContentTypeBuilder.PT_CONTENTTYPES, null, null);
 		Bundle installed = null;
 		listener.register();
 		try {
@@ -181,7 +182,7 @@ public class ContentTypePerformanceTest {
 					0x10000)) {
 				writer.write("<plugin>");
 				writer.write(eol);
-				writer.write("<extension point=\"org.eclipse.core.runtime.contentTypes\">");
+				writer.write("<extension point=\"org.eclipse.core.contenttype.contentTypes\">");
 				writer.write(eol);
 				String root = createContentType(writer, 0, null);
 				createContentTypes(writer, root, 1, numberOfLevels, nodesPerLevel);

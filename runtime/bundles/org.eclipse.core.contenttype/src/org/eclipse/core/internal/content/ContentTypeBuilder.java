@@ -227,9 +227,7 @@ public class ContentTypeBuilder {
 	private final static IConfigurationElement[] emptyConfArray = new IConfigurationElement[0];
 
 	/**
-	 * Gets configuration elements for both "backward compatible" extension point
-	 * 		org.eclipse.core.runtime.contentTypes
-	 * and "new" extension point controlled by this plugin:
+	 * Gets configuration elements for the extension point controlled by this plugin:
 	 * 		org.eclipse.core.contenttype.contentTypes
 	 */
 	protected IConfigurationElement[] getConfigurationElements() {
@@ -237,24 +235,11 @@ public class ContentTypeBuilder {
 		if (registry == null) {
 			return emptyConfArray;
 		}
-		IConfigurationElement[] oldConfigElements = emptyConfArray;
-		IConfigurationElement[] newConfigElements = emptyConfArray;
-		// "old" extension point
-		IExtensionPoint oldPoint = registry.getExtensionPoint(IContentConstants.RUNTIME_NAME, PT_CONTENTTYPES);
-		if (oldPoint != null) {
-			oldConfigElements = oldPoint.getConfigurationElements();
+		IExtensionPoint contentTypesPoint = registry.getExtensionPoint(IContentConstants.CONTENT_NAME, PT_CONTENTTYPES);
+		if (contentTypesPoint == null) {
+			return emptyConfArray;
 		}
-		// "new" extension point
-		IExtensionPoint newPoint = registry.getExtensionPoint(IContentConstants.CONTENT_NAME, PT_CONTENTTYPES);
-		if (newPoint != null) {
-			newConfigElements = newPoint.getConfigurationElements();
-		}
-
-		IConfigurationElement[] allContentTypeCEs = new IConfigurationElement[oldConfigElements.length + newConfigElements.length];
-		System.arraycopy(oldConfigElements, 0, allContentTypeCEs, 0, oldConfigElements.length);
-		System.arraycopy(newConfigElements, 0, allContentTypeCEs, oldConfigElements.length, newConfigElements.length);
-
-		return allContentTypeCEs;
+		return contentTypesPoint.getConfigurationElements();
 	}
 
 	private void missingMandatoryAttribute(String messageKey, String argument) throws CoreException {

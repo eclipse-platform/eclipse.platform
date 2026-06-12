@@ -53,16 +53,13 @@ public class ContentTypeManager extends ContentTypeMatcher implements IContentTy
 		@Override
 		public void registryChanged(IRegistryChangeEvent event) {
 			// no changes related to the content type registry
-			if (event.getExtensionDeltas(IContentConstants.RUNTIME_NAME, ContentTypeBuilder.PT_CONTENTTYPES).length == 0
-					&& event.getExtensionDeltas(IContentConstants.CONTENT_NAME,
-							ContentTypeBuilder.PT_CONTENTTYPES).length == 0) {
+			if (event.getExtensionDeltas(IContentConstants.CONTENT_NAME, ContentTypeBuilder.PT_CONTENTTYPES).length == 0) {
 				return;
 			}
 			getInstance().invalidate();
 		}
 	}
 
-	private static IRegistryChangeListener runtimeExtensionListener = new ContentTypeRegistryChangeListener();
 	private static IRegistryChangeListener contentExtensionListener = new ContentTypeRegistryChangeListener();
 
 	private static volatile ContentTypeManager instance;
@@ -103,9 +100,6 @@ public class ContentTypeManager extends ContentTypeMatcher implements IContentTy
 		if (registry == null) {
 			return;
 		}
-		// Different instances of listener required. See documentation of
-		// IExtensionRegistry.addRegistryChangeListener(IRegistryChangeListener, String).
-		registry.addRegistryChangeListener(runtimeExtensionListener, IContentConstants.RUNTIME_NAME);
 		registry.addRegistryChangeListener(contentExtensionListener, IContentConstants.CONTENT_NAME);
 	}
 
@@ -123,7 +117,6 @@ public class ContentTypeManager extends ContentTypeMatcher implements IContentTy
 			return;
 		}
 		getInstance().invalidate();
-		registry.removeRegistryChangeListener(runtimeExtensionListener);
 		registry.removeRegistryChangeListener(contentExtensionListener);
 	}
 
