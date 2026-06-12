@@ -254,11 +254,19 @@ public class TerminalsView extends ViewPart implements ITerminalsView, IShowInTa
 	}
 
 	/**
-	 * Initialize the drop support on the terminals page book control.
+	 * Initialize the drop support on the terminals page book control and the tab folder.
 	 */
 	private void addDropSupport() {
+		// The tab folder needs its own drop target: depending on the platform, drops
+		// over a child control are not delivered to the drop target of its parent.
+		// The page book drop target covers the empty view.
+		addDropSupport(pageBookControl);
+		addDropSupport(tabFolderControl);
+	}
+
+	private void addDropSupport(Control dropControl) {
 		int operations = DND.DROP_MOVE | DND.DROP_DEFAULT;
-		final DropTarget target = new DropTarget(pageBookControl, operations);
+		final DropTarget target = new DropTarget(dropControl, operations);
 
 		Transfer[] transferTypes = new Transfer[] { TerminalTransfer.getInstance() };
 		target.setTransfer(transferTypes);
@@ -322,13 +330,8 @@ public class TerminalsView extends ViewPart implements ITerminalsView, IShowInTa
 	}
 
 	/**
-	 * Reorder the dragged tab item within its own tab folder so that it is dropped at the position
-	 * the mouse points to. Only drops on the tab strip reorder, a drop on the terminal content
-	 * area is ignored.
-	 *
-	 * @param draggedItem the tab item being dragged, must not be <code>null</code>.
-	 * @param x the x coordinate of the drop, in display-relative coordinates.
-	 * @param y the y coordinate of the drop, in display-relative coordinates.
+	 * Moves the dragged tab to the drop position. Only drops on the tab strip reorder, drops on
+	 * the terminal content area are ignored.
 	 */
 	private void reorderTabItem(CTabItem draggedItem, int x, int y) {
 		if (tabFolderControl == null || tabFolderControl.isDisposed()) {
@@ -343,14 +346,20 @@ public class TerminalsView extends ViewPart implements ITerminalsView, IShowInTa
 		// Map the display-relative drop coordinates to the tab folder and find the tab below them.
 		// A drop on the empty space next to the tabs targets the last position.
 		Point point = tabFolderControl.toControl(x, y);
-		CTabItem targetItem = tabFolderControl.getItem(point);
+		if (!isOnTabStrip(point)) {
+			// The drop event coordinates are not display-relative on every platform, on
+			// Wayland for example they are relative to the shell. Retry with the cursor
+			// location, which uses the same coordinate base as toControl.
+			point = tabFolderControl.toControl(tabFolderControl.getDisplay().getCursorLocation());
+		}
 
 		// Only drops on the tab strip reorder. Ignore drops on the terminal content area,
 		// keeping the previous behavior of rejecting such drops.
-		if (targetItem == null && (point.y < 0 || point.y > tabFolderControl.getTabHeight())) {
+		if (!isOnTabStrip(point)) {
 			return;
 		}
 
+		CTabItem targetItem = tabFolderControl.getItem(point);
 		int indexUnderCursor = targetItem != null ? tabFolderControl.indexOf(targetItem) : -1;
 
 		int to = computeReorderIndex(from, indexUnderCursor, tabFolderControl.getItemCount());
@@ -361,6 +370,16 @@ public class TerminalsView extends ViewPart implements ITerminalsView, IShowInTa
 		// Keep the moved terminal selected and focused.
 		tabFolderManager.bringToTop(draggedItem);
 		setFocus();
+	}
+
+	/**
+	 * Returns whether the given point, in tab folder coordinates, is on the tab strip.
+	 */
+	private boolean isOnTabStrip(Point point) {
+		if (tabFolderControl.getItem(point) != null) {
+			return true;
+		}
+		return point.y >= 0 && point.y <= tabFolderControl.getTabHeight();
 	}
 
 	/**
