@@ -49,6 +49,9 @@ public class UndoAllRunnable implements Runnable {
 	public void run() {
 		var tw = tv.getTextWidget();
 		List<UnifiedDiff> diffs1 = get(tv);
+		if (diffs1 == null) {
+			return;
+		}
 		List<Position> positions = new ArrayList<>();
 		List<String> replaceStrings = new ArrayList<>();
 		for (UnifiedDiff diff : diffs1) {
@@ -72,6 +75,9 @@ public class UndoAllRunnable implements Runnable {
 			ext.updateCodeMinings();
 		}
 		disposeUnifiedDiff(tv, model, tv.getTextWidget());
+		if (positions.isEmpty()) {
+			return;
+		}
 		// we have to insert with delay because otherwise the line header code minings
 		// cannot be deleted
 		runAfterRepaintFinished(tw, () -> {

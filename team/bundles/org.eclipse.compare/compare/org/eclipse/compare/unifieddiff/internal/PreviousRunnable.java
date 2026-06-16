@@ -62,6 +62,9 @@ public class PreviousRunnable implements Runnable {
 		}
 		int offset = sel.getOffset();
 		List<UnifiedDiff> diffs1 = get(tv);
+		if (diffs1 == null || diffs1.size() == 0) {
+			return;
+		}
 		// get next UnifiedDiff for given offset
 		UnifiedDiff nextDiff = null;
 		for (UnifiedDiff diff : diffs1) {

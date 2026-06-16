@@ -470,8 +470,8 @@ public class UnifiedDiffManager {
 			UnifiedDiffMode mode) {
 		StyledText tw = tv.getTextWidget();
 		var tm = new ToolBarManager(SWT.FLAT | SWT.HORIZONTAL | SWT.RIGHT);
-		List<UnifiedDiff> diffs = get(tv);
 		if (UnifiedDiffMode.OVERLAY_MODE.equals(mode) || UnifiedDiffMode.OVERLAY_READ_ONLY_MODE.equals(mode)) {
+			List<UnifiedDiff> diffs = get(tv);
 			if (!isReadOnly(diffs)) {
 				var acceptAll = new AcceptAllRunnable(tv, model);
 				addToolbarAction(tm, acceptAll.getLabel(), AcceptAllRunnable.getImageDescriptor(), acceptAll);
