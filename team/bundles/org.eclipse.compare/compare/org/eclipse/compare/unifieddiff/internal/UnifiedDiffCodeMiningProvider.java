@@ -613,7 +613,15 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 
 		@Override
 		public void dispose() {
+			cleanCachedData();
 			super.dispose();
+		}
+
+		private void cleanCachedData() {
+			foregrounds = null;
+			backgrounds = null;
+			lastRectangle = null;
+			cachedFont = null;
 			clearStyledFonts();
 		}
 
@@ -634,14 +642,13 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			gc.setForeground(c);
 			Font font = textWidget.getFont();
 			gc.setFont(font);
-			if (cachedFont != null && !cachedFont.equals(font)) {
+			if (cachedFont != null && (cachedFont.isDisposed() || !cachedFont.equals(font))) {
 				// font might have been changed in the meantime - remove cache
-				lastRectangle = null;
-				backgrounds = null;
-				foregrounds = null;
-				clearStyledFonts();
+				cleanCachedData();
 			}
+			cachedFont = font;
 			if (lastRectangle != null && backgrounds != null && foregrounds != null) {
+				boolean fontIsDisposed = false;
 				// draw background
 				// vs code is drawing the background to the top right of the editor - we do here
 				// the same!
@@ -663,20 +670,26 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 					}
 					if (f.font == null) {
 						gc.setFont(cachedFont);
-					} else {
+					} else if (!f.font.isDisposed()) {
 						gc.setFont(f.font);
+					} else {
+						cleanCachedData();
+						cachedFont = font;
+						fontIsDisposed = true;
+						break;
 					}
 					gc.setBackground(f.background);
 					gc.setForeground(f.foreground);
 					gc.drawString(f.str, x + f.x, y + f.y, true);
 				}
-				lastRectangle = new Rectangle(x, y, lastRectangle.width, lastRectangle.height);
-				return new Point(lastRectangle.width, lastRectangle.height);
+				if (!fontIsDisposed) {
+					lastRectangle = new Rectangle(x, y, lastRectangle.width, lastRectangle.height);
+					return new Point(lastRectangle.width, lastRectangle.height);
+				}
 			}
 			// first run to get width and height for label
 			Point result = super.draw(gc, textWidget, color, x, y);
 			lastRectangle = new Rectangle(x, y, result.x, result.y);
-			cachedFont = font;
 
 			// draw background
 			// vs code is drawing the background to the top right of the editor - we do here

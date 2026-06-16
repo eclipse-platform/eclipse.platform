@@ -42,6 +42,9 @@ public class KeepAllRunnable implements Runnable {
 	@Override
 	public void run() {
 		List<UnifiedDiff> diffs1 = get(tv);
+		if (diffs1 == null) {
+			return;
+		}
 		for (UnifiedDiff diff : diffs1) {
 			List<Annotation> annos = getAllAnnotationsForUnifiedDiff(model, diff);
 			for (var lanno : annos) {
