@@ -131,7 +131,7 @@ public class AntLaunchDelegate extends LaunchConfigurationDelegate {
 					vmver = vmver.substring(0, 3);
 				}
 				// int ver = (int) (CompilerOptions.versionToJdkLevel(vmver) >>> 16);
-				if (JavaCore.compareJavaVersions(vmver, JavaCore.VERSION_11) < 0) {
+				if (JavaCore.compareJavaVersions(vmver, JavaCore.VERSION_17) < 0) {
 					boolean useDefault = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_DEFAULT_CLASSPATH, true);
 					if (useDefault) {
 						IStatus status = new Status(IStatus.ERROR, AntLaunching.PLUGIN_ID, 1, AntLaunchConfigurationMessages.AntLaunchDelegate_Launching__0__2, null);
