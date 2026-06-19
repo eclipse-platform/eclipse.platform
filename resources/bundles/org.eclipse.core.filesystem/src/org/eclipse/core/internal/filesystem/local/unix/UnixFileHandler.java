@@ -21,6 +21,17 @@ import org.eclipse.core.internal.filesystem.local.NativeHandler;
  * Native handler that delegates to UnixFileNatives
  */
 public class UnixFileHandler extends NativeHandler {
+
+	@Override
+	public String[] listDirectoryNames(String fileName) {
+		return UnixFileNatives.listDirectoryNames(fileName);
+	}
+
+	@Override
+	public IFileInfo[] listDirectoryAndGetFileInfos(String fileName) {
+		return UnixFileNatives.listDirectoryAndGetFileInfos(fileName);
+	}
+
 	@Override
 	public int getSupportedAttributes() {
 		return UnixFileNatives.getSupportedAttributes();

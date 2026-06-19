@@ -21,7 +21,9 @@ import java.util.Enumeration;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.provider.FileInfo;
-import org.eclipse.core.internal.filesystem.*;
+import org.eclipse.core.internal.filesystem.FileSystemAccess;
+import org.eclipse.core.internal.filesystem.Messages;
+import org.eclipse.core.internal.filesystem.Policy;
 import org.eclipse.core.internal.filesystem.local.Convert;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osgi.util.NLS;
@@ -34,6 +36,8 @@ public abstract class UnixFileNatives {
 
 	private static final boolean usingNatives;
 	private static final int libattr;
+
+	protected static final String[] EMPTY_STRING_ARRAY = {};
 
 	static {
 		boolean _usingNatives = false;
@@ -76,27 +80,51 @@ public abstract class UnixFileNatives {
 		return ret;
 	}
 
+	public static String[] listDirectoryNames(String pathName) {
+		byte[] name = fileNameToBytes(pathName);
+		String[] result = listDir(name);
+		if (result == null) {
+			return EMPTY_STRING_ARRAY;
+		}
+		return result;
+	}
+
+	public static IFileInfo[] listDirectoryAndGetFileInfos(String pathName) {
+		byte[] name = fileNameToBytes(pathName);
+		StructStat[] stats = listDirAndGetFileInfos(name);
+		if (stats == null) {
+			return new IFileInfo[0];
+		}
+		int count = stats.length;
+		IFileInfo[] infos = new IFileInfo[count];
+		for (int i = 0; i < count; i++) {
+			var st = stats[i].toFileInfo();
+			infos[i] = st;
+		}
+		return infos;
+	}
+
 	public static FileInfo fetchFileInfo(String fileName) {
 		FileInfo info = null;
 		byte[] name = fileNameToBytes(fileName);
 		StructStat stat = new StructStat();
-		if (lstat(name, stat) == 0) {
-			if ((stat.st_mode & UnixFileFlags.S_IFMT) == UnixFileFlags.S_IFLNK) {
-				if (stat(name, stat) == 0) {
-					info = stat.toFileInfo();
-				} else {
+		if (lstat(name, stat) == 0) { // return information about the link itself if the file is a symbolic link
+			if ((stat.st_mode & UnixFileFlags.S_IFMT) == UnixFileFlags.S_IFLNK) { // it a link!
+				if (stat(name, stat) == 0) { // get the information about the file the link points to
+					info = stat.toFileInfo(); // store the target file stats in info
+				} else { // invalid link target!
 					info = new FileInfo();
 					if (getErrno() != ENOENT) {
 						info.setError(IFileInfo.IO_ERROR);
 					}
 				}
-				info.setAttribute(EFS.ATTRIBUTE_SYMLINK, true);
+				info.setAttribute(EFS.ATTRIBUTE_SYMLINK, true); // set symlink attribute
 				byte target[] = new byte[UnixFileFlags.PATH_MAX];
 				int length = readlink(name, target, target.length);
-				if (length > 0) {
+				if (length > 0) { // set target of the link
 					info.setStringAttribute(EFS.ATTRIBUTE_LINK_TARGET, bytesToFileName(target, length));
 				}
-			} else {
+			} else { // regular file or directory
 				info = stat.toFileInfo();
 			}
 		} else {
@@ -230,5 +258,9 @@ public abstract class UnixFileNatives {
 	private static final native byte[] tounicode(char[] buf);
 
 	private static final native int getflag(byte[] buf);
+
+	private static final native String[] listDir(byte[] path);
+
+	private static final native StructStat[] listDirAndGetFileInfos(byte[] path);
 
 }

@@ -14,6 +14,7 @@
 package org.eclipse.core.internal.filesystem.local.unix;
 
 import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.provider.FileInfo;
 
 /**
@@ -21,6 +22,7 @@ import org.eclipse.core.filesystem.provider.FileInfo;
  * and is used by JNI calls wrapping OS file related functions.
  */
 public class StructStat {
+	private static final int ENOENT = 2; // errno value for "No such file or directory"
 
 	private static final boolean USE_MILLISECOND_RESOLUTION = Boolean.parseBoolean(System.getProperty("eclipse.filesystem.useNatives.modificationTimestampMillisecondsResolution", "true")); //$NON-NLS-1$ //$NON-NLS-2$
 
@@ -29,10 +31,20 @@ public class StructStat {
 	public long st_mtime;
 	public long st_mtime_msec; // millisecond component of the file timestamp, filled on Linux systems
 	public long st_flags; // Filled only on Mac OS X
+	public int errno;
+	public String name;
+	public String linkFile; // Filled target for symbolic links
 
 	public FileInfo toFileInfo() {
 		FileInfo info = new FileInfo();
-		info.setExists(true);
+		if (errno != 0 && errno != ENOENT) {
+			info.setError(IFileInfo.IO_ERROR);
+			return info;
+		}
+		info.setExists(errno != ENOENT);
+		if (name != null) {
+			info.setName(name);
+		}
 		info.setLength(st_size);
 		long lastModified = (st_mtime * 1_000);
 		if (USE_MILLISECOND_RESOLUTION) {
@@ -41,6 +53,12 @@ public class StructStat {
 		info.setLastModified(lastModified);
 		if ((st_mode & UnixFileFlags.S_IFMT) == UnixFileFlags.S_IFDIR) {
 			info.setDirectory(true);
+		}
+		if (linkFile != null) {
+			info.setAttribute(EFS.ATTRIBUTE_SYMLINK, true);
+			if (!linkFile.isEmpty()) {
+				info.setStringAttribute(EFS.ATTRIBUTE_LINK_TARGET, linkFile);
+			}
 		}
 		if ((st_flags & (UnixFileFlags.UF_IMMUTABLE | UnixFileFlags.SF_IMMUTABLE)) != 0) {
 			info.setAttribute(EFS.ATTRIBUTE_IMMUTABLE, true);

@@ -20,6 +20,8 @@
 #include <errno.h>
 #include <limits.h>
 #include <jni.h>
+#include <fcntl.h>
+#include <dirent.h>
 
 #if defined MACOSX
 #include <CoreServices/CoreServices.h>
@@ -38,6 +40,14 @@ static jfieldID attrs_st_mtime_msec;
 /* Only filled on MACOSX. */
 static jfieldID attrs_st_flags;
 
+static jfieldID errno_fieldID;
+
+static jfieldID nameFieldId;
+
+static jfieldID linkFieldId;
+
+static const jsize INITIAL_LIST_ARRAY_SIZE = 100;
+
 /*
  * Class:     Java_org_eclipse_core_internal_filesystem_local_unix_UnixFileNatives_initializeStructStatFieldIDs
  * Method:    initializeStructStatFieldIDs
@@ -51,6 +61,9 @@ JNIEXPORT jint JNICALL Java_org_eclipse_core_internal_filesystem_local_unix_Unix
     attrs_st_mode = (*env)->GetFieldID(env, structStatClass, "st_mode", "I");
     attrs_st_size = (*env)->GetFieldID(env, structStatClass, "st_size", "J");
     attrs_st_mtime = (*env)->GetFieldID(env, structStatClass, "st_mtime", "J");
+	errno_fieldID = (*env)->GetFieldID(env, structStatClass, "errno", "I");
+	nameFieldId = (*env)->GetFieldID(env, structStatClass, "name", "Ljava/lang/String;");
+	linkFieldId = (*env)->GetFieldID(env, structStatClass, "linkFile", "Ljava/lang/String;");
 
 #ifdef MACOSX
     attrs_st_flags = (*env)->GetFieldID(env, structStatClass, "st_flags", "J");
@@ -80,17 +93,37 @@ jbyte* getByteArray(JNIEnv *env, jbyteArray target)
 }
 
 /*
+ * Copy object array contents using java.lang.System.arraycopy.
+ */
+jint copyObjectArray(JNIEnv *env, jobject source, jobject target, jsize length)
+{
+	jclass systemClass;
+	jmethodID arraycopyMethod;
+
+	systemClass = (*env)->FindClass(env, "java/lang/System");
+	if (systemClass == NULL) {
+		return -1;
+	}
+	arraycopyMethod = (*env)->GetStaticMethodID(env, systemClass, "arraycopy", "(Ljava/lang/Object;ILjava/lang/Object;II)V");
+	if (arraycopyMethod == NULL) {
+		(*env)->DeleteLocalRef(env, systemClass);
+		return -1;
+	}
+
+	(*env)->CallStaticVoidMethod(env, systemClass, arraycopyMethod, source, 0, target, 0, length);
+	(*env)->DeleteLocalRef(env, systemClass);
+	if ((*env)->ExceptionCheck(env)){
+		return -1;
+	}
+
+	return 0;
+}
+
+/*
  * Fills StructStat object with data from struct stat.
  */
-jint convertStatToObject(JNIEnv *env, struct stat info, jobject stat_object)
+jint convertStatToObject(JNIEnv *env, struct stat info, int errnoValue, jobject stat_object)
 {
-	jclass cls;
-	jfieldID fid;
-	jboolean readOnly;
-
-	cls = (*env)->GetObjectClass(env, stat_object);
-	if (cls == 0) return -1;
-
 	if (attrs_st_mode == 0) return -1;
 	(*env)->SetIntField(env, stat_object, attrs_st_mode, info.st_mode);
 
@@ -99,6 +132,9 @@ jint convertStatToObject(JNIEnv *env, struct stat info, jobject stat_object)
 
 	if (attrs_st_mtime == 0) return -1;
 	(*env)->SetLongField(env, stat_object, attrs_st_mtime, info.st_mtime);
+
+	if (errno_fieldID == 0) return -1;
+	(*env)->SetIntField(env, stat_object, errno_fieldID, errnoValue);
 
 #ifndef MACOSX
 	if (attrs_st_mtime_msec == 0) return -1;
@@ -165,10 +201,10 @@ JNIEXPORT jint JNICALL Java_org_eclipse_core_internal_filesystem_local_unix_Unix
 	struct stat info;
 
 	name = (char*) getByteArray(env, path);
-	code = stat(name, &info);
+	code = fstatat(AT_FDCWD, name, &info, 0);
 	free(name);
 	if (code != -1)
-		return convertStatToObject(env, info, buf);
+		return convertStatToObject(env, info, 0, buf);
 	else
 		return code;
 }
@@ -186,10 +222,10 @@ JNIEXPORT jint JNICALL Java_org_eclipse_core_internal_filesystem_local_unix_Unix
 	struct stat info;
 
 	name = (char*) getByteArray(env, path);
-	code = lstat(name, &info);
+	code = fstatat(AT_FDCWD, name, &info, AT_SYMLINK_NOFOLLOW);
 	free(name);
 	if (code != -1)
-		return convertStatToObject(env, info, buf);
+		return convertStatToObject(env, info, 0, buf);
 	else
 		return code;
 }
@@ -328,4 +364,301 @@ JNIEXPORT jint JNICALL Java_org_eclipse_core_internal_filesystem_local_unix_Unix
 #endif
 	free(flag);
 	return ret;
+}
+
+JNIEXPORT jobjectArray JNICALL Java_org_eclipse_core_internal_filesystem_local_unix_UnixFileNatives_listDir
+  (JNIEnv *env, jclass, jbyteArray path)
+{
+	char *name;
+	DIR *dir = NULL;
+	int directoryFd;
+	jsize arrayLength;
+	int count = 0;
+	int i;
+	struct dirent *entry;
+	jobjectArray namesArray;
+	jobjectArray result = NULL;
+	jclass stringClass;
+
+	stringClass = (*env)->FindClass(env, "java/lang/String");
+	if (stringClass == NULL) {
+		return NULL;
+	}
+	namesArray = (*env)->NewObjectArray(env, INITIAL_LIST_ARRAY_SIZE, stringClass, NULL);
+	if (namesArray == NULL) {
+		return NULL;
+	}
+	arrayLength = INITIAL_LIST_ARRAY_SIZE;
+
+	name = (char*) getByteArray(env, path);
+	dir = opendir(name);
+	free(name);
+	if (dir == NULL) {
+		goto cleanup;
+	}
+	directoryFd = dirfd(dir);
+	if (directoryFd == -1) {
+		goto cleanup;
+	}
+	while ((entry = readdir(dir)) != NULL) {
+		jstring nameString = NULL;
+		jobjectArray grownArray;
+
+		/* Skip . and .. */
+		if (entry->d_name[0] == '.' &&
+			(entry->d_name[1] == '\0' ||
+			 (entry->d_name[1] == '.' && entry->d_name[2] == '\0'))) {
+			continue;
+		}
+
+		if (count >= arrayLength) {
+			jsize newLength = arrayLength > 0 ? arrayLength * 2 : 1;
+
+			if (newLength < arrayLength) {
+				goto cleanup;
+			}
+
+			grownArray = (*env)->NewObjectArray(env, newLength, stringClass, NULL);
+			if (grownArray == NULL) {
+				goto cleanup;
+			}
+
+			if (copyObjectArray(env, namesArray, grownArray, arrayLength) != 0) {
+				(*env)->DeleteLocalRef(env, grownArray);
+				goto cleanup;
+			}
+
+			(*env)->DeleteLocalRef(env, namesArray);
+			namesArray = grownArray;
+			arrayLength = newLength;
+		}
+
+		/* Add the directory entry name to the names array */
+		nameString = (*env)->NewStringUTF(env, entry->d_name);
+		if (nameString == NULL) {
+			goto cleanup;
+		}
+
+		(*env)->SetObjectArrayElement(env, namesArray, count, nameString);
+		if ((*env)->ExceptionCheck(env)) {
+			(*env)->DeleteLocalRef(env, nameString);
+			goto cleanup;
+		}
+		(*env)->DeleteLocalRef(env, nameString);
+
+		count++;
+	}
+
+	result = (*env)->NewObjectArray(env, count, stringClass, NULL);
+	if (result == NULL) {
+		goto cleanup;
+	}
+
+	for (i = 0; i < count; i++) {
+		jobject existingName = (*env)->GetObjectArrayElement(env, namesArray, i);
+		if ((*env)->ExceptionCheck(env)) {
+			goto cleanup;
+		}
+		(*env)->SetObjectArrayElement(env, result, i, existingName);
+		(*env)->DeleteLocalRef(env, existingName);
+		if ((*env)->ExceptionCheck(env)) {
+			goto cleanup;
+		}
+	}
+
+cleanup:
+	if (dir != NULL) {
+		closedir(dir);
+	}
+	return result;
+}
+
+JNIEXPORT jobjectArray JNICALL Java_org_eclipse_core_internal_filesystem_local_unix_UnixFileNatives_listDirAndGetFileInfos
+	(JNIEnv *env, jclass, jbyteArray path)
+{
+	char *name;
+	DIR *dir = NULL;
+	int directoryFd;
+	jsize arrayLength;
+	int count = 0;
+	int i;
+	struct dirent *entry;
+	jclass structStatClass;
+	jmethodID structStatCtor;
+	jobjectArray statArray = NULL;
+	jobjectArray resultStatsArray = NULL;
+	jobjectArray result = NULL;
+
+	structStatClass = (*env)->FindClass(env, "org/eclipse/core/internal/filesystem/local/unix/StructStat");
+	if (structStatClass == NULL) {
+		return NULL;
+	}
+
+	statArray = (*env)->NewObjectArray(env, INITIAL_LIST_ARRAY_SIZE, structStatClass, NULL);
+	if (statArray == NULL) {
+		return NULL;
+	}
+	arrayLength = INITIAL_LIST_ARRAY_SIZE;
+
+	structStatCtor = (*env)->GetMethodID(env, structStatClass, "<init>", "()V");
+	if (structStatCtor == NULL) {
+		return NULL;
+	}
+	name = (char*) getByteArray(env, path);
+	dir = opendir(name);
+	free(name);
+	if (dir == NULL) {
+		goto cleanup;
+	}
+	directoryFd = dirfd(dir);
+	if (directoryFd == -1) {
+		goto cleanup;
+	}
+	while ((entry = readdir(dir)) != NULL) {
+		struct stat st;
+		jobject statObject = NULL;
+		jstring nameString = NULL;
+		int statErrno = 0;
+
+		/* Skip . and .. */
+		if (entry->d_name[0] == '.' &&
+			(entry->d_name[1] == '\0' ||
+			 (entry->d_name[1] == '.' && entry->d_name[2] == '\0'))) {
+			continue;
+		}
+
+		if (count >= arrayLength) {
+			jsize newLength = arrayLength > 0 ? arrayLength * 2 : 1;
+			jobjectArray grownStatArray;
+
+			if (newLength < arrayLength) {
+				goto cleanup;
+			}
+
+			grownStatArray = (*env)->NewObjectArray(env, newLength, structStatClass, NULL);
+			if (grownStatArray == NULL) {
+				goto cleanup;
+			}
+
+			if (copyObjectArray(env, statArray, grownStatArray, arrayLength) != 0) {
+				(*env)->DeleteLocalRef(env, grownStatArray);
+				goto cleanup;
+			}
+
+			(*env)->DeleteLocalRef(env, statArray);
+
+			statArray = grownStatArray;
+			arrayLength = newLength;
+		}
+
+		statObject = (*env)->NewObject(env, structStatClass, structStatCtor);
+		if (statObject == NULL) {
+			goto cleanup;
+		}
+
+		/* Collect file stats. Keep processing even if stat/readlink fails. */
+		if (fstatat(directoryFd, entry->d_name, &st, AT_SYMLINK_NOFOLLOW) != 0) {
+			memset(&st, 0, sizeof(st));
+			statErrno = errno;
+		} else if (S_ISLNK(st.st_mode)) {
+			char linkPath[PATH_MAX + 1];
+			jstring linkString = NULL;
+			ssize_t linkPathLen;
+
+			/* Follow symlink and update stat for further processing. */
+			if (fstatat(directoryFd, entry->d_name, &st, 0) != 0) {
+				memset(&st, 0, sizeof(st));
+				statErrno = errno;
+			}
+
+			/* Read link target if possible. */
+			linkPathLen = readlinkat(directoryFd, entry->d_name, linkPath, PATH_MAX);
+			if (linkPathLen >= 0) {
+				linkPath[linkPathLen] = '\0';
+			} else if (statErrno == 0) {
+				statErrno = errno;
+			}
+
+			if (linkPathLen >= 0) {
+				linkString = (*env)->NewStringUTF(env, linkPath);
+			} else {
+				linkString = (*env)->NewStringUTF(env, "");
+			}
+
+			if (linkString == NULL) {
+				(*env)->DeleteLocalRef(env, statObject);
+				goto cleanup;
+			}
+			(*env)->SetObjectField(env, statObject, linkFieldId, linkString);
+			(*env)->DeleteLocalRef(env, linkString);
+			if ((*env)->ExceptionCheck(env)) {
+				(*env)->DeleteLocalRef(env, statObject);
+				goto cleanup;
+			}
+		}
+
+		if (convertStatToObject(env, st, statErrno, statObject) != 0) {
+			(*env)->DeleteLocalRef(env, statObject);
+			goto cleanup;
+		}
+
+		(*env)->SetObjectArrayElement(env, statArray, count, statObject);
+		if ((*env)->ExceptionCheck(env)) {
+			(*env)->DeleteLocalRef(env, statObject);
+			goto cleanup;
+		}
+
+		nameString = (*env)->NewStringUTF(env, entry->d_name);
+		if (nameString == NULL) {
+			(*env)->DeleteLocalRef(env, statObject);
+			goto cleanup;
+		}
+
+		(*env)->SetObjectField(env, statObject, nameFieldId, nameString);
+		if ((*env)->ExceptionCheck(env)) {
+			(*env)->DeleteLocalRef(env, nameString);
+			(*env)->DeleteLocalRef(env, statObject);
+			goto cleanup;
+		}
+		(*env)->DeleteLocalRef(env, nameString);
+		(*env)->DeleteLocalRef(env, statObject);
+
+		count++;
+	}
+
+	resultStatsArray = (*env)->NewObjectArray(env, count, structStatClass, NULL);
+	if (resultStatsArray == NULL) {
+		goto cleanup;
+	}
+
+	for (i = 0; i < count; i++) {
+		jobject existingStat = (*env)->GetObjectArrayElement(env, statArray, i);
+		if ((*env)->ExceptionCheck(env)) {
+			if (existingStat != NULL) {
+				(*env)->DeleteLocalRef(env, existingStat);
+			}
+			goto cleanup;
+		}
+
+		(*env)->SetObjectArrayElement(env, resultStatsArray, i, existingStat);
+		(*env)->DeleteLocalRef(env, existingStat);
+		if ((*env)->ExceptionCheck(env)) {
+			goto cleanup;
+		}
+	}
+
+	result = resultStatsArray;
+	resultStatsArray = NULL;
+
+cleanup:
+	if (dir != NULL) {
+		closedir(dir);
+	}
+	if (statArray != NULL) {
+		(*env)->DeleteLocalRef(env, statArray);
+	}
+	if (resultStatsArray != NULL) {
+		(*env)->DeleteLocalRef(env, resultStatsArray);
+	}
+	return result;
 }
