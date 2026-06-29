@@ -68,7 +68,7 @@ public class HelpUIPlugin extends AbstractUIPlugin {
 		// Setup debugging options
 		DEBUG = isDebugging();
 		if (DEBUG) {
-			DEBUG_INFOPOP = "true".equalsIgnoreCase(Platform.getDebugOption(PLUGIN_ID + "/debug/infopop")); //$NON-NLS-1$ //$NON-NLS-2$
+			DEBUG_INFOPOP = Platform.getDebugBoolean(PLUGIN_ID + "/debug/infopop"); //$NON-NLS-1$
 		}
 
 		if (BaseHelpSystem.getMode() == BaseHelpSystem.MODE_WORKBENCH) {

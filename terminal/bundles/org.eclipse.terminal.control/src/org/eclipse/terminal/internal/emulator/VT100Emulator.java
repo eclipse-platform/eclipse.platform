@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.Arrays;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.graphics.RGB;
@@ -49,7 +50,6 @@ import org.eclipse.terminal.connector.ITerminalConnector;
 import org.eclipse.terminal.connector.Logger;
 import org.eclipse.terminal.control.TerminalTitleRequestor;
 import org.eclipse.terminal.internal.control.impl.ITerminalControlForText;
-import org.eclipse.terminal.internal.control.impl.TerminalPlugin;
 import org.eclipse.terminal.model.ITerminalTextData;
 import org.eclipse.terminal.model.TerminalStyle;
 
@@ -168,7 +168,7 @@ public class VT100Emulator implements ControlListener {
 			ansiParameters[i] = new StringBuffer();
 		}
 		setInputStreamReader(reader);
-		if (TerminalPlugin.isOptionEnabled(Logger.TRACE_DEBUG_LOG_VT100BACKEND)) {
+		if (Platform.getDebugBoolean(Logger.TRACE_DEBUG_LOG_VT100BACKEND)) {
 			text = new VT100BackendTraceDecorator(new VT100EmulatorBackend(data), System.out);
 		} else {
 			text = new VT100EmulatorBackend(data);

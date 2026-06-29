@@ -17,7 +17,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
@@ -263,15 +262,6 @@ public class UIPlugin extends AbstractUIPlugin {
 	 */
 	public static ImageDescriptor getImageDescriptor(String key) {
 		return getDefault().getImageRegistry().getDescriptor(key);
-	}
-
-	public static boolean isOptionEnabled(String strOption) {
-		String strEnabled = Platform.getDebugOption(strOption);
-		if (strEnabled == null) {
-			return false;
-		}
-
-		return Boolean.parseBoolean(strEnabled);
 	}
 
 	public static ITerminalService getTerminalService() {

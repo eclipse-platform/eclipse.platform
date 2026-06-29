@@ -18,15 +18,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.terminal.connector.Logger;
-import org.eclipse.terminal.internal.control.impl.TerminalPlugin;
 import org.eclipse.terminal.model.ITerminalTextDataReadOnly;
 import org.eclipse.terminal.model.ITerminalTextDataSnapshot;
 import org.eclipse.terminal.model.TextRange;
 
 abstract public class AbstractTextCanvasModel implements ITextCanvasModel {
-	private static final boolean DEBUG_HOVER = TerminalPlugin.isOptionEnabled(Logger.TRACE_DEBUG_LOG_HOVER);
+	private static final boolean DEBUG_HOVER = Platform.getDebugBoolean(Logger.TRACE_DEBUG_LOG_HOVER);
 	protected List<ITextCanvasModelListener> fListeners = new ArrayList<>();
 	private int fCursorLine;
 	private int fCursorColumn;

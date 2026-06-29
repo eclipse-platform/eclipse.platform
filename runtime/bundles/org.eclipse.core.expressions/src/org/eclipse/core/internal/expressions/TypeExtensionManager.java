@@ -40,7 +40,7 @@ public class TypeExtensionManager implements IRegistryChangeListener {
 	 *
 	 * @since 3.5
 	 */
-	private static boolean DEBUG= "true".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.core.expressions/debug/TypeExtensionManager")); //$NON-NLS-1$//$NON-NLS-2$
+	private static boolean DEBUG = Platform.getDebugBoolean("org.eclipse.core.expressions/debug/TypeExtensionManager"); //$NON-NLS-1$
 
 	private static final String TYPE= "type"; //$NON-NLS-1$
 

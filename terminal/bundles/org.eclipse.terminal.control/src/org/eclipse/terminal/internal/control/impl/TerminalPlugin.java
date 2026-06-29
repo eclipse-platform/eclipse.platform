@@ -20,7 +20,6 @@
  *******************************************************************************/
 package org.eclipse.terminal.internal.control.impl;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -52,15 +51,6 @@ public class TerminalPlugin extends AbstractUIPlugin {
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
 		super.stop(context);
-	}
-
-	public static boolean isOptionEnabled(String strOption) {
-		String strEnabled = Platform.getDebugOption(strOption);
-		if (strEnabled == null) {
-			return false;
-		}
-
-		return Boolean.parseBoolean(strEnabled);
 	}
 
 }

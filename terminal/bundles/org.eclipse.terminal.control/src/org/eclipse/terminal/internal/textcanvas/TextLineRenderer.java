@@ -19,13 +19,13 @@ package org.eclipse.terminal.internal.textcanvas;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Drawable;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.terminal.connector.Logger;
-import org.eclipse.terminal.internal.control.impl.TerminalPlugin;
 import org.eclipse.terminal.model.ITerminalTextDataReadOnly;
 import org.eclipse.terminal.model.LineSegment;
 import org.eclipse.terminal.model.TerminalColor;
@@ -35,7 +35,7 @@ import org.eclipse.terminal.model.TerminalStyle;
  *
  */
 public class TextLineRenderer implements ILinelRenderer {
-	private static final boolean DEBUG_HOVER = TerminalPlugin.isOptionEnabled(Logger.TRACE_DEBUG_LOG_HOVER);
+	private static final boolean DEBUG_HOVER = Platform.getDebugBoolean(Logger.TRACE_DEBUG_LOG_HOVER);
 	private final ITextCanvasModel fModel;
 	private final StyleMap fStyleMap;
 

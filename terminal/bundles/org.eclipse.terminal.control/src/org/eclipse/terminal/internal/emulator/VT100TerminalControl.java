@@ -58,6 +58,7 @@ import org.eclipse.core.commands.ParameterizedCommand;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.bindings.Binding;
@@ -828,7 +829,7 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 	}
 
 	protected boolean isLogCharEnabled() {
-		return TerminalPlugin.isOptionEnabled(Logger.TRACE_DEBUG_LOG_CHAR);
+		return Platform.getDebugBoolean(Logger.TRACE_DEBUG_LOG_CHAR);
 	}
 
 	@Override

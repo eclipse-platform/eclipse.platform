@@ -15,9 +15,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.terminal.connector.Logger;
-import org.eclipse.terminal.internal.control.impl.TerminalPlugin;
 
 /**
  * @author scharf
@@ -43,7 +43,7 @@ public class TerminalStyle {
 				protected boolean removeEldestEntry(Map.Entry<TerminalStyle, TerminalStyle> eldest) {
 					int size = size();
 					boolean removeEldest = size >= 1000;
-					if (TerminalPlugin.isOptionEnabled(Logger.TRACE_DEBUG_LOG_VT100BACKEND)) {
+					if (Platform.getDebugBoolean(Logger.TRACE_DEBUG_LOG_VT100BACKEND)) {
 						if (removeEldest) {
 							Logger.log("Removing eldest Style from style cache, size = " + size); //$NON-NLS-1$
 						} else {
