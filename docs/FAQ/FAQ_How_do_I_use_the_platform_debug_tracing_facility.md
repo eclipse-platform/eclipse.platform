@@ -34,7 +34,7 @@ If you do not need dynamic trace enablement or if you are concerned about code c
 
 
 ```java
-       private static final boolean DEBUG_TWO = "true".equalsIgnoreCase(Platform.getDebugOption(
+       private static final boolean DEBUG_TWO = Platform.getDebugBoolean(
              "org.eclipse.faq.examples/debug/option2"));
        ...
        if (DEBUG_TWO)

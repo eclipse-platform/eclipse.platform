@@ -388,9 +388,7 @@ public class BrowserIntroPartImplementation extends
 
 		// print the HTML if we are in debug mode and have tracing turned on
 		if (IntroPlugin.getDefault().isDebugging()) {
-			String printHtml = Platform
-				.getDebugOption("org.eclipse.ui.intro/trace/printHTML"); //$NON-NLS-1$
-			if (printHtml != null && printHtml.equalsIgnoreCase("true")) { //$NON-NLS-1$
+			if (Platform.getDebugBoolean("org.eclipse.ui.intro/trace/printHTML")) { //$NON-NLS-1$
 				System.out.println(content);
 			}
 			if (IntroPlugin.DEBUG_TOOLBAR) {

@@ -32,10 +32,8 @@ public class IntroPlugin extends AbstractUIPlugin {
 	public static final String PLUGIN_ID = "org.eclipse.ui.intro"; //$NON-NLS-1$
 
 	// Debug control variables
-	public static boolean LOG_WARN =
-		"true".equalsIgnoreCase(Platform.getDebugOption(PLUGIN_ID+"/debug/warn")); //$NON-NLS-1$ //$NON-NLS-2$
-	public static boolean LOG_INFO =
-		"true".equalsIgnoreCase(Platform.getDebugOption(PLUGIN_ID+"/debug/info")); //$NON-NLS-1$ //$NON-NLS-2$
+	public static boolean LOG_WARN = Platform.getDebugBoolean(PLUGIN_ID + "/debug/warn"); //$NON-NLS-1$
+	public static boolean LOG_INFO = Platform.getDebugBoolean(PLUGIN_ID + "/debug/info"); //$NON-NLS-1$
 
 	// The static shared instance.
 	private static IntroPlugin inst;
@@ -176,10 +174,10 @@ public class IntroPlugin extends AbstractUIPlugin {
 		// Setup debugging options
 		DEBUG = isDebugging();
 		if (DEBUG) {
-			DEBUG_NO_BROWSER = "true".equalsIgnoreCase(Platform.getDebugOption(PLUGIN_ID + "/flags/noBrowser")); //$NON-NLS-1$ //$NON-NLS-2$
+			DEBUG_NO_BROWSER = Platform.getDebugBoolean(PLUGIN_ID + "/flags/noBrowser"); //$NON-NLS-1$
 		}
 		if (DEBUG) {
-			DEBUG_TOOLBAR = "true".equalsIgnoreCase(Platform.getDebugOption(PLUGIN_ID + "/debug/toolbar")); //$NON-NLS-1$ //$NON-NLS-2$
+			DEBUG_TOOLBAR = Platform.getDebugBoolean(PLUGIN_ID + "/debug/toolbar"); //$NON-NLS-1$
 		}
 
 	}

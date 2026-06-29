@@ -59,10 +59,10 @@ public final class Logger {
 
 	static {
 		// Any of the known debugging options turns on the creation of the log file
-		boolean createLogFile = TerminalPlugin.isOptionEnabled(TRACE_DEBUG_LOG)
-				|| TerminalPlugin.isOptionEnabled(TRACE_DEBUG_LOG_CHAR)
-				|| TerminalPlugin.isOptionEnabled(TRACE_DEBUG_LOG_VT100BACKEND)
-				|| TerminalPlugin.isOptionEnabled(TRACE_DEBUG_LOG_HOVER);
+		boolean createLogFile = Platform.getDebugBoolean(TRACE_DEBUG_LOG)
+				|| Platform.getDebugBoolean(TRACE_DEBUG_LOG_CHAR)
+				|| Platform.getDebugBoolean(TRACE_DEBUG_LOG_VT100BACKEND)
+				|| Platform.getDebugBoolean(TRACE_DEBUG_LOG_HOVER);
 
 		// Log only if tracing is enabled
 		if (createLogFile && TerminalPlugin.getDefault() != null) {

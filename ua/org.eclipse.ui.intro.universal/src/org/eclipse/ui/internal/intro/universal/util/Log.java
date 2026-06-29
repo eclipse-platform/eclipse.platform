@@ -55,15 +55,10 @@ public class Log implements IUniversalIntroConstants {
 		// the plugin is not in debug mode, no point setting debug options.
 		if (UniversalIntroPlugin.getDefault().isDebugging()) {
 			logWarning = true;
-			logInfo = getDebugOption("/trace/logInfo"); //$NON-NLS-1$
-			logPerformance = getDebugOption("/trace/logPerformance"); //$NON-NLS-1$
+			logInfo = Platform.getDebugBoolean(PLUGIN_ID + "/trace/logInfo"); //$NON-NLS-1$
+			logPerformance = Platform.getDebugBoolean(PLUGIN_ID + "/trace/logPerformance"); //$NON-NLS-1$
 		}
 
-	}
-
-	private static boolean getDebugOption(String option) {
-		return "true".equalsIgnoreCase(//$NON-NLS-1$
-			Platform.getDebugOption(PLUGIN_ID + option));
 	}
 
 	/**

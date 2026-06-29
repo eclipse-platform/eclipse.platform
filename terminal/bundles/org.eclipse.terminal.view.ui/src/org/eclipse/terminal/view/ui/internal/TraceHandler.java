@@ -86,7 +86,7 @@ public class TraceHandler {
 		 * @return <code>true</code> if the slot is defined and enabled, <code>false</code> otherwise.
 		 */
 		protected boolean isSlotEnabled(String slotId) {
-			return fIdentifier != null ? Boolean.parseBoolean(Platform.getDebugOption(fIdentifier + "/" + slotId)) //$NON-NLS-1$
+			return fIdentifier != null ? Platform.getDebugBoolean(fIdentifier + "/" + slotId) //$NON-NLS-1$
 					: false;
 		}
 

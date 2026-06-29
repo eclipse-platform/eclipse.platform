@@ -108,10 +108,7 @@ public class CheatSheetStopWatch {
 
 	public static boolean isTracing() {
 		if (CheatSheetPlugin.getPlugin().isDebugging()) {
-			String traceTimes = Platform.getDebugOption("org.eclipse.ui.cheatsheets/trace/creation/times"); //$NON-NLS-1$
-			if (traceTimes != null && traceTimes.equalsIgnoreCase("true")) { //$NON-NLS-1$
-				return true;
-			}
+			return Platform.getDebugBoolean("org.eclipse.ui.cheatsheets/trace/creation/times"); //$NON-NLS-1$
 		}
 		return false;
 	}

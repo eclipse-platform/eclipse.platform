@@ -147,11 +147,11 @@ public class HelpPlugin extends Plugin {
 		// Setup debugging options
 		DEBUG = isDebugging();
 		if (DEBUG) {
-			DEBUG_CONTEXT = "true".equalsIgnoreCase(Platform.getDebugOption(PLUGIN_ID + "/debug/context")); //$NON-NLS-1$ //$NON-NLS-2$
-			DEBUG_SEARCH = "true".equalsIgnoreCase(Platform.getDebugOption(PLUGIN_ID + "/debug/search")); //$NON-NLS-1$ //$NON-NLS-2$
-			DEBUG_TOC = "true".equalsIgnoreCase(Platform.getDebugOption(PLUGIN_ID + "/debug/toc")); //$NON-NLS-1$ //$NON-NLS-2$
-			DEBUG_INDEX = "true".equalsIgnoreCase(Platform.getDebugOption(PLUGIN_ID + "/debug/index")); //$NON-NLS-1$ //$NON-NLS-2$
-			DEBUG_CRITERIA = "true".equalsIgnoreCase(Platform.getDebugOption(PLUGIN_ID + "/debug/criteria")); //$NON-NLS-1$ //$NON-NLS-2$
+			DEBUG_CONTEXT = Platform.getDebugBoolean(PLUGIN_ID + "/debug/context"); //$NON-NLS-1$
+			DEBUG_SEARCH = Platform.getDebugBoolean(PLUGIN_ID + "/debug/search"); //$NON-NLS-1$
+			DEBUG_TOC = Platform.getDebugBoolean(PLUGIN_ID + "/debug/toc"); //$NON-NLS-1$
+			DEBUG_INDEX = Platform.getDebugBoolean(PLUGIN_ID + "/debug/index"); //$NON-NLS-1$
+			DEBUG_CRITERIA = Platform.getDebugBoolean(PLUGIN_ID + "/debug/criteria"); //$NON-NLS-1$
 		}
 	}
 

@@ -44,7 +44,7 @@ public class HelpWebappPlugin extends Plugin {
 		// Setup debugging options
 		DEBUG = isDebugging();
 		if (DEBUG) {
-			DEBUG_WORKINGSETS = "true".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.help.webapp/debug/workingsets")); //$NON-NLS-1$ //$NON-NLS-2$
+			DEBUG_WORKINGSETS = Platform.getDebugBoolean("org.eclipse.help.webapp/debug/workingsets"); //$NON-NLS-1$
 		}
 	}
 

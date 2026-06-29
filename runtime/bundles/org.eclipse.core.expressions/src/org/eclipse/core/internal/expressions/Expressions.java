@@ -56,7 +56,7 @@ public class Expressions {
 	private static WeakHashMap<ClassLoader, Set<String>> fgNotFoundClasses;
 
 	/* debugging flag to enable tracing */
-	public static final boolean TRACING= "true".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.core.expressions/tracePropertyResolving")); //$NON-NLS-1$ //$NON-NLS-2$
+	public static final boolean TRACING= Platform.getDebugBoolean("org.eclipse.core.expressions/tracePropertyResolving"); //$NON-NLS-1$
 
 
 	private Expressions() {
