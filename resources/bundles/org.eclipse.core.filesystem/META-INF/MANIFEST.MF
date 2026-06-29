@@ -8,11 +8,14 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="[3.29.0,4.0.0)"
 Export-Package: org.eclipse.core.filesystem;uses:="org.eclipse.core.runtime",
  org.eclipse.core.filesystem.provider;uses:="org.eclipse.core.filesystem,org.eclipse.core.runtime",
  org.eclipse.core.internal.filesystem;x-internal:=true,
+ org.eclipse.core.internal.filesystem.linux;x-internal:=true,
  org.eclipse.core.internal.filesystem.local;x-internal:=true,
  org.eclipse.core.internal.filesystem.local.unix;x-internal:=true
 Bundle-Vendor: %providerName
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ActivationPolicy: lazy
 Automatic-Module-Name: org.eclipse.core.filesystem
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=17))"
+Multi-Release: true
 Import-Package: com.sun.jna;version="[5.14.0,6.0.0)",
  com.sun.jna.platform.win32;version="[5.14.0,6.0.0)"
