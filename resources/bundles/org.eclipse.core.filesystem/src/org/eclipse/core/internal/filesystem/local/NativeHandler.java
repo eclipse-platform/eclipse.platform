@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.internal.filesystem.local;
 
+import java.io.File;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.provider.FileInfo;
 
@@ -25,4 +26,21 @@ public abstract class NativeHandler {
 	public abstract FileInfo fetchFileInfo(String fileName);
 
 	public abstract boolean putFileInfo(String fileName, IFileInfo info, int options);
+
+	protected static final String[] EMPTY_STRING_ARRAY = {};
+
+	public String[] listDirectoryNames(String fileName) {
+		String[] names = new File(fileName).list();
+		return names == null ? EMPTY_STRING_ARRAY : names;
+	}
+
+	public IFileInfo[] listDirectoryAndGetFileInfos(String fileName) {
+		var directoryContents = listDirectoryNames(fileName);
+		var result = new IFileInfo[directoryContents.length];
+		for (int i = 0; i < directoryContents.length; i++) {
+			result[i] = fetchFileInfo(fileName + File.separator + directoryContents[i]);
+		}
+		return result;
+	}
+
 }

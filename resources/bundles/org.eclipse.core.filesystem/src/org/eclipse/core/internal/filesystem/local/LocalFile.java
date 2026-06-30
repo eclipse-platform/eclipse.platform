@@ -136,9 +136,13 @@ public class LocalFile extends FileStore {
 	}
 
 	@Override
+	public IFileInfo[] childInfos(int options, IProgressMonitor monitor) {
+		return LocalFileNativesManager.listDirectoryAndGetFileInfos(filePath);
+	}
+
+	@Override
 	public String[] childNames(int options, IProgressMonitor monitor) {
-		String[] names = file.list();
-		return (names == null ? EMPTY_STRING_ARRAY : names);
+		return LocalFileNativesManager.listDirectoryNames(filePath);
 	}
 
 	@Override

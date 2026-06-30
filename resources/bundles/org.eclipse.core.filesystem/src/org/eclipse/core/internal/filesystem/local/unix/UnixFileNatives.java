@@ -21,7 +21,9 @@ import java.util.Enumeration;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.provider.FileInfo;
-import org.eclipse.core.internal.filesystem.*;
+import org.eclipse.core.internal.filesystem.FileSystemAccess;
+import org.eclipse.core.internal.filesystem.Messages;
+import org.eclipse.core.internal.filesystem.Policy;
 import org.eclipse.core.internal.filesystem.local.Convert;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osgi.util.NLS;
@@ -30,7 +32,7 @@ public abstract class UnixFileNatives {
 	private static final String LIBRARY_NAME = "unixfile_1_0_0"; //$NON-NLS-1$
 	private static final int UNICODE_SUPPORTED = 1 << 0;
 	private static final int CHFLAGS_SUPPORTED = 1 << 1;
-	private static final int ENOENT = 2; // errno value for "No such file or directory"
+	private static final int ENOENT = StructStat.ENOENT; // errno value for "No such file or directory"
 
 	private static final boolean usingNatives;
 	private static final int libattr;
@@ -80,23 +82,23 @@ public abstract class UnixFileNatives {
 		FileInfo info = null;
 		byte[] name = fileNameToBytes(fileName);
 		StructStat stat = new StructStat();
-		if (lstat(name, stat) == 0) {
-			if ((stat.st_mode & UnixFileFlags.S_IFMT) == UnixFileFlags.S_IFLNK) {
-				if (stat(name, stat) == 0) {
-					info = stat.toFileInfo();
-				} else {
+		if (lstat(name, stat) == 0) { // return information about the link itself if the file is a symbolic link
+			if ((stat.st_mode & UnixFileFlags.S_IFMT) == UnixFileFlags.S_IFLNK) { // it a link!
+				if (stat(name, stat) == 0) { // get the information about the file the link points to
+					info = stat.toFileInfo(); // store the target file stats in info
+				} else { // invalid link target!
 					info = new FileInfo();
 					if (getErrno() != ENOENT) {
 						info.setError(IFileInfo.IO_ERROR);
 					}
 				}
-				info.setAttribute(EFS.ATTRIBUTE_SYMLINK, true);
+				info.setAttribute(EFS.ATTRIBUTE_SYMLINK, true); // set symlink attribute
 				byte target[] = new byte[UnixFileFlags.PATH_MAX];
 				int length = readlink(name, target, target.length);
-				if (length > 0) {
+				if (length > 0) { // set target of the link
 					info.setStringAttribute(EFS.ATTRIBUTE_LINK_TARGET, bytesToFileName(target, length));
 				}
-			} else {
+			} else { // regular file or directory
 				info = stat.toFileInfo();
 			}
 		} else {
@@ -106,7 +108,7 @@ public abstract class UnixFileNatives {
 			}
 		}
 
-		if (info.getName() == null) {
+		if (info.getName().isEmpty()) {
 			// If the file system is case insensitive, we don't know the real name of the file.
 			// Since obtaining the real name in such situation is pretty expensive, we use the name
 			// passed as a parameter, which may differ by case from the real name of the file
