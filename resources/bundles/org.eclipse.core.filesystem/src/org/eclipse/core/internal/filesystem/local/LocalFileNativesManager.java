@@ -87,4 +87,12 @@ public class LocalFileNativesManager {
 		return HANDLER.putFileInfo(fileName, info, options);
 	}
 
+	public static IFileInfo[] listDirectoryAndGetFileInfos(String fileName) {
+		return HANDLER.listDirectoryAndGetFileInfos(fileName);
+	}
+
+	public static String[] listDirectoryNames(String fileName) {
+		return HANDLER.listDirectoryNames(fileName);
+	}
+
 }
