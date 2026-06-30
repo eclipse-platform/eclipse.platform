@@ -12,22 +12,20 @@
  *     IBM Corporation - initial API and implementation
  *     Sergey Prigogin (Google) - ongoing development
  *******************************************************************************/
-package org.eclipse.core.internal.filesystem.local.unix;
+package org.eclipse.core.internal.filesystem.local.linux;
 
-import static org.eclipse.core.internal.filesystem.local.unix.UnixFileFlags.PATH_MAX;
-import static org.eclipse.core.internal.filesystem.local.unix.UnixFileFlags.SF_IMMUTABLE;
-import static org.eclipse.core.internal.filesystem.local.unix.UnixFileFlags.S_IFLNK;
-import static org.eclipse.core.internal.filesystem.local.unix.UnixFileFlags.S_IFMT;
-import static org.eclipse.core.internal.filesystem.local.unix.UnixFileFlags.S_IRGRP;
-import static org.eclipse.core.internal.filesystem.local.unix.UnixFileFlags.S_IROTH;
-import static org.eclipse.core.internal.filesystem.local.unix.UnixFileFlags.S_IRUSR;
-import static org.eclipse.core.internal.filesystem.local.unix.UnixFileFlags.S_IWGRP;
-import static org.eclipse.core.internal.filesystem.local.unix.UnixFileFlags.S_IWOTH;
-import static org.eclipse.core.internal.filesystem.local.unix.UnixFileFlags.S_IWUSR;
-import static org.eclipse.core.internal.filesystem.local.unix.UnixFileFlags.S_IXGRP;
-import static org.eclipse.core.internal.filesystem.local.unix.UnixFileFlags.S_IXOTH;
-import static org.eclipse.core.internal.filesystem.local.unix.UnixFileFlags.S_IXUSR;
-import static org.eclipse.core.internal.filesystem.local.unix.UnixFileFlags.UF_IMMUTABLE;
+import static org.eclipse.core.internal.filesystem.local.linux.LinuxFileFlags.PATH_MAX;
+import static org.eclipse.core.internal.filesystem.local.linux.LinuxFileFlags.S_IFLNK;
+import static org.eclipse.core.internal.filesystem.local.linux.LinuxFileFlags.S_IFMT;
+import static org.eclipse.core.internal.filesystem.local.linux.LinuxFileFlags.S_IRGRP;
+import static org.eclipse.core.internal.filesystem.local.linux.LinuxFileFlags.S_IROTH;
+import static org.eclipse.core.internal.filesystem.local.linux.LinuxFileFlags.S_IRUSR;
+import static org.eclipse.core.internal.filesystem.local.linux.LinuxFileFlags.S_IWGRP;
+import static org.eclipse.core.internal.filesystem.local.linux.LinuxFileFlags.S_IWOTH;
+import static org.eclipse.core.internal.filesystem.local.linux.LinuxFileFlags.S_IWUSR;
+import static org.eclipse.core.internal.filesystem.local.linux.LinuxFileFlags.S_IXGRP;
+import static org.eclipse.core.internal.filesystem.local.linux.LinuxFileFlags.S_IXOTH;
+import static org.eclipse.core.internal.filesystem.local.linux.LinuxFileFlags.S_IXUSR;
 
 import java.io.File;
 import java.net.URL;
@@ -43,30 +41,25 @@ import org.eclipse.core.internal.filesystem.local.Convert;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osgi.util.NLS;
 
-public abstract class UnixFileNatives {
-	private static final String LIBRARY_NAME = "unixfile_1_0_0"; //$NON-NLS-1$
-	private static final int UNICODE_SUPPORTED = 1 << 0;
-	private static final int CHFLAGS_SUPPORTED = 1 << 1;
-	private static final int ENOENT = StructStat.ENOENT; // errno value for "No such file or directory"
+public abstract class LinuxFileNatives {
+	private static final String LIBRARY_NAME = "fastlinuxfile_1_0_0"; //$NON-NLS-1$
+	private static final int ENOENT = LinuxStructStat.ENOENT; // errno value for "No such file or directory"
 
 	private static final boolean usingNatives;
-	private static final int libattr;
+	protected static final String[] EMPTY_STRING_ARRAY = {};
 
 	static {
 		boolean _usingNatives = false;
-		int _libattr = 0;
 		try {
 			System.loadLibrary(LIBRARY_NAME);
 			_usingNatives = true;
-			initializeStructStatFieldIDs();
-			_libattr = libattr();
+			initializeLinuxStructStatFieldIDs();
 		} catch (UnsatisfiedLinkError e) {
 			if (isLibraryPresent()) {
 				logMissingNativeLibrary(e);
 			}
 		} finally {
 			usingNatives = _usingNatives;
-			libattr = _libattr;
 		}
 	}
 
@@ -87,23 +80,52 @@ public abstract class UnixFileNatives {
 			return -1;
 		}
 		int ret = EFS.ATTRIBUTE_READ_ONLY | EFS.ATTRIBUTE_EXECUTABLE | EFS.ATTRIBUTE_SYMLINK | EFS.ATTRIBUTE_LINK_TARGET | EFS.ATTRIBUTE_OWNER_READ | EFS.ATTRIBUTE_OWNER_WRITE | EFS.ATTRIBUTE_OWNER_EXECUTE | EFS.ATTRIBUTE_GROUP_READ | EFS.ATTRIBUTE_GROUP_WRITE | EFS.ATTRIBUTE_GROUP_EXECUTE | EFS.ATTRIBUTE_OTHER_READ | EFS.ATTRIBUTE_OTHER_WRITE | EFS.ATTRIBUTE_OTHER_EXECUTE;
-		if (isSupported(CHFLAGS_SUPPORTED)) {
-			ret |= EFS.ATTRIBUTE_IMMUTABLE;
-		}
 		return ret;
+	}
+
+	public static String[] listDirectoryNames(String pathName) {
+		byte[] name = fileNameToBytes(pathName);
+		byte[][] result = listDir(name);
+		if (result == null) {
+			return EMPTY_STRING_ARRAY;
+		}
+		String[] names = new String[result.length];
+		for (int i = 0; i < result.length; i++) {
+			names[i] = Convert.fromPlatformBytes(result[i], result[i].length);
+		}
+		return names;
+	}
+
+	public static IFileInfo[] listDirectoryAndGetFileInfos(String pathName) {
+		byte[] name = fileNameToBytes(pathName);
+		LinuxStructStat[] stats = listDirAndGetFileInfos(name);
+		if (stats == null) {
+			return new IFileInfo[0];
+		}
+		int count = stats.length;
+		IFileInfo[] infos = new IFileInfo[count];
+		for (int i = 0; i < count; i++) {
+			var st = stats[i].toFileInfo();
+			infos[i] = st;
+		}
+		return infos;
 	}
 
 	public static FileInfo fetchFileInfo(String fileName) {
 		FileInfo info = null;
 		byte[] name = fileNameToBytes(fileName);
-		StructStat stat = new StructStat();
-		if (lstat(name, stat) == 0) { // return information about the link itself if the file is a symbolic link
-			if ((stat.st_mode & S_IFMT) == S_IFLNK) { // it a link!
-				if (stat(name, stat) == 0) { // get the information about the file the link points to
-					info = stat.toFileInfo(); // store the target file stats in info
-				} else { // invalid link target!
+		LinuxStructStat stat = new LinuxStructStat();
+		if (lstat(name, stat) == 0 || stat.errno == ENOENT) { // lstat fills errno even on failure
+			if (stat.errno == ENOENT) {
+				// file does not exist
+				info = new FileInfo();
+			} else if ((stat.st_mode & S_IFMT) == S_IFLNK) { // it's a link!
+				LinuxStructStat targetStat = new LinuxStructStat();
+				if (stat(name, targetStat) == 0) { // get the information about the file the link points to
+					info = targetStat.toFileInfo(); // store the target file stats in info
+				} else { // invalid link target
 					info = new FileInfo();
-					if (getErrno() != ENOENT) {
+					if (targetStat.errno != ENOENT) {
 						info.setError(IFileInfo.IO_ERROR);
 					}
 				}
@@ -118,7 +140,7 @@ public abstract class UnixFileNatives {
 			}
 		} else {
 			info = new FileInfo();
-			if (getErrno() != ENOENT) {
+			if (stat.errno != ENOENT) {
 				info.setError(IFileInfo.IO_ERROR);
 			}
 		}
@@ -128,8 +150,7 @@ public abstract class UnixFileNatives {
 			// Since obtaining the real name in such situation is pretty expensive, we use the name
 			// passed as a parameter, which may differ by case from the real name of the file
 			// if the file system is case insensitive.
-			File file = new File(fileName);
-			info.setName(file.getName());
+			info.setName(new File(fileName).getName());
 		}
 		return info;
 	}
@@ -139,17 +160,6 @@ public abstract class UnixFileNatives {
 		byte[] name = fileNameToBytes(fileName);
 		if (name == null) {
 			return false;
-		}
-
-		// In case uchg flag is to be removed do it before calling chmod
-		if (!info.getAttribute(EFS.ATTRIBUTE_IMMUTABLE) && isSupported(CHFLAGS_SUPPORTED)) {
-			StructStat stat = new StructStat();
-			if (stat(name, stat) == 0) {
-				long flags = stat.st_flags;
-				flags &= ~SF_IMMUTABLE;
-				flags &= ~UF_IMMUTABLE;
-				code |= chflags(name, (int) flags);
-			}
 		}
 
 		// Change permissions
@@ -183,24 +193,11 @@ public abstract class UnixFileNatives {
 		}
 		code |= chmod(name, mode);
 
-		// In case uchg flag is to be added do it after calling chmod
-		if (info.getAttribute(EFS.ATTRIBUTE_IMMUTABLE) && isSupported(CHFLAGS_SUPPORTED)) {
-			StructStat stat = new StructStat();
-			if (stat(name, stat) == 0) {
-				long flags = stat.st_flags;
-				flags |= UF_IMMUTABLE;
-				code |= chflags(name, (int) flags);
-			}
-		}
 		return code == 0;
 	}
 
 	public static boolean isUsingNatives() {
 		return usingNatives;
-	}
-
-	public static int getErrno() {
-		return errno();
 	}
 
 	public static int getFlag(String flag) {
@@ -211,41 +208,27 @@ public abstract class UnixFileNatives {
 	}
 
 	private static byte[] fileNameToBytes(String fileName) {
-		if (isSupported(UNICODE_SUPPORTED)) {
-			return tounicode(fileName.toCharArray());
-		}
 		return Convert.toPlatformBytes(fileName);
 	}
 
 	private static String bytesToFileName(byte[] buf, int length) {
-		if (isSupported(UNICODE_SUPPORTED)) {
-			return new String(buf, 0, length);
-		}
 		return Convert.fromPlatformBytes(buf, length);
 	}
 
-	private static boolean isSupported(int attr) {
-		return (libattr & attr) != 0;
-	}
-
-	private static final native void initializeStructStatFieldIDs();
+	private static final native void initializeLinuxStructStatFieldIDs();
 
 	private static final native int chmod(byte[] path, int mode);
 
-	private static final native int chflags(byte[] path, int flags);
+	private static final native int stat(byte[] path, LinuxStructStat buf);
 
-	private static final native int stat(byte[] path, StructStat buf);
-
-	private static final native int lstat(byte[] path, StructStat buf);
+	private static final native int lstat(byte[] path, LinuxStructStat buf);
 
 	private static final native int readlink(byte[] path, byte[] buf, long bufsiz);
 
-	private static final native int errno();
-
-	private static final native int libattr();
-
-	private static final native byte[] tounicode(char[] buf);
-
 	private static final native int getflag(byte[] buf);
+
+	private static final native byte[][] listDir(byte[] path);
+
+	private static final native LinuxStructStat[] listDirAndGetFileInfos(byte[] path);
 
 }

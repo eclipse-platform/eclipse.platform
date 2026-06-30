@@ -11,16 +11,18 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.core.internal.filesystem.local.unix;
+package org.eclipse.core.internal.filesystem.local.linux;
 
 import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.provider.FileInfo;
+import org.eclipse.core.internal.filesystem.local.Convert;
 
 /**
  * This class mirrors relevant fields of native struct stat
  * and is used by JNI calls wrapping OS file related functions.
  */
-public class StructStat {
+public class LinuxStructStat {
 	/**  errno value for "No such file or directory" */
 	public static final int ENOENT = 2;
 
@@ -29,49 +31,61 @@ public class StructStat {
 	public int st_mode;
 	public long st_size;
 	public long st_mtime;
-	public long st_mtime_msec; // millisecond component of the file timestamp, filled on Linux systems
-	public long st_flags; // Filled only on Mac OS X
+	public long st_mtime_msec; // millisecond component of the file timestamp
+	public int errno;
+	public byte[] name;
+	public byte[] linkFile; // Filled target for symbolic links
 
 	public FileInfo toFileInfo() {
 		FileInfo info = new FileInfo();
-		info.setExists(true);
+		if (name != null) {
+			info.setName(Convert.fromPlatformBytes(name, name.length));
+		}
+		if (errno != 0 && errno != ENOENT) {
+			info.setError(IFileInfo.IO_ERROR);
+			return info;
+		}
+		info.setExists(errno != ENOENT);
 		info.setLength(st_size);
 		long lastModified = (st_mtime * 1_000);
 		if (USE_MILLISECOND_RESOLUTION) {
 			lastModified += st_mtime_msec;
 		}
 		info.setLastModified(lastModified);
-		if ((st_mode & UnixFileFlags.S_IFMT) == UnixFileFlags.S_IFDIR) {
+		if ((st_mode & LinuxFileFlags.S_IFMT) == LinuxFileFlags.S_IFDIR) {
 			info.setDirectory(true);
 		}
-		if ((st_flags & (UnixFileFlags.UF_IMMUTABLE | UnixFileFlags.SF_IMMUTABLE)) != 0) {
-			info.setAttribute(EFS.ATTRIBUTE_IMMUTABLE, true);
+		if (linkFile != null) {
+			info.setAttribute(EFS.ATTRIBUTE_SYMLINK, true);
+			if (linkFile.length > 0) {
+				info.setStringAttribute(EFS.ATTRIBUTE_LINK_TARGET, Convert.fromPlatformBytes(linkFile, linkFile.length));
+			}
 		}
-		if ((st_mode & UnixFileFlags.S_IRUSR) == 0) { // Set to true in FileInfo constructor
+		if ((st_mode & LinuxFileFlags.S_IRUSR) == 0) { // Set to true in FileInfo constructor
 			info.setAttribute(EFS.ATTRIBUTE_OWNER_READ, false);
 		}
-		if ((st_mode & UnixFileFlags.S_IWUSR) == 0) { // Set to true in FileInfo constructor
+		if ((st_mode & LinuxFileFlags.S_IWUSR) == 0) { // Set to true in FileInfo constructor
 			info.setAttribute(EFS.ATTRIBUTE_OWNER_WRITE, false);
 		}
-		if ((st_mode & UnixFileFlags.S_IXUSR) != 0) {
+		if ((st_mode & LinuxFileFlags.S_IXUSR) != 0) {
 			info.setAttribute(EFS.ATTRIBUTE_OWNER_EXECUTE, true);
 		}
-		if ((st_mode & UnixFileFlags.S_IRGRP) != 0) {
+		if ((st_mode & LinuxFileFlags.S_IRGRP) != 0) {
 			info.setAttribute(EFS.ATTRIBUTE_GROUP_READ, true);
 		}
-		if ((st_mode & UnixFileFlags.S_IWGRP) != 0) {
+		if ((st_mode & LinuxFileFlags.S_IWGRP) != 0) {
 			info.setAttribute(EFS.ATTRIBUTE_GROUP_WRITE, true);
 		}
-		if ((st_mode & UnixFileFlags.S_IXGRP) != 0) {
+		if ((st_mode & LinuxFileFlags.S_IXGRP) != 0) {
 			info.setAttribute(EFS.ATTRIBUTE_GROUP_EXECUTE, true);
 		}
-		if ((st_mode & UnixFileFlags.S_IROTH) != 0) {
+		if ((st_mode & LinuxFileFlags.S_IROTH) != 0) {
 			info.setAttribute(EFS.ATTRIBUTE_OTHER_READ, true);
 		}
-		if ((st_mode & UnixFileFlags.S_IWOTH) != 0) {
+		if ((st_mode & LinuxFileFlags.S_IWOTH) != 0) {
 			info.setAttribute(EFS.ATTRIBUTE_OTHER_WRITE, true);
 		}
-		if ((st_mode & UnixFileFlags.S_IXOTH) != 0) {
+		if ((st_mode & LinuxFileFlags.S_IXOTH) != 0) {
 			info.setAttribute(EFS.ATTRIBUTE_OTHER_EXECUTE, true);
 		}
 		return info;

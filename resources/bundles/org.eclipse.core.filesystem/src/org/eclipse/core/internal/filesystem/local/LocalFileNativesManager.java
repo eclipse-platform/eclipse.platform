@@ -18,6 +18,8 @@ import java.nio.file.FileSystems;
 import java.util.Set;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.provider.FileInfo;
+import org.eclipse.core.internal.filesystem.local.linux.LinuxFileHandler;
+import org.eclipse.core.internal.filesystem.local.linux.LinuxFileNatives;
 import org.eclipse.core.internal.filesystem.local.nio.DefaultHandler;
 import org.eclipse.core.internal.filesystem.local.nio.PosixHandler;
 import org.eclipse.core.internal.filesystem.local.unix.UnixFileHandler;
@@ -38,7 +40,9 @@ import org.eclipse.core.runtime.Platform;
  */
 public class LocalFileNativesManager {
 	public static final boolean PROPERTY_USE_NATIVE_DEFAULT = true;
+	public static final boolean PROPERTY_USE_FAST_LINUX_NATIVES_DEFAULT = true;
 	public static final String PROPERTY_USE_NATIVES = "eclipse.filesystem.useNatives"; //$NON-NLS-1$
+	public static final String PROPERTY_USE_FAST_LINUX_NATIVES = "eclipse.filesystem.useFastLinuxNatives"; //$NON-NLS-1$
 	private static NativeHandler HANDLER;
 
 	static {
@@ -49,16 +53,21 @@ public class LocalFileNativesManager {
 	 * reset the usage of native to the system default
 	 */
 	public static void reset() {
-		setUsingNative(Boolean.parseBoolean(System.getProperty(PROPERTY_USE_NATIVES, String.valueOf(PROPERTY_USE_NATIVE_DEFAULT))));
+		setUsingNative(Boolean.parseBoolean(System.getProperty(PROPERTY_USE_NATIVES, String.valueOf(PROPERTY_USE_NATIVE_DEFAULT))),
+				Boolean.parseBoolean(System.getProperty(PROPERTY_USE_FAST_LINUX_NATIVES, String.valueOf(PROPERTY_USE_FAST_LINUX_NATIVES_DEFAULT))));
 	}
 
 	/**
 	 * Try to set the usage of natives to the provided value
 	 * @return <code>true</code> if natives are used as result of this call <code>false</code> otherwise
 	 */
-	public static boolean setUsingNative(boolean useNatives) {
+	public static boolean setUsingNative(boolean useNatives, boolean useFastLinuxNatives) {
 		boolean nativesAreUsed;
-		if (useNatives && !Platform.OS.isWindows() && UnixFileNatives.isUsingNatives()) {
+		if (useNatives && useFastLinuxNatives && Platform.OS.isLinux() && Platform.ARCH_X86_64.equals(Platform.getOSArch()) && LinuxFileNatives.isUsingNatives()) {
+			// Linux x86_64 architecture supports faster (bulk) file info fetching.
+			HANDLER = new LinuxFileHandler();
+			nativesAreUsed = true;
+		} else if (useNatives && !Platform.OS.isWindows() && UnixFileNatives.isUsingNatives()) {
 			HANDLER = new UnixFileHandler();
 			nativesAreUsed = true;
 		} else {
