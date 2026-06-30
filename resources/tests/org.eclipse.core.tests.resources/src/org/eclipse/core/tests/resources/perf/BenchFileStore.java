@@ -22,6 +22,7 @@ import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.filesystem.local.LocalFileNativesManager;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -81,22 +82,40 @@ public class BenchFileStore {
 
 	@Test
 	public void testStoreExitsNative() throws Throwable{
-		withNatives(true, () -> {
+		withNatives(true, false, () -> {
 			new StoreTestRunner(true).run(getClass(), testInfo.getDisplayName(), REPEATS, LOOP_SIZE);
 		});
 
 	}
 
 	@Test
+	public void testStoreExitsNative_Linux() throws Throwable {
+		if (Platform.OS.isLinux() && Platform.ARCH_X86_64.equals(Platform.getOSArch())) {
+			withNatives(true, true, () -> {
+				new StoreTestRunner(true).run(getClass(), testInfo.getDisplayName(), REPEATS, LOOP_SIZE);
+			});
+		}
+	}
+
+	@Test
 	public void testStoreNotExitsNative() throws Throwable {
-		withNatives(true, () -> {
+		withNatives(true, false, () -> {
 			new StoreTestRunner(false).run(getClass(), testInfo.getDisplayName(), REPEATS, LOOP_SIZE);
 		});
 	}
 
 	@Test
+	public void testStoreNotExitsNative_Linux() throws Throwable {
+		if (Platform.OS.isLinux() && Platform.ARCH_X86_64.equals(Platform.getOSArch())) {
+			withNatives(true, true, () -> {
+				new StoreTestRunner(false).run(getClass(), testInfo.getDisplayName(), REPEATS, LOOP_SIZE);
+			});
+		}
+	}
+
+	@Test
 	public void testStoreExitsNio() throws Throwable {
-		withNatives(false, () -> {
+		withNatives(false, false, () -> {
 			new StoreTestRunner(true).run(getClass(), testInfo.getDisplayName(), REPEATS, LOOP_SIZE);
 		});
 
@@ -104,14 +123,15 @@ public class BenchFileStore {
 
 	@Test
 	public void testStoreNotExitsNio() throws Throwable {
-		withNatives(false, () -> {
+		withNatives(false, false, () -> {
 			new StoreTestRunner(false).run(getClass(), testInfo.getDisplayName(), REPEATS, LOOP_SIZE);
 		});
 	}
 
-	private static void withNatives(boolean natives, Executable runnable) throws Throwable {
+	private static void withNatives(boolean natives, boolean useFastLinuxNatives, Executable runnable)
+			throws Throwable {
 		try {
-			assertEquals(natives, LocalFileNativesManager.setUsingNative(natives),
+			assertEquals(natives, LocalFileNativesManager.setUsingNative(natives, useFastLinuxNatives),
 					"can't set natives to the desired value");
 			runnable.execute();
 		} finally {

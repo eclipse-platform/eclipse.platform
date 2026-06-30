@@ -5,7 +5,7 @@
   are made available under the terms of the Eclipse Distribution License v1.0
   which accompanies this distribution, and is available at
   http://www.eclipse.org/org/documents/edl-v10.php
- 
+
   Contributors:
      Igor Fedorenko - initial implementation
 -->
@@ -42,12 +42,16 @@
                 <configuration>
                   <target>
                     <exec executable="make" newenvironment="false" dir="../org.eclipse.core.filesystem/natives/unix/linux/"/>
-           <mkdir dir="os/linux/x86_64/"/>
-           <copy todir="os/linux/x86_64/">
-           <fileset dir="../org.eclipse.core.filesystem/natives/unix/linux/">
-               <include name="libunixfile_*.so"/>
-           </fileset>
-           </copy>
+                    <exec executable="make" newenvironment="false" dir="../org.eclipse.core.filesystem/natives/unix/fastlinux/"/>
+                    <mkdir dir="os/linux/x86_64/"/>
+                    <copy todir="os/linux/x86_64/">
+                      <fileset dir="../org.eclipse.core.filesystem/natives/unix/linux/">
+                          <include name="libunixfile_*.so"/>
+                      </fileset>
+                      <fileset dir="../org.eclipse.core.filesystem/natives/unix/fastlinux/">
+                          <include name="libfastlinuxfile_*.so"/>
+                      </fileset>
+                    </copy>
                   </target>
                 </configuration>
                 <goals>
