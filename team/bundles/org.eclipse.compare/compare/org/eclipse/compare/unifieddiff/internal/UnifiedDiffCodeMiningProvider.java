@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
+import org.eclipse.compare.internal.CompareMessages;
 import org.eclipse.compare.unifieddiff.UnifiedDiffMode;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager.UnifiedDiff;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -49,6 +50,7 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.source.inlined.LineFooterAnnotation;
 import org.eclipse.jface.text.source.inlined.LineHeaderAnnotation;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
@@ -156,6 +158,9 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 				}
 			}
 			if (existingMinings.size() > 0) {
+				// the expander minings are recreated instead of reused so that they
+				// reflect the current expansion state of the folds
+				createFoldRegionCodeMinings(viewer, existingMinings);
 				return CompletableFuture.completedFuture(existingMinings);
 			}
 		}
@@ -164,9 +169,13 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		// take an immutable snapshot so the async iteration cannot observe
 		// concurrent modifications when accept/hide actions mutate the live list
 		List<UnifiedDiff> diffsSnapshot = List.copyOf(diffs);
+		// created on the calling thread because it reads the projection annotation model
+		List<ICodeMining> foldMinings = new ArrayList<>();
+		createFoldRegionCodeMinings(viewer, foldMinings);
 		return CompletableFuture.supplyAsync(() -> {
 			List<ICodeMining> minings = new ArrayList<>();
 			createLineHeaderCodeMinings(diffsSnapshot, minings, viewer, tabWidth);
+			minings.addAll(foldMinings);
 			return minings;
 		});
 	}
@@ -271,6 +280,53 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 					error(e);
 				}
 			}
+		}
+	}
+
+	/**
+	 * Creates one clickable expander mining per collapsed unchanged-region fold,
+	 * shown as e.g. "Expand 42 unchanged lines" above the fold's caption line.
+	 */
+	private void createFoldRegionCodeMinings(ITextViewer viewer, List<ICodeMining> minings) {
+		IDocument doc = viewer.getDocument();
+		if (doc == null) {
+			return;
+		}
+		Map<Annotation, Position> folds = UnifiedDiffManager.getCollapsedFoldRegions(viewer);
+		for (Map.Entry<Annotation, Position> fold : folds.entrySet()) {
+			Position position = fold.getValue();
+			try {
+				int firstLine = doc.getLineOfOffset(position.getOffset());
+				int lastLine = position.getLength() > 0
+						? doc.getLineOfOffset(position.getOffset() + position.getLength() - 1)
+						: firstLine;
+				// the first line of the region stays visible as the fold's caption
+				int hiddenLines = lastLine - firstLine;
+				if (hiddenLines <= 0) {
+					continue;
+				}
+				minings.add(new FoldedRegionCodeMining(new Position(position.getOffset(), 1), this, viewer,
+						fold.getKey(), hiddenLines));
+			} catch (BadLocationException e) {
+				error(e);
+			}
+		}
+	}
+
+	static class FoldedRegionCodeMining extends LineHeaderCodeMining {
+
+		private final String expandLabel;
+
+		public FoldedRegionCodeMining(Position position, ICodeMiningProvider provider, ITextViewer viewer,
+				Annotation foldAnnotation, int hiddenLines) throws BadLocationException {
+			super(position, provider, e -> UnifiedDiffManager.expandFoldRegion(viewer, foldAnnotation));
+			this.expandLabel = hiddenLines == 1 ? CompareMessages.UnifiedDiff_expandUnchangedLine
+					: NLS.bind(CompareMessages.UnifiedDiff_expandUnchangedLines, Integer.valueOf(hiddenLines));
+		}
+
+		@Override
+		public String getLabel() {
+			return this.expandLabel;
 		}
 	}
 

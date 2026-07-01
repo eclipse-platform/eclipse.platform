@@ -62,6 +62,7 @@ public final class UnifiedDiff {
 		private List<Action> additionalActions;
 		private TokenComparatorFactory tokenComparatorFactory;
 		private IgnoreWhitespaceContributorFactory ignoreWhitespaceContributorFactory;
+		private int foldContextLines = -1;
 
 		private Builder(ITextEditor editor, String source, UnifiedDiffMode mode) {
 			this.editor = Objects.requireNonNull(editor, "Editor cannot be null"); //$NON-NLS-1$
@@ -89,9 +90,19 @@ public final class UnifiedDiff {
 			return this;
 		}
 
+		/**
+		 * Collapses unchanged regions between diffs, keeping the given number of
+		 * context lines (at least one) around each change. A negative value disables
+		 * folding.
+		 */
+		public Builder foldUnchanged(int contextLines) {
+			this.foldContextLines = contextLines;
+			return this;
+		}
+
 		public IStatus open() {
 			return UnifiedDiffManager.open(editor, source, mode, additionalActions, tokenComparatorFactory,
-					ignoreWhitespaceContributorFactory, ignoreWhiteSpace);
+					ignoreWhitespaceContributorFactory, ignoreWhiteSpace, foldContextLines);
 		}
 	}
 }

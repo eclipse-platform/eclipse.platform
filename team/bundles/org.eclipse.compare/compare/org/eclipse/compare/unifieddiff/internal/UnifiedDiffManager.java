@@ -67,6 +67,8 @@ import org.eclipse.jface.text.source.IAnnotationModelListener;
 import org.eclipse.jface.text.source.IAnnotationModelListenerExtension;
 import org.eclipse.jface.text.source.ISourceViewerExtension5;
 import org.eclipse.jface.text.source.inlined.AbstractInlinedAnnotation;
+import org.eclipse.jface.text.source.projection.ProjectionAnnotation;
+import org.eclipse.jface.text.source.projection.ProjectionAnnotationModel;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -102,6 +104,7 @@ public class UnifiedDiffManager {
 	private static final String CURRENT_SELECTED_UNIFIED_DIFF_ANNO_KEY = "CURRENT_SELECTED_UNIFIED_DIFF_ANNO_KEY"; //$NON-NLS-1$
 	private static final String UNDO_LISTENER_KEY = "UNIFIED_DIFF_UNDO_LISTENER_KEY"; //$NON-NLS-1$
 	private static final String UNIFIED_DIFF_ANNOTATION_MODEL_LISTENER_KEY = "UNIFIED_DIFF_ANNOTATION_MODEL_LISTENER_KEY"; //$NON-NLS-1$
+	private static final String UNIFIED_DIFF_FOLD_LISTENER_KEY = "UNIFIED_DIFF_FOLD_LISTENER_KEY"; //$NON-NLS-1$
 	private static final String ADDITION_ANNO_TYPE = "org.eclipse.compare.unifieddiff.internal.addition"; //$NON-NLS-1$
 	private static final String DELETION_ANNO_TYPE = "org.eclipse.compare.unifieddiff.internal.deletion"; //$NON-NLS-1$
 	private static final String DETAILED_ADDITION_ANNO_TYPE = "org.eclipse.compare.unifieddiff.internal.detailedAddition"; //$NON-NLS-1$
@@ -120,10 +123,12 @@ public class UnifiedDiffManager {
 
 	public static IStatus open(ITextEditor editor, String source, UnifiedDiffMode mode, List<Action> additionalActions,
 			TokenComparatorFactory tokenComparatorFactory,
-			IgnoreWhitespaceContributorFactory ignoreWhitespaceContributorFactory, boolean ignoreWhiteSpace) {
+			IgnoreWhitespaceContributorFactory ignoreWhitespaceContributorFactory, boolean ignoreWhiteSpace,
+			int foldContextLines) {
 		ITextViewer viewer = editor.getAdapter(ITextViewer.class);
 		if (viewer instanceof ProjectionViewer pv) {
 			pv.doOperation(ProjectionViewer.EXPAND_ALL);
+			removeFoldAnnotations(pv);
 		}
 		IAnnotationModel model = editor.getDocumentProvider().getAnnotationModel(editor.getEditorInput());
 		if (model == null) {
@@ -310,6 +315,10 @@ public class UnifiedDiffManager {
 		addUndoListener(viewer, leftDocument, model);
 		addAnnoModelChangeListener(viewer, model);
 
+		if (foldContextLines >= 0 && viewer instanceof ProjectionViewer pv) {
+			foldUnchangedRegions(pv, leftDocument, unifiedDiffs, mode, foldContextLines);
+		}
+
 		if (unifiedDiffs.size() > 0) {
 			runAfterRepaintFinished(viewer.getTextWidget(), () -> {
 				Annotation firstAnno = getFirstAnnotationForUnifiedDiff(model, unifiedDiffs.get(0));
@@ -317,6 +326,194 @@ public class UnifiedDiffManager {
 			});
 		}
 		return Status.OK_STATUS;
+	}
+
+	/**
+	 * Marker for the projection annotations added to collapse unchanged regions so
+	 * they can be told apart from the editor's own (e.g. structural) folds.
+	 */
+	private static final class UnifiedDiffFoldAnnotation extends ProjectionAnnotation {
+		UnifiedDiffFoldAnnotation() {
+			super(true); // initially collapsed
+		}
+	}
+
+	/**
+	 * Collapses the unchanged regions between the displayed diffs, keeping
+	 * {@code contextLines} visible next to each change. Reuses the editor's
+	 * projection (folding) model, so this is a no-op when folding is disabled for
+	 * the editor.
+	 */
+	private static void foldUnchangedRegions(ProjectionViewer viewer, IDocument document,
+			List<UnifiedDiff> unifiedDiffs, UnifiedDiffMode mode, int contextLines) {
+		ProjectionAnnotationModel projectionModel = viewer.getProjectionAnnotationModel();
+		if (projectionModel == null || unifiedDiffs.isEmpty()) {
+			return;
+		}
+		// At least one context line so that the expander code mining and the code
+		// minings anchored to the first line after a change never share a line.
+		int context = Math.max(1, contextLines);
+		int lineCount = document.getNumberOfLines();
+		Map<ProjectionAnnotation, Position> foldsToAdd = new HashMap<>();
+		try {
+			// The unchanged regions are the gaps in the document before, between and
+			// after the displayed diffs.
+			int gapStart = 0; // first line of the current unchanged gap
+			for (int i = 0; i <= unifiedDiffs.size(); i++) {
+				boolean atStart = i == 0;
+				boolean atEnd = i == unifiedDiffs.size();
+				int gapEnd = atEnd ? lineCount : document.getLineOfOffset(unifiedDiffs.get(i).leftStart); // exclusive
+				// Keep context lines next to an adjacent change; none is reserved at the
+				// file start or end because there is no neighboring change there. The first
+				// folded line stays visible as the fold's caption.
+				int foldFirst = gapStart + (atStart ? 0 : context);
+				int foldEnd = gapEnd - (atEnd ? 0 : context); // exclusive
+				if (foldEnd - foldFirst >= 2) { // at least one line is hidden below the caption
+					int offset = document.getLineOffset(foldFirst);
+					int end = foldEnd < lineCount ? document.getLineOffset(foldEnd) : document.getLength();
+					if (end > offset) {
+						foldsToAdd.put(new UnifiedDiffFoldAnnotation(), new Position(offset, end - offset));
+					}
+				}
+				if (!atEnd) {
+					UnifiedDiff diff = unifiedDiffs.get(i);
+					// The displayed range has the same length as the diff annotation: in
+					// replace mode the document already contains the right content.
+					int length = UnifiedDiffMode.REPLACE_MODE.equals(mode) ? diff.rightLength : diff.leftLength;
+					int lastOffset = length > 0 ? diff.leftStart + length - 1 : diff.leftStart;
+					gapStart = Math.max(gapStart,
+							document.getLineOfOffset(Math.min(lastOffset, document.getLength())) + 1);
+				}
+			}
+		} catch (BadLocationException e) {
+			error(e);
+			return;
+		}
+		if (!foldsToAdd.isEmpty()) {
+			addFoldChangeListener(viewer);
+			projectionModel.replaceAnnotations(null, foldsToAdd);
+		}
+	}
+
+	/**
+	 * Removes the unchanged-region folds previously added by
+	 * {@link #foldUnchangedRegions}, leaving the editor's own folds untouched.
+	 */
+	private static void removeFoldAnnotations(ProjectionViewer viewer) {
+		ProjectionAnnotationModel projectionModel = viewer.getProjectionAnnotationModel();
+		if (projectionModel == null) {
+			return;
+		}
+		StyledText tw = viewer.getTextWidget();
+		if (tw != null && !tw.isDisposed()) {
+			var listener = (IAnnotationModelListener) tw.getData(UNIFIED_DIFF_FOLD_LISTENER_KEY);
+			if (listener != null) {
+				tw.setData(UNIFIED_DIFF_FOLD_LISTENER_KEY, null);
+				projectionModel.removeAnnotationModelListener(listener);
+			}
+		}
+		List<Annotation> toRemove = new ArrayList<>();
+		for (Iterator<Annotation> it = projectionModel.getAnnotationIterator(); it.hasNext();) {
+			Annotation annotation = it.next();
+			if (annotation instanceof UnifiedDiffFoldAnnotation) {
+				toRemove.add(annotation);
+			}
+		}
+		if (!toRemove.isEmpty()) {
+			projectionModel.replaceAnnotations(toRemove.toArray(new Annotation[0]), null);
+		}
+	}
+
+	/**
+	 * Returns the currently collapsed unchanged-region folds of the given viewer
+	 * with their positions.
+	 */
+	static Map<Annotation, Position> getCollapsedFoldRegions(ITextViewer viewer) {
+		Map<Annotation, Position> result = new HashMap<>();
+		if (viewer instanceof ProjectionViewer pv) {
+			ProjectionAnnotationModel projectionModel = pv.getProjectionAnnotationModel();
+			if (projectionModel != null) {
+				for (Iterator<Annotation> it = projectionModel.getAnnotationIterator(); it.hasNext();) {
+					Annotation annotation = it.next();
+					if (annotation instanceof UnifiedDiffFoldAnnotation fold && fold.isCollapsed()) {
+						Position position = projectionModel.getPosition(annotation);
+						if (position != null && !position.isDeleted()) {
+							result.put(annotation, position);
+						}
+					}
+				}
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Expands the given unchanged-region fold in the given viewer.
+	 */
+	static void expandFoldRegion(ITextViewer viewer, Annotation annotation) {
+		if (viewer instanceof ProjectionViewer pv) {
+			ProjectionAnnotationModel projectionModel = pv.getProjectionAnnotationModel();
+			if (projectionModel != null) {
+				projectionModel.expand(annotation);
+			}
+		}
+	}
+
+	/**
+	 * Refreshes the code minings when unchanged-region folds are expanded or
+	 * collapsed, so their inline expanders appear and disappear accordingly.
+	 */
+	private static void addFoldChangeListener(ProjectionViewer viewer) {
+		StyledText tw = viewer.getTextWidget();
+		ProjectionAnnotationModel projectionModel = viewer.getProjectionAnnotationModel();
+		if (tw == null || tw.isDisposed() || projectionModel == null
+				|| tw.getData(UNIFIED_DIFF_FOLD_LISTENER_KEY) != null) {
+			return;
+		}
+		IAnnotationModelListener listener = new FoldChangeListener(viewer);
+		tw.setData(UNIFIED_DIFF_FOLD_LISTENER_KEY, listener);
+		projectionModel.addAnnotationModelListener(listener);
+	}
+
+	private static final class FoldChangeListener
+			implements IAnnotationModelListener, IAnnotationModelListenerExtension {
+
+		private final ProjectionViewer viewer;
+
+		FoldChangeListener(ProjectionViewer viewer) {
+			this.viewer = viewer;
+		}
+
+		@Override
+		public void modelChanged(AnnotationModelEvent event) {
+			if (!concernsFolds(event.getAddedAnnotations()) && !concernsFolds(event.getRemovedAnnotations())
+					&& !concernsFolds(event.getChangedAnnotations())) {
+				return;
+			}
+			StyledText tw = viewer.getTextWidget();
+			if (tw == null || tw.isDisposed()) {
+				return;
+			}
+			if (viewer instanceof ISourceViewerExtension5 ext) {
+				ext.updateCodeMinings();
+			}
+		}
+
+		private static boolean concernsFolds(Annotation[] annotations) {
+			if (annotations != null) {
+				for (Annotation annotation : annotations) {
+					if (annotation instanceof UnifiedDiffFoldAnnotation) {
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		@Override
+		public void modelChanged(IAnnotationModel model) {
+			// handled by the AnnotationModelEvent variant
+		}
 	}
 
 	static boolean isViewerInPart(IWorkbenchPart part, ITextViewer viewer) {
@@ -1173,6 +1370,9 @@ public class UnifiedDiffManager {
 		if (tw == null || tw.isDisposed()) {
 			// SWT removes listeners automatically when the widget is disposed
 			return;
+		}
+		if (tv instanceof ProjectionViewer pv) {
+			removeFoldAnnotations(pv);
 		}
 		tw.getTypedListeners(SWT.MouseMove, UnifiedDiffMouseMoveListener.class)
 				.forEach(tw::removeMouseMoveListener);

@@ -263,6 +263,10 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 
 	public static final int NO_DIFFERENCE = 10000;
 
+	// Number of unchanged context lines kept around each change when the unified
+	// diff collapses unchanged regions.
+	private static final int UNIFIED_DIFF_CONTEXT_LINES = 3;
+
 	/**
 	 * The plugin singleton.
 	 */
@@ -627,6 +631,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 										: null)
 								.ignoreWhiteSpace(Utilities.getBoolean(input.getCompareConfiguration(),
 										CompareConfiguration.IGNORE_WHITESPACE, false))
+								.foldUnchanged(UNIFIED_DIFF_CONTEXT_LINES)
 								.open();
 						return status.isOK();
 					}
@@ -654,6 +659,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 										: null)
 								.ignoreWhiteSpace(Utilities.getBoolean(input.getCompareConfiguration(),
 										CompareConfiguration.IGNORE_WHITESPACE, false))
+								.foldUnchanged(UNIFIED_DIFF_CONTEXT_LINES)
 								.open();
 						return status.isOK();
 					}
