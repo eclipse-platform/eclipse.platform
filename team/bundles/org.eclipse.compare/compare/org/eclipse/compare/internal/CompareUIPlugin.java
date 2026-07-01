@@ -738,10 +738,8 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 			if (!(res instanceof ICompareInput compareInput)) {
 				return null;
 			}
-			ITypedElement ancestor = compareInput.getAncestor();
-			if (ancestor != null) {
-				return null;
-			}
+			// A common ancestor (3-way input) is ignored; the unified diff renders a
+			// plain left-vs-right overlay.
 			ITypedElement left = compareInput.getLeft();
 			if (left == null) {
 				return null;
