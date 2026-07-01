@@ -276,6 +276,7 @@ public class LaunchConfigurationTabGroupViewer {
 		fShowCommandLineButton = SWTFactory.createPushButton(buttonComp,
 				LaunchConfigurationsMessages.LaunchConfigurationDialog_ShowCommandLine, null,
 				GridData.HORIZONTAL_ALIGN_BEGINNING);
+		fShowCommandLineButton.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false));
 		fShowCommandLineButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent evt) {
