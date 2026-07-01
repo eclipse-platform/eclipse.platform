@@ -314,6 +314,10 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 
 	public static final int NO_DIFFERENCE = 10000;
 
+	// Number of unchanged context lines kept around each change when the unified
+	// diff collapses unchanged regions.
+	private static final int UNIFIED_DIFF_CONTEXT_LINES = 3;
+
 	/**
 	 * The plugin singleton.
 	 */
@@ -633,6 +637,13 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		openClassicCompareEditor(input, page, editor, activate);
 	}
 
+	/** The context lines to keep, or a negative value when folding is turned off. */
+	private static int foldUnchangedContextLines() {
+		return getDefault().getPreferenceStore().getBoolean(ComparePreferencePage.UNIFIED_DIFF_FOLD_UNCHANGED)
+				? UNIFIED_DIFF_CONTEXT_LINES
+				: -1;
+	}
+
 	/** Opens the classic side by side compare editor on the given input. */
 	private void openClassicCompareEditor(final CompareEditorInput input, final IWorkbenchPage page,
 			final IReusableEditor editor, final boolean activate) {
@@ -736,6 +747,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 					.tokenComparatorFactory(t -> mergerInput != null ? mergerInput.createTokenComparator(t) : null)
 					.ignoreWhiteSpace(Utilities.getBoolean(input.getCompareConfiguration(),
 							CompareConfiguration.IGNORE_WHITESPACE, false))
+					.foldUnchanged(foldUnchangedContextLines())
 					.open();
 			// The user canceled the diff, not the open: leave the text editor alone
 			// instead of falling back to the classic compare editor.

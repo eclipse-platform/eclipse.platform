@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
+import org.eclipse.compare.internal.CompareMessages;
 import org.eclipse.compare.unifieddiff.UnifiedDiffMode;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager.UnifiedDiff;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -55,6 +56,7 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.source.inlined.LineFooterAnnotation;
 import org.eclipse.jface.text.source.inlined.LineHeaderAnnotation;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
@@ -82,6 +84,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 
 	private Color deletionBackgroundColor;
 	private Color detailedDiffColor;
+	private Color foldSeparatorColor;
 	private boolean lastIsOverlay;
 
 	@Override
@@ -95,6 +98,10 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 				detailedDiffColor.dispose();
 			}
 			detailedDiffColor = null;
+			if (foldSeparatorColor != null && !foldSeparatorColor.isDisposed()) {
+				foldSeparatorColor.dispose();
+			}
+			foldSeparatorColor = null;
 		} finally {
 			super.dispose();
 		}
@@ -126,8 +133,12 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			if (this.deletionBackgroundColor != null && !this.deletionBackgroundColor.isDisposed()) {
 				this.deletionBackgroundColor.dispose();
 			}
+			if (this.foldSeparatorColor != null && !this.foldSeparatorColor.isDisposed()) {
+				this.foldSeparatorColor.dispose();
+			}
 			this.detailedDiffColor = new Color(interpolate(deletionColor, background, 0.9));
 			this.deletionBackgroundColor = new Color(interpolate(deletionColor, background, 0.8));
+			this.foldSeparatorColor = new Color(separatorBackground(background));
 			lastIsOverlay = isOverlay;
 		}
 		if (viewer instanceof ISourceViewer sv && UnifiedDiffManager.get(viewer) != null) {
@@ -161,7 +172,13 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 					}
 				}
 			}
-			if (existingMinings.size() > 0) {
+			// Only the complete set may be reused. Collapsing a region can keep an
+			// annotation from being created, and reusing what is left would drop that
+			// diff for good, because nothing recomputes it from the diffs afterwards.
+			if (existingMinings.size() >= expectedMiningCount(diffs)) {
+				// the expander minings are recreated instead of reused so that they
+				// reflect the current expansion state of the folds
+				createFoldRegionCodeMinings(viewer, existingMinings);
 				return CompletableFuture.completedFuture(existingMinings);
 			}
 		}
@@ -170,9 +187,13 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		// take an immutable snapshot so the async iteration cannot observe
 		// concurrent modifications when accept/hide actions mutate the live list
 		List<UnifiedDiff> diffsSnapshot = List.copyOf(diffs);
+		// created on the calling thread because it reads the projection annotation model
+		List<ICodeMining> foldMinings = new ArrayList<>();
+		createFoldRegionCodeMinings(viewer, foldMinings);
 		return CompletableFuture.supplyAsync(() -> {
 			List<ICodeMining> minings = new ArrayList<>();
 			createLineHeaderCodeMinings(diffsSnapshot, minings, viewer, tabWidth);
+			minings.addAll(foldMinings);
 			return minings;
 		});
 	}
@@ -215,6 +236,17 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			tabWidth = store.getInt(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
 		}
 		return tabWidth;
+	}
+
+	/** How many minings {@link #createLineHeaderCodeMinings} would create for the diffs. */
+	public static int expectedMiningCount(List<UnifiedDiff> diffs) {
+		int expected = 0;
+		for (UnifiedDiff diff : diffs) {
+			if (diff.mode.equals(UnifiedDiffMode.REPLACE_MODE) ? !diff.leftStr.isEmpty() : !diff.rightStr.isEmpty()) {
+				expected++;
+			}
+		}
+		return expected;
 	}
 
 	private void createLineHeaderCodeMinings(List<UnifiedDiff> diffs, List<ICodeMining> minings, ITextViewer tv,
@@ -277,6 +309,78 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 
 	private static boolean startsLine(IDocument doc, int offset) throws BadLocationException {
 		return doc.getLineOffset(doc.getLineOfOffset(offset)) == offset;
+	}
+
+	/**
+	 * Creates one clickable expander mining per collapsed unchanged-region fold,
+	 * shown as e.g. "Expand 42 unchanged lines" above the fold's caption line.
+	 */
+	private void createFoldRegionCodeMinings(ITextViewer viewer, List<ICodeMining> minings) {
+		IDocument doc = viewer.getDocument();
+		if (doc == null) {
+			return;
+		}
+		Map<Annotation, Position> folds = UnifiedDiffManager.getCollapsedFoldRegions(viewer);
+		for (Map.Entry<Annotation, Position> fold : folds.entrySet()) {
+			Position position = fold.getValue();
+			try {
+				int firstLine = doc.getLineOfOffset(position.getOffset());
+				int lastLine = position.getLength() > 0
+						? doc.getLineOfOffset(position.getOffset() + position.getLength() - 1)
+						: firstLine;
+				// the first line of the region stays visible as the fold's caption
+				int hiddenLines = lastLine - firstLine;
+				if (hiddenLines <= 0) {
+					continue;
+				}
+				minings.add(new FoldedRegionCodeMining(new Position(position.getOffset(), 1), this, viewer,
+						fold.getKey(), hiddenLines, this.foldSeparatorColor));
+			} catch (BadLocationException e) {
+				error(e);
+			}
+		}
+	}
+
+	/**
+	 * A band that stands out from the surrounding text, so the collapsed region
+	 * reads as a break between two hunks rather than as another line of the file.
+	 */
+	private static RGB separatorBackground(RGB background) {
+		boolean dark = background != null && (background.red + background.green + background.blue) / 3 < 128;
+		return interpolate(dark ? new RGB(255, 255, 255) : new RGB(0, 0, 0), background, 0.92);
+	}
+
+	static class FoldedRegionCodeMining extends LineHeaderCodeMining {
+
+		private final String expandLabel;
+		private final Color separatorColor;
+
+		public FoldedRegionCodeMining(Position position, ICodeMiningProvider provider, ITextViewer viewer,
+				Annotation foldAnnotation, int hiddenLines, Color separatorColor) throws BadLocationException {
+			super(position, provider, e -> UnifiedDiffManager.expandFoldRegion(viewer, foldAnnotation));
+			this.expandLabel = hiddenLines == 1 ? CompareMessages.UnifiedDiff_expandUnchangedLine
+					: NLS.bind(CompareMessages.UnifiedDiff_expandUnchangedLines, Integer.valueOf(hiddenLines));
+			this.separatorColor = separatorColor;
+		}
+
+		@Override
+		public String getLabel() {
+			return this.expandLabel;
+		}
+
+		@Override
+		public Point draw(GC gc, StyledText textWidget, Color color, int x, int y) {
+			if (this.separatorColor == null || this.separatorColor.isDisposed()) {
+				return super.draw(gc, textWidget, color, x, y);
+			}
+			gc.setBackground(this.separatorColor);
+			gc.setForeground(textWidget.getForeground());
+			gc.setFont(textWidget.getFont());
+			// a first run only to learn how tall the band has to be
+			Point size = super.draw(gc, textWidget, color, x, y);
+			gc.fillRectangle(0, y, textWidget.getBounds().width, size.y);
+			return super.draw(gc, textWidget, color, x, y);
+		}
 	}
 
 	static class UnifiedDiffFooterCodeMining extends DocumentFooterCodeMining {
