@@ -67,6 +67,7 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -166,7 +167,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 			String type= element.getAttribute(CONTENT_TYPE_ID_ATTRIBUTE);
 			String id= element.getAttribute(idAttributeName);
 			if (id == null) {
-				logErrorMessage(Utilities.getFormattedString("CompareUIPlugin.targetIdAttributeMissing", idAttributeName)); //$NON-NLS-1$
+				ILog.of(getClass()).error(Utilities.getFormattedString("CompareUIPlugin.targetIdAttributeMissing", idAttributeName)); //$NON-NLS-1$
 			}
 			if (type != null && id != null && fIdMap != null) {
 				T o= fIdMap.get(id);
@@ -182,10 +183,10 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 						}
 						l.add(o);
 					} else {
-						logErrorMessage(Utilities.getFormattedString("CompareUIPlugin.contentTypeNotFound", type)); //$NON-NLS-1$
+						ILog.of(getClass()).error(Utilities.getFormattedString("CompareUIPlugin.contentTypeNotFound", type)); //$NON-NLS-1$
 					}
 				} else {
-					logErrorMessage(Utilities.getFormattedString("CompareUIPlugin.targetNotFound", id)); //$NON-NLS-1$
+					ILog.of(getClass()).error(Utilities.getFormattedString("CompareUIPlugin.targetNotFound", id)); //$NON-NLS-1$
 				}
 			}
 		}
@@ -410,7 +411,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 			String name= element.getName();
 			if (!CONTENT_TYPE_BINDING.equals(name)) {
 				if (!STRUCTURE_CREATOR.equals(name)) {
-					logErrorMessage(Utilities.getFormattedString("CompareUIPlugin.unexpectedTag", name, STRUCTURE_CREATOR)); //$NON-NLS-1$
+					ILog.of(getClass()).error(Utilities.getFormattedString("CompareUIPlugin.unexpectedTag", name, STRUCTURE_CREATOR)); //$NON-NLS-1$
 				}
 				fStructureCreators.register(element, new StructureCreatorDescriptor(element));
 			}
@@ -427,7 +428,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 			String name= element.getName();
 			if (!CONTENT_TYPE_BINDING.equals(name)) {
 				if (!VIEWER_TAG.equals(name)) {
-					logErrorMessage(Utilities.getFormattedString("CompareUIPlugin.unexpectedTag", name, VIEWER_TAG)); //$NON-NLS-1$
+					ILog.of(getClass()).error(Utilities.getFormattedString("CompareUIPlugin.unexpectedTag", name, VIEWER_TAG)); //$NON-NLS-1$
 				}
 				fStructureMergeViewers.register(element, new ViewerDescriptor(element));
 			}
@@ -444,7 +445,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 			String name= element.getName();
 			if (!CONTENT_TYPE_BINDING.equals(name)) {
 				if (!VIEWER_TAG.equals(name)) {
-					logErrorMessage(Utilities.getFormattedString("CompareUIPlugin.unexpectedTag", name, VIEWER_TAG)); //$NON-NLS-1$
+					ILog.of(getClass()).error(Utilities.getFormattedString("CompareUIPlugin.unexpectedTag", name, VIEWER_TAG)); //$NON-NLS-1$
 				}
 				fContentMergeViewers.register(element, new ViewerDescriptor(element));
 			}
@@ -462,7 +463,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 			String name = element.getName();
 			if (!CONTENT_TYPE_BINDING.equals(name)) {
 				if (!FILTER_TAG.equals(name)) {
-					logErrorMessage(Utilities.getFormattedString(
+					ILog.of(getClass()).error(Utilities.getFormattedString(
 							"CompareUIPlugin.unexpectedTag", name, FILTER_TAG)); //$NON-NLS-1$
 				}
 				fCompareFilters.register(element, new CompareFilterDescriptor(element));
@@ -481,7 +482,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 			String name= element.getName();
 			if (!CONTENT_TYPE_BINDING.equals(name)) {
 				if (!VIEWER_TAG.equals(name)) {
-					logErrorMessage(Utilities.getFormattedString("CompareUIPlugin.unexpectedTag", name, VIEWER_TAG)); //$NON-NLS-1$
+					ILog.of(getClass()).error(Utilities.getFormattedString("CompareUIPlugin.unexpectedTag", name, VIEWER_TAG)); //$NON-NLS-1$
 				}
 				fContentViewers.register(element, new ViewerDescriptor(element));
 			}
@@ -659,7 +660,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 					}
 				}
 			} catch (PartInitException e) {
-				CompareUIPlugin.log(e);
+				ILog.of(getClass()).error(CompareMessages.ComparePlugin_internal_error, e);
 			}
 		}
 		return false;
@@ -693,7 +694,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 			String result = toString(right.getContents());
 			return result;
 		} catch (CoreException | IOException e) {
-			CompareUIPlugin.log(e);
+			ILog.of(getClass()).error(CompareMessages.ComparePlugin_internal_error, e);
 		}
 		// UnifiedDiff.Builder requires a non-null source. Return an empty string so
 		// the unified diff path can still attempt to open and the fallback to the
@@ -785,7 +786,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 			return new LeftEditorInputAndRightStreamContentAccessor(leftEditorInput, left, leftSa, rightEditorInput,
 					right, rightSa, documentMergerInput);
 		} catch (InvocationTargetException | InterruptedException e) {
-			CompareUIPlugin.log(e);
+			ILog.of(getClass()).error(CompareMessages.ComparePlugin_internal_error, e);
 		}
 		return null;
 	}
@@ -1789,21 +1790,6 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 			}
 		}
 		return result.toArray(new IEditorPart[result.size()]);
-	}
-
-	public static void logErrorMessage(String message) {
-		if (message == null) {
-			message= ""; //$NON-NLS-1$
-		}
-		log(new Status(IStatus.ERROR, getPluginId(), INTERNAL_ERROR, message, null));
-	}
-
-	public static void log(Throwable e) {
-		log(new Status(IStatus.ERROR, getPluginId(), INTERNAL_ERROR, CompareMessages.ComparePlugin_internal_error, e));
-	}
-
-	public static void log(IStatus status) {
-		getDefault().getLog().log(status);
 	}
 
 	String findContentTypeNameOrType(ICompareInput input, ViewerDescriptor vd, CompareConfiguration cc) {

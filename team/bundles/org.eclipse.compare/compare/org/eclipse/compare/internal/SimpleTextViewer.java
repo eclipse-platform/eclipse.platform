@@ -17,6 +17,7 @@ import org.eclipse.compare.IStreamContentAccessor;
 import org.eclipse.compare.ITypedElement;
 import org.eclipse.compare.structuremergeviewer.ICompareInput;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.swt.SWT;
@@ -63,7 +64,7 @@ public class SimpleTextViewer extends AbstractViewer {
 				return Utilities.readString((IStreamContentAccessor) input);
 			} catch (CoreException ex) {
 				// NeedWork
-				CompareUIPlugin.log(ex);
+				ILog.of(getClass()).error(CompareMessages.ComparePlugin_internal_error, ex);
 			}
 		}
 		return ""; //$NON-NLS-1$

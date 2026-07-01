@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import org.eclipse.compare.internal.CompareContainer;
+import org.eclipse.compare.internal.CompareMessages;
 import org.eclipse.compare.internal.CompareUIPlugin;
 import org.eclipse.compare.internal.ResizableDialog;
 import org.eclipse.compare.internal.StructureCreatorDescriptor;
@@ -37,6 +38,7 @@ import org.eclipse.compare.structuremergeviewer.IStructureComparator;
 import org.eclipse.compare.structuremergeviewer.IStructureCreator;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
@@ -141,7 +143,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 							fContent= Utilities.readString(sca);
 						} catch (CoreException ex) {
 							// NeedWork
-							CompareUIPlugin.log(ex);
+							ILog.of(getClass()).error(CompareMessages.ComparePlugin_internal_error, ex);
 						}
 					}
 				}

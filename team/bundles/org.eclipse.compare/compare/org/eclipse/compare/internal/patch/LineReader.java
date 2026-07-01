@@ -24,11 +24,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.compare.internal.CompareUIPlugin;
+import org.eclipse.compare.internal.CompareMessages;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
 
 public class LineReader {
 	/**
@@ -54,7 +55,7 @@ public class LineReader {
 				}
 			} catch (CoreException ex) {
 				// TODO
-				CompareUIPlugin.log(ex);
+				ILog.of(LineReader.class).error(CompareMessages.ComparePlugin_internal_error, ex);
 			} catch (IOException closeException) {
 				// silently ignored
 			}

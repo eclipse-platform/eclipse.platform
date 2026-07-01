@@ -95,6 +95,7 @@ import org.eclipse.core.runtime.Adapters;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -628,7 +629,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 						try {
 							fDocumentProvider.resetDocument(fDocumentKey);
 						} catch (CoreException e) {
-							CompareUIPlugin.log(e);
+							ILog.of(getClass()).error(CompareMessages.ComparePlugin_internal_error, e);
 						} finally {
 							update(true);
 							updateStructure(fLeg);
@@ -915,7 +916,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 						return newDoc;
 					} catch (CoreException e) {
 						// Connection failed. Log the error and continue without a shared document
-						CompareUIPlugin.log(e);
+						ILog.of(getClass()).error(CompareMessages.ComparePlugin_internal_error, e);
 					}
 				}
 			}
@@ -3737,7 +3738,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		try {
 			fMerger.doDiff();
 		} catch (CoreException e) {
-			CompareUIPlugin.log(e.getStatus());
+			ILog.of(getClass()).log(e.getStatus());
 			String title= Utilities.getString(getResourceBundle(), "tooComplexError.title"); //$NON-NLS-1$
 			String msg= Utilities.getString(getResourceBundle(), "tooComplexError.message"); //$NON-NLS-1$
 			MessageDialog.openError(fComposite.getShell(), title, msg);
@@ -3750,7 +3751,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		try {
 			return fMerger.findDiff(type, pos);
 		} catch (CoreException e) {
-			CompareUIPlugin.log(e.getStatus());
+			ILog.of(getClass()).log(e.getStatus());
 			String title= Utilities.getString(getResourceBundle(), "tooComplexError.title"); //$NON-NLS-1$
 			String msg= Utilities.getString(getResourceBundle(), "tooComplexError.message"); //$NON-NLS-1$
 			MessageDialog.openError(fComposite.getShell(), title, msg);
@@ -5616,7 +5617,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			handleException(ite.getTargetException());
 			return;
 		}
-		CompareUIPlugin.log(throwable);
+		ILog.of(getClass()).error(CompareMessages.ComparePlugin_internal_error, throwable);
 	}
 
 	@Override

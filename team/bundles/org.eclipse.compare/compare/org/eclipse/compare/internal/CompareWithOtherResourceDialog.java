@@ -28,6 +28,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -649,7 +650,7 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 					((IFolder)r).createLink(path, IResource.REPLACE, null);
 				}
 			} catch (CoreException e) {
-				CompareUIPlugin.log(e);
+				ILog.of(getClass()).error(CompareMessages.ComparePlugin_internal_error, e);
 				MessageDialog.openError(getShell(),
 								CompareMessages.CompareWithOtherResourceDialog_externalFile_errorTitle,
 								CompareMessages.CompareWithOtherResourceDialog_externalFile_errorMessage);

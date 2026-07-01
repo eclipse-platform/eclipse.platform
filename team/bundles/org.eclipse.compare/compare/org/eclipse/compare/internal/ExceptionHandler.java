@@ -17,6 +17,7 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -39,7 +40,7 @@ public class ExceptionHandler {
 	 * logged as an error with the error code <code>JavaStatusConstants.INTERNAL_ERROR</code>.
 	 */
 	public static void log(Throwable t, String message) {
-		CompareUIPlugin.log(new Status(IStatus.ERROR, CompareUIPlugin.getPluginId(),
+		ILog.of(ExceptionHandler.class).log(new Status(IStatus.ERROR, CompareUIPlugin.getPluginId(),
 			CompareUIPlugin.INTERNAL_ERROR, message, t));
 	}
 
@@ -94,7 +95,7 @@ public class ExceptionHandler {
 	//---- Hooks for subclasses to control exception handling ------------------------------------
 
 	protected void perform(CoreException e, Shell shell, String title, String message) {
-		CompareUIPlugin.log(e);
+		ILog.of(getClass()).error(CompareMessages.ComparePlugin_internal_error, e);
 		IStatus status= e.getStatus();
 		if (status != null) {
 			ErrorDialog.openError(shell, title, message, status);
@@ -108,7 +109,7 @@ public class ExceptionHandler {
 		if (target instanceof CoreException) {
 			perform((CoreException)target, shell, title, message);
 		} else {
-			CompareUIPlugin.log(e);
+			ILog.of(getClass()).error(CompareMessages.ComparePlugin_internal_error, e);
 			if (e.getMessage() != null && e.getMessage().length() > 0) {
 				displayMessageDialog(e, e.getMessage(), shell, title, message);
 			} else {

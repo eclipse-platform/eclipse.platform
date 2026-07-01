@@ -21,13 +21,14 @@ import java.util.List;
 import org.eclipse.compare.CompareUI;
 import org.eclipse.compare.IEncodedStreamContentAccessor;
 import org.eclipse.compare.ITypedElement;
-import org.eclipse.compare.internal.CompareUIPlugin;
+import org.eclipse.compare.internal.CompareMessages;
 import org.eclipse.compare.internal.core.patch.DiffProject;
 import org.eclipse.compare.internal.core.patch.FileDiffResult;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.swt.graphics.Image;
 
@@ -110,7 +111,7 @@ public class PatchFileTypedElement implements ITypedElement,
 			try {
 				bytes = contents.getBytes(charSet);
 			} catch (UnsupportedEncodingException e) {
-				CompareUIPlugin.log(e);
+				ILog.of(getClass()).error(CompareMessages.ComparePlugin_internal_error, e);
 			}
 		}
 		if (bytes == null) {

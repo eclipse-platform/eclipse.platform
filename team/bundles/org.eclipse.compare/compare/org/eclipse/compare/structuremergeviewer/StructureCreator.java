@@ -27,11 +27,12 @@ import org.eclipse.compare.IStreamContentAccessor;
 import org.eclipse.compare.ITypedElement;
 import org.eclipse.compare.SharedDocumentAdapter;
 import org.eclipse.compare.contentmergeviewer.IDocumentRange;
-import org.eclipse.compare.internal.CompareUIPlugin;
+import org.eclipse.compare.internal.CompareMessages;
 import org.eclipse.compare.internal.Utilities;
 import org.eclipse.compare.internal.patch.LineReader;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.jface.text.Document;
@@ -62,7 +63,7 @@ public abstract class StructureCreator implements IStructureCreator2 {
 					contents= Utilities.readString(sca);
 				} catch (CoreException e) {
 					// return null indicates the error.
-					CompareUIPlugin.log(e);
+					ILog.of(getClass()).error(CompareMessages.ComparePlugin_internal_error, e);
 					return null;
 				}
 			}
@@ -79,7 +80,7 @@ public abstract class StructureCreator implements IStructureCreator2 {
 		try {
 			return createStructureComparator(input, doc, null, null);
 		} catch (CoreException e) {
-			CompareUIPlugin.log(e);
+			ILog.of(getClass()).error(CompareMessages.ComparePlugin_internal_error, e);
 			return null;
 		}
 	}
@@ -118,7 +119,7 @@ public abstract class StructureCreator implements IStructureCreator2 {
 					} catch (CoreException e) {
 						// Connection to the document provider failed.
 						// Log and fall through to use simple structure
-						CompareUIPlugin.log(e);
+						ILog.of(getClass()).error(CompareMessages.ComparePlugin_internal_error, e);
 					}
 				}
 			}
@@ -266,7 +267,7 @@ public abstract class StructureCreator implements IStructureCreator2 {
 			sda.flushDocument(provider, key, document, false);
 			return true;
 		} catch (CoreException e) {
-			CompareUIPlugin.log(e);
+			ILog.of(getClass()).error(CompareMessages.ComparePlugin_internal_error, e);
 		}
 		return false;
 	}

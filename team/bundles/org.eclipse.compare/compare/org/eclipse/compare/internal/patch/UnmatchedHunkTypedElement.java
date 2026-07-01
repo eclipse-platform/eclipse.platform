@@ -22,13 +22,14 @@ import org.eclipse.compare.IContentChangeListener;
 import org.eclipse.compare.IContentChangeNotifier;
 import org.eclipse.compare.IEditableContent;
 import org.eclipse.compare.ITypedElement;
-import org.eclipse.compare.internal.CompareUIPlugin;
+import org.eclipse.compare.internal.CompareMessages;
 import org.eclipse.compare.internal.ContentChangeNotifier;
 import org.eclipse.compare.internal.core.patch.FilePatch2;
 import org.eclipse.compare.internal.core.patch.HunkResult;
 import org.eclipse.compare.patch.PatchConfiguration;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
 
 public class UnmatchedHunkTypedElement extends HunkTypedElement implements IContentChangeNotifier, IEditableContent {
 
@@ -97,7 +98,7 @@ public class UnmatchedHunkTypedElement extends HunkTypedElement implements ICont
 			try {
 				bytes = content.getBytes(getCharset());
 			} catch (UnsupportedEncodingException e) {
-				CompareUIPlugin.log(e);
+				ILog.of(getClass()).error(CompareMessages.ComparePlugin_internal_error, e);
 			}
 		}
 		if (bytes == null) {

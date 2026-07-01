@@ -26,10 +26,11 @@ import org.eclipse.compare.ISharedDocumentAdapter;
 import org.eclipse.compare.IStreamContentAccessor;
 import org.eclipse.compare.ITypedElement;
 import org.eclipse.compare.contentmergeviewer.IDocumentRange;
-import org.eclipse.compare.internal.CompareUIPlugin;
+import org.eclipse.compare.internal.CompareMessages;
 import org.eclipse.compare.internal.Utilities;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
@@ -120,7 +121,7 @@ public class DocumentRangeNode
 		try {
 			fBaseDocument.addPosition(RANGE_CATEGORY, fRange);
 		} catch (BadPositionCategoryException | BadLocationException ex) {
-			CompareUIPlugin.log(ex);
+			ILog.of(getClass()).error(CompareMessages.ComparePlugin_internal_error, ex);
 		}
 	}
 
@@ -332,7 +333,7 @@ public class DocumentRangeNode
 			try {
 				fBaseDocument.replace(p.getOffset(), p.getLength(), s);
 			} catch (BadLocationException ex) {
-				CompareUIPlugin.log(ex);
+				ILog.of(getClass()).error(CompareMessages.ComparePlugin_internal_error, ex);
 			}
 		}
 	}
@@ -382,7 +383,7 @@ public class DocumentRangeNode
 						srcContents= Utilities.readString((IStreamContentAccessor)other);
 					} catch(CoreException ex) {
 						// NeedWork
-						CompareUIPlugin.log(ex);
+						ILog.of(getClass()).error(CompareMessages.ComparePlugin_internal_error, ex);
 					}
 				}
 			}

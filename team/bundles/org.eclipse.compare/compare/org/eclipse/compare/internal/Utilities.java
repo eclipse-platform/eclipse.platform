@@ -56,6 +56,7 @@ import org.eclipse.core.resources.mapping.ResourceTraversal;
 import org.eclipse.core.runtime.Adapters;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -214,7 +215,7 @@ public class Utilities {
 							}
 						}
 					} catch (CoreException ex) {
-						CompareUIPlugin.log(ex);
+						ILog.of(Utilities.class).error(CompareMessages.ComparePlugin_internal_error, ex);
 					}
 				} else if (o instanceof IAdaptable a) {
 					Object adapter= a.getAdapter(IResource.class);
@@ -337,7 +338,7 @@ public class Utilities {
 			try {
 				return MessageFormat.format(bundle.getString(key), arg);
 			} catch (MissingResourceException x) {
-				CompareUIPlugin.log(x);
+				ILog.of(Utilities.class).error(CompareMessages.ComparePlugin_internal_error, x);
 			}
 		}
 		return "!" + key + "!";	//$NON-NLS-2$ //$NON-NLS-1$
@@ -371,7 +372,7 @@ public class Utilities {
 					return Integer.parseInt(s);
 				}
 			} catch (NumberFormatException x) {
-				CompareUIPlugin.log(x);
+				ILog.of(Utilities.class).error(CompareMessages.ComparePlugin_internal_error, x);
 			} catch (MissingResourceException x) {
 				// Silently ignore Exception
 			}
@@ -631,7 +632,7 @@ public class Utilities {
 			try {
 				return ((IEncodedStorage)resource).getCharset();
 			} catch (CoreException ex) {
-				CompareUIPlugin.log(ex);
+				ILog.of(Utilities.class).error(CompareMessages.ComparePlugin_internal_error, ex);
 			}
 		}
 		return ResourcesPlugin.getEncoding();

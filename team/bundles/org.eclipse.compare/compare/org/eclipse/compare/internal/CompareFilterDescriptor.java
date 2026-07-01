@@ -21,6 +21,7 @@ import org.eclipse.compare.ICompareFilter;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -95,7 +96,7 @@ public class CompareFilterDescriptor {
 			return (ICompareFilter) fConfiguration
 					.createExecutableExtension(CLASS_ATTRIBUTE);
 		} catch (CoreException e) {
-			CompareUIPlugin.log(e);
+			ILog.of(getClass()).error(CompareMessages.ComparePlugin_internal_error, e);
 		}
 		return null;
 	}

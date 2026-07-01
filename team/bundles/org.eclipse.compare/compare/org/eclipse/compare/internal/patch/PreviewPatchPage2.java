@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.regex.Pattern;
 
 import org.eclipse.compare.CompareConfiguration;
+import org.eclipse.compare.internal.CompareMessages;
 import org.eclipse.compare.internal.ComparePreferencePage;
 import org.eclipse.compare.internal.CompareUIPlugin;
 import org.eclipse.compare.internal.ICompareUIConstants;
@@ -27,6 +28,7 @@ import org.eclipse.compare.internal.core.patch.Hunk;
 import org.eclipse.compare.patch.IHunk;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.Action;
@@ -359,7 +361,7 @@ public class PreviewPatchPage2 extends WizardPage {
 					try {
 						fInput.saveChanges(null);
 					} catch (CoreException e) {
-						CompareUIPlugin.log(e);
+						ILog.of(getClass()).error(CompareMessages.ComparePlugin_internal_error, e);
 					}
 					result[0] = fInput.confirmRebuild(promptToConfirm);
 				}

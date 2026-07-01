@@ -30,6 +30,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
@@ -40,7 +41,7 @@ public class Utilities {
 			try {
 				return ((IEncodedStorage) resource).getCharset();
 			} catch (CoreException ex) {
-				CompareUIPlugin.log(ex);
+				ILog.of(Utilities.class).error(CompareMessages.ComparePlugin_internal_error, ex);
 			}
 		}
 		return ResourcesPlugin.getEncoding();
@@ -86,7 +87,7 @@ public class Utilities {
 			try {
 				in = new InputStreamReader(contents, charset);
 			} catch (UnsupportedEncodingException e) {
-				CompareUIPlugin.log(e);
+				ILog.of(Utilities.class).error(CompareMessages.ComparePlugin_internal_error, e);
 				try {
 					contents.close();
 				} catch (IOException e1) {

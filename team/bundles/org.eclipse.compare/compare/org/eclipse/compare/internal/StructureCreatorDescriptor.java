@@ -16,6 +16,7 @@ package org.eclipse.compare.internal;
 import org.eclipse.compare.structuremergeviewer.IStructureCreator;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.ILog;
 
 /**
  * A factory proxy for creating a StructureCreator.
@@ -41,7 +42,7 @@ public class StructureCreatorDescriptor {
 		try {
 			return (IStructureCreator)fElement.createExecutableExtension(CLASS_ATTRIBUTE);
 		} catch (CoreException ex) {
-			CompareUIPlugin.log(ex.getStatus());
+			ILog.of(getClass()).log(ex.getStatus());
 			//ExceptionHandler.handle(ex, SearchMessages.getString("Search.Error.createSorter.title"), SearchMessages.getString("Search.Error.createSorter.message")); //$NON-NLS-2$ //$NON-NLS-1$
 			return null;
 		} catch (ClassCastException ex) {

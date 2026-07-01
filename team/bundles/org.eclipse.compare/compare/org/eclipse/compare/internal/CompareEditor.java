@@ -24,6 +24,7 @@ import org.eclipse.compare.IPropertyChangeNotifier;
 import org.eclipse.core.runtime.Adapters;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
@@ -589,12 +590,12 @@ public class CompareEditor extends EditorPart
 		} else {
 			for (Saveable saveable : sourceSaveables) {
 				if (!knownSaveables.contains(saveable)) {
-					CompareUIPlugin.logErrorMessage(NLS.bind("Saveable {0} was not added using a saveables lifecycle event.", saveable.getName())); //$NON-NLS-1$
+					ILog.of(getClass()).error(NLS.bind("Saveable {0} was not added using a saveables lifecycle event.", saveable.getName())); //$NON-NLS-1$
 					knownSaveables.add(saveable);
 				}
 			}
 			if (sourceSaveables.length != knownSaveables.size()) {
-				CompareUIPlugin.logErrorMessage("Saveables were removed without an appropriate event"); //$NON-NLS-1$
+				ILog.of(getClass()).error("Saveables were removed without an appropriate event"); //$NON-NLS-1$
 				knownSaveables.clear();
 				recordSaveables(sourceSaveables);
 			}

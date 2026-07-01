@@ -25,6 +25,7 @@ import org.eclipse.compare.IStreamContentAccessor;
 import org.eclipse.compare.ITypedElement;
 import org.eclipse.compare.structuremergeviewer.ICompareInput;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -112,7 +113,7 @@ public class BinaryCompareViewer extends AbstractViewer {
 				}
 			} catch (CoreException | IOException ex) {
 				message = Utilities.getString(fBundle, "errorMessage"); //$NON-NLS-1$
-				CompareUIPlugin.log(ex);
+				ILog.of(getClass()).error(CompareMessages.ComparePlugin_internal_error, ex);
 			}
 			if (message != null) {
 				fMessage.setText(message);

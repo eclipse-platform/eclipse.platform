@@ -33,7 +33,6 @@ import org.eclipse.compare.internal.CompareEditor;
 import org.eclipse.compare.internal.CompareHandlerService;
 import org.eclipse.compare.internal.CompareMessages;
 import org.eclipse.compare.internal.ComparePreferencePage;
-import org.eclipse.compare.internal.CompareUIPlugin;
 import org.eclipse.compare.internal.ICompareUIConstants;
 import org.eclipse.compare.internal.IFlushable2;
 import org.eclipse.compare.internal.ISavingSaveable;
@@ -47,6 +46,7 @@ import org.eclipse.compare.structuremergeviewer.ICompareInput;
 import org.eclipse.compare.structuremergeviewer.ICompareInputChangeListener;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.action.Action;
@@ -135,8 +135,8 @@ public abstract class ContentMergeViewer extends ContentViewer
 		public void layout(Composite composite, boolean force) {
 			if (fLeftLabel == null) {
 				if (composite.isDisposed()) {
-					CompareUIPlugin
-							.log(new IllegalArgumentException("Attempted to perform a layout on a disposed composite")); //$NON-NLS-1$
+					ILog.of(getClass()).error(CompareMessages.ComparePlugin_internal_error,
+							new IllegalArgumentException("Attempted to perform a layout on a disposed composite")); //$NON-NLS-1$
 				}
 				if (Policy.debugContentMergeViewer) {
 					logTrace("found bad label. Layout = " + System.identityHashCode(this) + ". composite = "  //$NON-NLS-1$//$NON-NLS-2$
@@ -150,7 +150,7 @@ public abstract class ContentMergeViewer extends ContentViewer
 
 				// Allow to test whether doing nothing helps
 				if (Boolean.getBoolean("ContentMergeViewer.DEBUG")) { //$NON-NLS-1$
-					CompareUIPlugin.log(npe);
+					ILog.of(getClass()).error(CompareMessages.ComparePlugin_internal_error, npe);
 					return;
 				}
 
@@ -958,7 +958,7 @@ public abstract class ContentMergeViewer extends ContentViewer
 						try {
 							((IPersistentPreferenceStore) preferences).save();
 						} catch (IOException e) {
-							CompareUIPlugin.log(e);
+							ILog.of(getClass()).error(CompareMessages.ComparePlugin_internal_error, e);
 						}
 					}
 				}

@@ -18,6 +18,7 @@ import org.eclipse.compare.IViewerCreator;
 import org.eclipse.core.runtime.Adapters;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Composite;
 
@@ -49,7 +50,7 @@ public class ViewerDescriptor implements IViewerDescriptor {
 			try {
 				fViewerCreator= (IViewerCreator) fConfiguration.createExecutableExtension(CLASS_ATTRIBUTE);
 			} catch (CoreException e) {
-				CompareUIPlugin.log(e);
+				ILog.of(getClass()).error(CompareMessages.ComparePlugin_internal_error, e);
 			}
 		}
 

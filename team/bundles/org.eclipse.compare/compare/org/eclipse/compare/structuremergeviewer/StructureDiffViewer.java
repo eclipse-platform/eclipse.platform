@@ -25,9 +25,9 @@ import org.eclipse.compare.ITypedElement;
 import org.eclipse.compare.contentmergeviewer.IDocumentRange;
 import org.eclipse.compare.internal.ChangeCompareFilterPropertyAction;
 import org.eclipse.compare.internal.CompareMessages;
-import org.eclipse.compare.internal.CompareUIPlugin;
 import org.eclipse.compare.internal.Utilities;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
@@ -163,7 +163,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 				try {
 					return sc2.createStructure(input, monitor);
 				} catch (CoreException e) {
-					CompareUIPlugin.log(e);
+					ILog.of(getClass()).error(CompareMessages.ComparePlugin_internal_error, e);
 				}
 			}
 			return fStructureCreator.getStructure(input);
@@ -327,7 +327,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 				try {
 					inputChangedTask.run(new NullProgressMonitor());
 				} catch (InvocationTargetException e1) {
-					CompareUIPlugin.log(e1.getTargetException());
+					ILog.of(getClass()).error(CompareMessages.ComparePlugin_internal_error, e1.getTargetException());
 				} catch (InterruptedException e2) {
 					// Ignore
 				}
@@ -554,7 +554,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 			}
 		} catch (InvocationTargetException e) {
 			// Shouldn't happen since the run doesn't throw
-			CompareUIPlugin.log(e.getTargetException());
+			ILog.of(getClass()).error(CompareMessages.ComparePlugin_internal_error, e.getTargetException());
 			handleFailedRefresh(e.getTargetException().getMessage());
 		} catch (InterruptedException e) {
 			// Canceled by user
