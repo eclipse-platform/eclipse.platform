@@ -15,6 +15,9 @@ org.eclipse.core.resources/perf/snapshot=1000
 # Monitor workspace snapshot and gather time statistics etc.
 org.eclipse.core.resources/perf/save.participants=500
 
+# Monitor workspace refresh and trace if it takes longer than the specified time in milliseconds.
+org.eclipse.core.resources/perf/refresh=500
+
 # Debug build failure cases such as failure to retrieve deltas.
 org.eclipse.core.resources/build/failure=false
 
@@ -76,7 +79,7 @@ org.eclipse.core.resources/save/mastertable=false
 # Report debug of workspace auto-refresh
 org.eclipse.core.resources/refresh=false
 
-# Prints debug information on resource content description 
+# Prints debug information on resource content description
 org.eclipse.core.resources/contenttype=false
 org.eclipse.core.resources/contenttype/cache=false
 
