@@ -13,8 +13,13 @@
  *******************************************************************************/
 package org.eclipse.core.internal.events;
 
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.ISaveParticipant;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.PerformanceStats;
+import org.eclipse.core.runtime.Platform;
 
 /**
  * An ResourceStats collects and aggregates timing data about an event such as
@@ -30,12 +35,25 @@ public class ResourceStats {
 	public static final String EVENT_LISTENERS = ResourcesPlugin.PI_RESOURCES + "/perf/listeners"; //$NON-NLS-1$
 	public static final String EVENT_SAVE_PARTICIPANTS = ResourcesPlugin.PI_RESOURCES + "/perf/save.participants"; //$NON-NLS-1$
 	public static final String EVENT_SNAPSHOT = ResourcesPlugin.PI_RESOURCES + "/perf/snapshot"; //$NON-NLS-1$
+	public static final String EVENT_REFRESH = ResourcesPlugin.PI_RESOURCES + "/perf/refresh"; //$NON-NLS-1$
 
 	//performance event enablement
 	public static boolean TRACE_BUILDERS = PerformanceStats.isEnabled(ResourceStats.EVENT_BUILDERS);
 	public static boolean TRACE_LISTENERS = PerformanceStats.isEnabled(ResourceStats.EVENT_LISTENERS);
 	public static boolean TRACE_SAVE_PARTICIPANTS = PerformanceStats.isEnabled(ResourceStats.EVENT_SAVE_PARTICIPANTS);
 	public static boolean TRACE_SNAPSHOT = PerformanceStats.isEnabled(ResourceStats.EVENT_SNAPSHOT);
+	public static boolean TRACE_REFRESH = PerformanceStats.isEnabled(ResourceStats.EVENT_REFRESH);
+	public static int TRACE_REFRESH_THRESHOLD;
+	static {
+		String option = Platform.getDebugOption(ResourceStats.EVENT_REFRESH);
+		if (option != null) {
+			try {
+				TRACE_REFRESH_THRESHOLD = Integer.parseInt(option);
+			} catch (NumberFormatException e) {
+				TRACE_REFRESH_THRESHOLD = 0;
+			}
+		}
+	}
 
 	public static void endBuild() {
 		if (currentStats != null) {
@@ -63,6 +81,15 @@ public class ResourceStats {
 			currentStats.endRun();
 		}
 		currentStats = null;
+	}
+
+	public static PerformanceStats endRefresh() {
+		if (currentStats != null) {
+			currentStats.endRun();
+		}
+		PerformanceStats stats = currentStats;
+		currentStats = null;
+		return stats;
 	}
 
 	/**
@@ -102,4 +129,10 @@ public class ResourceStats {
 		currentStats = PerformanceStats.getStats(EVENT_SAVE_PARTICIPANTS, participant);
 		currentStats.startRun();
 	}
+
+	public static void startRefresh(IResource resource) {
+		currentStats = PerformanceStats.getStats(EVENT_REFRESH, resource);
+		currentStats.startRun();
+	}
+
 }

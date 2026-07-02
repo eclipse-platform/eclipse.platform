@@ -36,6 +36,7 @@ import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.IFileTree;
 import org.eclipse.core.filesystem.URIUtil;
+import org.eclipse.core.internal.events.ResourceStats;
 import org.eclipse.core.internal.refresh.RefreshManager;
 import org.eclipse.core.internal.resources.File;
 import org.eclipse.core.internal.resources.Folder;
@@ -72,6 +73,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.PerformanceStats;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
@@ -1073,7 +1075,26 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 				if (!target.isAccessible()) {
 					return false;
 				}
-				//fall through
+				boolean result;
+				if (ResourceStats.TRACE_REFRESH) {
+					ResourceStats.startRefresh(target);
+				}
+				try {
+					result = refreshResource(target, depth, updateAliases, monitor);
+				} finally {
+					if (ResourceStats.TRACE_REFRESH) {
+						PerformanceStats stats = ResourceStats.endRefresh();
+						if (stats != null) {
+							long runningTime = stats.getRunningTime();
+							if (runningTime > ResourceStats.TRACE_REFRESH_THRESHOLD) {
+								String message = "Refresh on " + target.getFullPath() + " took " + runningTime + " ms"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+								Policy.log(IStatus.INFO, message, null);
+							}
+							stats.reset();
+						}
+					}
+				}
+				return result;
 			case IResource.FOLDER :
 			case IResource.FILE :
 				return refreshResource(target, depth, updateAliases, monitor);
