@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -14,6 +14,7 @@
 package org.eclipse.debug.internal.ui.views.breakpoints;
 
 import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.model.Breakpoint;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.internal.ui.CompositeDebugImageDescriptor;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
@@ -78,7 +79,11 @@ public class BreakpointsLabelProvider extends LabelProvider implements IFontProv
 
 	@Override
 	public String getText(Object element) {
-		if (element instanceof IBreakpoint) {
+		if (element instanceof Breakpoint breakpoint) {
+			String customLabel = breakpoint.getBreakpointLabel();
+			if (customLabel != null) {
+				return customLabel;
+			}
 			return fPresentation.getText(element);
 		}
 		return fWorkbenchLabelProvider.getText(element);
