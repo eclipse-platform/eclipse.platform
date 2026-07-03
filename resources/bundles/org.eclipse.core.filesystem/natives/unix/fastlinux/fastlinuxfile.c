@@ -481,7 +481,7 @@ JNIEXPORT jobjectArray JNICALL Java_org_eclipse_core_internal_filesystem_local_l
 
 			/* Follow symlink and update stat for further processing. */
 			if (fstatat(directoryFd, entry->d_name, &st, 0) != 0) {
-				memset(&st, 0, sizeof(st));
+				/* Keep lstat data from the symlink itself for dangling links. */
 				statErrno = errno;
 			}
 

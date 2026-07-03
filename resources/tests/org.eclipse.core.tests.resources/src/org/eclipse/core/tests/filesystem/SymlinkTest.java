@@ -35,6 +35,10 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFileAttributes;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import org.eclipse.core.filesystem.EFS;
@@ -50,6 +54,18 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class SymlinkTest {
+
+	public static final boolean SUPPORT_BROKEN_SYMLINKS = Platform.OS.isLinux()
+			&& Platform.ARCH_X86_64.equals(Platform.getOSArch());
+
+	/**
+	 * Tolerance in milliseconds applied when comparing a file's last modified time against a
+	 * timestamp captured via {@link System#currentTimeMillis()}. The file system last modified
+	 * time may be provided by a finer-resolution native (JNI) source, so rounding/truncation can
+	 * make it appear a few milliseconds earlier than the wall-clock value.
+	 */
+	private static final long TIMESTAMP_TOLERANCE_MS = 1000;
+
 	/**
 	 * Symbolic links on Windows behave differently compared to Unix-based systems. Symbolic links
 	 * on Windows have their own set of attributes independent from the attributes of the link's
@@ -57,7 +73,9 @@ public class SymlinkTest {
 	 * existence of the symbolic link itself, not its target.
 	 */
 	private static final boolean SYMLINKS_ARE_FIRST_CLASS_FILES_OR_DIRECTORIES = Platform.OS_WIN32
-			.equals(Platform.getOS()) ? true : false;
+			.equals(Platform.getOS());
+
+
 	private static String specialCharName = "äöüß ÄÖÜ àÀâÂ µ²³úá"; //$NON-NLS-1$
 
 	protected IFileStore aDir, aFile; //actual Dir, File
@@ -109,7 +127,11 @@ public class SymlinkTest {
 
 	@Test
 	public void testBrokenSymlinkAttributes() throws Exception {
-		long testStartTime = System.currentTimeMillis();
+		// Use a tolerance because getLastModified() may originate from a finer-resolution
+		// native (JNI) timer than System.currentTimeMillis(). Truncation/rounding can make
+		// the reported modification time appear a few milliseconds before testStartTime even
+		// though the file was created afterwards.
+		long testStartTime = System.currentTimeMillis() - TIMESTAMP_TOLERANCE_MS;
 		makeLinkStructure();
 		//break links by removing actual dir and file
 		ensureDoesNotExist(aDir);
@@ -124,22 +146,39 @@ public class SymlinkTest {
 		assertEquals(SYMLINKS_ARE_FIRST_CLASS_FILES_OR_DIRECTORIES, ilDir.isDirectory());
 		assertEquals(SYMLINKS_ARE_FIRST_CLASS_FILES_OR_DIRECTORIES, illDir.exists());
 		assertEquals(SYMLINKS_ARE_FIRST_CLASS_FILES_OR_DIRECTORIES, illDir.isDirectory());
-		if (SYMLINKS_ARE_FIRST_CLASS_FILES_OR_DIRECTORIES) {
+		if (SYMLINKS_ARE_FIRST_CLASS_FILES_OR_DIRECTORIES || SUPPORT_BROKEN_SYMLINKS) {
 			// Symlinks on Windows have their own modification time.
-			assertTrue(ilFile.getLastModified() >= testStartTime);
-			assertTrue(ilDir.getLastModified() >= testStartTime);
-			assertTrue(illFile.getLastModified() >= testStartTime);
-			assertTrue(illDir.getLastModified() >= testStartTime);
+			assertTrue(ilFile.getLastModified() >= testStartTime,
+					"getLastModified()=" + ilFile.getLastModified() + " testStartTime=" + testStartTime);
+			assertTrue(ilDir.getLastModified() >= testStartTime,
+					"getLastModified()=" + ilDir.getLastModified() + " testStartTime=" + testStartTime);
+			assertTrue(illFile.getLastModified() >= testStartTime,
+					"getLastModified()=" + illFile.getLastModified() + " testStartTime=" + testStartTime);
+			assertTrue(illDir.getLastModified() >= testStartTime,
+					"getLastModified()=" + illDir.getLastModified() + " testStartTime=" + testStartTime);
 		} else {
 			assertEquals(0, ilFile.getLastModified());
 			assertEquals(0, ilDir.getLastModified());
 			assertEquals(0, illFile.getLastModified());
 			assertEquals(0, illDir.getLastModified());
 		}
-		assertEquals(0, ilFile.getLength());
-		assertEquals(0, ilDir.getLength());
-		assertEquals(0, illFile.getLength());
-		assertEquals(0, illDir.getLength());
+
+		if (SUPPORT_BROKEN_SYMLINKS) {
+			PosixFileAttributes ilFileAttrs = posixAttributess(lFile);
+			PosixFileAttributes illFileAttrs = posixAttributess(llFile);
+			PosixFileAttributes ilDirAttrs = posixAttributess(lDir);
+			PosixFileAttributes illDirAttrs = posixAttributess(llDir);
+
+			assertEquals(ilFileAttrs.size(), ilFile.getLength());
+			assertEquals(ilDirAttrs.size(), ilDir.getLength());
+			assertEquals(illFileAttrs.size(), illFile.getLength());
+			assertEquals(illDirAttrs.size(), illDir.getLength());
+		} else {
+			assertEquals(0, ilFile.getLength());
+			assertEquals(0, ilDir.getLength());
+			assertEquals(0, illFile.getLength());
+			assertEquals(0, illDir.getLength());
+		}
 
 		assertTrue(ilFile.getAttribute(EFS.ATTRIBUTE_SYMLINK));
 		assertEquals(ilFile.getStringAttribute(EFS.ATTRIBUTE_LINK_TARGET), "aFile");
@@ -149,6 +188,11 @@ public class SymlinkTest {
 		assertEquals(illFile.getStringAttribute(EFS.ATTRIBUTE_LINK_TARGET), "lFile");
 		assertTrue(illDir.getAttribute(EFS.ATTRIBUTE_SYMLINK));
 		assertEquals(illDir.getStringAttribute(EFS.ATTRIBUTE_LINK_TARGET), "lDir");
+	}
+
+	private static PosixFileAttributes posixAttributess(IFileStore store) throws IOException {
+		return Files.readAttributes(Paths.get(store.toURI()), PosixFileAttributes.class,
+				LinkOption.NOFOLLOW_LINKS);
 	}
 
 	// Moving a broken symlink is possible.
@@ -213,7 +257,7 @@ public class SymlinkTest {
 		mkLink(baseStore, "l2", "l1", false);
 		IFileStore l1 = baseStore.getChild("l1");
 		IFileInfo i1 = l1.fetchInfo();
-		assertEquals(SYMLINKS_ARE_FIRST_CLASS_FILES_OR_DIRECTORIES, i1.exists());
+		assertEquals(SYMLINKS_ARE_FIRST_CLASS_FILES_OR_DIRECTORIES || SUPPORT_BROKEN_SYMLINKS, i1.exists());
 		assertFalse(i1.isDirectory());
 
 		assertTrue(i1.getAttribute(EFS.ATTRIBUTE_SYMLINK));
@@ -235,7 +279,7 @@ public class SymlinkTest {
 			assertTrue(exceptionThrown);
 			assertTrue(i1.getAttribute(EFS.ATTRIBUTE_READ_ONLY));
 		}
-		assertEquals(SYMLINKS_ARE_FIRST_CLASS_FILES_OR_DIRECTORIES, i1.exists());
+		assertEquals(SYMLINKS_ARE_FIRST_CLASS_FILES_OR_DIRECTORIES || SUPPORT_BROKEN_SYMLINKS, i1.exists());
 
 		i1.setLastModified(12345);
 		exceptionThrown = false;
@@ -248,7 +292,7 @@ public class SymlinkTest {
 		//FIXME bug: putInfo neither sets attributes nor throws an exception for broken symbolic links
 		//assertTrue(exceptionThrown);
 		//assertEquals(i1.getLastModified(), 12345);
-		assertEquals(SYMLINKS_ARE_FIRST_CLASS_FILES_OR_DIRECTORIES, i1.exists());
+		assertEquals(SYMLINKS_ARE_FIRST_CLASS_FILES_OR_DIRECTORIES || SUPPORT_BROKEN_SYMLINKS, i1.exists());
 
 		l1.delete(EFS.NONE, getMonitor());
 		infos = baseStore.childInfos(EFS.NONE, getMonitor());
