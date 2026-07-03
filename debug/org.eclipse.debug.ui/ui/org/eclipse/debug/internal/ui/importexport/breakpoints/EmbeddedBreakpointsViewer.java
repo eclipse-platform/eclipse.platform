@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2015 IBM Corporation and others.
+ * Copyright (c) 2005, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -36,11 +36,16 @@ import org.eclipse.debug.internal.ui.views.breakpoints.BreakpointsViewer;
 import org.eclipse.debug.ui.IDebugModelPresentation;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jface.viewers.ICheckStateListener;
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.StructuredViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Widget;
@@ -61,7 +66,10 @@ public class EmbeddedBreakpointsViewer {
 	private BreakpointsContentProvider fProvider = null;
 	private Tree fTree = null;
 	private BreakpointsViewer fViewer = null;
-	private final ICheckStateListener fCheckListener = event -> updateCheckedState(event.getElement(), event.getChecked());
+	private final ICheckStateListener fCheckListener = event -> updateCheckedState(event.getElement(),
+			event.getChecked());
+	private Text filterText;
+	private BreakpointPatternFilter fFilter;
 
 	/**
 	 * This constructor allows a specific selection to be used in stead of the default
@@ -96,7 +104,8 @@ public class EmbeddedBreakpointsViewer {
 			}
 		}
 		Composite composite = SWTFactory.createComposite(parent, parent.getFont(), 1, 1, GridData.FILL_BOTH, 0, 0);
-
+		filterText = SWTFactory.createText(composite, SWT.SEARCH | SWT.ICON_SEARCH | SWT.CANCEL, 1,
+				GridData.FILL_HORIZONTAL);
 		// create the treeview
 		fTree = new Tree(composite, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.CHECK);
 		GridData gd = new GridData(GridData.FILL_BOTH);
@@ -105,6 +114,12 @@ public class EmbeddedBreakpointsViewer {
 		fProvider = new BreakpointsContentProvider();
 		BreakpointsView view = ((BreakpointsView)DebugUIPlugin.getActiveWorkbenchWindow().getActivePage().findView(IDebugUIConstants.ID_BREAKPOINT_VIEW));
 		fViewer = new BreakpointsViewer(fTree);
+		fFilter = new BreakpointPatternFilter();
+		fViewer.addFilter(fFilter);
+		filterText.addModifyListener(e -> {
+			fFilter.setPattern(filterText.getText());
+			fViewer.refresh();
+		});
 		BreakpointsLabelProvider labelprovider = new BreakpointsLabelProvider();
 		if(view != null) {
 			//if we have handle to the view try get the current attributes, that way the
@@ -133,6 +148,28 @@ public class EmbeddedBreakpointsViewer {
 		fViewer.setInput(input);
 		fProvider.setOrganizers(orgs);
 		initViewerState();
+	}
+
+	private static class BreakpointPatternFilter extends ViewerFilter {
+
+		private String pattern = ""; //$NON-NLS-1$
+
+		public void setPattern(String pattern) {
+			this.pattern = pattern == null ? "" : pattern.toLowerCase(); //$NON-NLS-1$
+		}
+
+		@Override
+		public boolean select(Viewer viewer, Object parentElement, Object element) {
+
+			if (pattern.isEmpty()) {
+				return true;
+			}
+			if (((StructuredViewer) viewer).getLabelProvider() instanceof ILabelProvider lp) {
+				String text = lp.getText(element);
+				return text != null && text.toLowerCase().contains(pattern);
+			}
+			return true;
+		}
 	}
 
 	/**
