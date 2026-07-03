@@ -37,6 +37,7 @@ import org.junit.platform.suite.api.Suite;
 	PatchUITest.class,
 	RangeDifferencerThreeWayDiffTest.class,
 	CompareUIPluginTest.class,
+	CompareOpenEfficiencyTest.class,
 	StructureCreatorTest.class,
 	CompareFileRevisionEditorInputTest.class})
 public class AllCompareTests {
