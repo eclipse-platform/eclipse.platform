@@ -20,7 +20,7 @@ import org.junit.platform.suite.api.Suite;
  * @since 3.1
  */
 @Suite
-@SelectClasses({RangeDifferencerTest.class})
+@SelectClasses({ RangeDifferencerTest.class, CompareOpenPerformanceTest.class })
 public class PerformanceTestSuite {
 	//
 }
