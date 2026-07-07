@@ -60,6 +60,9 @@ public class CompareContentViewerSwitchingPane extends CompareViewerSwitchingPan
 
 	private ViewerDescriptor fSelectedViewerDescriptor;
 
+	/** Descriptors computed by getViewer, reused by setInput to avoid a second lookup. */
+	private ViewerDescriptor[] fViewerDescriptors;
+
 	private ToolBar toolBar;
 	private CLabel labelOptimized;
 	private Link recomputeLink;
@@ -79,9 +82,10 @@ public class CompareContentViewerSwitchingPane extends CompareViewerSwitchingPan
 	@Override
 	protected Viewer getViewer(Viewer oldViewer, Object input) {
 		if (fSelectedViewerDescriptor != null) {
-			ViewerDescriptor[] array = CompareUIPlugin.getDefault().findContentViewerDescriptor(
+			fViewerDescriptors = CompareUIPlugin.getDefault().findContentViewerDescriptor(
 					oldViewer, input, getCompareConfiguration());
-			List<ViewerDescriptor> list = array != null ? Arrays.asList(array) : Collections.emptyList();
+			List<ViewerDescriptor> list = fViewerDescriptors != null ? Arrays.asList(fViewerDescriptors)
+					: Collections.emptyList();
 			if (list.contains(fSelectedViewerDescriptor)) {
 				// use selected viewer only when appropriate for the new input
 				fCompareEditorInput
@@ -94,12 +98,19 @@ public class CompareContentViewerSwitchingPane extends CompareViewerSwitchingPan
 			fSelectedViewerDescriptor = null;
 		}
 		if (input instanceof ICompareInput) {
-			fCompareEditorInput.setContentViewerDescriptor(null);
+			fViewerDescriptors = CompareUIPlugin.getDefault().findContentViewerDescriptor(
+					oldViewer, input, getCompareConfiguration());
+			// Feeding the default descriptor avoids a second lookup inside findContentViewer.
+			ViewerDescriptor defaultDescriptor = fViewerDescriptors != null && fViewerDescriptors.length > 0
+					? fViewerDescriptors[0]
+					: null;
+			fCompareEditorInput.setContentViewerDescriptor(defaultDescriptor);
 			Viewer viewer =
 					fCompareEditorInput.findContentViewer(oldViewer, (ICompareInput) input, this);
 			fCompareEditorInput.setContentViewerDescriptor(fSelectedViewerDescriptor);
 			return viewer;
 		}
+		fViewerDescriptors = null;
 		return null;
 	}
 
@@ -203,8 +214,12 @@ public class CompareContentViewerSwitchingPane extends CompareViewerSwitchingPan
 		if (getViewer() == null || !Utilities.okToUse(getViewer().getControl())) {
 			return;
 		}
-		ViewerDescriptor[] vd = CompareUIPlugin.getDefault()
-				.findContentViewerDescriptor(getViewer(), getInput(), getCompareConfiguration());
+		// Reuse the descriptors computed by getViewer; recompute only if the cache is empty.
+		ViewerDescriptor[] vd = fViewerDescriptors;
+		if (vd == null) {
+			vd = CompareUIPlugin.getDefault()
+					.findContentViewerDescriptor(getViewer(), getInput(), getCompareConfiguration());
+		}
 		boolean toolbarVisible = vd != null && vd.length > 1;
 		toolBar.setVisible(toolbarVisible);
 		((RowData) toolBar.getLayoutData()).exclude = !toolbarVisible;

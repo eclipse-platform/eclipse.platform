@@ -55,11 +55,11 @@ public class CompareOpenEfficiencyTest {
 
 	/**
 	 * Upper bound for the {@code getContents()} calls per side during a single
-	 * compare editor open, caused by repeated content-type sniffing and viewer
-	 * descriptor lookups. The exact count is platform dependent (observed: 15 on
-	 * Linux and Windows, 9 on macOS), so only the worst case is asserted.
+	 * compare editor open: one read for content-type detection, one for the text
+	 * heuristic, and one for the document shown in the viewer. Asserted as a bound
+	 * because the exact count can vary by platform.
 	 */
-	private static final int MAX_GET_CONTENTS_PER_SIDE = 15;
+	private static final int MAX_GET_CONTENTS_PER_SIDE = 3;
 
 	private static final long TIMEOUT_MILLIS = 30_000;
 
