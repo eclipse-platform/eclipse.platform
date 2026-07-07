@@ -269,7 +269,7 @@ JNIEXPORT jint JNICALL Java_org_eclipse_core_internal_filesystem_local_linux_Lin
 }
 
 JNIEXPORT jobjectArray JNICALL Java_org_eclipse_core_internal_filesystem_local_linux_LinuxFileNatives_listDir
-  (JNIEnv *env, jclass, jbyteArray path)
+  (JNIEnv *env, jclass clazz, jbyteArray path)
 {
 	char *name;
 	DIR *dir = NULL;
@@ -385,7 +385,7 @@ cleanup:
 }
 
 JNIEXPORT jobjectArray JNICALL Java_org_eclipse_core_internal_filesystem_local_linux_LinuxFileNatives_listDirAndGetFileInfos
-	(JNIEnv *env, jclass, jbyteArray path)
+	(JNIEnv *env, jclass clazz, jbyteArray path)
 {
 	char *name;
 	DIR *dir = NULL;
