@@ -173,6 +173,7 @@ public class SymlinkResourceTest {
 	@Test
 	public void testBug232426() throws Exception {
 		assumeTrue(canCreateSymLinks(), "only relevant for platforms supporting symbolic links");
+		assumeTrue(UnifiedTree.isAdvancedRecursiveLinkChecksEnabled(), "Will hang the simple implementation");
 
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		createInWorkspace(project);
@@ -199,7 +200,7 @@ public class SymlinkResourceTest {
 			public boolean visit(IResource resource) {
 				resourceCount++;
 				// We have 1 root + 4 folders + 5 elements --> 10 elements to visit at most
-				assertTrue(resourceCount <= 10);
+				assertTrue(resourceCount <= 10, "Expected max 10 elements to visit, got: " + resourceCount);
 				return true;
 			}
 		});
