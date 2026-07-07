@@ -38,6 +38,7 @@ import org.junit.platform.suite.api.Suite;
 	RangeDifferencerThreeWayDiffTest.class,
 	CompareUIPluginTest.class,
 	CompareOpenEfficiencyTest.class,
+	UnifiedDiffOpenTest.class,
 	StructureCreatorTest.class,
 	CompareFileRevisionEditorInputTest.class})
 public class AllCompareTests {
