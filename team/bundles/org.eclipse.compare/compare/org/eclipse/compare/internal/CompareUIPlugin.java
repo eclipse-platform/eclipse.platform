@@ -19,6 +19,8 @@ package org.eclipse.compare.internal;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -260,6 +262,25 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 
 	// content type
 	private static final IContentTypeManager fgContentTypeManager= Platform.getContentTypeManager();
+
+	/**
+	 * Sniffing results for the input currently being examined, one entry per
+	 * element. Used on the UI thread only; input and elements are held weakly.
+	 */
+	private static Reference<Object> fSniffInput= new WeakReference<>(null);
+	private static final List<SniffedElement> fSniffedElements= new ArrayList<>(3);
+
+	private static final class SniffedElement {
+		final Reference<ITypedElement> element;
+		IContentType contentType;
+		boolean contentTypeSniffed;
+		String guessedType;
+		boolean guessedTypeSniffed;
+
+		SniffedElement(ITypedElement element) {
+			this.element= new WeakReference<>(element);
+		}
+	}
 
 	public static final int NO_DIFFERENCE = 10000;
 
@@ -1060,6 +1081,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 
 	public ViewerDescriptor[] findStructureViewerDescriptor(Viewer oldViewer,
 			ICompareInput input, CompareConfiguration configuration) {
+		beginContentTypeSniffing(input);
 		// we don't show the structure of additions or deletions
 		if ((input == null) || input == null || input.getLeft() == null || input.getRight() == null) {
 			return null;
@@ -1245,6 +1267,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	}
 
 	public ViewerDescriptor[] findContentViewerDescriptor(Viewer oldViewer, Object in, CompareConfiguration cc) {
+		beginContentTypeSniffing(in);
 		LinkedHashSet<ViewerDescriptor> result = new LinkedHashSet<>();
 		if (in instanceof IStreamContentAccessor) {
 			String type= ITypedElement.TEXT_TYPE;
@@ -1469,10 +1492,47 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		return tmp.toArray(new String[tmp.size()]);
 	}
 
+	/** Drops the memoized results when a different input is examined. */
+	private static void beginContentTypeSniffing(Object input) {
+		if (Display.getCurrent() == null || input == fSniffInput.get()) {
+			return;
+		}
+		fSniffedElements.clear();
+		fSniffInput= new WeakReference<>(input);
+	}
+
+	/** Results are reused on the UI thread only. */
+	private static boolean isSniffing() {
+		return Display.getCurrent() != null && fSniffInput.get() != null;
+	}
+
+	private static SniffedElement sniffedElement(ITypedElement element) {
+		for (SniffedElement sniffed : fSniffedElements) {
+			if (sniffed.element.get() == element) {
+				return sniffed;
+			}
+		}
+		SniffedElement sniffed= new SniffedElement(element);
+		fSniffedElements.add(sniffed);
+		return sniffed;
+	}
+
 	private static IContentType getContentType(ITypedElement element) {
 		if (element == null) {
 			return null;
 		}
+		if (!isSniffing()) {
+			return computeContentType(element);
+		}
+		SniffedElement sniffed= sniffedElement(element);
+		if (!sniffed.contentTypeSniffed) {
+			sniffed.contentType= computeContentType(element);
+			sniffed.contentTypeSniffed= true;
+		}
+		return sniffed.contentType;
+	}
+
+	private static IContentType computeContentType(ITypedElement element) {
 		String name= element.getName();
 		IContentType ct= null;
 		if (element instanceof IResourceProvider) {
@@ -1603,6 +1663,21 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	 * Returns <code>null</code> if the input isn't an <code>IStreamContentAccessor</code>.
 	 */
 	private static String guessType(ITypedElement input) {
+		if (input == null) {
+			return null;
+		}
+		if (!isSniffing()) {
+			return computeGuessType(input);
+		}
+		SniffedElement sniffed= sniffedElement(input);
+		if (!sniffed.guessedTypeSniffed) {
+			sniffed.guessedType= computeGuessType(input);
+			sniffed.guessedTypeSniffed= true;
+		}
+		return sniffed.guessedType;
+	}
+
+	private static String computeGuessType(ITypedElement input) {
 		if (input instanceof IStreamContentAccessor sca) {
 			InputStream is= null;
 			try {
