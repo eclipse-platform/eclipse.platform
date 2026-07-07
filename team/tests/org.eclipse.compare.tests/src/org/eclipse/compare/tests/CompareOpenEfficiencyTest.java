@@ -54,12 +54,10 @@ import org.junit.jupiter.api.Test;
 public class CompareOpenEfficiencyTest {
 
 	/**
-	 * Upper bound for the {@code getContents()} calls per side during a single
-	 * compare editor open, caused by repeated content-type sniffing and viewer
-	 * descriptor lookups. The exact count is platform dependent (observed: 15 on
-	 * Linux and Windows, 9 on macOS), so only the worst case is asserted.
+	 * Upper bound for the {@code getContents()} calls per side on one compare editor
+	 * open: content-type detection, text heuristic, and the document itself.
 	 */
-	private static final int MAX_GET_CONTENTS_PER_SIDE = 15;
+	private static final int MAX_GET_CONTENTS_PER_SIDE = 3;
 
 	private static final long TIMEOUT_MILLIS = 30_000;
 
