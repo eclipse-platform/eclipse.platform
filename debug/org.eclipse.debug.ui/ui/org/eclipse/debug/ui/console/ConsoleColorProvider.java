@@ -38,9 +38,11 @@ public class ConsoleColorProvider implements IConsoleColorProvider {
 	public void connect(IProcess process, IConsole console) {
 		fProcess = process;
 		fConsole = console;
-		IStreamsProxy streamsProxy = fProcess.getStreamsProxy();
+		// Wire up via the arguments, not the fields: a shared provider instance
+		// may be connected concurrently for different processes (issue #2638).
+		IStreamsProxy streamsProxy = process.getStreamsProxy();
 		if (streamsProxy != null) {
-			fConsole.connect(streamsProxy);
+			console.connect(streamsProxy);
 		}
 	}
 
