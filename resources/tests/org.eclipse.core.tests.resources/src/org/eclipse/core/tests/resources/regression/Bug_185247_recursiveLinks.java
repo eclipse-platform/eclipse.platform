@@ -27,6 +27,7 @@ import org.eclipse.core.internal.resources.ProjectDescription;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
@@ -184,7 +185,76 @@ public class Bug_185247_recursiveLinks {
 		runTest(createSymlinks, useAdvancedLinkCheck);
 	}
 
-	private void runTest(CreateTestProjectStructure createSymlinks, boolean useAdvancedLinkCheck)
+	/**
+	 * Test project structure:
+	 *
+	 * <pre>
+	 * project root
+	 *   |-- directory
+	 *         |
+	 *         |- directory_1/
+	 *         |    |
+	 *         |    |- directory_1_1/
+	 *         |         |
+	 *         |         |- directory_1_1_1/
+	 *         |              |
+	 *         |              |- link_directory_2 -> ../../../directory_2/
+	 *         |
+	 *         |- directory_2/
+	 *              |
+	 *              |- directory_2_2/
+	 *                   |
+	 *                   |- link_directory_1 -> ../../directory_1/
+	 * </pre>
+	 */
+	@ParameterizedTest
+	@ValueSource(booleans = { false, true })
+	public void test6_linkGrandparentTwice(boolean useAdvancedLinkCheck) throws Exception {
+		CreateTestProjectStructure createSymlinks = directory -> {
+
+			// directory_1/directory_1_1/directory_1_1_1/
+			File directory1 = new File(directory, "directory_1");
+			File directory1_1 = new File(directory1, "directory_1_1");
+			File directory1_1_1 = new File(directory1_1, "directory_1_1_1");
+			createDirectory(directory1_1_1);
+
+			// directory_2/directory_2_2/
+			File directory2 = new File(directory, "directory_2");
+			File directory2_2 = new File(directory2, "directory_2_2");
+			createDirectory(directory2_2);
+
+			// link_directory_2 -> ../../../directory_2/ (from directory_1_1_1, goes up to
+			// root directory)
+			createSymlink(directory1_1_1, "link_directory_2", "../../../directory_2/");
+
+			// link_directory_1 -> ../../directory_1/ (from directory_2_2, goes up to
+			// root directory)
+			createSymlink(directory2_2, "link_directory_1", "../../directory_1/");
+		};
+
+		IProject project = runTest(createSymlinks, useAdvancedLinkCheck);
+		final boolean originalValue = UnifiedTree.isAdvancedRecursiveLinkChecksEnabled();
+		UnifiedTree.enableAdvancedRecursiveLinkChecks(useAdvancedLinkCheck);
+		try {
+			// visiting the project should not visit forever
+			project.accept(new IResourceVisitor() {
+				int resourceCount = 0;
+
+				@Override
+				public boolean visit(IResource resource) {
+					resourceCount++;
+					System.out.println(resourceCount + " visited: " + resource.getFullPath());
+					assertTrue(resourceCount <= 13, "Expected max 13 elements to visit, got: " + resourceCount);
+					return true;
+				}
+			});
+		} finally {
+			UnifiedTree.enableAdvancedRecursiveLinkChecks(originalValue);
+		}
+
+	}
+
+	private IProject runTest(CreateTestProjectStructure createSymlinks, boolean useAdvancedLinkCheck)
 			throws MalformedURLException, Exception {
 		final boolean originalValue = UnifiedTree.isAdvancedRecursiveLinkChecksEnabled();
 		try {
@@ -199,7 +269,8 @@ public class Bug_185247_recursiveLinks {
 
 			URI projectRootLocation = URIUtil.toURI((projectRoot));
 			// refreshing the project with recursive symlinks should not hang
-			importProjectAndRefresh(projectName, projectRootLocation);
+			IProject project = importProjectAndRefresh(projectName, projectRootLocation);
+			return project;
 		} finally {
 			UnifiedTree.enableAdvancedRecursiveLinkChecks(originalValue);
 		}
@@ -215,9 +286,10 @@ public class Bug_185247_recursiveLinks {
 		createSymLink(directory, linkName, linkTarget, isDir);
 	}
 
-	private void importProjectAndRefresh(String projectName, URI projectRootLocation) throws Exception {
+	private IProject importProjectAndRefresh(String projectName, URI projectRootLocation) throws Exception {
 		IProject project = importTestProject(projectName, projectRootLocation);
 		project.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
+		return project;
 	}
 
 	private IProject importTestProject(String projectName, URI projectRootLocation) throws Exception {

@@ -520,7 +520,7 @@ public class UnifiedTree {
 			if (disable_advanced_recursive_link_checks) {
 				// Multiple ../ backwards links can go outside the project tree
 				if (linkTarget != null) {
-					if (isRecursiveBackwardsLink(realParentPath, linkTarget)) {
+					if (isRecursiveBackwardsLink(parent, realParentPath, linkTarget)) {
 						return true;
 					}
 					// If link is outside the project tree, consider as non recursive
@@ -561,19 +561,23 @@ public class UnifiedTree {
 	}
 
 	/**
-	 * @param realParentPath    real parent path object obtained as a result
-	 *                          of @code{Path.toRealPath()}
-	 * @param linkTarget        the link target path as a string, may be relative or
-	 *                          absolute
+	 * @param parent         the parent path object (may not be a real path), coming
+	 *                       from {@link #isRecursiveLink(IFileStore, IFileInfo)}
+	 * @param realParentPath real parent path object obtained as a result of
+	 *                       <code>Path.toRealPath()</code>
+	 * @param linkTarget     the link target path as a string, may be relative or
+	 *                       absolute
 	 * @return true if the given target points backwards recursively to the given
 	 *         parent path
 	 * @throws IOException
 	 */
-	private static boolean isRecursiveBackwardsLink(Path realParentPath, String linkTarget)
+	private static boolean isRecursiveBackwardsLink(Path parent, Path realParentPath, String linkTarget)
 			throws IOException {
 		// Cheap test first: literal target points to the literal parent
 		Path normalizedLink = realParentPath.resolve(linkTarget).normalize();
 		if (realParentPath.startsWith(normalizedLink)) {
+			return true;
+		} else if (parent.startsWith(normalizedLink)) {
 			return true;
 		}
 		// Next check costs more time because it does real IO when resolving paths
