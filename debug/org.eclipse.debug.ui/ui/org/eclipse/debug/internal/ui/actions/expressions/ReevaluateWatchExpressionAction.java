@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2013 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -20,6 +20,7 @@ import java.util.Iterator;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IDebugElement;
+import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IWatchExpression;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.ui.DebugUITools;
@@ -88,6 +89,11 @@ public class ReevaluateWatchExpressionAction implements IObjectActionDelegate {
 		if (debugElement == null) {
 			action.setEnabled(false);
 		} else {
+			IDebugTarget debugTarget = debugElement.getDebugTarget();
+			if (debugTarget.isDisconnected() || debugTarget.isTerminated()) {
+				action.setEnabled(false);
+				return;
+			}
 			action.setEnabled(true);
 		}
 	}
