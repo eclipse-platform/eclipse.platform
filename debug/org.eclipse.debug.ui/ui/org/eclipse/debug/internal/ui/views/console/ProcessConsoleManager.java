@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -105,15 +106,16 @@ public class ProcessConsoleManager implements ILaunchListener {
 	}
 
 	/**
-	 * Console document content provider extensions, keyed by extension id
+	 * Console document content provider extensions, keyed by extension id.
+	 * Published once; never mutated after initialization.
 	 */
-	private Map<String, IConfigurationElement> fColorProviders;
+	private volatile Map<String, IConfigurationElement> fColorProviders;
 
 	/**
 	 * The default color provider. Used if no color provider is contributed
 	 * for the given process type.
 	 */
-	private IConsoleColorProvider fDefaultColorProvider;
+	private final AtomicReference<IConsoleColorProvider> fDefaultColorProvider = new AtomicReference<>();
 
 	/**
 	 * Console line trackers; keyed by process type to list of trackers (1:N)
@@ -129,6 +131,7 @@ public class ProcessConsoleManager implements ILaunchListener {
 	 * Lock for fLineTrackers
 	 */
 	private final Object fLineTrackersLock = new Object();
+
 	/**
 	 * @see ILaunchListener#launchRemoved(ILaunch)
 	 */
@@ -259,14 +262,19 @@ public class ProcessConsoleManager implements ILaunchListener {
 	 * @return IConsoleColorProvider
 	 */
 	public IConsoleColorProvider getColorProvider(String type) {
-		if (fColorProviders == null) {
-			fColorProviders = new HashMap<>();
+		// Initialize without a lock to avoid holding one across calls into the
+		// extension registry. A concurrent duplicate build is harmless: each
+		// thread fills its own local map and only the published reference wins.
+		Map<String, IConfigurationElement> colorProviders = fColorProviders;
+		if (colorProviders == null) {
+			colorProviders = new HashMap<>();
 			IExtensionPoint extensionPoint= Platform.getExtensionRegistry().getExtensionPoint(DebugUIPlugin.getUniqueIdentifier(), IDebugUIConstants.EXTENSION_POINT_CONSOLE_COLOR_PROVIDERS);
 			for (IConfigurationElement extension : extensionPoint.getConfigurationElements()) {
-				fColorProviders.put(extension.getAttribute("processType"), extension); //$NON-NLS-1$
+				colorProviders.put(extension.getAttribute("processType"), extension); //$NON-NLS-1$
 			}
+			fColorProviders = colorProviders;
 		}
-		IConfigurationElement extension = fColorProviders.get(type);
+		IConfigurationElement extension = colorProviders.get(type);
 		if (extension != null) {
 			try {
 				Object colorProvider = extension.createExecutableExtension("class"); //$NON-NLS-1$
@@ -281,10 +289,12 @@ public class ProcessConsoleManager implements ILaunchListener {
 			}
 		}
 		//no color provider found of specified type, return default color provider.
-		if (fDefaultColorProvider == null) {
-			fDefaultColorProvider = new ConsoleColorProvider();
+		IConsoleColorProvider defaultProvider = fDefaultColorProvider.get();
+		if (defaultProvider == null) {
+			fDefaultColorProvider.compareAndSet(null, new ConsoleColorProvider());
+			defaultProvider = fDefaultColorProvider.get();
 		}
-		return fDefaultColorProvider;
+		return defaultProvider;
 	}
 
 	/**
