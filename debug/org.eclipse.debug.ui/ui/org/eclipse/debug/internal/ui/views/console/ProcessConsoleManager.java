@@ -19,10 +19,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
@@ -107,28 +109,46 @@ public class ProcessConsoleManager implements ILaunchListener {
 	/**
 	 * Console document content provider extensions, keyed by extension id
 	 */
-	private Map<String, IConfigurationElement> fColorProviders;
-
-	/**
-	 * The default color provider. Used if no color provider is contributed
-	 * for the given process type.
-	 */
-	private IConsoleColorProvider fDefaultColorProvider;
+	private final Map<String, IConfigurationElement> fColorProviders;
 
 	/**
 	 * Console line trackers; keyed by process type to list of trackers (1:N)
 	 */
-	private Map<String, List<IConfigurationElement>> fLineTrackers;
+	private final Map<String, List<IConfigurationElement>> fLineTrackers;
 
 	/**
 	 * Map of processes for a launch to compute removed processes
 	 */
-	private Map<ILaunch, IProcess[]> fProcesses;
+	private final Map<ILaunch, IProcess[]> fProcesses;
 
-	/**
-	 * Lock for fLineTrackers
-	 */
-	private final Object fLineTrackersLock = new Object();
+	public ProcessConsoleManager() {
+		fColorProviders = new HashMap<>();
+		fLineTrackers = new HashMap<>();
+		fProcesses = new ConcurrentHashMap<>();
+		readExtensions();
+	}
+
+	private void readExtensions() {
+		IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
+		IExtensionPoint extensionPoint = extensionRegistry.getExtensionPoint(DebugUIPlugin.getUniqueIdentifier(),
+				IDebugUIConstants.EXTENSION_POINT_CONSOLE_COLOR_PROVIDERS);
+		for (IConfigurationElement extension : extensionPoint.getConfigurationElements()) {
+			String processType = extension.getAttribute("processType"); //$NON-NLS-1$
+			if (processType != null) {
+				fColorProviders.put(processType, extension);
+			}
+		}
+		extensionPoint = extensionRegistry.getExtensionPoint(DebugUIPlugin.getUniqueIdentifier(),
+				IDebugUIConstants.EXTENSION_POINT_CONSOLE_LINE_TRACKERS);
+		for (IConfigurationElement extension : extensionPoint.getConfigurationElements()) {
+			String processType = extension.getAttribute("processType"); //$NON-NLS-1$
+			if (processType != null) {
+				List<IConfigurationElement> list = fLineTrackers.computeIfAbsent(processType, k -> new ArrayList<>());
+				list.add(extension);
+			}
+		}
+	}
+
 	/**
 	 * @see ILaunchListener#launchRemoved(ILaunch)
 	 */
@@ -141,9 +161,7 @@ public class ProcessConsoleManager implements ILaunchListener {
 		for (IProcess process : launch.getProcesses()) {
 			removeProcess(process);
 		}
-		if (fProcesses != null) {
-			fProcesses.remove(launch);
-		}
+		fProcesses.remove(launch);
 	}
 
 	/**
@@ -246,32 +264,24 @@ public class ProcessConsoleManager implements ILaunchListener {
 			removeLaunch(launch);
 		}
 		launchManager.removeLaunchListener(this);
-		if (fProcesses != null) {
-			fProcesses.clear();
-		}
+		fProcesses.clear();
 	}
 
 	/**
-	 * Returns a new console document color provider extension for the given
-	 * process type, or <code>null</code> if none.
+	 * Returns a new console document color provider extension for the given process
+	 * type, or new default {@link ConsoleColorProvider} implementation if no
+	 * providers registered for given type.
 	 *
 	 * @param type corresponds to <code>IProcess.ATTR_PROCESS_TYPE</code>
 	 * @return IConsoleColorProvider
 	 */
 	public IConsoleColorProvider getColorProvider(String type) {
-		if (fColorProviders == null) {
-			fColorProviders = new HashMap<>();
-			IExtensionPoint extensionPoint= Platform.getExtensionRegistry().getExtensionPoint(DebugUIPlugin.getUniqueIdentifier(), IDebugUIConstants.EXTENSION_POINT_CONSOLE_COLOR_PROVIDERS);
-			for (IConfigurationElement extension : extensionPoint.getConfigurationElements()) {
-				fColorProviders.put(extension.getAttribute("processType"), extension); //$NON-NLS-1$
-			}
-		}
 		IConfigurationElement extension = fColorProviders.get(type);
 		if (extension != null) {
 			try {
 				Object colorProvider = extension.createExecutableExtension("class"); //$NON-NLS-1$
-				if (colorProvider instanceof IConsoleColorProvider) {
-					return (IConsoleColorProvider)colorProvider;
+				if (colorProvider instanceof IConsoleColorProvider consoleColorProvider) {
+					return consoleColorProvider;
 				}
 				DebugUIPlugin.logErrorMessage(MessageFormat.format(
 						"Extension {0} must specify an instanceof IConsoleColorProvider for class attribute.", //$NON-NLS-1$
@@ -280,11 +290,8 @@ public class ProcessConsoleManager implements ILaunchListener {
 				DebugUIPlugin.log(e);
 			}
 		}
-		//no color provider found of specified type, return default color provider.
-		if (fDefaultColorProvider == null) {
-			fDefaultColorProvider = new ConsoleColorProvider();
-		}
-		return fDefaultColorProvider;
+		// no color provider found of specified type, return default color provider.
+		return new ConsoleColorProvider();
 	}
 
 	/**
@@ -294,40 +301,22 @@ public class ProcessConsoleManager implements ILaunchListener {
 	 */
 	public IConsoleLineTracker[] getLineTrackers(IProcess process) {
 		String type = process.getAttribute(IProcess.ATTR_PROCESS_TYPE);
-
-		if (fLineTrackers == null) {
-			synchronized (fLineTrackersLock) { // can't use fLineTrackers as lock as it is null here
-				fLineTrackers = new HashMap<>();
-				IExtensionPoint extensionPoint = Platform.getExtensionRegistry().getExtensionPoint(DebugUIPlugin.getUniqueIdentifier(), IDebugUIConstants.EXTENSION_POINT_CONSOLE_LINE_TRACKERS);
-				for (IConfigurationElement extension : extensionPoint.getConfigurationElements()) {
-					String processType = extension.getAttribute("processType"); //$NON-NLS-1$
-					List<IConfigurationElement> list = fLineTrackers.get(processType);
-					if (list == null) {
-						list = new ArrayList<>();
-						fLineTrackers.put(processType, list);
-					}
-					list.add(extension);
-				}
-			}
+		if (type == null) {
+			return new IConsoleLineTracker[0];
 		}
 
 		ArrayList<IConsoleLineTracker> trackers = new ArrayList<>();
-		if (type != null) {
-			List<IConfigurationElement> lineTrackerExtensions;
-			synchronized (fLineTrackers) {// need to synchronize as the update to list might be still happening
-				lineTrackerExtensions = fLineTrackers.get(type);
-			}
-			if(lineTrackerExtensions != null) {
-				for (IConfigurationElement element : lineTrackerExtensions) {
-					try {
-						trackers.add((IConsoleLineTracker) element.createExecutableExtension("class")); //$NON-NLS-1$
-					} catch (CoreException e) {
-						DebugUIPlugin.log(e);
-					}
+		List<IConfigurationElement> lineTrackerExtensions = fLineTrackers.get(type);
+		if (lineTrackerExtensions != null) {
+			for (IConfigurationElement element : lineTrackerExtensions) {
+				try {
+					trackers.add((IConsoleLineTracker) element.createExecutableExtension("class")); //$NON-NLS-1$
+				} catch (CoreException e) {
+					DebugUIPlugin.log(e);
 				}
 			}
 		}
-		return trackers.toArray(new IConsoleLineTracker[0]);
+		return trackers.toArray(IConsoleLineTracker[]::new);
 	}
 
 	/**
@@ -339,9 +328,6 @@ public class ProcessConsoleManager implements ILaunchListener {
 	 */
 	private List<IProcess> getRemovedProcesses(ILaunch launch) {
 		List<IProcess> removed = null;
-		if (fProcesses == null) {
-			fProcesses = new HashMap<>();
-		}
 		IProcess[] old = fProcesses.get(launch);
 		IProcess[] curr = launch.getProcesses();
 		if (old != null) {
@@ -366,7 +352,7 @@ public class ProcessConsoleManager implements ILaunchListener {
 	 * @param object object to search for
 	 * @return whether the given object is contained in the list
 	 */
-	private boolean contains(Object[] list, Object object) {
+	private static boolean contains(Object[] list, Object object) {
 		for (Object object2 : list) {
 			if (object2.equals(object)) {
 				return true;
