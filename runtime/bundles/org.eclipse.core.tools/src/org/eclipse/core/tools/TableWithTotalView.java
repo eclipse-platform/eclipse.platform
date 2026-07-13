@@ -64,7 +64,7 @@ public abstract class TableWithTotalView extends ViewPart implements ISelectionP
 				// column selected - need to sort
 				int column = viewer.getTable().indexOf((TableColumn) event.widget);
 
-				ISorter oldSorter = (ISorter) viewer.getSorter();
+				ISorter oldSorter = (ISorter) viewer.getComparator();
 				boolean threeState = oldSorter.states() == 3;
 				ISelection selection = viewer.getSelection();
 
