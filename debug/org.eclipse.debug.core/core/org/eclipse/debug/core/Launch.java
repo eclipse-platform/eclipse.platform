@@ -494,7 +494,9 @@ public class Launch extends PlatformObject implements ILaunch, IDisconnect, ILau
 					prefs.flush();
 				}
 			} catch (CoreException | BackingStoreException e) {
-				DebugPlugin.log(e);
+				if (launchConfig.exists()) {
+					DebugPlugin.log(e);
+				}
 			}
 		}
 		if (!fSuppressChange) {
