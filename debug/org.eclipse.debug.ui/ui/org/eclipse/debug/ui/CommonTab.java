@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2019 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -232,7 +232,12 @@ public class CommonTab extends AbstractLaunchConfigurationTab {
 		gd.horizontalSpan = 3;
 		fLocalRadioButton.setLayoutData(gd);
 		fSharedRadioButton = createRadioButton(comp, LaunchConfigurationsMessages.CommonTab_S_hared_4);
-		fSharedRadioButton.addSelectionListener(widgetSelectedAdapter(e -> handleSharedRadioButtonSelected()));
+		fSharedRadioButton.addSelectionListener(widgetSelectedAdapter(e -> {
+			handleSharedRadioButtonSelected();
+			if (fSharedRadioButton.getSelection()) {
+				fSharedLocationText.setFocus();
+			}
+		}));
 
 		fSharedLocationText = SWTFactory.createSingleText(comp, 1);
 		fSharedLocationText.getAccessible().addAccessibleListener(
@@ -258,7 +263,11 @@ public class CommonTab extends AbstractLaunchConfigurationTab {
 		fFileOutput = createCheckButton(comp, LaunchConfigurationsMessages.CommonTab_6);
 		fFileOutput.setLayoutData(new GridData(SWT.BEGINNING, SWT.NORMAL, false, false));
 		fFileOutput.addSelectionListener(widgetSelectedAdapter(e -> {
-			enableOuputCaptureWidgets(fFileOutput.getSelection());
+			boolean selection = fFileOutput.getSelection();
+			enableOuputCaptureWidgets(selection);
+			if (selection) {
+				fFileText.setFocus();
+			}
 			updateLaunchConfigurationDialog();
 		}));
 		fFileText = SWTFactory.createSingleText(comp, 4);
@@ -343,6 +352,9 @@ public class CommonTab extends AbstractLaunchConfigurationTab {
 		fInputFileCheckButton.setLayoutData(gd);
 		fInputFileCheckButton.addSelectionListener(widgetSelectedAdapter(e -> {
 			handleInputFileButtonSelected();
+			if (fInputFileCheckButton.getSelection()) {
+				fInputFileLocationText.setFocus();
+			}
 			updateLaunchConfigurationDialog();
 		}));
 
