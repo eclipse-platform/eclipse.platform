@@ -426,6 +426,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 
 	private Control create3WayPreviewer(Composite parent) {
 		CompareConfiguration compareConfiguration = new CompareConfiguration(fOverlayStore);
+		compareConfiguration.setProperty(ICompareUIConstants.PROP_ANCESTOR_VISIBLE, Boolean.TRUE);
 		compareConfiguration.setAncestorLabel(Utilities.getString("ComparePreferencePage.ancestor.label")); //$NON-NLS-1$
 
 		compareConfiguration.setLeftLabel(Utilities.getString("ComparePreferencePage.left.label")); //$NON-NLS-1$
