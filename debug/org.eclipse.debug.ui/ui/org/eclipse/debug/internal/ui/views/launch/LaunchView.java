@@ -38,6 +38,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
+import org.eclipse.debug.core.ILaunchListener;
 import org.eclipse.debug.core.commands.IRestartHandler;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IProcess;
@@ -143,7 +144,8 @@ import org.eclipse.ui.texteditor.IUpdate;
 
 public class LaunchView extends AbstractDebugView
 	implements ISelectionChangedListener, IPerspectiveListener2, IPageListener, IShowInTarget, IShowInSource,
-	IShowInTargetList, IPartListener2, IViewerUpdateListener, IContextManagerListener, IModelChangedListener
+	IShowInTargetList, IPartListener2, IViewerUpdateListener, IContextManagerListener, IModelChangedListener,
+	ILaunchListener
 {
 
 	public static final String ID_CONTEXT_ACTIVITY_BINDINGS = "contextActivityBindings"; //$NON-NLS-1$
@@ -883,6 +885,7 @@ public class LaunchView extends AbstractDebugView
 		site.getPage().addPartListener((IPartListener2) this);
 		site.getWorkbenchWindow().addPageListener(this);
 		site.getWorkbenchWindow().addPerspectiveListener(this);
+		DebugPlugin.getDefault().getLaunchManager().addLaunchListener(this);
 	}
 
 	private void preferenceInit(IViewSite site) {
@@ -1058,6 +1061,7 @@ public class LaunchView extends AbstractDebugView
 
 	@Override
 	public void dispose() {
+		DebugPlugin.getDefault().getLaunchManager().removeLaunchListener(this);
 		fContextService.removeContextManagerListener(this);
 		getSite().getSelectionProvider().removeSelectionChangedListener(this);
 		DebugUITools.getDebugContextManager().getContextService(getSite().getWorkbenchWindow()).removeDebugContextProvider(fContextProviderProxy);
@@ -1396,6 +1400,22 @@ public class LaunchView extends AbstractDebugView
 
 	@Override
 	public void partInputChanged(IWorkbenchPartReference partRef) {
+	}
+
+	@Override
+	public void launchAdded(ILaunch launch) {
+		IWorkbenchSiteProgressService progressService = getSite().getAdapter(IWorkbenchSiteProgressService.class);
+		if (progressService != null) {
+			progressService.warnOfContentChange();
+		}
+	}
+
+	@Override
+	public void launchChanged(ILaunch launch) {
+	}
+
+	@Override
+	public void launchRemoved(ILaunch launch) {
 	}
 
 	@Override
