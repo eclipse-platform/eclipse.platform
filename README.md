@@ -20,6 +20,15 @@ Runtime provides Java interfaces like `IJob`, `ISchedulingRule` and implements s
 ### [eclipse.update](https://github.com/eclipse-platform/eclipse.platform/tree/master/update)
 Update provides Java interfaces like `IPlatformConfiguration`. `IPlatformConfiguration` represents the runtime configuration.
 
+### [eclipse.debug](https://github.com/eclipse-platform/eclipse.platform/tree/master/debug)
+Debug provides Java interfaces such as `ILaunchConfiguration`, `IDebugTarget`, and `IBreakpoint` to implement a language-agnostic framework for launching programs, managing breakpoints, and inspecting runtime state.
+
+### [eclipse.team](https://github.com/eclipse-platform/eclipse.platform/tree/master/team)
+Team provides Java interfaces such as `IResourceDiff` and `IDiff` to implement a framework for version control integration, resource synchronization, and two-way and three-way comparison that support merging of files and resources.
+
+### [eclipse.terminal](https://github.com/eclipse-platform/eclipse.platform/tree/master/terminal)
+Terminal provides Java interfaces such as `ITerminalConnector` and `ITerminalViewControl` to implement an embeddable terminal widget with support for local, SSH, and Telnet connections.
+
 
 ## How to Contribute
 
