@@ -15,13 +15,17 @@
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.internal.utils.Policy;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceStatus;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.jobs.*;
+import org.eclipse.core.runtime.jobs.IJobManager;
+import org.eclipse.core.runtime.jobs.ILock;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.core.runtime.jobs.Job;
 
 /**
  * The work manager governs concurrent access to the workspace tree.  The {@link #lock}
@@ -78,16 +82,16 @@ public class WorkManager implements IManager {
 	/**
 	 * The current depth of running nested operations.
 	 */
-	private int nestedOperations = 0;
+	private final AtomicInteger nestedOperations = new AtomicInteger(0);
 
 	private final NotifyRule notifyRule = new NotifyRule();
 
-	private boolean operationCanceled = false;
+	private volatile boolean operationCanceled;
 
 	/**
 	 * The current depth of prepared operations.
 	 */
-	private int preparedOperations = 0;
+	private final AtomicInteger preparedOperations = new AtomicInteger(0);
 	private final Workspace workspace;
 
 	WorkManager(Workspace workspace) {
@@ -165,7 +169,7 @@ public class WorkManager implements IManager {
 		decrementPreparedOperations();
 		rebalanceNestedOperations();
 		//reset state if this is the end of a top level operation
-		if (preparedOperations == 0) {
+		if (preparedOperations.get() == 0) {
 			hasBuildChanges = false;
 		}
 		//don't let cancelation of this operation affect other operations
@@ -184,7 +188,7 @@ public class WorkManager implements IManager {
 	 * prepareOperation/endOperation block.
 	 */
 	private void decrementPreparedOperations() {
-		preparedOperations--;
+		preparedOperations.decrementAndGet();
 	}
 
 	/**
@@ -218,7 +222,7 @@ public class WorkManager implements IManager {
 	 * prepareOperation/endOperation block.
 	 */
 	synchronized int getPreparedOperationDepth() {
-		return preparedOperations;
+		return preparedOperations.get();
 	}
 
 	/**
@@ -227,7 +231,7 @@ public class WorkManager implements IManager {
 	 * prepareOperation/endOperation block.
 	 */
 	void incrementNestedOperations() {
-		nestedOperations++;
+		nestedOperations.incrementAndGet();
 	}
 
 	/**
@@ -236,7 +240,7 @@ public class WorkManager implements IManager {
 	 * prepareOperation/endOperation block.
 	 */
 	private void incrementPreparedOperations() {
-		preparedOperations++;
+		preparedOperations.incrementAndGet();
 	}
 
 	/**
@@ -246,7 +250,7 @@ public class WorkManager implements IManager {
 	 * outside a prepareOperation/endOperation block.
 	 */
 	boolean isBalanced() {
-		return nestedOperations == preparedOperations;
+		return nestedOperations.get() == preparedOperations.get();
 	}
 
 	/**
@@ -285,7 +289,7 @@ public class WorkManager implements IManager {
 	 * be called from outside a prepareOperation/endOperation block.
 	 */
 	void rebalanceNestedOperations() {
-		nestedOperations = preparedOperations;
+		nestedOperations.set(preparedOperations.get());
 	}
 
 	/**
