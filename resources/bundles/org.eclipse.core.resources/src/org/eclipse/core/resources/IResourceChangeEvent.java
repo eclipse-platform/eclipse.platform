@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2014 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -10,6 +10,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Vogella GmbH - per-builder build events
  *******************************************************************************/
 package org.eclipse.core.resources;
 
@@ -85,6 +86,20 @@ import org.eclipse.core.runtime.IProgressMonitor;
  *    If the event is fired by a project refresh the <code>getResource</code>
  *    method returns the project being refreshed.
  *    The workspace is closed for changes during notification of these events.
+ *   </li>
+ *   <li>
+ *    Before-the-fact report that a single builder is about to run on a single
+ *    project. Event type is <code>PRE_PROJECT_BUILD</code>; <code>getSource</code>
+ *    returns the {@link IProject}, <code>getBuilderName</code> the builder id,
+ *    and <code>getBuildKind</code> the kind of build. Fired once per builder,
+ *    nested inside the enclosing <code>PRE_BUILD</code>/<code>POST_BUILD</code>
+ *    pair, with no resource delta.
+ *   </li>
+ *   <li>
+ *    After-the-fact report that a single builder has run on a single project.
+ *    Event type is <code>POST_PROJECT_BUILD</code>; the accessors behave as for
+ *    <code>PRE_PROJECT_BUILD</code>. Under parallel builds, events for different
+ *    projects may be delivered concurrently on different threads.
  *   </li>
  * </ul>
  * <p>
@@ -180,6 +195,26 @@ public interface IResourceChangeEvent {
 	int PRE_REFRESH = 32;
 
 	/**
+	 * Event type constant (bit mask) indicating that a single builder is about to
+	 * run on a single project. <code>getSource</code> returns the {@link IProject},
+	 * <code>getBuilderName</code> the builder id, and <code>getBuildKind</code> the
+	 * kind of build; no resource delta is provided.
+	 *
+	 * @see #getBuilderName()
+	 * @since 3.25
+	 */
+	int PRE_PROJECT_BUILD = 64;
+
+	/**
+	 * Event type constant (bit mask) indicating that a single builder has run on a
+	 * single project. Accessors behave as for {@link #PRE_PROJECT_BUILD}.
+	 *
+	 * @see #getBuilderName()
+	 * @since 3.25
+	 */
+	int POST_PROJECT_BUILD = 128;
+
+	/**
 	 * Returns all marker deltas of the specified type that are associated
 	 * with resource deltas for this event. If <code>includeSubtypes</code>
 	 * is <code>false</code>, only marker deltas whose type exactly matches
@@ -262,6 +297,19 @@ public interface IResourceChangeEvent {
 	 * @see #PRE_CLOSE
 	 * @see #PRE_DELETE
 	 * @see #PRE_REFRESH
+	 * @see #PRE_PROJECT_BUILD
+	 * @see #POST_PROJECT_BUILD
 	 */
 	int getType();
+
+	/**
+	 * Returns the id of the builder this event relates to (as declared in the
+	 * project's build spec) for {@link #PRE_PROJECT_BUILD} and
+	 * {@link #POST_PROJECT_BUILD} events, or <code>null</code> for other events.
+	 *
+	 * @since 3.25
+	 */
+	default String getBuilderName() {
+		return null;
+	}
 }

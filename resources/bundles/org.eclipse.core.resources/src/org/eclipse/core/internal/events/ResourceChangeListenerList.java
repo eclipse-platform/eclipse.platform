@@ -60,6 +60,8 @@ public class ResourceChangeListenerList {
 	private volatile int count8 = 0;
 	private volatile int count16 = 0;
 	private volatile int count32 = 0;
+	private volatile int count64 = 0;
+	private volatile int count128 = 0;
 
 	/**
 	 * The list of listeners.
@@ -114,6 +116,12 @@ public class ResourceChangeListenerList {
 		if ((mask & 32) != 0) {
 			count32++;
 		}
+		if ((mask & 64) != 0) {
+			count64++;
+		}
+		if ((mask & 128) != 0) {
+			count128++;
+		}
 	}
 
 	/**
@@ -138,6 +146,10 @@ public class ResourceChangeListenerList {
 			return count16 > 0;
 		case 32:
 			return count32 > 0;
+		case 64:
+			return count64 > 0;
+		case 128:
+			return count128 > 0;
 		default:
 			return false;
 		}
@@ -170,6 +182,8 @@ public class ResourceChangeListenerList {
 		count8 = 0;
 		count16 = 0;
 		count32 = 0;
+		count64 = 0;
+		count128 = 0;
 	}
 
 	private void removing(int mask) {
@@ -190,6 +204,12 @@ public class ResourceChangeListenerList {
 		}
 		if ((mask & 32) != 0) {
 			count32--;
+		}
+		if ((mask & 64) != 0) {
+			count64--;
+		}
+		if ((mask & 128) != 0) {
+			count128--;
 		}
 	}
 

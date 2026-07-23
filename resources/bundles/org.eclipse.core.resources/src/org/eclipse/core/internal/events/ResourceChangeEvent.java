@@ -12,6 +12,7 @@
  *     IBM Corporation - initial API and implementation
  *     James Blackburn (Broadcom Corp.) - ongoing development
  *     Lars Vogel <Lars.Vogel@vogella.com> - Bug 473427
+ *     Vogella GmbH - per-builder build events
  *******************************************************************************/
 package org.eclipse.core.internal.events;
 
@@ -32,6 +33,11 @@ public class ResourceChangeEvent extends EventObject implements IResourceChangeE
 	private int trigger = 0;
 	int type;
 
+	/**
+	 * The builder id for PRE_PROJECT_BUILD / POST_PROJECT_BUILD events, or null.
+	 */
+	private String builderName;
+
 	protected ResourceChangeEvent(Object source, int type, IResource resource) {
 		super(source);
 		this.resource = resource;
@@ -43,6 +49,12 @@ public class ResourceChangeEvent extends EventObject implements IResourceChangeE
 		this.delta = delta;
 		this.trigger = buildKind;
 		this.type = type;
+	}
+
+	public ResourceChangeEvent(Object source, int type, int buildKind, IResource resource, String builderName) {
+		this(source, type, resource);
+		this.trigger = buildKind;
+		this.builderName = builderName;
 	}
 
 	/**
@@ -107,6 +119,14 @@ public class ResourceChangeEvent extends EventObject implements IResourceChangeE
 		return type;
 	}
 
+	/**
+	 * @see IResourceChangeEvent#getBuilderName()
+	 */
+	@Override
+	public String getBuilderName() {
+		return builderName;
+	}
+
 	public void setDelta(IResourceDelta value) {
 		delta = value;
 	}
@@ -133,6 +153,12 @@ public class ResourceChangeEvent extends EventObject implements IResourceChangeE
 			case PRE_REFRESH :
 				output.append("PRE_REFRESH"); //$NON-NLS-1$
 				break;
+			case PRE_PROJECT_BUILD :
+				output.append("PRE_PROJECT_BUILD"); //$NON-NLS-1$
+				break;
+			case POST_PROJECT_BUILD :
+				output.append("POST_PROJECT_BUILD"); //$NON-NLS-1$
+				break;
 			default :
 				output.append("?"); //$NON-NLS-1$
 				break;
@@ -154,6 +180,9 @@ public class ResourceChangeEvent extends EventObject implements IResourceChangeE
 				break;
 		}
 		output.append("\nResource: " + (resource == null ? "null" : resource)); //$NON-NLS-1$ //$NON-NLS-2$
+		if (builderName != null) {
+			output.append("\nBuilder: " + builderName); //$NON-NLS-1$
+		}
 		output.append("\nDelta:" + (delta == null ? " null" : ((ResourceDelta) delta).toDeepDebugString())); //$NON-NLS-1$ //$NON-NLS-2$
 		return output.toString();
 	}
