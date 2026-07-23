@@ -30,6 +30,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -260,6 +261,14 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 
 	// content type
 	private static final IContentTypeManager fgContentTypeManager= Platform.getContentTypeManager();
+
+	/**
+	 * Per-open memoization of content-type sniffing, keyed by element identity and
+	 * reset when a different input is examined. Only accessed on the UI thread.
+	 */
+	private static Object fSniffInput;
+	private static final Map<ITypedElement, IContentType> fContentTypeSniffCache= new IdentityHashMap<>();
+	private static final Map<ITypedElement, String> fGuessTypeSniffCache= new IdentityHashMap<>();
 
 	public static final int NO_DIFFERENCE = 10000;
 
@@ -1060,6 +1069,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 
 	public ViewerDescriptor[] findStructureViewerDescriptor(Viewer oldViewer,
 			ICompareInput input, CompareConfiguration configuration) {
+		beginContentTypeSniffing(input);
 		// we don't show the structure of additions or deletions
 		if ((input == null) || input == null || input.getLeft() == null || input.getRight() == null) {
 			return null;
@@ -1245,6 +1255,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	}
 
 	public ViewerDescriptor[] findContentViewerDescriptor(Viewer oldViewer, Object in, CompareConfiguration cc) {
+		beginContentTypeSniffing(in);
 		LinkedHashSet<ViewerDescriptor> result = new LinkedHashSet<>();
 		if (in instanceof IStreamContentAccessor) {
 			String type= ITypedElement.TEXT_TYPE;
@@ -1469,10 +1480,28 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		return tmp.toArray(new String[tmp.size()]);
 	}
 
+	/** Resets the sniffing caches when a different input is examined. */
+	private static void beginContentTypeSniffing(Object input) {
+		if (input != fSniffInput) {
+			fContentTypeSniffCache.clear();
+			fGuessTypeSniffCache.clear();
+			fSniffInput= input;
+		}
+	}
+
 	private static IContentType getContentType(ITypedElement element) {
 		if (element == null) {
 			return null;
 		}
+		if (fContentTypeSniffCache.containsKey(element)) {
+			return fContentTypeSniffCache.get(element);
+		}
+		IContentType ct= computeContentType(element);
+		fContentTypeSniffCache.put(element, ct);
+		return ct;
+	}
+
+	private static IContentType computeContentType(ITypedElement element) {
 		String name= element.getName();
 		IContentType ct= null;
 		if (element instanceof IResourceProvider) {
@@ -1603,6 +1632,18 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	 * Returns <code>null</code> if the input isn't an <code>IStreamContentAccessor</code>.
 	 */
 	private static String guessType(ITypedElement input) {
+		if (input == null) {
+			return null;
+		}
+		if (fGuessTypeSniffCache.containsKey(input)) {
+			return fGuessTypeSniffCache.get(input);
+		}
+		String guessed= computeGuessType(input);
+		fGuessTypeSniffCache.put(input, guessed);
+		return guessed;
+	}
+
+	private static String computeGuessType(ITypedElement input) {
 		if (input instanceof IStreamContentAccessor sca) {
 			InputStream is= null;
 			try {

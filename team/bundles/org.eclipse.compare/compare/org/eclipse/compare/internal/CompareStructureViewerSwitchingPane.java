@@ -52,6 +52,9 @@ public class CompareStructureViewerSwitchingPane extends
 
 	private ViewerDescriptor fSelectedViewerDescriptor;
 
+	/** Descriptors computed by getViewer, reused by setInput to avoid a second lookup. */
+	private ViewerDescriptor[] fViewerDescriptors;
+
 	private ToolBar toolBar;
 
 	public CompareStructureViewerSwitchingPane(Composite parent, int style,
@@ -68,9 +71,10 @@ public class CompareStructureViewerSwitchingPane extends
 	protected Viewer getViewer(Viewer oldViewer, Object input) {
 		if (input instanceof ICompareInput) {
 			if (fSelectedViewerDescriptor != null) {
-				ViewerDescriptor[] array = CompareUIPlugin.getDefault().findStructureViewerDescriptor(
+				fViewerDescriptors = CompareUIPlugin.getDefault().findStructureViewerDescriptor(
 						oldViewer, (ICompareInput)input, getCompareConfiguration());
-				List<ViewerDescriptor> list = array != null ? Arrays.asList(array) : Collections.emptyList();
+				List<ViewerDescriptor> list = fViewerDescriptors != null ? Arrays.asList(fViewerDescriptors)
+						: Collections.emptyList();
 				if (list.contains(fSelectedViewerDescriptor)) {
 					// use selected viewer only when appropriate for the new input
 					fCompareEditorInput
@@ -83,12 +87,15 @@ public class CompareStructureViewerSwitchingPane extends
 				fSelectedViewerDescriptor = null;
 			}
 
+			// The default path computes no descriptors; invalidate so setInput recomputes.
+			fViewerDescriptors = null;
 			fCompareEditorInput.setStructureViewerDescriptor(null);
 			Viewer viewer = fCompareEditorInput.findStructureViewer(oldViewer,
 					(ICompareInput) input, this);
 			fCompareEditorInput.setStructureViewerDescriptor(fSelectedViewerDescriptor);
 			return viewer;
 		}
+		fViewerDescriptors = null;
 		return null;
 	}
 
@@ -141,8 +148,9 @@ public class CompareStructureViewerSwitchingPane extends
 		if (getViewer() == null || !Utilities.okToUse(getViewer().getControl())) {
 			return;
 		}
-		ViewerDescriptor[] vd = null;
-		if (getInput() instanceof ICompareInput) {
+		// Reuse the descriptors computed by getViewer; recompute only if the cache is empty.
+		ViewerDescriptor[] vd = fViewerDescriptors;
+		if (vd == null && getInput() instanceof ICompareInput) {
 			vd = CompareUIPlugin.getDefault().findStructureViewerDescriptor(
 					getViewer(), (ICompareInput) getInput(),
 					getCompareConfiguration());
