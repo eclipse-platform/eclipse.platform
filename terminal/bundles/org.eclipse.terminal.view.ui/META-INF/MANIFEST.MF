@@ -7,19 +7,16 @@ Bundle-Activator: org.eclipse.terminal.view.ui.internal.UIPlugin
 Bundle-Vendor: %providerName
 Require-Bundle: org.eclipse.core.expressions;bundle-version="[3.9.0,4.0.0)",
  org.eclipse.core.runtime;bundle-version="[3.33.0,4)",
- org.eclipse.core.resources;bundle-version="[3.22.0,4.0.0)";resolution:=optional,
  org.eclipse.core.variables;bundle-version="[3.6.0,4.0.0)",
  org.eclipse.debug.ui;bundle-version="[3.18.0,4.0.0)";resolution:=optional,
- org.eclipse.swt;bundle-version="[3.135.0,4.0.0)",
  org.eclipse.ui;bundle-version="[3.208.0,4.0.0)",
  org.eclipse.ui.ide;bundle-version="[3.22.0,4.0.0)";resolution:=optional,
- org.eclipse.ui.editors;bundle-version="[3.20.0,4.0.0)";resolution:=optional,
  org.eclipse.text;bundle-version="[3.14.0,4.0.0)";resolution:=optional,
  org.eclipse.terminal.view.core;bundle-version="[1.0.0,2.0.0)"
 Bundle-RequiredExecutionEnvironment: JavaSE-21
 Bundle-ActivationPolicy: lazy
 Bundle-Localization: plugin
-Export-Package: org.eclipse.terminal.view.ui;version="1.0.100",
+Export-Package: org.eclipse.terminal.view.ui;version="1.0.100";uses:="org.eclipse.jface.preference,org.eclipse.ui",
  org.eclipse.terminal.view.ui.internal;x-internal:=true,
  org.eclipse.terminal.view.ui.internal.actions;x-internal:=true,
  org.eclipse.terminal.view.ui.internal.dialogs;x-internal:=true,
@@ -30,8 +27,22 @@ Export-Package: org.eclipse.terminal.view.ui;version="1.0.100",
  org.eclipse.terminal.view.ui.internal.preferences;x-internal:=true,
  org.eclipse.terminal.view.ui.internal.tabs;x-internal:=true,
  org.eclipse.terminal.view.ui.internal.view;x-internal:=true,
- org.eclipse.terminal.view.ui.launcher;version="1.0.100",
- org.eclipse.terminal.view.ui.streams;version="1.0.100"
+ org.eclipse.terminal.view.ui.launcher;version="1.0.100";
+  uses:="org.eclipse.core.expressions,
+   org.eclipse.core.runtime,
+   org.eclipse.jface.dialogs,
+   org.eclipse.jface.fieldassist,
+   org.eclipse.jface.viewers,
+   org.eclipse.swt.widgets,
+   org.eclipse.terminal.connector,
+   org.eclipse.terminal.view.core,
+   org.eclipse.terminal.view.ui",
+ org.eclipse.terminal.view.ui.streams;version="1.0.100";
+  uses:="org.eclipse.terminal.connector,
+   org.eclipse.terminal.connector.provider,
+   org.eclipse.terminal.view.core,
+   org.eclipse.terminal.view.ui.launcher,
+   org.eclipse.ui.services"
 Automatic-Module-Name: org.eclipse.terminal.view.ui
 Import-Package: org.eclipse.terminal.connector;version="[1.0.0,2.0.0)",
  org.eclipse.terminal.connector.provider;version="[1.0.0,2.0.0)",
