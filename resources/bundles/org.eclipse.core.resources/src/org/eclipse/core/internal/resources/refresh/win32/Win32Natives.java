@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2024 IBM Corporation and others.
+ * Copyright (c) 2002, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -12,13 +12,19 @@
  *     IBM - Initial API and implementation
  *     Mikael Barbero (Eclipse Foundation) - 286681 handle WAIT_ABANDONED_0 return value
  *     Hannes Wellmann - Migrate Win32Natives to use JNA instead of JNI to avoid native binaries and platform-specific fragments
+ *     Contributors - Migrate Win32Natives to use FFM (Foreign Function & Memory) API
  *******************************************************************************/
 
 package org.eclipse.core.internal.resources.refresh.win32;
 
-import com.sun.jna.Native;
-import com.sun.jna.NativeLibrary;
-import com.sun.jna.WString;
+import java.lang.foreign.Arena;
+import java.lang.foreign.FunctionDescriptor;
+import java.lang.foreign.Linker;
+import java.lang.foreign.MemorySegment;
+import java.lang.foreign.SymbolLookup;
+import java.lang.foreign.ValueLayout;
+import java.lang.invoke.MethodHandle;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Hooks for native methods involved with win32 auto-refresh callbacks.
@@ -95,33 +101,111 @@ public class Win32Natives {
 	public static final int FILE_NOTIFY_CHANGE_LAST_WRITE = 0x10; // winnt.h
 
 	private static class WindowsH {
-		static {
-			Native.register(NativeLibrary
-					.getInstance("Kernel32" /* , W32APIOptions.DEFAULT_OPTIONS < type-conversion unnecessary> */)); //$NON-NLS-1$
-		}
-		// Direct-mappings are faster than interface-mappings
-		// and avoiding type-conversions is faster again.
-		// https://github.com/java-native-access/jna/blob/master/www/FunctionalDescription.md#direct-mapping
+		private static final Linker LINKER = Linker.nativeLinker();
+		private static final SymbolLookup KERNEL32;
+		
+		// Method handles for Kernel32 functions
+		private static final MethodHandle FindFirstChangeNotificationW;
+		private static final MethodHandle FindCloseChangeNotification;
+		private static final MethodHandle FindNextChangeNotification;
+		private static final MethodHandle WaitForMultipleObjects;
+		private static final MethodHandle GetLastError;
 
-		// WinNT's type 'HANDLE is expressed as long
-		// (in winnt.h it is defined as 'typedef HANDLE *PHANDLE;')
+		static {
+			try {
+				// Load Kernel32 library
+				KERNEL32 = SymbolLookup.libraryLookup("Kernel32", Arena.global());
+				
+				// WinNT's type 'HANDLE' is expressed as a pointer (long on 64-bit, int on 32-bit)
+				// We use ADDRESS layout which represents a native pointer
+				
+				// HANDLE FindFirstChangeNotificationW(LPCWSTR lpPathName, BOOL bWatchSubtree, DWORD dwNotifyFilter)
+				FindFirstChangeNotificationW = LINKER.downcallHandle(
+					KERNEL32.find("FindFirstChangeNotificationW").orElseThrow(),
+					FunctionDescriptor.of(ValueLayout.ADDRESS, ValueLayout.ADDRESS, ValueLayout.JAVA_INT, ValueLayout.JAVA_INT)
+				);
+				
+				// BOOL FindCloseChangeNotification(HANDLE hChangeHandle)
+				FindCloseChangeNotification = LINKER.downcallHandle(
+					KERNEL32.find("FindCloseChangeNotification").orElseThrow(),
+					FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.ADDRESS)
+				);
+				
+				// BOOL FindNextChangeNotification(HANDLE hChangeHandle)
+				FindNextChangeNotification = LINKER.downcallHandle(
+					KERNEL32.find("FindNextChangeNotification").orElseThrow(),
+					FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.ADDRESS)
+				);
+				
+				// DWORD WaitForMultipleObjects(DWORD nCount, HANDLE *lpHandles, BOOL bWaitAll, DWORD dwMilliseconds)
+				WaitForMultipleObjects = LINKER.downcallHandle(
+					KERNEL32.find("WaitForMultipleObjects").orElseThrow(),
+					FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.JAVA_INT, ValueLayout.ADDRESS, ValueLayout.JAVA_INT, ValueLayout.JAVA_INT)
+				);
+				
+				// DWORD GetLastError(void)
+				GetLastError = LINKER.downcallHandle(
+					KERNEL32.find("GetLastError").orElseThrow(),
+					FunctionDescriptor.of(ValueLayout.JAVA_INT)
+				);
+			} catch (Throwable t) {
+				throw new ExceptionInInitializerError(t);
+			}
+		}
 
 		// Methods from fileapi.h header
+		
+		static MemorySegment FindFirstChangeNotificationW(MemorySegment lpPathName, int bWatchSubtree, int dwNotifyFilter) {
+			try {
+				return (MemorySegment) FindFirstChangeNotificationW.invokeExact(lpPathName, bWatchSubtree, dwNotifyFilter);
+			} catch (Throwable t) {
+				throw new RuntimeException("Failed to call FindFirstChangeNotificationW", t);
+			}
+		}
 
-		static native long FindFirstChangeNotificationW(WString lpPathName, int bWatchSubtree, int dwNotifyFilter);
+		static int FindCloseChangeNotification(MemorySegment hChangeHandle) {
+			try {
+				return (int) FindCloseChangeNotification.invokeExact(hChangeHandle);
+			} catch (Throwable t) {
+				throw new RuntimeException("Failed to call FindCloseChangeNotification", t);
+			}
+		}
 
-		static native int FindCloseChangeNotification(long hChangeHandle);
-
-		static native int FindNextChangeNotification(long hChangeHandle);
+		static int FindNextChangeNotification(MemorySegment hChangeHandle) {
+			try {
+				return (int) FindNextChangeNotification.invokeExact(hChangeHandle);
+			} catch (Throwable t) {
+				throw new RuntimeException("Failed to call FindNextChangeNotification", t);
+			}
+		}
 
 		// Methods from synchapi.h
 
-		static native int WaitForMultipleObjects(int nCount, long[] lpHandles, int bWaitAll, int dwMilliseconds);
+		static int WaitForMultipleObjects(int nCount, MemorySegment lpHandles, int bWaitAll, int dwMilliseconds) {
+			try {
+				return (int) WaitForMultipleObjects.invokeExact(nCount, lpHandles, bWaitAll, dwMilliseconds);
+			} catch (Throwable t) {
+				throw new RuntimeException("Failed to call WaitForMultipleObjects", t);
+			}
+		}
 
-		// direct type conversion methods
+		static int GetLastError() {
+			try {
+				return (int) GetLastError.invokeExact();
+			} catch (Throwable t) {
+				throw new RuntimeException("Failed to call GetLastError", t);
+			}
+		}
 
-		static WString fromString(String value) {
-			return new WString(value);
+		// Helper methods for type conversion
+
+		static MemorySegment toWideString(Arena arena, String value) {
+			// Convert Java String to null-terminated wide string (UTF-16LE)
+			// In Java 21, we need to manually encode and allocate
+			byte[] bytes = (value + "\0").getBytes(StandardCharsets.UTF_16LE);
+			MemorySegment segment = arena.allocate(bytes.length);
+			segment.asByteBuffer().put(bytes);
+			return segment;
 		}
 
 		static int fromBoolean(boolean value) {
@@ -156,9 +240,12 @@ public class Win32Natives {
 	 *  ERROR_INVALID_HANDLE  if the attempt fails.
 	 */
 	public static long FindFirstChangeNotification(String lpPathName, boolean bWatchSubtree, int dwNotifyFilter) {
-		WString wPathName = WindowsH
-				.fromString(!lpPathName.startsWith(LONG_PATH_PREFIX) ? LONG_PATH_PREFIX + lpPathName : lpPathName);
-		return WindowsH.FindFirstChangeNotificationW(wPathName, WindowsH.fromBoolean(bWatchSubtree), dwNotifyFilter);
+		String fullPath = !lpPathName.startsWith(LONG_PATH_PREFIX) ? LONG_PATH_PREFIX + lpPathName : lpPathName;
+		try (Arena arena = Arena.ofConfined()) {
+			MemorySegment wPathName = WindowsH.toWideString(arena, fullPath);
+			MemorySegment handle = WindowsH.FindFirstChangeNotificationW(wPathName, WindowsH.fromBoolean(bWatchSubtree), dwNotifyFilter);
+			return handle.address();
+		}
 	}
 
 	/**
@@ -171,7 +258,8 @@ public class Win32Natives {
 	 * otherwise.
 	 */
 	public static boolean FindCloseChangeNotification(long hChangeHandle) {
-		return WindowsH.toBoolean(WindowsH.FindCloseChangeNotification(hChangeHandle));
+		MemorySegment handle = MemorySegment.ofAddress(hChangeHandle);
+		return WindowsH.toBoolean(WindowsH.FindCloseChangeNotification(handle));
 	}
 
 	/**
@@ -183,7 +271,8 @@ public class Win32Natives {
 	 * @return boolean <code>true</code> if the method succeeds, <code>false</code> otherwise.
 	 */
 	public static boolean FindNextChangeNotification(long hChangeHandle) {
-		return WindowsH.toBoolean(WindowsH.FindNextChangeNotification(hChangeHandle));
+		MemorySegment handle = MemorySegment.ofAddress(hChangeHandle);
+		return WindowsH.toBoolean(WindowsH.FindNextChangeNotification(handle));
 	}
 
 	/**
@@ -207,7 +296,15 @@ public class Win32Natives {
 	 * function fails.
 	 */
 	public static int WaitForMultipleObjects(int nCount, long[] lpHandles, boolean bWaitAll, int dwMilliseconds) {
-		return WindowsH.WaitForMultipleObjects(nCount, lpHandles, WindowsH.fromBoolean(bWaitAll), dwMilliseconds);
+		try (Arena arena = Arena.ofConfined()) {
+			// Allocate memory for array of handles (array of pointers)
+			long arraySize = ValueLayout.ADDRESS.byteSize() * nCount;
+			MemorySegment handlesArray = arena.allocate(arraySize, ValueLayout.ADDRESS.byteAlignment());
+			for (int i = 0; i < nCount; i++) {
+				handlesArray.setAtIndex(ValueLayout.ADDRESS, i, MemorySegment.ofAddress(lpHandles[i]));
+			}
+			return WindowsH.WaitForMultipleObjects(nCount, handlesArray, WindowsH.fromBoolean(bWaitAll), dwMilliseconds);
+		}
 	}
 
 	/**
@@ -215,7 +312,7 @@ public class Win32Natives {
 	 * @return int the last error
 	 */
 	public static int GetLastError() {
-		return Native.getLastError();
+		return WindowsH.GetLastError();
 	}
 
 }
