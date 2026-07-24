@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2020 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -42,7 +42,7 @@ public interface IConsoleHelpContextIds {
 	String CONSOLE_OPEN_CONSOLE_ACTION = PREFIX + "console_open_console_action_context"; //$NON-NLS-1$
 	String CONSOLE_DISPLAY_CONSOLE_ACTION = PREFIX + "console_display_console_action"; //$NON-NLS-1$
 	String CONSOLE_PIN_CONSOLE_ACITON = PREFIX + "console_pin_console_action"; //$NON-NLS-1$
-
+	String CONSOLE_COMPARE_ACTION = PREFIX + "console_compare_action_context"; //$NON-NLS-1$
 	// Views
 	String CONSOLE_VIEW = PREFIX + "console_view_context"; //$NON-NLS-1$
 
