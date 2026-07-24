@@ -40,3 +40,5 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-21
 Automatic-Module-Name: org.eclipse.ui.console
 Require-Capability: eclipse.swt;filter:="(image.format=svg)"
+Import-Package: org.eclipse.compare;resolution:=optional,
+ org.eclipse.compare.structuremergeviewer;resolution:=optional
