@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2018 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -15,6 +15,7 @@ package org.eclipse.debug.internal.ui.launchConfigurations;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -31,7 +32,9 @@ import org.eclipse.debug.internal.ui.IDebugHelpContextIds;
 import org.eclipse.debug.internal.ui.SWTFactory;
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.IDebugUIConstants;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -152,6 +155,60 @@ public class FavoritesDialog extends TrayDialog {
 				getFavorites().add((ILaunchConfiguration) s);
 			}
 			updateStatus();
+		}
+	}
+
+	/**
+	 * Returns whether the favorites have been modified.
+	 *
+	 * @return whether there are unsaved changes
+	 */
+	private boolean isDirty() {
+		return !Arrays.equals(getInitialFavorites(), getArray(getFavorites()));
+	}
+
+	@Override
+	protected void cancelPressed() {
+		if (confirmSaveBeforeClose()) {
+			super.cancelPressed();
+		}
+	}
+
+	@Override
+	protected void handleShellCloseEvent() {
+		if (confirmSaveBeforeClose()) {
+			super.handleShellCloseEvent();
+		}
+	}
+
+	/**
+	 * Prompts to save changes before closing the dialog.
+	 *
+	 * @return whether the dialog should be closed
+	 */
+	private boolean confirmSaveBeforeClose() {
+		if (!isDirty()) {
+			return true;
+		}
+
+		MessageDialog dialog = new MessageDialog(getShell(),
+				LaunchConfigurationsMessages.FavoritesDialogPromptOnCloseTitle, null,
+				LaunchConfigurationsMessages.FavoritesDialogPromptOnClose, MessageDialog.QUESTION,
+				new String[] { LaunchConfigurationsMessages.FavoritesDialogPromptOnCloseSaveButton,
+						IDialogConstants.NO_LABEL, IDialogConstants.CANCEL_LABEL },
+				0);
+
+		int option = dialog.open();
+		switch (option) {
+		case 0: // Save
+			saveFavorites();
+			return true;
+		case 1: // No -(Don't Save)
+			return true;
+		case 2: // Cancel - dialog closed
+			return false;
+		default:
+			return false;
 		}
 	}
 
@@ -398,10 +455,7 @@ public class FavoritesDialog extends TrayDialog {
 					monitor.worked(1);
 				}
 
-				// update added favorites
-				Iterator<ILaunchConfiguration> favs = current.iterator();
-				while (favs.hasNext()) {
-					ILaunchConfiguration configuration = favs.next();
+				for (ILaunchConfiguration configuration : current) {
 					try {
 						List<String> groups = configuration.getAttribute(IDebugUIConstants.ATTR_FAVORITE_GROUPS, (List<String>) null);
 						if (groups == null) {

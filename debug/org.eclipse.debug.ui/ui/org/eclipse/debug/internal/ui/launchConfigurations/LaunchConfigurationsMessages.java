@@ -319,4 +319,10 @@ public class LaunchConfigurationsMessages extends NLS {
 
 	public static String QuickGroupLaunchActionToolTip;
 
+	public static String FavoritesDialogPromptOnClose;
+
+	public static String FavoritesDialogPromptOnCloseTitle;
+
+	public static String FavoritesDialogPromptOnCloseSaveButton;
+
 }
