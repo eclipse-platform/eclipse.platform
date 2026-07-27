@@ -48,7 +48,6 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -68,7 +67,6 @@ import org.eclipse.jface.text.source.IAnnotationModelListenerExtension;
 import org.eclipse.jface.text.source.ISourceViewerExtension5;
 import org.eclipse.jface.text.source.inlined.AbstractInlinedAnnotation;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ControlEvent;
@@ -1295,11 +1293,6 @@ public class UnifiedDiffManager {
 				if (status != null) {
 					if (status.isOK()) {
 						result[0] = true;
-					} else {
-						MessageDialog.openError(Display.getDefault().getActiveShell(),
-								CompareMessages.UnifiedDiff_cannotEditFile_title,
-								NLS.bind(CompareMessages.UnifiedDiff_cannotEditFile_message, fFile.getFullPath(),
-										status.getMessage()));
 					}
 				}
 			}, new NullProgressMonitor());
