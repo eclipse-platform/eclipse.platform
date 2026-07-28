@@ -574,11 +574,11 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		CompareConfiguration configuration = input.getCompareConfiguration();
 		if (configuration != null) {
 			IPreferenceStore ps= configuration.getPreferenceStore();
-			boolean unifiedDiffEnabled = ps.getBoolean(ComparePreferencePage.UNIFIED_DIFF);
-			if (unifiedDiffEnabled && openUnifiedDiffInEditor(input, page, editor, activate)) {
-				return;
-			}
 			if (ps != null) {
+				if (ps.getBoolean(ComparePreferencePage.UNIFIED_DIFF)
+						&& openUnifiedDiffInEditor(input, page, editor, activate)) {
+					return;
+				}
 				configuration.setProperty(
 						CompareConfiguration.USE_OUTLINE_VIEW,
 						Boolean.valueOf(ps.getBoolean(ComparePreferencePage.USE_OUTLINE_VIEW)));
