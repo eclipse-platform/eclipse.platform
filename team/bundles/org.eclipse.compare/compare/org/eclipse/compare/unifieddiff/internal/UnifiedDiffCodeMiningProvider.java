@@ -15,6 +15,12 @@ package org.eclipse.compare.unifieddiff.internal;
 
 import static org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager.error;
 import static org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager.isOverlay;
+import static org.eclipse.compare.unifieddiff.internal.UnifiedDiffText.countLines;
+import static org.eclipse.compare.unifieddiff.internal.UnifiedDiffText.mapOffsetToTabExpanded;
+import static org.eclipse.compare.unifieddiff.internal.UnifiedDiffText.mergeStyleRanges;
+import static org.eclipse.compare.unifieddiff.internal.UnifiedDiffText.removeLeadingNewLines;
+import static org.eclipse.compare.unifieddiff.internal.UnifiedDiffText.removeTrailingNewLines;
+import static org.eclipse.compare.unifieddiff.internal.UnifiedDiffText.replaceTabWithSpaces;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -377,28 +383,6 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			((MouseClickConsumer) getAction()).setCodeMining(this);
 		}
 
-		private static String removeTrailingNewLines(String str) {
-			if (str == null) {
-				return str;
-			}
-			int end = str.length();
-			while (end > 0 && (str.charAt(end - 1) == '\n' || str.charAt(end - 1) == '\r')) {
-				end--;
-			}
-			return end == str.length() ? str : str.substring(0, end);
-		}
-
-		private static String removeLeadingNewLines(String str) {
-			if (str == null) {
-				return str;
-			}
-			int start = 0;
-			while (start < str.length() && (str.charAt(start) == '\n' || str.charAt(start) == '\r')) {
-				start++;
-			}
-			return start == 0 ? str : str.substring(start);
-		}
-
 		private static final class ForegroundInfo {
 
 			final int x;
@@ -470,58 +454,6 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 				setTextEditorActionsActivated(false);
 			}
 
-			private List<StyleRange> mergeStyleRanges(List<StyleRange> backgrounds, List<StyleRange> foregrounds) {
-				if (backgrounds.isEmpty()) {
-					return foregrounds;
-				}
-				if (foregrounds.isEmpty()) {
-					return backgrounds;
-				}
-				List<StyleRange> result = new ArrayList<>();
-				int bgIdx = 0;
-				for (StyleRange fg : foregrounds) {
-					int fgStart = fg.start;
-					int fgEnd = fg.start + fg.length;
-					int pos = fgStart;
-					while (pos < fgEnd && bgIdx < backgrounds.size()) {
-						StyleRange bg = backgrounds.get(bgIdx);
-						int bgStart = bg.start;
-						int bgEnd = bg.start + bg.length;
-						if (bgEnd <= pos) {
-							bgIdx++;
-							continue;
-						}
-						if (bgStart >= fgEnd) {
-							break;
-						}
-						if (bgStart > pos) {
-							result.add(createRange(fg, pos, bgStart - pos, null));
-							pos = bgStart;
-						}
-						int overlapEnd = Math.min(bgEnd, fgEnd);
-						result.add(createRange(fg, pos, overlapEnd - pos, bg.background));
-						pos = overlapEnd;
-						if (bgEnd <= fgEnd) {
-							bgIdx++;
-						}
-					}
-					if (pos < fgEnd) {
-						result.add(createRange(fg, pos, fgEnd - pos, null));
-					}
-				}
-				return result;
-			}
-
-			private StyleRange createRange(StyleRange base, int start, int length, Color background) {
-				StyleRange r = (StyleRange) base.clone();
-				r.start = start;
-				r.length = length;
-				if (background != null) {
-					r.background = background;
-				}
-				return r;
-			}
-
 			private List<StyleRange> createDetailedDiffBackgroundRanges(UnifiedDiffLineHeaderCodeMining miningParam,
 					String txt) {
 				List<StyleRange> ranges = new ArrayList<>();
@@ -564,17 +496,6 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 					}
 				}
 				return ranges;
-			}
-
-			private static int mapOffsetToTabExpanded(String originalStr, int offset, int tabWidth) {
-				int tabCount = 0;
-				int limit = Math.min(offset, originalStr.length());
-				for (int i = 0; i < limit; i++) {
-					if (originalStr.charAt(i) == '\t') {
-						tabCount++;
-					}
-				}
-				return offset + tabCount * (tabWidth - 1);
 			}
 
 			private void setTextEditorActionsActivated(boolean state) {
@@ -729,9 +650,10 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 				}
 				try {
 					var rangeInfo = new RangeInfo(-1, -1, null);
-					String l = diffStr.substring(0, detailedDiffStart);
-					int fromLine = l.split("\n").length; //$NON-NLS-1$
-					int toLine = diffStr.substring(0, detailedDiffStart + detailedDiffLength).split("\n").length; //$NON-NLS-1$
+					// String#split drops trailing empty strings, so it must not be used to
+					// count lines: a prefix ending with \n starts the next line
+					int fromLine = countLines(diffStr.substring(0, detailedDiffStart));
+					int toLine = countLines(diffStr.substring(0, detailedDiffStart + detailedDiffLength));
 					if (fromLine == toLine) {
 						int starty = getYForLine(fromLine - 1, y, gc, textWidget);
 						Point start = getPositionForOffset(textWidget, gc, detailedDiffStart, diffStr, ranges,
@@ -1066,17 +988,5 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			return bg;
 		}
 		return new RGB(128, 128, 128); // a gray
-	}
-
-	private static String replaceTabWithSpaces(String leftStr, int tabWidth) {
-		if (leftStr == null) {
-			return null;
-		}
-		StringBuilder sb = new StringBuilder();
-		for (int s = 0; s < tabWidth; s++) {
-			sb.append(' ');
-		}
-		String result = leftStr.replace("\t", sb); //$NON-NLS-1$
-		return result;
 	}
 }
