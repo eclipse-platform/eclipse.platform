@@ -81,7 +81,7 @@ public final class RangeDifferencer {
 	 * @since 2.0
 	 */
 	public static RangeDifference[] findDifferences(IProgressMonitor pm, IRangeComparator left, IRangeComparator right) {
-		return findDifferences(defaultFactory, null, left, right);
+		return findDifferences(defaultFactory, pm, left, right);
 	}
 
 	/**
