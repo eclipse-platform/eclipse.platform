@@ -222,15 +222,13 @@ public class CompareOpenEfficiencyTest {
 				"prepareInput must run off the UI thread when the input can run as a job"); //$NON-NLS-1$
 	}
 
-	// Documents current behavior: the unified diff path prepares the input on the
-	// UI thread. This assertion flips once the preparation moves to a background job.
 	@Test
-	public void testPrepareInputOnUiThreadUnifiedOnDocumentsCurrentBehavior() throws Exception {
+	public void testPrepareInputOffUiThreadUnifiedOn() throws Exception {
 		store().setValue(ComparePreferencePage.UNIFIED_DIFF, true);
 		CountingCompareEditorInput input = openAndWait(true);
 		assertTrue(input.prepareInputCalls() >= 1, "prepareInput did not run"); //$NON-NLS-1$
-		assertEquals(true, input.ranOnUiThread(),
-				"documents current behavior: unified diff runs prepareInput on the UI thread (Phase 1 item 3)"); //$NON-NLS-1$
+		assertEquals(false, input.ranOnUiThread(),
+				"the unified diff path must prepare the input off the UI thread"); //$NON-NLS-1$
 	}
 
 	private CountingCompareEditorInput openAndWait(boolean runAsJob) throws Exception {

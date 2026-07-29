@@ -79,6 +79,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.content.IContentDescription;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.content.IContentTypeManager;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableContext;
@@ -88,6 +89,7 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osgi.service.debug.DebugOptions;
 import org.eclipse.osgi.service.debug.DebugOptionsListener;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -595,11 +597,21 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		CompareConfiguration configuration = input.getCompareConfiguration();
 		if (configuration != null) {
 			IPreferenceStore ps= configuration.getPreferenceStore();
+			if (ps != null && ps.getBoolean(ComparePreferencePage.UNIFIED_DIFF)) {
+				openUnifiedDiffInEditor(input, page, editor, activate);
+				return;
+			}
+		}
+		openClassicCompareEditor(input, page, editor, activate);
+	}
+
+	/** Opens the classic side by side compare editor on the given input. */
+	private void openClassicCompareEditor(final CompareEditorInput input, final IWorkbenchPage page,
+			final IReusableEditor editor, final boolean activate) {
+		CompareConfiguration configuration = input.getCompareConfiguration();
+		if (configuration != null) {
+			IPreferenceStore ps= configuration.getPreferenceStore();
 			if (ps != null) {
-				if (ps.getBoolean(ComparePreferencePage.UNIFIED_DIFF)
-						&& openUnifiedDiffInEditor(input, page, editor, activate)) {
-					return;
-				}
 				configuration.setProperty(
 						CompareConfiguration.USE_OUTLINE_VIEW,
 						Boolean.valueOf(ps.getBoolean(ComparePreferencePage.USE_OUTLINE_VIEW)));
@@ -614,76 +626,108 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		}
 	}
 
-	private boolean openUnifiedDiffInEditor(final CompareEditorInput input, final IWorkbenchPage page,
-			IReusableEditor editor, boolean activate) {
-		var unifiedDiffInput = canShowInUnifiedDiff(input);
-		if (unifiedDiffInput!=null) {
-			try {
-				IWorkbenchPage wpage = page != null ? page : getActivePage();
-				if (wpage == null) {
-					// no active workbench page; fall back to the classic compare editor path
-					return false;
+	/**
+	 * Prepares the input in a background job and opens the unified diff on the
+	 * result, falling back to the classic compare editor when the input does not
+	 * qualify or no text editor can be opened for it.
+	 */
+	private void openUnifiedDiffInEditor(final CompareEditorInput input, final IWorkbenchPage page,
+			final IReusableEditor editor, final boolean activate) {
+		if (!input.canRunAsJob()) {
+			openUnifiedDiffOrFallback(prepareUnifiedDiff(input, new NullProgressMonitor()), input, page, editor,
+					activate);
+			return;
+		}
+		Job job = new Job(NLS.bind(CompareMessages.UnifiedDiff_preparing, input.getTitle())) {
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				UnifiedDiffSource source;
+				try {
+					source = prepareUnifiedDiff(input, monitor);
+				} catch (OperationCanceledException e) {
+					return Status.CANCEL_STATUS;
 				}
-				if (unifiedDiffInput.left instanceof IFileEditorInput) {
-					IEditorPart leftEditor = wpage.openEditor(unifiedDiffInput.left,
-							getEditorId(unifiedDiffInput.left, unifiedDiffInput.leftElement));
-					if (leftEditor instanceof MultiPageEditorPart mpe) {
-						Object p = mpe.getSelectedPage();
-						if (p instanceof IEditorPart) {
-							leftEditor = (IEditorPart) p;
-						}
-					}
-					if (leftEditor instanceof ITextEditor leftTextEditor) {
-						Action openTwoWayCompare = createOpenTwoWayCompareAction(input, page, editor, activate,
-								leftTextEditor);
-						IStatus status = UnifiedDiff
-								.create(leftTextEditor, getSourceOf(unifiedDiffInput.rightAcessor()),
-										UnifiedDiffMode.REVERT_MODE)
-								.additionalActions(Arrays.asList(openTwoWayCompare))
-								.ignoreWhitespaceContributorFactory(t -> unifiedDiffInput.documentMergerInput != null
-										? unifiedDiffInput.documentMergerInput.createIgnoreWhitespaceContributor(t)
-										: Optional.empty())
-								.tokenComparatorFactory(t -> unifiedDiffInput.documentMergerInput != null
-										? unifiedDiffInput.documentMergerInput.createTokenComparator(t)
-										: null)
-								.ignoreWhiteSpace(Utilities.getBoolean(input.getCompareConfiguration(),
-										CompareConfiguration.IGNORE_WHITESPACE, false))
-								.open();
-						return status.isOK();
-					}
-				} else {
-					IEditorPart rightEditor = wpage.openEditor(unifiedDiffInput.right,
-							getEditorId(unifiedDiffInput.right, unifiedDiffInput.rightElement));
-					if (rightEditor instanceof MultiPageEditorPart mpe) {
-						Object p = mpe.getSelectedPage();
-						if (p instanceof IEditorPart) {
-							rightEditor = (IEditorPart) p;
-						}
-					}
-					if (rightEditor instanceof ITextEditor rightTextEditor) {
-						Action openTwoWayCompare = createOpenTwoWayCompareAction(input, page, editor, activate,
-								rightTextEditor);
-						IStatus status = UnifiedDiff
-								.create(rightTextEditor, getSourceOf(unifiedDiffInput.leftAcessor()),
-										UnifiedDiffMode.OVERLAY_READ_ONLY_MODE)
-								.additionalActions(Arrays.asList(openTwoWayCompare))
-								.ignoreWhitespaceContributorFactory(t -> unifiedDiffInput.documentMergerInput != null
-										? unifiedDiffInput.documentMergerInput.createIgnoreWhitespaceContributor(t)
-										: Optional.empty())
-								.tokenComparatorFactory(t -> unifiedDiffInput.documentMergerInput != null
-										? unifiedDiffInput.documentMergerInput.createTokenComparator(t)
-										: null)
-								.ignoreWhiteSpace(Utilities.getBoolean(input.getCompareConfiguration(),
-										CompareConfiguration.IGNORE_WHITESPACE, false))
-								.open();
-						return status.isOK();
-					}
+				if (monitor.isCanceled()) {
+					return Status.CANCEL_STATUS;
 				}
-			} catch (PartInitException e) {
-				CompareUIPlugin.log(e);
+				Display.getDefault().asyncExec(() -> openUnifiedDiffOrFallback(source, input, page, editor, activate));
+				return Status.OK_STATUS;
 			}
+
+			@Override
+			public boolean belongsTo(Object family) {
+				return family == input || input.belongsTo(family);
+			}
+		};
+		job.setUser(true);
+		job.schedule();
+	}
+
+	private void openUnifiedDiffOrFallback(UnifiedDiffSource source, CompareEditorInput input, IWorkbenchPage page,
+			IReusableEditor editor, boolean activate) {
+		if (source == null || !openUnifiedDiff(source, input, page, editor, activate)) {
+			openClassicCompareEditor(input, page, editor, activate);
+		}
+	}
+
+	private boolean openUnifiedDiff(UnifiedDiffSource source, CompareEditorInput input, IWorkbenchPage page,
+			IReusableEditor editor, boolean activate) {
+		IWorkbenchPage wpage = page != null ? page : getActivePage();
+		if (wpage == null) {
+			// no active workbench page; fall back to the classic compare editor path
+			return false;
+		}
+		try {
+			IDocumentMergerInput mergerInput = findDocumentMergerInput(input, source.compareInput());
+			IEditorPart editorPart = wpage.openEditor(source.editorInput(),
+					getEditorId(source.editorInput(), source.element()));
+			if (editorPart instanceof MultiPageEditorPart mpe && mpe.getSelectedPage() instanceof IEditorPart selected) {
+				editorPart = selected;
+			}
+			if (!(editorPart instanceof ITextEditor textEditor)) {
+				return false;
+			}
+			Action openTwoWayCompare = createOpenTwoWayCompareAction(input, page, editor, activate, textEditor);
+			IStatus status = UnifiedDiff.create(textEditor, source.diffSource(), source.mode())
+					.additionalActions(Arrays.asList(openTwoWayCompare))
+					.ignoreWhitespaceContributorFactory(
+							t -> mergerInput != null ? mergerInput.createIgnoreWhitespaceContributor(t)
+									: Optional.empty())
+					.tokenComparatorFactory(t -> mergerInput != null ? mergerInput.createTokenComparator(t) : null)
+					.ignoreWhiteSpace(Utilities.getBoolean(input.getCompareConfiguration(),
+							CompareConfiguration.IGNORE_WHITESPACE, false))
+					.open();
+			return status.isOK();
+		} catch (PartInitException e) {
+			CompareUIPlugin.log(e);
 		}
 		return false;
+	}
+
+	/**
+	 * Returns the token comparator and whitespace factories of a registered custom
+	 * merge viewer, or <code>null</code> when the platform's own text merge viewer
+	 * applies. Only a custom viewer is instantiated, because the unified diff
+	 * already defaults to what the platform viewer would contribute.
+	 */
+	private IDocumentMergerInput findDocumentMergerInput(CompareEditorInput input, ICompareInput compareInput) {
+		ViewerDescriptor[] descriptors = findContentViewerDescriptor(null, compareInput,
+				input.getCompareConfiguration());
+		if (descriptors == null || descriptors.length == 0
+				|| TextMergeViewerCreator.class.getName().equals(descriptors[0].getViewerClass())) {
+			return null;
+		}
+		Shell invisibleParent = new Shell();
+		try {
+			invisibleParent.setVisible(false);
+			Viewer viewer = input.findContentViewer(new NullViewer(invisibleParent), compareInput, invisibleParent);
+			if (viewer instanceof IAdaptable adaptable) {
+				return adaptable.getAdapter(IDocumentMergerInput.class);
+			}
+		} finally {
+			invisibleParent.dispose();
+		}
+		return null;
 	}
 
 	private Action createOpenTwoWayCompareAction(final CompareEditorInput input, final IWorkbenchPage page,
@@ -746,67 +790,53 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		return id;
 	}
 
-	private static record LeftEditorInputAndRightStreamContentAccessor(IEditorInput left, ITypedElement leftElement,
-			IStreamContentAccessor leftAcessor, IEditorInput right, ITypedElement rightElement,
-			IStreamContentAccessor rightAcessor, IDocumentMergerInput documentMergerInput) {
+	/** The editor to open, plus the side that is overlaid onto it as a diff. */
+	private static record UnifiedDiffSource(ICompareInput compareInput, IEditorInput editorInput,
+			ITypedElement element, UnifiedDiffMode mode, String diffSource) {
 	}
 
-	private LeftEditorInputAndRightStreamContentAccessor canShowInUnifiedDiff(CompareEditorInput input) {
-		IDocumentMergerInput documentMergerInput = null;
+	/**
+	 * Runs the input and collects what the unified diff needs, off the UI thread.
+	 * Returns <code>null</code> if the input cannot be shown as a unified diff.
+	 */
+	private UnifiedDiffSource prepareUnifiedDiff(CompareEditorInput input, IProgressMonitor monitor) {
 		try {
-			input.run(new NullProgressMonitor());
-			Object res = input.getCompareResult();
-			if (!(res instanceof ICompareInput compareInput)) {
-				return null;
-			}
-			// A common ancestor (3-way input) is ignored; the unified diff renders a
-			// plain left-vs-right overlay.
-			ITypedElement left = compareInput.getLeft();
-			if (left == null) {
-				return null;
-			}
-			ISharedDocumentAdapter leftSda = SharedDocumentAdapterWrapper.getAdapter(left);
-			if (leftSda == null) {
-				return null;
-			}
-			IEditorInput leftEditorInput = leftSda.getDocumentKey(left);
-			if (leftEditorInput == null) {
-				return null;
-			}
-			if (!(left instanceof IStreamContentAccessor leftSa)) {
-				return null;
-			}
-			ITypedElement right = compareInput.getRight();
-			if (right == null) {
-				return null;
-			}
-			ISharedDocumentAdapter rightSda = SharedDocumentAdapterWrapper.getAdapter(right);
-			if (rightSda == null) {
-				return null;
-			}
-			IEditorInput rightEditorInput = rightSda.getDocumentKey(right);
-			if (rightEditorInput == null) {
-				return null;
-			}
-			if (!(right instanceof IStreamContentAccessor rightSa)) {
-				return null;
-			}
-			var invisibleParent = new Shell();
-			try {
-				invisibleParent.setVisible(false);
-				var viewer = input.findContentViewer(new NullViewer(invisibleParent), compareInput, invisibleParent);
-				if (viewer instanceof IAdaptable adaptable) {
-					documentMergerInput = adaptable.getAdapter(IDocumentMergerInput.class);
-				}
-			} finally {
-				invisibleParent.dispose();
-			}
-			return new LeftEditorInputAndRightStreamContentAccessor(leftEditorInput, left, leftSa, rightEditorInput,
-					right, rightSa, documentMergerInput);
-		} catch (InvocationTargetException | InterruptedException e) {
+			input.run(monitor);
+		} catch (InterruptedException e) {
+			throw new OperationCanceledException();
+		} catch (InvocationTargetException e) {
 			CompareUIPlugin.log(e);
+			return null;
 		}
-		return null;
+		if (!(input.getCompareResult() instanceof ICompareInput compareInput)) {
+			return null;
+		}
+		// A common ancestor (3-way input) is ignored; the unified diff renders a
+		// plain left-vs-right overlay.
+		ITypedElement left = compareInput.getLeft();
+		ITypedElement right = compareInput.getRight();
+		IEditorInput leftEditorInput = documentKeyOf(left);
+		IEditorInput rightEditorInput = documentKeyOf(right);
+		if (leftEditorInput == null || rightEditorInput == null || !(left instanceof IStreamContentAccessor leftSource)
+				|| !(right instanceof IStreamContentAccessor rightSource)) {
+			return null;
+		}
+		// The side that is not shown in the editor supplies the diff source, so it is
+		// read here instead of on the UI thread.
+		if (leftEditorInput instanceof IFileEditorInput) {
+			return new UnifiedDiffSource(compareInput, leftEditorInput, left, UnifiedDiffMode.REVERT_MODE,
+					getSourceOf(rightSource));
+		}
+		return new UnifiedDiffSource(compareInput, rightEditorInput, right, UnifiedDiffMode.OVERLAY_READ_ONLY_MODE,
+				getSourceOf(leftSource));
+	}
+
+	private static IEditorInput documentKeyOf(ITypedElement element) {
+		if (element == null) {
+			return null;
+		}
+		ISharedDocumentAdapter adapter = SharedDocumentAdapterWrapper.getAdapter(element);
+		return adapter == null ? null : adapter.getDocumentKey(element);
 	}
 
 	private void openEditorInBackground(final CompareEditorInput input, final IWorkbenchPage page,
