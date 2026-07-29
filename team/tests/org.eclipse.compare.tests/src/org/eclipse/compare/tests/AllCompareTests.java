@@ -36,6 +36,7 @@ import org.junit.platform.suite.api.Suite;
 	PatchLinesTest.class,
 	PatchUITest.class,
 	RangeDifferencerThreeWayDiffTest.class,
+	RangeDifferencerMonitorTest.class,
 	CompareUIPluginTest.class,
 	CompareOpenEfficiencyTest.class,
 	UnifiedDiffOpenTest.class,

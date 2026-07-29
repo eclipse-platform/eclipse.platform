@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.compare.unifieddiff.internal;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -38,10 +39,13 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
@@ -93,6 +97,7 @@ import org.eclipse.text.undo.DocumentUndoManagerRegistry;
 import org.eclipse.text.undo.IDocumentUndoListener;
 import org.eclipse.text.undo.IDocumentUndoManager;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 public class UnifiedDiffManager {
@@ -107,6 +112,16 @@ public class UnifiedDiffManager {
 	private static final String TOOLBAR_COMPOSITE_FOR_ONE_DIFF_KEY = "TOOLBAR_COMPOSITE_FOR_ONE_DIFF_KEY"; //$NON-NLS-1$
 	private static final String TOOLBAR_COMPOSITE_FOR_ALL_DIFFS_KEY = "TOOLBAR_COMPOSITE_FOR_ALL_DIFFS_KEY"; //$NON-NLS-1$
 	private static final Map<ITextViewer, List<UnifiedDiff>> diffsByViewer = new HashMap<>();
+
+	/** Status code reported when the user canceled the diff computation. */
+	public static final int CANCELED_BY_USER_CODE = 1;
+
+	/**
+	 * The user canceled the computation. The text editor is already open, so the
+	 * caller must not fall back to the classic compare editor.
+	 */
+	private static final IStatus CANCELED_BY_USER = new Status(IStatus.CANCEL, UnifiedDiffManager.class,
+			CANCELED_BY_USER_CODE, "canceled by the user", null); //$NON-NLS-1$
 
 	public static void put(ITextViewer viewer, List<UnifiedDiff> diffs) {
 		diffsByViewer.put(viewer, diffs);
@@ -132,103 +147,12 @@ public class UnifiedDiffManager {
 		IDocument leftDocument = editor.getDocumentProvider().getDocument(editor.getEditorInput());
 		IDocument rightDocument = new Document(source);
 
-		DocLineComparator left = null, right = null;
-		Optional<IIgnoreWhitespaceContributor> lDocIgnonerWhitespaceContributor = Optional.empty();
-		Optional<IIgnoreWhitespaceContributor> rDocIgnonreWhitespaceContributor = Optional.empty();
-		if (ignoreWhitespaceContributorFactory != null) {
-			lDocIgnonerWhitespaceContributor = ignoreWhitespaceContributorFactory.apply(leftDocument);
-			left = new DocLineComparator(leftDocument, null, ignoreWhiteSpace, null, '?',
-					lDocIgnonerWhitespaceContributor);
-			rDocIgnonreWhitespaceContributor = ignoreWhitespaceContributorFactory.apply(rightDocument);
-			right = new DocLineComparator(rightDocument, null, ignoreWhiteSpace, null, '?',
-					rDocIgnonreWhitespaceContributor);
-		} else {
-			left = new DocLineComparator(leftDocument, null, ignoreWhiteSpace);
-			right = new DocLineComparator(rightDocument, null, ignoreWhiteSpace);
-		}
-		List<UnifiedDiff> unifiedDiffs = new ArrayList<>();
-		RangeDifference[] rangeDiffs = RangeDifferencer.findDifferences(left, right);
-		for (RangeDifference rangeDiff : rangeDiffs) {
-			try {
-				int leftStart = left.getTokenStart(rangeDiff.leftStart());
-				int leftEnd = getTokenEnd(left, rangeDiff.leftStart(), rangeDiff.leftLength());
-				String leftDiffSource = leftDocument.get(leftStart, leftEnd - leftStart);
-
-				int rightStart = right.getTokenStart(rangeDiff.rightStart());
-				int rightEnd = getTokenEnd(right, rangeDiff.rightStart(), rangeDiff.rightLength());
-				String rightDiffSource = rightDocument.get(rightStart, rightEnd - rightStart);
-
-				if (leftDiffSource.length() == 0 && rightDiffSource.length() == 0) {
-					continue;
-				}
-				boolean isWhitespace = false;
-				// Indicate whether all contributors are whitespace
-				if (ignoreWhiteSpace && leftDiffSource.trim().length() == 0 && rightDiffSource.trim().length() == 0) {
-					isWhitespace = true;
-
-					// Check if whitespace can be ignored by the contributor
-					if (leftDiffSource.length() > 0 && !lDocIgnonerWhitespaceContributor.isEmpty()) {
-						boolean isIgnored = lDocIgnonerWhitespaceContributor.get()
-								.isIgnoredWhitespace(rangeDiff.leftStart(), rangeDiff.leftLength());
-						isWhitespace = isIgnored;
-					}
-					if (isWhitespace && rightDiffSource.length() > 0 && !rDocIgnonreWhitespaceContributor.isEmpty()) {
-						boolean isIgnored = rDocIgnonreWhitespaceContributor.get()
-								.isIgnoredWhitespace(rangeDiff.rightStart(), rangeDiff.rightLength());
-						isWhitespace = isIgnored;
-					}
-				}
-				if (isWhitespace) {
-					continue;
-				}
-				int kind = rangeDiff.kind();
-				switch (kind) {
-				case RangeDifference.NOCHANGE:
-					break;
-				case RangeDifference.CHANGE:
-					var diff = new UnifiedDiff(leftDocument, leftStart, leftEnd, leftDiffSource, rightDocument,
-							rightStart, rightEnd, rightDiffSource, unifiedDiffs, mode);
-					unifiedDiffs.add(diff);
-
-					// line based fine granular diff via DocumentMerger#simpleTokenDiff
-					ITokenComparator l = createTokenComparator(leftDiffSource, tokenComparatorFactory);
-					ITokenComparator r = createTokenComparator(rightDiffSource, tokenComparatorFactory);
-					RangeDifference[] detailedDiffs = RangeDifferencer.findRanges((IRangeComparator) null, l, r);
-					for (RangeDifference detailedDiff : detailedDiffs) {
-						if (detailedDiff.kind() == RangeDifference.NOCHANGE) {
-							continue;
-						}
-						int detailedLeftStart = l.getTokenStart(detailedDiff.leftStart());
-						int detailedLeftEnd = getTokenEnd(l, detailedDiff.leftStart(), detailedDiff.leftLength());
-						String detailedLeftDiffSource = leftDiffSource.substring(detailedLeftStart, detailedLeftEnd);
-
-						int detailedRightStart = r.getTokenStart(detailedDiff.rightStart());
-						int detailedRightEnd = getTokenEnd(r, detailedDiff.rightStart(), detailedDiff.rightLength());
-						String detailedDiffRightDiffSource = rightDiffSource.substring(detailedRightStart,
-								detailedRightEnd);
-						if (detailedLeftDiffSource.trim().length() == 0
-								&& detailedDiffRightDiffSource.trim().length() == 0) {
-							continue;
-						}
-						diff.detailedDiffs.add(new UnifiedDiff(leftDocument, detailedLeftStart, detailedLeftEnd,
-								detailedLeftDiffSource, rightDocument, detailedRightStart, detailedRightEnd,
-								detailedDiffRightDiffSource, unifiedDiffs, mode));
-					}
-					break;
-				case RangeDifference.CONFLICT:
-					break;
-				case RangeDifference.LEFT:
-					break;
-				case RangeDifference.ERROR:
-					break;
-				case RangeDifference.ANCESTOR:
-					break;
-				default:
-					break;
-				}
-			} catch (BadLocationException e) {
-				error(e);
-			}
+		List<UnifiedDiff> unifiedDiffs;
+		try {
+			unifiedDiffs = computeDiffsWithProgress(leftDocument, rightDocument, mode, tokenComparatorFactory,
+					ignoreWhitespaceContributorFactory, ignoreWhiteSpace);
+		} catch (OperationCanceledException | InterruptedException e) {
+			return CANCELED_BY_USER;
 		}
 		// call validateEdit before modifying the leftDocument; in read-only overlay
 		// mode the document is not modified, so skip the check to avoid prompting
@@ -428,6 +352,135 @@ public class UnifiedDiffManager {
 		@Override
 		public void modelChanged(IAnnotationModel model) {
 		}
+	}
+
+	/**
+	 * Computes the line differences and their token differences with a cancelable
+	 * progress monitor, so that a large file does not block the editor silently.
+	 */
+	private static List<UnifiedDiff> computeDiffsWithProgress(IDocument leftDocument, IDocument rightDocument,
+			UnifiedDiffMode mode, TokenComparatorFactory tokenComparatorFactory,
+			IgnoreWhitespaceContributorFactory ignoreWhitespaceContributorFactory, boolean ignoreWhiteSpace)
+			throws InterruptedException {
+		List<List<UnifiedDiff>> computed = new ArrayList<>(1);
+		try {
+			PlatformUI.getWorkbench().getProgressService()
+					.busyCursorWhile(monitor -> computed.add(computeDiffs(leftDocument, rightDocument, mode,
+							tokenComparatorFactory, ignoreWhitespaceContributorFactory, ignoreWhiteSpace, monitor)));
+		} catch (InvocationTargetException e) {
+			error(e);
+			return List.of();
+		}
+		return computed.isEmpty() ? List.of() : computed.get(0);
+	}
+
+	private static List<UnifiedDiff> computeDiffs(IDocument leftDocument, IDocument rightDocument, UnifiedDiffMode mode,
+			TokenComparatorFactory tokenComparatorFactory,
+			IgnoreWhitespaceContributorFactory ignoreWhitespaceContributorFactory, boolean ignoreWhiteSpace,
+			IProgressMonitor monitor) {
+		DocLineComparator left = null, right = null;
+		Optional<IIgnoreWhitespaceContributor> lDocIgnonerWhitespaceContributor = Optional.empty();
+		Optional<IIgnoreWhitespaceContributor> rDocIgnonreWhitespaceContributor = Optional.empty();
+		if (ignoreWhitespaceContributorFactory != null) {
+			lDocIgnonerWhitespaceContributor = ignoreWhitespaceContributorFactory.apply(leftDocument);
+			left = new DocLineComparator(leftDocument, null, ignoreWhiteSpace, null, '?',
+					lDocIgnonerWhitespaceContributor);
+			rDocIgnonreWhitespaceContributor = ignoreWhitespaceContributorFactory.apply(rightDocument);
+			right = new DocLineComparator(rightDocument, null, ignoreWhiteSpace, null, '?',
+					rDocIgnonreWhitespaceContributor);
+		} else {
+			left = new DocLineComparator(leftDocument, null, ignoreWhiteSpace);
+			right = new DocLineComparator(rightDocument, null, ignoreWhiteSpace);
+		}
+		List<UnifiedDiff> unifiedDiffs = new ArrayList<>();
+		SubMonitor progress = SubMonitor.convert(monitor, CompareMessages.UnifiedDiff_computing, 100);
+		RangeDifference[] rangeDiffs = RangeDifferencer.findDifferences(progress.split(70), left, right);
+		// The token diff of every change is computed eagerly, so let the user out of it.
+		SubMonitor tokenProgress = progress.split(30).setWorkRemaining(rangeDiffs.length);
+		for (RangeDifference rangeDiff : rangeDiffs) {
+			tokenProgress.split(1);
+			try {
+				int leftStart = left.getTokenStart(rangeDiff.leftStart());
+				int leftEnd = getTokenEnd(left, rangeDiff.leftStart(), rangeDiff.leftLength());
+				String leftDiffSource = leftDocument.get(leftStart, leftEnd - leftStart);
+
+				int rightStart = right.getTokenStart(rangeDiff.rightStart());
+				int rightEnd = getTokenEnd(right, rangeDiff.rightStart(), rangeDiff.rightLength());
+				String rightDiffSource = rightDocument.get(rightStart, rightEnd - rightStart);
+
+				if (leftDiffSource.length() == 0 && rightDiffSource.length() == 0) {
+					continue;
+				}
+				boolean isWhitespace = false;
+				// Indicate whether all contributors are whitespace
+				if (ignoreWhiteSpace && leftDiffSource.trim().length() == 0 && rightDiffSource.trim().length() == 0) {
+					isWhitespace = true;
+
+					// Check if whitespace can be ignored by the contributor
+					if (leftDiffSource.length() > 0 && !lDocIgnonerWhitespaceContributor.isEmpty()) {
+						boolean isIgnored = lDocIgnonerWhitespaceContributor.get()
+								.isIgnoredWhitespace(rangeDiff.leftStart(), rangeDiff.leftLength());
+						isWhitespace = isIgnored;
+					}
+					if (isWhitespace && rightDiffSource.length() > 0 && !rDocIgnonreWhitespaceContributor.isEmpty()) {
+						boolean isIgnored = rDocIgnonreWhitespaceContributor.get()
+								.isIgnoredWhitespace(rangeDiff.rightStart(), rangeDiff.rightLength());
+						isWhitespace = isIgnored;
+					}
+				}
+				if (isWhitespace) {
+					continue;
+				}
+				int kind = rangeDiff.kind();
+				switch (kind) {
+				case RangeDifference.NOCHANGE:
+					break;
+				case RangeDifference.CHANGE:
+					var diff = new UnifiedDiff(leftDocument, leftStart, leftEnd, leftDiffSource, rightDocument,
+							rightStart, rightEnd, rightDiffSource, unifiedDiffs, mode);
+					unifiedDiffs.add(diff);
+
+					// line based fine granular diff via DocumentMerger#simpleTokenDiff
+					ITokenComparator l = createTokenComparator(leftDiffSource, tokenComparatorFactory);
+					ITokenComparator r = createTokenComparator(rightDiffSource, tokenComparatorFactory);
+					RangeDifference[] detailedDiffs = RangeDifferencer.findRanges((IRangeComparator) null, l, r);
+					for (RangeDifference detailedDiff : detailedDiffs) {
+						if (detailedDiff.kind() == RangeDifference.NOCHANGE) {
+							continue;
+						}
+						int detailedLeftStart = l.getTokenStart(detailedDiff.leftStart());
+						int detailedLeftEnd = getTokenEnd(l, detailedDiff.leftStart(), detailedDiff.leftLength());
+						String detailedLeftDiffSource = leftDiffSource.substring(detailedLeftStart, detailedLeftEnd);
+
+						int detailedRightStart = r.getTokenStart(detailedDiff.rightStart());
+						int detailedRightEnd = getTokenEnd(r, detailedDiff.rightStart(), detailedDiff.rightLength());
+						String detailedDiffRightDiffSource = rightDiffSource.substring(detailedRightStart,
+								detailedRightEnd);
+						if (detailedLeftDiffSource.trim().length() == 0
+								&& detailedDiffRightDiffSource.trim().length() == 0) {
+							continue;
+						}
+						diff.detailedDiffs.add(new UnifiedDiff(leftDocument, detailedLeftStart, detailedLeftEnd,
+								detailedLeftDiffSource, rightDocument, detailedRightStart, detailedRightEnd,
+								detailedDiffRightDiffSource, unifiedDiffs, mode));
+					}
+					break;
+				case RangeDifference.CONFLICT:
+					break;
+				case RangeDifference.LEFT:
+					break;
+				case RangeDifference.ERROR:
+					break;
+				case RangeDifference.ANCESTOR:
+					break;
+				default:
+					break;
+				}
+			} catch (BadLocationException e) {
+				error(e);
+			}
+		}
+		return unifiedDiffs;
 	}
 
 	public static void error(Exception e) {

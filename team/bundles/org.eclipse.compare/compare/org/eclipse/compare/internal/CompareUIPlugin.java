@@ -60,6 +60,7 @@ import org.eclipse.compare.structuremergeviewer.StructureDiffViewer;
 import org.eclipse.compare.unifieddiff.UnifiedDiff;
 import org.eclipse.compare.unifieddiff.UnifiedDiffMode;
 import org.eclipse.compare.unifieddiff.internal.HideAllDiffsRunnable;
+import org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Adapters;
@@ -697,7 +698,9 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 					.ignoreWhiteSpace(Utilities.getBoolean(input.getCompareConfiguration(),
 							CompareConfiguration.IGNORE_WHITESPACE, false))
 					.open();
-			return status.isOK();
+			// The user canceled the diff, not the open: leave the text editor alone
+			// instead of falling back to the classic compare editor.
+			return status.isOK() || status.getCode() == UnifiedDiffManager.CANCELED_BY_USER_CODE;
 		} catch (PartInitException e) {
 			CompareUIPlugin.log(e);
 		}
