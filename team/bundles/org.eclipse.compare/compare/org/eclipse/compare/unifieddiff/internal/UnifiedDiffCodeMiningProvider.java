@@ -363,6 +363,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		private Rectangle lastRectangle;
 		private List<Rectangle> backgrounds;
 		private List<ForegroundInfo> foregrounds;
+		private List<StyleRange> styleRanges;
 		private Font cachedFont;
 		private final HashMap<Font, Map<Integer /* style */, Font>> styledFonts = new HashMap<>();
 
@@ -532,9 +533,22 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			return this.diff;
 		}
 
+		/**
+		 * Highlighting depends on the document content only, so unlike the drawing
+		 * caches it survives a font change. Recomputing it means re-partitioning the
+		 * whole file prefix once per mining.
+		 */
+		private List<StyleRange> styleRanges(String label) {
+			if (styleRanges == null) {
+				styleRanges = computeStyleRanges(viewer, diff.leftStart, label);
+			}
+			return styleRanges;
+		}
+
 		@Override
 		public void dispose() {
 			cleanCachedData();
+			styleRanges = null;
 			super.dispose();
 		}
 
@@ -618,7 +632,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			gc.fillRectangle(0, y, textWidget.getBounds().width /* result.x */, result.y);
 
 			String label = getLabel();
-			List<StyleRange> ranges = computeStyleRanges(viewer, diff.leftStart, label);
+			List<StyleRange> ranges = styleRanges(label);
 
 			// draw darker background for detailed diff
 			gc.setBackground(this.detailedDiffColor);
