@@ -502,6 +502,18 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 	private boolean isConfigured = false;
 	private boolean fRedoDiff = false;
 
+	/**
+	 * Combined line count of both sides from which on the first comparison is
+	 * deferred, so that the documents are painted before they are compared. Smaller
+	 * inputs are compared right away: the diff costs next to nothing there, and
+	 * showing the text and jumping to the first change in two steps would only
+	 * flicker.
+	 */
+	private static final int DEFER_DIFF_LINE_COUNT = 2000;
+
+	/** Pending first diff of the current input, scheduled after the documents are set. */
+	private UIJob fInitialDiffJob;
+
 	private double fCurrMagni = 0;
 
 	private int fCurrentHeight;
@@ -2103,6 +2115,11 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 	protected void handleDispose(DisposeEvent event) {
 		OperationHistoryFactory.getOperationHistory().removeOperationHistoryListener(operationHistoryListener);
 
+		if (fInitialDiffJob != null) {
+			fInitialDiffJob.cancel();
+			fInitialDiffJob = null;
+		}
+
 		if (fHandlerService != null) {
 			fHandlerService.dispose();
 		}
@@ -3211,41 +3228,73 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 		setSyncScrolling(fPreferenceStore.getBoolean(ComparePreferencePage.SYNCHRONIZE_SCROLLING));
 
-		update(false);
-
-		if (!fHasErrors && !emptyInput && !fComposite.isDisposed()) {
-			if (isRefreshing()) {
-				fLeftContributor.updateSelection(fLeft, !fSynchronizedScrolling);
-				fRightContributor.updateSelection(fRight, !fSynchronizedScrolling);
-				fAncestorContributor.updateSelection(fAncestor, !fSynchronizedScrolling);
-				if (fSynchronizedScrolling && fSynchronziedScrollPosition != -1) {
-					synchronizedScrollVertical(fSynchronziedScrollPosition);
-				}
-			} else {
-				if (isPatchHunk()) {
-					if (right != null && Adapters.adapt(right, IHunk.class) != null) {
-						fLeft.getSourceViewer().setTopIndex(getHunkStart());
-					} else {
-						fRight.getSourceViewer().setTopIndex(getHunkStart());
+		// A refresh restores the cached selection and scroll position, and that cache is
+		// dropped as soon as the refresh returns, so a refresh is never deferred.
+		if (isRefreshing() || fLeftLineCount + fRightLineCount <= DEFER_DIFF_LINE_COUNT) {
+			update(false);
+			if (!fHasErrors && !emptyInput && !fComposite.isDisposed()) {
+				if (isRefreshing()) {
+					fLeftContributor.updateSelection(fLeft, !fSynchronizedScrolling);
+					fRightContributor.updateSelection(fRight, !fSynchronizedScrolling);
+					fAncestorContributor.updateSelection(fAncestor, !fSynchronizedScrolling);
+					if (fSynchronizedScrolling && fSynchronziedScrollPosition != -1) {
+						synchronizedScrollVertical(fSynchronziedScrollPosition);
 					}
 				} else {
-					Diff selectDiff= null;
-					if (FIX_47640) {
-						if (leftRange != null) {
-							selectDiff= fMerger.findDiff(LEFT_CONTRIBUTOR, leftRange);
-						} else if (rightRange != null) {
-							selectDiff= fMerger.findDiff(RIGHT_CONTRIBUTOR, rightRange);
-						}
-					}
-					if (selectDiff != null) {
-						setCurrentDiff(selectDiff, true);
-					} else {
-						selectFirstDiff(true);
-					}
+					revealInitialDiff(right, leftRange, rightRange);
 				}
 			}
+			return;
 		}
 
+		// The documents are set, so let them be painted before comparing them. The diff
+		// and everything derived from it follows in a separate UI event.
+		final boolean isEmptyInput = emptyInput;
+		final Object rightElement = right;
+		final Position leftSelectRange = leftRange;
+		final Position rightSelectRange = rightRange;
+		if (fInitialDiffJob != null) {
+			fInitialDiffJob.cancel();
+		}
+		fInitialDiffJob = new UIJob(CompareMessages.DocumentMerger_0) {
+			@Override
+			public IStatus runInUIThread(IProgressMonitor monitor) {
+				fInitialDiffJob = null;
+				if (fComposite == null || fComposite.isDisposed()) {
+					return Status.OK_STATUS;
+				}
+				update(false);
+				if (!fHasErrors && !isEmptyInput && !fComposite.isDisposed()) {
+					revealInitialDiff(rightElement, leftSelectRange, rightSelectRange);
+				}
+				return Status.OK_STATUS;
+			}
+		};
+		fInitialDiffJob.schedule();
+	}
+
+	private void revealInitialDiff(Object right, Position leftRange, Position rightRange) {
+		if (isPatchHunk()) {
+			if (right != null && Adapters.adapt(right, IHunk.class) != null) {
+				fLeft.getSourceViewer().setTopIndex(getHunkStart());
+			} else {
+				fRight.getSourceViewer().setTopIndex(getHunkStart());
+			}
+			return;
+		}
+		Diff selectDiff= null;
+		if (FIX_47640) {
+			if (leftRange != null) {
+				selectDiff= fMerger.findDiff(LEFT_CONTRIBUTOR, leftRange);
+			} else if (rightRange != null) {
+				selectDiff= fMerger.findDiff(RIGHT_CONTRIBUTOR, rightRange);
+			}
+		}
+		if (selectDiff != null) {
+			setCurrentDiff(selectDiff, true);
+		} else {
+			selectFirstDiff(true);
+		}
 	}
 
 	private void configureSourceViewer(SourceViewer sourceViewer, boolean editable, ContributorInfo contributor) {
