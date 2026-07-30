@@ -96,6 +96,8 @@ public class LaunchConfigurationView extends AbstractDebugView implements ILaunc
 	 */
 	private FilterLaunchConfigurationAction fFilterAction;
 
+	private SortLaunchConfigurationAction fSort;
+
 	/**
 	 * This label is used to notify users that items (possibly) have been filtered from the
 	 * launch configuration view
@@ -225,6 +227,9 @@ public class LaunchConfigurationView extends AbstractDebugView implements ILaunc
 		fFilterAction = new FilterLaunchConfigurationAction();
 		setAction(FilterLaunchConfigurationAction.ID_FILTER_ACTION, fFilterAction);
 
+		fSort = new SortLaunchConfigurationAction(fTree);
+		setAction(SortLaunchConfigurationAction.ID_SORT_ACTION, fSort);
+
 		fLinkPrototypeAction = new LinkPrototypeAction(getViewer(), getLaunchGroup().getMode());
 		setAction(LinkPrototypeAction.ID_LINK_PROTOTYPE_ACTION, fLinkPrototypeAction);
 
@@ -291,6 +296,7 @@ public class LaunchConfigurationView extends AbstractDebugView implements ILaunc
 		fExportAction.dispose();
 		fImportAction.dispose();
 		fFilterAction = null;
+		fSort = null;
 		fCollapseAllAction = null;
 		fLinkPrototypeAction.dispose();
 		fUnlinkPrototypeAction.dispose();
