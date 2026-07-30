@@ -69,6 +69,7 @@ public class DebugUIPreferenceInitializer extends AbstractPreferenceInitializer 
 		prefs.setDefault(IInternalDebugUIConstants.PREF_USE_CONTEXTUAL_LAUNCH, true);
 		prefs.setDefault(IInternalDebugUIConstants.PREF_LAUNCH_PARENT_PROJECT, false);
 		prefs.setDefault(IInternalDebugUIConstants.PREF_LAUNCH_LAST_IF_NOT_LAUNCHABLE, true);
+		prefs.setDefault(IInternalDebugUIConstants.PREF_LAUNCHCONFIG_SORT_ON_RECENT, false);
 
 		prefs.setDefault(IInternalDebugUIConstants.PREF_TERMINATE_AND_RELAUNCH_LAUNCH_ACTION, false);
 		prefs.setDefault(IInternalDebugUIConstants.PREF_BREAKPOINT_SORTING_ORDER,

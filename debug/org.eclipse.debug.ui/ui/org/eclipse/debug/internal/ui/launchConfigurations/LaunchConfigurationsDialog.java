@@ -510,6 +510,7 @@ public class LaunchConfigurationsDialog extends TitleAreaDialog implements ILaun
 		tmanager.add(new Separator());
 		tmanager.add(getCollapseAllAction());
 		tmanager.add(getFilterAction());
+		tmanager.add(getSortAction());
 		tmanager.update(true);
 		DebugUIPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(this);
 	}
@@ -721,6 +722,10 @@ public class LaunchConfigurationsDialog extends TitleAreaDialog implements ILaun
 	 */
 	protected IAction getFilterAction() {
 		return fLaunchConfigurationView.getAction(FilterLaunchConfigurationAction.ID_FILTER_ACTION);
+	}
+
+	protected IAction getSortAction() {
+		return fLaunchConfigurationView.getAction(SortLaunchConfigurationAction.ID_SORT_ACTION);
 	}
 
 	/**

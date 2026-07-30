@@ -21,6 +21,7 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.internal.core.IInternalDebugCoreConstants;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.IDebugHelpContextIds;
+import org.eclipse.debug.internal.ui.IInternalDebugUIConstants;
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.ILaunchGroup;
 import org.eclipse.help.HelpSystem;
@@ -76,8 +77,14 @@ public final class LaunchConfigurationFilteredTree extends FilteredTree {
 	@Override
 	protected TreeViewer doCreateTreeViewer(Composite cparent, int style) {
 		treeViewer = new LaunchConfigurationViewer(cparent, style);
-		treeViewer.setLabelProvider(new DecoratingLabelProvider(DebugUITools.newDebugModelPresentation(), PlatformUI.getWorkbench().getDecoratorManager().getLabelDecorator()));
-		treeViewer.setComparator(new WorkbenchViewerComparator());
+
+		treeViewer.setLabelProvider(new DecoratingLabelProvider(DebugUITools.newDebugModelPresentation(),
+				PlatformUI.getWorkbench().getDecoratorManager().getLabelDecorator()));
+		boolean sortByRecent = DebugUIPlugin.getDefault().getPreferenceStore()
+				.getBoolean(IInternalDebugUIConstants.PREF_LAUNCHCONFIG_SORT_ON_RECENT);
+
+		treeViewer.setComparator(sortByRecent ? new LaunchConfigurationComparator(fLaunchGroup.getIdentifier())
+				: new WorkbenchViewerComparator());
 		treeViewer.setContentProvider(new LaunchConfigurationTreeContentProvider(fLaunchGroup.getMode(), cparent.getShell()));
 		treeViewer.addFilter(new LaunchGroupFilter(fLaunchGroup));
 		treeViewer.setUseHashlookup(true);
@@ -223,6 +230,10 @@ public final class LaunchConfigurationFilteredTree extends FilteredTree {
 		super.updateToolbar(visible);
 		// update filter count
 		getLaunchConfigurationViewer().filterChanged();
+	}
+
+	public ILaunchGroup getLaunchGroup() {
+		return fLaunchGroup;
 	}
 
 }

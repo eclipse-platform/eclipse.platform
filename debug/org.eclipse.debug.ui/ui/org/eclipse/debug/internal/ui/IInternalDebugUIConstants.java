@@ -435,4 +435,10 @@ public interface IInternalDebugUIConstants {
 	 */
 	String EXPRESSION_PASTE_AS_MULTI = "org.eclipse.debug.ui.expression.paste.multi"; //$NON-NLS-1$
 
+	/**
+	 * String indicating sorting order of launch configurations in
+	 * LaunchConfigurations View
+	 */
+	String PREF_LAUNCHCONFIG_SORT_ON_RECENT = IDebugUIConstants.PLUGIN_ID + ".PREF_LAUNCHCONFIG_SORT_ON_RECENT"; //$NON-NLS-1$
+
 }
