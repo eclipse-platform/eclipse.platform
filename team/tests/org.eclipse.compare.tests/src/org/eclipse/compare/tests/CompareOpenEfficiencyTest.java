@@ -19,9 +19,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
+import java.io.FilterInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BooleanSupplier;
 
 import org.eclipse.compare.CompareConfiguration;
@@ -55,31 +59,68 @@ public class CompareOpenEfficiencyTest {
 
 	/**
 	 * Upper bound for the {@code getContents()} calls per side on one compare editor
-	 * open: content-type detection, text heuristic, and the document itself.
+	 * open: the background job reads the contents once and everything else is served
+	 * from it.
 	 */
-	private static final int MAX_GET_CONTENTS_PER_SIDE = 3;
+	private static final int MAX_GET_CONTENTS_PER_SIDE = 1;
+
+	private static final int BINARY_SIZE = 4 * 1024 * 1024;
+
+	/**
+	 * Only the probe that tells binary from text may be read per side, plus a little
+	 * slack for the content type describers.
+	 */
+	private static final long MAX_BINARY_BYTES_PER_SIDE = 64 * 1024;
 
 	private static final long TIMEOUT_MILLIS = 30_000;
 
 	private boolean originalUnifiedDiff;
 
-	/** A text element that counts every {@link #getContents()} call. */
+	/**
+	 * An element that counts every {@link #getContents()} call and every byte
+	 * consumed from the streams it hands out.
+	 */
 	private static final class CountingElement
 			implements ITypedElement, IEncodedStreamContentAccessor {
 
 		private final String name;
+		private final String type;
 		private final byte[] bytes;
 		private final AtomicInteger contentReads = new AtomicInteger();
+		private final AtomicLong bytesRead = new AtomicLong();
 
 		CountingElement(String name, String content) {
+			this(name, TEXT_TYPE, content.getBytes(StandardCharsets.UTF_8));
+		}
+
+		CountingElement(String name, String type, byte[] content) {
 			this.name = name;
-			this.bytes = content.getBytes(StandardCharsets.UTF_8);
+			this.type = type;
+			this.bytes = content;
 		}
 
 		@Override
 		public InputStream getContents() {
 			contentReads.incrementAndGet();
-			return new ByteArrayInputStream(bytes);
+			return new FilterInputStream(new ByteArrayInputStream(bytes)) {
+				@Override
+				public int read() throws IOException {
+					int b = super.read();
+					if (b != -1) {
+						bytesRead.incrementAndGet();
+					}
+					return b;
+				}
+
+				@Override
+				public int read(byte[] b, int off, int len) throws IOException {
+					int n = super.read(b, off, len);
+					if (n > 0) {
+						bytesRead.addAndGet(n);
+					}
+					return n;
+				}
+			};
 		}
 
 		@Override
@@ -94,12 +135,16 @@ public class CompareOpenEfficiencyTest {
 
 		@Override
 		public String getType() {
-			return TEXT_TYPE;
+			return type;
 		}
 
 		@Override
 		public Image getImage() {
 			return null;
+		}
+
+		long bytes() {
+			return bytesRead.get();
 		}
 
 		int reads() {
@@ -186,6 +231,36 @@ public class CompareOpenEfficiencyTest {
 
 		assertReadsWithinBound("left", leftElement.reads()); //$NON-NLS-1$
 		assertReadsWithinBound("right", rightElement.reads()); //$NON-NLS-1$
+	}
+
+	/**
+	 * Binary contents must not be read ahead: the binary viewer stops at the first
+	 * difference, so buffering the whole thing would be both slower and a lot of
+	 * memory held for nothing.
+	 */
+	@Test
+	public void testBinaryContentsAreNotReadAhead() throws Exception {
+		store().setValue(ComparePreferencePage.UNIFIED_DIFF, false);
+		byte[] leftBytes = new byte[BINARY_SIZE];
+		Arrays.fill(leftBytes, (byte) 1);
+		byte[] rightBytes = leftBytes.clone();
+		rightBytes[0] = 2; // differs immediately, so the viewer reads one byte
+		CountingElement leftElement = new CountingElement("left.bin", ITypedElement.UNKNOWN_TYPE, leftBytes); //$NON-NLS-1$
+		CountingElement rightElement = new CountingElement("right.bin", ITypedElement.UNKNOWN_TYPE, rightBytes); //$NON-NLS-1$
+		CountingCompareEditorInput input = new CountingCompareEditorInput(true, leftElement, rightElement);
+
+		CompareUI.openCompareEditor(input);
+		pumpUntil(() -> input.getCompareResult() != null && contentPane(input) != null,
+				"compare editor did not finish opening"); //$NON-NLS-1$
+
+		assertBytesWithinBound("left", leftElement.bytes()); //$NON-NLS-1$
+		assertBytesWithinBound("right", rightElement.bytes()); //$NON-NLS-1$
+	}
+
+	private static void assertBytesWithinBound(String side, long bytes) {
+		assertTrue(bytes <= MAX_BINARY_BYTES_PER_SIDE,
+				"read " + bytes + " bytes from the " + side + " side of a " + BINARY_SIZE //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+						+ " byte binary, exceeding the bound of " + MAX_BINARY_BYTES_PER_SIDE); //$NON-NLS-1$
 	}
 
 	private static void assertReadsWithinBound(String side, int reads) {

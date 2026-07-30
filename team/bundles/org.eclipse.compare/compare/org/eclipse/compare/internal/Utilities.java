@@ -15,6 +15,7 @@
 package org.eclipse.compare.internal;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -582,14 +583,28 @@ public class Utilities {
 
 	// encoding
 
+	/** Opens the contents to decode, once per decoding attempt. */
+	private interface ContentsSupplier {
+		InputStream get() throws CoreException;
+	}
+
+	/** Decodes contents that have already been read. */
+	public static String readString(byte[] contents, String encoding) throws CoreException {
+		return decode(() -> new ByteArrayInputStream(contents), encoding);
+	}
+
 	public static String readString(IStreamContentAccessor sca, String encoding) throws CoreException {
+		return decode(sca::getContents, encoding);
+	}
+
+	private static String decode(ContentsSupplier contents, String encoding) throws CoreException {
 		String s = null;
 		try {
 			try {
-				s= Utilities.readString(sca.getContents(), encoding);
+				s= Utilities.readString(contents.get(), encoding);
 			} catch (UnsupportedEncodingException e) {
 				if (!encoding.equals(ResourcesPlugin.getEncoding())) {
-					s = Utilities.readString(sca.getContents(), ResourcesPlugin.getEncoding());
+					s = Utilities.readString(contents.get(), ResourcesPlugin.getEncoding());
 				}
 			}
 		} catch (IOException e) {
