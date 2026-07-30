@@ -139,7 +139,7 @@ public class NotificationManager implements IManager, ILifecycleListener {
 
 	public void addListener(IResourceChangeListener listener, int eventMask) {
 		listeners.add(listener, eventMask);
-		if (ResourceStats.TRACE_LISTENERS) {
+		if (ResourceStats.isTracingListeners()) {
 			ResourceStats.listenerAdded(listener);
 		}
 	}
@@ -325,9 +325,7 @@ public class NotificationManager implements IManager, ILifecycleListener {
 			for (ListenerEntry resourceListener : resourceListeners) {
 				if ((type & resourceListener.eventMask) != 0) {
 					final IResourceChangeListener listener = resourceListener.listener;
-					if (ResourceStats.TRACE_LISTENERS) {
-						ResourceStats.startNotify(listener);
-					}
+					ResourceStats.Run run = ResourceStats.isTracingListeners() ? ResourceStats.startNotify(listener) : null;
 					SafeRunner.run(new ISafeRunnable() {
 						@Override
 						public void handleException(Throwable e) {
@@ -342,9 +340,7 @@ public class NotificationManager implements IManager, ILifecycleListener {
 							listener.resourceChanged(event);
 						}
 					});
-					if (ResourceStats.TRACE_LISTENERS) {
-						ResourceStats.endNotify();
-					}
+					ResourceStats.end(run);
 				}
 			}
 		} finally {
@@ -356,7 +352,7 @@ public class NotificationManager implements IManager, ILifecycleListener {
 
 	public void removeListener(IResourceChangeListener listener) {
 		listeners.remove(listener);
-		if (ResourceStats.TRACE_LISTENERS) {
+		if (ResourceStats.isTracingListeners()) {
 			ResourceStats.listenerRemoved(listener);
 		}
 	}
