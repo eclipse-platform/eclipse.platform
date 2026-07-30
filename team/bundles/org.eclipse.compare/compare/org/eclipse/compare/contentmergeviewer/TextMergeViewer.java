@@ -893,7 +893,11 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 				try {
 					String encoding = internalGetEncoding();
-					s = Utilities.readString(sca, encoding);
+					// The background job may have read the contents already; decoding is
+					// all that is left then.
+					byte[] prefetched = CompareUIPlugin.takePrefetchedContents(fElement);
+					s = prefetched != null ? Utilities.readString(prefetched, encoding)
+							: Utilities.readString(sca, encoding);
 				} catch (CoreException ex) {
 					this.fViewer.setError(fLeg, ex.getMessage());
 				}

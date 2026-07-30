@@ -17,6 +17,8 @@
 package org.eclipse.compare.internal;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.Reference;
@@ -282,6 +284,30 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 
 		SniffedElement(ITypedElement element) {
 			this.element= new WeakReference<>(element);
+		}
+	}
+
+	/**
+	 * Contents read ahead while preparing an input. They are written in the
+	 * background job and read on the UI thread. An entry is dropped as soon as it
+	 * became a document, and the element is held weakly so that entries nobody asked
+	 * for go away with the editor that prepared them.
+	 */
+	private static final List<PrefetchedElement> fPrefetchedContents= new ArrayList<>(3);
+
+	/** Contents larger than this are read by whoever needs them instead. */
+	private static final int PREFETCH_LIMIT= 8 * 1024 * 1024;
+
+	/** Enough for the content type describers and the text heuristic. */
+	private static final int PREFETCH_PROBE_SIZE= 8 * 1024;
+
+	private static final class PrefetchedElement {
+		final Reference<ITypedElement> element;
+		final byte[] contents;
+
+		PrefetchedElement(ITypedElement element, byte[] contents) {
+			this.element= new WeakReference<>(element);
+			this.contents= contents;
 		}
 	}
 
@@ -904,6 +930,9 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 			if (input.getCompareResult() == null) {
 				return new Status(IStatus.ERROR, CompareUIPlugin.PLUGIN_ID, NO_DIFFERENCE, Utilities.getString("CompareUIPlugin.noDifferences"), null); //$NON-NLS-1$
 			}
+			// Still off the UI thread here, so this is the place to read the contents
+			// that the viewer would otherwise read while the user waits.
+			prefetchContents(input.getCompareResult(), monitor);
 			return Status.OK_STATUS;
 		} catch (InterruptedException e) {
 			throw new OperationCanceledException();
@@ -1569,6 +1598,134 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		return sniffed.contentType;
 	}
 
+	/**
+	 * Reads the contents of the given input's elements once, so that the sniffing
+	 * and the merge viewer do not have to open the streams again on the UI thread.
+	 * Elements that come with a shared document are left alone: those are served
+	 * from the file buffer and never read a stream.
+	 */
+	public static void prefetchContents(Object compareResult, IProgressMonitor monitor) {
+		if (!(compareResult instanceof ICompareInput input)) {
+			return;
+		}
+		prefetchContents(input.getAncestor(), monitor);
+		prefetchContents(input.getLeft(), monitor);
+		prefetchContents(input.getRight(), monitor);
+	}
+
+	private static void prefetchContents(ITypedElement element, IProgressMonitor monitor) {
+		if (!(element instanceof IStreamContentAccessor accessor) || hasSharedDocument(element)) {
+			return;
+		}
+		try (InputStream stream= accessor.getContents()) {
+			if (stream == null) {
+				return;
+			}
+			// Binary contents are neither shown by the text merge viewer nor read in
+			// full by the binary one, so nothing would use them.
+			byte[] probe= read(stream, PREFETCH_PROBE_SIZE, monitor);
+			if (probe == null || !looksLikeText(probe)) {
+				return;
+			}
+			byte[] rest= read(stream, PREFETCH_LIMIT - probe.length + 1, monitor);
+			if (rest == null || probe.length + rest.length > PREFETCH_LIMIT) {
+				return; // too large to be worth holding on to
+			}
+			byte[] contents= new byte[probe.length + rest.length];
+			System.arraycopy(probe, 0, contents, 0, probe.length);
+			System.arraycopy(rest, 0, contents, probe.length, rest.length);
+			putPrefetchedContents(element, contents);
+		} catch (CoreException | IOException e) {
+			// not fatal: whoever needs the contents reads the stream itself
+		}
+	}
+
+	/** Reads up to the given number of bytes, or <code>null</code> when cancelled. */
+	private static byte[] read(InputStream stream, int limit, IProgressMonitor monitor) throws IOException {
+		ByteArrayOutputStream buffer= new ByteArrayOutputStream(Math.min(limit, 8192));
+		byte[] chunk= new byte[8192];
+		while (buffer.size() < limit) {
+			if (monitor != null && monitor.isCanceled()) {
+				return null;
+			}
+			int read= stream.read(chunk, 0, Math.min(chunk.length, limit - buffer.size()));
+			if (read == -1) {
+				break;
+			}
+			buffer.write(chunk, 0, read);
+		}
+		return buffer.toByteArray();
+	}
+
+	/** The heuristic of {@link #computeGuessType(ITypedElement)}, on bytes at hand. */
+	private static boolean looksLikeText(byte[] contents) {
+		int lineLength= 0;
+		int lines= 0;
+		for (int i= 0; i < contents.length && lines < 10; i++) {
+			byte c= contents[i];
+			if (c == '\n' || c == '\r') {
+				lineLength= 0;
+				lines++;
+			} else if (++lineLength > 1000) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private static boolean hasSharedDocument(ITypedElement element) {
+		ISharedDocumentAdapter adapter= SharedDocumentAdapterWrapper.getAdapter(element);
+		return adapter != null && adapter.getDocumentKey(element) != null;
+	}
+
+	private static void putPrefetchedContents(ITypedElement element, byte[] contents) {
+		synchronized (fPrefetchedContents) {
+			fPrefetchedContents.removeIf(prefetched -> {
+				ITypedElement held= prefetched.element.get();
+				return held == null || held == element;
+			});
+			fPrefetchedContents.add(new PrefetchedElement(element, contents));
+		}
+	}
+
+	/**
+	 * Returns the prefetched contents of the given element and forgets them, or
+	 * <code>null</code> if nothing was read ahead for it.
+	 */
+	public static byte[] takePrefetchedContents(Object element) {
+		synchronized (fPrefetchedContents) {
+			for (Iterator<PrefetchedElement> it= fPrefetchedContents.iterator(); it.hasNext();) {
+				PrefetchedElement prefetched= it.next();
+				ITypedElement held= prefetched.element.get();
+				if (held == null) {
+					it.remove();
+				} else if (held == element) {
+					it.remove();
+					return prefetched.contents;
+				}
+			}
+		}
+		return null;
+	}
+
+	private static byte[] prefetchedContents(ITypedElement element) {
+		synchronized (fPrefetchedContents) {
+			for (PrefetchedElement prefetched : fPrefetchedContents) {
+				if (prefetched.element.get() == element) {
+					return prefetched.contents;
+				}
+			}
+		}
+		return null;
+	}
+
+	/** The contents of the given element, read ahead if that already happened. */
+	private static InputStream contentsOf(ITypedElement element, IStreamContentAccessor accessor)
+			throws CoreException {
+		byte[] prefetched= prefetchedContents(element);
+		return prefetched != null ? new ByteArrayInputStream(prefetched) : accessor.getContents();
+	}
+
 	private static IContentType computeContentType(ITypedElement element) {
 		String name= element.getName();
 		IContentType ct= null;
@@ -1585,7 +1742,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		}
 		if (element instanceof IStreamContentAccessor isa) {
 			try {
-				InputStream is= isa.getContents();
+				InputStream is= contentsOf(element, isa);
 				if (is != null) {
 					try (InputStream bis = new BufferedInputStream(is)) {
 						ct= fgContentTypeManager.findContentTypeFor(is, name);
@@ -1718,7 +1875,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		if (input instanceof IStreamContentAccessor sca) {
 			InputStream is= null;
 			try {
-				is= sca.getContents();
+				is= contentsOf(input, sca);
 				if (is == null) {
 					return null;
 				}
