@@ -459,6 +459,55 @@ public class TextMergeViewerTest  {
 		}
 	}
 
+	/**
+	 * A large input must be shown before it is compared, so the differences are only
+	 * available once the deferred comparison ran.
+	 */
+	@Test
+	public void testLargeInputIsShownBeforeItIsCompared() throws Exception {
+		DiffNode parentNode = new DiffNode(new ParentTestElement(), new ParentTestElement());
+		DiffNode testNode = new DiffNode(parentNode, Differencer.CHANGE, null,
+				new EditableTestElement(manyLines("line", 3000).getBytes()),
+				new EditableTestElement(manyLines("LINE", 3000).getBytes()));
+
+		runInDialog(testNode, () -> {
+			IMergeViewerTestAdapter ta = viewer.getAdapter(IMergeViewerTestAdapter.class);
+			assertEquals(0, ta.getChangesCount(), "a large input must not be compared before it is shown");
+			waitForChanges(ta);
+			assertTrue(ta.getChangesCount() > 0, "the deferred comparison did not produce differences");
+		});
+	}
+
+	private static String manyLines(String prefix, int count) {
+		StringBuilder content = new StringBuilder();
+		for (int i = 0; i < count; i++) {
+			content.append(prefix).append(' ').append(i).append('\n');
+		}
+		return content.toString();
+	}
+
+	private static void waitForChanges(IMergeViewerTestAdapter ta) {
+		Display display = Display.getCurrent();
+		long deadline = System.currentTimeMillis() + 30_000;
+		// A self-rescheduling timer keeps the loop waking so the deadline is enforced
+		// even while blocked in Display.sleep().
+		Runnable[] wake = new Runnable[1];
+		wake[0] = () -> display.timerExec(50, wake[0]);
+		display.timerExec(50, wake[0]);
+		try {
+			while (ta.getChangesCount() == 0) {
+				if (System.currentTimeMillis() > deadline) {
+					fail("no differences within 30000ms");
+				}
+				if (!display.readAndDispatch()) {
+					display.sleep();
+				}
+			}
+		} finally {
+			display.timerExec(-1, wake[0]);
+		}
+	}
+
 	@Test
 	public void testCompareFilter() throws Exception {
 		DiffNode parentNode = new DiffNode(new ParentTestElement(),
