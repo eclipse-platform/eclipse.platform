@@ -96,9 +96,11 @@ public class PerformanceStats {
 	private static final PerformanceStats EMPTY_STATS = new PerformanceStats("", ""); //$NON-NLS-1$ //$NON-NLS-2$
 
 	/**
-	 * Constant indicating whether or not tracing is enabled
+	 * Indicates whether or not tracing is enabled. Reflects the current value of
+	 * the <code>org.eclipse.core.runtime/perf</code> debug option, so it changes
+	 * when that option is changed through the <code>DebugOptions</code> service.
 	 */
-	public static final boolean ENABLED;
+	public static volatile boolean ENABLED;
 
 	/**
 	 * A constant indicating that the timer has not been started.
@@ -110,17 +112,6 @@ public class PerformanceStats {
 	 */
 	private final static Map<PerformanceStats, PerformanceStats> statMap =
 				Collections.synchronizedMap(new HashMap<>());
-
-	/**
-	 * Maximum allowed durations for each event.
-	 * Maps String (event name) -&gt; Long (threshold)
-	 */
-	private final static Map<String, Long> thresholdMap = Collections.synchronizedMap(new HashMap<>());
-
-	/**
-	 * Whether non-failure statistics should be retained.
-	 */
-	private static final boolean TRACE_SUCCESS;
 
 	/**
 	 * An identifier that can be used to figure out who caused the event. This is
@@ -170,8 +161,14 @@ public class PerformanceStats {
 
 	static {
 		ENABLED = InternalPlatform.getDefault().getBooleanOption(Platform.PI_RUNTIME + "/perf", false);//$NON-NLS-1$
-		//turn these on by default if the global trace flag is turned on
-		TRACE_SUCCESS = InternalPlatform.getDefault().getBooleanOption(Platform.PI_RUNTIME + "/perf/success", ENABLED); //$NON-NLS-1$
+	}
+
+	/**
+	 * Returns whether non-failure statistics should be retained. Turned on by
+	 * default if the global trace flag is turned on.
+	 */
+	private static boolean isTraceSuccess() {
+		return InternalPlatform.getDefault().getBooleanOption(Platform.PI_RUNTIME + "/perf/success", ENABLED); //$NON-NLS-1$
 	}
 
 	/**
@@ -182,9 +179,7 @@ public class PerformanceStats {
 	 * @see #removeListener(PerformanceStats.PerformanceListener)
 	 */
 	public static void addListener(PerformanceListener listener) {
-		if (ENABLED) {
-			PerformanceStatsProcessor.addListener(listener);
-		}
+		PerformanceStatsProcessor.addListener(listener);
 	}
 
 	/**
@@ -222,16 +217,11 @@ public class PerformanceStats {
 			return EMPTY_STATS;
 		}
 		PerformanceStats newStats = new PerformanceStats(eventName, blameObject);
-		if (!TRACE_SUCCESS) {
+		if (!isTraceSuccess()) {
 			return newStats;
 		}
 		//use existing stats object if available
-		PerformanceStats oldStats = statMap.get(newStats);
-		if (oldStats != null) {
-			return oldStats;
-		}
-		statMap.put(newStats, newStats);
-		return newStats;
+		return statMap.computeIfAbsent(newStats, key -> newStats);
 	}
 
 	/**
@@ -239,8 +229,8 @@ public class PerformanceStats {
 	 * <p>
 	 * For frequent performance events, the result of this method call should
 	 * be cached by the caller to minimize overhead when performance monitoring
-	 * is turned off.  It is not possible for enablement to change during the life
-	 * of this invocation of the platform.
+	 * is turned off.  Enablement follows the platform debug options, so a caller
+	 * that caches the result should refresh it when those options change.
 	 * </p>
 	 *
 	 * @param eventName The name of the event to determine enablement for
@@ -248,7 +238,9 @@ public class PerformanceStats {
 	 * name is enabled, and <code>false</code> otherwise.
 	 */
 	public static boolean isEnabled(String eventName) {
-		if (!ENABLED) {
+		// read the global flag live rather than through ENABLED, so that the answer does
+		// not depend on the order in which debug options listeners happen to be notified
+		if (!InternalPlatform.getDefault().getBooleanOption(Platform.PI_RUNTIME + "/perf", false)) { //$NON-NLS-1$
 			return false;
 		}
 		String option = Platform.getDebugOption(eventName);
@@ -287,9 +279,7 @@ public class PerformanceStats {
 	 * @see #addListener(PerformanceStats.PerformanceListener)
 	 */
 	public static void removeListener(PerformanceListener listener) {
-		if (ENABLED) {
-			PerformanceStatsProcessor.removeListener(listener);
-		}
+		PerformanceStatsProcessor.removeListener(listener);
 	}
 
 	/**
@@ -340,12 +330,14 @@ public class PerformanceStats {
 		if (!ENABLED) {
 			return;
 		}
-		runCount++;
-		runningTime += elapsed;
-		if (elapsed > getThreshold(event)) {
-			PerformanceStatsProcessor.failed(createFailureStats(contextName, elapsed), blamePluginId, elapsed);
+		record(elapsed);
+		// the threshold is the shortest duration that is still reported, so that a
+		// threshold of 0 reports every occurrence to listeners without logging it
+		long threshold = getThreshold(event);
+		if (elapsed >= threshold) {
+			PerformanceStatsProcessor.failed(createFailureStats(contextName, elapsed), blamePluginId, elapsed, threshold > 0);
 		}
-		if (TRACE_SUCCESS) {
+		if (isTraceSuccess()) {
 			PerformanceStatsProcessor.changed(this);
 		}
 	}
@@ -358,17 +350,23 @@ public class PerformanceStats {
 	 * @return The failure stats
 	 */
 	private PerformanceStats createFailureStats(String contextName, long elapsed) {
-		PerformanceStats failedStat = new PerformanceStats(event, blame, contextName);
-		PerformanceStats old = statMap.get(failedStat);
-		if (old == null) {
-			statMap.put(failedStat, failedStat);
-		} else {
-			failedStat = old;
-		}
+		PerformanceStats newStats = new PerformanceStats(event, blame, contextName);
+		PerformanceStats failedStat = statMap.computeIfAbsent(newStats, key -> newStats);
 		failedStat.isFailure = true;
-		failedStat.runCount++;
-		failedStat.runningTime += elapsed;
+		if (failedStat != this) {
+			// without a context the lookup returns this object, whose run was already recorded
+			failedStat.record(elapsed);
+		}
 		return failedStat;
+	}
+
+	/**
+	 * Adds an occurrence to the counters. Synchronized because runs of the same
+	 * event may end concurrently.
+	 */
+	private synchronized void record(long elapsed) {
+		runCount++;
+		runningTime += elapsed;
 	}
 
 	/**
@@ -462,22 +460,15 @@ public class PerformanceStats {
 	 * Returns the performance threshold for this event.
 	 */
 	private long getThreshold(String eventName) {
-		Long value = thresholdMap.get(eventName);
-		if (value == null) {
-			String option = InternalPlatform.getDefault().getOption(eventName);
-			if (option != null) {
-				try {
-					value = Long.valueOf(option);
-				} catch (NumberFormatException e) {
-					//invalid option, just ignore
-				}
+		String option = InternalPlatform.getDefault().getOption(eventName);
+		if (option != null) {
+			try {
+				return Long.parseLong(option.trim());
+			} catch (NumberFormatException e) {
+				//invalid option, just ignore
 			}
-			if (value == null) {
-				value = Long.valueOf(Long.MAX_VALUE);
-			}
-			thresholdMap.put(eventName, value);
 		}
-		return value.longValue();
+		return Long.MAX_VALUE;
 	}
 
 	@Override
@@ -503,7 +494,7 @@ public class PerformanceStats {
 	/**
 	 * Resets count and running time for this particular stats event.
 	 */
-	public void reset() {
+	public synchronized void reset() {
 		runningTime = 0;
 		runCount = 0;
 	}
