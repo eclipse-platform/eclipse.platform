@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 Fabrizio Iannetti and others.
+ * Copyright (c) 2026 Fabrizio Iannetti and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
  * Supported formats:
  * <ul>
  *   <li>{@code path}</li>
+ *   <li>{@code path:}</li>
  *   <li>{@code path:line}</li>
  *   <li>{@code path:line:}</li>
  *   <li>{@code path:line:column}</li>
@@ -35,9 +36,9 @@ import java.util.regex.Pattern;
  */
 public class FileReferenceParser {
 
-	private static final Pattern COLON_LINE_COL_PATTERN = Pattern
-			.compile("^(.+):([1-9]\\d*):([1-9]\\d*):?$"); //$NON-NLS-1$
-	private static final Pattern COLON_LINE_PATTERN = Pattern.compile("^(.+):([1-9]\\d*):?$"); //$NON-NLS-1$
+	private static final Pattern PATH_LINE_COL_PATTERN = Pattern.compile("^(.+):([1-9]\\d*):([1-9]\\d*):?$"); //$NON-NLS-1$
+	private static final Pattern PATH_LINE_PATTERN = Pattern.compile("^(.+):([1-9]\\d*):?$"); //$NON-NLS-1$
+	private static final String COLON = ":"; //$NON-NLS-1$
 
 	private FileReferenceParser() {
 	}
@@ -57,8 +58,7 @@ public class FileReferenceParser {
 		if (text == null || text.isEmpty()) {
 			return new FileReference(text, -1, -1);
 		}
-
-		Matcher m = COLON_LINE_COL_PATTERN.matcher(text);
+		Matcher m = PATH_LINE_COL_PATTERN.matcher(text);
 		if (m.matches()) {
 			String path = m.group(1);
 			int line = Integer.parseInt(m.group(2));
@@ -67,8 +67,7 @@ public class FileReferenceParser {
 				return new FileReference(path, line, column);
 			}
 		}
-
-		m = COLON_LINE_PATTERN.matcher(text);
+		m = PATH_LINE_PATTERN.matcher(text);
 		if (m.matches()) {
 			String path = m.group(1);
 			int line = Integer.parseInt(m.group(2));
@@ -76,7 +75,9 @@ public class FileReferenceParser {
 				return new FileReference(path, line, -1);
 			}
 		}
-
+		if (text.endsWith(COLON)) {
+			text = text.substring(0, text.length() - COLON.length());
+		}
 		return new FileReference(text, -1, -1);
 	}
 }

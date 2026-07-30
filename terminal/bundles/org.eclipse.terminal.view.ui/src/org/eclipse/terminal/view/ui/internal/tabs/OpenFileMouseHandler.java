@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 Fabrizio Iannetti.
+ * Copyright (c) 2026 Fabrizio Iannetti.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -231,7 +231,7 @@ public class OpenFileMouseHandler implements ITerminalMouseListener {
 			int lineOffset = document.getLineOffset(zeroBasedLine);
 			if (fileRef.hasColumn()) {
 				int lineLength = document.getLineLength(zeroBasedLine);
-				int col = Math.min(fileRef.column(), lineLength);
+				int col = Math.min(fileRef.column() - 1, lineLength);
 				lineOffset += col;
 			}
 			return Optional.of(lineOffset);

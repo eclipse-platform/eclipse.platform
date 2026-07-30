@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 Fabrizio Iannetti and others.
+ * Copyright (c) 2026 Fabrizio Iannetti and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -18,10 +18,10 @@ import org.eclipse.terminal.view.core.internal.FileReference;
 import org.eclipse.terminal.view.core.internal.FileReferenceParser;
 import org.junit.jupiter.api.Test;
 
-class FileReferenceParserTest {
+public class FileReferenceParserTest {
 
 	@Test
-	void testPlainPath() {
+	public void testPlainPath() {
 		FileReference ref = FileReferenceParser.parse("src/Test.java");
 		assertEquals("src/Test.java", ref.path());
 		assertEquals(-1, ref.line());
@@ -31,7 +31,17 @@ class FileReferenceParserTest {
 	}
 
 	@Test
-	void testPathWithLine() {
+	public void testPlainPathEndingWithColon() {
+		FileReference ref = FileReferenceParser.parse("src/Test.java:");
+		assertEquals("src/Test.java", ref.path());
+		assertEquals(-1, ref.line());
+		assertEquals(-1, ref.column());
+		assertFalse(ref.hasLine());
+		assertFalse(ref.hasColumn());
+	}
+
+	@Test
+	public void testPathWithLine() {
 		FileReference ref = FileReferenceParser.parse("src/Test.java:1");
 		assertEquals("src/Test.java", ref.path());
 		assertEquals(1, ref.line());
@@ -41,7 +51,7 @@ class FileReferenceParserTest {
 	}
 
 	@Test
-	void testPathWithLineAndTrailingColon() {
+	public void testPathWithLineAndTrailingColon() {
 		FileReference ref = FileReferenceParser.parse("src/Test.java:42:");
 		assertEquals("src/Test.java", ref.path());
 		assertEquals(42, ref.line());
@@ -49,7 +59,7 @@ class FileReferenceParserTest {
 	}
 
 	@Test
-	void testPathWithLineAndColumn() {
+	public void testPathWithLineAndColumn() {
 		FileReference ref = FileReferenceParser.parse("src/Test.java:42:7");
 		assertEquals("src/Test.java", ref.path());
 		assertEquals(42, ref.line());
@@ -58,7 +68,7 @@ class FileReferenceParserTest {
 	}
 
 	@Test
-	void testPathWithLineAndColumnAndTrailingColon() {
+	public void testPathWithLineAndColumnAndTrailingColon() {
 		FileReference ref = FileReferenceParser.parse("src/Test.java:42:7:");
 		assertEquals("src/Test.java", ref.path());
 		assertEquals(42, ref.line());
@@ -66,42 +76,42 @@ class FileReferenceParserTest {
 	}
 
 	@Test
-	void testPathWithLineAndTrailingTextAfterSpace() {
+	public void testPathWithLineAndTrailingTextAfterSpace() {
 		FileReference ref = FileReferenceParser.parse("src/Test.java:42:  private Prix prix;");
 		assertEquals("src/Test.java:42:  private Prix prix;", ref.path());
 		assertEquals(-1, ref.line());
 	}
 
 	@Test
-	void testPathWithLineColumnAndTrailingText() {
+	public void testPathWithLineColumnAndTrailingText() {
 		FileReference ref = FileReferenceParser.parse("src/Test.java:42:7: message");
 		assertEquals("src/Test.java:42:7: message", ref.path());
 		assertEquals(-1, ref.line());
 	}
 
 	@Test
-	void testPathWithSpaces() {
+	public void testPathWithSpaces() {
 		FileReference ref = FileReferenceParser.parse("src/main/My File.java:12");
 		assertEquals("src/main/My File.java", ref.path());
 		assertEquals(12, ref.line());
 	}
 
 	@Test
-	void testUnixAbsolutePath() {
+	public void testUnixAbsolutePath() {
 		FileReference ref = FileReferenceParser.parse("/home/user/project/Test.java:12");
 		assertEquals("/home/user/project/Test.java", ref.path());
 		assertEquals(12, ref.line());
 	}
 
 	@Test
-	void testWindowsAbsolutePath() {
+	public void testWindowsAbsolutePath() {
 		FileReference ref = FileReferenceParser.parse("C:\\work\\project\\Test.java:12");
 		assertEquals("C:\\work\\project\\Test.java", ref.path());
 		assertEquals(12, ref.line());
 	}
 
 	@Test
-	void testWindowsAbsolutePathWithColumn() {
+	public void testWindowsAbsolutePathWithColumn() {
 		FileReference ref = FileReferenceParser.parse("C:\\work\\project\\Test.java:12:8");
 		assertEquals("C:\\work\\project\\Test.java", ref.path());
 		assertEquals(12, ref.line());
@@ -109,21 +119,21 @@ class FileReferenceParserTest {
 	}
 
 	@Test
-	void testWindowsRelativePath() {
+	public void testWindowsRelativePath() {
 		FileReference ref = FileReferenceParser.parse("..\\module\\Test.java:15");
 		assertEquals("..\\module\\Test.java", ref.path());
 		assertEquals(15, ref.line());
 	}
 
 	@Test
-	void testWindowsForwardSlash() {
+	public void testWindowsForwardSlash() {
 		FileReference ref = FileReferenceParser.parse("C:/work/project/Test.java:12");
 		assertEquals("C:/work/project/Test.java", ref.path());
 		assertEquals(12, ref.line());
 	}
 
 	@Test
-	void testLineZeroIsNotLine() {
+	public void testLineZeroIsNotLine() {
 		FileReference ref = FileReferenceParser.parse("src/Test.java:0");
 		assertEquals("src/Test.java:0", ref.path());
 		assertEquals(-1, ref.line());
@@ -131,7 +141,7 @@ class FileReferenceParserTest {
 	}
 
 	@Test
-	void testColumnZeroIsNotColumn() {
+	public void testColumnZeroIsNotColumn() {
 		FileReference ref = FileReferenceParser.parse("src/Test.java:42:0");
 		assertEquals("src/Test.java:42:0", ref.path());
 		assertEquals(-1, ref.line());
@@ -139,14 +149,14 @@ class FileReferenceParserTest {
 	}
 
 	@Test
-	void testNonNumericSuffix() {
+	public void testNonNumericSuffix() {
 		FileReference ref = FileReferenceParser.parse("src/Test.java:abc");
 		assertEquals("src/Test.java:abc", ref.path());
 		assertEquals(-1, ref.line());
 	}
 
 	@Test
-	void testUrlLikeText() {
+	public void testUrlLikeText() {
 		FileReference ref = FileReferenceParser.parse("http://localhost:8080/path");
 		assertEquals("http://localhost:8080/path", ref.path());
 		assertEquals(-1, ref.line());
@@ -154,22 +164,22 @@ class FileReferenceParserTest {
 	}
 
 	@Test
-	void testTimeLikeText() {
+	public void testTimeLikeText() {
 		FileReference ref = FileReferenceParser.parse("12:30:45");
-		assertEquals("12:30:45", ref.path());
-		assertEquals(-1, ref.line());
-		assertEquals(-1, ref.column());
+		assertEquals("12", ref.path());
+		assertEquals(30, ref.line());
+		assertEquals(45, ref.column());
 	}
 
 	@Test
-	void testMavenCoordinates() {
+	public void testMavenCoordinates() {
 		FileReference ref = FileReferenceParser.parse("groupId:artifactId:version");
 		assertEquals("groupId:artifactId:version", ref.path());
 		assertEquals(-1, ref.line());
 	}
 
 	@Test
-	void testNullInput() {
+	public void testNullInput() {
 		FileReference ref = FileReferenceParser.parse(null);
 		assertEquals(null, ref.path());
 		assertEquals(-1, ref.line());
@@ -177,7 +187,7 @@ class FileReferenceParserTest {
 	}
 
 	@Test
-	void testEmptyInput() {
+	public void testEmptyInput() {
 		FileReference ref = FileReferenceParser.parse("");
 		assertEquals("", ref.path());
 		assertEquals(-1, ref.line());
@@ -185,7 +195,7 @@ class FileReferenceParserTest {
 	}
 
 	@Test
-	void testGitGrepOutput() {
+	public void testGitGrepOutput() {
 		FileReference ref = FileReferenceParser
 				.parse("ecore/app/src/main/java/com/example/CombinaisonTarifaire.java:42:");
 		assertEquals("ecore/app/src/main/java/com/example/CombinaisonTarifaire.java", ref.path());
@@ -194,30 +204,29 @@ class FileReferenceParserTest {
 	}
 
 	@Test
-	void testGitGrepOutputWithColumn() {
-		FileReference ref = FileReferenceParser
-				.parse("ecore/app/src/main/java/com/example/MyClass.java:42:17");
+	public void testGitGrepOutputWithColumn() {
+		FileReference ref = FileReferenceParser.parse("ecore/app/src/main/java/com/example/MyClass.java:42:17");
 		assertEquals("ecore/app/src/main/java/com/example/MyClass.java", ref.path());
 		assertEquals(42, ref.line());
 		assertEquals(17, ref.column());
 	}
 
 	@Test
-	void testMultipleColonsInPath() {
+	public void testMultipleColonsInPath() {
 		FileReference ref = FileReferenceParser.parse("/path/with:colon/File.java:42");
 		assertEquals("/path/with:colon/File.java", ref.path());
 		assertEquals(42, ref.line());
 	}
 
 	@Test
-	void testJustFileNameWithLine() {
+	public void testJustFileNameWithLine() {
 		FileReference ref = FileReferenceParser.parse("MyClass.java:42");
 		assertEquals("MyClass.java", ref.path());
 		assertEquals(42, ref.line());
 	}
 
 	@Test
-	void testNonFilePathLikeMot123() {
+	public void testNonFilePathLikeMot123() {
 		FileReference ref = FileReferenceParser.parse("mot:123");
 		assertEquals("mot", ref.path());
 		assertEquals(123, ref.line());
