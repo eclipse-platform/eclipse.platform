@@ -3267,10 +3267,13 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		styleText.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if ((e.stateMask & SWT.COMMAND) != 0 && (e.keyCode == '=' || e.keyCode == '+')) {
-					updateFontSize(true, LocalResManager);
+				// MOD1 is Command on macOS and Ctrl elsewhere
+				if ((e.stateMask & SWT.MOD1) == 0) {
+					return;
 				}
-				if ((e.stateMask & SWT.COMMAND) != 0 && e.keyCode == '-') {
+				if (e.keyCode == '=' || e.keyCode == '+' || e.keyCode == SWT.KEYPAD_ADD) {
+					updateFontSize(true, LocalResManager);
+				} else if (e.keyCode == '-' || e.keyCode == SWT.KEYPAD_SUBTRACT) {
 					updateFontSize(false, LocalResManager);
 				}
 			}
@@ -6161,7 +6164,12 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		Font newFont = localResManager.create(desc);
 		leftStyle.setFont(newFont);
 		rightStyle.setFont(newFont);
-		doDiff();
+		if (fAncestor != null) {
+			fAncestor.getSourceViewer().getTextWidget().setFont(newFont);
+		}
+		// The differences do not depend on the font, only the line geometry does.
+		updateVScrollBar();
+		updatePresentation();
 	}
 
 }
