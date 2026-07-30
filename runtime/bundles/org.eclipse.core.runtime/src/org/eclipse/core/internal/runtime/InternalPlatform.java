@@ -44,6 +44,7 @@ import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProduct;
+import org.eclipse.core.runtime.PerformanceStats;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.RegistryFactory;
@@ -64,6 +65,7 @@ import org.eclipse.osgi.container.ModuleContainer;
 import org.eclipse.osgi.framework.log.FrameworkLog;
 import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.osgi.service.debug.DebugOptions;
+import org.eclipse.osgi.service.debug.DebugOptionsListener;
 import org.eclipse.osgi.service.environment.EnvironmentInfo;
 import org.eclipse.osgi.service.resolver.PlatformAdmin;
 import org.osgi.framework.Bundle;
@@ -150,6 +152,7 @@ public final class InternalPlatform {
 
 	private ServiceRegistration<ILegacyPreferences> legacyPreferencesService = null;
 	private ServiceRegistration<IProductPreferencesService> customPreferencesService = null;
+	private ServiceRegistration<DebugOptionsListener> debugOptionsListenerService = null;
 
 	private ServiceTracker<EnvironmentInfo,EnvironmentInfo> environmentTracker = null;
 	private ServiceTracker<FrameworkLog,FrameworkLog> logTracker = null;
@@ -772,9 +775,20 @@ public final class InternalPlatform {
 		customPreferencesService = context.registerService(IProductPreferencesService.class, new ProductPreferencesService(), new Hashtable<>());
 
 		legacyPreferencesService = context.registerService(ILegacyPreferences.class, new InitLegacyPreferences(), new Hashtable<>());
+
+		Hashtable<String, String> debugProperties = new Hashtable<>(2);
+		debugProperties.put(DebugOptions.LISTENER_SYMBOLICNAME, Platform.PI_RUNTIME);
+		debugOptionsListenerService = context.registerService(DebugOptionsListener.class, options -> {
+			initializeDebugFlags();
+			PerformanceStats.ENABLED = options.getBooleanOption(Platform.PI_RUNTIME + "/perf", false); //$NON-NLS-1$
+		}, debugProperties);
 	}
 
 	private void stopServices() {
+		if (debugOptionsListenerService != null) {
+			debugOptionsListenerService.unregister();
+			debugOptionsListenerService = null;
+		}
 		if (legacyPreferencesService != null) {
 			legacyPreferencesService.unregister();
 			legacyPreferencesService = null;

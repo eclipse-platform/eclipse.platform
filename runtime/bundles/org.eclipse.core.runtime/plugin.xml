@@ -2,4 +2,15 @@
 <?eclipse version="3.0"?>
 <plugin>
    <extension-point id="preferences" name="%preferencesName" schema="schema/preferences.exsd"/>
+   <extension
+         point="org.eclipse.ui.trace.traceComponents">
+      <component
+            id="org.eclipse.core.runtime.trace"
+            label="%traceComponentLabel">
+         <bundle
+               consumed="false"
+               name="org.eclipse.core.runtime">
+         </bundle>
+      </component>
+   </extension>
 </plugin>

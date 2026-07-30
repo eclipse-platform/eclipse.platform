@@ -39,10 +39,13 @@ public class PerformanceStatsProcessor extends Job {
 	private final ArrayList<PerformanceStats> changes = new ArrayList<>();
 
 	/**
-	 * Event failures that have occurred but have not yet been broadcast.
-	 * Maps (PerformanceStats -&gt; Long).
+	 * Event failures that have occurred but have not yet been broadcast, one
+	 * entry per occurrence.
 	 */
-	private final HashMap<PerformanceStats,Long> failures = new HashMap<>();
+	private record Failure(PerformanceStats stats, long elapsed) {
+	}
+
+	private final ArrayList<Failure> failures = new ArrayList<>();
 
 	/**
 	 * Event listeners.
@@ -77,13 +80,16 @@ public class PerformanceStatsProcessor extends Job {
 	 * @param pluginId The id of the plugin that declared the blame object, or
 	 * <code>null</code>
 	 * @param elapsed The elapsed time for this failure
+	 * @param log Whether to write the failure to the performance log as well
 	 */
-	public static void failed(PerformanceStats stats, String pluginId, long elapsed) {
+	public static void failed(PerformanceStats stats, String pluginId, long elapsed, boolean log) {
 		synchronized (instance) {
-			instance.failures.put(stats, Long.valueOf(elapsed));
+			instance.failures.add(new Failure(stats, elapsed));
 		}
 		instance.schedule(SCHEDULE_DELAY);
-		instance.logFailure(stats, pluginId, elapsed);
+		if (log) {
+			instance.logFailure(stats, pluginId, elapsed);
+		}
 	}
 
 	/*
@@ -194,13 +200,11 @@ public class PerformanceStatsProcessor extends Job {
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		PerformanceStats[] events;
-		PerformanceStats[] failedEvents;
-		Long[] failedTimes;
+		Failure[] failedEvents;
 		synchronized (this) {
 			events = changes.toArray(new PerformanceStats[changes.size()]);
 			changes.clear();
-			failedEvents = failures.keySet().toArray(new PerformanceStats[failures.size()]);
-			failedTimes = failures.values().toArray(new Long[failures.size()]);
+			failedEvents = failures.toArray(new Failure[failures.size()]);
 			failures.clear();
 		}
 
@@ -209,8 +213,8 @@ public class PerformanceStatsProcessor extends Job {
 			if (events.length > 0) {
 				listener.eventsOccurred(events);
 			}
-			for (int j = 0; j < failedEvents.length; j++) {
-				listener.eventFailed(failedEvents[j], failedTimes[j].longValue());
+			for (Failure failure : failedEvents) {
+				listener.eventFailed(failure.stats(), failure.elapsed());
 			}
 		}
 		schedule(SCHEDULE_DELAY);

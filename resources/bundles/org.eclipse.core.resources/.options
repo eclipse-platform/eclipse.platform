@@ -3,7 +3,8 @@
 # Turn on debugging for the org.eclipse.core.resources plugin.
 org.eclipse.core.resources/debug=false
 
-# Monitor builders and gather time statistics etc.
+# Monitor builders and trace if a single builder run takes longer than the specified time in milliseconds.
+# A value of 0 gathers statistics for every builder run without writing any of them to the log.
 org.eclipse.core.resources/perf/builders=10000
 
 # Monitor resource change listeners and gather time statistics etc.

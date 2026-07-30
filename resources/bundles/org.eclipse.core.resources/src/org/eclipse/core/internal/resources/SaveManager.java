@@ -458,18 +458,15 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 			case PREPARE_TO_SAVE :
 				participant.prepareToSave(context);
 				break;
-			case SAVING :
+			case SAVING : {
+				ResourceStats.Run run = ResourceStats.isTracingSaveParticipants() ? ResourceStats.startSave(participant) : null;
 				try {
-					if (ResourceStats.TRACE_SAVE_PARTICIPANTS) {
-						ResourceStats.startSave(participant);
-					}
 					participant.saving(context);
 				} finally {
-					if (ResourceStats.TRACE_SAVE_PARTICIPANTS) {
-						ResourceStats.endSave();
-					}
+					ResourceStats.end(run);
 				}
 				break;
+			}
 			case DONE_SAVING :
 				participant.doneSaving(context);
 				break;
@@ -523,10 +520,8 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 	 * Hooks the end of a save operation, for debugging and performance
 	 * monitoring purposes.
 	 */
-	private void hookEndSave(int kind, IProject project, long start) {
-		if (ResourceStats.TRACE_SNAPSHOT && kind == ISaveContext.SNAPSHOT) {
-			ResourceStats.endSnapshot();
-		}
+	private void hookEndSave(int kind, IProject project, long start, ResourceStats.Run run) {
+		ResourceStats.end(run);
 		if (Policy.DEBUG_SAVE) {
 			String endMessage = null;
 			switch (kind) {
@@ -550,9 +545,10 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 	 * Hooks the start of a save operation, for debugging and performance
 	 * monitoring purposes.
 	 */
-	private void hookStartSave(int kind, Project project) {
-		if (ResourceStats.TRACE_SNAPSHOT && kind == ISaveContext.SNAPSHOT) {
-			ResourceStats.startSnapshot();
+	private ResourceStats.Run hookStartSave(int kind, Project project) {
+		ResourceStats.Run run = null;
+		if (ResourceStats.isTracingSnapshot() && kind == ISaveContext.SNAPSHOT) {
+			run = ResourceStats.startSnapshot();
 		}
 		if (Policy.DEBUG_SAVE) {
 			switch (kind) {
@@ -567,6 +563,7 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 					break;
 			}
 		}
+		return run;
 	}
 
 	/**
@@ -1276,7 +1273,7 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 			try {
 				workspace.prepareOperation(rule, monitor);
 				workspace.beginOperation(false);
-				hookStartSave(kind, project);
+				ResourceStats.Run snapshotRun = hookStartSave(kind, project);
 				long start = System.currentTimeMillis();
 				Map<String, SaveContext> contexts = computeSaveContexts(getSaveParticipantPluginIds(), kind, project);
 				broadcastLifecycle(PREPARE_TO_SAVE, contexts, warnings, Policy.subMonitorFor(monitor, 1));
@@ -1353,7 +1350,7 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 					//this must be done after committing save contexts to update participant save numbers
 					saveMasterTable(kind);
 					broadcastLifecycle(DONE_SAVING, contexts, warnings, Policy.subMonitorFor(monitor, 1));
-					hookEndSave(kind, project, start);
+					hookEndSave(kind, project, start, snapshotRun);
 					return warnings;
 				} catch (CoreException e) {
 					broadcastLifecycle(ROLLBACK, contexts, warnings, Policy.subMonitorFor(monitor, 1));

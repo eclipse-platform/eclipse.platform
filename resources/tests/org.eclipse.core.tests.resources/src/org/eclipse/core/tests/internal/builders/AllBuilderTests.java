@@ -27,6 +27,7 @@ import org.junit.platform.suite.api.Suite;
 		BuilderEventTest.class, //
 		BuilderNatureTest.class, //
 		BuilderTest.class, //
+		BuilderTracingTest.class, //
 		ComputeProjectOrderTest.class, //
 		CustomBuildTriggerTest.class, //
 		EmptyDeltaTest.class, //

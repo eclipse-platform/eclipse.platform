@@ -15,6 +15,7 @@ package org.eclipse.core.internal.utils;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import org.eclipse.core.internal.events.ResourceStats;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.Job;
@@ -67,6 +68,8 @@ public class Policy {
 			DEBUG_SAVE_TREE = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/save/tree", false); //$NON-NLS-1$
 
 			DEBUG_STRINGS = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/strings", false); //$NON-NLS-1$
+
+			ResourceStats.optionsChanged();
 		}
 	};
 
