@@ -7,3 +7,4 @@ https://github.com/eclipse-platform/eclipse.platform.releng.aggregator/issues/17
 https://github.com/eclipse-platform/eclipse.platform.releng.aggregator/issues/2935
 https://github.com/eclipse-platform/eclipse.platform.releng.aggregator/issues/2995
 https://github.com/eclipse-platform/eclipse.platform.releng.aggregator/issues/2995 take two
+https://github.com/eclipse-platform/eclipse.platform.releng.aggregator/issues/3947
