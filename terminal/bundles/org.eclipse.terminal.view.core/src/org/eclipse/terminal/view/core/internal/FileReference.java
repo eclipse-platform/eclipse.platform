@@ -21,6 +21,8 @@ package org.eclipse.terminal.view.core.internal;
 public record FileReference(String path, int line, int column) {
 
 	/**
+	 * Returns whether this reference contains a valid line number.
+	 *
 	 * @return {@code true} if this reference contains a valid line number
 	 */
 	public boolean hasLine() {
@@ -28,6 +30,8 @@ public record FileReference(String path, int line, int column) {
 	}
 
 	/**
+	 * Returns whether this reference contains a valid column number.
+	 *
 	 * @return {@code true} if this reference contains a valid column number
 	 */
 	public boolean hasColumn() {

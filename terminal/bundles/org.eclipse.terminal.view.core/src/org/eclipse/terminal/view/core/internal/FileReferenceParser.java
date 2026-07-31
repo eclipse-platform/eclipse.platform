@@ -17,16 +17,9 @@ import java.util.regex.Pattern;
  * Parses terminal hover text to extract a {@link FileReference} containing
  * the file path and optional line and column numbers.
  * <p>
- * Supported formats:
- * <ul>
- *   <li>{@code path}</li>
- *   <li>{@code path:}</li>
- *   <li>{@code path:line}</li>
- *   <li>{@code path:line:}</li>
- *   <li>{@code path:line:column}</li>
- *   <li>{@code path:line:column:}</li>
- * </ul>
- * Line and column numbers must be strictly positive (≥ 1).
+ * Supported formats are {@code path}, {@code path:}, {@code path:line},
+ * {@code path:line:}, {@code path:line:column} and {@code path:line:column:}.
+ * Line and column numbers must be strictly positive (&ge; 1).
  * Windows drive letters ({@code C:\...}) are correctly distinguished
  * from the {@code :line} suffix.
  * </p>
