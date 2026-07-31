@@ -18,6 +18,7 @@ import org.eclipse.terminal.view.core.internal.FileReference;
 import org.eclipse.terminal.view.core.internal.FileReferenceParser;
 import org.junit.jupiter.api.Test;
 
+@SuppressWarnings("restriction")
 public class FileReferenceParserTest {
 
 	@Test

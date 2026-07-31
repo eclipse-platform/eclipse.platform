@@ -52,6 +52,7 @@ import org.osgi.framework.Bundle;
 /**
  * @noreference This class is not intended to be referenced by clients.
  */
+@SuppressWarnings("restriction")
 public class OpenFileMouseHandler implements ITerminalMouseListener {
 	private static final boolean DEBUG_HOVER = Platform.getDebugBoolean(Logger.TRACE_DEBUG_LOG_HOVER);
 	private static final List<String> NEEDED_BUNDLES = //
