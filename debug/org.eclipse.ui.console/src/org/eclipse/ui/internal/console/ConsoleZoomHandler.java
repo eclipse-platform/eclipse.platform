@@ -13,7 +13,9 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.console;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -62,10 +64,9 @@ import org.osgi.service.prefs.BackingStoreException;
 public class ConsoleZoomHandler extends AbstractHandler implements IExecutableExtension {
 
 	/**
-	 * Key used to remember, on the console itself, the custom font created for
-	 * zooming, so it can be reused/replaced and eventually disposed.
+	 * Remember the custom fonts created for each console, so they can be disposed.
 	 */
-	public static final String ZOOM_FONT_ATTRIBUTE = ConsoleZoomHandler.class.getName() + ".zoomFont"; //$NON-NLS-1$
+	private static final Map<TextConsole, List<Font>> fontsMap = new HashMap<>();
 
 	/**
 	 * Key used to remember, on the console itself, that a mismatching font change
@@ -151,7 +152,7 @@ public class ConsoleZoomHandler extends AbstractHandler implements IExecutableEx
 					textConsole.addPropertyChangeListener(FONT_ENFORCER);
 					ZoomState state = sZoomByType.get(typeKey(textConsole));
 					if (state != null) {
-						applyHeight(textConsole, state.height());
+						Display.getDefault().asyncExec(() -> applyHeight(textConsole, state.height()));
 					}
 				}
 			}
@@ -162,7 +163,7 @@ public class ConsoleZoomHandler extends AbstractHandler implements IExecutableEx
 			for (IConsole console : consoles) {
 				if (console instanceof TextConsole textConsole) {
 					textConsole.removePropertyChangeListener(FONT_ENFORCER);
-					disposeZoomFont(textConsole);
+					Display.getDefault().asyncExec(() -> disposeZoomFonts(textConsole));
 				}
 			}
 		}
@@ -221,10 +222,6 @@ public class ConsoleZoomHandler extends AbstractHandler implements IExecutableEx
 				return;
 			}
 		}
-		// genuine external change: our own custom zoom font, if any, is no longer
-		// the console's active font, so it must be disposed now instead of being
-		// leaked until the console (e.g. a long-lived ProcessConsole) is removed
-		disposeZoomFont(textConsole);
 		sZoomByType.put(type, new ZoomState(currentHeight.intValue(), 0));
 		persistZoomStates();
 	}
@@ -317,11 +314,6 @@ public class ConsoleZoomHandler extends AbstractHandler implements IExecutableEx
 	 * @param delta the font size delta to apply, in points
 	 */
 	public static void applyZoom(IWorkbenchPart part, int delta) {
-		if (Display.getCurrent() == null) {
-			Display.getDefault().asyncExec(() -> applyZoom(part, delta));
-			return;
-		}
-
 		if (!(part instanceof IConsoleView consoleView)) {
 			return;
 		}
@@ -390,11 +382,6 @@ public class ConsoleZoomHandler extends AbstractHandler implements IExecutableEx
 	 * @param height      the font height to apply, in points
 	 */
 	private static void applyHeight(TextConsole textConsole, int height) {
-		if (Display.getCurrent() == null) {
-			Display.getDefault().asyncExec(() -> applyHeight(textConsole, height));
-			return;
-		}
-
 		// make sure this console's font is (still) being watched, in case it was
 		// registered before the zoom handler class got loaded, or the listener
 		// was otherwise not yet attached
@@ -415,61 +402,46 @@ public class ConsoleZoomHandler extends AbstractHandler implements IExecutableEx
 			fd.setHeight(height);
 		}
 
-		Object oldAttribute = textConsole.getAttribute(ZOOM_FONT_ATTRIBUTE);
-		Font oldZoomFont = oldAttribute instanceof Font f ? f : null;
-
-		Font newZoomFont = new Font(currentFont.getDevice(), fontData);
-		// remember/apply before disposing the old one, in case they are the same object
-		textConsole.setAttribute(ZOOM_FONT_ATTRIBUTE, newZoomFont);
-		textConsole.setFont(newZoomFont);
-
-		if (oldZoomFont != null && !oldZoomFont.isDisposed()) {
-			disposeLater(oldZoomFont);
-		}
+		fontsMap.compute(textConsole, (console, oldZoomFonts) -> {
+			Font newZoomFont = new Font(currentFont.getDevice(), fontData);
+			textConsole.setFont(newZoomFont);
+			List<Font> oldFonts = oldZoomFonts;
+			if (oldFonts == null) {
+				oldFonts = new ArrayList<>();
+			}
+			oldFonts.add(newZoomFont);
+			return oldFonts;
+		});
 	}
 
 	/**
-	 * Disposes the custom zoom font remembered on the given console, if any.
-	 * Dispatches to the UI thread if necessary.
-	 *
-	 * @param textConsole the console whose zoom font should be disposed
-	 */
-	private static void disposeZoomFont(TextConsole textConsole) {
-		Object attribute = textConsole.getAttribute(ZOOM_FONT_ATTRIBUTE);
-		if (!(attribute instanceof Font font) || font.isDisposed()) {
-			return;
-		}
-		if (Display.getCurrent() == null) {
-			// see applyHeight(...) above for why asyncExec (not syncExec) is used
-			Display.getDefault().asyncExec(() -> disposeZoomFont(textConsole));
-			return;
-		}
-		disposeLater(font);
-		textConsole.setAttribute(ZOOM_FONT_ATTRIBUTE, null);
-	}
-
-	/**
-	 * Disposes the given font on a later UI cycle rather than immediately.
+	 * Disposes all custom fonts after console is removed on a later UI cycle rather
+	 * than immediately.
 	 * <p>
 	 * A font that was just replaced on a console (e.g. via
-	 * {@link TextConsole#setFont(Font)}) may still be referenced for a little
-	 * while by the viewer's internal rendering caches (e.g.
+	 * {@link TextConsole#setFont(Font)}) may still be referenced for a little while
+	 * by the viewer's internal rendering caches (e.g.
 	 * {@code StyledText}/{@code TextLayout} keep per-line layouts that are only
 	 * refreshed on their next repaint). Disposing it synchronously can therefore
 	 * cause a later, asynchronously dispatched repaint to fail with an
-	 * {@code IllegalArgumentException} ("Argument not valid") when it tries to
-	 * use the now-disposed font. Deferring the actual disposal by one UI cycle
-	 * gives any such pending repaint a chance to pick up the new font first.
+	 * {@code IllegalArgumentException} ("Argument not valid") when it tries to use
+	 * the now-disposed font. Deferring the actual disposal by one UI cycle gives
+	 * any such pending repaint a chance to pick up the new font first.
 	 * </p>
 	 *
-	 * @param font the font to dispose; must be called on the UI thread
+	 * @param textConsole the console whose zoom fonts should be disposed
 	 */
-	private static void disposeLater(Font font) {
-		Display.getCurrent().asyncExec(() -> {
-			if (!font.isDisposed()) {
-				font.dispose();
-			}
-		});
+	private static void disposeZoomFonts(TextConsole textConsole) {
+		List<Font> oldFonts = fontsMap.remove(textConsole);
+		if (oldFonts != null && !oldFonts.isEmpty()) {
+			Display.getDefault().timerExec(100, () -> {
+				for (Font font : oldFonts) {
+					if (font != null && !font.isDisposed()) {
+						font.dispose();
+					}
+				}
+			});
+		}
 	}
 }
 

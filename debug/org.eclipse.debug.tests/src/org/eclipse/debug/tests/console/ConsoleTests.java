@@ -463,13 +463,11 @@ public class ConsoleTests {
 			ConsoleZoomHandler.applyZoom(consoleView, 1);
 			TestUtil.processUIEvents();
 
-			Object attribute = console.getAttribute(ConsoleZoomHandler.ZOOM_FONT_ATTRIBUTE);
-			assertThat(attribute).as("a custom zoom font should have been created").isInstanceOf(Font.class); //$NON-NLS-1$
-			Font zoomFont = (Font) attribute;
+			Font zoomFont = console.getFont();
 			assertFalse(zoomFont.isDisposed(), "the zoom font must not be disposed while its console is still open"); //$NON-NLS-1$
 
 			removeConsoles(console);
-			TestUtil.processUIEvents();
+			TestUtil.processUIEvents(200);
 
 			assertTrue(zoomFont.isDisposed(), "the zoom font must be disposed once its console is removed"); //$NON-NLS-1$
 		} finally {
