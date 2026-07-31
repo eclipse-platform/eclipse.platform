@@ -824,14 +824,18 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 				|| !(right instanceof IStreamContentAccessor rightSource)) {
 			return null;
 		}
-		// The side that is not shown in the editor supplies the diff source, so it is
-		// read here instead of on the UI thread.
+		// The overlay needs a workspace file to sit on; an editor opened on anything
+		// else, a revision for example, comes up empty. The other side supplies the
+		// diff source and is read here rather than on the UI thread.
 		if (leftEditorInput instanceof IFileEditorInput) {
 			return new UnifiedDiffSource(compareInput, leftEditorInput, left, UnifiedDiffMode.REVERT_MODE,
 					getSourceOf(rightSource));
 		}
-		return new UnifiedDiffSource(compareInput, rightEditorInput, right, UnifiedDiffMode.OVERLAY_READ_ONLY_MODE,
-				getSourceOf(leftSource));
+		if (rightEditorInput instanceof IFileEditorInput) {
+			return new UnifiedDiffSource(compareInput, rightEditorInput, right, UnifiedDiffMode.OVERLAY_READ_ONLY_MODE,
+					getSourceOf(leftSource));
+		}
+		return null;
 	}
 
 	private static IEditorInput documentKeyOf(ITypedElement element) {
