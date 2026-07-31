@@ -704,14 +704,20 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 			// no active workbench page; fall back to the classic compare editor path
 			return false;
 		}
+		// Only an editor opened here may be closed again when the diff cannot be
+		// applied after all; one the user already had open stays untouched.
+		IEditorPart editorBefore = wpage.findEditor(source.editorInput());
+		IEditorPart openedHere = null;
 		try {
 			IDocumentMergerInput mergerInput = findDocumentMergerInput(input, source.compareInput());
 			IEditorPart editorPart = wpage.openEditor(source.editorInput(),
 					getEditorId(source.editorInput(), source.element()));
+			openedHere = editorPart == editorBefore ? null : editorPart;
 			if (editorPart instanceof MultiPageEditorPart mpe && mpe.getSelectedPage() instanceof IEditorPart selected) {
 				editorPart = selected;
 			}
 			if (!(editorPart instanceof ITextEditor textEditor)) {
+				closeIfOpenedHere(wpage, openedHere);
 				return false;
 			}
 			Action openTwoWayCompare = createOpenTwoWayCompareAction(input, page, editor, activate, textEditor);
@@ -726,11 +732,23 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 					.open();
 			// The user canceled the diff, not the open: leave the text editor alone
 			// instead of falling back to the classic compare editor.
-			return status.isOK() || status == UnifiedDiffManager.CANCELED_BY_USER;
+			if (status.isOK() || status == UnifiedDiffManager.CANCELED_BY_USER) {
+				return true;
+			}
 		} catch (PartInitException e) {
 			CompareUIPlugin.log(e);
 		}
+		// The classic compare editor takes over, so the editor opened for the unified
+		// diff would only be a second editor on the same file without a comparison.
+		closeIfOpenedHere(wpage, openedHere);
 		return false;
+	}
+
+	private static void closeIfOpenedHere(IWorkbenchPage page, IEditorPart editor) {
+		if (editor != null) {
+			// Nothing here writes to the document, so there is nothing to save.
+			page.closeEditor(editor, false);
+		}
 	}
 
 	/**
