@@ -17,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.eclipse.terminal.view.core.internal.FileReference;
 import org.junit.jupiter.api.Test;
 
-@SuppressWarnings("restriction")
 public class FileReferenceTest {
 
 	@Test

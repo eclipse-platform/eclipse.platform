@@ -88,7 +88,6 @@ public class OpenFileMouseHandler implements ITerminalMouseListener {
 		}
 	}
 
-	@SuppressWarnings("restriction")
 	@Override
 	public void mouseUp(ITerminalTextDataReadOnly terminalText, int line, int column, int button, int stateMask) {
 		if ((stateMask & SWT.MODIFIER_MASK) != SWT.MOD1) {
