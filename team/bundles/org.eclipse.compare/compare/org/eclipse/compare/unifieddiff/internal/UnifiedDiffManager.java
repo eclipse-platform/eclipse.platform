@@ -113,15 +113,14 @@ public class UnifiedDiffManager {
 	private static final String TOOLBAR_COMPOSITE_FOR_ALL_DIFFS_KEY = "TOOLBAR_COMPOSITE_FOR_ALL_DIFFS_KEY"; //$NON-NLS-1$
 	private static final Map<ITextViewer, List<UnifiedDiff>> diffsByViewer = new HashMap<>();
 
-	/** Status code reported when the user canceled the diff computation. */
-	public static final int CANCELED_BY_USER_CODE = 1;
-
 	/**
 	 * The user canceled the computation. The text editor is already open, so the
-	 * caller must not fall back to the classic compare editor.
+	 * caller must not fall back to the classic compare editor. Compared by identity,
+	 * because a status code would clash with {@link Status#CANCEL_STATUS}, which
+	 * this class returns when it cannot show a unified diff at all.
 	 */
-	private static final IStatus CANCELED_BY_USER = new Status(IStatus.CANCEL, UnifiedDiffManager.class,
-			CANCELED_BY_USER_CODE, "canceled by the user", null); //$NON-NLS-1$
+	public static final IStatus CANCELED_BY_USER = new Status(IStatus.CANCEL, UnifiedDiffManager.class,
+			"canceled by the user"); //$NON-NLS-1$
 
 	public static void put(ITextViewer viewer, List<UnifiedDiff> diffs) {
 		diffsByViewer.put(viewer, diffs);

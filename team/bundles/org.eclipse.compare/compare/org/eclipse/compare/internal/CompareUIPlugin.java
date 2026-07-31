@@ -700,7 +700,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 					.open();
 			// The user canceled the diff, not the open: leave the text editor alone
 			// instead of falling back to the classic compare editor.
-			return status.isOK() || status.getCode() == UnifiedDiffManager.CANCELED_BY_USER_CODE;
+			return status.isOK() || status == UnifiedDiffManager.CANCELED_BY_USER;
 		} catch (PartInitException e) {
 			CompareUIPlugin.log(e);
 		}
