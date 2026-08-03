@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -53,6 +54,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.terminal.internal.control.impl.TerminalPlugin;
+import org.eclipse.terminal.internal.preferences.ITerminalConstants;
 import org.eclipse.terminal.view.ui.ITerminalsView;
 import org.eclipse.terminal.view.ui.internal.Messages;
 import org.eclipse.terminal.view.ui.internal.tabs.TabFolderManager;
@@ -90,6 +93,9 @@ public class TerminalsView extends ViewPart implements ITerminalsView, IShowInTa
 	private Control emptyPageControl;
 	// The view's memento handler
 	private final TerminalsViewMementoHandler mementoHandler = new TerminalsViewMementoHandler();
+
+	@SuppressWarnings("restriction")
+	private IPreferenceStore preferenceStore = TerminalPlugin.getDefault().getPreferenceStore();
 
 	/**
 	 * "dummy" transfer just to store the information needed for the DnD
@@ -706,8 +712,9 @@ public class TerminalsView extends ViewPart implements ITerminalsView, IShowInTa
 	 *
 	 * @param memento The memento or <code>null</code>.
 	 */
+	@SuppressWarnings("restriction")
 	public void restoreState(IMemento memento) {
-		if (memento == null) {
+		if (memento == null || !preferenceStore.getBoolean(ITerminalConstants.PREF_RESTORE_TERMINALS)) {
 			return;
 		}
 		mementoHandler.restoreState(this, memento);
