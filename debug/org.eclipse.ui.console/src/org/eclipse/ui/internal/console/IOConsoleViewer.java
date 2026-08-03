@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2019 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -225,10 +225,43 @@ public class IOConsoleViewer extends TextConsoleViewer {
 				public void documentChanged(DocumentEvent event) {
 					if (fAutoScroll) {
 						revealEndOfDocument();
+						repositionCaretAfterOutput();
 					}
 				}
 			};
 		}
 		return fAutoScrollListener;
+	}
+
+	/**
+	 * Moves caret to the beginning of next valid input section
+	 */
+	private void repositionCaretAfterOutput() {
+		final IDocument doc = getDocument();
+		if (doc == null) {
+			return;
+		}
+		if (doc.getDocumentPartitioner() instanceof IConsoleDocumentPartitioner consolePart
+				&& consolePart instanceof IConsoleDocumentPartitionerExtension consolePartExt) {
+			StyledText widget = getTextWidget();
+			if (widget == null || widget.isDisposed()) {
+				return;
+			}
+			ConsolePlugin.getStandardDisplay().asyncExec(() -> {
+				StyledText styleText = getTextWidget();
+				if (styleText == null || styleText.isDisposed()) {
+					return;
+				}
+				int caretOffset = widget.getCaretOffset();
+				if (consolePart.isReadOnly(caretOffset) && consolePart.isReadOnly(Math.max(caretOffset - 1, 0))) {
+					int nextWritable = consolePartExt.getNextOffsetByState(caretOffset, true);
+					if (nextWritable != caretOffset) {
+						styleText.setCaretOffset(nextWritable);
+						styleText.showSelection();
+					}
+				}
+			});
+		}
+
 	}
 }

@@ -1139,4 +1139,30 @@ public class IOConsoleTests {
 		final boolean changedBack = IOConsole.isAnsiConsoleEnabled();
 		assertEquals(initial, changedBack);
 	}
+
+
+	@Test
+	public void testBug2127_CaretRepositionedAfterOutput() throws Exception {
+		IOConsoleTestUtil c = getTestUtil("Test caret reposition after output");
+		try {
+			c.writeAndVerify("Please type something: ");
+			c.insertTypingAndVerify("42");
+			c.enter();
+			TestUtil.waitWhile(() -> c.getCaretOffset() != c.getContentLength(), TestUtil.DEFAULT_TIMEOUT, () -> "Caret never reached end of document after submitting input.");
+
+			int caretBeforeOutput = c.getCaretOffset();
+			c.writeAndVerify("You typed: 42");
+			TestUtil.waitWhile(() -> c.getCaretOffset() != c.getContentLength(), TestUtil.DEFAULT_TIMEOUT, () -> "Caret was not repositioned to end of document after output arrived at the old (now read-only) caret position.");
+
+			assertTrue(c.getPartitioner().isReadOnly(caretBeforeOutput), "Precondition: old caret position must now be read-only.");
+
+			c.insertTypingAndVerify("7");
+			c.enter().clear();
+			c.verifyPartitions();
+			closeConsole(c, "42", "7");
+		} finally {
+			ConsolePlugin.getDefault().getConsoleManager().removeConsoles(new IConsole[] {
+					c.getConsole() });
+		}
+	}
 }
