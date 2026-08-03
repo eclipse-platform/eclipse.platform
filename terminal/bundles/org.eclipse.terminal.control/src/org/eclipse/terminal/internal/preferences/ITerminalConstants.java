@@ -29,12 +29,14 @@ public interface ITerminalConstants {
 
 	public static final String PREF_BUFFERLINES = "TerminalPrefBufferLines"; //$NON-NLS-1$
 	public static final String PREF_INVERT_COLORS = "TerminalPrefInvertColors"; //$NON-NLS-1$
+	public static final String PREF_RESTORE_TERMINALS = "TerminalPrefRestoreTerminals"; //$NON-NLS-1$
 	/**
 	 * @since 5.0
 	 */
 	public static final String PREF_FONT_DEFINITION = "TerminalFontDefinition"; //$NON-NLS-1$
 	public static final int DEFAULT_BUFFERLINES = 1000;
 	public static final boolean DEFAULT_INVERT_COLORS = false;
+	public static final boolean DEFAULT_PREF_RESTORE_TERMINALS = true;
 	/**
 	 * @since 5.0
 	 */

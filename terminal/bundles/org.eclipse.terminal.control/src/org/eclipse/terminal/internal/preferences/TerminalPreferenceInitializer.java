@@ -41,6 +41,7 @@ public class TerminalPreferenceInitializer extends AbstractPreferenceInitializer
 		IEclipsePreferences defaultPrefs = DefaultScope.INSTANCE.getNode(TerminalPlugin.PLUGIN_ID);
 		defaultPrefs.putBoolean(ITerminalConstants.PREF_INVERT_COLORS, ITerminalConstants.DEFAULT_INVERT_COLORS);
 		defaultPrefs.putInt(ITerminalConstants.PREF_BUFFERLINES, ITerminalConstants.DEFAULT_BUFFERLINES);
+		defaultPrefs.putBoolean(ITerminalConstants.PREF_RESTORE_TERMINALS, ITerminalConstants.DEFAULT_PREF_RESTORE_TERMINALS);
 		defaultPrefs.put(ITerminalConstants.PREF_FONT_DEFINITION, ITerminalConstants.DEFAULT_FONT_DEFINITION);
 
 		Preset defaultPresets = TerminalColorPresets.INSTANCE.getDefaultPreset();

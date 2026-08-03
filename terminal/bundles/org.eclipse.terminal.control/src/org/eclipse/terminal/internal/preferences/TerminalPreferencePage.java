@@ -68,6 +68,8 @@ public class TerminalPreferencePage extends FieldEditorPreferencePage implements
 	}
 
 	protected void setupEditors() {
+		addField(new BooleanFieldEditor(ITerminalConstants.PREF_RESTORE_TERMINALS, TerminalMessages.RESTORE_TERMINALS,
+				getFieldEditorParent()));
 		addField(new BooleanFieldEditor(ITerminalConstants.PREF_INVERT_COLORS, TerminalMessages.INVERT_COLORS,
 				getFieldEditorParent()));
 
@@ -76,6 +78,7 @@ public class TerminalPreferencePage extends FieldEditorPreferencePage implements
 
 		terminalColorsFieldEditor = new TerminalColorsFieldEditor(getFieldEditorParent());
 		addField(terminalColorsFieldEditor);
+
 	}
 
 	@Override
