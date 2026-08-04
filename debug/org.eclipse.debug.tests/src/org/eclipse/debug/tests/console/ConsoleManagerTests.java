@@ -22,6 +22,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.eclipse.debug.tests.ConsoleExtension;
 import org.eclipse.debug.tests.DebugTestExtension;
 import org.eclipse.debug.tests.TestUtil;
 import org.eclipse.swt.widgets.Display;
@@ -42,7 +43,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * Tests console manager behavior when multiple consoles are shown at the same
  * time.
  */
-@ExtendWith(DebugTestExtension.class)
+@ExtendWith({ DebugTestExtension.class, ConsoleExtension.class })
 public class ConsoleManagerTests {
 
 	private ExecutorService executorService;

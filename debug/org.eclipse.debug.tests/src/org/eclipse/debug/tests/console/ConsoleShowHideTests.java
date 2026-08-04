@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
+import org.eclipse.debug.tests.ConsoleExtension;
 import org.eclipse.debug.tests.DebugTestExtension;
 import org.eclipse.debug.tests.TestUtil;
 import org.eclipse.swt.widgets.Display;
@@ -39,7 +40,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * Tests console manager's show/hide behavior when multiple consoles are shown
  * in the console view.
  */
-@ExtendWith(DebugTestExtension.class)
+@ExtendWith({ DebugTestExtension.class, ConsoleExtension.class })
 public class ConsoleShowHideTests {
 
 	private IConsoleManager manager;

@@ -49,6 +49,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.debug.tests.ConsoleExtension;
 import org.eclipse.debug.tests.DebugTestExtension;
 import org.eclipse.debug.tests.TestUtil;
 import org.eclipse.debug.tests.TestsPlugin;
@@ -78,7 +79,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 /**
  * Tests the {@link IOConsole}. Especially the partitioner and viewer parts.
  */
-@ExtendWith(DebugTestExtension.class)
+@ExtendWith({ DebugTestExtension.class, ConsoleExtension.class })
 public class IOConsoleTests {
 
 	/**

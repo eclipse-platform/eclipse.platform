@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
@@ -34,6 +33,7 @@ import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.views.console.ConsoleRemoveAllTerminatedAction;
 import org.eclipse.debug.internal.ui.views.console.ProcessConsole;
 import org.eclipse.debug.internal.ui.views.console.ProcessConsoleManager;
+import org.eclipse.debug.tests.ConsoleExtension;
 import org.eclipse.debug.tests.DebugTestExtension;
 import org.eclipse.debug.tests.TestUtil;
 import org.eclipse.debug.ui.IDebugUIConstants;
@@ -49,7 +49,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 /**
  * Tests the ProcessConsoleManager.
  */
-@ExtendWith(DebugTestExtension.class)
+@ExtendWith({ DebugTestExtension.class, ConsoleExtension.class })
 public class ProcessConsoleManagerTests {
 
 	private final PreferenceMemento prefMemento = new PreferenceMemento();
@@ -70,12 +70,6 @@ public class ProcessConsoleManagerTests {
 		DebugUIPlugin.getDefault();
 		final ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
 		final IConsoleManager consoleManager = ConsolePlugin.getDefault().getConsoleManager();
-		final int existingNumConsoles = consoleManager.getConsoles().length;
-		if (existingNumConsoles > 0) {
-			// existing consoles must not harm this test but it may be
-			// interesting in case the test fails
-			TestUtil.log(IStatus.INFO, testInfo.getDisplayName(), "Found " + existingNumConsoles + " existing consoles on test start.");
-		}
 
 		ILaunch launch = null;
 		final MockProcess mockProcess = new MockProcess(MockProcess.RUN_FOREVER);
