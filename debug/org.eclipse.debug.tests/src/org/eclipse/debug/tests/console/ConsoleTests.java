@@ -23,10 +23,12 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.debug.tests.ConsoleExtension;
 import org.eclipse.debug.tests.DebugTestExtension;
 import org.eclipse.debug.tests.TestUtil;
 import org.eclipse.jface.text.IDocument;
@@ -55,120 +57,120 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-@ExtendWith(DebugTestExtension.class)
+@ExtendWith({ DebugTestExtension.class, ConsoleExtension.class })
 public class ConsoleTests {
 
 	@Test
 	public void testConsoleOutputStreamEncoding(TestInfo testInfo) throws IOException {
-		String testString = "abc\u00e4\u00f6\u00fcdef"; //$NON-NLS-1$
+		String testString = "abc\u00e4\u00f6\u00fcdef";
 		// abcdef need 1 byte in UTF-8 each
 		// Ã¤Ã¶Ã¼ (\u00e4\u00f6\u00fc) need 2 bytes each
 		byte[] testStringBuffer = testString.getBytes(StandardCharsets.UTF_8);
 		assertThat(testStringBuffer).as("Test string \"" + testString + "\" should consist of 12 UTF-8 bytes").hasSize(12);
-		MessageConsole console = new MessageConsole("Test Console", //$NON-NLS-1$
+		MessageConsole console = new MessageConsole("Test Console",
 				IConsoleConstants.MESSAGE_CONSOLE_TYPE, null, StandardCharsets.UTF_8.name(), true);
 		IDocument document = console.getDocument();
 		TestUtil.waitForJobs(testInfo.getDisplayName(), ConsoleManager.CONSOLE_JOB_FAMILY, 200, 5000);
-		assertEquals("", document.get(), "Document should be empty"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals("", document.get(), "Document should be empty");
 		try (IOConsoleOutputStream outStream = console.newOutputStream()) {
 			outStream.write(testStringBuffer, 0, 6);
 			// half of Ã¶ (\u00f6) is written so we don't expect this char in
 			// output but all previous chars can be decoded
 			TestUtil.waitForJobs(testInfo.getDisplayName(), ConsoleManager.CONSOLE_JOB_FAMILY, 200, 5000);
-			assertEquals(testString.substring(0, 4), document.get(), "First 4 chars should be written"); //$NON-NLS-1$
+			assertEquals(testString.substring(0, 4), document.get(), "First 4 chars should be written");
 			outStream.write(testStringBuffer, 6, 6);
 			// all remaining bytes are written so we expect the whole string
 			// including the Ã¶ (\u00f6) which was at buffer boundary
 			TestUtil.waitForJobs(testInfo.getDisplayName(), ConsoleManager.CONSOLE_JOB_FAMILY, 200, 5000);
-			assertEquals(testString, document.get(), "whole test string should be written"); //$NON-NLS-1$
+			assertEquals(testString, document.get(), "whole test string should be written");
 		}
 		TestUtil.waitForJobs(testInfo.getDisplayName(), ConsoleManager.CONSOLE_JOB_FAMILY, 200, 5000);
 		// after closing the stream, the document content should still be the
 		// same
-		assertEquals(testString, document.get(), "closing the stream should not alter the document"); //$NON-NLS-1$
+		assertEquals(testString, document.get(), "closing the stream should not alter the document");
 	}
 
 	@Test
 	public void testConsoleOutputStreamLastR(TestInfo testInfo) throws IOException {
-		String testString = "a\r"; //$NON-NLS-1$
+		String testString = "a\r";
 		byte[] testStringBuffer = testString.getBytes(StandardCharsets.UTF_8);
 		assertThat(testStringBuffer).as("Test string \"" + testString + "\" should consist of 2 UTF-8 bytes").hasSize(2);
-		MessageConsole console = new MessageConsole("Test Console 2", //$NON-NLS-1$
+		MessageConsole console = new MessageConsole("Test Console 2",
 				IConsoleConstants.MESSAGE_CONSOLE_TYPE, null, StandardCharsets.UTF_8.name(), true);
 		IDocument document = console.getDocument();
 		TestUtil.waitForJobs(testInfo.getDisplayName(), ConsoleManager.CONSOLE_JOB_FAMILY, 200, 5000);
-		assertEquals("", document.get(), "Document should be empty"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals("", document.get(), "Document should be empty");
 		try (IOConsoleOutputStream outStream = console.newOutputStream()) {
 			outStream.write(testStringBuffer);
 			// everything but pending \r should be written
 			TestUtil.waitForJobs(testInfo.getDisplayName(), ConsoleManager.CONSOLE_JOB_FAMILY, 200, 5000);
-			assertEquals(testString.substring(0, 1), document.get(), "First char should be written"); //$NON-NLS-1$
+			assertEquals(testString.substring(0, 1), document.get(), "First char should be written");
 		}
 		TestUtil.waitForJobs(testInfo.getDisplayName(), ConsoleManager.CONSOLE_JOB_FAMILY, 200, 5000);
 		// after closing the stream, the document content should still be the
 		// same
-		assertEquals(testString, document.get(), "closing the stream should write the pending \\r"); //$NON-NLS-1$
+		assertEquals(testString, document.get(), "closing the stream should write the pending \\r");
 	}
 
 	@Test
 	public void testConsoleOutputStreamDocumentClosed() throws IOException {
-		MessageConsole console = new MessageConsole("Test Console 3", //$NON-NLS-1$
+		MessageConsole console = new MessageConsole("Test Console 3",
 				IConsoleConstants.MESSAGE_CONSOLE_TYPE, null, StandardCharsets.UTF_8.name(), true);
 		IDocument document = console.getDocument();
 		try (IOConsoleOutputStream outStream = console.newOutputStream()) {
-			outStream.write("write1"); //$NON-NLS-1$
+			outStream.write("write1");
 			document.getDocumentPartitioner().disconnect();
 			try {
-				outStream.write("write2"); //$NON-NLS-1$
-				fail("IOException with message \"Document is closed\" expected"); //$NON-NLS-1$
+				outStream.write("write2");
+				fail("IOException with message \"Document is closed\" expected");
 			} catch (IOException ioe) {
-				assertEquals("Document is closed", ioe.getMessage()); //$NON-NLS-1$
+				assertEquals("Document is closed", ioe.getMessage());
 			}
 		}
 	}
 
 	@Test
 	public void testConsoleOutputStreamClosed() throws IOException {
-		MessageConsole console = new MessageConsole("Test Console 4", //$NON-NLS-1$
+		MessageConsole console = new MessageConsole("Test Console 4",
 				IConsoleConstants.MESSAGE_CONSOLE_TYPE, null, StandardCharsets.UTF_8.name(), true);
 		try (IOConsoleOutputStream outStream = console.newOutputStream()) {
-			outStream.write("test1".getBytes(StandardCharsets.UTF_8)); //$NON-NLS-1$
+			outStream.write("test1".getBytes(StandardCharsets.UTF_8));
 			outStream.close();
 			try {
-				outStream.write("test2".getBytes(StandardCharsets.UTF_8)); //$NON-NLS-1$
-				fail("IOException with message \"Output Stream is closed\" expected"); //$NON-NLS-1$
+				outStream.write("test2".getBytes(StandardCharsets.UTF_8));
+				fail("IOException with message \"Output Stream is closed\" expected");
 			} catch (IOException ioe) {
-				assertEquals("Output Stream is closed", ioe.getMessage()); //$NON-NLS-1$
+				assertEquals("Output Stream is closed", ioe.getMessage());
 			}
 		}
 	}
 
 	@Test
 	public void testConsoleOutputStreamDocumentStreamClosed() throws IOException {
-		MessageConsole console = new MessageConsole("Test Console 5", //$NON-NLS-1$
+		MessageConsole console = new MessageConsole("Test Console 5",
 				IConsoleConstants.MESSAGE_CONSOLE_TYPE, null, StandardCharsets.UTF_8.name(), true);
 		IDocument document = console.getDocument();
 		try (IOConsoleOutputStream outStream = console.newOutputStream()) {
-			outStream.write("write1"); //$NON-NLS-1$
+			outStream.write("write1");
 			document.getDocumentPartitioner().disconnect();
 			try {
-				outStream.write("write2"); //$NON-NLS-1$
-				fail("IOException with message \"Document is closed\" expected"); //$NON-NLS-1$
+				outStream.write("write2");
+				fail("IOException with message \"Document is closed\" expected");
 			} catch (IOException ioe) {
-				assertEquals("Document is closed", ioe.getMessage()); //$NON-NLS-1$
+				assertEquals("Document is closed", ioe.getMessage());
 			}
 			try {
-				outStream.write("write3"); //$NON-NLS-1$
-				fail("IOException with message \"Output Stream is closed\" expected"); //$NON-NLS-1$
+				outStream.write("write3");
+				fail("IOException with message \"Output Stream is closed\" expected");
 			} catch (IOException ioe) {
-				assertEquals("Output Stream is closed", ioe.getMessage()); //$NON-NLS-1$
+				assertEquals("Output Stream is closed", ioe.getMessage());
 			}
 		}
 	}
 
 	@Test
 	public void testSetNullEncoding() throws IOException {
-		MessageConsole console = new MessageConsole("Test Console 6", null); //$NON-NLS-1$
+		MessageConsole console = new MessageConsole("Test Console 6", null);
 		try (IOConsoleOutputStream outStream = console.newOutputStream()) {
 			outStream.setEncoding(null);
 		}
@@ -186,8 +188,8 @@ public class ConsoleTests {
 		IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		IViewPart consoleView = activePage.showView(IConsoleConstants.ID_CONSOLE_VIEW);
 
-		IOConsole console = new IOConsole("Test Console 7", IConsoleConstants.MESSAGE_CONSOLE_TYPE, null, true); //$NON-NLS-1$
-		console.getDocument().set("some text"); //$NON-NLS-1$
+		IOConsole console = new IOConsole("Test Console 7", IConsoleConstants.MESSAGE_CONSOLE_TYPE, null, true);
+		console.getDocument().set("some text");
 
 		IConsoleManager consoleManager = ConsolePlugin.getDefault().getConsoleManager();
 		IConsole[] consoles = { console };
@@ -253,8 +255,8 @@ public class ConsoleTests {
 	@Test
 	public void testZoomOnlyAffectsActiveConsoleType(TestInfo testInfo) throws Exception {
 		IConsoleView consoleView = showConsoleView();
-		MessageConsole activeConsole = createConsole("Zoom Active Console", uniqueConsoleType("active")); //$NON-NLS-1$ //$NON-NLS-2$
-		MessageConsole otherConsole = createConsole("Zoom Other Console", uniqueConsoleType("other")); //$NON-NLS-1$ //$NON-NLS-2$
+		MessageConsole activeConsole = createConsole("Zoom Active Console", uniqueConsoleType("active"));
+		MessageConsole otherConsole = createConsole("Zoom Other Console", uniqueConsoleType("other"));
 		try {
 			showConsoles(testInfo, activeConsole, otherConsole);
 
@@ -265,9 +267,9 @@ public class ConsoleTests {
 			TestUtil.processUIEvents();
 
 			assertEquals(activeInitialHeight + 1, getFontHeight(activeConsole),
-					"zooming should increase the font size of the console shown in the active console view"); //$NON-NLS-1$
+					"zooming should increase the font size of the console shown in the active console view");
 			assertEquals(otherInitialHeight, getFontHeight(otherConsole),
-					"zooming must not affect a console of a different type that was already open"); //$NON-NLS-1$
+					"zooming must not affect a console of a different type that was already open");
 		} finally {
 			removeConsoles(activeConsole, otherConsole);
 			hideConsoleView(consoleView);
@@ -289,7 +291,7 @@ public class ConsoleTests {
 	@Test
 	public void testPreferenceFontChangeOverridesZoom(TestInfo testInfo) throws Exception {
 		IConsoleView consoleView = showConsoleView();
-		MessageConsole console = createConsole("Zoom Preference Console", uniqueConsoleType("pref")); //$NON-NLS-1$ //$NON-NLS-2$
+		MessageConsole console = createConsole("Zoom Preference Console", uniqueConsoleType("pref"));
 		Font reassertedFont = null;
 		Font preferenceFont = null;
 		try {
@@ -300,7 +302,7 @@ public class ConsoleTests {
 			ConsoleZoomHandler.applyZoom(consoleView, 1);
 			TestUtil.processUIEvents();
 			int zoomedHeight = getFontHeight(console);
-			assertEquals(naturalHeight + 1, zoomedHeight, "zoom should have increased the font size"); //$NON-NLS-1$
+			assertEquals(naturalHeight + 1, zoomedHeight, "zoom should have increased the font size");
 
 			// simulate the console re-asserting its own natural font once, right
 			// after being zoomed (mirrors e.g. ProcessConsole's asynchronous font
@@ -310,7 +312,7 @@ public class ConsoleTests {
 			console.setFont(reassertedFont);
 			TestUtil.processUIEvents();
 			assertEquals(zoomedHeight, getFontHeight(console),
-					"the console's own re-assertion of its natural font should have been reverted back to the current zoom level"); //$NON-NLS-1$
+					"the console's own re-assertion of its natural font should have been reverted back to the current zoom level");
 
 			// simulate an actual, deliberate font change from a preference page:
 			// this must be accepted as the new base font, overriding the zoom
@@ -319,7 +321,7 @@ public class ConsoleTests {
 			console.setFont(preferenceFont);
 			TestUtil.processUIEvents();
 			assertEquals(preferenceHeight, getFontHeight(console),
-					"a later, deliberate font change (e.g. from a preference page) should override the current zoom"); //$NON-NLS-1$
+					"a later, deliberate font change (e.g. from a preference page) should override the current zoom");
 		} finally {
 			removeConsoles(console);
 			hideConsoleView(consoleView);
@@ -333,10 +335,10 @@ public class ConsoleTests {
 	 */
 	@Test
 	public void testZoomLevelIsPersisted(TestInfo testInfo) throws Exception {
-		String type = uniqueConsoleType("persist"); //$NON-NLS-1$
+		String type = uniqueConsoleType("persist");
 
 		IConsoleView consoleView = showConsoleView();
-		MessageConsole console = createConsole("Zoom Persistence Console", type); //$NON-NLS-1$
+		MessageConsole console = createConsole("Zoom Persistence Console", type);
 		try {
 			showConsoles(testInfo, console);
 
@@ -345,9 +347,9 @@ public class ConsoleTests {
 			ConsoleZoomHandler.applyZoom(consoleView, 1);
 			TestUtil.processUIEvents();
 
-			String expectedEntry = type + "=" + naturalHeight + "|" + 1; //$NON-NLS-1$ //$NON-NLS-2$
+			String expectedEntry = type + "=" + naturalHeight + "|" + 1;
 			assertThat(getPersistedZoomState())
-					.as("persisted zoom state should contain an entry for the zoomed console type") //$NON-NLS-1$
+					.as("persisted zoom state should contain an entry for the zoomed console type")
 					.contains(expectedEntry);
 		} finally {
 			removeConsoles(console);
@@ -362,11 +364,11 @@ public class ConsoleTests {
 	 */
 	@Test
 	public void testNewConsoleOfAlreadyZoomedTypeInheritsZoom(TestInfo testInfo) throws Exception {
-		String type = uniqueConsoleType("inherit"); //$NON-NLS-1$
+		String type = uniqueConsoleType("inherit");
 
 		IConsoleView consoleView = showConsoleView();
-		MessageConsole firstConsole = createConsole("Zoom Inherit Console 1", type); //$NON-NLS-1$
-		MessageConsole secondConsole = createConsole("Zoom Inherit Console 2", type); //$NON-NLS-1$
+		MessageConsole firstConsole = createConsole("Zoom Inherit Console 1", type);
+		MessageConsole secondConsole = createConsole("Zoom Inherit Console 2", type);
 		try {
 			showConsoles(testInfo, firstConsole);
 
@@ -374,14 +376,14 @@ public class ConsoleTests {
 			ConsoleZoomHandler.applyZoom(consoleView, 1);
 			TestUtil.processUIEvents();
 			int zoomedHeight = getFontHeight(firstConsole);
-			assertEquals(naturalHeight + 1, zoomedHeight, "zoom should have increased the font size"); //$NON-NLS-1$
+			assertEquals(naturalHeight + 1, zoomedHeight, "zoom should have increased the font size");
 
 			// a second console of the SAME type, added afterwards and never shown
 			// in the console view, should still start at the current zoom level
 			addConsoles(testInfo, secondConsole);
 
 			assertEquals(zoomedHeight, getFontHeight(secondConsole),
-					"a newly added console of an already zoomed type should immediately start at the current zoom level"); //$NON-NLS-1$
+					"a newly added console of an already zoomed type should immediately start at the current zoom level");
 		} finally {
 			removeConsoles(firstConsole, secondConsole);
 			hideConsoleView(consoleView);
@@ -394,7 +396,7 @@ public class ConsoleTests {
 	@Test
 	public void testZoomOutDecreasesFontSize(TestInfo testInfo) throws Exception {
 		IConsoleView consoleView = showConsoleView();
-		MessageConsole console = createConsole("Zoom Out Console", uniqueConsoleType("zoomOut")); //$NON-NLS-1$ //$NON-NLS-2$
+		MessageConsole console = createConsole("Zoom Out Console", uniqueConsoleType("zoomOut"));
 		try {
 			showConsoles(testInfo, console);
 
@@ -404,18 +406,18 @@ public class ConsoleTests {
 			ConsoleZoomHandler.applyZoom(consoleView, 1);
 			ConsoleZoomHandler.applyZoom(consoleView, 1);
 			TestUtil.processUIEvents();
-			assertEquals(naturalHeight + 2, getFontHeight(console), "two zoom-in steps should increase the font size by 2"); //$NON-NLS-1$
+			assertEquals(naturalHeight + 2, getFontHeight(console), "two zoom-in steps should increase the font size by 2");
 
 			ConsoleZoomHandler.applyZoom(consoleView, -1);
 			TestUtil.processUIEvents();
-			assertEquals(naturalHeight + 1, getFontHeight(console), "a zoom-out step should decrease the font size"); //$NON-NLS-1$
+			assertEquals(naturalHeight + 1, getFontHeight(console), "a zoom-out step should decrease the font size");
 
 			// zoom back down to (and past) the natural size
 			ConsoleZoomHandler.applyZoom(consoleView, -1);
 			ConsoleZoomHandler.applyZoom(consoleView, -1);
 			TestUtil.processUIEvents();
 			assertEquals(naturalHeight - 1, getFontHeight(console),
-					"zooming out below the natural size should be possible"); //$NON-NLS-1$
+					"zooming out below the natural size should be possible");
 		} finally {
 			removeConsoles(console);
 			hideConsoleView(consoleView);
@@ -429,19 +431,19 @@ public class ConsoleTests {
 	@Test
 	public void testZoomClampsAtMinimumAndMaximumFontSize(TestInfo testInfo) throws Exception {
 		IConsoleView consoleView = showConsoleView();
-		MessageConsole console = createConsole("Zoom Clamp Console", uniqueConsoleType("clamp")); //$NON-NLS-1$ //$NON-NLS-2$
+		MessageConsole console = createConsole("Zoom Clamp Console", uniqueConsoleType("clamp"));
 		try {
 			showConsoles(testInfo, console);
 
 			ConsoleZoomHandler.applyZoom(consoleView, 1000);
 			TestUtil.processUIEvents();
 			assertEquals(ConsoleZoomHandler.MAX_FONT_SIZE, getFontHeight(console),
-					"zooming in by a huge delta should clamp at the maximum font size"); //$NON-NLS-1$
+					"zooming in by a huge delta should clamp at the maximum font size");
 
 			ConsoleZoomHandler.applyZoom(consoleView, -10000);
 			TestUtil.processUIEvents();
 			assertEquals(ConsoleZoomHandler.MIN_FONT_SIZE, getFontHeight(console),
-					"zooming out by a huge delta should clamp at the minimum font size"); //$NON-NLS-1$
+					"zooming out by a huge delta should clamp at the minimum font size");
 		} finally {
 			removeConsoles(console);
 			hideConsoleView(consoleView);
@@ -456,7 +458,7 @@ public class ConsoleTests {
 	@Test
 	public void testRemovingConsoleDisposesZoomFont(TestInfo testInfo) throws Exception {
 		IConsoleView consoleView = showConsoleView();
-		MessageConsole console = createConsole("Zoom Dispose Console", uniqueConsoleType("disposeOnRemove")); //$NON-NLS-1$ //$NON-NLS-2$
+		MessageConsole console = createConsole("Zoom Dispose Console", uniqueConsoleType("disposeOnRemove"));
 		try {
 			showConsoles(testInfo, console);
 
@@ -464,12 +466,16 @@ public class ConsoleTests {
 			TestUtil.processUIEvents();
 
 			Font zoomFont = console.getFont();
-			assertFalse(zoomFont.isDisposed(), "the zoom font must not be disposed while its console is still open"); //$NON-NLS-1$
+			assertFalse(zoomFont.isDisposed(), "the zoom font must not be disposed while its console is still open");
 
 			removeConsoles(console);
 			TestUtil.processUIEvents(200);
-
-			assertTrue(zoomFont.isDisposed(), "the zoom font must be disposed once its console is removed"); //$NON-NLS-1$
+			long startTime = System.currentTimeMillis();
+			while (getConsoleManager().getConsoles().length > 0 && System.currentTimeMillis() - startTime < 60_000) {
+				TestUtil.processUIEvents(200);
+			}
+			assertEquals(0, getConsoleManager().getConsoles().length, "Should have no consoles after removal, but some are still present: " + Arrays.toString(getConsoleManager().getConsoles()));
+			assertTrue(zoomFont.isDisposed(), "the zoom font must be disposed once its console is removed");
 		} finally {
 			removeConsoles(console);
 			hideConsoleView(consoleView);
@@ -484,7 +490,7 @@ public class ConsoleTests {
 	@Test
 	public void testZoomCommandExecutesWhileConsoleViewActive(TestInfo testInfo) throws Exception {
 		IConsoleView consoleView = showConsoleView();
-		MessageConsole console = createConsole("Zoom Command Console", uniqueConsoleType("command")); //$NON-NLS-1$ //$NON-NLS-2$
+		MessageConsole console = createConsole("Zoom Command Console", uniqueConsoleType("command"));
 		try {
 			showConsoles(testInfo, console);
 			consoleView.getSite().getPage().activate(consoleView);
@@ -493,17 +499,17 @@ public class ConsoleTests {
 			int naturalHeight = getFontHeight(console);
 
 			IHandlerService handlerService = PlatformUI.getWorkbench().getService(IHandlerService.class);
-			handlerService.executeCommand("org.eclipse.ui.console.command.fontZoomIn", null); //$NON-NLS-1$
+			handlerService.executeCommand("org.eclipse.ui.console.command.fontZoomIn", null);
 			TestUtil.processUIEvents();
 
 			assertEquals(naturalHeight + 1, getFontHeight(console),
-					"executing the zoom-in command should increase the font size of the active console"); //$NON-NLS-1$
+					"executing the zoom-in command should increase the font size of the active console");
 
-			handlerService.executeCommand("org.eclipse.ui.console.command.fontZoomOut", null); //$NON-NLS-1$
+			handlerService.executeCommand("org.eclipse.ui.console.command.fontZoomOut", null);
 			TestUtil.processUIEvents();
 
 			assertEquals(naturalHeight, getFontHeight(console),
-					"executing the zoom-out command should decrease the font size of the active console"); //$NON-NLS-1$
+					"executing the zoom-out command should decrease the font size of the active console");
 		} finally {
 			removeConsoles(console);
 			hideConsoleView(consoleView);
@@ -577,7 +583,7 @@ public class ConsoleTests {
 	}
 
 	private static String uniqueConsoleType(String suffix) {
-		return "org.eclipse.debug.tests.console.zoomTest." + suffix + "." + System.nanoTime(); //$NON-NLS-1$ //$NON-NLS-2$
+		return "org.eclipse.debug.tests.console.zoomTest." + suffix + "." + System.nanoTime();
 	}
 
 	private static int getFontHeight(TextConsole console) {
@@ -596,6 +602,6 @@ public class ConsoleTests {
 	 */
 	private static String getPersistedZoomState() {
 		IEclipsePreferences preferences = InstanceScope.INSTANCE.getNode(ConsolePlugin.getUniqueIdentifier());
-		return preferences.get(ConsoleZoomHandler.PREF_ZOOM_FONT_HEIGHTS, ""); //$NON-NLS-1$
+		return preferences.get(ConsoleZoomHandler.PREF_ZOOM_FONT_HEIGHTS, "");
 	}
 }

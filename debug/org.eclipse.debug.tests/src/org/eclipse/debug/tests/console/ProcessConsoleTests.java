@@ -59,6 +59,7 @@ import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.views.console.ConsoleMessages;
 import org.eclipse.debug.internal.ui.views.console.ProcessConsole;
+import org.eclipse.debug.tests.ConsoleExtension;
 import org.eclipse.debug.tests.DebugTestExtension;
 import org.eclipse.debug.tests.TestUtil;
 import org.eclipse.debug.tests.launching.LaunchConfigurationTests;
@@ -88,7 +89,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 /**
  * Tests the ProcessConsole.
  */
-@ExtendWith(DebugTestExtension.class)
+@ExtendWith({ DebugTestExtension.class, ConsoleExtension.class })
 public class ProcessConsoleTests {
 	/**
 	 * Log messages with severity error received while running a single test
