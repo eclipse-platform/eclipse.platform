@@ -43,6 +43,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import org.eclipse.compare.CompareConfiguration;
+import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.compare.CompareNavigator;
 import org.eclipse.compare.CompareUI;
 import org.eclipse.compare.ICompareNavigator;
@@ -4196,6 +4197,34 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 				new MergeSourceViewer[] { fLeft, fRight, fAncestor },
 				AbstractDecoratedTextEditorPreferenceConstants.EDITOR_LINE_NUMBER_RULER);
 		fHandlerService.registerAction(toggleLineNumbersAction, ITextEditorActionDefinitionIds.LINENUMBER_TOGGLE);
+
+		createShowUnifiedDiffItem(tbm);
+	}
+
+	/**
+	 * Adds the action that switches this side by side comparison over to the
+	 * unified diff, the counterpart of the unified diff's action to open the
+	 * comparison. Only added when the input can be shown as a unified diff at all.
+	 */
+	private void createShowUnifiedDiffItem(ToolBarManager tbm) {
+		if (!(getCompareConfiguration().getContainer() instanceof CompareEditorInput input)
+				|| !CompareUIPlugin.canShowAsUnifiedDiff(input)) {
+			return;
+		}
+		Action showUnifiedDiff = new Action() {
+			@Override
+			public void run() {
+				CompareUIPlugin.getDefault().switchToUnifiedDiff(input, getWorkbenchPage(input));
+			}
+		};
+		Utilities.initAction(showUnifiedDiff, getResourceBundle(), "action.ShowUnifiedDiff."); //$NON-NLS-1$
+		tbm.add(new Separator());
+		tbm.add(new ActionContributionItem(showUnifiedDiff));
+	}
+
+	private static IWorkbenchPage getWorkbenchPage(CompareEditorInput input) {
+		IWorkbenchPart part = input.getWorkbenchPart();
+		return part == null ? null : part.getSite().getPage();
 	}
 
 	private void configureCompareFilterActions(Object input, Object ancestor,

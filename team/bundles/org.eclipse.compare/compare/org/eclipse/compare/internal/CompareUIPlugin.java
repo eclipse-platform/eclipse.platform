@@ -855,7 +855,41 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 			CompareUIPlugin.log(e);
 			return null;
 		}
-		if (!(input.getCompareResult() instanceof ICompareInput compareInput)) {
+		return unifiedDiffSourceOf(input);
+	}
+
+	/**
+	 * Collects what the unified diff needs from an input that has already been run.
+	 * Reads the side that supplies the diff, so it must not be called on the UI
+	 * thread. Returns <code>null</code> if the input cannot be shown as a unified
+	 * diff.
+	 */
+	private UnifiedDiffSource unifiedDiffSourceOf(CompareEditorInput input) {
+		UnifiedDiffCandidate candidate = unifiedDiffCandidateOf(input);
+		if (candidate == null) {
+			return null;
+		}
+		// The other side supplies the diff source and is read here rather than on the
+		// UI thread.
+		return new UnifiedDiffSource(candidate.compareInput(), candidate.editorInput(), candidate.element(),
+				candidate.mode(), getSourceOf(candidate.diffSource()));
+	}
+
+	/**
+	 * Returns whether the result of the given input can be displayed as a unified
+	 * diff. Answers from the structure of the compare result alone, without reading
+	 * any content, so it is cheap enough for deciding whether to offer the switch.
+	 */
+	public static boolean canShowAsUnifiedDiff(CompareEditorInput input) {
+		return unifiedDiffCandidateOf(input) != null;
+	}
+
+	/**
+	 * Picks the side the unified diff sits on, without reading any content.
+	 * Returns <code>null</code> if neither side qualifies.
+	 */
+	private static UnifiedDiffCandidate unifiedDiffCandidateOf(CompareEditorInput input) {
+		if (input == null || !(input.getCompareResult() instanceof ICompareInput compareInput)) {
 			return null;
 		}
 		// A common ancestor (3-way input) is ignored; the unified diff renders a
@@ -869,17 +903,58 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 			return null;
 		}
 		// The overlay needs a workspace file to sit on; an editor opened on anything
-		// else, a revision for example, comes up empty. The other side supplies the
-		// diff source and is read here rather than on the UI thread.
+		// else, a revision for example, comes up empty.
 		if (leftEditorInput instanceof IFileEditorInput) {
-			return new UnifiedDiffSource(compareInput, leftEditorInput, left, UnifiedDiffMode.REVERT_MODE,
-					getSourceOf(rightSource));
+			return new UnifiedDiffCandidate(compareInput, leftEditorInput, left, UnifiedDiffMode.REVERT_MODE,
+					rightSource);
 		}
 		if (rightEditorInput instanceof IFileEditorInput) {
-			return new UnifiedDiffSource(compareInput, rightEditorInput, right, UnifiedDiffMode.OVERLAY_READ_ONLY_MODE,
-					getSourceOf(leftSource));
+			return new UnifiedDiffCandidate(compareInput, rightEditorInput, right,
+					UnifiedDiffMode.OVERLAY_READ_ONLY_MODE, leftSource);
 		}
 		return null;
+	}
+
+	/**
+	 * Switches the compare editor showing the given input over to the unified diff.
+	 * The compare editor is closed once the unified diff is up; when it cannot be
+	 * shown, the compare editor is left as it is.
+	 */
+	public void switchToUnifiedDiff(final CompareEditorInput input, final IWorkbenchPage page) {
+		final IWorkbenchPage wpage = page != null ? page : getActivePage();
+		if (wpage == null || !canShowAsUnifiedDiff(input)) {
+			return;
+		}
+		Job job = new Job(NLS.bind(CompareMessages.UnifiedDiff_preparing, input.getTitle())) {
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				// The input already ran, so only the diff source has to be read here.
+				UnifiedDiffSource source = unifiedDiffSourceOf(input);
+				if (source == null || monitor.isCanceled()) {
+					return Status.CANCEL_STATUS;
+				}
+				Display.getDefault().asyncExec(() -> {
+					IEditorPart compareEditor = wpage.findEditor(input);
+					if (openUnifiedDiff(source, input, wpage, null, true) && compareEditor != null) {
+						// Prompts when the merge has unsaved changes.
+						wpage.closeEditor(compareEditor, true);
+					}
+				});
+				return Status.OK_STATUS;
+			}
+
+			@Override
+			public boolean belongsTo(Object family) {
+				return family == input || input.belongsTo(family);
+			}
+		};
+		job.setUser(true);
+		job.schedule();
+	}
+
+	/** The side the unified diff would sit on, before any content is read. */
+	private static record UnifiedDiffCandidate(ICompareInput compareInput, IEditorInput editorInput,
+			ITypedElement element, UnifiedDiffMode mode, IStreamContentAccessor diffSource) {
 	}
 
 	private static IEditorInput documentKeyOf(ITypedElement element) {
