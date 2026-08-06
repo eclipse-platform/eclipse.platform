@@ -22,6 +22,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.eclipse.core.tests.resources.TestUtil.waitForCondition;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -103,10 +104,18 @@ public class ParallelBuildChainTest {
 
 	@AfterEach
 	public void tearDown() throws Exception {
-		// Cleanup workspace first to ensure that auto-build is not started on projects
-		waitForBuild();
-		getWorkspace().getRoot().delete(true, true, createTestMonitor());
-		TimerBuilder.abortCurrentBuilds();
+		boolean buildsStillRunning;
+		try {
+			// Cleanup workspace first to ensure that auto-build is not started on projects
+			waitForBuild();
+			getWorkspace().getRoot().delete(true, true, createTestMonitor());
+		} finally {
+			TimerBuilder.abortCurrentBuilds();
+			// Reset unconditionally, so that a build leaked by this test does not affect
+			// any subsequent test
+			buildsStillRunning = TimerBuilder.reset();
+		}
+		assertFalse(buildsStillRunning, "builds are still running at the end of the test");
 	}
 
 	private void setWorkspaceMaxNumberOfConcurrentBuilds(int maximumNumberOfConcurrentBuilds) throws CoreException {
