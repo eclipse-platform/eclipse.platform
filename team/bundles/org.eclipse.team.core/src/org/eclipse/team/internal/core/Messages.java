@@ -49,11 +49,6 @@ public class Messages extends NLS {
 	public static String SubscriberDiffTreeEventHandler_0;
 
 	public static String Team_readError;
-	public static String PollingInputStream_readTimeout;
-	public static String PollingInputStream_closeTimeout;
-	public static String PollingOutputStream_writeTimeout;
-	public static String PollingOutputStream_closeTimeout;
-	public static String TimeoutOutputStream_cannotWriteToStream;
 
 	public static String RemoteSyncElement_delimit;
 	public static String RemoteSyncElement_insync;
