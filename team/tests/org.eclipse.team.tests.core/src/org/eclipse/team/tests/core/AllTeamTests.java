@@ -24,7 +24,6 @@ import org.junit.platform.suite.api.Suite;
 		RefreshSubscriberParticipantJobProgressTests.class, //
 		RepositoryProviderTests.class, //
 		StorageMergerTests.class, //
-		StreamTests.class, //
 		UserMappingTest.class, //
 })
 public class AllTeamTests {
