@@ -105,8 +105,10 @@ public class LocalLauncherDelegate extends AbstractLauncherDelegate {
 			properties.put(ITerminalsConnectorConstants.PROP_FORCE_NEW, Boolean.TRUE);
 		}
 
+		boolean hadWorkingDirectoryBefore = properties
+				.containsKey(ITerminalsConnectorConstants.PROP_PROCESS_WORKING_DIR);
 		// Initialize the local terminal working directory.
-		if (!properties.containsKey(ITerminalsConnectorConstants.PROP_PROCESS_WORKING_DIR)) {
+		if (!hadWorkingDirectoryBefore) {
 			// By default, start the local terminal in the users home directory
 			String initialCwd = IPreferenceKeys.getPreferences()
 					.getString(IPreferenceKeys.PREF_LOCAL_TERMINAL_INITIAL_CWD);
@@ -213,7 +215,7 @@ public class LocalLauncherDelegate extends AbstractLauncherDelegate {
 						}
 					}
 				}
-				if (dir != null) {
+				if (!hadWorkingDirectoryBefore && dir != null) {
 					properties.put(ITerminalsConnectorConstants.PROP_PROCESS_WORKING_DIR, dir);
 
 					String basename = new Path(dir).lastSegment();
