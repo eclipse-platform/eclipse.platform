@@ -14,9 +14,11 @@ package org.eclipse.terminal.view.ui.internal;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
@@ -250,6 +252,7 @@ public class TerminalService implements ITerminalService {
 	public CompletableFuture<?> openConsole(final Map<String, Object> properties) {
 		Assert.isNotNull(properties);
 		final boolean restoringView = fRestoringView;
+		AtomicReference<CompletableFuture<?>> endOperation = new AtomicReference<>(null);
 		return executeServiceOperation(properties, new TerminalServiceRunnable() {
 			@Override
 			public void run(TerminalViewId tvid, String title, ITerminalConnector connector, Object data)
@@ -261,7 +264,14 @@ public class TerminalService implements ITerminalService {
 					fRestoringView = true;
 					consoleViewManager.showConsoleView(tvid);
 					fRestoringView = false;
-					doRun(tvid, title, connector, data);
+
+					// To make sure that the terminals started by showConsoleView() are started first,
+					// we have to delay starting the current one with executeServiceOperation()
+					// (add the operation at the end of the queue)
+					endOperation.set(executeServiceOperation(
+							(tvid2, title2, connector2, data2) -> doRun(tvid, title, connector, data), tvid, title,
+							connector, data));
+
 				}
 			}
 
@@ -294,7 +304,8 @@ public class TerminalService implements ITerminalService {
 					console.setData("properties", properties); //$NON-NLS-1$
 				}
 			}
-		});
+		}).thenCompose(o -> Objects.<CompletableFuture<?>>requireNonNullElse(endOperation.get(),
+				CompletableFuture.completedFuture(o)));
 	}
 
 	@Override
