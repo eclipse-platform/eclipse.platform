@@ -35,13 +35,7 @@ public class ExternalToolsUIMessages extends NLS {
 	public static String BuilderPropertyPage_New_Builder_7;
 	public static String BuilderPropertyPage_Choose_configuration_type_8;
 	public static String BuilderPropertyPage_Choose_an_external_tool_type_to_create_9;
-	public static String BuilderPropertyPage_Migrate_project_builder_10;
-	public static String BuilderPropertyPage_Not_Support;
-	public static String BuilderPropertyPage_Prompt;
 	public static String BuilderPropertyPage_error;
-	public static String BuilderPropertyPage_0;
-	public static String BuilderPropertyPage_2;
-	public static String BuilderPropertyPage_1;
 	public static String BuilderPropertyPage_4;
 	public static String BuilderPropertyPage_5;
 	public static String BuilderPropertyPage_13;

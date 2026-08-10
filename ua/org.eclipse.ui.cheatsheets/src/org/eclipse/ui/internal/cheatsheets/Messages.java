@@ -68,8 +68,6 @@ public final class Messages extends NLS {
 	public static String ERROR_OPENING_PERSPECTIVE;
 	public static String ERROR_SAVING_STATEFILE_URL;
 	public static String CHEAT_SHEET_INTRO_TITLE;
-	public static String ERROR_TITLE;
-	public static String ERROR_CREATING_DOCUMENT_BUILDER;
 	public static String ERROR_DOCUMENT_BUILDER_NOT_INIT;
 	public static String ERROR_OPENING_FILE;
 	public static String ERROR_OPENING_FILE_IN_PARSER;
@@ -129,7 +127,6 @@ public final class Messages extends NLS {
 	public static String COMPOSITE_PAGE_SKIP_TASK_GROUP;
 	public static String COMPOSITE_MENU_SKIP;
 	public static String COMPOSITE_MENU_START;
-	public static String COMPOSITE_MENU_REVIEW;
 	public static String COMPOSITE_MENU_RESET;
 	public static String COMPOSITE_PAGE_BLOCKED;
 	public static String COMPOSITE_PAGE_TASK_NOT_COMPLETE;
