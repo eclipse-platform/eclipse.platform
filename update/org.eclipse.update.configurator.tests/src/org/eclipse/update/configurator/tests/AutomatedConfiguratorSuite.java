@@ -14,6 +14,7 @@
 package org.eclipse.update.configurator.tests;
 
 import org.eclipse.update.internal.configurator.tests.FeatureEntryTests;
+import org.eclipse.update.internal.configurator.tests.SiteEntryTests;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
@@ -25,6 +26,7 @@ import org.junit.platform.suite.api.Suite;
 @Suite
 @SelectClasses({ //
 		FeatureEntryTests.class, //
+		SiteEntryTests.class, //
 })
 public class AutomatedConfiguratorSuite {
 

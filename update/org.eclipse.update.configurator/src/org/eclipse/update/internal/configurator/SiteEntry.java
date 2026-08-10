@@ -674,7 +674,7 @@ public class SiteEntry
 		featuresChangeStamp = lastChange;
 		pluginsChangeStamp = lastChange;
 		detectFeatures();
-		detectPlugins();
+		// plugins are detected on first access, the scan opens every jar on the site
 	}
 
 	/**
