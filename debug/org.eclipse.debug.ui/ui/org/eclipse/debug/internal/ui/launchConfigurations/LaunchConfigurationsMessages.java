@@ -29,7 +29,6 @@ public class LaunchConfigurationsMessages extends NLS {
 	public static String CommonTab_L_ocal_3;
 	public static String CommonTab_S_hared_4;
 	public static String CommonTab_Select_a_location_for_the_launch_configuration_13;
-	public static String CommonTab_Select_a_location_for_the_Input_File_15;
 	public static String CommonTab_Cannot_save_launch_configuration_in_a_closed_project__1;
 	public static String CommonTab_10;
 	public static String CommonTab_11;
