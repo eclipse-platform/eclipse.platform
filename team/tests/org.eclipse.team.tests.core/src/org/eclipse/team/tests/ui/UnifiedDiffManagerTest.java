@@ -323,6 +323,25 @@ public class UnifiedDiffManagerTest {
 	}
 
 	/**
+	 * A diff at the very end of the document is shown as a code mining. Only a line
+	 * header mining reserves its height in the text widget, so an emptied file must
+	 * not fall back to a footer mining: the removed content would be unreachable
+	 * because the viewer would have nothing to scroll over.
+	 */
+	@Test
+	public void testRemovingTheWholeContentStaysScrollable() {
+		setEditorContent("");
+		String removed = "a removed line\n".repeat(200);
+
+		assertTrue(UnifiedDiff.create(editor, removed, UnifiedDiffMode.OVERLAY_READ_ONLY_MODE).open().isOK());
+
+		StyledText widget = viewer().getTextWidget();
+		int reserved = waitForVerticalIndent(widget);
+		assertTrue(reserved >= 200 * widget.getLineHeight(),
+				"the 200 removed lines must reserve scrollable space, but only " + reserved + " pixels were reserved");
+	}
+
+	/**
 	 * Opening a second diff on the same editor must replace the first one instead
 	 * of stacking annotations and diffs on top of each other.
 	 */
@@ -408,6 +427,20 @@ public class UnifiedDiffManagerTest {
 
 	private static int countAnnotations(IAnnotationModel model, String type) {
 		return annotations(model, type).size();
+	}
+
+	/**
+	 * The vertical indent of a line is only applied while the code mining is
+	 * painted, and the minings themselves are resolved asynchronously.
+	 */
+	private static int waitForVerticalIndent(StyledText widget) {
+		long deadline = System.currentTimeMillis() + 10_000;
+		int indent = 0;
+		while (indent == 0 && System.currentTimeMillis() < deadline) {
+			forcePaintCycle(widget);
+			indent = widget.getLineVerticalIndent(0);
+		}
+		return indent;
 	}
 
 	private static void forcePaintCycle(StyledText tw) {
