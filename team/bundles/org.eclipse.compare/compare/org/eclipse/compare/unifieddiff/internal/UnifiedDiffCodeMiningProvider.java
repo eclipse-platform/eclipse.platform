@@ -229,15 +229,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 					continue;
 				}
 				try {
-					ICodeMining mining;
-					if (diff.leftStart == doc.getLength()) {
-						mining = new UnifiedDiffFooterCodeMining(doc, this, null, diff, tabWidth,
-								this.deletionBackgroundColor);
-					} else {
-						mining = new UnifiedDiffLineHeaderCodeMining(new Position(diff.leftStart, 1), this, diff,
-								tabWidth, this.detailedDiffColor, this.deletionBackgroundColor, tv);
-					}
-					minings.add(mining);
+					minings.add(createMining(doc, diff, diff.leftStart, tabWidth, tv));
 				} catch (BadLocationException e) {
 					error(e);
 				}
@@ -247,15 +239,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 					continue;
 				}
 				try {
-					ICodeMining mining;
-					if (diff.leftStart == doc.getLength()) {
-						mining = new UnifiedDiffFooterCodeMining(doc, this, null, diff, tabWidth,
-								this.deletionBackgroundColor);
-					} else {
-						mining = new UnifiedDiffLineHeaderCodeMining(new Position(diff.leftStart + diff.leftLength, 1),
-								this, diff, tabWidth, this.detailedDiffColor, this.deletionBackgroundColor, tv);
-					}
-					minings.add(mining);
+					minings.add(createMining(doc, diff, diff.leftStart + diff.leftLength, tabWidth, tv));
 				} catch (BadLocationException e) {
 					error(e);
 				}
@@ -264,20 +248,35 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 					continue;
 				}
 				try {
-					ICodeMining mining;
-					if (diff.leftStart == doc.getLength()) {
-						mining = new UnifiedDiffFooterCodeMining(doc, this, null, diff, tabWidth,
-								this.deletionBackgroundColor);
-					} else {
-						mining = new UnifiedDiffLineHeaderCodeMining(new Position(diff.leftStart, 1), this, diff,
-								tabWidth, this.detailedDiffColor, this.deletionBackgroundColor, tv);
-					}
-					minings.add(mining);
+					minings.add(createMining(doc, diff, diff.leftStart, tabWidth, tv));
 				} catch (BadLocationException e) {
 					error(e);
 				}
 			}
 		}
+	}
+
+	/**
+	 * A line header mining reserves its height as the vertical indent of its line,
+	 * so the viewer can scroll over it. A footer mining reserves nothing and is
+	 * therefore only used where no line start is available: behind the last,
+	 * non-empty line of the document.
+	 */
+	private ICodeMining createMining(IDocument doc, UnifiedDiff diff, int offset, int tabWidth, ITextViewer tv)
+			throws BadLocationException {
+		int end = doc.getLength();
+		if (offset >= end && !startsLine(doc, end)) {
+			return new UnifiedDiffFooterCodeMining(doc, this, null, diff, tabWidth, this.deletionBackgroundColor);
+		}
+		// a position must not reach beyond the document, otherwise the annotation model
+		// silently drops it
+		int start = Math.min(offset, end);
+		return new UnifiedDiffLineHeaderCodeMining(new Position(start, start < end ? 1 : 0), this, diff, tabWidth,
+				this.detailedDiffColor, this.deletionBackgroundColor, tv);
+	}
+
+	private static boolean startsLine(IDocument doc, int offset) throws BadLocationException {
+		return doc.getLineOffset(doc.getLineOfOffset(offset)) == offset;
 	}
 
 	static class UnifiedDiffFooterCodeMining extends DocumentFooterCodeMining {
