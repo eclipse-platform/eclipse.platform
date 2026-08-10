@@ -469,13 +469,12 @@ public class ConsoleTests {
 			assertFalse(zoomFont.isDisposed(), "the zoom font must not be disposed while its console is still open");
 
 			removeConsoles(console);
-			TestUtil.processUIEvents(200);
-			long startTime = System.currentTimeMillis();
-			while (getConsoleManager().getConsoles().length > 0 && System.currentTimeMillis() - startTime < 60_000) {
-				TestUtil.processUIEvents(200);
-			}
-			assertEquals(0, getConsoleManager().getConsoles().length, "Should have no consoles after removal, but some are still present: " + Arrays.toString(getConsoleManager().getConsoles()));
-			assertTrue(zoomFont.isDisposed(), "the zoom font must be disposed once its console is removed");
+			TestUtil.waitWhile(() -> getConsoleManager().getConsoles().length > 0, 60_000,
+					() -> "Should have no consoles after removal, but some are still present: "
+							+ Arrays.toString(getConsoleManager().getConsoles()));
+			// the zoom fonts are disposed a UI cycle later, see ConsoleZoomHandler
+			TestUtil.waitWhile(() -> !zoomFont.isDisposed(), 10_000,
+					() -> "the zoom font must be disposed once its console is removed");
 		} finally {
 			removeConsoles(console);
 			hideConsoleView(consoleView);
