@@ -40,7 +40,6 @@ public final class HelpBaseResources extends NLS {
 	public static String selectAll;
 	public static String selectWorkingSet;
 	public static String WorkingSetContent;
-	public static String LocalHelpPage_capabilityFiltering_name;
 	public static String InfoCenter_fileNotFound;
 	public static String InfoCenter_io;
 	public static String WebSearch_click;
@@ -64,7 +63,6 @@ public final class HelpBaseResources extends NLS {
 	public static String HelpIndexBuilder_cannotCreateDest;
 	public static String HelpIndexBuilder_errorExtractingId;
 	public static String HelpIndexBuilder_errorParsing;
-	public static String PreferenceNameDefault;
 	public static String HelpSearch_QueryTooComplex;
 	public static String EnabledTopicFilterName;
 	public static String SearchScopeFilterName;

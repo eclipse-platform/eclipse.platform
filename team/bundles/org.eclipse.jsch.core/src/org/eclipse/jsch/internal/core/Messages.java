@@ -20,13 +20,6 @@ public class Messages extends NLS{
 
   public static String JSchSession_5;
   public static String Util_timeout;
-  public static String JSchAuthenticationException_detail;
-  public static String JSchRepositoryLocation_locationForm;
-  public static String JSchRepositoryLocation_invalidFormat;
-  public static String KnownRepositories_0;
-  public static String JSchRepositoryLocation_73;
-  public static String JSchRepositoryLocation_74;
-  public static String JSchRepositoryLocation_75;
 
   static{
     // load message values from bundle file

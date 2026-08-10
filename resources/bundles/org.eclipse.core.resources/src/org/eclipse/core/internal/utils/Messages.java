@@ -81,7 +81,6 @@ public class Messages extends NLS {
 	public static String localstore_couldNotWriteReadOnly;
 	public static String localstore_deleteProblem;
 	public static String localstore_deleting;
-	public static String localstore_failedReadDuringWrite;
 	public static String localstore_fileExists;
 	public static String localstore_fileNotFound;
 	public static String localstore_locationUndefined;
@@ -158,11 +157,9 @@ public class Messages extends NLS {
 	public static String refresh_pollJob;
 	public static String refresh_refreshErr;
 	public static String refresh_restoreOnInvalid;
-	public static String refresh_task;
 	public static String refresh_uninstallMonitorsOnWorkspace;
 
 	public static String resources_cannotModify;
-	public static String resources_changeInAdd;
 	public static String resources_charsetBroadcasting;
 	public static String resources_charsetUpdating;
 	public static String resources_closing_0;
@@ -178,7 +175,6 @@ public class Messages extends NLS {
 	public static String resources_deleteMeta;
 	public static String resources_deleteProblem;
 	public static String resources_deleting;
-	public static String resources_deleting_0;
 	public static String resources_destNotNull;
 	public static String resources_errorContentDescription;
 	public static String resources_errorDeleting;
@@ -193,7 +189,6 @@ public class Messages extends NLS {
 	public static String resources_errorReadProject;
 	public static String resources_errorRefresh;
 	public static String resources_errorValidator;
-	public static String resources_errorVisiting;
 	public static String resources_existsDifferentCase;
 	public static String resources_existsLocalDifferentCase;
 	public static String resources_exMasterTable;
@@ -265,7 +260,6 @@ public class Messages extends NLS {
 	public static String resources_readProjectTree;
 	public static String resources_readSync;
 	public static String resources_readWorkspaceMeta;
-	public static String resources_readWorkspaceMetaValue;
 	public static String resources_readWorkspaceSnap;
 	public static String resources_readWorkspaceTree;
 	public static String resources_refreshing;
@@ -286,7 +280,6 @@ public class Messages extends NLS {
 	public static String resources_settingDerivedFlag;
 	public static String resources_shutdown;
 	public static String resources_shutdownProblems;
-	public static String resources_snapInit;
 	public static String resources_snapRead;
 	public static String resources_snapRequest;
 	public static String resources_snapshot;
@@ -313,7 +306,6 @@ public class Messages extends NLS {
 	public static String url_couldNotResolve_resourceLocationCanNotBeDetermined;
 
 	// utils
-	public static String utils_clone;
 	public static String utils_stringJobName;
 	// watson
 	public static String watson_elementNotFound;

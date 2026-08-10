@@ -27,7 +27,6 @@ public final class XMLCompareMessages extends NLS {
 	public static String XMLStructureCreator_unordered;
 	public static String XMLStructureCreator_ordered;
 	public static String XMLStructureCreator_idmap_unordered;
-	public static String XMLStructureCreator_id_map_scheme;
 	public static String XMLStructureCreator_body;
 	public static String ChooseMatcherDropDownAction_text;
 	public static String ChooseMatcherDropDownAction_tooltip;

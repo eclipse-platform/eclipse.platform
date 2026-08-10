@@ -14,12 +14,10 @@ public class Messages extends NLS {
 	public static String IDETipManager_6;
 	public static String IDETipManager_8;
 	public static String IDETipManager_9;
-	public static String Startup_0;
 	public static String Startup_1;
 	public static String Startup_18;
 	public static String Startup_19;
 	public static String Startup_20;
-	public static String Startup_3;
 	public static String Tip1_Welcome_subject;
 	public static String Tip1_Welcome_text_body;
 	public static String Tip1_Welcome_text_footer;

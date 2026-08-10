@@ -34,7 +34,6 @@ public final class Messages extends NLS {
 	public static String BundleManifest_noVersion;
 	public static String FeatureParser_IdOrVersionInvalid;
 	public static String BundleGroupProvider;
-	public static String ConfigurationActivator_createConfig;
 	public static String ConfigurationParser_cannotLoadSharedInstall;
 	public static String PluginEntry_versionError;
 	public static String IniFileReader_MissingDesc;

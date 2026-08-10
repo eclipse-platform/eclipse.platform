@@ -53,7 +53,6 @@ public final class NetUIMessages extends NLS {
 	public static String ProxyEntryDialog_2;
 	public static String ProxyEntryDialog_3;
 	public static String ProxyEntryDialog_4;
-	public static String ProxyEntryDialog_5;
 	public static String ProxyEntryDialog_6;
 	public static String ProxyEntryDialog_7;
 	public static String ProxyEntryDialog_8;

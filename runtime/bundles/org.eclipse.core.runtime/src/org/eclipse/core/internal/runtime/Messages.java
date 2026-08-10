@@ -33,57 +33,15 @@ public class Messages extends NLS {
 	public static String meta_exceptionParsingLog;
 
 	// parsing/resolve
-	public static String plugin_deactivatedLoad;
 
 	// plugins
-	public static String plugin_shutdownProblems;
-	public static String plugin_startupProblems;
 
 	// Preferences
 	public static String preferences_saveProblems;
 
 	// Compatibility - parsing/resolve
-	public static String parse_badPrereqOnFrag;
-	public static String parse_duplicateFragment;
-	public static String parse_duplicateLib;
-	public static String parse_internalStack;
-	public static String parse_unknownElement;
-	public static String parse_unknownTopElement;
-	public static String parse_unknownAttribute;
-	public static String parse_error;
-	public static String parse_errorProcessing;
-	public static String parse_errorNameLineColumn;
-	public static String parse_validExport;
-	public static String parse_validMatch;
-	public static String parse_unknownLibraryType;
-	public static String parse_nullFragmentIdentifier;
-	public static String parse_nullPluginIdentifier;
-	public static String parse_duplicatePlugin;
-	public static String parse_unknownEntry;
-	public static String parse_missingPluginId;
-	public static String parse_missingPluginName;
-	public static String parse_missingFPName;
-	public static String parse_missingFPVersion;
-	public static String parse_missingPluginVersion;
-	public static String parse_fragmentMissingAttr;
-	public static String parse_pluginMissingAttr;
-	public static String parse_pluginMissingIdName;
-	public static String parse_fragmentMissingIdName;
-	public static String parse_missingFragmentPd;
-	public static String parse_extPointDisabled;
-	public static String parse_extPointUnknown;
-	public static String parse_unsatisfiedOptPrereq;
-	public static String parse_unsatisfiedPrereq;
-	public static String parse_prereqDisabled;
-	public static String parse_prereqLoop;
-	public static String parse_prereqOptLoop;
 
 	// Compatibility - plugins
-	public static String plugin_notPluginClass;
-	public static String plugin_unableToResolve;
-	public static String plugin_pluginDisabled;
-	public static String plugin_instantiateClassError;
-	public static String plugin_loadClassError;
 	public static String plugin_unableToGetActivator;
 
 	static {
