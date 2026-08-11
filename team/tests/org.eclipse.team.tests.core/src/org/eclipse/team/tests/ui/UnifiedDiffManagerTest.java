@@ -42,6 +42,8 @@ import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationModel;
+import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.text.source.inlined.LineHeaderAnnotation;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPage;
@@ -335,9 +337,10 @@ public class UnifiedDiffManagerTest {
 
 		assertTrue(UnifiedDiff.create(editor, removed, UnifiedDiffMode.OVERLAY_READ_ONLY_MODE).open().isOK());
 
-		StyledText widget = viewer().getTextWidget();
-		int reserved = waitForVerticalIndent(widget);
-		assertTrue(reserved >= 200 * widget.getLineHeight(),
+		LineHeaderAnnotation header = waitForLineHeaderAnnotation();
+		assertNotNull(header, "the removed content must be shown as a line header mining, not as a document footer");
+		int reserved = header.getHeight();
+		assertTrue(reserved >= 200 * viewer().getTextWidget().getLineHeight(),
 				"the 200 removed lines must reserve scrollable space, but only " + reserved + " pixels were reserved");
 	}
 
@@ -430,17 +433,25 @@ public class UnifiedDiffManagerTest {
 	}
 
 	/**
-	 * The vertical indent of a line is only applied while the code mining is
-	 * painted, and the minings themselves are resolved asynchronously.
+	 * Returns the line header annotation of the code minings, or <code>null</code>
+	 * if none appears within the timeout. The minings are computed asynchronously,
+	 * so the annotation only reaches the model after the request completed. Its
+	 * height is asserted instead of the vertical indent of the widget line, because
+	 * the indent is applied while painting, and a build machine gives no guarantee
+	 * that the editor is ever painted.
 	 */
-	private static int waitForVerticalIndent(StyledText widget) {
+	private LineHeaderAnnotation waitForLineHeaderAnnotation() {
 		long deadline = System.currentTimeMillis() + 10_000;
-		int indent = 0;
-		while (indent == 0 && System.currentTimeMillis() < deadline) {
-			forcePaintCycle(widget);
-			indent = widget.getLineVerticalIndent(0);
+		while (System.currentTimeMillis() < deadline) {
+			processEvents();
+			Iterator<Annotation> it = ((ISourceViewer) viewer()).getAnnotationModel().getAnnotationIterator();
+			while (it.hasNext()) {
+				if (it.next() instanceof LineHeaderAnnotation header) {
+					return header;
+				}
+			}
 		}
-		return indent;
+		return null;
 	}
 
 	private static void forcePaintCycle(StyledText tw) {
