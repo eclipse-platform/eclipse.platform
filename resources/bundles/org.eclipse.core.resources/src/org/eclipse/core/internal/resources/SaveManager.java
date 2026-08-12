@@ -1903,7 +1903,7 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 			executor.shutdown();
 		}
 		if (stats.length == 1) {
-			throw new CoreException(stats[1]);
+			throw new CoreException(stats[0]);
 		}
 		if (stats.length > 0) {
 			throw new CoreException(new MultiStatus(ResourcesPlugin.PI_RESOURCES, IStatus.ERROR, stats,
