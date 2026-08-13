@@ -6,3 +6,6 @@ https://github.com/eclipse-platform/eclipse.platform.releng.aggregator/issues/11
 XML Refactoring
 https://github.com/eclipse-platform/eclipse.platform.releng.aggregator/issues/1659
 https://github.com/eclipse-platform/eclipse.platform.releng.aggregator/issues/2044
+https://github.com/eclipse-platform/eclipse.platform.ui/issues/3604
+https://github.com/eclipse-platform/eclipse.platform/issues/2872
+https://github.com/eclipse-platform/eclipse.platform/pull/2319
