@@ -88,6 +88,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osgi.service.debug.DebugOptions;
@@ -720,6 +721,12 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 				closeIfOpenedHere(wpage, openedHere);
 				return false;
 			}
+			// A side that is not a workspace file, the version shown for a deleted file
+			// for example, is only worth overlaying when its content really loaded.
+			if (!(source.editorInput() instanceof IFileEditorInput) && !hasContent(textEditor)) {
+				closeIfOpenedHere(wpage, openedHere);
+				return false;
+			}
 			Action openTwoWayCompare = createOpenTwoWayCompareAction(input, page, editor, activate, textEditor);
 			IStatus status = UnifiedDiff.create(textEditor, source.diffSource(), source.mode())
 					.additionalActions(Arrays.asList(openTwoWayCompare))
@@ -742,6 +749,11 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		// diff would only be a second editor on the same file without a comparison.
 		closeIfOpenedHere(wpage, openedHere);
 		return false;
+	}
+
+	private static boolean hasContent(ITextEditor editor) {
+		IDocument document = editor.getDocumentProvider().getDocument(editor.getEditorInput());
+		return document != null && document.getLength() > 0;
 	}
 
 	private static void closeIfOpenedHere(IWorkbenchPage page, IEditorPart editor) {
@@ -897,16 +909,30 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		// plain left-vs-right overlay.
 		ITypedElement left = compareInput.getLeft();
 		ITypedElement right = compareInput.getRight();
-		// Only the side shown in the editor has to be a workspace file; an editor
-		// opened on anything else, a revision for example, comes up empty. The other
-		// side merely supplies the diff source and may be missing entirely, as for a
-		// newly added file.
-		if (documentKeyOf(left) instanceof IFileEditorInput leftEditorInput) {
+		IEditorInput leftEditorInput = documentKeyOf(left);
+		IEditorInput rightEditorInput = documentKeyOf(right);
+		// The side shown in the editor is preferably a workspace file; an editor opened
+		// on anything else, a revision for example, comes up empty. The other side
+		// merely supplies the diff source and may be missing entirely, as for a newly
+		// added file.
+		if (leftEditorInput instanceof IFileEditorInput) {
 			return new UnifiedDiffCandidate(compareInput, leftEditorInput, left, UnifiedDiffMode.REVERT_MODE, right);
 		}
-		if (documentKeyOf(right) instanceof IFileEditorInput rightEditorInput) {
+		if (rightEditorInput instanceof IFileEditorInput) {
 			return new UnifiedDiffCandidate(compareInput, rightEditorInput, right,
 					UnifiedDiffMode.OVERLAY_READ_ONLY_MODE, left);
+		}
+		// A deleted file leaves no workspace file to overlay. The version that still
+		// exists is then shown read-only, with its whole content marked as removed.
+		// Two sides that both exist are left to the classic compare editor, because
+		// neither of them is the state on disk.
+		if (rightEditorInput != null && isAbsent(left)) {
+			return new UnifiedDiffCandidate(compareInput, rightEditorInput, right,
+					UnifiedDiffMode.OVERLAY_READ_ONLY_MODE, left);
+		}
+		if (leftEditorInput != null && isAbsent(right)) {
+			return new UnifiedDiffCandidate(compareInput, leftEditorInput, left,
+					UnifiedDiffMode.OVERLAY_READ_ONLY_MODE, right);
 		}
 		return null;
 	}
@@ -951,6 +977,21 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	/** The side the unified diff would sit on, before any content is read. */
 	private static record UnifiedDiffCandidate(ICompareInput compareInput, IEditorInput editorInput,
 			ITypedElement element, UnifiedDiffMode mode, ITypedElement diffSource) {
+	}
+
+	/**
+	 * Returns whether the given side does not exist, as the workspace file of a
+	 * deleted resource or the previous version of an added file. Answered from the
+	 * element alone, so that picking a candidate stays free of content reads.
+	 */
+	private static boolean isAbsent(ITypedElement element) {
+		// null, or an element that only names the file
+		if (!(element instanceof IStreamContentAccessor)) {
+			return true;
+		}
+		IResource resource = element instanceof IResourceProvider provider ? provider.getResource()
+				: Adapters.adapt(element, IResource.class);
+		return resource != null && !resource.exists();
 	}
 
 	private static IEditorInput documentKeyOf(ITypedElement element) {

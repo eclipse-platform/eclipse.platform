@@ -42,7 +42,7 @@ public class HideAllDiffsRunnable implements Runnable {
 
 	public HideAllDiffsRunnable(ITextEditor textEditor) {
 		this.tv = textEditor.getAdapter(ITextViewer.class);
-		this.model = textEditor.getDocumentProvider().getAnnotationModel(textEditor.getEditorInput());
+		this.model = UnifiedDiffManager.annotationModelOf(textEditor);
 	}
 
 	public String getLabel() {
