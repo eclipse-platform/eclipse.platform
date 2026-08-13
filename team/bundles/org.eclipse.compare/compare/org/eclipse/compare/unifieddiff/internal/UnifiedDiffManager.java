@@ -63,11 +63,13 @@ import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.codemining.ICodeMining;
 import org.eclipse.jface.text.source.Annotation;
+import org.eclipse.jface.text.source.AnnotationModel;
 import org.eclipse.jface.text.source.AnnotationModelEvent;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.IAnnotationModelExtension;
 import org.eclipse.jface.text.source.IAnnotationModelListener;
 import org.eclipse.jface.text.source.IAnnotationModelListenerExtension;
+import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.ISourceViewerExtension5;
 import org.eclipse.jface.text.source.inlined.AbstractInlinedAnnotation;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
@@ -130,6 +132,34 @@ public class UnifiedDiffManager {
 		return diffsByViewer.get(viewer);
 	}
 
+	/**
+	 * Returns the annotation model the diffs of the given editor live in, or
+	 * <code>null</code> when it has none. The document provider of an editor on
+	 * something other than a workspace file, a revision for example, supplies no
+	 * model, so the one installed on the viewer is used.
+	 */
+	public static IAnnotationModel annotationModelOf(ITextEditor editor) {
+		IAnnotationModel model = editor.getDocumentProvider().getAnnotationModel(editor.getEditorInput());
+		if (model != null) {
+			return model;
+		}
+		return editor.getAdapter(ITextViewer.class) instanceof ISourceViewer sourceViewer
+				? sourceViewer.getAnnotationModel()
+				: null;
+	}
+
+	/**
+	 * Installs an annotation model on the viewer of an editor whose document
+	 * provider has none, so that the diffs have somewhere to be shown.
+	 */
+	private static IAnnotationModel installAnnotationModel(ITextViewer viewer, IDocument document) {
+		if (document == null || !(viewer instanceof ISourceViewer sourceViewer)) {
+			return null;
+		}
+		sourceViewer.setDocument(document, new AnnotationModel());
+		return sourceViewer.getAnnotationModel();
+	}
+
 	public static IStatus open(ITextEditor editor, String source, UnifiedDiffMode mode, List<Action> additionalActions,
 			TokenComparatorFactory tokenComparatorFactory,
 			IgnoreWhitespaceContributorFactory ignoreWhitespaceContributorFactory, boolean ignoreWhiteSpace) {
@@ -137,13 +167,14 @@ public class UnifiedDiffManager {
 		if (viewer instanceof ProjectionViewer pv) {
 			pv.doOperation(ProjectionViewer.EXPAND_ALL);
 		}
-		IAnnotationModel model = editor.getDocumentProvider().getAnnotationModel(editor.getEditorInput());
+		IDocument leftDocument = editor.getDocumentProvider().getDocument(editor.getEditorInput());
+		IAnnotationModel editorModel = annotationModelOf(editor);
+		IAnnotationModel model = editorModel != null ? editorModel : installAnnotationModel(viewer, leftDocument);
 		if (model == null) {
 			return Status.CANCEL_STATUS;
 		}
 		clearAll(viewer, model);
 
-		IDocument leftDocument = editor.getDocumentProvider().getDocument(editor.getEditorInput());
 		IDocument rightDocument = new Document(source);
 
 		List<UnifiedDiff> unifiedDiffs;
