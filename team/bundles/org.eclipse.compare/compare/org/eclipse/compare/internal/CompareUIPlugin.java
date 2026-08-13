@@ -797,19 +797,20 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		return openTwoWayCompare;
 	}
 
-	private String getSourceOf(IStreamContentAccessor right) {
+	/**
+	 * Returns the text of the side that is diffed against the editor. An element
+	 * that is absent or carries no contents, as for a file that exists on one side
+	 * only, contributes an empty document, so the whole file shows up as one
+	 * change.
+	 */
+	private String getSourceOf(ITypedElement element) {
 		try {
-			if (right == null) {
-				return ""; //$NON-NLS-1$
+			if (element instanceof IStreamContentAccessor accessor) {
+				return toString(accessor.getContents());
 			}
-			String result = toString(right.getContents());
-			return result;
 		} catch (CoreException | IOException e) {
 			CompareUIPlugin.log(e);
 		}
-		// UnifiedDiff.Builder requires a non-null source. Return an empty string so
-		// the unified diff path can still attempt to open and the fallback to the
-		// classic compare editor remains intact when an OK status is not returned.
 		return ""; //$NON-NLS-1$
 	}
 
@@ -896,21 +897,16 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		// plain left-vs-right overlay.
 		ITypedElement left = compareInput.getLeft();
 		ITypedElement right = compareInput.getRight();
-		IEditorInput leftEditorInput = documentKeyOf(left);
-		IEditorInput rightEditorInput = documentKeyOf(right);
-		if (leftEditorInput == null || rightEditorInput == null || !(left instanceof IStreamContentAccessor leftSource)
-				|| !(right instanceof IStreamContentAccessor rightSource)) {
-			return null;
+		// Only the side shown in the editor has to be a workspace file; an editor
+		// opened on anything else, a revision for example, comes up empty. The other
+		// side merely supplies the diff source and may be missing entirely, as for a
+		// newly added file.
+		if (documentKeyOf(left) instanceof IFileEditorInput leftEditorInput) {
+			return new UnifiedDiffCandidate(compareInput, leftEditorInput, left, UnifiedDiffMode.REVERT_MODE, right);
 		}
-		// The overlay needs a workspace file to sit on; an editor opened on anything
-		// else, a revision for example, comes up empty.
-		if (leftEditorInput instanceof IFileEditorInput) {
-			return new UnifiedDiffCandidate(compareInput, leftEditorInput, left, UnifiedDiffMode.REVERT_MODE,
-					rightSource);
-		}
-		if (rightEditorInput instanceof IFileEditorInput) {
+		if (documentKeyOf(right) instanceof IFileEditorInput rightEditorInput) {
 			return new UnifiedDiffCandidate(compareInput, rightEditorInput, right,
-					UnifiedDiffMode.OVERLAY_READ_ONLY_MODE, leftSource);
+					UnifiedDiffMode.OVERLAY_READ_ONLY_MODE, left);
 		}
 		return null;
 	}
@@ -954,7 +950,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 
 	/** The side the unified diff would sit on, before any content is read. */
 	private static record UnifiedDiffCandidate(ICompareInput compareInput, IEditorInput editorInput,
-			ITypedElement element, UnifiedDiffMode mode, IStreamContentAccessor diffSource) {
+			ITypedElement element, UnifiedDiffMode mode, ITypedElement diffSource) {
 	}
 
 	private static IEditorInput documentKeyOf(ITypedElement element) {
