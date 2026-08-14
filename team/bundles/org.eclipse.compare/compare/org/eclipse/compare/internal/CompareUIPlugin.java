@@ -898,6 +898,20 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	}
 
 	/**
+	 * Returns whether the classic compare editor may offer a switch to the unified
+	 * diff for the given input. The unified diff is still experimental, so the
+	 * switch stays hidden until the preference that enables it is set.
+	 */
+	public static boolean canOfferUnifiedDiffSwitch(CompareEditorInput input) {
+		if (input == null) {
+			return false;
+		}
+		CompareConfiguration configuration = input.getCompareConfiguration();
+		IPreferenceStore store = configuration == null ? null : configuration.getPreferenceStore();
+		return store != null && store.getBoolean(ComparePreferencePage.UNIFIED_DIFF) && canShowAsUnifiedDiff(input);
+	}
+
+	/**
 	 * Picks the side the unified diff sits on, without reading any content.
 	 * Returns <code>null</code> if neither side qualifies.
 	 */
