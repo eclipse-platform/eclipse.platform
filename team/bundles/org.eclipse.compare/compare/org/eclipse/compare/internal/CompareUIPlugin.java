@@ -957,7 +957,11 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 				}
 				Display.getDefault().asyncExec(() -> {
 					IEditorPart compareEditor = wpage.findEditor(input);
-					if (openUnifiedDiff(source, input, wpage, null, true) && compareEditor != null) {
+					if (compareEditor == null) {
+						// The comparison was closed while it was being prepared.
+						return;
+					}
+					if (openUnifiedDiff(source, input, wpage, null, true)) {
 						// Prompts when the merge has unsaved changes.
 						wpage.closeEditor(compareEditor, true);
 					}
