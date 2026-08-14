@@ -4204,11 +4204,12 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 	/**
 	 * Adds the action that switches this side by side comparison over to the
 	 * unified diff, the counterpart of the unified diff's action to open the
-	 * comparison. Only added when the input can be shown as a unified diff at all.
+	 * comparison. Only added when the unified diff is enabled in the preferences
+	 * and the input can be shown as one at all.
 	 */
 	private void createShowUnifiedDiffItem(ToolBarManager tbm) {
 		if (!(getCompareConfiguration().getContainer() instanceof CompareEditorInput input)
-				|| !CompareUIPlugin.canShowAsUnifiedDiff(input)) {
+				|| !CompareUIPlugin.canOfferUnifiedDiffSwitch(input)) {
 			return;
 		}
 		Action showUnifiedDiff = new Action() {
