@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.terminal.view.ui.internal.view;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -154,43 +156,48 @@ public class TerminalsViewMementoHandler {
 			// Get all the "connection" memento's.
 			IMemento[] connections = memento.getChildren("connection"); //$NON-NLS-1$
 			for (IMemento connection : connections) {
-				// Create the properties container that holds the terminal properties
-				Map<String, Object> properties = new HashMap<>();
-
-				// Set the view id attributes
-				properties.put(ITerminalsConnectorConstants.PROP_ID, id);
-				properties.put(ITerminalsConnectorConstants.PROP_SECONDARY_ID, secondaryId);
-
-				// Restore the common attributes
-				properties.put(ITerminalsConnectorConstants.PROP_DELEGATE_ID,
-						connection.getString(ITerminalsConnectorConstants.PROP_DELEGATE_ID));
-				properties.put(ITerminalsConnectorConstants.PROP_TERMINAL_CONNECTOR_ID,
-						connection.getString(ITerminalsConnectorConstants.PROP_TERMINAL_CONNECTOR_ID));
-				if (connection.getBoolean(ITerminalsConnectorConstants.PROP_FORCE_NEW) != null) {
-					properties.put(ITerminalsConnectorConstants.PROP_FORCE_NEW,
-							connection.getBoolean(ITerminalsConnectorConstants.PROP_FORCE_NEW));
-				}
-
-				// Restore the encoding
-				if (connection.getString(ITerminalsConnectorConstants.PROP_ENCODING) != null) {
-					properties.put(ITerminalsConnectorConstants.PROP_ENCODING,
-							connection.getString(ITerminalsConnectorConstants.PROP_ENCODING));
-				}
-
-				// Restore the working directory
-				if (connection.getString(ITerminalsConnectorConstants.PROP_PROCESS_WORKING_DIR) != null) {
-					properties.put(ITerminalsConnectorConstants.PROP_PROCESS_WORKING_DIR,
-							connection.getString(ITerminalsConnectorConstants.PROP_PROCESS_WORKING_DIR));
-				}
-				Optional<ILauncherDelegate> delegate = findDelegate(properties);
-				// Pass on to the memento handler
-				delegate.map(d -> d.getAdapter(IMementoHandler.class))
-						.ifPresent(mh -> mh.restoreState(connection, properties));
-				// Restore the terminal connection
-				delegate.ifPresent(d -> executeDelegate(properties, d));
-
+				restoreConnection(id, secondaryId, connection);
 			}
 		}
+	}
+
+	private void restoreConnection(String id, String secondaryId, IMemento connection) {
+		// Create the properties container that holds the terminal properties
+		Map<String, Object> properties = new HashMap<>();
+
+		// Set the view id attributes
+		properties.put(ITerminalsConnectorConstants.PROP_ID, id);
+		properties.put(ITerminalsConnectorConstants.PROP_SECONDARY_ID, secondaryId);
+
+		// Restore the common attributes
+		properties.put(ITerminalsConnectorConstants.PROP_DELEGATE_ID,
+				connection.getString(ITerminalsConnectorConstants.PROP_DELEGATE_ID));
+		properties.put(ITerminalsConnectorConstants.PROP_TERMINAL_CONNECTOR_ID,
+				connection.getString(ITerminalsConnectorConstants.PROP_TERMINAL_CONNECTOR_ID));
+		if (connection.getBoolean(ITerminalsConnectorConstants.PROP_FORCE_NEW) != null) {
+			properties.put(ITerminalsConnectorConstants.PROP_FORCE_NEW,
+					connection.getBoolean(ITerminalsConnectorConstants.PROP_FORCE_NEW));
+		}
+
+		// Restore the encoding
+		if (connection.getString(ITerminalsConnectorConstants.PROP_ENCODING) != null) {
+			properties.put(ITerminalsConnectorConstants.PROP_ENCODING,
+					connection.getString(ITerminalsConnectorConstants.PROP_ENCODING));
+		}
+
+		// Restore the working directory
+		String workingDirectory = connection.getString(ITerminalsConnectorConstants.PROP_PROCESS_WORKING_DIR);
+		if (workingDirectory != null) {
+			if (!Files.isDirectory(Path.of(workingDirectory))) {
+				return;
+			}
+			properties.put(ITerminalsConnectorConstants.PROP_PROCESS_WORKING_DIR, workingDirectory);
+		}
+		Optional<ILauncherDelegate> delegate = findDelegate(properties);
+		// Pass on to the memento handler
+		delegate.map(d -> d.getAdapter(IMementoHandler.class)).ifPresent(mh -> mh.restoreState(connection, properties));
+		// Restore the terminal connection
+		delegate.ifPresent(d -> executeDelegate(properties, d));
 	}
 
 	private Optional<ILauncherDelegate> findDelegate(Map<String, Object> properties) {
