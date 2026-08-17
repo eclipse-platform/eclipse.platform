@@ -27,9 +27,7 @@ public class Messages extends NLS {
 	public static String ok;
 	public static String concatStrings;
 
-	public static String AbstractResourceVariantTree_0;
 
-	public static String Assert_assertionFailed;
 
 	public static String FileModificationValidator_someReadOnly;
 	public static String FileModificationValidator_fileIsReadOnly;
@@ -103,13 +101,10 @@ public class Messages extends NLS {
 	public static String SubscriberResourceMappingContext_1;
 	public static String MergeContext_0;
 	public static String MergeContext_1;
-	public static String MergeContext_2;
-	public static String MergeContext_3;
 	public static String MergeContext_4;
 
 	public static String LocalFileRevision_currentVersion;
 	public static String LocalFileRevision_currentVersionTag;
-	public static String LocalFileRevision_localRevisionTag;
 	static {
 		// load message values from bundle file
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
@@ -119,9 +114,7 @@ public class Messages extends NLS {
 
 	public static String DelegatingStorageMerger_1;
 
-	public static String WorkspaceSubscriber_0;
 
-	public static String WorkspaceSubscriber_1;
 
 	public static String ScopeManagerEventHandler_0;
 

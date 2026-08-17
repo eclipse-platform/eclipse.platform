@@ -54,7 +54,6 @@ public final class Messages extends NLS {
 	public static String ScopeSelect_scope;
 	public static String SeeAlsoPart_search;
 	public static String SeeAlsoPart_allTopics;
-	public static String SeeAlsoPart_goto;
 	public static String SeeAlsoPart_contextHelp;
 	public static String SeeAlsoPart_bookmarks;
 	public static String SeeAlsoPart_index;
@@ -75,8 +74,6 @@ public final class Messages extends NLS {
 	public static String SearchPart_title;
 	public static String SearchPart_stop;
 	public static String SearchPart_go;
-	public static String SearchPart_collapse;
-	public static String SearchPart_expand;
 	public static String SearchPart_potential_hit;
 	public static String WorkingSetContent;
 	public static String WorkingSetCriteria;
@@ -134,7 +131,6 @@ public final class Messages extends NLS {
 	public static String HelpPreferencePage_externalBrowser;
 	public static String HelpPreferencePage_dlabel;
 	public static String HelpPreferencePage_tray;
-	public static String HelpPreferencePage_search;
 	public static String HelpPreferencePage_searchLocation;
 	public static String HelpPreferencePage_openContents;
 	public static String InfoCenterPage_url;
@@ -186,35 +182,22 @@ public final class Messages extends NLS {
 	public static String SearchEmbeddedHelpLast;
 
 	// Remote Help Preferences
-	public static String AddICDialog_10;
 
-	public static String AddICDialog_17;
 
-	public static String AddICDialog_19;
 
 	public static String AddICDialog_2;
 
 	public static String AddICDialog_4;
 
-	public static String AddICDialog_5;
 
-	public static String AddICDialog_7;
 
-	public static String AddICDialog_8;
 
-	public static String AddICDialog_9;
 
-	public static String EditICDialog_10;
 
-	public static String EditICDialog_11;
 
-	public static String EditICDialog_12;
 
-	public static String EditICDialog_13;
 
-	public static String EditICDialog_14;
 
-	public static String EditICDialog_15;
 
 	public static String EditICDialog_7;
 
@@ -226,7 +209,6 @@ public final class Messages extends NLS {
 	public static String HelpContentBlock_addICTitle;
 	public static String HelpContentBlock_editICTitle;
 	public static String HelpContentBlock_removeICTitle;
-	public static String HelpContentBlock_viewICTitle;
 	public static String HelpContentBlock_testConnectionTitle;
 	public static String HelpContentBlock_rmvTitle;
 	public static String HelpContentBlock_rmvLabel;
@@ -245,37 +227,20 @@ public final class Messages extends NLS {
 
 	public static String TestConnectionDialog_13;
 
-	public static String TestConnectionDialog_4;
 
-	public static String TestConnectionDialog_6;
-	public static String TestConnectionDialog_URL_With_Param;
 
-	public static String ViewICPropsDialog_10;
 
-	public static String ViewICPropsDialog_11;
 
-	public static String ViewICPropsDialog_12;
 
-	public static String ViewICPropsDialog_13;
 
-	public static String ViewICPropsDialog_14;
 
-	public static String ViewICPropsDialog_19;
 
-	public static String ViewICPropsDialog_20;
 
-	public static String ViewICPropsDialog_21;
 
-	public static String ViewICPropsDialog_23;
 
-	public static String ViewICPropsDialog_24;
 
-	public static String ViewICPropsDialog_6;
 
-	public static String ViewICPropsDialog_7;
 
-	public static String ViewICPropsDialog_8;
-	public static String ViewICPropsDialog_URL;
 	public static String remoteHelpUnavailable;
 
 	public static String See;

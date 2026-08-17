@@ -107,11 +107,9 @@ public class TeamUIMessages extends NLS {
 
 	public static String HistoryPageCompareEditorInput_0;
 
-	public static String ImportProjectSetMainPage_AddToWorkingSet;
 	public static String ImportProjectSetMainPage_Project_Set_File;
 	public static String ImportProjectSetMainPage_Project_Set_Url;
 
-	public static String ImportProjectSetMainPage_Browse;
 
 	public static String ImportProjectSetDialog_duplicatedWorkingSet_title;
 	public static String ImportProjectSetDialog_duplicatedWorkingSet_message;
@@ -320,14 +318,10 @@ public class TeamUIMessages extends NLS {
 	public static String ImportProjectSetMainPage_The_given_URL_cannot_be_loaded;
 	public static String ImportProjectSetMainPage_The_specified_file_does_not_exist_4;
 	public static String ImportProjectSetMainPage_You_have_specified_a_folder_5;
-	public static String ImportProjectSetMainPage_workingSetNameEmpty;
-	public static String ImportProjectSetMainPage_createWorkingSetLabel;
-	public static String ImportProjectSetMainPage_workingSetLabel;
 	public static String ImportProjectSetMainPage_runInBackground;
 	public static String ImportProjectSetMainPage_jobName;
 	public static String ImportProjectSetMainPage_specifyFile;
 	public static String ImportProjectSetMainPage_specifyURL;
-	public static String ImportProjectSetMainPage_selectWorkingSet;
 	public static String ImportProjectSetMainPage_projectSetFileInvalid;
 
 	public static String ProjectSetContentHandler_Element_provider_must_be_contained_in_element_psf_4;
@@ -348,15 +342,12 @@ public class TeamUIMessages extends NLS {
 	public static String ProjectSetImportWizard_1;
 	public static String ProjectSetImportWizard_3;
 	public static String ProjectSetImportWizard_Import_a_Project_Set_3;
-	public static String ProjectSetImportWizard_workingSetExistsTitle;
-	public static String ProjectSetImportWizard_workingSetExistsMessage;
 
 	public static String ExportProjectSetMainPage_Project_Set_Files_3;
 	public static String ExportProjectSetMainPage_default;
 	public static String ExportProjectSetMainPage_warning;
 	public static String ImportProjectSetMainPage_allFiles;
 	public static String ImportProjectSetMainPage_Project_Set_Files_2;
-	public static String ExportProjectSetMainPage__File_name__1;
 	public static String ImportProjectSetAction_0;
 
 	public static String SyncViewPreferencePage_lastRefreshRunNever;
@@ -565,7 +556,6 @@ public class TeamUIMessages extends NLS {
 	public static String ChangeLogModelProvider_3a;
 	public static String ChangeLogModelProvider_0;
 	public static String ChangeLogModelProvider_12;
-	public static String ChangeLogModelProvider_13;
 	public static String ChangeLogModelProvider_5;
 	public static String ChangeLogModelProvider_6;
 	public static String ChangeLogModelProvider_7;
@@ -588,25 +578,10 @@ public class TeamUIMessages extends NLS {
 	public static String nameAndRevision;
 	public static String internal;
 
-	public static String TeamCompareEditorInput_repository;
-	public static String TeamCompareEditorInput_titleAncestor;
-	public static String TeamCompareEditorInput_titleNoAncestor;
-	public static String TeamCompareEditorInput_titleNoAncestorDifferent;
-	public static String TeamCompareEditorInput_different;
 
-	public static String TeamCompareEditorInput_comparing;
-	public static String TeamCompareEditorInput_new;
-	public static String TeamCompareEditorInput_deleted;
 
-	public static String TeamCompareEditorInput_fileProgress;
 
 	public static String GenericHistoryView_Refresh;
-	public static String GenericHistoryView_GetDirectDescendents;
-	public static String GenericHistoryView_GetPredecessor;
-	public static String GenericHistoryView_ShowCommentViewer;
-	public static String GenericHistoryView_WrapComments;
-	public static String GenericHistoryView_ShowTagViewer;
-	public static String GenericHistoryView_GenericFileHistoryFetcher;
 	public static String GenericHistoryView_LinkWithEditor;
 	public static String GenericHistoryTableProvider_Revision;
 	public static String GenericHistoryTableProvider_RevisionTime;
@@ -614,7 +589,6 @@ public class TeamUIMessages extends NLS {
 	public static String GenericHistoryTableProvider_Comment;
 	public static String OpenRevisionAction_DeletedRevisionTitle;
 	public static String OpenRevisionAction_DeletedRevisionMessage;
-	public static String GenericHistoryView_ErrorFetchingEntries;
 	public static String TeamContentProviderDescriptor_1;
 	public static String TeamContentProviderDescriptor_2;
 	public static String MergeIncomingChangesAction_0;
@@ -637,9 +611,6 @@ public class TeamUIMessages extends NLS {
 
 	public static String GenericHistoryView_0;
 
-	public static String LocalHistoryTableProvider_localRevision;
-	public static String LocalHistoryPage_openRevision;
-	public static String LocalHistoryPage_fetchingLocalHistory;
 
 	public static String CompareFileRevisionEditorInput_compareResourceAndVersions;
 	public static String CompareFileRevisionEditorInput_repository;
@@ -656,7 +627,6 @@ public class TeamUIMessages extends NLS {
 
 	public static String DiffTreeChangesSection_2;
 
-	public static String ModelParticipantPageDialog_0;
 
 	public static String ModelElementSelectionPage_0;
 

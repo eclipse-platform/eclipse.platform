@@ -34,7 +34,6 @@ public final class CompareMessages extends NLS {
 	public static String CompareEditor_2;
 	public static String DocumentMerger_0;
 	public static String DocumentMerger_1;
-	public static String DocumentMerger_2;
 	public static String DocumentMerger_3;
 	public static String CompareEditorInput_0;
 	public static String ComparePlugin_internal_error;
@@ -43,8 +42,6 @@ public final class CompareMessages extends NLS {
 	public static String ComparePreferencePage_2;
 	public static String ComparePreferencePage_3;
 	public static String ComparePreferencePage_4;
-	public static String CompareUIPlugin_0;
-	public static String CompareUIPlugin_1;
 	public static String ContentMergeViewer_resource_changed_description;
 	public static String ContentMergeViewer_resource_changed_title;
 	public static String ExceptionDialog_seeErrorLogMessage;
@@ -60,8 +57,6 @@ public final class CompareMessages extends NLS {
 	public static String StructureDiffViewer_StructureError;
 	public static String TextMergeViewer_0;
 	public static String TextMergeViewer_1;
-	public static String TextMergeViewer_10;
-	public static String TextMergeViewer_11;
 	public static String TextMergeViewer_12;
 	public static String TextMergeViewer_13;
 	public static String TextMergeViewer_14;
@@ -74,8 +69,6 @@ public final class CompareMessages extends NLS {
 	public static String TextMergeViewer_5;
 	public static String TextMergeViewer_6;
 	public static String TextMergeViewer_7;
-	public static String TextMergeViewer_8;
-	public static String TextMergeViewer_9;
 	public static String TextMergeViewer_accessible_ancestor;
 	public static String TextMergeViewer_accessible_left;
 	public static String TextMergeViewer_accessible_right;
@@ -92,10 +85,6 @@ public final class CompareMessages extends NLS {
 	public static String TextMergeViewer_diffDescription_noDiff_format;
 	public static String TextMergeViewer_diffDescription_diff_format;
 	public static String TextMergeViewer_statusLine_format;
-	public static String TextMergeViewer_atEnd_title;
-	public static String TextMergeViewer_atEnd_message;
-	public static String TextMergeViewer_atBeginning_title;
-	public static String TextMergeViewer_atBeginning_message;
 	public static String TextMergeViewer_differences;
 	public static String CompareNavigator_atEnd_title;
 	public static String CompareNavigator_atEnd_message;

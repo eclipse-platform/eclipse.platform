@@ -32,7 +32,6 @@ public class DebugCoreMessages extends NLS {
 	public static String DebugPlugin_3;
 	public static String DebugPlugin_4;
 	public static String DebugPlugin_invalid_exec_factory;
-	public static String DebugPlugin_invalid_exec_factory_priority;
 	public static String DebugPlugin_5;
 	public static String DebugPlugin_6;
 	public static String DebugPlugin_7;
@@ -43,10 +42,6 @@ public class DebugCoreMessages extends NLS {
 	public static String GroupLaunchConfigurationDelegate_Delay;
 	public static String GroupLaunchConfigurationDelegate_Delaying;
 	public static String GroupLaunchConfigurationDelegate_Launching;
-	public static String GroupLaunchConfigurationDelegate_mode_debug;
-	public static String GroupLaunchConfigurationDelegate_mode_inherit;
-	public static String GroupLaunchConfigurationDelegate_mode_profile;
-	public static String GroupLaunchConfigurationDelegate_mode_run;
 	public static String GroupLaunchConfigurationDelegate_None;
 	public static String GroupLaunchConfigurationDelegate_Wait_until_terminated;
 	public static String GroupLaunchConfigurationDelegate_Waiting_for_termination;
