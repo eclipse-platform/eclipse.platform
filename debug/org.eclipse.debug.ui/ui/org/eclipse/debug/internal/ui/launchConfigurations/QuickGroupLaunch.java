@@ -81,7 +81,7 @@ public class QuickGroupLaunch extends AbstractLaunchConfigurationAction {
 			IStructuredSelection selection = getStructuredSelection();
 
 			for (Object selected : selection) {
-				if (selected instanceof ILaunchConfiguration launchConfig) {
+				if (selected instanceof ILaunchConfiguration launchConfig && !launchConfig.isPrototype()) {
 					GroupLaunchElement element = new GroupLaunchElement();
 					element.index = input.size();
 					element.enabled = true;
@@ -116,7 +116,15 @@ public class QuickGroupLaunch extends AbstractLaunchConfigurationAction {
 	 */
 	@Override
 	protected boolean updateSelection(IStructuredSelection selection) {
-		return selection.size() > 1;
+		if (selection.size() <= 1) {
+			return false;
+		}
+		for (Object selected : selection) {
+			if (selected instanceof ILaunchConfiguration launchConfig && launchConfig.isPrototype()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override
