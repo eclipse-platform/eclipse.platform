@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2013 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -11,9 +11,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *     dakshinamurthy.karra@gmail.com - bug 165371
+ *     Alexander Fedorov (ArSysOp) - API to process launch configuration attributes
  *******************************************************************************/
 
 package org.eclipse.core.externaltools.internal;
+
+import org.eclipse.core.externaltools.internal.launchConfigurations.ExternalToolsProgramMessages;
+import org.eclipse.debug.core.ILaunchAttribute;
+
 /**
  * Defines the constants available for client use.
  * <p>
@@ -30,26 +35,31 @@ public interface IExternalToolConstants {
 	String EMPTY_STRING = ""; //$NON-NLS-1$
 
 	/**
-	 * Plug-in identifier for external tools UI (value <code>org.eclipse.ui.externaltools</code>).
+	 * Plug-in identifier for external tools UI (value
+	 * <code>org.eclipse.ui.externaltools</code>).
 	 */
-	String UI_PLUGIN_ID = "org.eclipse.ui.externaltools"; //$NON-NLS-1$;
+	String UI_PLUGIN_ID = "org.eclipse.ui.externaltools"; //$NON-NLS-1$ ;
 
 	/**
-	 * Plug-in identifier for external tools core (value <code>org.eclipse.core.externaltools</code>).
+	 * Plug-in identifier for external tools core (value
+	 * <code>org.eclipse.core.externaltools</code>).
 	 */
-	String PLUGIN_ID = "org.eclipse.core.externaltools"; //$NON-NLS-1$;
+	String PLUGIN_ID = "org.eclipse.core.externaltools"; //$NON-NLS-1$ ;
 
 	// ------- Refresh Variables -------
 	/**
-	 * Variable that expands to the workspace root object (value <code>workspace</code>).
+	 * Variable that expands to the workspace root object (value
+	 * <code>workspace</code>).
 	 */
 	String VAR_WORKSPACE = "workspace"; //$NON-NLS-1$
 	/**
-	 * Variable that expands to the project resource (value <code>project</code>).
+	 * Variable that expands to the project resource (value
+	 * <code>project</code>).
 	 */
 	String VAR_PROJECT = "project"; //$NON-NLS-1$
 	/**
-	 * Variable that expands to the container resource (value <code>container</code>).
+	 * Variable that expands to the container resource (value
+	 * <code>container</code>).
 	 */
 	String VAR_CONTAINER = "container"; //$NON-NLS-1$
 	/**
@@ -57,44 +67,45 @@ public interface IExternalToolConstants {
 	 */
 	String VAR_RESOURCE = "resource"; //$NON-NLS-1$
 	/**
-	 * Variable that expands to the working set object (value <code>working_set</code>).
+	 * Variable that expands to the working set object (value
+	 * <code>working_set</code>).
 	 */
 	String VAR_WORKING_SET = "working_set"; //$NON-NLS-1$
 	// ------- Tool Types -------
 	/**
-	 * External tool type for programs such as executables, batch files,
-	 * shell scripts, etc (value <code>programType</code>).
+	 * External tool type for programs such as executables, batch files, shell
+	 * scripts, etc (value <code>programType</code>).
 	 */
-	String TOOL_TYPE_PROGRAM = "programType"; //$NON-NLS-1$;
+	String TOOL_TYPE_PROGRAM = "programType"; //$NON-NLS-1$ ;
 
 	// ------- Build Types -------
 	/**
-	 * Build type indicating an incremental project build request for
-	 * the external tool running as a builder (value <code>incremental</code>).
+	 * Build type indicating an incremental project build request for the
+	 * external tool running as a builder (value <code>incremental</code>).
 	 */
 	String BUILD_TYPE_INCREMENTAL = "incremental"; //$NON-NLS-1$
 
 	/**
-	 * Build type indicating a full project build request for
-	 * the external tool running as a builder (value <code>full</code>).
+	 * Build type indicating a full project build request for the external tool
+	 * running as a builder (value <code>full</code>).
 	 */
 	String BUILD_TYPE_FULL = "full"; //$NON-NLS-1$
 
 	/**
-	 * Build type indicating an automatic project build request for
-	 * the external tool running as a builder (value <code>auto</code>).
+	 * Build type indicating an automatic project build request for the external
+	 * tool running as a builder (value <code>auto</code>).
 	 */
 	String BUILD_TYPE_AUTO = "auto"; //$NON-NLS-1$
 
 	/**
-	 * Build type indicating a clean project build request for
-	 * the external tool running as a builder (value <code>clean</code>).
+	 * Build type indicating a clean project build request for the external tool
+	 * running as a builder (value <code>clean</code>).
 	 */
 	String BUILD_TYPE_CLEAN = "clean"; //$NON-NLS-1$
 
 	/**
-	 * Build type indicating no project build request for
-	 * the external tool running as a builder (value <code>none</code>).
+	 * Build type indicating no project build request for the external tool
+	 * running as a builder (value <code>none</code>).
 	 */
 	String BUILD_TYPE_NONE = "none"; //$NON-NLS-1$
 
@@ -129,9 +140,12 @@ public interface IExternalToolConstants {
 	/**
 	 * Boolean attribute indicating if external tool output should be captured.
 	 * Default value is <code>false</code>.
-	 * @deprecated since 3.1 Replaced by <code>org.eclipse.debug.core.DebugPlugin.ATTR_CAPTURE_OUTPUT</code>
+	 *
+	 * @deprecated since 3.1 Replaced by
+	 *             <code>org.eclipse.debug.core.DebugPlugin.ATTR_CAPTURE_OUTPUT</code>
 	 */
-	@Deprecated String ATTR_CAPTURE_OUTPUT = UI_PLUGIN_ID + ".ATTR_CAPTURE_OUTPUT"; //$NON-NLS-1$
+	@Deprecated
+	String ATTR_CAPTURE_OUTPUT = UI_PLUGIN_ID + ".ATTR_CAPTURE_OUTPUT"; //$NON-NLS-1$
 	/**
 	 * String attribute identifying the location of an external. Default value
 	 * is <code>null</code>. Encoding is tool specific.
@@ -139,22 +153,30 @@ public interface IExternalToolConstants {
 	String ATTR_LOCATION = UI_PLUGIN_ID + ".ATTR_LOCATION"; //$NON-NLS-1$
 
 	/**
-	 * Boolean attribute indicating if the user should be prompted for
-	 * arguments before running a tool. Default value is <code>false</code>.
-	 * THIS ATTRIBUTE IS NOT USED.
+	 * {@link ILaunchAttribute<String>} identifying the location of an external.
+	 * Default value is <code>null</code>. Encoding is tool specific.
+	 *
+	 * @see IExternalToolConstants#ATTR_LOCATION
+	 */
+	ILaunchAttribute<String> LAUNCH_ATTRIBUTE_LOCATION = ILaunchAttribute.of(ATTR_LOCATION, String.class, lc -> null, ExternalToolsProgramMessages.LaunchAttributeLocation_name);
+
+	/**
+	 * Boolean attribute indicating if the user should be prompted for arguments
+	 * before running a tool. Default value is <code>false</code>. THIS
+	 * ATTRIBUTE IS NOT USED.
 	 */
 	String ATTR_PROMPT_FOR_ARGUMENTS = UI_PLUGIN_ID + ".ATTR_PROMPT_FOR_ARGUMENTS"; //$NON-NLS-1$
 
 	/**
-	 * String attribute identifying the scope of resources that should trigger an
-	 * external tool to run. Default value is <code>null</code>
-	 * indicating that the builder will be triggered for all changes.
+	 * String attribute identifying the scope of resources that should trigger
+	 * an external tool to run. Default value is <code>null</code> indicating
+	 * that the builder will be triggered for all changes.
 	 */
 	String ATTR_BUILDER_SCOPE = UI_PLUGIN_ID + ".ATTR_BUILD_SCOPE"; //$NON-NLS-1$
 
 	/**
-	 * String attribute containing an array of build kinds for which an
-	 * external tool builder should be run.
+	 * String attribute containing an array of build kinds for which an external
+	 * tool builder should be run.
 	 */
 	String ATTR_RUN_BUILD_KINDS = UI_PLUGIN_ID + ".ATTR_RUN_BUILD_KINDS"; //$NON-NLS-1$
 
@@ -171,6 +193,15 @@ public interface IExternalToolConstants {
 	String ATTR_TOOL_ARGUMENTS = UI_PLUGIN_ID + ".ATTR_TOOL_ARGUMENTS"; //$NON-NLS-1$
 
 	/**
+	 * {@link ILaunchAttribute<String>} containing the arguments that should be
+	 * passed to the tool. Default value is <code>null</code>, and encoding is
+	 * tool specific.
+	 *
+	 * @see IExternalToolConstants#ATTR_TOOL_ARGUMENTS
+	 */
+	ILaunchAttribute<String> LAUNCH_ATTRIBUTE_ARGUMENTS = ILaunchAttribute.of(ATTR_TOOL_ARGUMENTS, String.class, lc -> null, ExternalToolsProgramMessages.LaunchAttributeArguments_name);
+
+	/**
 	 * String attribute identifying the working directory of an external tool.
 	 * Default value is <code>null</code>, which indicates a default working
 	 * directory, which is tool specific.
@@ -178,16 +209,26 @@ public interface IExternalToolConstants {
 	String ATTR_WORKING_DIRECTORY = UI_PLUGIN_ID + ".ATTR_WORKING_DIRECTORY"; //$NON-NLS-1$
 
 	/**
-	 * String attribute identifying whether an external tool builder configuration
-	 * is enabled. The default value is <code>true</code>, which indicates
-	 * that the configuration will be executed as appropriate by the builder.
+	 * {@link ILaunchAttribute<String>} identifying the working directory of an
+	 * external tool. Default value is <code>null</code>, which indicates a
+	 * default working directory, which is tool specific.
+	 *
+	 * @see IExternalToolConstants#ATTR_WORKING_DIRECTORY
+	 */
+	ILaunchAttribute<String> LAUNCH_ATTRIBUTE_WORKING_DIRECTORY = ILaunchAttribute.of(ATTR_WORKING_DIRECTORY, String.class, lc -> null, ExternalToolsProgramMessages.LaunchAttributeWorkingDirectory_name);
+
+	/**
+	 * String attribute identifying whether an external tool builder
+	 * configuration is enabled. The default value is <code>true</code>, which
+	 * indicates that the configuration will be executed as appropriate by the
+	 * builder.
 	 */
 	String ATTR_BUILDER_ENABLED = UI_PLUGIN_ID + ".ATTR_BUILDER_ENABLED"; //$NON-NLS-1$
 
 	/**
-	 * Boolean attribute identifying whether an external tool launcher should execute
-	 * synchronously (value <code>false</code>) or asynchronously (value <code>true</code>).
-	 * Default value is
+	 * Boolean attribute identifying whether an external tool launcher should
+	 * execute synchronously (value <code>false</code>) or asynchronously (value
+	 * <code>true</code>). Default value is
 	 */
 	String ATTR_LAUNCH_IN_BACKGROUND = "org.eclipse.debug.ui.ATTR_LAUNCH_IN_BACKGROUND"; //$NON-NLS-1$
 
@@ -197,17 +238,20 @@ public interface IExternalToolConstants {
 	int ERR_INTERNAL_ERROR = 150;
 
 	/**
-	 * String attribute identifying a non-external tool builder launch configuration that is disabled
-	 * The value is the name of the disabled builder.
+	 * String attribute identifying a non-external tool builder launch
+	 * configuration that is disabled The value is the name of the disabled
+	 * builder.
 	 */
-	String ATTR_DISABLED_BUILDER = UI_PLUGIN_ID + ".ATTR_DISABLED_BUILDER";		 //$NON-NLS-1$
+	String ATTR_DISABLED_BUILDER = UI_PLUGIN_ID + ".ATTR_DISABLED_BUILDER"; //$NON-NLS-1$
 
 	/**
-	 * boolean attribute identifying that an external tool builder has been configured for triggering
-	 * using the <code>ICommand.setBuilding(int)</code> mechanism
+	 * boolean attribute identifying that an external tool builder has been
+	 * configured for triggering using the
+	 * <code>ICommand.setBuilding(int)</code> mechanism
+	 *
 	 * @since 3.1
 	 */
-	String ATTR_TRIGGERS_CONFIGURED = UI_PLUGIN_ID + ".ATTR_TRIGGERS_CONFIGURED";		 //$NON-NLS-1$
+	String ATTR_TRIGGERS_CONFIGURED = UI_PLUGIN_ID + ".ATTR_TRIGGERS_CONFIGURED"; //$NON-NLS-1$
 
 	/**
 	 * String attribute identifying the build scope for a launch configuration.
@@ -221,4 +265,5 @@ public interface IExternalToolConstants {
 	 * <code>true</code>.
 	 */
 	String ATTR_INCLUDE_REFERENCED_PROJECTS = UI_PLUGIN_ID + ".ATTR_INCLUDE_REFERENCED_PROJECTS"; //$NON-NLS-1$
+
 }
