@@ -15,7 +15,9 @@
 package org.eclipse.core.internal.localstore;
 
 import java.util.Iterator;
-import org.eclipse.core.filesystem.*;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.resources.Resource;
 import org.eclipse.core.resources.IResource;
 
@@ -41,7 +43,7 @@ public class UnifiedTreeNode implements ILocalStoreConstants {
 	}
 
 	public boolean existsInFileSystem() {
-		return fileInfo != null && fileInfo.exists();
+		return fileInfo != null && (fileInfo.exists() || fileInfo.getAttribute(EFS.ATTRIBUTE_SYMLINK));
 	}
 
 	/**

@@ -16,8 +16,14 @@
 package org.eclipse.core.internal.filesystem.local.nio;
 
 import java.io.IOException;
-import java.nio.file.*;
-import java.nio.file.attribute.*;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFileAttributeView;
+import java.nio.file.attribute.PosixFileAttributes;
+import java.nio.file.attribute.PosixFilePermission;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.filesystem.EFS;
@@ -51,14 +57,21 @@ public class PosixHandler extends NativeHandler {
 
 		try {
 			PosixFileAttributes attrs = Files.readAttributes(path, PosixFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
+			info.setExists(true);
 
 			if (attrs.isSymbolicLink()) {
 				info.setAttribute(EFS.ATTRIBUTE_SYMLINK, true);
 				info.setStringAttribute(EFS.ATTRIBUTE_LINK_TARGET, Files.readSymbolicLink(path).toString());
-				attrs = Files.readAttributes(path, PosixFileAttributes.class);
+				try {
+					attrs = Files.readAttributes(path, PosixFileAttributes.class);
+				} catch (NoSuchFileException e) {
+					// The link target does not exist, so we cannot read its attributes.
+					// Keep symlink metadata (permissions/timestamp) for dangling links.
+					// Preserve historical "broken target" semantics while still providing link attributes.
+					info.setExists(false);
+				}
 			}
 
-			info.setExists(true);
 			info.setLastModified(attrs.lastModifiedTime().toMillis());
 			info.setLength(attrs.size());
 			info.setDirectory(attrs.isDirectory());

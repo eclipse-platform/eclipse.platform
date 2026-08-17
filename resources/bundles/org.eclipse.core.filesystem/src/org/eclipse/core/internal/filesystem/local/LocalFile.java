@@ -18,6 +18,7 @@
  *******************************************************************************/
 package org.eclipse.core.internal.filesystem.local;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -533,9 +534,26 @@ public class LocalFile extends FileStore {
 		try {
 			return new FileInputStream(file);
 		} catch (FileNotFoundException e) {
+			IFileInfo info = fetchInfo();
+			if (isBrokenSymbolicLink(info)) {
+				// If the file is a symbolic link and the target is set but does not exist, return an empty
+				// stream instead of throwing an exception
+				return new ByteArrayInputStream(new byte[0]);
+			}
 			handleReadIOException(e);
 			return null;
 		}
+	}
+
+	/**
+	 * @param info the file info to check
+	 * @return true if the file is a broken symbolic link, false otherwise
+	 */
+	private static boolean isBrokenSymbolicLink(IFileInfo info) {
+		// Historically, file info for a broken symbolic links reported that it doesn't exist
+		// if the target didn't existed as a file, which is actually incorrect.
+		// We can check for the existence of the target by checking if the link target attribute is set.
+		return !info.exists() && info.getAttribute(EFS.ATTRIBUTE_SYMLINK) && info.getStringAttribute(EFS.ATTRIBUTE_LINK_TARGET) != null;
 	}
 
 	/** @see #openInputStream(int, IProgressMonitor) */
@@ -544,6 +562,12 @@ public class LocalFile extends FileStore {
 		try {
 			return Files.readAllBytes(file.toPath());
 		} catch (IOException e) {
+			IFileInfo info = fetchInfo();
+			if (isBrokenSymbolicLink(info)) {
+				// If the file is a symbolic link and the target is set but does not exist, return an empty
+				// stream instead of throwing an exception
+				return new byte[0];
+			}
 			handleReadIOException(e);
 			return null;
 		}
