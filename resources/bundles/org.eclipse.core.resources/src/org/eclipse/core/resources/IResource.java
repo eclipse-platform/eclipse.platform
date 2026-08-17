@@ -299,6 +299,15 @@ public interface IResource extends IAdaptable, ISchedulingRule {
 	 */
 	int VIRTUAL = 0x2000;
 
+	/**
+	 * Update flag constant (bit mask value 0x4000) indicating that an opened zip
+	 * file was closed and the zip file in the local file system should not be
+	 * deleted.
+	 *
+	 * @since 3.21
+	 */
+	int CLOSE_ZIP_FILE = 0x4000;
+
 	/*====================================================================
 	 * Other constants:
 	 *====================================================================*/
