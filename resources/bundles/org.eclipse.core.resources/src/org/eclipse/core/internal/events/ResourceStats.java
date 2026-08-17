@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -26,10 +26,14 @@ import org.eclipse.core.runtime.Platform;
  * a builder running, an editor opening, etc.
  */
 public class ResourceStats {
+
 	/**
-	 * The event that is currently occurring, maybe <code>null</code>
+	 * A single timed occurrence of a traced event. Returned by the
+	 * <code>start...</code> methods and passed back to {@link ResourceStats#end(Run)}.
 	 */
-	private static PerformanceStats currentStats;
+	public record Run(PerformanceStats stats, String context, long startTime) {
+	}
+
 	//performance event names
 	public static final String EVENT_BUILDERS = ResourcesPlugin.PI_RESOURCES + "/perf/builders"; //$NON-NLS-1$
 	public static final String EVENT_LISTENERS = ResourcesPlugin.PI_RESOURCES + "/perf/listeners"; //$NON-NLS-1$
@@ -37,59 +41,98 @@ public class ResourceStats {
 	public static final String EVENT_SNAPSHOT = ResourcesPlugin.PI_RESOURCES + "/perf/snapshot"; //$NON-NLS-1$
 	public static final String EVENT_REFRESH = ResourcesPlugin.PI_RESOURCES + "/perf/refresh"; //$NON-NLS-1$
 
-	//performance event enablement
-	public static boolean TRACE_BUILDERS = PerformanceStats.isEnabled(ResourceStats.EVENT_BUILDERS);
-	public static boolean TRACE_LISTENERS = PerformanceStats.isEnabled(ResourceStats.EVENT_LISTENERS);
-	public static boolean TRACE_SAVE_PARTICIPANTS = PerformanceStats.isEnabled(ResourceStats.EVENT_SAVE_PARTICIPANTS);
-	public static boolean TRACE_SNAPSHOT = PerformanceStats.isEnabled(ResourceStats.EVENT_SNAPSHOT);
-	public static boolean TRACE_REFRESH = PerformanceStats.isEnabled(ResourceStats.EVENT_REFRESH);
-	public static int TRACE_REFRESH_THRESHOLD;
-	static {
-		String option = Platform.getDebugOption(ResourceStats.EVENT_REFRESH);
-		if (option != null) {
-			try {
-				TRACE_REFRESH_THRESHOLD = Integer.parseInt(option);
-			} catch (NumberFormatException e) {
-				TRACE_REFRESH_THRESHOLD = 0;
-			}
+	/*
+	 * Whether the debug option of the event is set. These only track this bundle's
+	 * own options: the global org.eclipse.core.runtime/perf flag belongs to another
+	 * bundle, and changes to it are not reported to this bundle's debug options
+	 * listener, so it has to be read separately through PerformanceStats.ENABLED.
+	 */
+	private static volatile boolean optionBuilders = isOptionSet(EVENT_BUILDERS);
+	private static volatile boolean optionListeners = isOptionSet(EVENT_LISTENERS);
+	private static volatile boolean optionSaveParticipants = isOptionSet(EVENT_SAVE_PARTICIPANTS);
+	private static volatile boolean optionSnapshot = isOptionSet(EVENT_SNAPSHOT);
+	private static volatile boolean optionRefresh = isOptionSet(EVENT_REFRESH);
+
+	//durations above which an occurrence is reported to the log, in milliseconds
+	public static volatile int TRACE_BUILDERS_THRESHOLD = threshold(EVENT_BUILDERS);
+	public static volatile int TRACE_REFRESH_THRESHOLD = threshold(EVENT_REFRESH);
+
+	/**
+	 * Re-reads the tracing options so that tracing can be switched on and off at
+	 * runtime. Called whenever the platform debug options change.
+	 */
+	public static void optionsChanged() {
+		optionBuilders = isOptionSet(EVENT_BUILDERS);
+		optionListeners = isOptionSet(EVENT_LISTENERS);
+		optionSaveParticipants = isOptionSet(EVENT_SAVE_PARTICIPANTS);
+		optionSnapshot = isOptionSet(EVENT_SNAPSHOT);
+		optionRefresh = isOptionSet(EVENT_REFRESH);
+		TRACE_BUILDERS_THRESHOLD = threshold(EVENT_BUILDERS);
+		TRACE_REFRESH_THRESHOLD = threshold(EVENT_REFRESH);
+	}
+
+	public static boolean isTracingBuilders() {
+		return PerformanceStats.ENABLED && optionBuilders;
+	}
+
+	public static boolean isTracingListeners() {
+		return PerformanceStats.ENABLED && optionListeners;
+	}
+
+	public static boolean isTracingSaveParticipants() {
+		return PerformanceStats.ENABLED && optionSaveParticipants;
+	}
+
+	public static boolean isTracingSnapshot() {
+		return PerformanceStats.ENABLED && optionSnapshot;
+	}
+
+	public static boolean isTracingRefresh() {
+		return PerformanceStats.ENABLED && optionRefresh;
+	}
+
+	private static boolean isOptionSet(String event) {
+		String option = Platform.getDebugOption(event);
+		return option != null && !"false".equalsIgnoreCase(option) && !"-1".equalsIgnoreCase(option); //$NON-NLS-1$ //$NON-NLS-2$
+	}
+
+	private static int threshold(String event) {
+		String option = Platform.getDebugOption(event);
+		if (option == null) {
+			return 0;
+		}
+		try {
+			return Integer.parseInt(option.trim());
+		} catch (NumberFormatException e) {
+			return 0;
 		}
 	}
 
-	public static void endBuild() {
-		if (currentStats != null) {
-			currentStats.endRun();
-		}
-		currentStats = null;
+	private static Run start(String event, Object blame, String context) {
+		return new Run(PerformanceStats.getStats(event, blame), context, System.currentTimeMillis());
 	}
 
-	public static void endNotify() {
-		if (currentStats != null) {
-			currentStats.endRun();
-		}
-		currentStats = null;
+	/**
+	 * Starts a run that is only timed, without being recorded as a performance
+	 * event. Used where just the duration is of interest, such as debug tracing.
+	 */
+	public static Run startTiming() {
+		return new Run(null, null, System.currentTimeMillis());
 	}
 
-	public static void endSave() {
-		if (currentStats != null) {
-			currentStats.endRun();
+	/**
+	 * Records the given run and returns its duration in milliseconds, or -1 if
+	 * there was no run.
+	 */
+	public static long end(Run run) {
+		if (run == null) {
+			return -1;
 		}
-		currentStats = null;
-	}
-
-	public static void endSnapshot() {
-		if (currentStats != null) {
-			currentStats.endRun();
+		long duration = System.currentTimeMillis() - run.startTime();
+		if (run.stats() != null) {
+			run.stats().addRun(duration, run.context());
 		}
-		currentStats = null;
-	}
-
-	public static PerformanceStats endRefresh() {
-		if (currentStats != null) {
-			currentStats.endRun();
-		}
-		PerformanceStats stats = currentStats;
-		currentStats = null;
-		return stats;
+		return duration;
 	}
 
 	/**
@@ -110,29 +153,24 @@ public class ResourceStats {
 		}
 	}
 
-	public static void startBuild(IncrementalProjectBuilder builder) {
-		currentStats = PerformanceStats.getStats(EVENT_BUILDERS, builder);
-		currentStats.startRun(builder.getProject().getName());
+	public static Run startBuild(IncrementalProjectBuilder builder) {
+		return start(EVENT_BUILDERS, builder, builder.getProject().getName());
 	}
 
-	public static void startNotify(IResourceChangeListener listener) {
-		currentStats = PerformanceStats.getStats(EVENT_LISTENERS, listener);
-		currentStats.startRun();
+	public static Run startNotify(IResourceChangeListener listener) {
+		return start(EVENT_LISTENERS, listener, null);
 	}
 
-	public static void startSnapshot() {
-		currentStats = PerformanceStats.getStats(EVENT_SNAPSHOT, ResourcesPlugin.getWorkspace());
-		currentStats.startRun();
+	public static Run startSnapshot() {
+		return start(EVENT_SNAPSHOT, ResourcesPlugin.getWorkspace(), null);
 	}
 
-	public static void startSave(ISaveParticipant participant) {
-		currentStats = PerformanceStats.getStats(EVENT_SAVE_PARTICIPANTS, participant);
-		currentStats.startRun();
+	public static Run startSave(ISaveParticipant participant) {
+		return start(EVENT_SAVE_PARTICIPANTS, participant, null);
 	}
 
-	public static void startRefresh(IResource resource) {
-		currentStats = PerformanceStats.getStats(EVENT_REFRESH, resource);
-		currentStats.startRun();
+	public static Run startRefresh(IResource resource) {
+		return start(EVENT_REFRESH, resource, null);
 	}
 
 }
