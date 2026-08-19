@@ -186,7 +186,8 @@ public class InputStreamMonitor {
 			synchronized(fLock) {
 				// Queue could receive more input between last empty check and
 				// lock acquire. See https://bugs.eclipse.org/550834
-				if (fQueue.isEmpty()) {
+				// Use while instead of if to guard against spurious wakeups.
+				while (fQueue.isEmpty() && !fClosed) {
 					fLock.wait();
 				}
 			}
