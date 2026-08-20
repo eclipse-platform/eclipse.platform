@@ -1870,14 +1870,14 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 				Assert.isNotNull(info, "Tree root info must never be null"); //$NON-NLS-1$
 				return info;
 			}
-			ResourceInfo result = null;
-			if (!tree.includes(path)) {
-				return null;
-			}
+			ResourceInfo result;
 			if (mutable) {
+				if (!tree.includes(path)) {
+					return null;
+				}
 				result = (ResourceInfo) tree.openElementData(path);
 			} else {
-				result = (ResourceInfo) tree.getElementData(path);
+				result = (ResourceInfo) tree.getElementDataOrNull(path);
 			}
 			if (result != null && (!phantom && result.isSet(M_PHANTOM))) {
 				return null;
