@@ -22,6 +22,7 @@ import org.junit.platform.suite.api.Suite;
 		DeltaFlatteningTest.class, //
 		ElementTreeDeltaChainTest.class, //
 		ElementTreeIteratorTest.class, //
+		ElementTreeGetElementDataOrNullTest.class, //
 		ElementTreeHasChangesTest.class, //
 		TreeFlatteningTest.class, //
 })
