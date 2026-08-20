@@ -385,6 +385,26 @@ public class ElementTree {
 	}
 
 	/**
+	 * Returns the element data for the given element identifier, or
+	 * <code>null</code> if the element is not present in this tree.
+	 * <p>
+	 * Unlike {@link #includes(IPath)} followed by {@link #getElementData(IPath)}
+	 * this performs at most one tree lookup.
+	 */
+	public Object getElementDataOrNull(IPath key) {
+		if (key.isRoot()) {
+			return null;
+		}
+		synchronized (this) {
+			DataTreeLookup lookup = lookupCache; // Grab it in case it's replaced concurrently.
+			if (lookup == null || lookup.key != key) {
+				lookupCache = lookup = tree.lookup(key);
+			}
+			return lookup.isPresent ? lookup.data : null;
+		}
+	}
+
+	/**
 	 * Returns the element data for the given element identifier.
 	 * The given element must be present in this tree.
 	 */
