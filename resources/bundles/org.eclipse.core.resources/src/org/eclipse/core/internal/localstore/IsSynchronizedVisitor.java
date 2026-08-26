@@ -33,6 +33,12 @@ public class IsSynchronizedVisitor extends CollectSyncStatusVisitor {
 		public ResourceChangedException(IResource target) {
 			this.target = target;
 		}
+
+		@Override
+		public synchronized Throwable fillInStackTrace() {
+			// the stack trace is never used, see the class comment
+			return this;
+		}
 	}
 
 	/**
