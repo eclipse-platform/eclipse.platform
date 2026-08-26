@@ -2086,7 +2086,7 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 			return list;
 		}
 		final ProjectDescription description = project.internalGetDescription();
-		if (description == null) {
+		if (description == null || description.getFilters() == null) {
 			return list;
 		}
 		return filterChildren(project, description, list, throwException);

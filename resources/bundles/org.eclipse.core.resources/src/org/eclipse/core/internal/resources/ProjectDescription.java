@@ -430,9 +430,10 @@ public class ProjectDescription extends ModelObject implements IProjectDescripti
 	 * Returns the map of filter descriptions (IPath (project relative path) -&gt;
 	 * {@literal LinkedList<FilterDescription>}). Since this method is only used
 	 * internally, it never creates a copy. Returns null if the project does not
-	 * have any filtered resources.
+	 * have any filtered resources. Only the read of the reference is guarded,
+	 * the returned map itself is not.
 	 */
-	public HashMap<IPath, LinkedList<FilterDescription>> getFilters() {
+	synchronized public HashMap<IPath, LinkedList<FilterDescription>> getFilters() {
 		return filterDescriptions;
 	}
 
