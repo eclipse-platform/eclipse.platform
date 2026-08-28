@@ -708,28 +708,31 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 	}
 
 	protected void removeUnusedTreeFiles() {
-		// root resource
-		List<String> valuables = new ArrayList<>(10);
-		IPath location = workspace.getMetaArea().getTreeLocationFor(workspace.getRoot(), false);
-		valuables.add(location.lastSegment());
-		java.io.File target = location.toFile().getParentFile();
 		FilenameFilter filter = (dir, name) -> name.endsWith(LocalMetaArea.F_TREE);
-		String[] candidates = target.list(filter);
-		if (candidates != null) {
-			removeFiles(target, candidates, valuables);
-		}
+		// root resource
+		IPath location = workspace.getMetaArea().getTreeLocationFor(workspace.getRoot(), false);
+		removeUnusedTreeFiles(location, filter);
 
 		// projects
 		IProject[] projects = workspace.getRoot().getProjects(IContainer.INCLUDE_HIDDEN);
 		for (IProject project : projects) {
-			location = workspace.getMetaArea().getTreeLocationFor(project, false);
-			valuables.add(location.lastSegment());
-			target = location.toFile().getParentFile();
-			candidates = target.list(filter);
-			if (candidates != null) {
-				removeFiles(target, candidates, valuables);
-			}
+			removeUnusedTreeFiles(workspace.getMetaArea().getTreeLocationFor(project, false), filter);
 		}
+	}
+
+	/**
+	 * Deletes every tree file next to the given one, which is the tree file still in
+	 * use for that resource.
+	 */
+	private void removeUnusedTreeFiles(IPath treeLocation, FilenameFilter filter) {
+		java.io.File target = treeLocation.toFile().getParentFile();
+		String[] candidates = target.list(filter);
+		if (candidates == null) {
+			return;
+		}
+		List<String> valuables = new ArrayList<>(1);
+		valuables.add(treeLocation.lastSegment());
+		removeFiles(target, candidates, valuables);
 	}
 
 	protected void reportSnapshotRequestor() {
