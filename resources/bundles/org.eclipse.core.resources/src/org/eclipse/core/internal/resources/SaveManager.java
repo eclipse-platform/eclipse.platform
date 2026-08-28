@@ -620,11 +620,10 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 	}
 
 	/**
-	 * @see IElementInfoFlattener#readElement(IPath, DataInput)
+	 * @see IElementInfoFlattener#readElement(DataInput)
 	 */
 	@Override
-	public Object readElement(IPath path, DataInput input) throws IOException {
-		Assert.isNotNull(path);
+	public Object readElement(DataInput input) throws IOException {
 		Assert.isNotNull(input);
 		// read the flags and pull out the type.
 		int flags = input.readInt();
@@ -2013,8 +2012,7 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 	}
 
 	@Override
-	public void writeElement(IPath path, Object element, DataOutput output) throws IOException {
-		Assert.isNotNull(path);
+	public void writeElement(Object element, DataOutput output) throws IOException {
 		Assert.isNotNull(element);
 		Assert.isNotNull(output);
 		ResourceInfo info = (ResourceInfo) element;

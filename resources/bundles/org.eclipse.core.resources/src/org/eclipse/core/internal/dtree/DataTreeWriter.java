@@ -47,10 +47,10 @@ public class DataTreeWriter {
 	/**
 	 * Writes the subtree rooted at the given node.
 	 * @param node The subtree to write.
-	 * @param path  The path of the current node.
+	 * @param rootNode Whether the node is the root of the tree.
 	 * @param depth The depth of the subtree to write.
 	 */
-	protected void writeNode(AbstractDataTreeNode node, IPath path, int depth) throws IOException {
+	protected void writeNode(AbstractDataTreeNode node, boolean rootNode, int depth) throws IOException {
 		int type = node.type();
 
 		/* write the node name */
@@ -75,7 +75,7 @@ public class DataTreeWriter {
 				writeNumber(0);
 			} else {
 				writeNumber(1);
-				flatener.writeData(path, node.getData(), output);
+				flatener.writeData(rootNode, node.getData(), output);
 			}
 
 		}
@@ -90,7 +90,7 @@ public class DataTreeWriter {
 			/* write the children */
 			int newDepth = (depth == D_INFINITE) ? D_INFINITE : depth - 1;
 			for (AbstractDataTreeNode element : children) {
-				writeNode(element, path.append(element.getName()), newDepth);
+				writeNode(element, false, newDepth);
 			}
 		} else {
 			/* write the number of children */
@@ -116,7 +116,7 @@ public class DataTreeWriter {
 	 * Writes a single node to the output.  Does not recurse
 	 * on child nodes, and does not write the number of children.
 	 */
-	protected void writeSingleNode(AbstractDataTreeNode node, IPath path) throws IOException {
+	protected void writeSingleNode(AbstractDataTreeNode node, boolean rootNode) throws IOException {
 		/* write the node name */
 		String name = node.getName();
 		if (name == null) {
@@ -139,7 +139,7 @@ public class DataTreeWriter {
 				writeNumber(0);
 			} else {
 				writeNumber(1);
-				flatener.writeData(path, node.getData(), output);
+				flatener.writeData(rootNode, node.getData(), output);
 			}
 		}
 	}
@@ -163,7 +163,7 @@ public class DataTreeWriter {
 		String[] segments = path.segments();
 		for (String nextSegment : segments) {
 			/* write this node to the output */
-			writeSingleNode(node, currentPath);
+			writeSingleNode(node, currentPath.isRoot());
 
 			currentPath = currentPath.append(nextSegment);
 			node = node.childAtOrNull(nextSegment);
@@ -181,6 +181,6 @@ public class DataTreeWriter {
 		Assert.isTrue(currentPath.equals(path), "dtree.navigationError"); //$NON-NLS-1$
 
 		/* recursively write the subtree we're interested in */
-		writeNode(node, path, depth);
+		writeNode(node, path.isRoot(), depth);
 	}
 }

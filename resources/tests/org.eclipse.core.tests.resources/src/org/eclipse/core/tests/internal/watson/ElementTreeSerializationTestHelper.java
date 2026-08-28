@@ -198,7 +198,7 @@ public final class ElementTreeSerializationTestHelper implements ArgumentsProvid
 	private static IElementInfoFlattener getFlattener() {
 		return new IElementInfoFlattener() {
 			@Override
-			public void writeElement(IPath path, Object data, DataOutput output) throws IOException {
+			public void writeElement(Object data, DataOutput output) throws IOException {
 				if (data == null) {
 					output.writeUTF("null");
 				} else {
@@ -207,7 +207,7 @@ public final class ElementTreeSerializationTestHelper implements ArgumentsProvid
 			}
 
 			@Override
-			public Object readElement(IPath path, DataInput input) throws IOException {
+			public Object readElement(DataInput input) throws IOException {
 				String data = input.readUTF();
 				if ("null".equals(data)) {
 					return null;

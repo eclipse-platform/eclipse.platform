@@ -14,7 +14,6 @@
 package org.eclipse.core.internal.watson;
 
 import java.io.*;
-import org.eclipse.core.runtime.IPath;
 
 /**
  * The <code>IElementInfoFlattener</code> interface supports
@@ -23,20 +22,15 @@ import org.eclipse.core.runtime.IPath;
 public interface IElementInfoFlattener {
 	/**
 	 * Reads an element info from the given input stream.
-	 * @param elementPath the path of the element to be read
-	 * @param input the stream from which the element info should be read.
-	 * @return the object associated with the given elementPath,
-	 *   which may be <code>null</code>.
+	 * @return the object read, which may be <code>null</code>.
 	 */
-	Object readElement(IPath elementPath, DataInput input) throws IOException;
+	Object readElement(DataInput input) throws IOException;
 
 	/**
 	 * Writes the given element to the output stream.
 	 * <p> N.B. The bytes written must be sufficient for the
 	 * purposes of reading the object back in.
-	 * @param elementPath the element's path in the tree
-	 * @param element the object associated with the given path,
-	 *   which may be <code>null</code>.
+	 * @param element the object to write, which may be <code>null</code>.
 	 */
-	void writeElement(IPath elementPath, Object element, DataOutput output) throws IOException;
+	void writeElement(Object element, DataOutput output) throws IOException;
 }
