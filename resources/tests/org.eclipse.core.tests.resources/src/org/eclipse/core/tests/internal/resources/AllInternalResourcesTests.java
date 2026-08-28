@@ -33,6 +33,7 @@ import org.junit.platform.suite.api.Suite;
 		WorkspaceConcurrencyTest.class, //
 		WorkspacePreferencesTest.class, //
 		RestrictedFileTests.class, //
+		RemoveUnusedTreeFilesTest.class, //
 })
 public class AllInternalResourcesTests {
 }
