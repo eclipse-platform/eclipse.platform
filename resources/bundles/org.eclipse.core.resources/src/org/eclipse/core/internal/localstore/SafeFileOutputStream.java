@@ -15,6 +15,7 @@
 package org.eclipse.core.internal.localstore;
 
 import java.io.*;
+import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
@@ -82,8 +83,13 @@ public class SafeFileOutputStream extends OutputStream {
 		if (!temp.exists()) {
 			return;
 		}
-		Files.copy(temp.toPath(), target.toPath(), StandardCopyOption.REPLACE_EXISTING);
-		temp.delete();
+		try {
+			// a rename does not rewrite the bytes and never leaves a partially written target
+			Files.move(temp.toPath(), target.toPath(), StandardCopyOption.ATOMIC_MOVE);
+		} catch (AtomicMoveNotSupportedException e) {
+			Files.copy(temp.toPath(), target.toPath(), StandardCopyOption.REPLACE_EXISTING);
+			temp.delete();
+		}
 	}
 
 	protected void createTempFile(String tempPath) {
