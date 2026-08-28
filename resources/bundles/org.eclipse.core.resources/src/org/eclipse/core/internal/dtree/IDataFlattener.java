@@ -14,7 +14,6 @@
 package org.eclipse.core.internal.dtree;
 
 import java.io.*;
-import org.eclipse.core.runtime.IPath;
 
 /**
  * The <code>IElementInfoFlattener</code> interface supports
@@ -23,20 +22,17 @@ import org.eclipse.core.runtime.IPath;
 public interface IDataFlattener {
 	/**
 	 * Reads a data object from the given input stream.
-	 * @param path the path of the element to be read
-	 * @param input the stream from which the element info should be read.
-	 * @return the object associated with the given path,
-	 *   which may be <code>null</code>.
+	 * @param rootNode whether the node being read is the root of the tree
+	 * @return the object read, which may be <code>null</code>.
 	 */
-	Object readData(IPath path, DataInput input) throws IOException;
+	Object readData(boolean rootNode, DataInput input) throws IOException;
 
 	/**
 	 * Writes the given data to the output stream.
 	 * <p> N.B. The bytes written must be sufficient for the
 	 * purposes of reading the object back in.
-	 * @param path the element's path in the tree
-	 * @param data the object associated with the given path,
-	 *   which may be <code>null</code>.
+	 * @param rootNode whether the node being written is the root of the tree
+	 * @param data the object to write, which may be <code>null</code>.
 	 */
-	void writeData(IPath path, Object data, DataOutput output) throws IOException;
+	void writeData(boolean rootNode, Object data, DataOutput output) throws IOException;
 }

@@ -21,7 +21,6 @@ import org.eclipse.core.internal.dtree.DataTreeReader;
 import org.eclipse.core.internal.dtree.IDataFlattener;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.IPath;
 
 /** <code>ElementTreeReader</code> is the standard implementation
  * of an element tree serialization reader.
@@ -59,16 +58,16 @@ public class ElementTreeReader {
 		/* wrap the IElementInfoFlattener in an IDataFlattener */
 		IDataFlattener f = new IDataFlattener() {
 			@Override
-			public void writeData(IPath path, Object data, DataOutput output) {
+			public void writeData(boolean rootNode, Object data, DataOutput output) {
 				//not needed
 			}
 
 			@Override
-			public Object readData(IPath path, DataInput input) throws IOException {
+			public Object readData(boolean rootNode, DataInput input) throws IOException {
 				//never read the root node of an ElementTree
 				//this node is reserved for the parent backpointer
-				if (!IPath.ROOT.equals(path)) {
-					return factory.readElement(path, input);
+				if (!rootNode) {
+					return factory.readElement(input);
 				}
 				return null;
 			}

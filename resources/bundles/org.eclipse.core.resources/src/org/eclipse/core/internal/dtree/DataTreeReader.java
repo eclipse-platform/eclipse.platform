@@ -18,7 +18,6 @@ import java.io.DataInput;
 import java.io.IOException;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.IPath;
 
 /**
  * Class used for reading a single data tree (no parents) from an input stream
@@ -62,25 +61,17 @@ public class DataTreeReader {
 	 * the project (first node under root) in the created node
 	 * instead of the name read from the stream.
 	 */
-	protected AbstractDataTreeNode readNode(IPath parentPath, String newProjectName) throws IOException {
+	protected AbstractDataTreeNode readNode(int depth, String newProjectName) throws IOException {
 		/* read the node name */
 		String name = input.readUTF();
 
 		/* read the node type */
 		int nodeType = readNumber();
 
-		/* maybe read the data */
-		IPath path;
-
-		/* if not the root node */
-		if (parentPath != null) {
-			if (parentPath.equals(IPath.ROOT) && newProjectName.length() > 0 && name.length() > 0) {
-				/* use the supplied name for the project node */
-				name = newProjectName;
-			}
-			path = parentPath.append(name);
-		} else {
-			path = IPath.ROOT;
+		/* project nodes are the children of the unnamed root */
+		if (depth <= 1 && newProjectName.length() > 0 && name.length() > 0) {
+			/* use the supplied name for the project node */
+			name = newProjectName;
 		}
 
 		Object data = null;
@@ -89,7 +80,7 @@ public class DataTreeReader {
 			/* read flag indicating if the data is null */
 			int dataFlag = readNumber();
 			if (dataFlag != 0) {
-				data = flatener.readData(path, input);
+				data = flatener.readData(depth == 0, input);
 			}
 		}
 
@@ -103,7 +94,7 @@ public class DataTreeReader {
 		} else {
 			children = new AbstractDataTreeNode[childCount];
 			for (int i = 0; i < childCount; i++) {
-				children[i] = readNode(path, newProjectName);
+				children[i] = readNode(depth + 1, newProjectName);
 			}
 		}
 
@@ -147,7 +138,7 @@ public class DataTreeReader {
 	 */
 	public DeltaDataTree readTree(DeltaDataTree parent, DataInput dataInput, String newProjectName) throws IOException {
 		this.input = dataInput;
-		AbstractDataTreeNode root = readNode(IPath.ROOT, newProjectName);
+		AbstractDataTreeNode root = readNode(0, newProjectName);
 		return new DeltaDataTree(root, parent);
 	}
 }
