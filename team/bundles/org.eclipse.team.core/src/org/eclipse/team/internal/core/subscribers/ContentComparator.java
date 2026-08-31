@@ -21,8 +21,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 /**
  * This is an internal class that is used by the
  * {@link org.eclipse.team.core.synchronize.SyncInfoFilter.ContentComparisonSyncInfoFilter}
- * and {@link ContentComparisonDiffFilter} to compare the contents of the local
- * and remote resources.
+ * to compare the contents of the local and remote resources.
  */
 public class ContentComparator extends AbstractContentComparator{
 
