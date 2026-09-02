@@ -1272,9 +1272,12 @@ public class VT100Emulator implements ControlListener {
 			break;
 		case 47:
 		case 1047:
-		case 1048:
 		case 1049:
-			// Use Alternate Screen Buffer (ignored).
+			// Use Alternate Screen Buffer.
+			text.enableAlternateScreen(true);
+			break;
+		case 1048:
+			// Save cursor position (ignored).
 			break;
 		default:
 			Logger.log("Unsupported command parameter: CSI ?" + param + 'h'); //$NON-NLS-1$
@@ -1291,10 +1294,13 @@ public class VT100Emulator implements ControlListener {
 			break;
 		case 47:
 		case 1047:
-		case 1048:
 		case 1049:
-			// Use Normal Screen Buffer (ignored, but reset scroll region).
+			// Use Normal Screen Buffer, putting back what was on it.
 			text.setScrollRegion(-1, -1);
+			text.enableAlternateScreen(false);
+			break;
+		case 1048:
+			// Restore cursor position (ignored).
 			break;
 		default:
 			Logger.log("Unsupported command parameter: CSI ?" + param + 'l'); //$NON-NLS-1$
