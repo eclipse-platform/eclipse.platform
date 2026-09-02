@@ -11,6 +11,8 @@ package org.eclipse.terminal.internal.emulator;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -375,4 +377,29 @@ public class VT100EmulatorTest {
 				() -> assertEquals(List.of("TITLE1", "TITLE2"), control.getAllTitles()));
 	}
 
+	@Test
+	public void testFaint() {
+		// SGR 2 makes the text faint; 22 takes both bold and faint off, as in xterm
+		run("\u001b[2mfaint\u001b[22m normal \u001b[1;2mboth\u001b[22mplain");
+		assertTrue(data.getStyle(0, 0).isDim());
+		assertFalse(data.getStyle(0, 0).isBold());
+		assertFalse(data.getStyle(0, 6).isDim());
+		assertTrue(data.getStyle(0, 13).isDim());
+		assertTrue(data.getStyle(0, 13).isBold());
+		assertFalse(data.getStyle(0, 17).isDim());
+		assertFalse(data.getStyle(0, 17).isBold());
+	}
+
+	@Test
+	public void testModifiedSpecialKeys() {
+		// xterm's spelling: the plain key with the modifier as a parameter, 2 shift, 3 alt, 5 control
+		assertEquals("\u001b[1;5A", VT100TerminalControl.modifiedSpecialKey(0x1000001, org.eclipse.swt.SWT.CTRL));
+		assertEquals("\u001b[1;2F", VT100TerminalControl.modifiedSpecialKey(0x1000008, org.eclipse.swt.SWT.SHIFT));
+		assertEquals("\u001b[5;3~", VT100TerminalControl.modifiedSpecialKey(0x1000005, org.eclipse.swt.SWT.ALT));
+		assertEquals("\u001b[1;6P", VT100TerminalControl.modifiedSpecialKey(0x100000a, org.eclipse.swt.SWT.CTRL | org.eclipse.swt.SWT.SHIFT));
+		assertEquals("\u001b[15;5~", VT100TerminalControl.modifiedSpecialKey(0x100000e, org.eclipse.swt.SWT.CTRL));
+		assertEquals("\u001b[24;2~", VT100TerminalControl.modifiedSpecialKey(0x1000015, org.eclipse.swt.SWT.SHIFT));
+		// no modifier held that xterm can spell: not this way
+		assertEquals(null, VT100TerminalControl.modifiedSpecialKey(0x1000001, 0));
+	}
 }
