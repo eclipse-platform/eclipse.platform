@@ -334,4 +334,9 @@ public class TerminalTextData implements ITerminalTextData {
 	public void setWrappedLine(int line) {
 		fData.setWrappedLine(line);
 	}
+
+	@Override
+	public void clearWrappedLine(int line) {
+		fData.clearWrappedLine(line);
+	}
 }

@@ -96,6 +96,16 @@ public class TextLineRenderer implements ILinelRenderer {
 				setupGC(gc, style);
 				Point start = model.getSelectionStart();
 				Point end = model.getSelectionEnd();
+				// Everything the selection covers on this line goes down first. Drawing
+				// it as the text is drawn leaves out whatever the text does not reach:
+				// the cells past the last character a program put on the line, and the
+				// cells where the font draws a glyph narrower than the one it sits in.
+				int from = Math.max(start.y == line ? start.x : 0, colFirst);
+				int to = end.y == line ? Math.min(end.x + 1, colLast) : colLast;
+				if (to > from) {
+					gc.fillRectangle(x + (from - colFirst) * getCellWidth(), y, (to - from) * getCellWidth(),
+							getCellHeight());
+				}
 				char[] chars = model.getTerminalText().getChars(line);
 				if (chars != null) {
 					int offset = 0;
