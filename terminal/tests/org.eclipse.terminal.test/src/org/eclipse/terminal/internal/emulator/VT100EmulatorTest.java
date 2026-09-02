@@ -11,6 +11,8 @@ package org.eclipse.terminal.internal.emulator;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -375,4 +377,17 @@ public class VT100EmulatorTest {
 				() -> assertEquals(List.of("TITLE1", "TITLE2"), control.getAllTitles()));
 	}
 
+	@Test
+	public void testDecPrivateModes() {
+		// the cursor hidden and shown again by a program
+		run("\u001b[?25l");
+		assertFalse(control.isCursorShown());
+		run("\u001b[?25h");
+		assertTrue(control.isCursorShown());
+		// several modes in one sequence, as ncurses sends them: every one of them counts
+		run("\u001b[?2004;25l");
+		assertAll(() -> assertFalse(control.isCursorShown()), () -> assertFalse(control.isBracketedPaste()));
+		run("\u001b[?25;2004h");
+		assertAll(() -> assertTrue(control.isCursorShown()), () -> assertTrue(control.isBracketedPaste()));
+	}
 }
