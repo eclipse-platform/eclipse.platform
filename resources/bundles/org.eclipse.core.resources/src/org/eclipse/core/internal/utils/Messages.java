@@ -214,6 +214,7 @@ public class Messages extends NLS {
 	public static String resources_invalidRoot;
 	public static String resources_markerNotFound;
 	public static String resources_missingProjectMeta;
+	public static String resources_missingProjectMetaClosed;
 	public static String resources_missingProjectMetaRepaired;
 	public static String resources_moveDestNotSub;
 	public static String resources_moveMeta;

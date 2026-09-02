@@ -29,6 +29,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspac
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.getLineSeparatorFromFile;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -582,18 +583,13 @@ public class IProjectTest  {
 			Preferences projectNode = rootNode.node(ProjectScope.SCOPE).node(project.getName()).node(Platform.PI_RUNTIME);
 			projectNode.put(Platform.PREF_LINE_SEPARATOR, newProjectValue);
 			projectNode.flush();
-			// remove .project file but leave the project
+			// remove .project file from disk but leave the project
+			removeFromFileSystem(file);
+			// writing the description should recreate .project file with project-specific line delimiter
+			description = project.getDescription();
+			description.setComment("another comment");
 			monitor.prepare();
-			file.delete(true, monitor);
-			monitor.assertUsedUp();
-			assertFalse(file.exists());
-			// workspace save should recreate .project file with project-specific line delimiter
-			monitor.prepare();
-			getWorkspace().save(true, monitor);
-			monitor.assertUsedUp();
-			// refresh project to update the resource tree
-			monitor.prepare();
-			project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
+			project.setDescription(description, IResource.FORCE, monitor);
 			monitor.assertUsedUp();
 			assertTrue(file.exists());
 			// new .project should have project-specific line separator
