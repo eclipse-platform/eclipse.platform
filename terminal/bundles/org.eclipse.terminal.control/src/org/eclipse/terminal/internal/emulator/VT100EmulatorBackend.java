@@ -14,6 +14,8 @@
  *******************************************************************************/
 package org.eclipse.terminal.internal.emulator;
 
+import java.text.Normalizer;
+
 import org.eclipse.terminal.internal.model.CharWidth;
 import org.eclipse.terminal.model.ITerminalTextData;
 import org.eclipse.terminal.model.TerminalStyle;
@@ -317,6 +319,25 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 			int line = toAbsoluteLine(fCursorLine);
 			int i = 0;
 			while (i < chars.length) {
+				int codePoint = Character.codePointAt(chars, i);
+				int charsUsed = Character.charCount(codePoint);
+				int width = CharWidth.of(codePoint);
+				// What takes no cell of its own goes onto the character before it, even
+				// one on the last cell with a wrap pending: it belongs there, not on the
+				// next line.
+				if (joinsCluster(line, codePoint)) {
+					i += charsUsed;
+					continue;
+				}
+				if (width == 0) {
+					// composed into the character before it where the two have one form;
+					// otherwise kept with it as a cluster, as a keycap is
+					if (!combine(line, codePoint)) {
+						attachToCluster(line, codePoint);
+					}
+					i += charsUsed;
+					continue;
+				}
 				if (fWrapPending) {
 					line = doLineWrap();
 				}
@@ -330,14 +351,6 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 					col = fCursorColumn + n;
 					i += n;
 				} else {
-					int codePoint = Character.codePointAt(chars, i);
-					int charsUsed = Character.charCount(codePoint);
-					int width = CharWidth.of(codePoint);
-					if (width == 0) {
-						// combining marks and other non-printing code points occupy no cell
-						i += charsUsed;
-						continue;
-					}
 					// a surrogate pair cannot share a cell, so it always takes two
 					if (charsUsed == 2) {
 						width = 2;
@@ -378,6 +391,122 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 				}
 			}
 		}
+	}
+
+	private static final int ZWJ = 0x200D, VS15 = 0xFE0E, VS16 = 0xFE0F;
+	/** a zero width joiner was the last thing written: whatever comes next joins the cluster before it */
+	private boolean fJoinPending;
+
+	/**
+	 * A grapheme cluster takes two cells however many characters it runs to, which
+	 * is how Windows Terminal and the programs that lay text out for it count. What
+	 * joins the cluster before the cursor and so takes no cells of its own: what
+	 * follows a zero width joiner, a skin tone, a presentation selector, a mark. A
+	 * presentation selector after a narrow character (a heart, a digit) makes the
+	 * cluster wide first, taking the cell after it. The cells keep the first
+	 * character to draw; the whole cluster is kept beside them for copying.
+	 *
+	 * @return whether the character was taken into a cluster
+	 */
+	private boolean joinsCluster(int line, int codePoint) {
+		boolean join = fJoinPending;
+		fJoinPending = false;
+		if (codePoint == ZWJ) {
+			fJoinPending = attachToCluster(line, codePoint);
+			return true;
+		}
+		if (isRegionalIndicator(codePoint) && !join) {
+			// two indicators make a flag, so the second joins the first
+			String before = clusterBefore(line);
+			join = before != null && before.codePointCount(0, before.length()) == 1
+					&& isRegionalIndicator(before.codePointAt(0));
+		}
+		boolean modifier = codePoint == VS15 || codePoint == VS16 || (codePoint >= 0x1F3FB && codePoint <= 0x1F3FF);
+		if (!join && !modifier) {
+			return false;
+		}
+		if (attachToCluster(line, codePoint)) {
+			return true;
+		}
+		if (codePoint != VS16 || fWrapPending || fCursorColumn == 0 || fCursorColumn >= fColumns) {
+			return false;
+		}
+		// A narrow character asked to be shown as an emoji: it gets a second cell.
+		int col = fCursorColumn - 1;
+		char base = fTerminal.getChar(line, col);
+		if (base == 0 || base == ' ') {
+			return false;
+		}
+		breakWideChar(line, fCursorColumn);
+		fTerminal.setChar(line, fCursorColumn, '\000', fTerminal.getStyle(line, col));
+		fTerminal.setCluster(line, col, base + new String(Character.toChars(VS16)));
+		setCursorColumn(fCursorColumn + 1);
+		return true;
+	}
+
+	private static boolean isRegionalIndicator(int codePoint) {
+		return codePoint >= 0x1F1E6 && codePoint <= 0x1F1FF;
+	}
+
+	/** @return whether there was a two-cell cluster before the cursor for the character to go into */
+	private boolean attachToCluster(int line, int codePoint) {
+		String cluster = clusterBefore(line);
+		if (cluster == null) {
+			return false;
+		}
+		fTerminal.setCluster(line, endColumn() - 2, cluster + new String(Character.toChars(codePoint)));
+		return true;
+	}
+
+	/** Where the next character goes: past the margin while a wrap is pending, the cursor being held on the last cell. */
+	private int endColumn() {
+		return fWrapPending ? fColumns : fCursorColumn;
+	}
+
+	/** The cluster in the two cells before the cursor, or null when there is no two-cell character there. */
+	private String clusterBefore(int line) {
+		int col = endColumn() - 2;
+		if (col < 0) {
+			return null;
+		}
+		String cluster = fTerminal.getCluster(line, col);
+		if (cluster != null) {
+			return cluster;
+		}
+		char first = fTerminal.getChar(line, col), second = fTerminal.getChar(line, col + 1);
+		if (Character.isHighSurrogate(first) && Character.isLowSurrogate(second)) {
+			return new String(new char[] { first, second });
+		}
+		if (CharWidth.of(first) == 2 && second == '\000') {
+			return String.valueOf(first);
+		}
+		return null;
+	}
+
+	/**
+	 * A mark owns no cell of its own, so it has to go onto the character it followed
+	 * or be lost. A cell holds one character, which is enough whenever the two have
+	 * a single composed form - the accents, the Hangul jamo, the Japanese voicing
+	 * marks. What has no such form is still dropped, there being nowhere to put it.
+	 */
+	private boolean combine(int line, int mark) {
+		int col = endColumn() - 1;
+		if (col > 0 && fTerminal.getChar(line, col) == '\000') {
+			col--; // the mark follows a wide character, and that is the cell it lives in
+		}
+		if (col < 0) {
+			return false;
+		}
+		char base = fTerminal.getChar(line, col);
+		if (base == 0 || base == ' ') {
+			return false;
+		}
+		String composed = Normalizer.normalize(base + new String(Character.toChars(mark)), Normalizer.Form.NFC);
+		if (composed.length() != 1) {
+			return false;
+		}
+		fTerminal.setChar(line, col, composed.charAt(0), fTerminal.getStyle(line, col));
+		return true;
 	}
 
 	/**
