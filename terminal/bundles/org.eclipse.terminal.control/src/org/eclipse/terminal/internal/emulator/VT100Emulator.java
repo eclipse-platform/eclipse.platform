@@ -943,6 +943,10 @@ public class VT100Emulator implements ControlListener {
 				style = style.setBold(true);
 				break;
 
+			case 2:
+				style = style.setDim(true);
+				break;
+
 			case 4:
 				style = style.setUnderline(true);
 				break;
@@ -959,8 +963,14 @@ public class VT100Emulator implements ControlListener {
 				break;
 
 			case 21:
-			case 22:
+				// Double underline in ECMA-48, which is not supported; bold off as before,
+				// as the Linux console long took it. Faint stays.
 				style = style.setBold(false);
+				break;
+
+			case 22:
+				// Normal intensity: undoes both of the two that change it.
+				style = style.setBold(false).setDim(false);
 				break;
 
 			case 24:

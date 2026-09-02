@@ -126,4 +126,14 @@ public class StyleTest {
 		return TerminalStyle.getStyle(c1, c2, false, false, false, false);
 	}
 
+	@Test
+	public void testSetDim() {
+		TerminalStyle s1 = TerminalStyle.getStyle(c1, c2, true, false, true, false);
+		assertFalse(s1.isDim());
+		TerminalStyle s2 = s1.setDim(true);
+		assertNotSame(s1, s2);
+		assertTrue(s2.isDim());
+		assertTrue(s2.isBold()); // the rest is kept
+		assertSame(s1, s2.setDim(false));
+	}
 }

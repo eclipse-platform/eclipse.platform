@@ -569,6 +569,47 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 		return getCtlText().getShell();
 	}
 
+	private record XtermKey(int number, char last) {
+	}
+
+	/**
+	 * xterm's number and final character for each key: the arrows, Home, End and
+	 * F1-F4 spelled with a letter after 1, the others with a number before ~
+	 * (xterm uses no 16 or 22)
+	 */
+	private static final Map<Integer, XtermKey> XTERM_KEYS = Map.ofEntries(
+			Map.entry(SWT.ARROW_UP, new XtermKey(1, 'A')), Map.entry(SWT.ARROW_DOWN, new XtermKey(1, 'B')),
+			Map.entry(SWT.ARROW_RIGHT, new XtermKey(1, 'C')), Map.entry(SWT.ARROW_LEFT, new XtermKey(1, 'D')),
+			Map.entry(SWT.HOME, new XtermKey(1, 'H')), Map.entry(SWT.END, new XtermKey(1, 'F')),
+			Map.entry(SWT.INSERT, new XtermKey(2, '~')),
+			Map.entry(SWT.PAGE_UP, new XtermKey(5, '~')), Map.entry(SWT.PAGE_DOWN, new XtermKey(6, '~')),
+			Map.entry(SWT.F1, new XtermKey(1, 'P')), Map.entry(SWT.F2, new XtermKey(1, 'Q')),
+			Map.entry(SWT.F3, new XtermKey(1, 'R')), Map.entry(SWT.F4, new XtermKey(1, 'S')),
+			Map.entry(SWT.F5, new XtermKey(15, '~')), Map.entry(SWT.F6, new XtermKey(17, '~')),
+			Map.entry(SWT.F7, new XtermKey(18, '~')), Map.entry(SWT.F8, new XtermKey(19, '~')),
+			Map.entry(SWT.F9, new XtermKey(20, '~')), Map.entry(SWT.F10, new XtermKey(21, '~')),
+			Map.entry(SWT.F11, new XtermKey(23, '~')), Map.entry(SWT.F12, new XtermKey(24, '~')));
+
+	/**
+	 * The special keys in keyPressed are sent only when no modifier is held, so a
+	 * program was never told about Ctrl+End and the rest of them. xterm spells a modified
+	 * special key as the plain one carrying the modifier as a parameter, which is
+	 * what this builds. Keys keyPressed already answered never reach here, so what
+	 * works today keeps working.
+	 *
+	 * @return the sequence, or null when the key is not one that is spelled this way
+	 */
+	public static String modifiedSpecialKey(int keyCode, int modifierKeys) {
+		if ((modifierKeys & SWT.COMMAND) != 0) {
+			// xterm has no spelling for the Mac's Cmd: a combination with it stays in Eclipse
+			return null;
+		}
+		int modifier = 1 + ((modifierKeys & SWT.SHIFT) != 0 ? 1 : 0) + ((modifierKeys & SWT.ALT) != 0 ? 2 : 0)
+				+ ((modifierKeys & SWT.CTRL) != 0 ? 4 : 0);
+		XtermKey key = XTERM_KEYS.get(keyCode);
+		return modifier == 1 || key == null ? null : "\u001b[" + key.number() + ';' + modifier + key.last(); //$NON-NLS-1$
+	}
+
 	protected void sendChar(char chKey, boolean altKeyPressed) {
 		try {
 			int byteToSend = chKey;
@@ -1164,6 +1205,12 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 					break;
 				}
 
+				// a key Eclipse has a binding for stays with it, as Alt+Right (Quick Access)
+				// and Alt+Up (Maximize) do in this terminal
+				if (escSeq == null && !hasKeyBinding(accelerator)) {
+					escSeq = modifiedSpecialKey(event.keyCode, modifierKeys);
+				}
+
 				if (escSeq == null) {
 					// Any unmapped key should be handled locally by Eclipse
 					event.doit = true;
@@ -1238,6 +1285,18 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 			}
 
 			writeToTerminal(charBuffer.toString());
+		}
+
+		/**
+		 * @return whether an Eclipse key binding active here takes the key
+		 */
+		private boolean hasKeyBinding(int accelerator) {
+			if (!PlatformUI.isWorkbenchRunning()) {
+				return false;
+			}
+			IBindingService bindingService = PlatformUI.getWorkbench().getAdapter(IBindingService.class);
+			KeyStroke keyStroke = SWTKeySupport.convertAcceleratorToKeyStroke(accelerator);
+			return bindingService != null && bindingService.getPerfectMatch(KeySequence.getInstance(keyStroke)) != null;
 		}
 
 		/*

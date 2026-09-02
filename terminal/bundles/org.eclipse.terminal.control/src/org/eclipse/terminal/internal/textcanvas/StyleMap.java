@@ -20,6 +20,7 @@
 package org.eclipse.terminal.internal.textcanvas;
 
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -51,6 +52,11 @@ public class StyleMap {
 	private boolean fProportional;
 	private final int[] fOffsets = new int[256];
 	private final Map<TerminalColor, Color> fColorMap = new EnumMap<>(TerminalColor.class);
+	/** faint colours already blended, by the colour and the background it fades to */
+	private final Map<FaintKey, Color> fFaintColors = new HashMap<>();
+
+	private record FaintKey(RGB color, RGB background) {
+	}
 
 	public StyleMap(Supplier<Drawable> usageContextProvider) {
 		fDefaultStyle = TerminalStyle.getDefaultStyle();
@@ -86,7 +92,7 @@ public class StyleMap {
 			foregroundRGB = style.getForegroundRGB();
 		}
 		if (foregroundRGB != null) {
-			return new Color(foregroundRGB);
+			return dimmed(style, new Color(foregroundRGB));
 		}
 
 		TerminalColor color;
@@ -101,7 +107,24 @@ public class StyleMap {
 		}
 
 		color = color.convertColor(fInvertColors, style.isBold());
-		return getColor(color);
+		return dimmed(style, getColor(color));
+	}
+
+	/**
+	 * SGR 2 asks for a fainter version of whatever colour is in force. Half way to
+	 * the background keeps the text readable while setting it apart from the rest,
+	 * and it works for any colour rather than only the sixteen named ones.
+	 */
+	private Color dimmed(TerminalStyle style, Color color) {
+		if (!style.isDim()) {
+			return color;
+		}
+		if (fFaintColors.size() >= 1024) {
+			// a program in 24-bit colour could ask for any number of them: start over rather than track use
+			fFaintColors.clear();
+		}
+		return fFaintColors.computeIfAbsent(new FaintKey(color.getRGB(), getBackgroundColor(style).getRGB()),
+				key -> new Color(key.color().blend(key.background(), 0.5)));
 	}
 
 	public Color getBackgroundColor(TerminalStyle style) {

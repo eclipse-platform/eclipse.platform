@@ -2,12 +2,13 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.terminal.control; singleton:=true
-Bundle-Version: 1.1.300.qualifier
+Bundle-Version: 1.2.0.qualifier
 Bundle-Activator: org.eclipse.terminal.internal.control.impl.TerminalPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime;bundle-version="[3.33.0,4.0.0)",
- org.eclipse.ui;bundle-version="[3.208.0,4.0.0)"
+ org.eclipse.ui;bundle-version="[3.208.0,4.0.0)",
+ org.eclipse.swt;bundle-version="[3.136.0,4.0.0)"
 Bundle-ActivationPolicy: lazy
 Eclipse-LazyStart: true
 Bundle-RequiredExecutionEnvironment: JavaSE-21
@@ -30,5 +31,5 @@ Export-Package: org.eclipse.terminal.connector;version="1.0.100";
  org.eclipse.terminal.internal.model;x-internal:=true,
  org.eclipse.terminal.internal.preferences;x-internal:=true;x-friends:="org.eclipse.terminal.view.ui",
  org.eclipse.terminal.internal.textcanvas;x-internal:=true,
- org.eclipse.terminal.model;version="1.0.100";uses:="org.eclipse.swt.graphics"
+ org.eclipse.terminal.model;version="1.1.0";uses:="org.eclipse.swt.graphics"
 Automatic-Module-Name: org.eclipse.terminal.control
