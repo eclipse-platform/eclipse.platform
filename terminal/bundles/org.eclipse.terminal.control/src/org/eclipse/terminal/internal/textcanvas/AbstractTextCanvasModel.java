@@ -442,6 +442,24 @@ abstract public class AbstractTextCanvasModel implements ITextCanvasModel {
 	}
 
 	/**
+	 * The cells from <code>from</code> to <code>to</code> as text, with each two-cell
+	 * cluster given in full in place of the one character its cells hold.
+	 */
+	private static String withClusters(ITerminalTextDataReadOnly data, int line, char[] chars, int from, int to) {
+		StringBuilder text = new StringBuilder(to - from);
+		for (int col = from; col < to; col++) {
+			String cluster = col + 1 < to ? data.getCluster(line, col) : null;
+			if (cluster != null) {
+				text.append(cluster);
+				col++;
+			} else {
+				text.append(chars[col]);
+			}
+		}
+		return text.toString();
+	}
+
+	/**
 	 * Calculates the currently selected text
 	 * @return the currently selected text
 	 */
@@ -454,14 +472,11 @@ abstract public class AbstractTextCanvasModel implements ITextCanvasModel {
 			String text;
 			char[] chars = fSelectionSnapshot.getChars(line);
 			if (chars != null) {
-				text = new String(chars);
-				if (line == fSeletionEndLine && fSelectionEndColumn >= 0) {
-					text = text.substring(0, Math.min(fSelectionEndColumn + 1, text.length()));
-				}
-				if (line == fSelectionStartLine) {
-					text = text.substring(Math.min(fSelectionStartCoumn, text.length()));
-				}
-				text = scrubLine(text);
+				int from = line == fSelectionStartLine ? Math.min(fSelectionStartCoumn, chars.length) : 0;
+				int to = line == fSeletionEndLine && fSelectionEndColumn >= 0
+						? Math.min(fSelectionEndColumn + 1, chars.length)
+						: chars.length;
+				text = scrubLine(withClusters(fSelectionSnapshot, line, chars, from, to));
 			} else {
 				text = ""; //$NON-NLS-1$
 			}
