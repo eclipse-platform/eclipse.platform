@@ -157,4 +157,9 @@ public class SynchronizedTerminalTextData implements ITerminalTextData {
 	synchronized public void setWrappedLine(int line) {
 		fData.setWrappedLine(line);
 	}
+
+	@Override
+	synchronized public void clearWrappedLine(int line) {
+		fData.clearWrappedLine(line);
+	}
 }

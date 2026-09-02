@@ -156,4 +156,14 @@ public interface ITerminalTextData extends ITerminalTextDataReadOnly {
 	 */
 	void setWrappedLine(int line);
 
+	/**
+	 * Says the line no longer runs on to the next, undoing
+	 * {@link #setWrappedLine(int)}: what ran on to the margin was erased.
+	 *
+	 * @param line line to unmark, must be &gt;=0 and &lt; {@link #getHeight()}
+	 * @since 1.2
+	 */
+	default void clearWrappedLine(int line) {
+	}
+
 }

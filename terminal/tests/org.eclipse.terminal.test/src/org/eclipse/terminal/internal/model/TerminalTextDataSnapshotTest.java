@@ -1288,4 +1288,21 @@ public class TerminalTextDataSnapshotTest {
 		assertEquals(3, snapshot.getWidth());
 		assertEquals(toMultiLineText(source), toMultiLineText(snapshot));
 	}
+
+	@Test
+	public void testWrapMarkChangesReachTheSnapshot() {
+		ITerminalTextData term = new TerminalTextData();
+		term.setDimensions(2, 4);
+		ITerminalTextDataSnapshot snapshot = term.makeSnapshot();
+		snapshot.updateSnapshot(false);
+		// setting or clearing the mark alone is a change readers have to see
+		term.setWrappedLine(0);
+		assertTrue(snapshot.isOutOfDate());
+		snapshot.updateSnapshot(false);
+		assertTrue(snapshot.isWrappedLine(0));
+		term.clearWrappedLine(0);
+		assertTrue(snapshot.isOutOfDate());
+		snapshot.updateSnapshot(false);
+		assertFalse(snapshot.isWrappedLine(0));
+	}
 }

@@ -58,6 +58,9 @@ public class TextCanvas extends GridCanvas {
 	private final ILinelRenderer fCellRenderer;
 	private boolean fScrollLock;
 	private Point fDraggingStart;
+	/** -1 above the top, 1 below the bottom, 0 while the pointer is inside */
+	private boolean fDragScrolling;
+	private static final int DRAG_SCROLL_INTERVAL = 60;
 	private Point fDraggingEnd;
 	private boolean fHasSelection;
 	private ResizeListener fResizeListener;
@@ -270,21 +273,13 @@ public class TextCanvas extends GridCanvas {
 		});
 		addMouseMoveListener(e -> {
 			if (fDraggingStart != null) {
-				Point curr = screenPointToCell(e.x, e.y);
-				updateHasSelection(e);
-				switch (fSelMode) {
-				case WORD:
-					updateWordSelection(curr);
-					break;
-				case LINE:
-					updateLineSelection(curr);
-					break;
-				case DRAG:
-				default:
-					setSelection(curr);
-					break;
+				// Dragging past an edge keeps the lines beyond it coming into view.
+				if (dragPast(e.y) != 0 && !fDragScrolling) {
+					fDragScrolling = true;
+					getDisplay().timerExec(DRAG_SCROLL_INTERVAL, this::dragScroll);
 				}
-				fCellCanvasModel.expandHoverSelectionAt(-1, -1);
+				updateHasSelection(e);
+				extendSelection(screenPointToCell(e.x, e.y));
 			} else if ((e.stateMask & SWT.MODIFIER_MASK) == SWT.MOD1) {
 				// highlight (underline) word that would be used by MOD1 + mouse click
 				Point pt = screenPointToCell(e.x, e.y);
@@ -296,6 +291,47 @@ public class TextCanvas extends GridCanvas {
 		});
 		setVerticalBarVisible(true);
 		setHorizontalBarVisible(false);
+	}
+
+	/**
+	 * A drag moves the end of the selection to the cell, by characters, words or
+	 * lines as it began: the one way a drag does, whether the pointer moved or the
+	 * view scrolled under it.
+	 */
+	private void extendSelection(Point cell) {
+		switch (fSelMode) {
+		case WORD:
+			updateWordSelection(cell);
+			break;
+		case LINE:
+			updateLineSelection(cell);
+			break;
+		case DRAG:
+		default:
+			setSelection(cell);
+			break;
+		}
+		fCellCanvasModel.expandHoverSelectionAt(-1, -1);
+	}
+
+	/** @return -1 above the canvas, 1 below it, 0 on it */
+	private int dragPast(int y) {
+		return y < 0 ? -1 : y >= getClientArea().height ? 1 : 0;
+	}
+
+	private void dragScroll() {
+		Point p = isDisposed() ? null : toControl(getDisplay().getCursorLocation());
+		// where the pointer is now, not where the last move left it: a new click may have
+		// come in between
+		int past = p == null ? 0 : dragPast(p.y);
+		if (p == null || fDraggingStart == null || past == 0) {
+			fDragScrolling = false;
+			return;
+		}
+		scrollYDelta(past * getCellHeight());
+		extendSelection(screenPointToCell(p.x, p.y));
+		redraw();
+		getDisplay().timerExec(DRAG_SCROLL_INTERVAL, this::dragScroll);
 	}
 
 	private static class Range {
@@ -494,6 +530,11 @@ public class TextCanvas extends GridCanvas {
 			}
 		} finally {
 			setRedraw(true);
+		}
+		// NO_REDRAW_RESIZE paints only what a resize uncovers. When the grid gets
+		// narrower, what was drawn in the columns now past its edge stays there.
+		if (getVirtualBounds().width < virtualBounds.width) {
+			redraw();
 		}
 	}
 

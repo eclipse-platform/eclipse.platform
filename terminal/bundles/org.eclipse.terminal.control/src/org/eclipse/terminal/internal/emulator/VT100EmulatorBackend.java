@@ -429,15 +429,20 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 	@Override
 	public void eraseLineToEnd() {
 		synchronized (fTerminal) {
-			eraseWhole(toAbsoluteLine(fCursorLine), fCursorColumn, fColumns);
+			int line = toAbsoluteLine(fCursorLine);
+			eraseWhole(line, fCursorColumn, fColumns);
+			// Nothing is left out to the margin, so the line ends where the cursor is.
+			fTerminal.clearWrappedLine(line);
 		}
 	}
 
 	/**
 	 * Erasing either half of a wide character erases all of it, in the same
 	 * background as the rest of the range.
+	 *
+	 * @return where the erase ended, past a wide character it took whole
 	 */
-	private void eraseWhole(int line, int from, int to) {
+	private int eraseWhole(int line, int from, int to) {
 		if (isSecondCell(line, from)) {
 			from--;
 		}
@@ -445,6 +450,7 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 			to++;
 		}
 		eraseCells(line, from, to);
+		return to;
 	}
 
 	/**
@@ -518,6 +524,8 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 				fTerminal.setChar(line, col - n, c, style);
 			}
 			eraseCells(line, Math.max(fCursorColumn, fColumns - n), fColumns);
+			// what reached the margin moved off it, so the line ends before it (xterm)
+			fTerminal.clearWrappedLine(line);
 		}
 	}
 
@@ -884,7 +892,14 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 			return; // nothing is erased, so no wide character may be broken either
 		}
 		synchronized (fTerminal) {
-			eraseWhole(toAbsoluteLine(fCursorLine), fCursorColumn, Math.min(fCursorColumn + n, fColumns));
+			int line = toAbsoluteLine(fCursorLine);
+			int end = n >= fColumns - fCursorColumn ? fColumns : fCursorColumn + n;
+			// a wide character the erase ends in is erased whole, maybe up to the margin
+			if (eraseWhole(line, fCursorColumn, end) == fColumns) {
+				// Nothing is left out to the margin, so the line ends before it, as
+				// erasing to the end of the line says (xterm; Ghostty on any ECH).
+				fTerminal.clearWrappedLine(line);
+			}
 		}
 	}
 }
