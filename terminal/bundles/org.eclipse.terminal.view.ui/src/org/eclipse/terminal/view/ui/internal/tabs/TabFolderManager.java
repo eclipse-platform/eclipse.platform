@@ -481,7 +481,7 @@ public class TabFolderManager extends PlatformObject implements ISelectionProvid
 					}
 					String text = (String) clipboard.getContents(TextTransfer.getInstance(), clipboardType);
 					if (text != null && text.length() > 0) {
-						terminal.pasteString(text);
+						terminal.paste(text);
 					}
 				}
 			}
