@@ -17,6 +17,7 @@
 package org.eclipse.terminal.internal.emulator;
 
 import static org.eclipse.terminal.model.TerminalColor.BLACK;
+import static org.eclipse.terminal.model.TerminalColor.RED;
 import static org.eclipse.terminal.model.TerminalColor.WHITE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -24,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.eclipse.terminal.internal.model.TerminalTextData;
 import org.eclipse.terminal.internal.model.TerminalTextDataStore;
 import org.eclipse.terminal.internal.model.TerminalTextTestHelper;
 import org.eclipse.terminal.model.ITerminalTextData;
@@ -1374,5 +1376,183 @@ public class VT100EmulatorBackendTest {
 		vt100.setCursor(1, 0);
 		vt100.appendString("한");
 		assertEquals("한", new String(term.getChars(1)));
+	}
+
+	@Test
+	public void testAlternateScreenBuffer() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(100);
+		vt100.setDimensions(3, 10);
+		vt100.setCursor(0, 0);
+		vt100.appendString("one\r\n");
+		for (int i = 0; i < 5; i++) {
+			vt100.appendString("more");
+			vt100.processNewline();
+			vt100.setCursorColumn(0);
+		}
+		vt100.appendString("last");
+		int historyHeight = term.getHeight();
+		assertTrue(historyHeight > 3);
+
+		vt100.enableAlternateScreen(true);
+		// no history to scroll back through, and none accumulates: scrolling drops the top line
+		assertEquals(3, term.getHeight());
+		assertEquals(3, term.getMaxHeight());
+		vt100.appendString("alt");
+		vt100.setCursor(2, 0);
+		vt100.processNewline();
+		vt100.processNewline();
+		assertEquals(3, term.getHeight());
+		assertNull(term.getChars(0));
+
+		// resized while the program had the screen
+		vt100.setDimensions(5, 7);
+		vt100.enableAlternateScreen(false);
+		// the buffer put back is as wide as the screen is now and at least as tall
+		assertEquals(7, term.getWidth());
+		assertTrue(term.getHeight() >= 5);
+		assertEquals(100, term.getMaxHeight());
+		assertEquals("last", new String(term.getChars(term.getHeight() - 1), 0, 4));
+		vt100.appendString("x"); // a write past the old margin used to throw
+		assertEquals(5, vt100.getCursorColumn());
+		// the cursor is back on the line it left, now the bottom of a taller screen
+		assertEquals(4, vt100.getCursorLine());
+		assertEquals("lastx", new String(term.getChars(term.getHeight() - 1), 0, 5));
+	}
+
+	@Test
+	public void testAlternateScreenShrunkKeepsNoHistory() {
+		// also on the buffer the terminal actually uses, which rejects a cap below its height
+		for (ITerminalTextData term : new ITerminalTextData[] { makeITerminalTextData(), new TerminalTextData() }) {
+			IVT100EmulatorBackend vt100 = makeBakend(term);
+			term.setMaxHeight(100);
+			vt100.setDimensions(5, 10);
+			vt100.enableAlternateScreen(true);
+			vt100.setCursor(4, 0);
+			vt100.appendString("bottom");
+			vt100.setDimensions(3, 10);
+			assertEquals(3, term.getHeight());
+			assertEquals(3, term.getMaxHeight());
+			// the lines above the cursor went, the cursor and its line stayed
+			assertEquals(2, vt100.getCursorLine());
+			assertEquals("bottom", new String(term.getChars(2), 0, 6));
+			for (int i = 0; i < 6; i++) {
+				vt100.processNewline();
+				vt100.appendString("x");
+			}
+			// scrolling drops the top line instead of growing back to the old height
+			assertEquals(3, term.getHeight());
+			vt100.setDimensions(6, 10);
+			assertEquals(6, term.getHeight());
+			assertEquals(6, term.getMaxHeight());
+			vt100.enableAlternateScreen(false);
+			assertEquals(100, term.getMaxHeight());
+		}
+	}
+
+	@Test
+	public void testAlternateScreenKeepsALoweredLimit() {
+		for (ITerminalTextData term : new ITerminalTextData[] { makeITerminalTextData(), new TerminalTextData() }) {
+			IVT100EmulatorBackend vt100 = makeBakend(term);
+			term.setMaxHeight(1000);
+			vt100.setDimensions(3, 10);
+			for (int i = 0; i < 750; i++) {
+				vt100.appendString("l" + i);
+				vt100.processNewline();
+				vt100.setCursorColumn(0);
+			}
+			vt100.appendString("last");
+			vt100.enableAlternateScreen(true);
+			vt100.setBufferLineLimit(500); // the preference changes while the program has the screen
+			vt100.enableAlternateScreen(false);
+			// the oldest lines went, not the screen, and the limit holds from now on
+			assertEquals(500, term.getHeight());
+			assertEquals(500, term.getMaxHeight());
+			assertEquals("last", new String(term.getChars(499), 0, 4));
+			assertEquals(2, vt100.getCursorLine());
+			assertEquals(4, vt100.getCursorColumn());
+		}
+	}
+
+	@Test
+	public void testAlternateScreenGrownLeavesNoTextBehind() {
+		for (ITerminalTextData term : new ITerminalTextData[] { makeITerminalTextData(), new TerminalTextData() }) {
+			IVT100EmulatorBackend vt100 = makeBakend(term);
+			term.setMaxHeight(100);
+			vt100.setDimensions(3, 10);
+			vt100.setCursor(0, 0);
+			vt100.appendString("shell");
+			vt100.enableAlternateScreen(true);
+			vt100.setDimensions(6, 10);
+			for (int line = 0; line < 6; line++) {
+				vt100.setCursor(line, 0);
+				vt100.appendString("program");
+			}
+			vt100.enableAlternateScreen(false);
+			// the rows the screen gained show nothing of the program
+			assertEquals(6, term.getHeight());
+			assertEquals("shell", new String(term.getChars(0), 0, 5));
+			for (int line = 1; line < 6; line++) {
+				char[] chars = term.getChars(line);
+				assertTrue(chars == null || new String(chars).trim().replace("\000", "").isEmpty(), "row " + line);
+			}
+		}
+	}
+
+	@Test
+	public void testAlternateScreenShrunkKeepsTheCursorOnItsLine() {
+		for (ITerminalTextData term : new ITerminalTextData[] { makeITerminalTextData(), new TerminalTextData() }) {
+			IVT100EmulatorBackend vt100 = makeBakend(term);
+			term.setMaxHeight(100);
+			vt100.setDimensions(24, 10);
+			vt100.setCursor(0, 0);
+			vt100.appendString("a");
+			vt100.setCursor(1, 0);
+			vt100.appendString("$ ");
+			vt100.enableAlternateScreen(true);
+			vt100.setDimensions(12, 10);
+			vt100.enableAlternateScreen(false);
+			// no history: the unused rows below the cursor go, and the prompt stays where it was
+			assertEquals(12, term.getHeight());
+			assertEquals(1, vt100.getCursorLine());
+			assertEquals(2, vt100.getCursorColumn());
+			vt100.appendString("ls");
+			assertEquals("$ ls", new String(term.getChars(1), 0, 4));
+		}
+	}
+
+	@Test
+	public void testAlternateScreenKeepsAPendingWrap() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(10);
+		vt100.setDimensions(2, 4);
+		vt100.setVT100LineWrapping(true);
+		vt100.setCursor(0, 0);
+		vt100.appendString("abcd"); // the cursor waits on the last column to wrap
+		vt100.enableAlternateScreen(true);
+		vt100.enableAlternateScreen(false);
+		vt100.appendString("e");
+		assertEquals("abcd", new String(term.getChars(0), 0, 4));
+		assertEquals('e', term.getChar(1, 0));
+	}
+
+	@Test
+	public void testAlternateScreenKeepsTheStyle() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(10);
+		vt100.setDimensions(2, 8);
+		vt100.setDefaultStyle(TerminalStyle.getStyle(WHITE, BLACK));
+		TerminalStyle red = TerminalStyle.getStyle(RED, BLACK);
+		vt100.setStyle(red);
+		vt100.enableAlternateScreen(true);
+		// entering keeps what was selected: no SGR reset was sent
+		assertEquals(red, vt100.getStyle());
+		vt100.setStyle(TerminalStyle.getStyle(WHITE, BLACK).setBold(true)); // the program's own
+		vt100.enableAlternateScreen(false);
+		// the shell goes on in its red, and nothing of the program's bold leaks into it
+		assertEquals(red, vt100.getStyle());
 	}
 }

@@ -26,6 +26,43 @@ public interface IVT100EmulatorBackend {
 	void clearAll();
 
 	/**
+	 * Switches between the screen a shell writes to, which keeps its scrollback, and
+	 * the one a full screen program is given, which has none. Leaving the alternate
+	 * screen puts back exactly what was on the normal one, so a program that takes
+	 * over the display does not cost the user the history behind it.
+	 *
+	 * @param enable whether to show the alternate screen
+	 */
+	default void enableAlternateScreen(boolean enable) {
+		enableAlternateScreen(enable, true);
+	}
+
+	/**
+	 * As {@link #enableAlternateScreen(boolean)}, for the modes that differ in the
+	 * cursor: 1049 saves it on the way in and restores it on the way out, as DECSC
+	 * and DECRC do, while 47 and 1047 leave it where the program put it.
+	 *
+	 * @param enable whether to show the alternate screen
+	 * @param cursor whether the cursor and its rendition come back with the normal screen
+	 */
+	void enableAlternateScreen(boolean enable, boolean cursor);
+
+	/**
+	 * @return how many lines the normal screen keeps, history included, also while the
+	 *         alternate screen, which keeps none, is showing
+	 */
+	int getBufferLineLimit();
+
+	/**
+	 * Sets how many lines the normal screen keeps, history included. While the
+	 * alternate screen is showing, the limit is kept for the normal screen and
+	 * applies once it is back, since the alternate screen keeps no history.
+	 *
+	 * @param bufferLineLimit the maximum number of lines, ignored when not positive
+	 */
+	void setBufferLineLimit(int bufferLineLimit);
+
+	/**
 	 * Sets the Dimensions of the addressable scroll space of the screen....
 	 * Keeps the cursor position relative to the bottom of the screen!
 	 * @param lines
