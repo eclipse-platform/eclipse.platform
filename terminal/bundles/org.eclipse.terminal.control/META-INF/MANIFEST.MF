@@ -19,7 +19,7 @@ Export-Package: org.eclipse.terminal.connector;version="1.0.100";
    org.eclipse.swt.widgets,
    org.eclipse.terminal.control",
  org.eclipse.terminal.connector.provider;version="1.0.100";uses:="org.eclipse.terminal.connector",
- org.eclipse.terminal.control;version="1.0.100";
+ org.eclipse.terminal.control;version="1.1.0";
   uses:="org.eclipse.swt.dnd,
    org.eclipse.swt.graphics,
    org.eclipse.swt.widgets,

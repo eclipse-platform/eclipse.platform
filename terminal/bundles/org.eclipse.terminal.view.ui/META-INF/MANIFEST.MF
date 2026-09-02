@@ -16,7 +16,7 @@ Require-Bundle: org.eclipse.core.expressions;bundle-version="[3.9.0,4.0.0)",
  org.eclipse.ui.editors;bundle-version="[3.20.0,4.0.0)";resolution:=optional,
  org.eclipse.text;bundle-version="[3.14.0,4.0.0)";resolution:=optional,
  org.eclipse.terminal.view.core;bundle-version="[1.0.0,2.0.0)",
- org.eclipse.terminal.control;bundle-version="[1.0.0,2.0.0)"
+ org.eclipse.terminal.control;bundle-version="[1.2.0,2.0.0)"
 Bundle-RequiredExecutionEnvironment: JavaSE-21
 Bundle-ActivationPolicy: lazy
 Bundle-Localization: plugin
@@ -36,7 +36,7 @@ Export-Package: org.eclipse.terminal.view.ui;version="1.0.100",
 Automatic-Module-Name: org.eclipse.terminal.view.ui
 Import-Package: org.eclipse.terminal.connector;version="[1.0.0,2.0.0)",
  org.eclipse.terminal.connector.provider;version="[1.0.0,2.0.0)",
- org.eclipse.terminal.control;version="[1.0.0,2.0.0)",
+ org.eclipse.terminal.control;version="[1.1.0,2.0.0)",
  org.eclipse.terminal.model;version="[1.0.0,2.0.0)"
 Service-Component: OSGI-INF/org.eclipse.terminal.view.ui.internal.ConsoleManager.xml,
  OSGI-INF/org.eclipse.terminal.view.ui.internal.LauncherDelegateManager.xml,

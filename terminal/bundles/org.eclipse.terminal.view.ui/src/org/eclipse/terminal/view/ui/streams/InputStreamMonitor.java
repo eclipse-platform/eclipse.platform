@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.ILog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.terminal.connector.ITerminalControl;
 import org.eclipse.terminal.view.core.ILineSeparatorConstants;
+import org.eclipse.terminal.view.ui.internal.InputChunks;
 import org.eclipse.terminal.view.ui.internal.Messages;
 import org.eclipse.ui.services.IDisposable;
 
@@ -248,7 +249,8 @@ public class InputStreamMonitor extends OutputStream implements IDisposable {
 					int written = 0;
 					byte[] buf = new byte[1000];
 					while (written < data.length) {
-						int len = Math.min(buf.length, data.length - written);
+						// not cutting a character or an escape sequence
+						int len = InputChunks.writeLength(data, written, buf.length);
 						System.arraycopy(data, written, buf, 0, len);
 						// Write the data to the stream
 						stream.write(buf, 0, len);

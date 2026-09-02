@@ -41,6 +41,7 @@ import static org.eclipse.terminal.model.TerminalColor.YELLOW;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Arrays;
+import java.util.function.IntConsumer;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.events.ControlEvent;
@@ -521,6 +522,17 @@ public class VT100Emulator implements ControlListener {
 		text.setScrollRegion(-1, -1);
 		text.setInsertMode(false);
 		terminal.enableApplicationCursorKeys(false);
+		resetProgramModes();
+	}
+
+	/**
+	 * The modes a program asked for end with a full reset and with its connection: a
+	 * program that hid the cursor and was cut off must not leave the next shell
+	 * without one.
+	 */
+	private void resetProgramModes() {
+		terminal.showCursor(true);
+		terminal.enableBracketedPaste(false);
 	}
 
 	/**
@@ -1302,12 +1314,32 @@ public class VT100Emulator implements ControlListener {
 		text.eraseCharacters(getAnsiParameter(0));
 	}
 
+	/**
+	 * Runs the action on each mode of a set or reset. Only the first 16 parameters are
+	 * stored, while every ';' is counted: the ones past them are dropped.
+	 */
+	private void forEachMode(IntConsumer action) {
+		for (int i = 0; i <= nextAnsiParameter && i < ansiParameters.length; i++) {
+			if (ansiParameters[i].length() > 0) { // an empty one names no mode
+				action.accept(getAnsiParameter(i));
+			}
+		}
+	}
+
 	private void processDecPrivateCommand_h() {
-		int param = getAnsiParameter(0);
+		// A program may set several modes at once: ncurses turns the mouse on with CSI ? 1006 ; 1000 h.
+		forEachMode(this::setDecPrivateMode);
+	}
+
+	private void setDecPrivateMode(int param) {
 		switch (param) {
 		case 1:
 			// Enable Application Cursor Keys (DECCKM)
 			terminal.enableApplicationCursorKeys(true);
+			break;
+		case 25:
+			// Show cursor (DECTCEM).
+			terminal.showCursor(true);
 			break;
 		case 47:
 		case 1047:
@@ -1324,6 +1356,10 @@ public class VT100Emulator implements ControlListener {
 			// Save cursor, as ESC 7 does.
 			saveCursor();
 			break;
+		case 2004:
+			// Bracketed paste: pasted text is wrapped so a program can tell it from typing.
+			terminal.enableBracketedPaste(true);
+			break;
 		default:
 			Logger.log("Unsupported command parameter: CSI ?" + param + 'h'); //$NON-NLS-1$
 			break;
@@ -1331,11 +1367,18 @@ public class VT100Emulator implements ControlListener {
 	}
 
 	private void processDecPrivateCommand_l() {
-		int param = getAnsiParameter(0);
+		forEachMode(this::resetDecPrivateMode);
+	}
+
+	private void resetDecPrivateMode(int param) {
 		switch (param) {
 		case 1:
 			// Enable Normal Cursor Keys (DECCKM)
 			terminal.enableApplicationCursorKeys(false);
+			break;
+		case 25:
+			// Hide cursor (DECTCEM).
+			terminal.showCursor(false);
 			break;
 		case 47:
 		case 1047:
@@ -1353,6 +1396,9 @@ public class VT100Emulator implements ControlListener {
 		case 1048:
 			// Restore cursor, as ESC 8 does.
 			restoreCursor();
+			break;
+		case 2004:
+			terminal.enableBracketedPaste(false);
 			break;
 		default:
 			Logger.log("Unsupported command parameter: CSI ?" + param + 'l'); //$NON-NLS-1$
@@ -1627,6 +1673,7 @@ public class VT100Emulator implements ControlListener {
 		text.setStyle(text.getDefaultStyle());
 		text.setScrollRegion(-1, -1);
 		text.setInsertMode(false);
+		resetProgramModes();
 	}
 
 	//	public OutputStream getOutputStream() {

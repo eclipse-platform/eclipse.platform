@@ -12,6 +12,7 @@ package org.eclipse.terminal.internal.textcanvas;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -103,10 +104,32 @@ public class TerminalControlRecreateUITest {
 	public void recreatedCanvasKeepsWhatWasSetOnThisTerminal() {
 		// set on this terminal, not in the preferences: a move must not reset them to the preferences
 		terminal.setInvertedColors(true);
+		terminal.setScrollLock(true);
 		terminal.setBufferLineLimit(123);
 		recreateInNewParent();
 		assertTrue(terminal.isInvertedColors());
+		assertTrue(terminal.isScrollLock());
 		assertEquals(123, terminal.getBufferLineLimit());
+	}
+
+	@Test
+	public void recreatedCanvasKeepsTheCursorTheProgramHid() {
+		// CSI ? 25 l: a program hid the cursor; the new canvas must not show it again
+		terminal.showCursor(false);
+		recreateInNewParent();
+		assertFalse(terminal.isCursorShown());
+		terminal.showCursor(true);
+		assertTrue(terminal.isCursorShown());
+	}
+
+	@Test
+	public void recreatedCanvasOfAConnectedTerminalBlinksTheCursor() {
+		terminal.setState(TerminalState.CONNECTED);
+		while (Display.getCurrent().readAndDispatch()) {
+			// let setState enable the cursor
+		}
+		recreateInNewParent();
+		assertTrue(((TextCanvas) terminal.getControl()).isCursorEnabled());
 	}
 
 	@Test

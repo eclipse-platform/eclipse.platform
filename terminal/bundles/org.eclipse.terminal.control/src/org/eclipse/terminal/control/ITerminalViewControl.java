@@ -119,6 +119,21 @@ public interface ITerminalViewControl {
 	 */
 	public boolean pasteString(String string);
 
+	/**
+	 * Pastes text as the user pastes it, unlike {@link #pasteString(String)}, which
+	 * writes it as it is, for callers that run commands with it: each line break goes
+	 * as the Enter key sends it, and the text is marked as pasted when the program
+	 * asked for bracketed paste.
+	 *
+	 * @param text the text to paste
+	 * @return whether it was sent, which it is not while the terminal is not
+	 *         connected
+	 * @since 1.2
+	 */
+	default boolean paste(String text) {
+		return pasteString(text);
+	}
+
 	boolean isConnected();
 
 	/**

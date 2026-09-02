@@ -172,13 +172,23 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 	 */
 	private final IPropertyChangeListener fPreferenceListener = this::updatePreferences;
 	private final IPropertyChangeListener fFontListener = this::updateFont;
+	// set by the reader job, read by the display thread when pasting
+	private volatile boolean fBracketedPaste;
+	// asked for by the program (DECTCEM); kept on the control, as the canvas is new after a move.
+	// Written with the model it is copied to under fCursorLock, so a model made during a move
+	// cannot miss a hide or show that the reader job makes meanwhile
+	private boolean fCursorHidden;
+	private final Object fCursorLock = new Object();
+	private static final String PASTE_START = "\u001b[200~"; //$NON-NLS-1$
+	private static final String PASTE_END = "\u001b[201~"; //$NON-NLS-1$
 
 	/**
 	 * Is protected by synchronize on this
 	 */
 	volatile private Job fJob;
 
-	private PollingTextCanvasModel fPollingTextCanvasModel;
+	// replaced on the display thread when the tab moves, read by the reader job in showCursor
+	private volatile PollingTextCanvasModel fPollingTextCanvasModel;
 
 	/**
 	 * In some circumstances (e.g PowerShell on Windows) the backspace
@@ -294,7 +304,7 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 	private void paste(int clipboardType) {
 		TextTransfer textTransfer = TextTransfer.getInstance();
 		String strText = (String) fClipboard.getContents(textTransfer, clipboardType);
-		pasteString(strText);
+		paste(strText);
 	}
 
 	/**
@@ -309,6 +319,18 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 			return false;
 		}
 		sendString(strText);
+		return true;
+	}
+
+	@Override
+	public boolean paste(String text) {
+		if (!isConnected() || text == null || text.isEmpty()) {
+			return false; // nothing to paste: no empty brackets either
+		}
+		// a connector that echoes locally (a stream, telnet without remote echo) gets the
+		// text as it always did: InputStreamMonitor converts the line breaks of a stream
+		ITerminalConnector connector = getTerminalConnector();
+		sendString(connector != null && connector.isLocalEcho() ? text : pasteText(text, fBracketedPaste));
 		return true;
 	}
 
@@ -610,6 +632,30 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 		return modifier == 1 || key == null ? null : "\u001b[" + key.number() + ';' + modifier + key.last(); //$NON-NLS-1$
 	}
 
+	/**
+	 * Pasted text as it goes to the program: each line break as the Enter key sends
+	 * it, a CR, as Windows Terminal (CR LF to CR) and tmux (LF to CR) paste. A
+	 * Windows clipboard's CR LF would reach the shell as two breaks, and readline
+	 * then draws two rows for every line: a paste taller than the screen pushes the
+	 * prompt off it, and the redraw on the next key lands where the prompt no
+	 * longer is. With bracketed paste on, the text is marked as pasted.
+	 */
+	public static String pasteText(String text, boolean bracketedPaste) {
+		String lines = text.replace("\r\n", "\r").replace('\n', '\r'); //$NON-NLS-1$ //$NON-NLS-2$
+		return bracketedPaste ? bracketed(lines) : lines;
+	}
+
+	/**
+	 * Marks text as pasted, so that a program takes the newlines in it as part of
+	 * the text rather than as the user pressing return on each line. The text cannot
+	 * end the paste early: every ESC and C1 CSI goes, as xterm does, so no end marker
+	 * can be left over or put together from the pieces around one taken out
+	 * ("ESC[20ESC[201~1~").
+	 */
+	private static String bracketed(String text) {
+		return PASTE_START + text.replace("\u001b", "").replace("\u009b", "") + PASTE_END; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+	}
+
 	protected void sendChar(char chKey, boolean altKeyPressed) {
 		try {
 			int byteToSend = chKey;
@@ -691,8 +737,9 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 			fClipboard.dispose();
 			fPollingTextCanvasModel.stopPolling();
 		}
-		// set on this terminal alone (Inverted colors in its menu): kept across a move
+		// set on this terminal alone (Inverted colors and Scroll Lock in its menu): kept across a move
 		boolean inverted = fCtlText != null && fCtlText.isInvertedColors();
+		boolean scrollLock = fCtlText != null && fCtlText.isScrollLock();
 		if (fWndParent != null && !fWndParent.isDisposed()) {
 			// terminal widget gets a new parent (DnD)
 			fWndParent.dispose();
@@ -715,12 +762,15 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 			onTerminalColorsChanged();
 			onTerminalFontChanged();
 			setInvertedColors(inverted);
+			setScrollLock(scrollLock);
 		}
 		JFaceResources.getFontRegistry().addListener(fFontListener);
 		setupHelp(fWndParent, TerminalPlugin.HELP_VIEW);
 
 		if (!wasDisposed) {
 			fState = oldState;
+			// the new canvas starts with the cursor off: a connected terminal's cursor blinks
+			fCtlText.setCursorEnabled(isConnected());
 		}
 	}
 
@@ -816,7 +866,11 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 		ITerminalTextDataSnapshot snapshot = fTerminalModel.makeSnapshot();
 		// TODO how to get the initial size correctly!
 		snapshot.updateSnapshot(false);
-		fPollingTextCanvasModel = new PollingTextCanvasModel(snapshot);
+		synchronized (fCursorLock) {
+			PollingTextCanvasModel model = new PollingTextCanvasModel(snapshot);
+			model.setCursorHidden(fCursorHidden);
+			fPollingTextCanvasModel = model;
+		}
 		fCtlText = new TextCanvas(fWndParent, fPollingTextCanvasModel, SWT.NONE,
 				new TextLineRenderer(() -> fCtlText, fPollingTextCanvasModel));
 
@@ -1361,6 +1415,11 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 		});
 	}
 
+	@Override
+	public void enableBracketedPaste(boolean enable) {
+		fBracketedPaste = enable;
+	}
+
 	/**
 	 * @param runnable run in display thread
 	 */
@@ -1478,6 +1537,21 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 	@Override
 	public String getHoverSelection() {
 		return fCtlText.getHoverSelection();
+	}
+
+	/** @return whether the cursor is drawn when on, not hidden by the program (DECTCEM) */
+	public boolean isCursorShown() {
+		return !fPollingTextCanvasModel.isCursorHidden();
+	}
+
+	@Override
+	public void showCursor(boolean show) {
+		synchronized (fCursorLock) {
+			fCursorHidden = !show;
+			if (fPollingTextCanvasModel != null) {
+				fPollingTextCanvasModel.setCursorHidden(!show);
+			}
+		}
 	}
 
 	@Override
