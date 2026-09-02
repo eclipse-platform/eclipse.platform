@@ -21,7 +21,7 @@ import java.util.List;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.terminal.connector.Logger;
-import org.eclipse.terminal.internal.model.CharWidth;
+import org.eclipse.terminal.internal.model.Cells;
 import org.eclipse.terminal.model.ITerminalTextDataReadOnly;
 import org.eclipse.terminal.model.ITerminalTextDataSnapshot;
 import org.eclipse.terminal.model.TextRange;
@@ -299,11 +299,12 @@ abstract public class AbstractTextCanvasModel implements ITextCanvasModel {
 			// A wide character is selected whole: a selection that starts on its
 			// second cell starts on its first, one that ends on its first ends on
 			// its second.
-			if (isSecondCell(startLine, startColumn)) {
-				startColumn--;
+			if (inside(startLine, startColumn)) {
+				startColumn = Cells.start(fSelectionSnapshot, startLine, startColumn);
 			}
-			if (isSecondCell(endLine, endColumn + 1)) {
-				endColumn++;
+			if (inside(endLine, endColumn)) {
+				int start = Cells.start(fSelectionSnapshot, endLine, endColumn);
+				endColumn = start + fSelectionSnapshot.getCellWidth(endLine, start) - 1;
 			}
 		}
 		int oldStart = fSelectionStartLine;
@@ -383,7 +384,7 @@ abstract public class AbstractTextCanvasModel implements ITextCanvasModel {
 			return;
 		}
 		fHoverRange = TextRange.EMPTY;
-		if (line < 0 || line > fSnapshot.getHeight() || col < 0) {
+		if (line < 0 || line >= fSnapshot.getHeight() || col < 0) {
 			return;
 		}
 		int row1 = line;
@@ -391,45 +392,50 @@ abstract public class AbstractTextCanvasModel implements ITextCanvasModel {
 		while (row1 > 0 && fSnapshot.isWrappedLine(row1 - 1)) {
 			row1--;
 		}
-		while (row2 < fSnapshot.getHeight() && fSnapshot.isWrappedLine(row2)) {
+		while (row2 + 1 < fSnapshot.getHeight() && fSnapshot.isWrappedLine(row2)) {
 			row2++;
 		}
 		row2++;
-		String lineText = ""; //$NON-NLS-1$
+		int width = fSnapshot.getWidth();
+		// the first cells of the characters of the logical line, as row * width + column
+		int[] cells = new int[(row2 - row1) * width];
+		int n = 0;
+		int at = -1;
+		int under = col < width ? line * width + Cells.start(fSnapshot, line, col) : -1;
 		for (int l = row1; l < row2; l++) {
-			char[] chars = fSnapshot.getChars(l);
-			if (chars == null) {
+			if (fSnapshot.getChars(l) == null) {
 				return;
 			}
-			lineText += String.valueOf(chars);
+			for (int c = 0; c < width; c++) {
+				if (fSnapshot.getCellWidth(l, c) > 0) {
+					if (l * width + c == under) {
+						at = n;
+					}
+					cells[n++] = l * width + c;
+				}
+			}
 		}
-		int width = fSnapshot.getWidth();
-		int col1 = col + (line - row1) * width;
-		if (lineText.length() <= col1 || isBoundary(lineText, col1)) {
+		if (at < 0 || isBoundary(cells[at], width)) {
 			return;
 		}
-		int wordStart = 0;
-		int wordEnd = lineText.length();
-		for (int c = col1; c >= 1; c--) {
-			if (isBoundary(lineText, c - 1)) {
-				wordStart = c;
-				break;
-			}
+		int first = at;
+		int last = at;
+		while (first > 0 && !isBoundary(cells[first - 1], width)) {
+			first--;
 		}
-		for (int c = col1; c < lineText.length(); c++) {
-			if (isBoundary(lineText, c)) {
-				wordEnd = c;
-				break;
-			}
+		while (last + 1 < n && !isBoundary(cells[last + 1], width)) {
+			last++;
 		}
-		if (wordStart < wordEnd) {
-			fHoverRange = new TextRange(row1 + wordStart / width, row1 + (wordEnd - 1) / width + 1, (wordStart % width),
-					(wordEnd - 1) % width + 1,
-					lineText.substring(wordStart, wordEnd).replace("\000", "")); //$NON-NLS-1$ //$NON-NLS-2$
-			if (DEBUG_HOVER) {
-				System.out.format("hover: %s   <- [%s,%s][%s,%s]\n", //$NON-NLS-1$
-						fHoverRange, col, line, wordStart, wordEnd);
-			}
+		StringBuilder word = new StringBuilder();
+		for (int k = first; k <= last; k++) {
+			word.append(Cells.text(fSnapshot, cells[k] / width, cells[k] % width));
+		}
+		int a = cells[first];
+		int b = cells[last];
+		fHoverRange = new TextRange(a / width, b / width + 1, a % width,
+				b % width + fSnapshot.getCellWidth(b / width, b % width), word.toString());
+		if (DEBUG_HOVER) {
+			System.out.format("hover: %s   <- [%s,%s]\n", fHoverRange, col, line); //$NON-NLS-1$
 		}
 	}
 
@@ -439,45 +445,22 @@ abstract public class AbstractTextCanvasModel implements ITextCanvasModel {
 	}
 
 	/**
-	 * The filler in the second cell of a wide character is what its character is:
-	 * part of the word for a path with Hangul in it, which would otherwise end at
-	 * every syllable, and a boundary for an ideographic space (U+3000).
+	 * A word ends at a cell never written, at whitespace, the wide ideographic space
+	 * included, and at a quote.
 	 */
-	private boolean isBoundary(String text, int index) {
-		char c = text.charAt(CharWidth.isFiller(text, index) ? index - 1 : index);
-		return Character.isWhitespace(c) || (c < '\u0020') || c == '"' || c == '\'';
+	private boolean isBoundary(int cell, int width) {
+		int line = cell / width;
+		int col = cell % width;
+		if (fSnapshot.getCellWidth(line, col) == 0) {
+			return true;
+		}
+		char c = fSnapshot.getChar(line, col); // what the cell shows, not a prefix written before it
+		return Character.isWhitespace(c) || c < '\u0020' || c == '"' || c == '\'';
 	}
 
-	// helper to sanitize text copied out of a snapshot
-	private static String scrubLine(String text) {
-		// get rid of the empty space at the end of the lines
-		// text=text.replaceAll("\000+$","");  //$NON-NLS-1$//$NON-NLS-2$
-		// <J2ME-CDC-1.1 version>
-		int i = text.length() - 1;
-		while (i >= 0 && text.charAt(i) == '\000') {
-			i--;
-		}
-		text = text.substring(0, i + 1);
-		// </J2ME-CDC-1.1 version>
-		// null means space, unless it is the filler of a wide character
-		StringBuilder scrubbed = new StringBuilder(text.length());
-		for (int j = 0; j < text.length(); j++) {
-			char c = text.charAt(j);
-			if (c != '\000') {
-				scrubbed.append(c);
-			} else if (!CharWidth.isFiller(text, j)) {
-				scrubbed.append(' ');
-			}
-		}
-		return scrubbed.toString();
-	}
-
-	private boolean isSecondCell(int line, int col) {
-		if (line < 0 || line >= fSelectionSnapshot.getHeight() || col <= 0) {
-			return false;
-		}
-		char[] chars = fSelectionSnapshot.getChars(line);
-		return chars != null && col < chars.length && CharWidth.isSecondCell(new String(chars), col);
+	/** @return whether the cell is on the selection's snapshot */
+	private boolean inside(int line, int col) {
+		return line >= 0 && line < fSelectionSnapshot.getHeight() && col >= 0 && col < fSelectionSnapshot.getWidth();
 	}
 
 	/**
@@ -493,14 +476,12 @@ abstract public class AbstractTextCanvasModel implements ITextCanvasModel {
 			String text;
 			char[] chars = fSelectionSnapshot.getChars(line);
 			if (chars != null) {
-				text = new String(chars);
-				if (line == fSeletionEndLine && fSelectionEndColumn >= 0) {
-					text = text.substring(0, Math.min(fSelectionEndColumn + 1, text.length()));
-				}
-				if (line == fSelectionStartLine) {
-					text = text.substring(Math.min(fSelectionStartCoumn, text.length()));
-				}
-				text = scrubLine(text);
+				int width = fSelectionSnapshot.getWidth();
+				int from = line == fSelectionStartLine ? Math.min(fSelectionStartCoumn, width) : 0;
+				// a row selected to its end comes whole, with what a narrowed screen keeps past its margin
+				text = line == fSeletionEndLine && fSelectionEndColumn >= 0 && fSelectionEndColumn + 1 < width
+						? Cells.text(fSelectionSnapshot, line, from, Math.min(fSelectionEndColumn + 1, width))
+						: Cells.row(fSelectionSnapshot, line, from);
 			} else {
 				text = ""; //$NON-NLS-1$
 			}
@@ -561,7 +542,7 @@ abstract public class AbstractTextCanvasModel implements ITextCanvasModel {
 			char[] chars = snapshot.getChars(line);
 			String text;
 			if (chars != null) {
-				text = scrubLine(new String(chars)); // take care of NULs
+				text = Cells.row(snapshot, line, 0);
 			} else {
 				text = ""; //$NON-NLS-1$ null arrays represent empty lines
 			}
