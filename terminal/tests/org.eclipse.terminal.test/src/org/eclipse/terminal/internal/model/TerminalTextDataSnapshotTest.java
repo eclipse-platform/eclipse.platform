@@ -1252,4 +1252,40 @@ public class TerminalTextDataSnapshotTest {
 		ITerminalTextDataSnapshot snapshot = term.makeSnapshot();
 		assertSame(term, snapshot.getTerminalTextData());
 	}
+
+	@Test
+	public void testCopyRefreshesSnapshotOfTheSameSize() {
+		ITerminalTextData term = makeITerminalTextData();
+		TerminalTextTestHelper.fill(term, "12345\n" + "abcde\n" + "ABCDE");
+		ITerminalTextDataSnapshot snapshot = term.makeSnapshot();
+		snapshot.updateSnapshot(false);
+		assertFalse(snapshot.isOutOfDate());
+		// what the alternate screen puts back when a program leaves it
+		ITerminalTextData source = new TerminalTextDataStore();
+		TerminalTextTestHelper.fill(source, "vwxyz\n" + "VWXYZ\n" + "98765");
+		term.copy(source);
+		assertTrue(snapshot.isOutOfDate());
+		snapshot.updateSnapshot(false);
+		assertEquals(toMultiLineText(source), toMultiLineText(snapshot));
+		assertEquals(0, snapshot.getFirstChangedLine());
+		assertEquals(term.getHeight() - 1, snapshot.getLastChangedLine());
+		assertFalse(snapshot.hasDimensionsChanged());
+	}
+
+	@Test
+	public void testCopyRefreshesSnapshotOfAnotherSize() {
+		ITerminalTextData term = makeITerminalTextData();
+		TerminalTextTestHelper.fill(term, "12345\n" + "abcde\n" + "ABCDE");
+		ITerminalTextDataSnapshot snapshot = term.makeSnapshot();
+		snapshot.updateSnapshot(false);
+		ITerminalTextData source = new TerminalTextDataStore();
+		TerminalTextTestHelper.fill(source, "vwx\n" + "VWX\n" + "987\n" + "654\n" + "321");
+		term.copy(source);
+		assertTrue(snapshot.isOutOfDate());
+		snapshot.updateSnapshot(false);
+		assertTrue(snapshot.hasDimensionsChanged());
+		assertEquals(5, snapshot.getHeight());
+		assertEquals(3, snapshot.getWidth());
+		assertEquals(toMultiLineText(source), toMultiLineText(snapshot));
+	}
 }

@@ -56,8 +56,7 @@ public class MockTerminalControlForText implements ITerminalControlForText {
 
 	@Override
 	public void enableApplicationCursorKeys(boolean enable) {
-		throw new UnsupportedOperationException();
-
+		// a full reset (ESC c) turns them off; nothing to record here
 	}
 
 }

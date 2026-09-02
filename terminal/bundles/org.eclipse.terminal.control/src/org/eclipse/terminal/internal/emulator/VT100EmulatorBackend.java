@@ -15,6 +15,7 @@
 package org.eclipse.terminal.internal.emulator;
 
 import org.eclipse.terminal.internal.model.CharWidth;
+import org.eclipse.terminal.internal.model.TerminalTextDataStore;
 import org.eclipse.terminal.model.ITerminalTextData;
 import org.eclipse.terminal.model.TerminalStyle;
 
@@ -93,6 +94,22 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 	int fLines;
 	int fColumns;
 	final private ITerminalTextData fTerminal;
+
+	/**
+	 * What the normal screen held while the alternate one is showing, and null the
+	 * rest of the time, which is also how we know which screen we are on.
+	 */
+	private ITerminalTextData fNormalScreen;
+	private int fNormalMaxHeight;
+	/** in the normal buffer, not on the screen: the screen may be resized meanwhile */
+	private int fNormalCursorLine;
+	private int fNormalCursorColumn;
+	/** the screen the normal buffer was saved from, and whether a wrap was pending on it */
+	private int fNormalLines;
+	private int fNormalColumns;
+	private boolean fNormalWrapPending;
+	/** the rendition the shell had selected: 1049 saves it with the cursor, as DECSC does */
+	private TerminalStyle fNormalStyle;
 	private boolean fVT100LineWrapping;
 	private ScrollRegion fScrollRegion = ScrollRegion.FULL_WINDOW;
 
@@ -101,7 +118,141 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 	}
 
 	@Override
+	public void enableAlternateScreen(boolean enable, boolean cursor) {
+		synchronized (fTerminal) {
+			if (enable == (fNormalScreen != null)) {
+				// Already on the screen being asked for. Programs do ask twice.
+				return;
+			}
+			if (enable) {
+				fNormalScreen = new TerminalTextDataStore();
+				fNormalScreen.copy(fTerminal);
+				fNormalCursorLine = toAbsoluteLine(fCursorLine);
+				fNormalCursorColumn = fCursorColumn;
+				fNormalLines = fLines;
+				fNormalColumns = fColumns;
+				fNormalWrapPending = fWrapPending;
+				fNormalStyle = fStyle;
+				fNormalMaxHeight = fTerminal.getMaxHeight();
+				// clearing leaves the buffer the size of the screen, which is what the
+				// alternate screen is: no history to scroll back through. Capping the
+				// buffer there keeps it so: scrolling drops the top line instead of
+				// growing the buffer, as a program on this screen expects.
+				clearBuffer();
+				fTerminal.setMaxHeight(fLines);
+				// the rendition carries over: clearing resets it, entering does not
+				setStyle(fNormalStyle);
+				if (!cursor) {
+					// 47 and 1047 move no cursor: it stays on its row and column, a
+					// wrap pending there still pending
+					setCursor(fNormalCursorLine - (fNormalScreen.getHeight() - fLines), fNormalCursorColumn);
+					fWrapPending = fNormalWrapPending;
+				}
+			} else {
+				restoreNormalScreen(cursor);
+			}
+		}
+	}
+
+	/**
+	 * Puts the normal screen back as if it had been resized along with the alternate
+	 * one: the window may have changed while the program had it, and the buffer put
+	 * back is the one from before. Narrower, and every write past its margin throws;
+	 * shorter than the screen, and the top of the screen sits above its first line.
+	 */
+	private void restoreNormalScreen(boolean cursorBack) {
+		// where the program left the cursor, for the modes that keep it there
+		int programLine = fCursorLine;
+		int programColumn = fCursorColumn;
+		boolean programWrapPending = fWrapPending;
+		TerminalStyle programStyle = fStyle;
+		ITerminalTextData saved = fNormalScreen;
+		fNormalScreen = null;
+		// the margins were the full screen program's, not the shell's
+		fScrollRegion = ScrollRegion.FULL_WINDOW;
+		int height = saved.getHeight();
+		int cursor = fNormalCursorLine; // a line of the saved buffer
+		// the height setDimensions would give the normal screen: at least the screen,
+		// and with no history, the rows below the cursor go when the screen shrinks
+		int newHeight = Math.max(fLines, height);
+		if (fLines < fNormalLines && height == fNormalLines) {
+			newHeight = Math.max(fLines, cursor + 1);
+		}
+		fTerminal.setMaxHeight(Math.max(fTerminal.getMaxHeight(), Math.max(height, newHeight)));
+		fTerminal.copy(saved);
+		fTerminal.setDimensions(newHeight, fColumns);
+		// rows the buffer gains are blank: they may still hold what the program drew there
+		for (int line = height; line < newHeight; line++) {
+			fTerminal.cleanLine(line);
+		}
+		// a limit lowered meanwhile takes the oldest lines, never the screen
+		int limit = Math.max(fNormalMaxHeight, fLines);
+		int excess = newHeight - limit;
+		if (excess > 0) {
+			fTerminal.scroll(0, newHeight, -excess);
+			fTerminal.setDimensions(limit, fColumns);
+			cursor -= excess;
+		}
+		fTerminal.setMaxHeight(Math.max(limit, fTerminal.getHeight()));
+		// back to the line the cursor was on, wherever it is on the screen now
+		if (!cursorBack) {
+			// 47 and 1047 save no cursor: it stays on the row and column the program left it
+			setCursor(programLine, programColumn);
+			fWrapPending = programWrapPending && fCursorColumn == fColumns - 1;
+			setStyle(programStyle);
+			return;
+		}
+		setCursor(cursor - (fTerminal.getHeight() - fLines), fNormalCursorColumn);
+		// and to a wrap that was pending there, if the line is as wide as it was
+		fWrapPending = fNormalWrapPending && fColumns == fNormalColumns && fCursorColumn == fColumns - 1;
+		// in the colours the shell was writing in, not the ones the program left selected
+		setStyle(fNormalStyle);
+	}
+
+	@Override
+	public int getBufferLineLimit() {
+		synchronized (fTerminal) {
+			// while the alternate screen shows, the model's limit is that screen's height
+			return fNormalScreen != null ? fNormalMaxHeight : fTerminal.getMaxHeight();
+		}
+	}
+
+	@Override
+	public void setBufferLineLimit(int bufferLineLimit) {
+		if (bufferLineLimit <= 0) {
+			return;
+		}
+		synchronized (fTerminal) {
+			if (fNormalScreen != null) {
+				// the alternate screen keeps its cap; the normal screen gets the limit back
+				fNormalMaxHeight = bufferLineLimit;
+				return;
+			}
+			if (fTerminal.getHeight() > bufferLineLimit) {
+				fTerminal.setDimensions(bufferLineLimit, fTerminal.getWidth());
+			}
+			fTerminal.setMaxHeight(bufferLineLimit);
+		}
+	}
+
+	@Override
 	public void clearAll() {
+		synchronized (fTerminal) {
+			if (fNormalScreen != null) {
+				// Clearing while a full screen program shows clears what is behind it as
+				// well, or leaving the program would bring back what the user cleared:
+				// a blank normal screen, the cursor on the row of it where it was.
+				int row = fNormalCursorLine - (fNormalScreen.getHeight() - fNormalLines);
+				fNormalScreen = new TerminalTextDataStore();
+				fNormalScreen.setDimensions(fNormalLines, fNormalColumns);
+				fNormalCursorLine = Math.max(0, Math.min(row, fNormalLines - 1));
+				fNormalWrapPending = false;
+			}
+			clearBuffer();
+		}
+	}
+
+	private void clearBuffer() {
 		synchronized (fTerminal) {
 			// clear the history
 			int n = fTerminal.getHeight();
@@ -123,6 +274,22 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 			// relative cursor line
 			int cl = getCursorLine();
 			int cc = getCursorColumn();
+			if (fNormalScreen != null) {
+				// The alternate screen has no history, so its buffer stays exactly as
+				// high as the screen. On a shorter screen the lines above the cursor go
+				// first, as many as it takes to keep the cursor on it; the cap follows
+				// once the buffer is no higher than it, which the buffer requires.
+				int drop = Math.max(0, cl + 1 - lines);
+				if (drop > 0) {
+					fTerminal.scroll(0, fTerminal.getHeight(), -drop);
+				}
+				fLines = lines;
+				fColumns = cols;
+				fTerminal.setDimensions(lines, cols);
+				fTerminal.setMaxHeight(lines);
+				setCursor(cl - drop, cc);
+				return;
+			}
 			int height = fTerminal.getHeight();
 			// absolute cursor line
 			int acl = cl + height - fLines;

@@ -119,16 +119,15 @@ public class VT100Emulator implements ControlListener {
 	 */
 	final private IVT100EmulatorBackend text;
 	/**
-	 * This field hold the saved absolute line number of the cursor when
-	 * processing the "ESC 7" and "ESC 8" command sequences.
+	 * The cursor saved by "ESC 7" (and CSI ? 1048 h) for "ESC 8", one slot per screen
+	 * as in xterm: [0] on the normal screen, [1] on the alternate one, so a full screen
+	 * program saving its cursor does not overwrite the one the shell saved.
 	 */
-	private int savedCursorLine = 0;
+	private final int[] savedCursorLine = new int[2];
+	private final int[] savedCursorColumn = new int[2];
 
-	/**
-	 * This field hold the saved column number of the cursor when processing the
-	 * "ESC 7" and "ESC 8" command sequences.
-	 */
-	private int savedCursorColumn = 0;
+	/** whether a program asked for the alternate screen (47, 1047 or 1049) */
+	private boolean alternateScreen;
 
 	/**
 	 * This field holds an array of StringBuffer objects, each of which is one
@@ -195,6 +194,31 @@ public class VT100Emulator implements ControlListener {
 	 */
 	public void setInputStreamReader(Reader reader) {
 		fReader = reader;
+	}
+
+	/**
+	 * @see IVT100EmulatorBackend#setBufferLineLimit(int)
+	 */
+	public void setBufferLineLimit(int bufferLineLimit) {
+		text.setBufferLineLimit(bufferLineLimit);
+	}
+
+	/**
+	 * @see IVT100EmulatorBackend#getBufferLineLimit()
+	 */
+	public int getBufferLineLimit() {
+		return text.getBufferLineLimit();
+	}
+
+	private void saveCursor() {
+		int screen = alternateScreen ? 1 : 0;
+		savedCursorLine[screen] = relativeCursorLine();
+		savedCursorColumn[screen] = getCursorColumn();
+	}
+
+	private void restoreCursor() {
+		int screen = alternateScreen ? 1 : 0;
+		moveCursor(savedCursorLine[screen], savedCursorColumn[screen]);
 	}
 
 	public void setDimensions(int lines, int cols) {
@@ -383,8 +407,7 @@ public class VT100Emulator implements ControlListener {
 					// Save cursor position and character attributes
 
 					ansiState = ANSISTATE_INITIAL;
-					savedCursorLine = relativeCursorLine();
-					savedCursorColumn = getCursorColumn();
+					saveCursor();
 					break;
 
 				case '8':
@@ -392,7 +415,7 @@ public class VT100Emulator implements ControlListener {
 					// position
 
 					ansiState = ANSISTATE_INITIAL;
-					moveCursor(savedCursorLine, savedCursorColumn);
+					restoreCursor();
 					break;
 
 				case 'c':
@@ -486,6 +509,11 @@ public class VT100Emulator implements ControlListener {
 	}
 
 	private void resetTerminal() {
+		// a full reset (ESC c) puts the normal screen back first, history and all, as a
+		// reset before a connection does; else the history stays capped away and a
+		// later CSI ? 1049 l would bring back the screen from before the reset
+		text.enableAlternateScreen(false);
+		alternateScreen = false;
 		text.eraseAll();
 		text.setCursor(0, 0);
 		text.setStyle(text.getDefaultStyle());
@@ -1272,9 +1300,18 @@ public class VT100Emulator implements ControlListener {
 			break;
 		case 47:
 		case 1047:
-		case 1048:
+			// Use Alternate Screen Buffer, the cursor staying where it is.
+			text.enableAlternateScreen(true, false);
+			alternateScreen = true;
+			break;
 		case 1049:
-			// Use Alternate Screen Buffer (ignored).
+			// Save the cursor as DECSC does, then use Alternate Screen Buffer.
+			text.enableAlternateScreen(true, true);
+			alternateScreen = true;
+			break;
+		case 1048:
+			// Save cursor, as ESC 7 does.
+			saveCursor();
 			break;
 		default:
 			Logger.log("Unsupported command parameter: CSI ?" + param + 'h'); //$NON-NLS-1$
@@ -1291,10 +1328,20 @@ public class VT100Emulator implements ControlListener {
 			break;
 		case 47:
 		case 1047:
-		case 1048:
+			// Use Normal Screen Buffer, putting back what was on it, the cursor
+			// staying where the program left it. Leaving also resets the margins,
+			// which a repeated request must not do to the normal screen.
+			text.enableAlternateScreen(false, false);
+			alternateScreen = false;
+			break;
 		case 1049:
-			// Use Normal Screen Buffer (ignored, but reset scroll region).
-			text.setScrollRegion(-1, -1);
+			// Use Normal Screen Buffer and restore the cursor saved on the way in.
+			text.enableAlternateScreen(false, true);
+			alternateScreen = false;
+			break;
+		case 1048:
+			// Restore cursor, as ESC 8 does.
+			restoreCursor();
 			break;
 		default:
 			Logger.log("Unsupported command parameter: CSI ?" + param + 'l'); //$NON-NLS-1$
@@ -1561,6 +1608,11 @@ public class VT100Emulator implements ControlListener {
 	 */
 	public void resetState() {
 		ansiState = ANSISTATE_INITIAL;
+		// a new connection starts on the normal screen, even if the last one ended
+		// while a full screen program had the alternate one; first, as leaving it puts
+		// back the shell's rendition, which the reset then resets
+		text.enableAlternateScreen(false);
+		alternateScreen = false;
 		text.setStyle(text.getDefaultStyle());
 		text.setScrollRegion(-1, -1);
 		text.setInsertMode(false);
