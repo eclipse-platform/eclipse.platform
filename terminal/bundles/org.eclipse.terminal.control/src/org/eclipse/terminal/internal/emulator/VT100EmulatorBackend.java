@@ -334,21 +334,17 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 			// A wide character is not left half on the line: one the insertion splits
 			// is blanked whole, and so is one whose second cell it pushes off the end.
 			if (isSecondCell(line, fCursorColumn)) {
-				blank(line, fCursorColumn - 1);
-				blank(line, fCursorColumn);
+				eraseCells(line, fCursorColumn - 1, fCursorColumn + 1);
 			}
 			if (fCursorColumn + n < fColumns && isSecondCell(line, fColumns - n)) {
-				blank(line, fColumns - n - 1);
+				eraseCells(line, fColumns - n - 1, fColumns - n);
 			}
 			for (int col = fColumns - 1; col >= fCursorColumn + n; col--) {
 				char c = fTerminal.getChar(line, col - n);
 				TerminalStyle style = fTerminal.getStyle(line, col - n);
 				fTerminal.setChar(line, col, c, style);
 			}
-			int last = Math.min(fCursorColumn + n, fColumns);
-			for (int col = fCursorColumn; col < last; col++) {
-				fTerminal.setChar(line, col, '\000', null);
-			}
+			eraseCells(line, fCursorColumn, Math.min(fCursorColumn + n, fColumns));
 		}
 	}
 
@@ -357,7 +353,7 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 		synchronized (fTerminal) {
 			eraseLineToEnd();
 			for (int line = toAbsoluteLine(fCursorLine + 1); line < toAbsoluteLine(fLines); line++) {
-				fTerminal.cleanLine(line);
+				eraseLine(line);
 			}
 		}
 
@@ -367,7 +363,7 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 	public void eraseToCursor() {
 		synchronized (fTerminal) {
 			for (int line = toAbsoluteLine(0); line < toAbsoluteLine(fCursorLine); line++) {
-				fTerminal.cleanLine(line);
+				eraseLine(line);
 			}
 			eraseLineToCursor();
 		}
@@ -398,7 +394,7 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 				setCursorLine(fCursorLine);
 			}
 			for (int line = toAbsoluteLine(0); line < toAbsoluteLine(fLines); line++) {
-				fTerminal.cleanLine(line);
+				eraseLine(line);
 			}
 		}
 	}
@@ -418,29 +414,73 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 	@Override
 	public void eraseLine() {
 		synchronized (fTerminal) {
-			fTerminal.cleanLine(toAbsoluteLine(fCursorLine));
+			eraseLine(toAbsoluteLine(fCursorLine));
+		}
+	}
+
+	private void eraseLine(int line) {
+		fWrapPending = false; // also when there is nothing to fill
+		fTerminal.cleanLine(line);
+		if (eraseStyle() != null) {
+			eraseCells(line, 0, fColumns);
 		}
 	}
 
 	@Override
 	public void eraseLineToEnd() {
 		synchronized (fTerminal) {
-			int line = toAbsoluteLine(fCursorLine);
-			breakWideChar(line, fCursorColumn);
-			for (int col = fCursorColumn; col < fColumns; col++) {
-				fTerminal.setChar(line, col, '\000', null);
-			}
+			eraseWhole(toAbsoluteLine(fCursorLine), fCursorColumn, fColumns);
 		}
+	}
+
+	/**
+	 * Erasing either half of a wide character erases all of it, in the same
+	 * background as the rest of the range.
+	 */
+	private void eraseWhole(int line, int from, int to) {
+		if (isSecondCell(line, from)) {
+			from--;
+		}
+		if (isSecondCell(line, to)) {
+			to++;
+		}
+		eraseCells(line, from, to);
+	}
+
+	/**
+	 * Erasing leaves behind the background a program is writing in, not the one the
+	 * terminal started with (xterm's "back color erase", which every terminal that
+	 * supports colour implements). Colouring a run of a line by setting a background
+	 * and erasing to the end of it is how a program paints anything wider than the
+	 * characters it has to put there, and without this such a line keeps the
+	 * terminal's own colour from its last character on. xterm applies this to every
+	 * erase (EL, ED, ECH) and to the cells insertion and deletion uncover (ICH, DCH).
+	 */
+	private void eraseCells(int line, int from, int to) {
+		fWrapPending = false; // erasing, inserting and deleting all forget a pending wrap
+		if (from < to) {
+			fTerminal.setChars(line, from, new char[to - from], eraseStyle());
+		}
+	}
+
+	/**
+	 * @return the style erased cells take: only the background carries over, what is
+	 *         erased is not bold or underlined; null, as a cell that was never
+	 *         written, when that background is the default one
+	 */
+	private TerminalStyle eraseStyle() {
+		TerminalStyle plain = getDefaultStyle();
+		if (plain == null || fStyle == null) {
+			return fStyle;
+		}
+		TerminalStyle erased = plain.setBackground(fStyle);
+		return erased.equals(plain) ? null : erased;
 	}
 
 	@Override
 	public void eraseLineToCursor() {
 		synchronized (fTerminal) {
-			int line = toAbsoluteLine(fCursorLine);
-			breakWideChar(line, fCursorColumn);
-			for (int col = 0; col <= fCursorColumn; col++) {
-				fTerminal.setChar(line, col, '\000', null);
-			}
+			eraseWhole(toAbsoluteLine(fCursorLine), 0, fCursorColumn + 1);
 		}
 	}
 
@@ -465,17 +505,19 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 		synchronized (fTerminal) {
 			int line = toAbsoluteLine(fCursorLine);
 			// deleting either half of a wide character leaves none of it
-			breakWideChar(line, fCursorColumn);
-			breakWideChar(line, Math.min(fCursorColumn + n, fColumns) - 1);
+			int end = Math.min(fCursorColumn + n, fColumns);
+			if (isSecondCell(line, fCursorColumn)) {
+				eraseCells(line, fCursorColumn - 1, fCursorColumn);
+			}
+			if (isSecondCell(line, end)) {
+				eraseCells(line, end, end + 1);
+			}
 			for (int col = fCursorColumn + n; col < fColumns; col++) {
 				char c = fTerminal.getChar(line, col);
 				TerminalStyle style = fTerminal.getStyle(line, col);
 				fTerminal.setChar(line, col - n, c, style);
 			}
-			int first = Math.max(fCursorColumn, fColumns - n);
-			for (int col = first; col < fColumns; col++) {
-				fTerminal.setChar(line, col, '\000', null);
-			}
+			eraseCells(line, Math.max(fCursorColumn, fColumns - n), fColumns);
 		}
 	}
 
@@ -685,6 +727,7 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 	 * MUST be called from a synchronized block!
 	 */
 	private void doNewline() {
+		fWrapPending = false; // DEC STD 070: any move of the cursor forgets a pending wrap
 		if (fCursorLine == fScrollRegion.getBottomLine()) {
 			scrollUp(1);
 		} else if (fCursorLine + 1 >= fLines) {
@@ -706,6 +749,7 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 	}
 
 	private void doReverseLineFeed() {
+		fWrapPending = false;
 		if (fCursorLine == fScrollRegion.getTopLine()) {
 			scrollDown(1);
 		} else {
@@ -768,6 +812,7 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 				targetLine = fLines - 1;
 			}
 			fCursorLine = targetLine;
+			fWrapPending = false;
 			// We make the assumption that nobody is changing the
 			// terminal cursor except this class!
 			// This assumption gives a huge performance improvement
@@ -839,14 +884,7 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 			return; // nothing is erased, so no wide character may be broken either
 		}
 		synchronized (fTerminal) {
-			int line = toAbsoluteLine(fCursorLine);
-			int end = Math.min(fCursorColumn + n, fColumns);
-			// erasing either half of a wide character erases all of it
-			breakWideChar(line, fCursorColumn);
-			breakWideChar(line, end - 1);
-			for (int col = fCursorColumn; col < end; col++) {
-				fTerminal.setChar(line, col, '\000', null);
-			}
+			eraseWhole(toAbsoluteLine(fCursorLine), fCursorColumn, Math.min(fCursorColumn + n, fColumns));
 		}
 	}
 }
