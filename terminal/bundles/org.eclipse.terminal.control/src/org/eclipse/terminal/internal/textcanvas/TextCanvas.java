@@ -58,6 +58,10 @@ public class TextCanvas extends GridCanvas {
 	private final ILinelRenderer fCellRenderer;
 	private boolean fScrollLock;
 	private Point fDraggingStart;
+	/** -1 above the top, 1 below the bottom, 0 while the pointer is inside */
+	private int fDragPast;
+	private boolean fDragScrolling;
+	private static final int DRAG_SCROLL_INTERVAL = 60;
 	private Point fDraggingEnd;
 	private boolean fHasSelection;
 	private ResizeListener fResizeListener;
@@ -270,6 +274,12 @@ public class TextCanvas extends GridCanvas {
 		});
 		addMouseMoveListener(e -> {
 			if (fDraggingStart != null) {
+				// Dragging past an edge keeps the lines beyond it coming into view.
+				fDragPast = e.y < 0 ? -1 : e.y >= getClientArea().height ? 1 : 0;
+				if (fDragPast != 0 && !fDragScrolling) {
+					fDragScrolling = true;
+					getDisplay().timerExec(DRAG_SCROLL_INTERVAL, this::dragScroll);
+				}
 				Point curr = screenPointToCell(e.x, e.y);
 				updateHasSelection(e);
 				switch (fSelMode) {
@@ -296,6 +306,18 @@ public class TextCanvas extends GridCanvas {
 		});
 		setVerticalBarVisible(true);
 		setHorizontalBarVisible(false);
+	}
+
+	private void dragScroll() {
+		if (isDisposed() || fDraggingStart == null || fDragPast == 0) {
+			fDragScrolling = false;
+			return;
+		}
+		scrollYDelta(fDragPast * getCellHeight());
+		Point p = toControl(getDisplay().getCursorLocation());
+		setSelection(screenPointToCell(p.x, p.y));
+		redraw();
+		getDisplay().timerExec(DRAG_SCROLL_INTERVAL, this::dragScroll);
 	}
 
 	private static class Range {
@@ -494,6 +516,11 @@ public class TextCanvas extends GridCanvas {
 			}
 		} finally {
 			setRedraw(true);
+		}
+		// NO_REDRAW_RESIZE paints only what a resize uncovers. When the grid gets
+		// narrower, what was drawn in the columns now past its edge stays there.
+		if (getVirtualBounds().width < virtualBounds.width) {
+			redraw();
 		}
 	}
 

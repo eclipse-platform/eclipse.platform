@@ -1175,4 +1175,28 @@ public class VT100EmulatorBackendTest {
 		// pushes the rest along by two cells, not one
 		assertEquals("a한\000bcdef", new String(term.getChars(0), 0, 8));
 	}
+
+	@Test
+	public void testWrappedLineMarkComesOff() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(3);
+		vt100.setDimensions(3, 5);
+		vt100.setCursor(0, 0);
+		// a line the terminal folded is marked as running on to the next
+		vt100.appendString("abcdefg");
+		assertTrue(term.isWrappedLine(0));
+		assertFalse(term.isWrappedLine(1));
+		// drawn over shorter, the line ends there and the mark comes off
+		vt100.setCursor(0, 0);
+		vt100.appendString("xyz");
+		assertFalse(term.isWrappedLine(0));
+		// erasing to the end of the line says the same
+		vt100.setCursor(0, 0);
+		vt100.appendString("abcdefg");
+		assertTrue(term.isWrappedLine(0));
+		vt100.setCursor(0, 3);
+		vt100.eraseLineToEnd();
+		assertFalse(term.isWrappedLine(0));
+	}
 }
