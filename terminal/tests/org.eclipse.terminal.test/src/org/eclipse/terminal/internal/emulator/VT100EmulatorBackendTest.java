@@ -17,6 +17,7 @@
 package org.eclipse.terminal.internal.emulator;
 
 import static org.eclipse.terminal.model.TerminalColor.BLACK;
+import static org.eclipse.terminal.model.TerminalColor.GREEN;
 import static org.eclipse.terminal.model.TerminalColor.RED;
 import static org.eclipse.terminal.model.TerminalColor.WHITE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -1266,17 +1267,17 @@ public class VT100EmulatorBackendTest {
 		vt100.appendString("한x");
 		vt100.setCursor(0, 1);
 		vt100.eraseCharacters(1);
-		assertEquals(" \000x", new String(term.getChars(0), 0, 3));
+		assertEquals("\000\000x", new String(term.getChars(0), 0, 3));
 		vt100.setCursor(1, 0);
 		vt100.appendString("한x");
 		vt100.setCursor(1, 0);
 		vt100.eraseCharacters(1);
-		assertEquals("\000 x", new String(term.getChars(1), 0, 3));
+		assertEquals("\000\000x", new String(term.getChars(1), 0, 3));
 		vt100.setCursor(2, 0);
 		vt100.appendString("a😀b");
 		vt100.setCursor(2, 2);
 		vt100.eraseCharacters(1);
-		assertEquals("a \000b", new String(term.getChars(2), 0, 4));
+		assertEquals("a\000\000b", new String(term.getChars(2), 0, 4));
 	}
 
 	@Test
@@ -1289,12 +1290,12 @@ public class VT100EmulatorBackendTest {
 		vt100.appendString("ab한cd");
 		vt100.setCursor(0, 3);
 		vt100.eraseLineToEnd();
-		assertEquals("ab \000\000\000", new String(term.getChars(0)));
+		assertEquals("ab\000\000\000\000", new String(term.getChars(0)));
 		vt100.setCursor(1, 0);
 		vt100.appendString("ab한cd");
 		vt100.setCursor(1, 2);
 		vt100.eraseLineToCursor();
-		assertEquals("\000\000\000 cd", new String(term.getChars(1)));
+		assertEquals("\000\000\000\000cd", new String(term.getChars(1)));
 	}
 
 	@Test
@@ -1303,18 +1304,18 @@ public class VT100EmulatorBackendTest {
 		IVT100EmulatorBackend vt100 = makeBakend(term);
 		term.setMaxHeight(4);
 		vt100.setDimensions(4, 5);
-		// a wide character pushed half past the margin is blanked
+		// a wide character pushed half past the margin is erased, as ECH erases
 		vt100.setCursor(0, 0);
 		vt100.appendString("abc한");
 		vt100.setCursor(0, 0);
 		vt100.insertCharacters(1);
-		assertEquals("\000abc ", new String(term.getChars(0)));
-		// one split by the insertion is blanked whole
+		assertEquals("\000abc\000", new String(term.getChars(0)));
+		// one split by the insertion is erased whole
 		vt100.setCursor(1, 0);
 		vt100.appendString("a한bc");
 		vt100.setCursor(1, 2);
 		vt100.insertCharacters(1);
-		assertEquals("a \000 b", new String(term.getChars(1)));
+		assertEquals("a\000\000\000b", new String(term.getChars(1)));
 		// one at the cursor moves along whole
 		vt100.setCursor(2, 0);
 		vt100.appendString("a한bc");
@@ -1334,17 +1335,17 @@ public class VT100EmulatorBackendTest {
 		vt100.appendString("a한bc");
 		vt100.setCursor(0, 1);
 		vt100.deleteCharacters(1);
-		assertEquals("a bc\000", new String(term.getChars(0)));
+		assertEquals("a\000bc\000", new String(term.getChars(0)));
 		vt100.setCursor(1, 0);
 		vt100.appendString("a한bc");
 		vt100.setCursor(1, 2);
 		vt100.deleteCharacters(1);
-		assertEquals("a bc\000", new String(term.getChars(1)));
+		assertEquals("a\000bc\000", new String(term.getChars(1)));
 		vt100.setCursor(2, 0);
 		vt100.appendString("ab😀c");
 		vt100.setCursor(2, 0);
 		vt100.deleteCharacters(3);
-		assertEquals(" c\000\000\000", new String(term.getChars(2)));
+		assertEquals("\000c\000\000\000", new String(term.getChars(2)));
 	}
 
 	@Test
@@ -1383,7 +1384,7 @@ public class VT100EmulatorBackendTest {
 		vt100.appendString("abc한");
 		vt100.setCursor(2, 4);
 		vt100.appendString("가");
-		assertEquals("abc \000", new String(term.getChars(2)));
+		assertEquals("abc\000\000", new String(term.getChars(2)));
 		assertEquals("가\000", new String(term.getChars(3), 0, 2));
 	}
 
@@ -1620,5 +1621,145 @@ public class VT100EmulatorBackendTest {
 		vt100.appendString("again");
 		vt100.eraseAll();
 		assertEquals(height + 1, term.getHeight());
+	}
+
+	@Test
+	public void testEraseKeepsBackground() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(4);
+		vt100.setDimensions(4, 8);
+		vt100.setDefaultStyle(TerminalStyle.getStyle(WHITE, BLACK));
+		TerminalStyle onGreen = TerminalStyle.getStyle(WHITE, GREEN).setBold(true);
+		// a program paints a run wider than its text by setting a background and erasing
+		vt100.setStyle(onGreen);
+		vt100.setCursor(0, 0);
+		vt100.appendString("ab");
+		vt100.eraseLineToEnd();
+		assertEquals(GREEN, term.getStyle(0, 5).getBackgroundTerminalColor());
+		assertEquals(GREEN, term.getStyle(0, 7).getBackgroundTerminalColor());
+		assertFalse(term.getStyle(0, 5).isBold()); // only the background carries over
+		// the same for erase to cursor, whole line, ECH, and the cells ICH and DCH uncover
+		vt100.setCursor(1, 3);
+		vt100.eraseLineToCursor();
+		assertEquals(GREEN, term.getStyle(1, 0).getBackgroundTerminalColor());
+		vt100.setCursor(2, 0);
+		vt100.eraseLine();
+		assertEquals(GREEN, term.getStyle(2, 7).getBackgroundTerminalColor());
+		vt100.setStyle(TerminalStyle.getStyle(WHITE, BLACK));
+		vt100.setCursor(3, 0);
+		vt100.appendString("0123456"); // one short of the margin, so as not to wrap
+		vt100.setStyle(onGreen);
+		vt100.setCursor(3, 1);
+		vt100.eraseCharacters(2);
+		assertEquals(GREEN, term.getStyle(3, 2).getBackgroundTerminalColor());
+		assertEquals(BLACK, term.getStyle(3, 3).getBackgroundTerminalColor());
+		vt100.setCursor(3, 4);
+		vt100.insertCharacters(1);
+		assertEquals(GREEN, term.getStyle(3, 4).getBackgroundTerminalColor());
+		assertEquals('4', term.getChar(3, 5));
+		vt100.deleteCharacters(1);
+		assertEquals(GREEN, term.getStyle(3, 7).getBackgroundTerminalColor());
+		// erasing in the default background leaves the cells unwritten, drawn in the default colours
+		vt100.setStyle(TerminalStyle.getStyle(WHITE, BLACK).setBold(true));
+		vt100.setCursor(0, 0);
+		vt100.eraseToEndOfScreen();
+		assertNull(term.getStyle(2, 7));
+		assertNull(term.getStyle(0, 0));
+	}
+
+	@Test
+	public void testPendingWrapForgottenByCursorMove() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(3);
+		vt100.setDimensions(3, 5);
+		vt100.setVT100LineWrapping(true); // xterm's deferred wrap, as the process connector sets it
+		vt100.setCursor(0, 0);
+		vt100.appendString("abcde"); // fills the row: the wrap is pending, not done
+		// DEC STD 070: a line feed, a cursor move or an erase forgets the pending wrap
+		vt100.processNewline();
+		vt100.appendString("x");
+		assertEquals('x', term.getChar(1, 4));
+		assertFalse(term.isWrappedLine(0));
+		assertFalse(term.isWrappedLine(1));
+		vt100.setCursor(0, 4);
+		vt100.appendString("e");
+		vt100.setCursorLine(2);
+		vt100.appendString("y");
+		assertEquals('y', term.getChar(2, 4));
+		vt100.setCursor(0, 4);
+		vt100.appendString("e");
+		vt100.eraseCharacters(1);
+		vt100.appendString("z");
+		assertEquals('z', term.getChar(0, 4));
+		assertEquals(0, vt100.getCursorLine());
+		// so does erasing the whole line, also in the default colours, which leave nothing to fill
+		vt100.setCursor(0, 4);
+		vt100.appendString("e");
+		vt100.eraseLine();
+		vt100.appendString("w");
+		assertEquals('w', term.getChar(0, 4));
+		assertEquals(0, vt100.getCursorLine());
+		assertFalse(term.isWrappedLine(0));
+		// only writing on is a wrap
+		vt100.setCursor(0, 4);
+		vt100.appendString("ef");
+		assertTrue(term.isWrappedLine(0));
+		assertEquals('f', term.getChar(1, 0));
+	}
+
+	@Test
+	public void testEraseHalfOfWideKeepsBackground() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(3);
+		vt100.setDimensions(3, 8);
+		vt100.setDefaultStyle(TerminalStyle.getStyle(WHITE, BLACK));
+		TerminalStyle onGreen = TerminalStyle.getStyle(WHITE, GREEN);
+		for (int line = 0; line < 3; line++) {
+			vt100.setStyle(TerminalStyle.getStyle(WHITE, BLACK));
+			vt100.setCursor(line, 0);
+			vt100.appendString("\uD55C\uAE00");
+		}
+		// erasing from or to half of a wide character erases both of its cells, in the current background
+		vt100.setStyle(onGreen);
+		vt100.setCursor(0, 1);
+		vt100.eraseLineToEnd();
+		vt100.setCursor(1, 2);
+		vt100.eraseLineToCursor();
+		vt100.setCursor(2, 1);
+		vt100.eraseCharacters(2);
+		for (int line = 0; line < 3; line++) {
+			for (int col = 0; col < 4; col++) {
+				assertEquals(GREEN, term.getStyle(line, col).getBackgroundTerminalColor(), line + "," + col);
+			}
+		}
+		assertEquals('\000', term.getChar(0, 0));
+		assertEquals('\000', term.getChar(1, 3));
+	}
+
+	@Test
+	public void testInsertAndDeleteOnHalfOfWideKeepBackground() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(2);
+		vt100.setDimensions(2, 8);
+		vt100.setDefaultStyle(TerminalStyle.getStyle(WHITE, BLACK));
+		for (int line = 0; line < 2; line++) {
+			vt100.setStyle(TerminalStyle.getStyle(WHITE, BLACK));
+			vt100.setCursor(line, 0);
+			vt100.appendString("\uD55C\uAE00");
+		}
+		// what is left of a wide character ICH or DCH splits goes the way ECH erases it
+		vt100.setStyle(TerminalStyle.getStyle(WHITE, GREEN));
+		vt100.setCursor(0, 1);
+		vt100.deleteCharacters(1);
+		vt100.setCursor(1, 1);
+		vt100.insertCharacters(1);
+		for (int line = 0; line < 2; line++) {
+			assertEquals('\000', term.getChar(line, 0), "line " + line);
+			assertEquals(GREEN, term.getStyle(line, 0).getBackgroundTerminalColor(), "line " + line);
+		}
 	}
 }

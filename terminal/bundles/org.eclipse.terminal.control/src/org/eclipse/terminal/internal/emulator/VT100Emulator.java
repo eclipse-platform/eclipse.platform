@@ -514,9 +514,10 @@ public class VT100Emulator implements ControlListener {
 		// later CSI ? 1049 l would bring back the screen from before the reset
 		text.enableAlternateScreen(false);
 		alternateScreen = false;
+		// the style first: the screen is erased in its background
+		text.setStyle(text.getDefaultStyle());
 		text.eraseAll();
 		text.setCursor(0, 0);
-		text.setStyle(text.getDefaultStyle());
 		text.setScrollRegion(-1, -1);
 		text.setInsertMode(false);
 		terminal.enableApplicationCursorKeys(false);

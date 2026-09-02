@@ -22,6 +22,7 @@ import java.util.StringJoiner;
 
 import org.eclipse.terminal.connector.Logger;
 import org.eclipse.terminal.model.ITerminalTextData;
+import org.eclipse.terminal.model.TerminalStyle;
 import org.eclipse.terminal.model.TerminalTextDataFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -479,6 +480,16 @@ public class VT100EmulatorTest {
 			char[] chars = data.getChars(line);
 			assertTrue(chars == null || !new String(chars).contains("Full screen"), "line " + line);
 		}
+	}
+
+	@Test
+	public void testFullResetErasesInTheDefaultBackground() {
+		run("\u001b[42m", "\u001bc", "x");
+		// the screen a program left green comes back in the default background
+		int line = data.getHeight() - WINDOW_LINES;
+		TerminalStyle erased = data.getStyle(line, 1);
+		assertTrue(erased == null
+				|| erased.getBackgroundTerminalColor() == data.getStyle(line, 0).getBackgroundTerminalColor());
 	}
 
 	@Test
