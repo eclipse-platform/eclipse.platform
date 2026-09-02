@@ -557,7 +557,7 @@ public class File extends Resource implements IFile {
 	public long setLocalTimeStamp(long value) throws CoreException {
 		//override to handle changing timestamp on project description file
 		long result = super.setLocalTimeStamp(value);
-		if (path.segmentCount() == 2 && path.segment(1).equals(IProjectDescription.DESCRIPTION_FILE_NAME)) {
+		if (isProjectDescriptionFile()) {
 			//handle concurrent project deletion
 			ResourceInfo projectInfo = ((Project) getProject()).getResourceInfo(false, false);
 			if (projectInfo != null) {
@@ -576,10 +576,7 @@ public class File extends Resource implements IFile {
 	 * been modified (added, removed, or changed).
 	 */
 	public void updateMetadataFiles() throws CoreException {
-		int count = path.segmentCount();
-		String name = path.segment(1);
-		// is this a project description file?
-		if (count == 2 && name.equals(IProjectDescription.DESCRIPTION_FILE_NAME)) {
+		if (isProjectDescriptionFile()) {
 			Project project = (Project) getProject();
 			project.updateDescription();
 			// Discard stale project natures on ProjectInfo
@@ -588,10 +585,17 @@ public class File extends Resource implements IFile {
 			return;
 		}
 		// check to see if we are in the .settings directory
-		if (count == 3 && EclipsePreferences.DEFAULT_PREFERENCES_DIRNAME.equals(name)) {
+		if (path.segmentCount() == 3 && EclipsePreferences.DEFAULT_PREFERENCES_DIRNAME.equals(path.segment(1))) {
 			ProjectPreferences.updatePreferences(this);
 			return;
 		}
+	}
+
+	/**
+	 * Returns whether this file is the description file (.project) of its project.
+	 */
+	public boolean isProjectDescriptionFile() {
+		return path.segmentCount() == 2 && path.segment(1).equals(IProjectDescription.DESCRIPTION_FILE_NAME);
 	}
 
 	@Deprecated

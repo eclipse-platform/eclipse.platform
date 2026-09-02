@@ -14,10 +14,13 @@
  *******************************************************************************/
 package org.eclipse.core.internal.localstore;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
 import org.eclipse.core.internal.resources.Container;
 import org.eclipse.core.internal.resources.File;
 import org.eclipse.core.internal.resources.Folder;
 import org.eclipse.core.internal.resources.ICoreConstants;
+import org.eclipse.core.internal.resources.Project;
 import org.eclipse.core.internal.resources.Resource;
 import org.eclipse.core.internal.resources.ResourceInfo;
 import org.eclipse.core.internal.resources.ResourceStatus;
@@ -56,6 +59,7 @@ public class RefreshLocalVisitor implements IUnifiedTreeVisitor, ILocalStoreCons
 	protected SubMonitor monitor;
 	protected boolean resourceChanged;
 	protected Workspace workspace;
+	private final Set<Project> projectsWithoutDescription = new LinkedHashSet<>();
 
 	public RefreshLocalVisitor(IProgressMonitor monitor) {
 		this.monitor = SubMonitor.convert(monitor);
@@ -107,6 +111,13 @@ public class RefreshLocalVisitor implements IUnifiedTreeVisitor, ILocalStoreCons
 		}
 		if (target.exists(flags, false)) {
 			target.deleteResource(true, errors);
+			// a filtered description file is still read from disk
+			if (target.getType() == IResource.FILE && ((File) target).isProjectDescriptionFile()) {
+				Project project = (Project) target.getProject();
+				if (project.isOpen() && !target.getLocalManager().hasSavedDescription(project)) {
+					projectsWithoutDescription.add(project);
+				}
+			}
 		}
 		node.setExistsWorkspace(false);
 	}
@@ -144,6 +155,29 @@ public class RefreshLocalVisitor implements IUnifiedTreeVisitor, ILocalStoreCons
 		node.setResource(target);
 		info = target.getResourceInfo(false, true);
 		target.getLocalManager().updateLocalSync(info, node.getLastModified());
+	}
+
+	/**
+	 * Closes the open projects whose description file was found deleted, rather
+	 * than recreating the file. Failures are added to the error status.
+	 */
+	public void closeProjectsWithoutDescription() {
+		for (Project project : projectsWithoutDescription) {
+			closeProjectWithoutDescription(project);
+		}
+	}
+
+	private void closeProjectWithoutDescription(Project project) {
+		if (!project.isOpen()) {
+			return;
+		}
+		String message = NLS.bind(Messages.resources_missingProjectMetaClosed, project.getName());
+		Policy.log(new ResourceStatus(IStatus.WARNING, IResourceStatus.FAILED_READ_METADATA, project.getFullPath(), message, null));
+		try {
+			project.basicClose(null);
+		} catch (CoreException e) {
+			errors.merge(e.getStatus());
+		}
 	}
 
 	/**
@@ -287,6 +321,12 @@ public class RefreshLocalVisitor implements IUnifiedTreeVisitor, ILocalStoreCons
 			Resource target = (Resource) node.getResource();
 			int targetType = target.getType();
 			if (targetType == IResource.PROJECT) {
+				// close before visiting the members, whose deletion could write the description back
+				Project project = (Project) target;
+				if (project.isOpen() && !target.getLocalManager().hasSavedDescription(project)) {
+					closeProjectWithoutDescription(project);
+					return false;
+				}
 				return true;
 			}
 			if (node.existsInWorkspace() && node.existsInFileSystem()) {
@@ -318,7 +358,8 @@ public class RefreshLocalVisitor implements IUnifiedTreeVisitor, ILocalStoreCons
 				}
 				int state = synchronizeExistence(node, target);
 				if (state == RL_IN_SYNC || state == RL_NOT_IN_SYNC) {
-					if (targetType == IResource.FILE) {
+					// the metadata of a project about to be closed is not read
+					if (targetType == IResource.FILE && !projectsWithoutDescription.contains(target.getProject())) {
 						try {
 							((File) target).updateMetadataFiles();
 						} catch (CoreException e) {
