@@ -1762,4 +1762,54 @@ public class VT100EmulatorBackendTest {
 			assertEquals(GREEN, term.getStyle(line, 0).getBackgroundTerminalColor(), "line " + line);
 		}
 	}
+
+	@Test
+	public void testWrappedLineMarkComesOff() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(3);
+		vt100.setDimensions(3, 5);
+		vt100.setCursor(0, 0);
+		// a line the terminal folded is marked as running on to the next
+		vt100.appendString("abcdefg");
+		assertTrue(term.isWrappedLine(0));
+		assertFalse(term.isWrappedLine(1));
+		// writing over part of it leaves it running on: aXcde is still followed by fg
+		vt100.setCursor(0, 1);
+		vt100.appendString("X");
+		assertTrue(term.isWrappedLine(0));
+		// erasing to the end of the line ends it there, as in xterm and Ghostty
+		vt100.setCursor(0, 3);
+		vt100.eraseLineToEnd();
+		assertFalse(term.isWrappedLine(0));
+		// and so does erasing characters as far as the margin, but not short of it
+		vt100.setCursor(0, 0);
+		vt100.appendString("abcdefg");
+		vt100.setCursor(0, 1);
+		vt100.eraseCharacters(2);
+		assertTrue(term.isWrappedLine(0));
+		vt100.eraseCharacters(9);
+		assertFalse(term.isWrappedLine(0));
+		// however large the count
+		vt100.setCursor(0, 0);
+		vt100.appendString("abcdefg");
+		vt100.setCursor(0, 1);
+		vt100.eraseCharacters(Integer.MAX_VALUE);
+		assertFalse(term.isWrappedLine(0));
+		assertEquals('a', term.getChar(0, 0));
+		assertEquals(0, term.getChar(0, 1));
+		// deleting characters pulls blanks in at the margin, so it ends the line too (xterm)
+		vt100.setCursor(0, 0);
+		vt100.appendString("abcdefg");
+		vt100.setCursor(0, 1);
+		vt100.deleteCharacters(1);
+		assertFalse(term.isWrappedLine(0));
+		// erasing the first cell of a wide character at the margin erases it whole, to the margin
+		vt100.setCursor(0, 0);
+		vt100.appendString("abc\ud55cfg");
+		assertTrue(term.isWrappedLine(0));
+		vt100.setCursor(0, 3);
+		vt100.eraseCharacters(1);
+		assertFalse(term.isWrappedLine(0));
+	}
 }

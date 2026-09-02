@@ -70,4 +70,20 @@ public class TextCanvasModelTest {
 		assertEquals(new Point(0, 0), model.getSelectionStart());
 		assertEquals(new Point(3, 0), model.getSelectionEnd());
 	}
+
+	@Test
+	public void testCopyKeepsSpacesBeforeAFold() {
+		TerminalTextData data = new TerminalTextData();
+		data.setDimensions(2, 4);
+		// "foo bar" folded at four columns: the space ends the first row
+		data.setChars(0, 0, "foo ".toCharArray(), null);
+		data.setWrappedLine(0);
+		data.setChars(1, 0, "bar".toCharArray(), null);
+		ITerminalTextDataSnapshot snapshot = data.makeSnapshot();
+		snapshot.updateSnapshot(true);
+		AbstractTextCanvasModel model = new AbstractTextCanvasModel(snapshot) {
+		};
+		model.setSelection(0, 1, 0, 3);
+		assertEquals("foo bar", model.getSelectedText());
+	}
 }
