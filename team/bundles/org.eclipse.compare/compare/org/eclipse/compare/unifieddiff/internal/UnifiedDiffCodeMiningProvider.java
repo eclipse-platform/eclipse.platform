@@ -359,6 +359,8 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		private final int tabWidth;
 		private ITextViewer viewer;
 
+		private final List<DetailedDiffRange> detailedDiffRanges;
+
 		private Rectangle lastRectangle;
 		private List<Rectangle> backgrounds;
 		private List<ForegroundInfo> foregrounds;
@@ -380,7 +382,45 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			this.diff = diff;
 			this.tabWidth = tabWidth;
 			this.viewer = viewer;
+			this.detailedDiffRanges = computeDetailedDiffRanges(diff);
 			((MouseClickConsumer) getAction()).setCodeMining(this);
+		}
+
+		/**
+		 * Line range of a detailed diff, resolved once so painting does not scan
+		 * the hunk text.
+		 */
+		private record DetailedDiffRange(String diffStr, int start, int length, int fromLine, int toLine) {
+		}
+
+		private static List<DetailedDiffRange> computeDetailedDiffRanges(UnifiedDiff diff) {
+			boolean useRight = diff.mode.equals(UnifiedDiffMode.OVERLAY_MODE)
+					|| diff.mode.equals(UnifiedDiffMode.OVERLAY_READ_ONLY_MODE)
+					|| diff.mode.equals(UnifiedDiffMode.REVERT_MODE);
+			String fullDiffStr = useRight ? diff.rightStr : diff.leftStr;
+			String diffStr = removeTrailingNewLines(fullDiffStr);
+			int diffStrDelta = fullDiffStr.length() - diffStr.length();
+			List<DetailedDiffRange> result = new ArrayList<>();
+			for (var detailedDiff : diff.detailedDiffs) {
+				String detailedDiffStr = useRight ? detailedDiff.rightStr : detailedDiff.leftStr;
+				int detailedDiffStart = useRight ? detailedDiff.rightStart : detailedDiff.leftStart;
+				int detailedDiffLength = useRight ? detailedDiff.rightLength : detailedDiff.leftLength;
+				if (detailedDiffStr.trim().length() == 0) {
+					continue;
+				}
+				if (detailedDiffStart + detailedDiffLength >= diffStr.length()) {
+					if (detailedDiffLength <= diffStrDelta) {
+						continue;
+					}
+					detailedDiffLength -= diffStrDelta;
+				}
+				// String#split drops trailing empty strings, so it must not be used to
+				// count lines: a prefix ending with \n starts the next line
+				int fromLine = countLines(diffStr, detailedDiffStart);
+				int toLine = countLines(diffStr, detailedDiffStart + detailedDiffLength);
+				result.add(new DetailedDiffRange(diffStr, detailedDiffStart, detailedDiffLength, fromLine, toLine));
+			}
+			return result;
 		}
 
 		private static final class ForegroundInfo {
@@ -636,37 +676,16 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			// draw darker background for detailed diff
 			gc.setBackground(this.detailedDiffColor);
 			backgrounds = new ArrayList<>();
-			for (var detailedDiff : this.diff.detailedDiffs) {
-				String diffStr = this.diff.leftStr;
-				String detailedDiffStr = detailedDiff.leftStr;
-				int detailedDiffStart = detailedDiff.leftStart;
-				int detailedDiffLength = detailedDiff.leftLength;
-				if (diff.mode.equals(UnifiedDiffMode.OVERLAY_MODE)
-						|| diff.mode.equals(UnifiedDiffMode.OVERLAY_READ_ONLY_MODE)
-						|| diff.mode.equals(UnifiedDiffMode.REVERT_MODE)) {
-					diffStr = this.diff.rightStr;
-					detailedDiffStr = detailedDiff.rightStr;
-					detailedDiffStart = detailedDiff.rightStart;
-					detailedDiffLength = detailedDiff.rightLength;
-				}
-				if (detailedDiffStr.trim().length() == 0) {
-					continue;
-				}
-				int diffStrLength = diffStr.length();
-				diffStr = removeTrailingNewLines(diffStr);
-				if (detailedDiffStart + detailedDiffLength >= diffStr.length()) {
-					int diffStrDelta = diffStrLength - diffStr.length();
-					if (detailedDiffLength <= diffStrDelta) {
-						continue;
-					}
-					detailedDiffLength -= diffStrDelta;
-				}
+			String[] diffLines = null;
+			Document diffStrDoc = null;
+			for (var range : this.detailedDiffRanges) {
+				String diffStr = range.diffStr();
+				int detailedDiffStart = range.start();
+				int detailedDiffLength = range.length();
+				int fromLine = range.fromLine();
+				int toLine = range.toLine();
 				try {
 					var rangeInfo = new RangeInfo(-1, -1, null);
-					// String#split drops trailing empty strings, so it must not be used to
-					// count lines: a prefix ending with \n starts the next line
-					int fromLine = countLines(diffStr.substring(0, detailedDiffStart));
-					int toLine = countLines(diffStr.substring(0, detailedDiffStart + detailedDiffLength));
 					if (fromLine == toLine) {
 						int starty = getYForLine(fromLine - 1, y, gc, textWidget);
 						Point start = getPositionForOffset(textWidget, gc, detailedDiffStart, diffStr, ranges,
@@ -685,11 +704,13 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 						}
 					} else {
 						// mark first line until end
-						String[] lines = diffStr.split("\n"); //$NON-NLS-1$
-						String firstLine = lines[fromLine - 1];
+						if (diffLines == null) {
+							diffLines = diffStr.split("\n"); //$NON-NLS-1$
+							diffStrDoc = new Document(diffStr);
+						}
+						String firstLine = diffLines[fromLine - 1];
 						int starty = getYForLine(fromLine - 1, y, gc, textWidget);
 						int idx = getOffsetAtLine(diffStr, detailedDiffStart);
-						var diffStrDoc = new Document(diffStr);
 						int fromLineOffset;
 						try {
 							fromLineOffset = diffStrDoc.getLineOffset(fromLine - 1);

@@ -63,6 +63,20 @@ public class UnifiedDiffTextTest {
 				() -> assertEquals(2, countLines("first\r\nsecond"), "CRLF is one delimiter"));
 	}
 
+	/**
+	 * The prefix overload counts the same lines as the copied substring would.
+	 */
+	@Test
+	public void testCountLinesOfPrefixMatchesSubstring() {
+		String diff = "first\nsecond\r\nthird\n";
+		assertAll( //
+				() -> assertEquals(1, countLines(diff, 0), "empty prefix is one line"), //
+				() -> assertEquals(1, countLines(diff, 5), "prefix ending before the delimiter"), //
+				() -> assertEquals(2, countLines(diff, 6), "prefix ending after the delimiter"), //
+				() -> assertEquals(3, countLines(diff, 14), "CRLF is one delimiter"), //
+				() -> assertEquals(countLines(diff), countLines(diff, diff.length()), "whole string"));
+	}
+
 	// ------------------------------------------------------------ tab expansion
 
 	@Test
