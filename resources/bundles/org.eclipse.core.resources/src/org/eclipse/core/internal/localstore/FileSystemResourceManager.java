@@ -1115,6 +1115,12 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 		SubMonitor refreshMonitor = subMonitor.newChild(98);
 		RefreshLocalVisitor visitor = updateAliases ? new RefreshLocalAliasVisitor(refreshMonitor) : new RefreshLocalVisitor(refreshMonitor);
 		tree.accept(visitor, depth);
+		// a project without description file is closed rather than recreating the file
+		for (Project project : visitor.getProjectsWithoutDescription()) {
+			if (project.isOpen()) {
+				project.basicClose(null);
+			}
+		}
 		IStatus result = visitor.getErrorStatus();
 		if (!result.isOK()) {
 			throw new ResourceException(result);
@@ -1485,42 +1491,6 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 		store.mkdir(EFS.NONE, monitor);
 		ResourceInfo info = ((Resource) target).getResourceInfo(false, true);
 		updateLocalSync(info, store.fetchInfo().getLastModified());
-	}
-
-	/**
-	 * Write the .project file without modifying the resource tree.  This is called
-	 * during save when it is discovered that the .project file is missing.  The tree
-	 * cannot be modified during save.
-	 */
-	public void writeSilently(IProject target) throws CoreException {
-		IPath location = locationFor(target, false);
-		//if the project location cannot be resolved, we don't know if a description file exists or not
-		if (location == null) {
-			return;
-		}
-		IFileStore projectStore = getStore(target);
-		projectStore.mkdir(EFS.NONE, null);
-		//can't do anything if there's no description
-		IProjectDescription desc = ((Project) target).internalGetDescription();
-		if (desc == null) {
-			return;
-		}
-		//write the project's private description to the meta-data area
-		getWorkspace().getMetaArea().writePrivateDescription(target);
-
-		//write the file that represents the project description
-		IFileStore fileStore = projectStore.getChild(IProjectDescription.DESCRIPTION_FILE_NAME);
-		try (
-			OutputStream out = fileStore.openOutputStream(EFS.NONE, null)
-		) {
-			IFile file = target.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
-			new ModelObjectWriter().write(desc, out, file.getLineSeparator(true));
-		} catch (IOException e) {
-			String msg = NLS.bind(Messages.resources_writeMeta, target.getFullPath());
-			throw new ResourceException(IResourceStatus.FAILED_WRITE_METADATA, target.getFullPath(), msg, e);
-		}
-		//for backwards compatibility, ensure the old .prj file is deleted
-		getWorkspace().getMetaArea().clearOldDescription(target);
 	}
 
 	public boolean storeHistory(IResource file) {

@@ -13,8 +13,11 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static java.util.function.Predicate.not;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
@@ -39,8 +42,8 @@ public class TestBug12575 {
 			.withCustomization(SessionTestExtension.createCustomWorkspace()).create();
 
 	/**
-	 * Setup.  Create a simple project, delete the .project file, shutdown
-	 * cleanly.
+	 * Setup. Create a simple project, delete the .project file, which closes the
+	 * project, shutdown cleanly.
 	 */
 	@Test
 	@Order(1)
@@ -50,20 +53,23 @@ public class TestBug12575 {
 		project.open(createTestMonitor());
 		IFile dotProject = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
 		dotProject.delete(IResource.NONE, createTestMonitor());
+		assertThat(project).matches(not(IProject::isOpen), "is closed");
 		getWorkspace().save(true, createTestMonitor());
+		assertDoesNotExistInFileSystem(dotProject);
 	}
 
 	/**
-	 * Infection.  Modify the .project, cause a snapshot, crash
+	 * Infection. The project is still closed and without .project file. Delete
+	 * it, cause a snapshot, crash
 	 */
 	@Test
 	@Order(2)
 	public void test2() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject(projectName);
 		IProject other = getWorkspace().getRoot().getProject("Other");
-		IProjectDescription desc = project.getDescription();
-		desc.setReferencedProjects(new IProject[] { other });
-		project.setDescription(desc, IResource.FORCE, createTestMonitor());
+		assertThat(project).matches(IProject::exists, "exists").matches(not(IProject::isOpen), "is closed");
+		assertDoesNotExistInFileSystem(project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME));
+		project.delete(true, createTestMonitor());
 		//creating a project will cause a snapshot
 		createInWorkspace(other);
 

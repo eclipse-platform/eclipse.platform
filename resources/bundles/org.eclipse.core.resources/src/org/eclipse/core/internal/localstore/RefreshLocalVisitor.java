@@ -14,10 +14,13 @@
  *******************************************************************************/
 package org.eclipse.core.internal.localstore;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
 import org.eclipse.core.internal.resources.Container;
 import org.eclipse.core.internal.resources.File;
 import org.eclipse.core.internal.resources.Folder;
 import org.eclipse.core.internal.resources.ICoreConstants;
+import org.eclipse.core.internal.resources.Project;
 import org.eclipse.core.internal.resources.Resource;
 import org.eclipse.core.internal.resources.ResourceInfo;
 import org.eclipse.core.internal.resources.ResourceStatus;
@@ -56,6 +59,7 @@ public class RefreshLocalVisitor implements IUnifiedTreeVisitor, ILocalStoreCons
 	protected SubMonitor monitor;
 	protected boolean resourceChanged;
 	protected Workspace workspace;
+	private final Set<Project> projectsWithoutDescription = new LinkedHashSet<>();
 
 	public RefreshLocalVisitor(IProgressMonitor monitor) {
 		this.monitor = SubMonitor.convert(monitor);
@@ -144,6 +148,13 @@ public class RefreshLocalVisitor implements IUnifiedTreeVisitor, ILocalStoreCons
 		node.setResource(target);
 		info = target.getResourceInfo(false, true);
 		target.getLocalManager().updateLocalSync(info, node.getLastModified());
+	}
+
+	/**
+	 * Returns the open projects whose description file was found deleted.
+	 */
+	public Set<Project> getProjectsWithoutDescription() {
+		return projectsWithoutDescription;
 	}
 
 	/**
@@ -314,13 +325,22 @@ public class RefreshLocalVisitor implements IUnifiedTreeVisitor, ILocalStoreCons
 					errors.merge(new ResourceStatus(IResourceStatus.INVALID_RESOURCE_NAME, message));
 					return false;
 				}
+				boolean existedInWorkspace = node.existsInWorkspace();
 				int state = synchronizeExistence(node, target);
 				if (state == RL_IN_SYNC || state == RL_NOT_IN_SYNC) {
 					if (targetType == IResource.FILE) {
-						try {
-							((File) target).updateMetadataFiles();
-						} catch (CoreException e) {
-							errors.merge(e.getStatus());
+						File file = (File) target;
+						Project project = (Project) file.getProject();
+						// a filtered description file is still read from disk
+						if (existedInWorkspace && !file.exists() && file.isProjectDescriptionFile()
+								&& !file.getLocalManager().hasSavedDescription(project)) {
+							projectsWithoutDescription.add(project);
+						} else {
+							try {
+								file.updateMetadataFiles();
+							} catch (CoreException e) {
+								errors.merge(e.getStatus());
+							}
 						}
 					}
 					return true;
