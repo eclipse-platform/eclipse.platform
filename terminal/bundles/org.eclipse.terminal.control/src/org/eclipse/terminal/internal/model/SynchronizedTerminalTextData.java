@@ -162,4 +162,24 @@ public class SynchronizedTerminalTextData implements ITerminalTextData {
 	synchronized public void clearWrappedLine(int line) {
 		fData.clearWrappedLine(line);
 	}
+
+	@Override
+	synchronized public String getCluster(int line, int column) {
+		return fData.getCluster(line, column);
+	}
+
+	@Override
+	synchronized public int getCellWidth(int line, int column) {
+		return fData.getCellWidth(line, column);
+	}
+
+	@Override
+	synchronized public boolean isSimpleLine(int line) {
+		return fData.isSimpleLine(line);
+	}
+
+	@Override
+	synchronized public void setCluster(int line, int column, String cluster) {
+		fData.setCluster(line, column, cluster);
+	}
 }
