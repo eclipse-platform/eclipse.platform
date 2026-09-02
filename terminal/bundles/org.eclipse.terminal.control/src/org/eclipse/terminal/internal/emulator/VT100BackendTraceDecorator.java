@@ -39,6 +39,12 @@ public class VT100BackendTraceDecorator implements IVT100EmulatorBackend {
 	}
 
 	@Override
+	public void enableAlternateScreen(boolean enable) {
+		fWriter.println("enableAlternateScreen(" + enable + ')'); //$NON-NLS-1$
+		fBackend.enableAlternateScreen(enable);
+	}
+
+	@Override
 	public void deleteCharacters(int n) {
 		fWriter.println("deleteCharacters(" + n + ")"); //$NON-NLS-1$ //$NON-NLS-2$
 		fBackend.deleteCharacters(n);

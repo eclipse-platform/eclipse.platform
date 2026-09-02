@@ -57,6 +57,9 @@ public class VT100EmulatorTest {
 	 * Set the cursor position to line/column. Note that this is the logical
 	 * line and column, so 1, 1 is the top left.
 	 */
+	private static final String ALTERNATE_SCREEN_ON = "\u001b[?1049h";
+	private static final String ALTERNATE_SCREEN_OFF = "\u001b[?1049l";
+
 	private static String CURSOR_POSITION(int line, int column) {
 		return "\033[" + line + ";" + column + "H";
 	}
@@ -375,4 +378,23 @@ public class VT100EmulatorTest {
 				() -> assertEquals(List.of("TITLE1", "TITLE2"), control.getAllTitles()));
 	}
 
+	@Test
+	public void testAlternateScreen() {
+		data.setMaxHeight(1000);
+		run("Hello 1\r\nHello 2");
+		assertAll(() -> assertCursorLocation(1, 7), () -> assertTextEquals("Hello 1", "Hello 2"));
+		// a full screen program takes the screen: it starts blank and no history is kept
+		run(ALTERNATE_SCREEN_ON);
+		assertAll(() -> assertCursorLocation(0, 0), () -> assertTextEquals(""));
+		assertEquals(WINDOW_LINES, data.getHeight());
+		run("Full screen");
+		assertTextEquals("Full screen");
+		run(ALTERNATE_SCREEN_ON); // programs do ask twice
+		assertTextEquals("Full screen");
+		// and gives it back with what was there before, cursor included
+		run(ALTERNATE_SCREEN_OFF);
+		assertAll(() -> assertCursorLocation(1, 7), () -> assertTextEquals("Hello 1", "Hello 2"));
+		run(ALTERNATE_SCREEN_OFF); // harmless twice as well
+		assertAll(() -> assertCursorLocation(1, 7), () -> assertTextEquals("Hello 1", "Hello 2"));
+	}
 }
