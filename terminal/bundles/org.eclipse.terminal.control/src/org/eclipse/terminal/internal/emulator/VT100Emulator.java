@@ -1286,9 +1286,23 @@ public class VT100Emulator implements ControlListener {
 		case 1049:
 			// Use Alternate Screen Buffer (ignored).
 			break;
+		case 2026:
+			terminal.enableSynchronizedOutput(true);
+			break;
 		case 2004:
 			// Bracketed paste: pasted text is wrapped so a program can tell it from typing.
 			terminal.enableBracketedPaste(true);
+			break;
+		case 1000: // report button press and release
+		case 1002: // also report drag
+		case 1003: // also report every move
+			terminal.enableMouseReporting(param);
+			break;
+		case 1006:
+			terminal.enableSgrMouseEncoding(true);
+			break;
+		case 1004:
+			terminal.enableFocusReporting(true);
 			break;
 		default:
 			Logger.log("Unsupported command parameter: CSI ?" + param + 'h'); //$NON-NLS-1$
@@ -1319,8 +1333,22 @@ public class VT100Emulator implements ControlListener {
 			// Use Normal Screen Buffer (ignored, but reset scroll region).
 			text.setScrollRegion(-1, -1);
 			break;
+		case 2026:
+			terminal.enableSynchronizedOutput(false);
+			break;
 		case 2004:
 			terminal.enableBracketedPaste(false);
+			break;
+		case 1000:
+		case 1002:
+		case 1003:
+			terminal.enableMouseReporting(0);
+			break;
+		case 1006:
+			terminal.enableSgrMouseEncoding(false);
+			break;
+		case 1004:
+			terminal.enableFocusReporting(false);
 			break;
 		default:
 			Logger.log("Unsupported command parameter: CSI ?" + param + 'l'); //$NON-NLS-1$
