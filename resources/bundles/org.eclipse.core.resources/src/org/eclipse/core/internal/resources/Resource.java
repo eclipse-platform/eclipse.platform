@@ -800,6 +800,7 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 		progress.subTask(message);
 		final ISchedulingRule rule = workspace.getRuleFactory().deleteRule(this);
 		SubMonitor split = progress.split(1);
+		boolean deletesDescriptionFile = false;
 		try {
 			workspace.prepareOperation(rule, split);
 			// If there is no resource then there is nothing to delete so just return.
@@ -807,6 +808,7 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 				return;
 			}
 			workspace.beginOperation(true);
+			deletesDescriptionFile = getType() == FILE && ((File) this).isProjectDescriptionFile();
 			broadcastPreDeleteEvent();
 
 			// When a project is being deleted, flush the build order in case there is a problem.
@@ -841,7 +843,8 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 			// Update any aliases of this resource.
 			// Note that deletion of a linked resource cannot affect other resources.
 			if (!wasLinked) {
-				workspace.getAliasManager().updateAliases(this, originalStore, IResource.DEPTH_INFINITE, progress.split(48));
+				// not cancelable, the aliases have to follow the deletion done on disk
+				workspace.getAliasManager().updateAliases(this, originalStore, IResource.DEPTH_INFINITE, progress.newChild(48));
 			}
 			if (getType() == PROJECT) {
 				// Make sure the rule factory is cleared on project deletion.
@@ -853,8 +856,36 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 			workspace.getWorkManager().operationCanceled();
 			throw e;
 		} finally {
-			progress.done();
-			workspace.endOperation(rule, true);
+			try {
+				// also when canceled or failed after the file was deleted
+				if (deletesDescriptionFile) {
+					closeProjectWithoutDescription();
+				}
+			} finally {
+				progress.done();
+				workspace.endOperation(rule, true);
+			}
+		}
+	}
+
+	/**
+	 * Closes the open project of this description file if its description file
+	 * is gone, rather than recreating the file.
+	 */
+	private void closeProjectWithoutDescription() throws CoreException {
+		Project project = (Project) getProject();
+		if (project.isOpen() && !getLocalManager().hasSavedDescription(project)) {
+			project.basicClose(null);
+		}
+	}
+
+	/**
+	 * Writes the description of the given project unless its description file is
+	 * gone, since such a project gets closed instead of recreating the file.
+	 */
+	private void writeDescriptionIfSaved(Project project) throws CoreException {
+		if (getLocalManager().hasSavedDescription(project)) {
+			project.writeDescription(IResource.FORCE);
 		}
 	}
 
@@ -908,7 +939,7 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 				if (wasChanged) {
 					project.internalSetDescription(description, true);
 					try {
-						project.writeDescription(IResource.FORCE);
+						writeDescriptionIfSaved(project);
 					} catch (CoreException e) {
 						// A problem happened updating the description, update the description in memory.
 						project.updateDescription();
@@ -936,7 +967,7 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 					description.setFilters(resource.getProjectRelativePath(), null);
 				}
 				project.internalSetDescription(description, true);
-				project.writeDescription(IResource.FORCE);
+				writeDescriptionIfSaved(project);
 			}
 		}
 
