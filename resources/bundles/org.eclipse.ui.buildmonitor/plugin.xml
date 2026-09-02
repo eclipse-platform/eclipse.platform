@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            category="org.eclipse.ui"
+            class="org.eclipse.ui.internal.buildmonitor.BuildMonitorView"
+            id="org.eclipse.ui.buildmonitor.BuildMonitorView"
+            name="%BuildMonitorView.name">
+      </view>
+   </extension>
+</plugin>
