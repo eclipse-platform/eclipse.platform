@@ -11,6 +11,7 @@ package org.eclipse.terminal.internal.emulator;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -18,8 +19,10 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.StringJoiner;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.terminal.connector.Logger;
 import org.eclipse.terminal.model.ITerminalTextData;
 import org.eclipse.terminal.model.TerminalStyle;
@@ -572,5 +575,45 @@ public class VT100EmulatorTest {
 		// back on the normal screen, clearing it keeps it again
 		run("\u001b[2J");
 		assertEquals(height + 2, data.getHeight());
+	}
+
+	@Test
+	public void testFaint() {
+		// SGR 2 makes the text faint; 22 takes both bold and faint off, as in xterm
+		run("\u001b[2mfaint\u001b[22m normal \u001b[1;2mboth\u001b[22mplain");
+		assertTrue(data.getStyle(0, 0).isDim());
+		assertFalse(data.getStyle(0, 0).isBold());
+		assertFalse(data.getStyle(0, 6).isDim());
+		assertTrue(data.getStyle(0, 13).isDim());
+		assertTrue(data.getStyle(0, 13).isBold());
+		assertFalse(data.getStyle(0, 17).isDim());
+		assertFalse(data.getStyle(0, 17).isBold());
+		// 21 is double underline in ECMA-48, not normal intensity: it takes bold off as before, faint stays
+		run("\r\n\u001b[1;2ma\u001b[21mb");
+		assertTrue(data.getStyle(1, 1).isDim());
+		assertFalse(data.getStyle(1, 1).isBold());
+	}
+
+	@Test
+	public void testModifiedSpecialKeys() {
+		// xterm's spelling: CSI number ; modifier final, with 2 shift, 3 alt, 5 control and their sums
+		Map<Integer, String> keys = Map.ofEntries(Map.entry(SWT.ARROW_UP, "1;%dA"), Map.entry(SWT.ARROW_DOWN, "1;%dB"),
+				Map.entry(SWT.ARROW_RIGHT, "1;%dC"), Map.entry(SWT.ARROW_LEFT, "1;%dD"), Map.entry(SWT.HOME, "1;%dH"),
+				Map.entry(SWT.END, "1;%dF"), Map.entry(SWT.INSERT, "2;%d~"), Map.entry(SWT.PAGE_UP, "5;%d~"),
+				Map.entry(SWT.PAGE_DOWN, "6;%d~"), Map.entry(SWT.F1, "1;%dP"), Map.entry(SWT.F2, "1;%dQ"),
+				Map.entry(SWT.F3, "1;%dR"), Map.entry(SWT.F4, "1;%dS"), Map.entry(SWT.F5, "15;%d~"),
+				Map.entry(SWT.F6, "17;%d~"), Map.entry(SWT.F7, "18;%d~"), Map.entry(SWT.F8, "19;%d~"),
+				Map.entry(SWT.F9, "20;%d~"), Map.entry(SWT.F10, "21;%d~"), Map.entry(SWT.F11, "23;%d~"),
+				Map.entry(SWT.F12, "24;%d~"));
+		Map<Integer, Integer> modifiers = Map.of(SWT.SHIFT, 2, SWT.ALT, 3, SWT.CTRL, 5, SWT.CTRL | SWT.SHIFT, 6,
+				SWT.CTRL | SWT.ALT | SWT.SHIFT, 8);
+		keys.forEach((key, spelling) -> modifiers.forEach((mask, modifier) -> assertEquals(
+				"\u001b[" + spelling.formatted(modifier), VT100TerminalControl.modifiedSpecialKey(key, mask))));
+		// no modifier held that xterm can spell, or a key it does not spell this way: not this way
+		assertEquals(null, VT100TerminalControl.modifiedSpecialKey(SWT.ARROW_UP, 0));
+		assertEquals(null, VT100TerminalControl.modifiedSpecialKey(SWT.TAB, SWT.CTRL));
+		// the Mac's Cmd, alone or with others, stays in Eclipse: Cmd+Shift+Left is not Shift+Left
+		assertEquals(null, VT100TerminalControl.modifiedSpecialKey(SWT.ARROW_LEFT, SWT.COMMAND));
+		assertEquals(null, VT100TerminalControl.modifiedSpecialKey(SWT.ARROW_LEFT, SWT.COMMAND | SWT.SHIFT));
 	}
 }
