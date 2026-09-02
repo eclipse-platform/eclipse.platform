@@ -399,4 +399,19 @@ public class VT100EmulatorTest {
 		emulator.resetState();
 		assertAll(() -> assertTrue(control.isCursorShown()), () -> assertFalse(control.isBracketedPaste()));
 	}
+
+	@Test
+	public void testMouseModes() {
+		// how ncurses turns the mouse on: both modes in one sequence
+		run("\u001b[?1006;1000h");
+		assertAll(() -> assertEquals(1000, control.getMouseMode()), () -> assertTrue(control.isSgrMouseEncoding()));
+		run("\u001b[?1002h");
+		assertEquals(1002, control.getMouseMode());
+		run("\u001b[?1000;1006l");
+		assertAll(() -> assertEquals(0, control.getMouseMode()), () -> assertFalse(control.isSgrMouseEncoding()));
+		run("\u001b[?1004h");
+		assertTrue(control.isFocusReporting());
+		run("\u001b[?1004l");
+		assertFalse(control.isFocusReporting());
+	}
 }

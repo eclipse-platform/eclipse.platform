@@ -62,4 +62,39 @@ public interface ITerminalControlForText {
 	default void showCursor(boolean show) {
 	}
 
+	/**
+	 * Turns reporting of the terminal gaining and losing focus on or off (DEC mode 1004).
+	 *
+	 * @param enable whether the program wants to be told
+	 */
+	default void enableFocusReporting(boolean enable) {
+	}
+
+	/**
+	 * A program that asks for mouse events wants them instead of the terminal's own
+	 * handling of the mouse, scrolling included.
+	 *
+	 * @since 5.6
+	 */
+	default void enableMouseReporting(int mode) {
+	}
+
+	/**
+	 * Says a program is drawing a screen and has not finished (DEC mode 2026), so
+	 * that the view does not show it half drawn.
+	 *
+	 * @param redrawing whether a screen is being drawn
+	 */
+	default void enableSynchronizedOutput(boolean redrawing) {
+	}
+
+	/**
+	 * SGR encoding (CSI ?1006) reports coordinates as decimal numbers instead of
+	 * single bytes, which is what lets them go past column 223.
+	 *
+	 * @since 5.6
+	 */
+	default void enableSgrMouseEncoding(boolean enable) {
+	}
+
 }
