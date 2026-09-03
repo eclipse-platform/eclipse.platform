@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2015 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -34,7 +34,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Preferences;
 import org.eclipse.osgi.util.NLS;
 
 public class WorkspaceRoot extends Container implements IWorkspaceRoot {
@@ -123,8 +122,9 @@ public class WorkspaceRoot extends Container implements IWorkspaceRoot {
 		if (checkImplicit) {
 			return ResourcesPlugin.getEncoding();
 		}
-		String enc = ResourcesPlugin.getPlugin().getPluginPreferences().getString(ResourcesPlugin.PREF_ENCODING);
-		return enc == null || enc.length() == 0 ? null : enc;
+		String enc = Platform.getPreferencesService().getString(ResourcesPlugin.PI_RESOURCES,
+				ResourcesPlugin.PREF_ENCODING, "", null); //$NON-NLS-1$
+		return enc.isEmpty() ? null : enc;
 	}
 
 	@Override
@@ -282,18 +282,6 @@ public class WorkspaceRoot extends Container implements IWorkspaceRoot {
 	@Override
 	public boolean isPhantom() {
 		return false;
-	}
-
-	@Deprecated
-	@Override
-	public void setDefaultCharset(String charset) {
-		// directly change the Resource plugin's preference for encoding
-		Preferences resourcesPreferences = ResourcesPlugin.getPlugin().getPluginPreferences();
-		if (charset != null) {
-			resourcesPreferences.setValue(ResourcesPlugin.PREF_ENCODING, charset);
-		} else {
-			resourcesPreferences.setToDefault(ResourcesPlugin.PREF_ENCODING);
-		}
 	}
 
 	@Override
