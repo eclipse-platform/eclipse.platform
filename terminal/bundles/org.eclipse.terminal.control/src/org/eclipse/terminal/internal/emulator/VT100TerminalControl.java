@@ -1510,7 +1510,7 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 		return mouseReport(fSgrMouseEncoding, button, line, column, pressed);
 	}
 
-	static String mouseReport(boolean sgr, int button, int line, int column, boolean pressed) {
+	public static String mouseReport(boolean sgr, int button, int line, int column, boolean pressed) {
 		if (sgr) {
 			return "\u001b[<" + button + ';' + column + ';' + line + (pressed ? 'M' : 'm'); //$NON-NLS-1$
 		}
