@@ -290,6 +290,7 @@ public class CharsetManager implements IManager {
 	private static final String PROJECT_KEY = "<project>"; //$NON-NLS-1$
 	private CharsetDeltaJob charsetListener;
 	CharsetManagerJob job;
+	private ValidateProjectEncoding encodingValidation;
 	private IResourceChangeListener resourceChangeListener;
 	private IPreferenceChangeListener preferenceChangeListener;
 	protected final Bundle systemBundle = Platform.getBundle("org.eclipse.osgi"); //$NON-NLS-1$
@@ -503,7 +504,7 @@ public class CharsetManager implements IManager {
 		try {
 			setResourceEncodingSettings(resourcePath, newCharset, resource);
 			if (resource instanceof Project project) {
-				ValidateProjectEncoding.scheduleProjectValidation(workspace, project);
+				encodingValidation.scheduleProjectValidation(project);
 			}
 		} catch (BackingStoreException e) {
 			setCharsetForHasFailed(resourcePath, e);
@@ -529,10 +530,20 @@ public class CharsetManager implements IManager {
 		throw new ResourceException(IResourceStatus.FAILED_SETTING_CHARSET, resourcePath, message, e);
 	}
 
+	/**
+	 * Schedules a check whether the given project has an explicit encoding.
+	 */
+	public void validateProjectEncoding(IProject project) {
+		encodingValidation.scheduleProjectValidation(project);
+	}
+
 	@Override
 	public void shutdown(IProgressMonitor monitor) {
 		if (job != null) {
 			job.shutDown();
+		}
+		if (encodingValidation != null) {
+			encodingValidation.cancel();
 		}
 		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES)
 				.removePreferenceChangeListener(preferenceChangeListener);
@@ -584,18 +595,19 @@ public class CharsetManager implements IManager {
 	@Override
 	public void startup(IProgressMonitor monitor) {
 		job = new CharsetManagerJob();
+		encodingValidation = new ValidateProjectEncoding(workspace);
 		resourceChangeListener = new ResourceChangeListener();
 		workspace.addResourceChangeListener(resourceChangeListener, IResourceChangeEvent.POST_CHANGE);
 		charsetListener = new CharsetDeltaJob(workspace);
 		charsetListener.startup();
-		ValidateProjectEncoding.scheduleWorkspaceValidation(workspace);
+		encodingValidation.scheduleWorkspaceValidation();
 		initPreferenceChangeListener();
 	}
 
 	private void initPreferenceChangeListener() {
 		preferenceChangeListener = event -> {
 			if (ResourcesPlugin.PREF_MISSING_ENCODING_MARKER_SEVERITY.equals(event.getKey())) {
-				ValidateProjectEncoding.scheduleWorkspaceValidation(workspace);
+				encodingValidation.scheduleWorkspaceValidation();
 			}
 		};
 
