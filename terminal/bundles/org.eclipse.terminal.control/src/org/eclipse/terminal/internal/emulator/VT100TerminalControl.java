@@ -578,7 +578,7 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 	 *
 	 * @return the sequence, or null when the key is not one that is spelled this way
 	 */
-	static String modifiedSpecialKey(int keyCode, int modifierKeys) {
+	public static String modifiedSpecialKey(int keyCode, int modifierKeys) {
 		int modifier = 1 + ((modifierKeys & SWT.SHIFT) != 0 ? 1 : 0) + ((modifierKeys & SWT.ALT) != 0 ? 2 : 0)
 				+ ((modifierKeys & SWT.CTRL) != 0 ? 4 : 0);
 		if (modifier == 1) {
