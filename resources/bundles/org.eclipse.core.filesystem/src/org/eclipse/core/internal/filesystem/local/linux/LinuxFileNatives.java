@@ -121,10 +121,15 @@ public abstract class LinuxFileNatives {
 				info = new FileInfo();
 			} else if ((stat.st_mode & S_IFMT) == S_IFLNK) { // it's a link!
 				LinuxStructStat targetStat = new LinuxStructStat();
-				if (stat(name, targetStat) == 0) { // get the information about the file the link points to
+				if (stat(name, targetStat) == 0 && targetStat.errno == 0) { // get the information about the file the link points to
 					info = targetStat.toFileInfo(); // store the target file stats in info
 				} else { // invalid link target
-					info = new FileInfo();
+					// Keep symlink metadata (permissions/timestamp) from lstat for dangling links.
+					info = stat.toFileInfo();
+					if (targetStat.errno == ENOENT) {
+						// Preserve historical "broken target" semantics while still providing link attributes.
+						info.setExists(false);
+					}
 					if (targetStat.errno != ENOENT) {
 						info.setError(IFileInfo.IO_ERROR);
 					}

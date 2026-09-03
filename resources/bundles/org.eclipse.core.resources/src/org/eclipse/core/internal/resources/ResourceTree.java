@@ -15,14 +15,35 @@
 package org.eclipse.core.internal.resources;
 
 import java.net.URI;
-import org.eclipse.core.filesystem.*;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.filesystem.IFileSystem;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.internal.localstore.FileSystemResourceManager;
 import org.eclipse.core.internal.properties.IPropertyManager;
-import org.eclipse.core.internal.utils.*;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.internal.utils.BitMask;
+import org.eclipse.core.internal.utils.Messages;
+import org.eclipse.core.internal.utils.Policy;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.resources.IResourceVisitor;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.team.IResourceTree;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.ILock;
 import org.eclipse.osgi.util.NLS;
 
@@ -289,7 +310,8 @@ class ResourceTree implements IResourceTree {
 			// If the file doesn't exist on disk then signal to the workspace to delete the
 			// file and return.
 			IFileStore fileStore = localManager.getStore(file);
-			boolean localExists = fileStore.fetchInfo().exists();
+			IFileInfo localFileInfo = fileStore.fetchInfo();
+			boolean localExists = localFileInfo.exists() || localFileInfo.getAttribute(EFS.ATTRIBUTE_SYMLINK);
 			if (!localExists) {
 				deletedFile(file);
 				// Indicate that the delete was successful.

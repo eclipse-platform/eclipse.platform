@@ -329,7 +329,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 	public ResourceAttributes attributes(IResource resource) {
 		IFileStore store = getStore(resource);
 		IFileInfo fileInfo = store.fetchInfo();
-		if (!fileInfo.exists()) {
+		if (!fileInfo.exists() && !fileInfo.getAttribute(EFS.ATTRIBUTE_SYMLINK)) {
 			return null;
 		}
 		return FileUtil.fileInfoToAttributes(fileInfo);
