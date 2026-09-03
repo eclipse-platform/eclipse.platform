@@ -32,6 +32,7 @@ import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -299,6 +300,17 @@ public class LocalFile extends FileStore {
 				/* keepAliveTime */ 1, TimeUnit.MINUTES); // pool terminates 1 thread per
 	}
 
+	private static void clearWindowsReadOnlyAttribute(Path path) {
+		if (!OS.isWindows()) {
+			return;
+		}
+		try {
+			Files.setAttribute(path, "dos:readonly", Boolean.FALSE, LinkOption.NOFOLLOW_LINKS); //$NON-NLS-1$
+		} catch (IOException | UnsupportedOperationException e) {
+			// deletion is retried anyway and reports the original failure
+		}
+	}
+
 	/**
 	* Deletes the given file recursively, adding failure info to
 	* the provided status object.  The filePath is passed as a parameter
@@ -317,14 +329,10 @@ public class LocalFile extends FileStore {
 				infMonitor.worked();
 				return Status.OK_STATUS;
 			} catch (AccessDeniedException e) {
-				// If the file is read only, it can't be deleted via Files.deleteIfExists()
-				// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=500306
-				// Since Java 25, just calling File#delete() is not sufficient anymore on Windows
-				// but the read-only state has to be cleared explicitly,
-				// see https://bugs.openjdk.org/browse/JDK-8355954
-				if (OS.isWindows()) {
-					target.setWritable(true);
-				}
+				// Read-only files can't be deleted via Files.deleteIfExists() (bug 500306) and
+				// since Java 25 File#delete() no longer clears the flag on Windows (JDK-8355954).
+				// Clear it on the path itself, File#setWritable() would follow symbolic links.
+				clearWindowsReadOnlyAttribute(target.toPath());
 				if (target.delete()) {
 					infMonitor.worked();
 					return Status.OK_STATUS;

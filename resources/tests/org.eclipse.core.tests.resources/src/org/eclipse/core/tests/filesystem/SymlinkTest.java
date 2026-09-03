@@ -221,33 +221,25 @@ public class SymlinkTest {
 
 		IFileInfo[] infos = baseStore.childInfos(EFS.NONE, getMonitor());
 		assertThat(infos).hasSize(2);
+		// FIXME bug: putInfo neither sets attributes nor throws an exception for broken
+		// symbolic links. Once fixed, replace the try/catch blocks below with assertThrows
+		// and assert that the read-only attribute and the last modified time were set.
 		i1.setAttribute(EFS.ATTRIBUTE_READ_ONLY, true);
-		boolean exceptionThrown = false;
 		try {
 			l1.putInfo(i1, EFS.SET_ATTRIBUTES, getMonitor());
 		} catch (CoreException ce) {
-			exceptionThrown = true;
+			// ignored until the FIXME above is resolved
 		}
 		i1 = l1.fetchInfo();
-		boolean fixMeFixed = false;
-		if (fixMeFixed) {
-			//FIXME bug: putInfo neither sets attributes nor throws an exception for broken symbolic links
-			assertTrue(exceptionThrown);
-			assertTrue(i1.getAttribute(EFS.ATTRIBUTE_READ_ONLY));
-		}
 		assertEquals(SYMLINKS_ARE_FIRST_CLASS_FILES_OR_DIRECTORIES, i1.exists());
 
 		i1.setLastModified(12345);
-		exceptionThrown = false;
 		try {
 			l1.putInfo(i1, EFS.SET_LAST_MODIFIED, getMonitor());
 		} catch (CoreException ce) {
-			exceptionThrown = true;
+			// ignored until the FIXME above is resolved
 		}
 		i1 = l1.fetchInfo();
-		//FIXME bug: putInfo neither sets attributes nor throws an exception for broken symbolic links
-		//assertTrue(exceptionThrown);
-		//assertEquals(i1.getLastModified(), 12345);
 		assertEquals(SYMLINKS_ARE_FIRST_CLASS_FILES_OR_DIRECTORIES, i1.exists());
 
 		l1.delete(EFS.NONE, getMonitor());
