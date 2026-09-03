@@ -14,10 +14,12 @@
 package org.eclipse.core.tests.resources;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
-import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assertions;
@@ -28,9 +30,12 @@ import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
@@ -151,6 +156,51 @@ public class ProjectEncodingTest {
 		thenProjectHasNoEncodingMarker();
 	}
 
+	@Test
+	public void test_TwoProjectsOpenedWithoutEncoding_ValidatedInOneJobRun_EachProjectHasMarker()
+			throws Exception {
+		givenPreferenceIsSetTo(IMarker.SEVERITY_WARNING);
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		IProject first = workspace.getRoot().getProject(createUniqueString());
+		IProject second = workspace.getRoot().getProject(createUniqueString());
+		createProjectWithContentOnDisk(first);
+		createProjectWithContentOnDisk(second);
+
+		AtomicInteger validationRuns = new AtomicInteger();
+		JobChangeAdapter validationRunCounter = new JobChangeAdapter() {
+			@Override
+			public void running(IJobChangeEvent event) {
+				if (event.getJob().belongsTo(ValidateProjectEncoding.class)) {
+					validationRuns.incrementAndGet();
+				}
+			}
+		};
+		Job.getJobManager().addJobChangeListener(validationRunCounter);
+		try {
+			// open both projects in one workspace operation, like a mass import does
+			workspace.run(monitor -> {
+				first.open(monitor);
+				second.open(monitor);
+			}, workspace.getRoot(), IWorkspace.AVOID_UPDATE, null);
+			waitForEncodingValidation();
+		} finally {
+			Job.getJobManager().removeJobChangeListener(validationRunCounter);
+		}
+
+		assertThat(validationRuns).as("encoding validation job runs").hasValue(1);
+		IProjectMatcher.assertThat(first).hasEncodingMarkerOfSeverity(IMarker.SEVERITY_WARNING);
+		IProjectMatcher.assertThat(second).hasEncodingMarkerOfSeverity(IMarker.SEVERITY_WARNING);
+	}
+
+	/**
+	 * Creates a closed project whose location already has content, so that
+	 * opening it does not write a default encoding.
+	 */
+	private static void createProjectWithContentOnDisk(IProject project) throws Exception {
+		createInFileSystem(project.getFile("content.txt"));
+		project.create(null);
+	}
+
 	private void whenPreferenceIsChangedTo(int severity) throws Exception {
 		givenPreferenceIsSetTo(severity);
 	}
@@ -159,6 +209,10 @@ public class ProjectEncodingTest {
 		IEclipsePreferences node = InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES);
 		node.putInt(ResourcesPlugin.PREF_MISSING_ENCODING_MARKER_SEVERITY, value);
 		node.flush();
+		waitForEncodingValidation();
+	}
+
+	private static void waitForEncodingValidation() throws InterruptedException {
 		Job.getJobManager().wakeUp(ValidateProjectEncoding.class);
 		Job.getJobManager().join(ValidateProjectEncoding.class, createTestMonitor());
 	}
@@ -170,12 +224,12 @@ public class ProjectEncodingTest {
 
 	private void whenProjectSpecificEncodingWasRemoved() throws Exception {
 		project.setDefaultCharset(null, null);
-		buildAndWaitForBuildFinish();
+		waitForEncodingValidation();
 	}
 
 	private void whenProjectSpecificEncodingWasSet() throws Exception {
 		project.setDefaultCharset("UTF-8", null);
-		buildAndWaitForBuildFinish();
+		waitForEncodingValidation();
 	}
 
 	private void thenProjectHasNoEncodingMarker() throws Exception {
@@ -217,10 +271,6 @@ public class ProjectEncodingTest {
 			return NLS.bind(Messages.resources_checkExplicitEncoding_problemText, actual.getName());
 		}
 
-	}
-
-	private void buildAndWaitForBuildFinish() {
-		waitForBuild();
 	}
 
 }

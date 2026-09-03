@@ -23,6 +23,7 @@ import org.eclipse.osgi.util.NLS;
 
 /**
  * Reports warning markers on projects without an explicit encoding setting.
+ * Requests are collected and handled together in a single job run.
  */
 public class ValidateProjectEncoding extends InternalWorkspaceJob {
 
@@ -37,29 +38,49 @@ public class ValidateProjectEncoding extends InternalWorkspaceJob {
 	 */
 	public static final int SEVERITY_IGNORE = -1;
 
-	public static void scheduleWorkspaceValidation(Workspace workspace) {
-		IProject[] projects = workspace.getRoot().getProjects();
-		ValidateProjectEncoding validateProjectEncoding = new ValidateProjectEncoding(workspace, projects);
-		validateProjectEncoding.setRule(workspace.getRoot());
-		validateProjectEncoding.schedule();
-	}
+	private final Workspace workspace;
+	private final Set<IProject> pendingProjects = new LinkedHashSet<>();
+	private boolean validateAllProjects;
 
-	public static void scheduleProjectValidation(Workspace workspace, IProject project) {
-		// schedule a job only if marker state would change
-		boolean shouldScheduleValidation = shouldScheduleValidation(project);
-		if (shouldScheduleValidation) {
-			ValidateProjectEncoding validateProjectEncoding = new ValidateProjectEncoding(workspace, project);
-			validateProjectEncoding.setRule(project);
-			validateProjectEncoding.schedule();
-		}
-	}
-
-	private final IProject[] projects;
-
-	private ValidateProjectEncoding(Workspace workspace, IProject... projects) {
+	ValidateProjectEncoding(Workspace workspace) {
 		super(Messages.resources_checkExplicitEncoding_jobName, workspace);
+		this.workspace = workspace;
 		setSystem(true);
-		this.projects = projects;
+		setRule(workspace.getRoot());
+	}
+
+	/**
+	 * Validates all projects of the workspace in the next run of this job.
+	 */
+	public void scheduleWorkspaceValidation() {
+		synchronized (pendingProjects) {
+			validateAllProjects = true;
+		}
+		schedule();
+	}
+
+	/**
+	 * Validates the given project in the next run of this job, unless its marker
+	 * state already matches its encoding setting.
+	 */
+	public void scheduleProjectValidation(IProject project) {
+		if (!shouldScheduleValidation(project)) {
+			return;
+		}
+		synchronized (pendingProjects) {
+			pendingProjects.add(project);
+		}
+		schedule();
+	}
+
+	private IProject[] takePendingProjects() {
+		synchronized (pendingProjects) {
+			IProject[] projects = validateAllProjects ? workspace.getRoot().getProjects()
+					: pendingProjects.toArray(new IProject[0]);
+			validateAllProjects = false;
+			pendingProjects.clear();
+			return projects;
+		}
 	}
 
 	@Override
@@ -72,6 +93,7 @@ public class ValidateProjectEncoding extends InternalWorkspaceJob {
 		if (monitor.isCanceled()) {
 			return Status.CANCEL_STATUS;
 		}
+		IProject[] projects = takePendingProjects();
 		SubMonitor subMonitor = SubMonitor.convert(monitor, projects.length);
 		for (IProject project : projects) {
 			subMonitor.checkCanceled();

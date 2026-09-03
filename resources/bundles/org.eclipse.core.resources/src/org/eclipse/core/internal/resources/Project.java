@@ -1214,7 +1214,7 @@ public class Project extends Container implements IProject {
 			monitor.done();
 		}
 		if (!encodingWritten) {
-			ValidateProjectEncoding.scheduleProjectValidation((Workspace) getWorkspace(), this);
+			workspace.getCharsetManager().validateProjectEncoding(this);
 		}
 	}
 
