@@ -57,6 +57,7 @@ public class TerminalTextDataStore implements ITerminalTextData {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public void setDimensions(int height, int width) {
 		if (height < 0) {
 			throw new IllegalArgumentException("Parameter 'height' can't be negative value:" + height); //$NON-NLS-1$
