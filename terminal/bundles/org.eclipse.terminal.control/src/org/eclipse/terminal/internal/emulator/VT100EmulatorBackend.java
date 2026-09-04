@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.terminal.internal.emulator;
 
+import org.eclipse.terminal.internal.model.CharWidth;
 import org.eclipse.terminal.model.ITerminalTextData;
 import org.eclipse.terminal.model.TerminalStyle;
 
@@ -311,7 +312,7 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 		synchronized (fTerminal) {
 			char[] chars = buffer.toCharArray();
 			if (fInsertMode) {
-				insertCharacters(chars.length);
+				insertCharacters(CharWidth.ofString(buffer)); // room in cells, not characters
 			}
 			int line = toAbsoluteLine(fCursorLine);
 			int i = 0;
@@ -319,10 +320,50 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 				if (fWrapPending) {
 					line = doLineWrap();
 				}
-				int n = Math.min(fColumns - fCursorColumn, chars.length - i);
-				fTerminal.setChars(line, fCursorColumn, chars, i, n, fStyle);
-				int col = fCursorColumn + n;
-				i += n;
+				int room = fColumns - fCursorColumn;
+				int col;
+				int n = narrowRun(chars, i, room);
+				if (n > 0) {
+					breakWideChar(line, fCursorColumn);
+					breakWideChar(line, fCursorColumn + n - 1);
+					fTerminal.setChars(line, fCursorColumn, chars, i, n, fStyle);
+					col = fCursorColumn + n;
+					i += n;
+				} else {
+					int codePoint = Character.codePointAt(chars, i);
+					int charsUsed = Character.charCount(codePoint);
+					int width = CharWidth.of(codePoint);
+					if (width == 0) {
+						// combining marks and other non-printing code points occupy no cell
+						i += charsUsed;
+						continue;
+					}
+					// a surrogate pair cannot share a cell, so it always takes two
+					if (charsUsed == 2) {
+						width = 2;
+					}
+					if (width > room) {
+						if (fCursorColumn > 0) {
+							// a wide character is never split across the right margin
+							line = doLineWrap();
+							continue;
+						}
+						// terminal narrower than the character itself
+						width = room;
+					}
+					breakWideChar(line, fCursorColumn);
+					breakWideChar(line, fCursorColumn + width - 1);
+					if (charsUsed == 2) {
+						fTerminal.setChars(line, fCursorColumn, chars, i, 2, fStyle);
+					} else {
+						fTerminal.setChar(line, fCursorColumn, chars[i], fStyle);
+						if (width == 2) {
+							fTerminal.setChar(line, fCursorColumn + 1, '\000', fStyle);
+						}
+					}
+					col = fCursorColumn + width;
+					i += charsUsed;
+				}
 				// wrap needed?
 				if (col == fColumns) {
 					if (fVT100LineWrapping) {
@@ -337,6 +378,45 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 				}
 			}
 		}
+	}
+
+	/**
+	 * A wide character owns two cells. Overwriting either one leaves the other
+	 * stranded: a filler with nothing in front of it, or a glyph that now spills
+	 * over whatever was written next to it. Blanking the partner before the write
+	 * goes in keeps the line honest, which is what a terminal is expected to do.
+	 */
+	private void breakWideChar(int line, int col) {
+		if (col < 0 || col >= fColumns) {
+			return;
+		}
+		char c = fTerminal.getChar(line, col);
+		if (c == '\000') {
+			if (col > 0 && CharWidth.of(fTerminal.getChar(line, col - 1)) == 2) {
+				blank(line, col - 1);
+			}
+		} else if (CharWidth.of(c) == 2 && col + 1 < fColumns && fTerminal.getChar(line, col + 1) == '\000') {
+			blank(line, col + 1);
+		}
+	}
+
+	private void blank(int line, int col) {
+		fTerminal.setChar(line, col, ' ', fTerminal.getStyle(line, col));
+	}
+
+	/**
+	 * Length of the run of characters starting at <code>offset</code> that each
+	 * occupy exactly one cell, so that they can be copied in one block. Capped at
+	 * <code>max</code> cells. Zero when the run does not start with such a
+	 * character, which sends the caller down the code point by code point path.
+	 */
+	private static int narrowRun(char[] chars, int offset, int max) {
+		int n = 0;
+		while (n < max && offset + n < chars.length && !Character.isSurrogate(chars[offset + n])
+				&& CharWidth.of(chars[offset + n]) == 1) {
+			n++;
+		}
+		return n;
 	}
 
 	private int doLineWrap() {
