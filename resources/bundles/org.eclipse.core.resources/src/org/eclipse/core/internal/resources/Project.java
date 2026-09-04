@@ -235,19 +235,8 @@ public class Project extends Container implements IProject {
 			if (!isOpen(flags)) {
 				return;
 			}
-			// Signal that this resource is about to be closed.  Do this at the very
-			// beginning so that infrastructure pieces have a chance to do clean up
-			// while the resources still exist.
 			workspace.beginOperation(true);
-			workspace.broadcastEvent(LifecycleEvent.newEvent(LifecycleEvent.PRE_PROJECT_CLOSE, this));
-			// flush the build order early in case there is a problem
-			workspace.flushBuildOrder();
-			IProgressMonitor sub = subMonitor.newChild(49, SubMonitor.SUPPRESS_SUBTASK);
-			IStatus saveStatus = workspace.getSaveManager().save(ISaveContext.PROJECT_SAVE, this, sub);
-			internalClose(subMonitor.newChild(49));
-			if (saveStatus != null && !saveStatus.isOK()) {
-				throw new ResourceException(saveStatus);
-			}
+			basicClose(subMonitor.newChild(98));
 		} catch (OperationCanceledException e) {
 			workspace.getWorkManager().operationCanceled();
 			throw e;
@@ -668,6 +657,26 @@ public class Project extends Container implements IProject {
 		};
 
 		workspace.run(buildRunnable, null, IWorkspace.AVOID_UPDATE, monitor);
+	}
+
+	/**
+	 * Closes this open project. Must be called from within a workspace operation
+	 * whose scheduling rule covers this project.
+	 */
+	public void basicClose(IProgressMonitor monitor) throws CoreException {
+		SubMonitor subMonitor = SubMonitor.convert(monitor, 2);
+		// Signal that this resource is about to be closed.  Do this at the very
+		// beginning so that infrastructure pieces have a chance to do clean up
+		// while the resources still exist.
+		workspace.broadcastEvent(LifecycleEvent.newEvent(LifecycleEvent.PRE_PROJECT_CLOSE, this));
+		// flush the build order early in case there is a problem
+		workspace.flushBuildOrder();
+		IProgressMonitor sub = subMonitor.newChild(1, SubMonitor.SUPPRESS_SUBTASK);
+		IStatus saveStatus = workspace.getSaveManager().save(ISaveContext.PROJECT_SAVE, this, sub);
+		internalClose(subMonitor.newChild(1));
+		if (saveStatus != null && !saveStatus.isOK()) {
+			throw new ResourceException(saveStatus);
+		}
 	}
 
 	/**

@@ -715,19 +715,21 @@ public class IWorkspaceTest {
 	}
 
 	/**
-	 * Test API method IWorkspace.setDescription.
+	 * Test API method IWorkspace.save.
 	 */
 	@Test
 	public void testSave() throws CoreException {
-		// ensure save returns a warning if a project's .project file is deleted.
+		// deleting a project's .project file closes the project, save must not recreate the file
 		IProject project = getWorkspace().getRoot().getProject("Broken");
 		createInWorkspace(project);
 		// wait for snapshot before modifying file
 		TestingSupport.waitForSnapshot();
 		IFile descriptionFile = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
 		descriptionFile.delete(IResource.NONE, null);
+		assertFalse(project.isOpen());
 		IStatus result = getWorkspace().save(true, createTestMonitor());
-		assertEquals(IStatus.WARNING, result.getSeverity());
+		assertTrue(result.isOK());
+		assertDoesNotExistInFileSystem(descriptionFile);
 	}
 
 	/**

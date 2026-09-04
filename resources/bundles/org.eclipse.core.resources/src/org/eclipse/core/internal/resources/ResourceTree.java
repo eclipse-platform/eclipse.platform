@@ -1114,18 +1114,14 @@ class ResourceTree implements IResourceTree {
 			}
 
 			// Move the project content in the local file system.
+			boolean contentMoved = true;
 			try {
 				moveProjectContent(source, destinationStore, flags, Policy.subMonitorFor(monitor, Policy.totalWork * 3 / 4));
 			} catch (CoreException e) {
 				message = NLS.bind(Messages.localstore_couldNotMove, source.getFullPath());
 				IStatus status = new ResourceStatus(IStatus.ERROR, source.getFullPath(), message, e);
 				failed(status);
-				//refresh the project because it might have been partially moved
-				try {
-					source.refreshLocal(IResource.DEPTH_INFINITE, null);
-				} catch (CoreException e2) {
-					//ignore secondary failures
-				}
+				contentMoved = false;
 			}
 
 			// If we got this far the project content has been moved on disk (if necessary)
@@ -1133,8 +1129,17 @@ class ResourceTree implements IResourceTree {
 			movedProjectSubtree(source, description);
 			monitor.worked(Policy.totalWork * 1 / 8);
 
+			IProject destination = source.getWorkspace().getRoot().getProject(description.getName());
+			if (!contentMoved) {
+				// the content might have been partially moved, so align the tree with the destination
+				try {
+					destination.refreshLocal(IResource.DEPTH_INFINITE, null);
+				} catch (CoreException e) {
+					//ignore secondary failures
+				}
+			}
 			boolean isDeep = (flags & IResource.SHALLOW) == 0;
-			updateTimestamps(source.getWorkspace().getRoot().getProject(description.getName()), isDeep);
+			updateTimestamps(destination, isDeep);
 			monitor.worked(Policy.totalWork * 1 / 8);
 		} finally {
 			lock.release();

@@ -848,6 +848,12 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 				((Rules) workspace.getRuleFactory()).setRuleFactory((IProject) this, null);
 				// Make sure project deletion is remembered.
 				workspace.getSaveManager().requestSnapshot();
+			} else if (getType() == FILE && ((File) this).isProjectDescriptionFile()) {
+				// a project without description file is closed rather than recreating the file
+				Project project = (Project) getProject();
+				if (project.isOpen() && !getLocalManager().hasSavedDescription(project)) {
+					project.basicClose(progress.split(1));
+				}
 			}
 		} catch (OperationCanceledException e) {
 			workspace.getWorkManager().operationCanceled();

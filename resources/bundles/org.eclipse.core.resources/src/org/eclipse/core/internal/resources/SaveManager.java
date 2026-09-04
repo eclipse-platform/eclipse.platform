@@ -1311,8 +1311,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 							workspace.getFileSystemManager().getHistoryStore().clean(Policy.subMonitorFor(monitor, 1));
 							monitor.ignoreCancelState(keepConsistencyWhenCanceled);
 
-							// write out all metainfo (e.g., workspace/project descriptions)
-							saveMetaInfo(warnings, Policy.subMonitorFor(monitor, 1));
+							// write out the workspace metainfo (e.g., the workspace description)
+							saveMetaInfo();
+							monitor.worked(1);
 							break;
 						case ISaveContext.SNAPSHOT :
 							snapTree(workspace.getElementTree(), Policy.subMonitorFor(monitor, 1));
@@ -1327,8 +1328,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 							}
 							collapseTrees(contexts);
 							clearSavedDelta();
-							// write out all metainfo (e.g., workspace/project descriptions)
-							saveMetaInfo(warnings, Policy.subMonitorFor(monitor, 1));
+							// write out the workspace metainfo (e.g., the workspace description)
+							saveMetaInfo();
+							monitor.worked(1);
 							break;
 						case ISaveContext.PROJECT_SAVE :
 							writeTree(project, IResource.DEPTH_INFINITE);
@@ -1338,10 +1340,6 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 							monitor.worked(1);
 							// reset the snapshot file
 							resetSnapshots(project);
-							IStatus result = saveMetaInfo(project, null);
-							if (!result.isOK()) {
-								warnings.merge(result);
-							}
 							monitor.worked(1);
 							break;
 					}
@@ -1404,50 +1402,18 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 	}
 
 	/**
-	 * Writes the metainfo (e.g. descriptions) of the given workspace and
-	 * all projects to the local disk.
+	 * Writes the metainfo (e.g. description) of the workspace to the local disk.
 	 */
-	protected void saveMetaInfo(MultiStatus problems, IProgressMonitor monitor) throws CoreException {
+	protected void saveMetaInfo() {
 		if (Policy.DEBUG_SAVE_METAINFO) {
 			Policy.debug("Save workspace metainfo: starting..."); //$NON-NLS-1$
 		}
 		long start = System.currentTimeMillis();
 		// save preferences (workspace description, path variables, etc)
 		ResourcesPlugin.getPlugin().savePluginPreferences();
-		// save projects' meta info
-		IProject[] roots = workspace.getRoot().getProjects(IContainer.INCLUDE_HIDDEN);
-		for (IProject root : roots) {
-			if (root.isAccessible()) {
-				IStatus result = saveMetaInfo((Project) root, null);
-				if (!result.isOK()) {
-					problems.merge(result);
-				}
-			}
-		}
 		if (Policy.DEBUG_SAVE_METAINFO) {
 			Policy.debug("Save workspace metainfo: " + (System.currentTimeMillis() - start) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
-	}
-
-	/**
-	 * Ensures that the project meta-info is saved.  The project meta-info
-	 * is usually saved as soon as it changes, so this is just a sanity check
-	 * to make sure there is something on disk before we shutdown.
-	 *
-	 * @return Status object containing non-critical warnings, or an OK status.
-	 */
-	protected IStatus saveMetaInfo(Project project, IProgressMonitor monitor) throws CoreException {
-		long start = System.currentTimeMillis();
-		//if there is nothing on disk, write the description
-		if (!workspace.getFileSystemManager().hasSavedDescription(project)) {
-			workspace.getFileSystemManager().writeSilently(project);
-			String msg = NLS.bind(Messages.resources_missingProjectMetaRepaired, project.getName());
-			return new ResourceStatus(IResourceStatus.MISSING_DESCRIPTION_REPAIRED, project.getFullPath(), msg);
-		}
-		if (Policy.DEBUG_SAVE_METAINFO) {
-			Policy.debug("Save metainfo for " + project.getFullPath() + ": " + (System.currentTimeMillis() - start) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		}
-		return Status.OK_STATUS;
 	}
 
 	/**
