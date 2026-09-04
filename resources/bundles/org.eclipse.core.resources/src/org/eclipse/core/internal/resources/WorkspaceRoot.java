@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2015 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -34,8 +34,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Preferences;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.osgi.util.NLS;
+import org.osgi.service.prefs.BackingStoreException;
 
 public class WorkspaceRoot extends Container implements IWorkspaceRoot {
 	/**
@@ -123,8 +125,9 @@ public class WorkspaceRoot extends Container implements IWorkspaceRoot {
 		if (checkImplicit) {
 			return ResourcesPlugin.getEncoding();
 		}
-		String enc = ResourcesPlugin.getPlugin().getPluginPreferences().getString(ResourcesPlugin.PREF_ENCODING);
-		return enc == null || enc.length() == 0 ? null : enc;
+		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES);
+		String enc = prefs.get(ResourcesPlugin.PREF_ENCODING, ""); //$NON-NLS-1$
+		return enc.isEmpty() ? null : enc;
 	}
 
 	@Override
@@ -288,11 +291,18 @@ public class WorkspaceRoot extends Container implements IWorkspaceRoot {
 	@Override
 	public void setDefaultCharset(String charset) {
 		// directly change the Resource plugin's preference for encoding
-		Preferences resourcesPreferences = ResourcesPlugin.getPlugin().getPluginPreferences();
+		IEclipsePreferences resourcesPreferences = InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES);
 		if (charset != null) {
-			resourcesPreferences.setValue(ResourcesPlugin.PREF_ENCODING, charset);
+			resourcesPreferences.put(ResourcesPlugin.PREF_ENCODING, charset);
 		} else {
-			resourcesPreferences.setToDefault(ResourcesPlugin.PREF_ENCODING);
+			resourcesPreferences.remove(ResourcesPlugin.PREF_ENCODING);
+		}
+		// unlike the legacy Preferences API, IEclipsePreferences does not
+		// persist automatically - an explicit flush is required.
+		try {
+			resourcesPreferences.flush();
+		} catch (BackingStoreException e) {
+			Policy.log(IStatus.ERROR, "Failed to persist default charset preference", e); //$NON-NLS-1$
 		}
 	}
 
