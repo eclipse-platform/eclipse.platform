@@ -73,7 +73,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.PerformanceStats;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
@@ -1075,26 +1074,16 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 				if (!target.isAccessible()) {
 					return false;
 				}
-				boolean result;
-				if (ResourceStats.TRACE_REFRESH) {
-					ResourceStats.startRefresh(target);
-				}
+				ResourceStats.Run run = ResourceStats.isTracingRefresh() ? ResourceStats.startRefresh(target) : null;
 				try {
-					result = refreshResource(target, depth, updateAliases, monitor);
+					return refreshResource(target, depth, updateAliases, monitor);
 				} finally {
-					if (ResourceStats.TRACE_REFRESH) {
-						PerformanceStats stats = ResourceStats.endRefresh();
-						if (stats != null) {
-							long runningTime = stats.getRunningTime();
-							if (runningTime > ResourceStats.TRACE_REFRESH_THRESHOLD) {
-								String message = "Refresh on " + target.getFullPath() + " took " + runningTime + " ms"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-								Policy.log(IStatus.INFO, message, null);
-							}
-							stats.reset();
-						}
+					long duration = ResourceStats.end(run);
+					if (duration > ResourceStats.TRACE_REFRESH_THRESHOLD) {
+						String message = "Refresh on " + target.getFullPath() + " took " + duration + " ms"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+						Policy.log(IStatus.INFO, message, null);
 					}
 				}
-				return result;
 			case IResource.FOLDER :
 			case IResource.FILE :
 				return refreshResource(target, depth, updateAliases, monitor);

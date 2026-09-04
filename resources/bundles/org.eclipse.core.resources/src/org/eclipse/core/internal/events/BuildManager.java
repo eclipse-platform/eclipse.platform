@@ -210,7 +210,6 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 	private final Object builderInitializationLock = new Object();
 
 	//used for debug/trace timing
-	private long timeStamp = -1;
 	private long overallTimeStamp = -1;
 	private final Workspace workspace;
 
@@ -262,6 +261,7 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 			currentTree = ((trigger == IncrementalProjectBuilder.FULL_BUILD) || clean) ? null : workspace.getElementTree();
 			int depth = -1;
 			ISchedulingRule rule = null;
+			ResourceStats.Run run = null;
 			try {
 				//short-circuit if none of the projects this builder cares about have changed.
 				if (!needsBuild(currentBuilder, trigger)) {
@@ -279,7 +279,7 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 					message = NLS.bind(Messages.events_invoking_1, builder.getProject().getFullPath());
 				}
 				monitor.subTask(message);
-				hookStartBuild(builder, trigger);
+				run = hookStartBuild(builder, trigger);
 				// Make the current tree immutable before releasing the WS lock
 				if (rule != null && currentTree != null) {
 					workspace.newWorkingTree();
@@ -329,7 +329,7 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 					lastTree.immutable();
 					currentBuilder.setLastBuiltTree(lastTree);
 				}
-				hookEndBuild(builder);
+				hookEndBuild(builder, trigger, run);
 			}
 		} finally {
 			currentBuilders.remove(currentBuilder);
@@ -1199,15 +1199,20 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 	 * Hook for adding trace options and debug information at the end of a build.
 	 * This hook is called after each builder instance is called.
 	 */
-	private void hookEndBuild(IncrementalProjectBuilder builder) {
-		if (ResourceStats.TRACE_BUILDERS) {
-			ResourceStats.endBuild();
+	private void hookEndBuild(IncrementalProjectBuilder builder, int trigger, ResourceStats.Run run) {
+		if (run == null) {
+			return; //builder wasn't called, or we are neither tracing nor debugging
 		}
-		if (!Policy.DEBUG_BUILD_INVOKING || timeStamp == -1) {
-			return; //builder wasn't called or we are not debugging
+		long duration = ResourceStats.end(run);
+		// a threshold of 0 collects statistics for every run without logging any of them
+		if (run.stats() != null && ResourceStats.TRACE_BUILDERS_THRESHOLD > 0
+				&& duration >= ResourceStats.TRACE_BUILDERS_THRESHOLD) {
+			String message = "Builder " + toString(builder) + " took " + duration + " ms for " + debugTrigger(trigger); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			Policy.log(IStatus.INFO, message, null);
 		}
-		Policy.debug("Builder finished: " + toString(builder) + " time: " + (System.currentTimeMillis() - timeStamp) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		timeStamp = -1;
+		if (Policy.DEBUG_BUILD_INVOKING) {
+			Policy.debug("Builder finished: " + toString(builder) + " time: " + duration + "ms"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		}
 	}
 
 	/**
@@ -1232,14 +1237,14 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 	 * Hook for adding trace options and debug information at the start of a build.
 	 * This hook is called before each builder instance is called.
 	 */
-	private void hookStartBuild(IncrementalProjectBuilder builder, int trigger) {
-		if (ResourceStats.TRACE_BUILDERS) {
-			ResourceStats.startBuild(builder);
+	private ResourceStats.Run hookStartBuild(IncrementalProjectBuilder builder, int trigger) {
+		if (!ResourceStats.isTracingBuilders() && !Policy.DEBUG_BUILD_INVOKING) {
+			return null;
 		}
 		if (Policy.DEBUG_BUILD_INVOKING) {
-			timeStamp = System.currentTimeMillis();
 			Policy.debug("Invoking (" + debugTrigger(trigger) + ") on builder: " + toString(builder)); //$NON-NLS-1$ //$NON-NLS-2$
 		}
+		return ResourceStats.isTracingBuilders() ? ResourceStats.startBuild(builder) : ResourceStats.startTiming();
 	}
 
 	/**
