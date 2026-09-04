@@ -1316,6 +1316,10 @@ public class UnifiedDiffManager {
 		@Override
 		public void paintControl(PaintEvent e) {
 			Rectangle bounds = this.w.getBounds();
+			// Only the damaged lines: getTextBounds lays out every line it is asked for,
+			// so touching every hunk would make each repaint O(document).
+			int firstDamagedLine = this.w.getLineIndex(e.y);
+			int lastDamagedLine = this.w.getLineIndex(e.y + e.height);
 			Iterator<Annotation> it = this.model.getAnnotationIterator();
 			while (it.hasNext()) {
 				Annotation anno = it.next();
@@ -1338,8 +1342,11 @@ public class UnifiedDiffManager {
 					}
 					posLength = pos.length;
 				}
-				int fromLine = this.w.getLineAtOffset(posOffset);
-				int toLine = this.w.getLineAtOffset(posOffset + posLength);
+				int fromLine = Math.max(this.w.getLineAtOffset(posOffset), firstDamagedLine);
+				int toLine = Math.min(this.w.getLineAtOffset(posOffset + posLength), lastDamagedLine + 1);
+				if (fromLine >= toLine) {
+					continue;
+				}
 				e.gc.setBackground(this.additionBackgroundColor);
 				for (int lineNr = fromLine; lineNr < toLine; lineNr++) {
 					String line = this.w.getLine(lineNr);

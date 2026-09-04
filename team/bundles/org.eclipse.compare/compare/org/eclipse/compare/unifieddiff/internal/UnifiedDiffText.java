@@ -36,8 +36,16 @@ public final class UnifiedDiffText {
 		if (str == null) {
 			return 0;
 		}
+		return countLines(str, str.length());
+	}
+
+	/**
+	 * Returns the number of lines of the first {@code end} characters of the
+	 * given string, like {@link #countLines(String)} on that prefix.
+	 */
+	public static int countLines(String str, int end) {
 		int result = 1;
-		for (int i = 0; i < str.length(); i++) {
+		for (int i = 0; i < end; i++) {
 			if (str.charAt(i) == '\n') {
 				result++;
 			}
