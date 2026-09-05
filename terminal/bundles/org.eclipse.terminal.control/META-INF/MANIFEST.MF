@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.terminal.control; singleton:=true
-Bundle-Version: 1.1.200.qualifier
+Bundle-Version: 1.2.0.qualifier
 Bundle-Activator: org.eclipse.terminal.internal.control.impl.TerminalPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
@@ -30,5 +30,5 @@ Export-Package: org.eclipse.terminal.connector;version="1.0.100";
  org.eclipse.terminal.internal.model;x-internal:=true,
  org.eclipse.terminal.internal.preferences;x-internal:=true;x-friends:="org.eclipse.terminal.view.ui",
  org.eclipse.terminal.internal.textcanvas;x-internal:=true,
- org.eclipse.terminal.model;version="1.0.100";uses:="org.eclipse.swt.graphics"
+ org.eclipse.terminal.model;version="1.1.0";uses:="org.eclipse.swt.graphics"
 Automatic-Module-Name: org.eclipse.terminal.control

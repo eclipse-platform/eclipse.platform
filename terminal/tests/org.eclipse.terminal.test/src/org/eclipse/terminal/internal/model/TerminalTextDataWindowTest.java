@@ -441,5 +441,9 @@ public class TerminalTextDataWindowTest extends AbstractITerminalTextDataTest {
 		assertTrue(term.isWrappedLine(3));
 		term.cleanLine(3);
 		assertFalse(term.isWrappedLine(3));
+		term.setWrappedLine(3);
+		term.clearWrappedLine(3);
+		assertFalse(term.isWrappedLine(3));
+		term.clearWrappedLine(0); // outside window, harmless
 	}
 }
