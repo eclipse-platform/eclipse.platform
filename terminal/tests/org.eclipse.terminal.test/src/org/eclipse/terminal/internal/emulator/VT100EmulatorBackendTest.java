@@ -1086,4 +1086,44 @@ public class VT100EmulatorBackendTest {
 		assertNull(term.getChars(3));
 		assertEquals("4444", new String(term.getChars(4))); // footer below the region is untouched
 	}
+
+	@Test
+	public void testAlternateScreenBuffer() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(100);
+		vt100.setDimensions(3, 10);
+		vt100.setCursor(0, 0);
+		vt100.appendString("one\r\n");
+		for (int i = 0; i < 5; i++) {
+			vt100.appendString("more");
+			vt100.processNewline();
+			vt100.setCursorColumn(0);
+		}
+		vt100.appendString("last");
+		int historyHeight = term.getHeight();
+		assertTrue(historyHeight > 3);
+
+		vt100.enableAlternateScreen(true);
+		// no history to scroll back through, and none accumulates: scrolling drops the top line
+		assertEquals(3, term.getHeight());
+		assertEquals(3, term.getMaxHeight());
+		vt100.appendString("alt");
+		vt100.setCursor(2, 0);
+		vt100.processNewline();
+		vt100.processNewline();
+		assertEquals(3, term.getHeight());
+		assertNull(term.getChars(0));
+
+		// resized while the program had the screen
+		vt100.setDimensions(5, 7);
+		vt100.enableAlternateScreen(false);
+		// the buffer put back is as wide as the screen is now and at least as tall
+		assertEquals(7, term.getWidth());
+		assertTrue(term.getHeight() >= 5);
+		assertEquals(100, term.getMaxHeight());
+		assertEquals("last", new String(term.getChars(term.getHeight() - 1), 0, 4));
+		vt100.appendString("x"); // a write past the old margin used to throw
+		assertEquals(5, vt100.getCursorColumn());
+	}
 }
