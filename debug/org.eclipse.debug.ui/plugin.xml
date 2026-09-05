@@ -329,7 +329,6 @@
                menubarPath="org.eclipse.ui.run/emptyStepGroup"
                toolbarPath="org.eclipse.debug.ui.main.toolbar/renderGroup"
                style="toggle"
-               state="false"
                initialEnabled="true">
          </action>
          <action
