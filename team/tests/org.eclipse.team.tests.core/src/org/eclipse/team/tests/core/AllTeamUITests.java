@@ -15,7 +15,10 @@ package org.eclipse.team.tests.core;
 
 import org.eclipse.team.tests.core.mapping.AllTeamMappingTests;
 import org.eclipse.team.tests.ui.SaveableCompareEditorInputTest;
+import org.eclipse.team.tests.ui.UnifiedDiffCodeMiningProviderTest;
+import org.eclipse.team.tests.ui.UnifiedDiffFoldRegionsTest;
 import org.eclipse.team.tests.ui.UnifiedDiffManagerTest;
+import org.eclipse.team.tests.ui.UnifiedDiffShadowedFoldsTest;
 import org.eclipse.team.tests.ui.UnifiedDiffTextTest;
 import org.eclipse.team.tests.ui.synchronize.AllTeamSynchronizeTests;
 import org.junit.platform.suite.api.SelectClasses;
@@ -26,7 +29,10 @@ import org.junit.platform.suite.api.Suite;
 		AllTeamMappingTests.class, //
 		AllTeamSynchronizeTests.class, //
 		SaveableCompareEditorInputTest.class, //
+		UnifiedDiffCodeMiningProviderTest.class, //
+		UnifiedDiffFoldRegionsTest.class, //
 		UnifiedDiffManagerTest.class, //
+		UnifiedDiffShadowedFoldsTest.class, //
 		UnifiedDiffTextTest.class, //
 })
 public class AllTeamUITests {

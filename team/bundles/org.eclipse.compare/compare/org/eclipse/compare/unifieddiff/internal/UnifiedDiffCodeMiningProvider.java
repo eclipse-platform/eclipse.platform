@@ -25,12 +25,14 @@ import static org.eclipse.compare.unifieddiff.internal.UnifiedDiffText.replaceTa
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
+import org.eclipse.compare.internal.CompareMessages;
 import org.eclipse.compare.unifieddiff.UnifiedDiffMode;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager.UnifiedDiff;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -55,6 +57,7 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.source.inlined.LineFooterAnnotation;
 import org.eclipse.jface.text.source.inlined.LineHeaderAnnotation;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
@@ -82,6 +85,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 
 	private Color deletionBackgroundColor;
 	private Color detailedDiffColor;
+	private Color foldSeparatorColor;
 	private boolean lastIsOverlay;
 
 	@Override
@@ -95,6 +99,10 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 				detailedDiffColor.dispose();
 			}
 			detailedDiffColor = null;
+			if (foldSeparatorColor != null && !foldSeparatorColor.isDisposed()) {
+				foldSeparatorColor.dispose();
+			}
+			foldSeparatorColor = null;
 		} finally {
 			super.dispose();
 		}
@@ -126,43 +134,21 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			if (this.deletionBackgroundColor != null && !this.deletionBackgroundColor.isDisposed()) {
 				this.deletionBackgroundColor.dispose();
 			}
+			if (this.foldSeparatorColor != null && !this.foldSeparatorColor.isDisposed()) {
+				this.foldSeparatorColor.dispose();
+			}
 			this.detailedDiffColor = new Color(interpolate(deletionColor, background, 0.9));
 			this.deletionBackgroundColor = new Color(interpolate(deletionColor, background, 0.8));
+			this.foldSeparatorColor = new Color(separatorBackground(background));
 			lastIsOverlay = isOverlay;
 		}
-		if (viewer instanceof ISourceViewer sv && UnifiedDiffManager.get(viewer) != null) {
-			List<ICodeMining> existingMinings = new ArrayList<>();
-			IAnnotationModel model = sv.getAnnotationModel();
-			Iterator<Annotation> it = model.getAnnotationIterator();
-			while (it.hasNext()) {
-				Annotation next = it.next();
-				if (next instanceof LineHeaderAnnotation n) {
-					try {
-						List<ICodeMining> m = n.getMinings();
-						if (m != null && m.size() == 1 && m.get(0) instanceof UnifiedDiffLineHeaderCodeMining idlhcm) {
-							Position p = n.getPosition();
-							IDocument doc = sv.getDocument();
-							int line = doc.getLineOfOffset(p.offset);
-							idlhcm.getPosition().offset = doc.getLineOffset(line); // we need to recalculate the line
-																					// offset for the scenario where
-																					// source is modified at the
-																					// beginning of the line
-							existingMinings.add(idlhcm);
-						}
-					} catch (BadLocationException e) {
-						error(e);
-					}
-				} else if (next instanceof LineFooterAnnotation footer) {
-					List<ICodeMining> m = footer.getMinings();
-					if (m != null && m.size() == 1 && m.get(0) instanceof UnifiedDiffFooterCodeMining idlhcm) {
-						IDocument doc = sv.getDocument();
-						idlhcm.getPosition().offset = doc.getLength();
-						existingMinings.add(idlhcm);
-					}
-				}
-			}
-			if (existingMinings.size() > 0) {
-				return CompletableFuture.completedFuture(existingMinings);
+		if (viewer instanceof ISourceViewer sv) {
+			List<ICodeMining> attached = attachedMiningsOf(sv, diffs);
+			if (attached != null) {
+				// the expander minings are recreated instead of reused so that they
+				// reflect the current expansion state of the folds
+				createFoldRegionCodeMinings(viewer, attached);
+				return CompletableFuture.completedFuture(attached);
 			}
 		}
 
@@ -170,9 +156,13 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		// take an immutable snapshot so the async iteration cannot observe
 		// concurrent modifications when accept/hide actions mutate the live list
 		List<UnifiedDiff> diffsSnapshot = List.copyOf(diffs);
+		// created on the calling thread because it reads the projection annotation model
+		List<ICodeMining> foldMinings = new ArrayList<>();
+		createFoldRegionCodeMinings(viewer, foldMinings);
 		return CompletableFuture.supplyAsync(() -> {
 			List<ICodeMining> minings = new ArrayList<>();
 			createLineHeaderCodeMinings(diffsSnapshot, minings, viewer, tabWidth);
+			minings.addAll(foldMinings);
 			return minings;
 		});
 	}
@@ -217,6 +207,73 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		return tabWidth;
 	}
 
+	/** Whether the diff shows content of the other side, which takes a mining. */
+	public static boolean needsCodeMining(UnifiedDiff diff) {
+		return diff.mode.equals(UnifiedDiffMode.REPLACE_MODE) ? !diff.leftStr.isEmpty() : !diff.rightStr.isEmpty();
+	}
+
+	/**
+	 * Returns the attached minings of the diffs, one per diff that takes one, or
+	 * {@code null} when a diff has none and they have to be rebuilt. Minings of
+	 * diffs that are no longer shown are left out, so what an earlier request
+	 * attached never decides what is shown.
+	 */
+	private static List<ICodeMining> attachedMiningsOf(ISourceViewer sv, List<UnifiedDiff> diffs) {
+		IAnnotationModel model = sv.getAnnotationModel();
+		IDocument doc = sv.getDocument();
+		if (model == null || doc == null) {
+			return null;
+		}
+		Map<UnifiedDiff, ICodeMining> attached = new IdentityHashMap<>();
+		Iterator<Annotation> it = model.getAnnotationIterator();
+		while (it.hasNext()) {
+			Annotation next = it.next();
+			UnifiedDiff diff;
+			ICodeMining mining;
+			if (next instanceof LineHeaderAnnotation header) {
+				List<ICodeMining> m = header.getMinings();
+				if (m.size() != 1 || !(m.get(0) instanceof UnifiedDiffLineHeaderCodeMining lineHeaderMining)) {
+					continue;
+				}
+				try {
+					// the annotation followed the edits of the document, the mining has not
+					int line = doc.getLineOfOffset(header.getPosition().offset);
+					lineHeaderMining.getPosition().offset = doc.getLineOffset(line);
+				} catch (BadLocationException e) {
+					error(e);
+					continue;
+				}
+				diff = lineHeaderMining.getUnifiedDiff();
+				mining = lineHeaderMining;
+			} else if (next instanceof LineFooterAnnotation footer) {
+				List<ICodeMining> m = footer.getMinings();
+				if (m.size() != 1 || !(m.get(0) instanceof UnifiedDiffFooterCodeMining footerMining)) {
+					continue;
+				}
+				footerMining.getPosition().offset = doc.getLength();
+				diff = footerMining.getUnifiedDiff();
+				mining = footerMining;
+			} else {
+				continue;
+			}
+			if (attached.put(diff, mining) != null) {
+				return null;
+			}
+		}
+		List<ICodeMining> minings = new ArrayList<>();
+		for (UnifiedDiff diff : diffs) {
+			if (!needsCodeMining(diff)) {
+				continue;
+			}
+			ICodeMining mining = attached.get(diff);
+			if (mining == null) {
+				return null;
+			}
+			minings.add(mining);
+		}
+		return minings;
+	}
+
 	private void createLineHeaderCodeMinings(List<UnifiedDiff> diffs, List<ICodeMining> minings, ITextViewer tv,
 			int tabWidth) {
 		if (diffs == null) {
@@ -224,34 +281,17 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		}
 		IDocument doc = tv.getDocument();
 		for (UnifiedDiff diff : diffs) {
-			if (diff.mode.equals(UnifiedDiffMode.REPLACE_MODE)) {
-				if (diff.leftStr.isEmpty()) {
-					continue;
-				}
-				try {
-					minings.add(createMining(doc, diff, diff.leftStart, tabWidth, tv));
-				} catch (BadLocationException e) {
-					error(e);
-				}
-			} else if (diff.mode.equals(UnifiedDiffMode.OVERLAY_MODE)
-					|| diff.mode.equals(UnifiedDiffMode.OVERLAY_READ_ONLY_MODE)) {
-				if (diff.rightStr.isEmpty()) {
-					continue;
-				}
-				try {
-					minings.add(createMining(doc, diff, diff.leftStart + diff.leftLength, tabWidth, tv));
-				} catch (BadLocationException e) {
-					error(e);
-				}
-			} else if (diff.mode.equals(UnifiedDiffMode.REVERT_MODE)) {
-				if (diff.rightStr.isEmpty()) {
-					continue;
-				}
-				try {
-					minings.add(createMining(doc, diff, diff.leftStart, tabWidth, tv));
-				} catch (BadLocationException e) {
-					error(e);
-				}
+			if (!needsCodeMining(diff)) {
+				continue;
+			}
+			// an overlay sits on the line after the range it stands for
+			boolean overlay = diff.mode.equals(UnifiedDiffMode.OVERLAY_MODE)
+					|| diff.mode.equals(UnifiedDiffMode.OVERLAY_READ_ONLY_MODE);
+			int offset = overlay ? diff.leftStart + diff.leftLength : diff.leftStart;
+			try {
+				minings.add(createMining(doc, diff, offset, tabWidth, tv));
+			} catch (BadLocationException e) {
+				error(e);
 			}
 		}
 	}
@@ -277,6 +317,78 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 
 	private static boolean startsLine(IDocument doc, int offset) throws BadLocationException {
 		return doc.getLineOffset(doc.getLineOfOffset(offset)) == offset;
+	}
+
+	/**
+	 * Creates one clickable expander mining per collapsed unchanged-region fold,
+	 * shown as e.g. "Expand 42 unchanged lines" above the fold's caption line.
+	 */
+	private void createFoldRegionCodeMinings(ITextViewer viewer, List<ICodeMining> minings) {
+		IDocument doc = viewer.getDocument();
+		if (doc == null) {
+			return;
+		}
+		Map<Annotation, Position> folds = UnifiedDiffManager.getCollapsedFoldRegions(viewer);
+		for (Map.Entry<Annotation, Position> fold : folds.entrySet()) {
+			Position position = fold.getValue();
+			try {
+				int firstLine = doc.getLineOfOffset(position.getOffset());
+				int lastLine = position.getLength() > 0
+						? doc.getLineOfOffset(position.getOffset() + position.getLength() - 1)
+						: firstLine;
+				// the first line of the region stays visible as the fold's caption
+				int hiddenLines = lastLine - firstLine;
+				if (hiddenLines <= 0) {
+					continue;
+				}
+				minings.add(new FoldedRegionCodeMining(new Position(position.getOffset(), 1), this, viewer,
+						fold.getKey(), hiddenLines, this.foldSeparatorColor));
+			} catch (BadLocationException e) {
+				error(e);
+			}
+		}
+	}
+
+	/**
+	 * A band that stands out from the surrounding text, so the collapsed region
+	 * reads as a break between two hunks rather than as another line of the file.
+	 */
+	private static RGB separatorBackground(RGB background) {
+		boolean dark = background != null && (background.red + background.green + background.blue) / 3 < 128;
+		return interpolate(dark ? new RGB(255, 255, 255) : new RGB(0, 0, 0), background, 0.92);
+	}
+
+	public static class FoldedRegionCodeMining extends LineHeaderCodeMining {
+
+		private final String expandLabel;
+		private final Color separatorColor;
+
+		public FoldedRegionCodeMining(Position position, ICodeMiningProvider provider, ITextViewer viewer,
+				Annotation foldAnnotation, int hiddenLines, Color separatorColor) throws BadLocationException {
+			super(position, provider, e -> UnifiedDiffManager.expandFoldRegion(viewer, foldAnnotation));
+			this.expandLabel = hiddenLines == 1 ? CompareMessages.UnifiedDiff_expandUnchangedLine
+					: NLS.bind(CompareMessages.UnifiedDiff_expandUnchangedLines, Integer.valueOf(hiddenLines));
+			this.separatorColor = separatorColor;
+		}
+
+		@Override
+		public String getLabel() {
+			return this.expandLabel;
+		}
+
+		@Override
+		public Point draw(GC gc, StyledText textWidget, Color color, int x, int y) {
+			if (this.separatorColor == null || this.separatorColor.isDisposed()) {
+				return super.draw(gc, textWidget, color, x, y);
+			}
+			gc.setBackground(this.separatorColor);
+			gc.setForeground(textWidget.getForeground());
+			gc.setFont(textWidget.getFont());
+			// a first run only to learn how tall the band has to be
+			Point size = super.draw(gc, textWidget, color, x, y);
+			gc.fillRectangle(0, y, textWidget.getBounds().width, size.y);
+			return super.draw(gc, textWidget, color, x, y);
+		}
 	}
 
 	static class UnifiedDiffFooterCodeMining extends DocumentFooterCodeMining {
