@@ -17,10 +17,8 @@ import static java.util.Comparator.reverseOrder;
 import static org.eclipse.core.tests.harness.TestHarnessPlugin.PI_HARNESS;
 import static org.eclipse.core.tests.harness.TestHarnessPlugin.log;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.Callable;
@@ -121,48 +119,7 @@ public class FileSystemHelper {
 	 */
 	public static void createSymLink(File basedir, String linkName, String linkTarget, boolean isDir)
 			throws IOException {
-		// The following code creates even a link if
-		// Files.createSymbolicLink(new File(basedir, linkName).toPath(), new
-		// File(basedir, linkTarget).toPath());
-		// would throw java.nio.file.FileSystemException "missing rights"
-		//
-		Process process = startSymlinkCreation(basedir, linkName, linkTarget, isDir);
-		try {
-			int exitcode = process.waitFor();
-			if (exitcode != 0) {
-				// xxx wrong charset. from jdk17+ we could use Console.charset()
-				try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
-					String result = reader.readLine();
-					throw new IllegalStateException("Creating symlink is unsupported: " + result);
-				}
-			}
-		} catch (InterruptedException e) {
-			throw new IOException("Creating symlink failed due to interrupted exception", e);
-		}
-	}
-
-	private static Process startSymlinkCreation(File basedir, String linkName, String linkTarget, boolean isDir)
-			throws IOException {
-		// Deliberately use an empty environment to make the test reproducible.
-		String[] environmentParameters = {};
-		if (Platform.getOS().equals(Platform.OS_WIN32)) {
-			return startSymlinkCreationOnWindows(basedir, linkName, linkTarget, isDir, environmentParameters);
-		}
-		String[] cmd = { "ln", "-s", linkTarget, linkName };
-		return Runtime.getRuntime().exec(cmd, environmentParameters, basedir);
-	}
-
-	private static Process startSymlinkCreationOnWindows(File basedir, String linkName, String linkTarget,
-			boolean isDir, String[] environmentParameters) throws IOException {
-		// use File.getPath to avoid 'Illegal argument - ".."' for using "../"
-		// instead of "..\"
-		if (isDir) {
-			String[] cmd = { "cmd", "/c", "mklink", "/d", new File(linkName).getPath(),
-					new File(linkTarget).getPath() };
-			return Runtime.getRuntime().exec(cmd, environmentParameters, basedir);
-		}
-		String[] cmd = { "cmd", "/c", "mklink", new File(linkName).getPath(), new File(linkTarget).getPath() };
-		return Runtime.getRuntime().exec(cmd, environmentParameters, basedir);
+		Files.createSymbolicLink(basedir.toPath().resolve(linkName), basedir.toPath().resolve(linkTarget));
 	}
 
 	/**
