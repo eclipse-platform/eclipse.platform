@@ -20,7 +20,26 @@ import org.eclipse.terminal.model.ITerminalTextDataSnapshot;
  */
 public class PollingTextCanvasModel extends AbstractTextCanvasModel {
 	private static final int DEFAULT_POLL_INTERVAL = 50;
+	/**
+	 * How long a program is given to finish a screen it said it was drawing. A
+	 * program that says so and then stops must not leave the view frozen.
+	 */
+	private static final int REDRAW_GRACE = 200;
 	int fPollInterval = -1;
+	private volatile long fRedrawingUntil;
+
+	/**
+	 * A program that draws a screen in pieces can say where a screen begins and
+	 * ends, and while it is between the two the view leaves it alone rather than
+	 * catching it half drawn.
+	 */
+	public void setSynchronizedOutput(boolean redrawing) {
+		fRedrawingUntil = redrawing ? System.currentTimeMillis() + REDRAW_GRACE : 0;
+	}
+
+	private boolean mayLook() {
+		return fRedrawingUntil == 0 || System.currentTimeMillis() > fRedrawingUntil;
+	}
 
 	/**
 	 *
@@ -45,7 +64,9 @@ public class PollingTextCanvasModel extends AbstractTextCanvasModel {
 			Display.getDefault().timerExec(fPollInterval, new Runnable() {
 				@Override
 				public void run() {
-					update();
+					if (mayLook()) {
+						update();
+					}
 					Display.getDefault().timerExec(fPollInterval, this);
 				}
 			});
