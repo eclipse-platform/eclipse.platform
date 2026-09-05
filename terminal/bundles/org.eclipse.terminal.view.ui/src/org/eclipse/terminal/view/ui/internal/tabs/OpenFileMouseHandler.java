@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 Fabrizio Iannetti.
+ * Copyright (c) 2026 Fabrizio Iannetti.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -16,8 +16,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
@@ -36,6 +34,8 @@ import org.eclipse.terminal.connector.Logger;
 import org.eclipse.terminal.control.ITerminalMouseListener;
 import org.eclipse.terminal.control.ITerminalViewControl;
 import org.eclipse.terminal.model.ITerminalTextDataReadOnly;
+import org.eclipse.terminal.view.core.internal.FileReference;
+import org.eclipse.terminal.view.core.internal.FileReferenceParser;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -52,6 +52,7 @@ import org.osgi.framework.Bundle;
 /**
  * @noreference This class is not intended to be referenced by clients.
  */
+@SuppressWarnings("restriction")
 public class OpenFileMouseHandler implements ITerminalMouseListener {
 	private static final boolean DEBUG_HOVER = Platform.getDebugBoolean(Logger.TRACE_DEBUG_LOG_HOVER);
 	private static final List<String> NEEDED_BUNDLES = //
@@ -61,7 +62,6 @@ public class OpenFileMouseHandler implements ITerminalMouseListener {
 					"org.eclipse.text"); //$NON-NLS-1$
 
 	private final ITerminalViewControl terminal;
-	private final Pattern regex = Pattern.compile("(\\d*)(:(\\d*))?.*"); //$NON-NLS-1$
 	private final IWorkbenchPartSite site;
 
 	/**
@@ -88,7 +88,6 @@ public class OpenFileMouseHandler implements ITerminalMouseListener {
 		}
 	}
 
-	@SuppressWarnings("restriction")
 	@Override
 	public void mouseUp(ITerminalTextDataReadOnly terminalText, int line, int column, int button, int stateMask) {
 		if ((stateMask & SWT.MODIFIER_MASK) != SWT.MOD1) {
@@ -96,7 +95,6 @@ public class OpenFileMouseHandler implements ITerminalMouseListener {
 			return;
 		}
 		String textToOpen = terminal.getHoverSelection();
-		String lineAndCol = null;
 		if (textToOpen.length() > 0) {
 			try {
 				// if the selection looks like a web URL, open using the browser
@@ -118,18 +116,10 @@ public class OpenFileMouseHandler implements ITerminalMouseListener {
 				if (textToOpen.startsWith("file://")) { //$NON-NLS-1$
 					textToOpen = textToOpen.substring(7);
 				}
-				// remove optional position info name:[row[:col]]
-				{
-					int startOfRowCol = textToOpen.indexOf(':');
-					if (startOfRowCol == 1 && textToOpen.length() > 2) {
-						// assume this is the device separator on Windows
-						startOfRowCol = textToOpen.indexOf(':', startOfRowCol + 1);
-					}
-					if (startOfRowCol >= 0) {
-						lineAndCol = textToOpen.substring(startOfRowCol + 1);
-						textToOpen = textToOpen.substring(0, startOfRowCol);
-					}
-				}
+				// Parse file reference to extract path and optional line:column
+				FileReference fileRef = FileReferenceParser.parse(textToOpen);
+				textToOpen = fileRef.path();
+
 				Optional<String> fullPath = Optional.empty();
 				if (!textToOpen.startsWith("/")) { //$NON-NLS-1$
 					// relative path: try to append to the working directory
@@ -146,7 +136,7 @@ public class OpenFileMouseHandler implements ITerminalMouseListener {
 					IEditorPart editor = IDE.openEditor(
 							PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage(), fileForLocation,
 							true);
-					goToLine(lineAndCol, editor);
+					goToLine(fileRef, editor);
 					return;
 				}
 				// try an external file, if it exists
@@ -155,7 +145,7 @@ public class OpenFileMouseHandler implements ITerminalMouseListener {
 					try {
 						IEditorPart editor = IDE.openEditor(site.getPage(), file.toURI(),
 								IDE.getEditorDescriptor(file.getName(), true, true).getId(), true);
-						goToLine(lineAndCol, editor);
+						goToLine(fileRef, editor);
 						return;
 					} catch (Exception e) {
 						// continue
@@ -190,7 +180,7 @@ public class OpenFileMouseHandler implements ITerminalMouseListener {
 					try {
 						for (IFile iFile : files) {
 							IEditorPart editor = IDE.openEditor(page, iFile, true);
-							goToLine(lineAndCol, editor);
+							goToLine(fileRef, editor);
 						}
 					} catch (final PartInitException e) {
 						throw new ExecutionException("error opening file in editor", e); //$NON-NLS-1$
@@ -211,64 +201,44 @@ public class OpenFileMouseHandler implements ITerminalMouseListener {
 		return available;
 	}
 
-	private void goToLine(String lineAndCol, IEditorPart editor) {
+	private void goToLine(FileReference fileRef, IEditorPart editor) {
+		if (!fileRef.hasLine()) {
+			return;
+		}
 		ITextEditor textEditor = Adapters.adapt(editor, ITextEditor.class);
 		if (textEditor != null) {
-			Optional<Integer> optionalOffset = getRegionFromLineAndCol(textEditor, lineAndCol);
+			Optional<Integer> optionalOffset = getOffsetFromFileRef(textEditor, fileRef);
 			optionalOffset.ifPresent(offset -> textEditor.selectAndReveal(offset, 0));
 		}
 	}
 
-	/**
-	 * Returns the line information for the given line in the given editor
-	 */
-	private Optional<Integer> getRegionFromLineAndCol(ITextEditor editor, String lineAndCol) {
-		if (lineAndCol == null) {
-			return Optional.empty();
-		}
-		Matcher matcher = regex.matcher(lineAndCol);
-		if (!matcher.matches()) {
-			return Optional.empty();
-		}
-		String lineStr = matcher.group(1);
-		String colStr = matcher.group(3);
-		int line;
-		int col = 0;
-		try {
-			line = Integer.parseInt(lineStr);
-		} catch (NumberFormatException e1) {
-			return Optional.empty();
-		}
-		try {
-			col = Integer.parseInt(colStr);
-		} catch (NumberFormatException e1) {
-			// if we can't get a column, go to the line alone
-		}
+	private static Optional<Integer> getOffsetFromFileRef(ITextEditor editor, FileReference fileRef) {
+		int line = fileRef.line();
 		IDocumentProvider provider = editor.getDocumentProvider();
 		IEditorInput input = editor.getEditorInput();
 		try {
 			provider.connect(input);
 		} catch (CoreException e) {
-			return null;
+			return Optional.empty();
 		}
 		try {
 			IDocument document = provider.getDocument(input);
-			if (document != null && line > 0) {
-				// document's lines are 0-offset
-				line = line - 1;
-				int lineOffset = document.getLineOffset(line);
-				if (col > 0) {
-					int lineLength = document.getLineLength(line);
-					if (col < lineLength) {
-						lineOffset += col;
-					}
-				}
-				return Optional.of(lineOffset);
+			if (document == null) {
+				return Optional.empty();
 			}
+			// document lines are 0-based, input lines are 1-based
+			int zeroBasedLine = line - 1;
+			int lineOffset = document.getLineOffset(zeroBasedLine);
+			if (fileRef.hasColumn()) {
+				int lineLength = document.getLineLength(zeroBasedLine);
+				int col = Math.min(fileRef.column() - 1, lineLength);
+				lineOffset += col;
+			}
+			return Optional.of(lineOffset);
 		} catch (BadLocationException e) {
+			return Optional.empty();
 		} finally {
 			provider.disconnect(input);
 		}
-		return Optional.empty();
 	}
 }

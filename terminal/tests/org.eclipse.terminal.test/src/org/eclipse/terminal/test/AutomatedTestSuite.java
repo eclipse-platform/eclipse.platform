@@ -26,6 +26,8 @@ import org.junit.platform.suite.api.Suite;
 		org.eclipse.terminal.internal.connector.TerminalConnectorTest.class, //
 		org.eclipse.terminal.internal.connector.TerminalToRemoteInjectionOutputStreamTest.class, //
 		org.eclipse.terminal.view.ui.tests.TerminalsViewReorderTest.class, //
+		org.eclipse.terminal.view.core.tests.FileReferenceTest.class, //
+		org.eclipse.terminal.view.core.tests.FileReferenceParserTest.class, //
 })
 public class AutomatedTestSuite {
 
