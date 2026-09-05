@@ -172,6 +172,9 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 	 */
 	private final IPropertyChangeListener fPreferenceListener = this::updatePreferences;
 	private final IPropertyChangeListener fFontListener = this::updateFont;
+	private boolean fBracketedPaste;
+	private static final String PASTE_START = "\u001b[200~"; //$NON-NLS-1$
+	private static final String PASTE_END = "\u001b[201~"; //$NON-NLS-1$
 
 	/**
 	 * Is protected by synchronize on this
@@ -308,7 +311,7 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 		if (strText == null) {
 			return false;
 		}
-		sendString(strText);
+		sendString(fBracketedPaste ? bracketed(strText) : strText);
 		return true;
 	}
 
@@ -567,6 +570,16 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 	@Override
 	public Shell getShell() {
 		return getCtlText().getShell();
+	}
+
+	/**
+	 * Marks text as pasted, so that a program takes the newlines in it as part of
+	 * the text rather than as the user pressing return on each line. The end marker
+	 * is taken out of the text itself, or the text could close the bracket early and
+	 * the rest of it would arrive as if it had been typed.
+	 */
+	private static String bracketed(String text) {
+		return PASTE_START + text.replace(PASTE_END, "") + PASTE_END; //$NON-NLS-1$
 	}
 
 	protected void sendChar(char chKey, boolean altKeyPressed) {
@@ -1288,6 +1301,11 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 		});
 	}
 
+	@Override
+	public void enableBracketedPaste(boolean enable) {
+		fBracketedPaste = enable;
+	}
+
 	/**
 	 * @param runnable run in display thread
 	 */
@@ -1410,6 +1428,13 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 	@Override
 	public String getHoverSelection() {
 		return fCtlText.getHoverSelection();
+	}
+
+	@Override
+	public void showCursor(boolean show) {
+		if (fPollingTextCanvasModel != null) {
+			fPollingTextCanvasModel.setCursorHidden(!show);
+		}
 	}
 
 	@Override
