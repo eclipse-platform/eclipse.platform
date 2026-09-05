@@ -21,6 +21,7 @@ import java.util.List;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.terminal.connector.Logger;
+import org.eclipse.terminal.internal.model.CharWidth;
 import org.eclipse.terminal.model.ITerminalTextDataReadOnly;
 import org.eclipse.terminal.model.ITerminalTextDataSnapshot;
 import org.eclipse.terminal.model.TextRange;
@@ -427,8 +428,35 @@ abstract public class AbstractTextCanvasModel implements ITextCanvasModel {
 		}
 		text = text.substring(0, i + 1);
 		// </J2ME-CDC-1.1 version>
-		// null means space
-		return text.replace('\000', ' ');
+		// null means space, unless it is the filler of a wide character
+		StringBuilder scrubbed = new StringBuilder(text.length());
+		for (int j = 0; j < text.length(); j++) {
+			char c = text.charAt(j);
+			if (c != '\000') {
+				scrubbed.append(c);
+			} else if (!CharWidth.isFiller(text, j)) {
+				scrubbed.append(' ');
+			}
+		}
+		return scrubbed.toString();
+	}
+
+	/**
+	 * The cells from <code>from</code> to <code>to</code> as text, with each two-cell
+	 * cluster given in full in place of the one character its cells hold.
+	 */
+	private static String withClusters(ITerminalTextDataReadOnly data, int line, char[] chars, int from, int to) {
+		StringBuilder text = new StringBuilder(to - from);
+		for (int col = from; col < to; col++) {
+			String cluster = col + 1 < to ? data.getCluster(line, col) : null;
+			if (cluster != null) {
+				text.append(cluster);
+				col++;
+			} else {
+				text.append(chars[col]);
+			}
+		}
+		return text.toString();
 	}
 
 	/**
@@ -444,14 +472,11 @@ abstract public class AbstractTextCanvasModel implements ITextCanvasModel {
 			String text;
 			char[] chars = fSelectionSnapshot.getChars(line);
 			if (chars != null) {
-				text = new String(chars);
-				if (line == fSeletionEndLine && fSelectionEndColumn >= 0) {
-					text = text.substring(0, Math.min(fSelectionEndColumn + 1, text.length()));
-				}
-				if (line == fSelectionStartLine) {
-					text = text.substring(Math.min(fSelectionStartCoumn, text.length()));
-				}
-				text = scrubLine(text);
+				int from = line == fSelectionStartLine ? Math.min(fSelectionStartCoumn, chars.length) : 0;
+				int to = line == fSeletionEndLine && fSelectionEndColumn >= 0
+						? Math.min(fSelectionEndColumn + 1, chars.length)
+						: chars.length;
+				text = scrubLine(withClusters(fSelectionSnapshot, line, chars, from, to));
 			} else {
 				text = ""; //$NON-NLS-1$
 			}
