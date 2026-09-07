@@ -17,7 +17,6 @@ package org.eclipse.update.internal.configurator;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ResourceBundle;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -36,8 +35,6 @@ public class FullFeatureParser extends DefaultHandler implements IConfigurationC
 	private SAXParser parser;
 	private final FeatureEntry feature;
 	private URL url;
-	private boolean isDescription;
-	private final StringBuffer description = new StringBuffer();
 
 	/**
 	 * Constructs a feature parser.
@@ -87,10 +84,6 @@ public class FullFeatureParser extends DefaultHandler implements IConfigurationC
 
 		if ("plugin".equals(localName)) { //$NON-NLS-1$
 			processPlugin(attributes);
-		} else if ("description".equals(localName)){ //$NON-NLS-1$
-			isDescription = true;
-		} else if ("license".equals(localName)) { //$NON-NLS-1$
-			processLicense(attributes);
 		}
 	}
 
@@ -127,27 +120,4 @@ public class FullFeatureParser extends DefaultHandler implements IConfigurationC
 		}
 	}
 
-	private void processLicense(Attributes attributes ){
-		feature.setLicenseURL(attributes.getValue("url")); //$NON-NLS-1$
-	}
-
-	@Override
-	public void characters(char[] ch, int start, int length)
-			throws SAXException {
-		if (!isDescription) {
-			return;
-		}
-		description.append(ch, start, length);
-	}
-
-	@Override
-	public void endElement(String uri, String localName, String qName)
-			throws SAXException {
-		if ("description".equals(localName)) { //$NON-NLS-1$
-			isDescription = false;
-			String d = description.toString().trim();
-			ResourceBundle bundle = feature.getResourceBundle();
-			feature.setDescription(Utils.getResourceString(bundle, d));
-		}
-	}
 }

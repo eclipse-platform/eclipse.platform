@@ -13,20 +13,10 @@
  *******************************************************************************/
 package org.eclipse.update.internal.configurator;
 
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
 
-import org.eclipse.core.runtime.IBundleGroup;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.update.configurator.IPlatformConfiguration;
-import org.eclipse.update.internal.configurator.branding.AboutInfo;
-import org.eclipse.update.internal.configurator.branding.IBundleGroupConstants;
-import org.eclipse.update.internal.configurator.branding.IProductConstants;
-import org.osgi.framework.Bundle;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -35,13 +25,7 @@ import org.w3c.dom.Element;
  *
  * Feature information
  */
-public class FeatureEntry
-		implements
-			IPlatformConfiguration.IFeatureEntry,
-			IConfigurationConstants,
-			IBundleGroup,
-			IBundleGroupConstants,
-			IProductConstants {
+public class FeatureEntry implements IPlatformConfiguration.IFeatureEntry, IConfigurationConstants {
 	private final String id;
 	private final String version;
 	private final String pluginVersion;
@@ -50,12 +34,8 @@ public class FeatureEntry
 	private final boolean primary;
 	private final String pluginIdentifier;
 	private String url;
-	private String description;
-	private String licenseURL;
 	private ArrayList<PluginEntry> plugins;
-	private AboutInfo branding;
 	private SiteEntry site;
-	private ResourceBundle resourceBundle;
 	private boolean fullyParsed;
 
 	public FeatureEntry(String id, String version, String pluginIdentifier, String pluginVersion, boolean primary, String application, URL[] root) {
@@ -190,164 +170,12 @@ public class FeatureEntry
 		return featureElement;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	@Override
-	public Bundle[] getBundles() {
-		if (plugins == null) {
-			fullParse();
-		}
-
-		ArrayList<Bundle> bundles = new ArrayList<>(plugins.size());
-		for (PluginEntry plugin : plugins) {
-			// get the highest version for the plugin
-			Bundle bundle = Platform.getBundle(plugin.getPluginIdentifier());
-			if (bundle != null) {
-				bundles.add(bundle);
-			}
-		}
-		return bundles.toArray(new Bundle[bundles.size()]);
-	}
-
-	@Override
-	public String getDescription() {
-		if (description == null) {
-			fullParse();
-		}
-		return description;
-	}
-
-	@Override
-	public String getIdentifier() {
-		return id;
-	}
-
-	@Override
-	public String getName() {
-		if (branding == null) {
-			branding = AboutInfo.readFeatureInfo(id, version, getFeaturePluginIdentifier());
-		}
-		return branding.getProductName();
-	}
-
-	@Override
-	public String getProperty(String key) {
-		if (key == null) {
-			return null;
-		}
-
-		if (branding == null) {
-			branding = AboutInfo.readFeatureInfo(id, version, getFeaturePluginIdentifier());
-		}
-
-		// IBundleGroupConstants
-		if (key.equals(FEATURE_IMAGE)) {
-			return branding.getFeatureImageURL() == null ? null : branding.getFeatureImageURL().toExternalForm();
-		} else if (key.equals(TIPS_AND_TRICKS_HREF)) {
-			return branding.getTipsAndTricksHref();
-		} else if (key.equals(IBundleGroupConstants.WELCOME_PAGE)) { // same value is used by product and bundle group
-			return branding.getWelcomePageURL() == null ? null : branding.getWelcomePageURL().toExternalForm();
-		} else if (key.equals(WELCOME_PERSPECTIVE)) {
-			return branding.getWelcomePerspectiveId();
-		} else if (key.equals(BRANDING_BUNDLE_ID)) {
-			return pluginIdentifier;
-		} else if (key.equals(BRANDING_BUNDLE_VERSION)) {
-			return pluginVersion;
-		} else if (key.equals(APP_NAME)) {
-			return branding.getAppName();
-		} else if (key.equals(ABOUT_TEXT)) {
-			return branding.getAboutText();
-		} else if (key.equals(ABOUT_IMAGE)) {
-			return branding.getAboutImageURL() == null ? null : branding.getAboutImageURL().toExternalForm();
-		} else if (key.equals(WINDOW_IMAGE)) {
-			return branding.getWindowImageURL()== null ? null : branding.getWindowImageURL().toExternalForm();
-		} else if (key.equals(WINDOW_IMAGES)) {
-			URL[] urls = branding.getWindowImagesURLs();
-			if (urls == null) {
-				return null;
-			}
-			StringBuilder windowImagesURLs = new StringBuilder();
-			for (int i=0; i<urls.length; i++){
-				windowImagesURLs.append(urls[i].toExternalForm());
-				if (i != urls.length-1) {
-					windowImagesURLs.append(',');
-				}
-			}
-			return windowImagesURLs.toString();
-		} else if (key.equals(LICENSE_HREF)) {
-			return getLicenseURL();
-		}
-
-		return null;
-	}
-
-	@Override
-	public String getProviderName() {
-		if (branding == null) {
-			branding = AboutInfo.readFeatureInfo(id, version, getFeaturePluginIdentifier());
-		}
-		return branding.getProviderName();
-	}
-
-	@Override
-	public String getVersion() {
-		return version;
-	}
-
 	public String getApplication() {
 		return application;
 	}
 
 	public String getId() {
 		return id;
-	}
-
-	public ResourceBundle getResourceBundle(){
-		if (resourceBundle != null) {
-			return resourceBundle;
-		}
-
-		// Determine the properties file location
-		if (site == null) {
-			return null;
-		}
-
-		ResourceBundle bundle = null;
-		try {
-			URL propertiesURL = new URL(site.getResolvedURL(), getURL());
-			ClassLoader l = new URLClassLoader(new URL[] { propertiesURL }, null);
-			bundle = ResourceBundle.getBundle(IConfigurationConstants.CFG_FEATURE_ENTRY, Utils.getDefaultLocale(), l);
-		} catch (MissingResourceException e) {
-			Utils.log(e.getLocalizedMessage());
-		} catch (MalformedURLException e) {
-			Utils.log(e.getLocalizedMessage());
-		}
-		return bundle;
-	}
-
-	public void setLicenseURL(String licenseURL) {
-		this.licenseURL = licenseURL;
-	}
-
-	public String getLicenseURL() {
-		if (licenseURL == null) {
-			fullParse();
-		}
-		if (licenseURL == null) {
-			return null;
-		}
-
-		String resolvedURL = Utils.getResourceString(getResourceBundle(), licenseURL);
-		if (resolvedURL.startsWith("http://") || resolvedURL.startsWith("https://")) { //$NON-NLS-1$ //$NON-NLS-2$
-			return resolvedURL;
-		}
-		try {
-			return new URL(getSite().getResolvedURL(), getURL() + resolvedURL).toExternalForm();
-		} catch (MalformedURLException e) {
-			return resolvedURL;
-		}
 	}
 
 	private void fullParse() {
@@ -360,14 +188,5 @@ public class FeatureEntry
 		}
 		FullFeatureParser parser = new FullFeatureParser(this);
 		parser.parse();
-	}
-
-	public Bundle getDefiningBundle() {
-		return Platform.getBundle(getFeaturePluginIdentifier());
-	}
-
-	public boolean hasBranding() {
-		String bundleId = getFeaturePluginIdentifier();
-		return bundleId != null && Platform.getBundle(bundleId) != null;
 	}
 }

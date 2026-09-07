@@ -33,14 +33,8 @@ public final class Messages extends NLS {
 	public static String InstalledSiteParser_date;
 	public static String BundleManifest_noVersion;
 	public static String FeatureParser_IdOrVersionInvalid;
-	public static String BundleGroupProvider;
 	public static String ConfigurationParser_cannotLoadSharedInstall;
 	public static String PluginEntry_versionError;
-	public static String IniFileReader_MissingDesc;
-	public static String IniFileReader_OpenINIError;
-	public static String IniFileReader_ReadIniError;
-	public static String IniFileReader_ReadPropError;
-	public static String IniFileReader_ReadMapError;
 	public static String SiteEntry_computePluginStamp;
 	public static String SiteEntry_cannotFindFeatureInDir;
 	public static String SiteEntry_duplicateFeature;

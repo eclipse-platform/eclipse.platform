@@ -11,7 +11,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.update.internal.configurator.branding;
+package org.eclipse.core.internal.runtime.bundlegroups;
 
 import java.net.URL;
 import java.util.Hashtable;

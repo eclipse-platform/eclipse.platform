@@ -11,7 +11,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.update.internal.configurator.branding;
+package org.eclipse.core.internal.runtime.bundlegroups;
 
 /**
  * These constants define the set of properties that the UI expects to

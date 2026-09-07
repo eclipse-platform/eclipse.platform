@@ -11,7 +11,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.update.internal.configurator.branding;
+package org.eclipse.core.internal.runtime.bundlegroups;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,7 +31,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.update.internal.configurator.Messages;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
 
@@ -43,7 +42,7 @@ import org.osgi.framework.Constants;
  * properties file - format being "n = some text", where n is a number.
  */
 public class IniFileReader {
-	private static final String PID = "org.eclipse.update.configurator"; //$NON-NLS-1$
+	private static final String PID = "org.eclipse.core.runtime.bundlegroups"; //$NON-NLS-1$
 	private static final Status OK_STATUS = new Status(IStatus.OK, PID, 0, "", null); //$NON-NLS-1$
 	private static final String KEY_PREFIX = "%"; //$NON-NLS-1$
 	private static final String KEY_DOUBLE_PREFIX = "%%"; //$NON-NLS-1$
