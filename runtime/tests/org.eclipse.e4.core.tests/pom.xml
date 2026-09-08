@@ -25,6 +25,7 @@
 	<packaging>eclipse-test-plugin</packaging>
 	<properties>
 		<testClass>org.eclipse.e4.core.tests.CoreTestSuite</testClass>
+		<maven.javadoc.skip>true</maven.javadoc.skip>
 	</properties>
 	<build>
 		<testSourceDirectory>src</testSourceDirectory>

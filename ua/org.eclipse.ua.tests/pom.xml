@@ -25,6 +25,7 @@
   <properties>
     <testSuite>${project.artifactId}</testSuite>
     <testClass>org.eclipse.ua.tests.AllTests</testClass>
+    <maven.javadoc.skip>true</maven.javadoc.skip>
   </properties>
 
   <build>

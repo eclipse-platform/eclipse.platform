@@ -24,6 +24,7 @@
   <properties>
   	<testSuite>${project.artifactId}</testSuite>
   	<testClass>org.eclipse.core.tests.resources.AutomatedResourceTests</testClass>
+  	<maven.javadoc.skip>true</maven.javadoc.skip>
   </properties>
 
   <build>

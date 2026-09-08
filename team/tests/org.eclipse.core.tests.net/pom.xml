@@ -25,5 +25,6 @@
     <testClass>org.eclipse.core.tests.net.AllNetTests</testClass>
     <!-- Currently, test fails with tycho-surefire-plugin -->
     <skipTests>true</skipTests>
+    <maven.javadoc.skip>true</maven.javadoc.skip>
   </properties>
 </project>
