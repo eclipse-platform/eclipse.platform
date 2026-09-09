@@ -574,7 +574,7 @@ public class LaunchingResourceManager implements IPropertyChangeListener, IWindo
 	 * Shutdown and clean up the manager
 	 */
 	public void shutdown() {
-		IWorkbench workbench = PlatformUI.getWorkbench();
+		IWorkbench workbench = PlatformUI.isWorkbenchRunning() ? PlatformUI.getWorkbench() : null;
 		if(workbench != null) {
 			workbench.removeWindowListener(this);
 		}
