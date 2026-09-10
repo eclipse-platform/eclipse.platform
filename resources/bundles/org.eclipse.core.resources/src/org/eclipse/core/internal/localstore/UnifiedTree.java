@@ -34,6 +34,7 @@ import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.IFileTree;
 import org.eclipse.core.internal.refresh.RefreshJob;
+import org.eclipse.core.internal.resources.Container;
 import org.eclipse.core.internal.resources.ICoreConstants;
 import org.eclipse.core.internal.resources.Resource;
 import org.eclipse.core.internal.resources.ResourceInfo;
@@ -167,23 +168,24 @@ public class UnifiedTree {
 
 		// get the list of resources in the workspace
 		if (!unknown && (parentType == IResource.FOLDER || parentType == IResource.PROJECT) && parent.exists(flags, true)) {
-			List<IResource> members;
+			// The infos come along so the link check below needs no second lookup.
+			Container.MembersWithInfo members;
 			try {
-				IContainer container = (IContainer) parent;
-				members = Arrays.asList(container.members(IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS | IContainer.INCLUDE_HIDDEN));
+				members = ((Container) parent)
+						.membersWithInfo(IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS | IContainer.INCLUDE_HIDDEN);
 			} catch (CoreException e) {
-				members = List.of();
+				members = Container.NO_MEMBERS;
 			}
 			int workspaceIndex = 0;
 			//iterate simultaneously over file system and workspace members
-			while (workspaceIndex < members.size()) {
-				IResource target = members.get(workspaceIndex);
+			while (workspaceIndex < members.resources().length) {
+				IResource target = members.resources()[workspaceIndex];
 				String name = target.getName();
 				IFileInfo localInfo = localIndex < list.size() ? list.get(localIndex) : null;
 				int comp = localInfo != null ? name.compareTo(localInfo.getName()) : -1;
 				UnifiedTreeNode child = null;
 				//special handling for linked resources
-				if (target.isLinked()) {
+				if (ResourceInfo.isSet(members.infos()[workspaceIndex].getFlags(), ICoreConstants.M_LINK)) {
 					//child will be null if location is undefined
 					child = createChildForLinkedResource(target);
 					workspaceIndex++;

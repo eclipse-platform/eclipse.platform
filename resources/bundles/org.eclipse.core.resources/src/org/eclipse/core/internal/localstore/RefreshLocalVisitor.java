@@ -290,20 +290,22 @@ public class RefreshLocalVisitor implements IUnifiedTreeVisitor, ILocalStoreCons
 				return true;
 			}
 			if (node.existsInWorkspace() && node.existsInFileSystem()) {
+				// One lookup for the whole node: every check below reads the same info.
+				ResourceInfo info = target.getResourceInfo(false, false);
 				/* for folders we only care about updating local status */
 				if (targetType == IResource.FOLDER && node.isFolder()) {
 					// if not local, mark as local
-					if (!target.isLocal(IResource.DEPTH_ZERO)) {
+					if (!target.isLocal(target.getFlags(info), IResource.DEPTH_ZERO)) {
+						// makeLocal opens the info for modification, which may replace it
 						makeLocal(node, target);
+						info = target.getResourceInfo(false, false);
 					}
-					ResourceInfo info = target.getResourceInfo(false, false);
 					if (info != null && info.getModificationStamp() != IResource.NULL_STAMP) {
 						return true;
 					}
 				}
 				/* compare file last modified */
 				if (targetType == IResource.FILE && !node.isFolder()) {
-					ResourceInfo info = target.getResourceInfo(false, false);
 					if (info != null && info.getModificationStamp() != IResource.NULL_STAMP && info.getLocalSyncInfo() == node.getLastModified()) {
 						return true;
 					}
