@@ -137,6 +137,10 @@ public abstract class Container extends Resource implements IContainer {
 	}
 
 	protected IResource[] getChildren(int memberFlags) {
+		return getChildrenWithInfo(memberFlags).resources();
+	}
+
+	private MembersWithInfo getChildrenWithInfo(int memberFlags) {
 		IPath[] children = null;
 		try {
 			children = workspace.tree.getChildren(path);
@@ -145,22 +149,22 @@ public abstract class Container extends Resource implements IContainer {
 			//thread during this call.  Just return empty children set
 		}
 		if (children == null || children.length == 0) {
-			return ICoreConstants.EMPTY_RESOURCE_ARRAY;
+			return NO_MEMBERS;
 		}
 		Resource[] result = new Resource[children.length];
+		ResourceInfo[] infos = new ResourceInfo[children.length];
 		int found = 0;
 		for (IPath child : children) {
 			ResourceInfo info = workspace.getResourceInfo(child, true, false);
 			if (info != null && isMember(info.getFlags(), memberFlags)) {
+				infos[found] = info;
 				result[found++] = workspace.newResource(child, info.getType());
 			}
 		}
 		if (found == result.length) {
-			return result;
+			return new MembersWithInfo(result, infos);
 		}
-		Resource[] trimmedResult = new Resource[found];
-		System.arraycopy(result, 0, trimmedResult, 0, found);
-		return trimmedResult;
+		return new MembersWithInfo(Arrays.copyOf(result, found, IResource[].class), Arrays.copyOf(infos, found));
 	}
 
 	public IFile getFile(String name) {
@@ -253,6 +257,20 @@ public abstract class Container extends Resource implements IContainer {
 
 	@Override
 	public IResource[] members(int memberFlags) throws CoreException {
+		return membersWithInfo(memberFlags).resources();
+	}
+
+	/**
+	 * A container's members together with the {@link ResourceInfo} each was found
+	 * with, so a caller that needs both does not look every member up again.
+	 */
+	public record MembersWithInfo(IResource[] resources, ResourceInfo[] infos) {
+	}
+
+	public static final MembersWithInfo NO_MEMBERS = new MembersWithInfo(ICoreConstants.EMPTY_RESOURCE_ARRAY,
+			new ResourceInfo[0]);
+
+	public MembersWithInfo membersWithInfo(int memberFlags) throws CoreException {
 		final boolean phantom = (memberFlags & INCLUDE_PHANTOMS) != 0;
 		ResourceInfo info = getResourceInfo(phantom, false);
 		checkAccessible(getFlags(info));
@@ -260,7 +278,7 @@ public abstract class Container extends Resource implements IContainer {
 		if (info.isSet(ICoreConstants.M_CHILDREN_UNKNOWN)) {
 			workspace.refreshManager.refresh(this);
 		}
-		return getChildren(memberFlags);
+		return getChildrenWithInfo(memberFlags);
 	}
 
 	public void removeFilter(IResourceFilterDescription filterDescription, int updateFlags, IProgressMonitor monitor) throws CoreException {
