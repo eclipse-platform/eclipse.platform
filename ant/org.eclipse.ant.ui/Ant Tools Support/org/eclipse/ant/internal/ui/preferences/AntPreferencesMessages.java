@@ -122,14 +122,7 @@ public class AntPreferencesMessages extends NLS {
 
 	public static String AntEditorPreferencePage_description;
 	public static String AntEditorPreferencePage_general;
-	public static String AntEditorPreferencePage_6;
-	public static String AntEditorPreferencePage_Ant_editor_text_1;
-	public static String AntEditorPreferencePage_Ant_editor_processing_instuctions_2;
-	public static String AntEditorPreferencePage_Ant_editor_constant_strings_3;
-	public static String AntEditorPreferencePage_Ant_editor_tags_4;
-	public static String AntEditorPreferencePage_Ant_editor_comments_5;
 	public static String AntEditorPreferencePage_30;
-	public static String AntEditorPreferencePage_1;
 	public static String AntEditorPreferencePage_10;
 	public static String AntEditorPreferencePage_11;
 	public static String AntEditorPreferencePage_12;
@@ -146,13 +139,9 @@ public class AntPreferencesMessages extends NLS {
 	public static String AntEditorPreferencePage_23;
 	public static String AntEditorPreferencePage_24;
 	public static String AntEditorPreferencePage_25;
-	public static String AntEditorPreferencePage_26;
 	public static String AntEditorPreferencePage_27;
 	public static String AntEditorPreferencePage_28;
 	public static String AntEditorPreferencePage_29;
-	public static String AntEditorPreferencePage_5;
-	public static String AntEditorPreferencePage_7;
-	public static String AntEditorPreferencePage_8;
 	public static String AntEditorPreferencePage_9;
 	public static String AntEditorPreferencePage_3;
 	public static String AntEditorPreferencePage_0;

@@ -13,7 +13,6 @@
  *******************************************************************************/
 package org.eclipse.ant.internal.ui;
 
-import org.eclipse.ant.internal.ui.editor.text.IAntEditorColorConstants;
 import org.eclipse.ant.internal.ui.preferences.AntEditorPreferenceConstants;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -50,14 +49,6 @@ public class AntUIPreferenceInitializer extends AbstractPreferenceInitializer {
 		prefs.setDefault(IAntUIPreferenceConstants.ANTEDITOR_FILTER_IMPORTED_ELEMENTS, false);
 		prefs.setDefault(IAntUIPreferenceConstants.ANTEDITOR_FILTER_PROPERTIES, false);
 		prefs.setDefault(IAntUIPreferenceConstants.ANTEDITOR_FILTER_TOP_LEVEL, false);
-
-		// Ant Editor color preferences
-		PreferenceConverter.setDefault(prefs, IAntEditorColorConstants.TEXT_COLOR, IAntEditorColorConstants.DEFAULT);
-		PreferenceConverter.setDefault(prefs, IAntEditorColorConstants.PROCESSING_INSTRUCTIONS_COLOR, IAntEditorColorConstants.PROC_INSTR);
-		PreferenceConverter.setDefault(prefs, IAntEditorColorConstants.STRING_COLOR, IAntEditorColorConstants.STRING);
-		PreferenceConverter.setDefault(prefs, IAntEditorColorConstants.TAG_COLOR, IAntEditorColorConstants.TAG);
-		PreferenceConverter.setDefault(prefs, IAntEditorColorConstants.XML_COMMENT_COLOR, IAntEditorColorConstants.XML_COMMENT);
-		PreferenceConverter.setDefault(prefs, IAntEditorColorConstants.XML_DTD_COLOR, IAntEditorColorConstants.XML_DTD);
 
 		PreferenceConverter.setDefault(prefs, IAntUIPreferenceConstants.CONSOLE_ERROR_COLOR, new RGB(255, 0, 0)); // red - exactly the same as debug
 																													// Console
