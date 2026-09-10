@@ -18,11 +18,7 @@ import org.eclipse.ant.internal.ui.editor.text.AntDocumentSetupParticipant;
 import org.eclipse.ant.internal.ui.editor.text.AntEditorPartitionScanner;
 import org.eclipse.ant.internal.ui.editor.text.AntEditorProcInstrScanner;
 import org.eclipse.ant.internal.ui.editor.text.AntEditorTagScanner;
-import org.eclipse.ant.internal.ui.editor.text.IAntEditorColorConstants;
 import org.eclipse.ant.internal.ui.editor.text.MultilineDamagerRepairer;
-import org.eclipse.ant.internal.ui.preferences.AntEditorPreferenceConstants;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.TextAttribute;
@@ -30,8 +26,7 @@ import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.RGB;
+import org.eclipse.ui.editors.text.SyntaxThemeConstants;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 
@@ -75,30 +70,17 @@ public class AntSourceViewerConfiguration extends TextSourceViewerConfiguration 
 		reconciler.setDamager(dr, AntEditorPartitionScanner.XML_TAG);
 		reconciler.setRepairer(dr, AntEditorPartitionScanner.XML_TAG);
 
-		int style = getStyle(IAntEditorColorConstants.XML_COMMENT_COLOR);
-		xmlCommentAttribute = new TextAttribute(AntUIPlugin.getPreferenceColor(IAntEditorColorConstants.XML_COMMENT_COLOR), null, style);
+		xmlCommentAttribute = new TextAttribute(AntUIPlugin.getThemeColor(SyntaxThemeConstants.COMMENT_COLOR));
 		damageRepairer = new MultilineDamagerRepairer(null, xmlCommentAttribute);
 		reconciler.setDamager(damageRepairer, AntEditorPartitionScanner.XML_COMMENT);
 		reconciler.setRepairer(damageRepairer, AntEditorPartitionScanner.XML_COMMENT);
 
-		style = getStyle(IAntEditorColorConstants.XML_DTD_COLOR);
-		xmlDtdAttribute = new TextAttribute(AntUIPlugin.getPreferenceColor(IAntEditorColorConstants.XML_DTD_COLOR), null, style);
+		xmlDtdAttribute = new TextAttribute(AntUIPlugin.getThemeColor(SyntaxThemeConstants.DIRECTIVE_COLOR));
 		dtdDamageRepairer = new MultilineDamagerRepairer(null, xmlDtdAttribute);
 		reconciler.setDamager(dtdDamageRepairer, AntEditorPartitionScanner.XML_DTD);
 		reconciler.setRepairer(dtdDamageRepairer, AntEditorPartitionScanner.XML_DTD);
 
 		return reconciler;
-	}
-
-	private int getStyle(String pref) {
-		int style = SWT.NORMAL;
-		if (fPreferenceStore.getBoolean(pref + AntEditorPreferenceConstants.EDITOR_BOLD_SUFFIX)) {
-			style |= SWT.BOLD;
-		}
-		if (fPreferenceStore.getBoolean(pref + AntEditorPreferenceConstants.EDITOR_ITALIC_SUFFIX)) {
-			style |= SWT.ITALIC;
-		}
-		return style;
 	}
 
 	/**
@@ -111,59 +93,16 @@ public class AntSourceViewerConfiguration extends TextSourceViewerConfiguration 
 		tagScanner.adaptToPreferenceChange(event);
 		instructionScanner.adaptToPreferenceChange(event);
 		String property = event.getProperty();
-		if (property.startsWith(IAntEditorColorConstants.XML_COMMENT_COLOR)) {
-			xmlCommentAttribute = adaptTextAttribute(event, property, xmlCommentAttribute, damageRepairer);
-		} else if (property.startsWith(IAntEditorColorConstants.XML_DTD_COLOR)) {
-			xmlDtdAttribute = adaptTextAttribute(event, property, xmlDtdAttribute, dtdDamageRepairer);
+		if (property.endsWith(SyntaxThemeConstants.COMMENT_COLOR)) {
+			xmlCommentAttribute = adaptTextAttribute(SyntaxThemeConstants.COMMENT_COLOR, damageRepairer);
+		} else if (property.endsWith(SyntaxThemeConstants.DIRECTIVE_COLOR)) {
+			xmlDtdAttribute = adaptTextAttribute(SyntaxThemeConstants.DIRECTIVE_COLOR, dtdDamageRepairer);
 		}
 	}
 
-	private TextAttribute adaptTextAttribute(PropertyChangeEvent event, String property, TextAttribute textAttribute, MultilineDamagerRepairer repairer) {
-		if (property.endsWith(AntEditorPreferenceConstants.EDITOR_BOLD_SUFFIX)) {
-			textAttribute = adaptToStyleChange(event, SWT.BOLD, textAttribute);
-		} else if (property.endsWith(AntEditorPreferenceConstants.EDITOR_ITALIC_SUFFIX)) {
-			textAttribute = adaptToStyleChange(event, SWT.ITALIC, textAttribute);
-		} else {
-			textAttribute = adaptToColorChange(event, textAttribute);
-		}
+	private TextAttribute adaptTextAttribute(String colorId, MultilineDamagerRepairer repairer) {
+		TextAttribute textAttribute = new TextAttribute(AntUIPlugin.getThemeColor(colorId));
 		repairer.setDefaultTextAttribute(textAttribute);
-		return textAttribute;
-	}
-
-	private TextAttribute adaptToStyleChange(PropertyChangeEvent event, int styleAttribute, TextAttribute textAttribute) {
-		boolean eventValue = false;
-		Object value = event.getNewValue();
-		if (value instanceof Boolean) {
-			eventValue = ((Boolean) value).booleanValue();
-		} else if (IPreferenceStore.TRUE.equals(value)) {
-			eventValue = true;
-		}
-
-		boolean activeValue = (textAttribute.getStyle() & styleAttribute) == styleAttribute;
-		if (activeValue != eventValue) {
-			textAttribute = new TextAttribute(textAttribute.getForeground(), textAttribute.getBackground(), eventValue
-					? textAttribute.getStyle() | styleAttribute
-					: textAttribute.getStyle() & ~styleAttribute);
-		}
-		return textAttribute;
-	}
-
-	/**
-	 * Update the text attributes associated with the tokens of this scanner as a color preference has been changed.
-	 */
-	private TextAttribute adaptToColorChange(PropertyChangeEvent event, TextAttribute textAttribute) {
-		RGB rgb = null;
-
-		Object value = event.getNewValue();
-		if (value instanceof RGB) {
-			rgb = (RGB) value;
-		} else if (value instanceof String) {
-			rgb = StringConverter.asRGB((String) value);
-		}
-
-		if (rgb != null) {
-			textAttribute = new TextAttribute(ColorManager.getDefault().getColor(rgb), textAttribute.getBackground(), textAttribute.getStyle());
-		}
 		return textAttribute;
 	}
 
@@ -180,9 +119,9 @@ public class AntSourceViewerConfiguration extends TextSourceViewerConfiguration 
 
 	public boolean affectsTextPresentation(PropertyChangeEvent event) {
 		String property = event.getProperty();
-		return property.startsWith(IAntEditorColorConstants.TEXT_COLOR) || property.startsWith(IAntEditorColorConstants.PROCESSING_INSTRUCTIONS_COLOR)
-				|| property.startsWith(IAntEditorColorConstants.STRING_COLOR) || property.startsWith(IAntEditorColorConstants.TAG_COLOR)
-				|| property.startsWith(IAntEditorColorConstants.XML_COMMENT_COLOR) || property.startsWith(IAntEditorColorConstants.XML_DTD_COLOR);
+		return property.endsWith(SyntaxThemeConstants.DIRECTIVE_COLOR) || property.endsWith(SyntaxThemeConstants.STRING_COLOR)
+				|| property.endsWith(SyntaxThemeConstants.TAG_COLOR) || property.endsWith(SyntaxThemeConstants.ATTRIBUTE_NAME_COLOR)
+				|| property.endsWith(SyntaxThemeConstants.COMMENT_COLOR);
 	}
 
 	@Override

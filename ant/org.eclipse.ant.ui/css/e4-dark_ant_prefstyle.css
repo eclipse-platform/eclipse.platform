@@ -14,15 +14,6 @@
 
 IEclipsePreferences#org-eclipse-ant-ui {
 	preferences:
-		'org.eclipse.ant.ui.commentsColor=204,204,204'
-		'org.eclipse.ant.ui.constantStringsColor=23,198,163'
-		'org.eclipse.ant.ui.constantStringsColor_italic=true'
-		'org.eclipse.ant.ui.dtdColor=140,210,20'
-		'org.eclipse.ant.ui.processingInstructionsColor=221,40,103'
-		'org.eclipse.ant.ui.processingInstructionsColor_bold=true'
-		'org.eclipse.ant.ui.tagsColor=38,139,210'
-		'org.eclipse.ant.ui.tagsColor_bold=true'
-		'org.eclipse.ant.ui.textColor=217,232,247'
 		'org.eclipse.ant.ui.debugColor=235,235,235'
 		'org.eclipse.ant.ui.errorColor=225,30,70'
 		'org.eclipse.ant.ui.informationColor=140,175,210'

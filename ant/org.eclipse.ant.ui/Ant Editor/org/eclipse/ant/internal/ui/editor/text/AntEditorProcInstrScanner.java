@@ -1,6 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2005 GEBIT Gesellschaft fuer EDV-Beratung
- * und Informatik-Technologien mbH,
+ * Copyright (c) 2002, 2013 GEBIT Gesellschaft fuer EDV-Beratung und Informatik-Technologien mbH,
  * Berlin, Duesseldorf, Frankfurt (Germany) and others.
  *
  * This program and the accompanying materials
@@ -17,13 +16,12 @@
 
 package org.eclipse.ant.internal.ui.editor.text;
 
-import org.eclipse.ant.internal.ui.preferences.AntEditorPreferenceConstants;
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.MultiLineRule;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.swt.SWT;
+import org.eclipse.ui.editors.text.SyntaxThemeConstants;
 
 /**
  * The scanner to tokenize for XML processing instructions and text
@@ -34,9 +32,7 @@ public class AntEditorProcInstrScanner extends AbstractAntEditorScanner {
 
 	public AntEditorProcInstrScanner() {
 		IRule[] rules = new IRule[2];
-		fProcInstructionToken = new Token(createTextAttribute(IAntEditorColorConstants.PROCESSING_INSTRUCTIONS_COLOR, IAntEditorColorConstants.PROCESSING_INSTRUCTIONS_COLOR
-				+ AntEditorPreferenceConstants.EDITOR_BOLD_SUFFIX, IAntEditorColorConstants.PROCESSING_INSTRUCTIONS_COLOR
-				+ AntEditorPreferenceConstants.EDITOR_ITALIC_SUFFIX));
+		fProcInstructionToken = new Token(createTextAttribute(SyntaxThemeConstants.DIRECTIVE_COLOR));
 
 		// Add rule for processing instructions
 		rules[0] = new MultiLineRule("<?", "?>", fProcInstructionToken); //$NON-NLS-1$ //$NON-NLS-2$
@@ -46,28 +42,13 @@ public class AntEditorProcInstrScanner extends AbstractAntEditorScanner {
 
 		setRules(rules);
 
-		setDefaultReturnToken(new Token(createTextAttribute(IAntEditorColorConstants.TEXT_COLOR, IAntEditorColorConstants.TEXT_COLOR
-				+ AntEditorPreferenceConstants.EDITOR_BOLD_SUFFIX, IAntEditorColorConstants.TEXT_COLOR
-				+ AntEditorPreferenceConstants.EDITOR_ITALIC_SUFFIX)));
-	}
-
-	private Token getTokenAffected(PropertyChangeEvent event) {
-		if (event.getProperty().startsWith(IAntEditorColorConstants.PROCESSING_INSTRUCTIONS_COLOR)) {
-			return fProcInstructionToken;
-		}
-		return (Token) fDefaultReturnToken;
+		// unstyled text follows the editor foreground colour
+		setDefaultReturnToken(new Token(createTextAttribute(null)));
 	}
 
 	public void adaptToPreferenceChange(PropertyChangeEvent event) {
-		String property = event.getProperty();
-		if (property.startsWith(IAntEditorColorConstants.TEXT_COLOR) || property.startsWith(IAntEditorColorConstants.PROCESSING_INSTRUCTIONS_COLOR)) {
-			if (property.endsWith(AntEditorPreferenceConstants.EDITOR_BOLD_SUFFIX)) {
-				adaptToStyleChange(event, getTokenAffected(event), SWT.BOLD);
-			} else if (property.endsWith(AntEditorPreferenceConstants.EDITOR_ITALIC_SUFFIX)) {
-				adaptToStyleChange(event, getTokenAffected(event), SWT.ITALIC);
-			} else {
-				adaptToColorChange(event, getTokenAffected(event));
-			}
+		if (event.getProperty().endsWith(SyntaxThemeConstants.DIRECTIVE_COLOR)) {
+			adaptToColorChange(fProcInstructionToken, SyntaxThemeConstants.DIRECTIVE_COLOR);
 		}
 	}
 }

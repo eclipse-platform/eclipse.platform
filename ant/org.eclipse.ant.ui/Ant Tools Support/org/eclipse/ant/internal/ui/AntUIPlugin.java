@@ -22,6 +22,7 @@ import org.eclipse.ant.internal.ui.editor.text.AntEditorDocumentProvider;
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.resource.ImageRegistry;
@@ -32,6 +33,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.osgi.framework.BundleContext;
@@ -174,6 +176,13 @@ public class AntUIPlugin extends AbstractUIPlugin {
 	}
 
 	/**
+	 * Returns the color of the given theme color definition in the active theme.
+	 */
+	public static Color getThemeColor(String colorId) {
+		return PlatformUI.getWorkbench().getThemeManager().getCurrentTheme().getColorRegistry().get(colorId);
+	}
+
+	/**
 	 * Returns the active workbench page or <code>null</code> if none.
 	 */
 	public static IWorkbenchPage getActivePage() {
@@ -209,7 +218,9 @@ public class AntUIPlugin extends AbstractUIPlugin {
 	public IPreferenceStore getCombinedPreferenceStore() {
 		if (fCombinedPreferenceStore == null) {
 			IPreferenceStore generalTextStore = EditorsUI.getPreferenceStore();
-			fCombinedPreferenceStore = new ChainedPreferenceStore(new IPreferenceStore[] { getPreferenceStore(), generalTextStore });
+			// chained in so that the editor is notified when a theme colour changes
+			IPreferenceStore themeStore = new ScopedPreferenceStore(InstanceScope.INSTANCE, "org.eclipse.ui.workbench"); //$NON-NLS-1$
+			fCombinedPreferenceStore = new ChainedPreferenceStore(new IPreferenceStore[] { getPreferenceStore(), generalTextStore, themeStore });
 		}
 		return fCombinedPreferenceStore;
 	}
