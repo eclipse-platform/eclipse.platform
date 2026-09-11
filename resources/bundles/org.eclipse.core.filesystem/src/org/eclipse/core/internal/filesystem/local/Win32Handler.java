@@ -85,7 +85,7 @@ public class Win32Handler extends NativeHandler {
 	}
 
 	@Override
-	public boolean putFileInfo(String fileName, IFileInfo info, int options) {
+	public boolean putFileInfo(String fileName, IFileInfo info) {
 		WString lpFileName = new WString(toLongWindowsPath(fileName));
 		long dwFileAttributes = FileAPIh.GetFileAttributesW(lpFileName);
 		if (dwFileAttributes == FileAPIh.INVALID_FILE_ATTRIBUTES) {

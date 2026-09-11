@@ -92,8 +92,8 @@ public class LocalFileNativesManager {
 		return HANDLER.fetchFileInfo(fileName);
 	}
 
-	public static boolean putFileInfo(String fileName, IFileInfo info, int options) {
-		return HANDLER.putFileInfo(fileName, info, options);
+	public static boolean putFileInfo(String fileName, IFileInfo info) {
+		return HANDLER.putFileInfo(fileName, info);
 	}
 
 	public static IFileInfo[] listDirectoryAndGetFileInfos(String fileName) {

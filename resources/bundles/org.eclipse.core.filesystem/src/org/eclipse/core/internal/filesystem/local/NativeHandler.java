@@ -25,7 +25,7 @@ public abstract class NativeHandler {
 
 	public abstract FileInfo fetchFileInfo(String fileName);
 
-	public abstract boolean putFileInfo(String fileName, IFileInfo info, int options);
+	public abstract boolean putFileInfo(String fileName, IFileInfo info);
 
 	protected static final String[] EMPTY_STRING_ARRAY = {};
 

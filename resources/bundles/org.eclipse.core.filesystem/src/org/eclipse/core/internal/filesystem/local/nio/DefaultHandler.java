@@ -17,7 +17,9 @@ package org.eclipse.core.internal.filesystem.local.nio;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
@@ -87,7 +89,7 @@ public class DefaultHandler extends NativeHandler {
 	}
 
 	@Override
-	public boolean putFileInfo(String fileName, IFileInfo info, int options) {
+	public boolean putFileInfo(String fileName, IFileInfo info) {
 		// In all cases we will set the information on the symbolic link target
 		// and not the symbolic link itself. This is consistent with the approach
 		// taken above in fetchInfo.
