@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -16,24 +16,27 @@ package org.eclipse.core.internal.filesystem.local.linux;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.provider.FileInfo;
 import org.eclipse.core.internal.filesystem.local.NativeHandler;
+import org.eclipse.core.internal.filesystem.local.nio.PosixHandler;
 
 /**
  * Native handler that delegates to LinuxFileNatives
  */
 public class LinuxFileHandler extends NativeHandler {
+	private final PosixHandler posixHandler = new PosixHandler();
+
 	@Override
 	public int getSupportedAttributes() {
-		return LinuxFileNatives.getSupportedAttributes();
+		return posixHandler.getSupportedAttributes();
 	}
 
 	@Override
 	public FileInfo fetchFileInfo(String fileName) {
-		return LinuxFileNatives.fetchFileInfo(fileName);
+		return posixHandler.fetchFileInfo(fileName);
 	}
 
 	@Override
 	public boolean putFileInfo(String fileName, IFileInfo info, int options) {
-		return LinuxFileNatives.putFileInfo(fileName, info, options);
+		return posixHandler.putFileInfo(fileName, info, options);
 	}
 
 	@Override
