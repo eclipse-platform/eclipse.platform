@@ -150,7 +150,7 @@ public class Win32Handler extends NativeHandler {
 	 * Since there are currently there file attributes considered, using the Java NIO API would consequently be up to three times slower.
 	 */
 	@Override
-	public boolean putFileInfo(String fileName, IFileInfo info, int options) {
+	public boolean putFileInfo(String fileName, IFileInfo info) {
 		String longFilename = toLongWindowsPath(fileName);
 		try (Arena arena = Arena.ofConfined()) {
 			MemorySegment lpFileName = allocateWideString(longFilename, arena);

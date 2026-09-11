@@ -32,7 +32,7 @@ public class UnixFileHandler extends NativeHandler {
 	}
 
 	@Override
-	public boolean putFileInfo(String fileName, IFileInfo info, int options) {
-		return UnixFileNatives.putFileInfo(fileName, info, options);
+	public boolean putFileInfo(String fileName, IFileInfo info) {
+		return UnixFileNatives.putFileInfo(fileName, info);
 	}
 }

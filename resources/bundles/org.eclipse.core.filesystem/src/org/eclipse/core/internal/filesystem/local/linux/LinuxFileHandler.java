@@ -32,8 +32,8 @@ public class LinuxFileHandler extends NativeHandler {
 	}
 
 	@Override
-	public boolean putFileInfo(String fileName, IFileInfo info, int options) {
-		return LinuxFileNatives.putFileInfo(fileName, info, options);
+	public boolean putFileInfo(String fileName, IFileInfo info) {
+		return LinuxFileNatives.putFileInfo(fileName, info);
 	}
 
 	@Override

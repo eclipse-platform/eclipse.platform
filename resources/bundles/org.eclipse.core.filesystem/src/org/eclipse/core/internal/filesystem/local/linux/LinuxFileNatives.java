@@ -155,7 +155,7 @@ public abstract class LinuxFileNatives {
 		return info;
 	}
 
-	public static boolean putFileInfo(String fileName, IFileInfo info, int options) {
+	public static boolean putFileInfo(String fileName, IFileInfo info) {
 		int code = 0;
 		byte[] name = fileNameToBytes(fileName);
 		if (name == null) {
