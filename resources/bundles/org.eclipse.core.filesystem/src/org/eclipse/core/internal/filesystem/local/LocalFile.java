@@ -611,7 +611,7 @@ public class LocalFile extends FileStore {
 	public void putInfo(IFileInfo info, int options, IProgressMonitor monitor) throws CoreException {
 		boolean success = true;
 		if ((options & EFS.SET_ATTRIBUTES) != 0) {
-			success &= LocalFileNativesManager.putFileInfo(filePath, info, options);
+			success &= LocalFileNativesManager.putFileInfo(filePath, info);
 		}
 		//native does not currently set last modified
 		if ((options & EFS.SET_LAST_MODIFIED) != 0) {
