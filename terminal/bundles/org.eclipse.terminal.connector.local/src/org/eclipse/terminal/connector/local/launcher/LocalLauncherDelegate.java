@@ -270,22 +270,23 @@ public class LocalLauncherDelegate extends AbstractLauncherDelegate {
 	 * @return The default shell to launch.
 	 */
 	private final File defaultShell() {
-		String shell = null;
+		String shell = IPreferenceKeys.getPreferences()
+				.getString(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX);
+		String defaultShellEnvironmentVariable;
+		String defaultShellIfNotSet;
 		if (Platform.OS_WIN32.equals(Platform.getOS())) {
-			if (System.getenv("ComSpec") != null && !"".equals(System.getenv("ComSpec").trim())) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				shell = System.getenv("ComSpec").trim(); //$NON-NLS-1$
-			} else {
-				shell = "cmd.exe"; //$NON-NLS-1$
-			}
+			defaultShellEnvironmentVariable = "ComSpec"; //$NON-NLS-1$
+			defaultShellIfNotSet = "cmd.exe"; //$NON-NLS-1$
+		} else {
+			defaultShellEnvironmentVariable = "SHELL"; //$NON-NLS-1$
+			defaultShellIfNotSet = "/bin/sh"; //$NON-NLS-1$
 		}
-		if (shell == null) {
-			shell = IPreferenceKeys.getPreferences().getString(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX);
-			if (shell == null || "".equals(shell)) { //$NON-NLS-1$
-				if (System.getenv("SHELL") != null && !"".equals(System.getenv("SHELL").trim())) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-					shell = System.getenv("SHELL").trim(); //$NON-NLS-1$
-				} else {
-					shell = "/bin/sh"; //$NON-NLS-1$
-				}
+		if (shell == null || shell.isEmpty()) {
+			if (System.getenv(defaultShellEnvironmentVariable) != null
+					&& !"".equals(System.getenv(defaultShellEnvironmentVariable).trim())) { //$NON-NLS-1$
+				shell = System.getenv(defaultShellEnvironmentVariable).trim();
+			} else {
+				shell = defaultShellIfNotSet;
 			}
 		}
 
@@ -313,7 +314,7 @@ public class LocalLauncherDelegate extends AbstractLauncherDelegate {
 		}
 
 		String arguments = (String) properties.get(ITerminalsConnectorConstants.PROP_PROCESS_ARGS);
-		if (arguments == null && !Platform.OS_WIN32.equals(Platform.getOS())) {
+		if (arguments == null) {
 			arguments = IPreferenceKeys.getPreferences()
 					.getString(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX_ARGS);
 		}
