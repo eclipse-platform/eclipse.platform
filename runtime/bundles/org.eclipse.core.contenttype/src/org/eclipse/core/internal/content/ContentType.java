@@ -394,7 +394,14 @@ public final class ContentType implements IContentType, IContentTypeInfo {
 	}
 
 	boolean hasFileSpec(IScopeContext context, String text, int typeMask) {
-		if (context.equals(manager.getContext()) || (typeMask & IGNORE_USER_DEFINED) != 0) {
+		return hasFileSpec(context, context.equals(manager.getContext()), text, typeMask);
+	}
+
+	/**
+	 * Variant for callers that already know whether the context is the default one.
+	 */
+	boolean hasFileSpec(IScopeContext context, boolean defaultContext, String text, int typeMask) {
+		if (defaultContext || (typeMask & IGNORE_USER_DEFINED) != 0) {
 			return hasFileSpec(text, typeMask, false);
 		}
 		String[] fileSpecs = ContentTypeSettings.getFileSpecs(context, id, typeMask);
