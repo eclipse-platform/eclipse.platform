@@ -16,7 +16,9 @@ package org.eclipse.debug.internal.ui.importexport.breakpoints;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import org.eclipse.core.runtime.Assert;
@@ -66,8 +68,11 @@ public class EmbeddedBreakpointsViewer {
 	private BreakpointsContentProvider fProvider = null;
 	private Tree fTree = null;
 	private BreakpointsViewer fViewer = null;
-	private final ICheckStateListener fCheckListener = event -> updateCheckedState(event.getElement(),
-			event.getChecked());
+	private final Set<IBreakpoint> fCheckedBreakpoints = new HashSet<>();
+	private final ICheckStateListener fCheckListener = event -> {
+		updateCheckedState(event.getElement(), event.getChecked());
+		updateCheckedBreakpointsSet(event.getElement(), event.getChecked());
+	};
 	private Text filterText;
 	private BreakpointPatternFilter fFilter;
 
@@ -119,6 +124,7 @@ public class EmbeddedBreakpointsViewer {
 		filterText.addModifyListener(e -> {
 			fFilter.setPattern(filterText.getText());
 			fViewer.refresh();
+			restoreCheckedState();
 		});
 		BreakpointsLabelProvider labelprovider = new BreakpointsLabelProvider();
 		if(view != null) {
@@ -178,6 +184,7 @@ public class EmbeddedBreakpointsViewer {
 	private void initViewerState() {
 		fViewer.setGrayedElements();
 		fViewer.setCheckedElements(new Object[] {});
+		fCheckedBreakpoints.clear();
 		ArrayList<IBreakpoint> list = new ArrayList<>();
 		for (Object item : fSelection.toArray()) {
 			IBreakpoint breakpoint = (IBreakpoint)DebugPlugin.getAdapter(item, IBreakpoint.class);
@@ -190,6 +197,49 @@ public class EmbeddedBreakpointsViewer {
 		}
 		for (IBreakpoint element : list) {
 			updateCheckedState(element, true);
+			fCheckedBreakpoints.add(element);
+		}
+	}
+
+	/**
+	 * Updates the tracked set of checked breakpoints when the user changes check state.
+	 */
+	private void updateCheckedBreakpointsSet(Object obj, boolean checked) {
+		IBreakpoint breakpoint = (IBreakpoint) DebugPlugin.getAdapter(obj, IBreakpoint.class);
+		if (breakpoint != null) {
+			if (checked) {
+				fCheckedBreakpoints.add(breakpoint);
+			} else {
+				fCheckedBreakpoints.remove(breakpoint);
+			}
+		} else if (obj instanceof IBreakpointContainer container) {
+			for (IBreakpoint bp : container.getBreakpoints()) {
+				if (checked) {
+					fCheckedBreakpoints.add(bp);
+				} else {
+					fCheckedBreakpoints.remove(bp);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Restores the checked state from the tracked set after a viewer refresh.
+	 */
+	private void restoreCheckedState() {
+		for (TreeItem root : fTree.getItems()) {
+			uncheckAll(root);
+		}
+		for (IBreakpoint bp : fCheckedBreakpoints) {
+			updateCheckedState(bp, true);
+		}
+	}
+
+	private void uncheckAll(TreeItem item) {
+		item.setChecked(false);
+		item.setGrayed(false);
+		for (TreeItem child : item.getItems()) {
+			uncheckAll(child);
 		}
 	}
 
