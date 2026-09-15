@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2014 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -20,7 +20,6 @@ public class ConsoleMessages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.ui.internal.console.ConsoleMessages";//$NON-NLS-1$
 
 	public static String AbstractConsole_0;
-
 	public static String ConsoleDropDownAction_0;
 	public static String ConsoleDropDownAction_1;
 
@@ -80,4 +79,12 @@ public class ConsoleMessages extends NLS {
 	public static String PatternMatchListenerExtension_5;
 
 	public static String UpdatingConsoleState;
+
+	public static String CompareConsoleWithClipboard_0;
+	public static String CompareConsoleWithClipboard_1;
+	public static String CompareConsoleWithClipboard_2;
+	public static String CompareConsoleWithClipboard_3;
+	public static String CompareConsoleWithClipboard_4;
+	public static String CompareConsoleWithClipboard_5;
+	public static String CompareConsoleWithClipboard_6;
 }
