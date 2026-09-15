@@ -17,6 +17,7 @@
 package org.eclipse.terminal.internal.emulator;
 
 import static org.eclipse.terminal.model.TerminalColor.BLACK;
+import static org.eclipse.terminal.model.TerminalColor.GREEN;
 import static org.eclipse.terminal.model.TerminalColor.WHITE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -1085,5 +1086,82 @@ public class VT100EmulatorBackendTest {
 		assertEquals("3333", new String(term.getChars(2)));
 		assertNull(term.getChars(3));
 		assertEquals("4444", new String(term.getChars(4))); // footer below the region is untouched
+	}
+
+	@Test
+	public void testEraseKeepsBackground() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(4);
+		vt100.setDimensions(4, 8);
+		vt100.setDefaultStyle(TerminalStyle.getStyle(WHITE, BLACK));
+		TerminalStyle onGreen = TerminalStyle.getStyle(WHITE, GREEN).setBold(true);
+		// a program paints a run wider than its text by setting a background and erasing
+		vt100.setStyle(onGreen);
+		vt100.setCursor(0, 0);
+		vt100.appendString("ab");
+		vt100.eraseLineToEnd();
+		assertEquals(GREEN, term.getStyle(0, 5).getBackgroundTerminalColor());
+		assertEquals(GREEN, term.getStyle(0, 7).getBackgroundTerminalColor());
+		assertFalse(term.getStyle(0, 5).isBold()); // only the background carries over
+		// the same for erase to cursor, whole line, ECH, and the cells ICH and DCH uncover
+		vt100.setCursor(1, 3);
+		vt100.eraseLineToCursor();
+		assertEquals(GREEN, term.getStyle(1, 0).getBackgroundTerminalColor());
+		vt100.setCursor(2, 0);
+		vt100.eraseLine();
+		assertEquals(GREEN, term.getStyle(2, 7).getBackgroundTerminalColor());
+		vt100.setStyle(TerminalStyle.getStyle(WHITE, BLACK));
+		vt100.setCursor(3, 0);
+		vt100.appendString("0123456"); // one short of the margin, so as not to wrap
+		vt100.setStyle(onGreen);
+		vt100.setCursor(3, 1);
+		vt100.eraseCharacters(2);
+		assertEquals(GREEN, term.getStyle(3, 2).getBackgroundTerminalColor());
+		assertEquals(BLACK, term.getStyle(3, 3).getBackgroundTerminalColor());
+		vt100.setCursor(3, 4);
+		vt100.insertCharacters(1);
+		assertEquals(GREEN, term.getStyle(3, 4).getBackgroundTerminalColor());
+		assertEquals('4', term.getChar(3, 5));
+		vt100.deleteCharacters(1);
+		assertEquals(GREEN, term.getStyle(3, 7).getBackgroundTerminalColor());
+		// erasing in the default background stays default
+		vt100.setStyle(TerminalStyle.getStyle(WHITE, BLACK));
+		vt100.setCursor(0, 0);
+		vt100.eraseToEndOfScreen();
+		assertEquals(BLACK, term.getStyle(2, 7).getBackgroundTerminalColor());
+	}
+
+	@Test
+	public void testPendingWrapForgottenByCursorMove() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(3);
+		vt100.setDimensions(3, 5);
+		vt100.setVT100LineWrapping(true); // xterm's deferred wrap, as the process connector sets it
+		vt100.setCursor(0, 0);
+		vt100.appendString("abcde"); // fills the row: the wrap is pending, not done
+		// DEC STD 070: a line feed, a cursor move or an erase forgets the pending wrap
+		vt100.processNewline();
+		vt100.appendString("x");
+		assertEquals('x', term.getChar(1, 4));
+		assertFalse(term.isWrappedLine(0));
+		assertFalse(term.isWrappedLine(1));
+		vt100.setCursor(0, 4);
+		vt100.appendString("e");
+		vt100.setCursorLine(2);
+		vt100.appendString("y");
+		assertEquals('y', term.getChar(2, 4));
+		vt100.setCursor(0, 4);
+		vt100.appendString("e");
+		vt100.eraseCharacters(1);
+		vt100.appendString("z");
+		assertEquals('z', term.getChar(0, 4));
+		assertEquals(0, vt100.getCursorLine());
+		// only writing on is a wrap
+		vt100.setCursor(0, 4);
+		vt100.appendString("ef");
+		assertTrue(term.isWrappedLine(0));
+		assertEquals('f', term.getChar(1, 0));
 	}
 }
