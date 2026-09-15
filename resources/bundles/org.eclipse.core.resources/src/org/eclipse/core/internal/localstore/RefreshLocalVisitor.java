@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2015 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -173,6 +173,13 @@ public class RefreshLocalVisitor implements IUnifiedTreeVisitor, ILocalStoreCons
 		ResourceInfo info = target.getResourceInfo(false, true);
 		if (info == null) {
 			return;
+		}
+		if (target.getType() == IResource.FILE && (target.isLinked() || !target.equals(node.getResource()))) {
+			try {
+				((File) target).updateMetadataFiles();
+			} catch (CoreException e) {
+				errors.merge(e.getStatus());
+			}
 		}
 		target.getLocalManager().updateLocalSync(info, node.getLastModified());
 		info.incrementContentId();
