@@ -267,4 +267,11 @@ public class TerminalTextDataWindow implements ITerminalTextData {
 			fData.setWrappedLine(line - fWindowStartLine);
 		}
 	}
+
+	@Override
+	public void clearWrappedLine(int line) {
+		if (isInWindow(line)) {
+			fData.clearWrappedLine(line - fWindowStartLine);
+		}
+	}
 }

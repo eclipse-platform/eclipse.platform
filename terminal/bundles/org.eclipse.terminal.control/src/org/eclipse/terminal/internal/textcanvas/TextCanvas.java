@@ -43,6 +43,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.terminal.control.ITerminalMouseListener;
+import org.eclipse.terminal.internal.model.CharWidth;
 import org.eclipse.terminal.model.ITerminalTextDataReadOnly;
 import org.eclipse.terminal.model.TerminalColor;
 
@@ -57,6 +58,10 @@ public class TextCanvas extends GridCanvas {
 	private final ILinelRenderer fCellRenderer;
 	private boolean fScrollLock;
 	private Point fDraggingStart;
+	/** -1 above the top, 1 below the bottom, 0 while the pointer is inside */
+	private int fDragPast;
+	private boolean fDragScrolling;
+	private static final int DRAG_SCROLL_INTERVAL = 60;
 	private Point fDraggingEnd;
 	private boolean fHasSelection;
 	private ResizeListener fResizeListener;
@@ -269,6 +274,12 @@ public class TextCanvas extends GridCanvas {
 		});
 		addMouseMoveListener(e -> {
 			if (fDraggingStart != null) {
+				// Dragging past an edge keeps the lines beyond it coming into view.
+				fDragPast = e.y < 0 ? -1 : e.y >= getClientArea().height ? 1 : 0;
+				if (fDragPast != 0 && !fDragScrolling) {
+					fDragScrolling = true;
+					getDisplay().timerExec(DRAG_SCROLL_INTERVAL, this::dragScroll);
+				}
 				Point curr = screenPointToCell(e.x, e.y);
 				updateHasSelection(e);
 				switch (fSelMode) {
@@ -295,6 +306,18 @@ public class TextCanvas extends GridCanvas {
 		});
 		setVerticalBarVisible(true);
 		setHorizontalBarVisible(false);
+	}
+
+	private void dragScroll() {
+		if (isDisposed() || fDraggingStart == null || fDragPast == 0) {
+			fDragScrolling = false;
+			return;
+		}
+		scrollYDelta(fDragPast * getCellHeight());
+		Point p = toControl(getDisplay().getCursorLocation());
+		setSelection(screenPointToCell(p.x, p.y));
+		redraw();
+		getDisplay().timerExec(DRAG_SCROLL_INTERVAL, this::dragScroll);
 	}
 
 	private static class Range {
@@ -494,6 +517,11 @@ public class TextCanvas extends GridCanvas {
 		} finally {
 			setRedraw(true);
 		}
+		// NO_REDRAW_RESIZE paints only what a resize uncovers. When the grid gets
+		// narrower, what was drawn in the columns now past its edge stays there.
+		if (getVirtualBounds().width < virtualBounds.width) {
+			redraw();
+		}
 	}
 
 	void scrollToEnd() {
@@ -535,7 +563,31 @@ public class TextCanvas extends GridCanvas {
 
 	@Override
 	protected void drawLine(GC gc, int line, int x, int y, int colFirst, int colLast) {
+		// A wide character spans two cells and has to be drawn from the first of
+		// them. When the damaged area starts on the second one, widen the range so
+		// the glyph is drawn from its own origin. Clipping then keeps only the half
+		// that was actually damaged, which is the half that needed repainting.
+		if (isFillerCell(line, colFirst)) {
+			colFirst--;
+			x -= getCellWidth();
+		}
+		// Same at the other end: a wide character starting in the last cell of the
+		// range would be cut in half by the edge of the range.
+		if (isFillerCell(line, colLast)) {
+			colLast++;
+		}
 		fCellRenderer.drawLine(fCellCanvasModel, gc, line, x, y, colFirst, colLast);
+	}
+
+	/**
+	 * @return whether the cell holds the second half of a wide character
+	 */
+	private boolean isFillerCell(int line, int col) {
+		ITerminalTextDataReadOnly text = fCellCanvasModel.getTerminalText();
+		if (col <= 0 || col >= text.getWidth() || line < 0 || line >= text.getHeight()) {
+			return false;
+		}
+		return text.getChar(line, col) == '\000' && CharWidth.of(text.getChar(line, col - 1)) == 2;
 	}
 
 	@Override
