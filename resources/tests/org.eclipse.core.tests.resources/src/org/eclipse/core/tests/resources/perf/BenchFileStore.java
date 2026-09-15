@@ -15,6 +15,7 @@ package org.eclipse.core.tests.resources.perf;
 
 import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import org.eclipse.core.filesystem.EFS;
@@ -114,6 +115,24 @@ public class BenchFileStore {
 	}
 
 	@Test
+	public void testStoreExitsFfm_Linux() throws Throwable {
+		if (Platform.OS.isLinux()) {
+			withFfm(() -> {
+				new StoreTestRunner(true).run(getClass(), testInfo.getDisplayName(), REPEATS, LOOP_SIZE);
+			});
+		}
+	}
+
+	@Test
+	public void testStoreNotExitsFfm_Linux() throws Throwable {
+		if (Platform.OS.isLinux()) {
+			withFfm(() -> {
+				new StoreTestRunner(false).run(getClass(), testInfo.getDisplayName(), REPEATS, LOOP_SIZE);
+			});
+		}
+	}
+
+	@Test
 	public void testStoreExitsNio() throws Throwable {
 		withNatives(false, false, () -> {
 			new StoreTestRunner(true).run(getClass(), testInfo.getDisplayName(), REPEATS, LOOP_SIZE);
@@ -133,6 +152,16 @@ public class BenchFileStore {
 		try {
 			assertEquals(natives, LocalFileNativesManager.setUsingNative(natives, useFastLinuxNatives),
 					"can't set natives to the desired value");
+			runnable.execute();
+		} finally {
+			LocalFileNativesManager.reset();
+		}
+	}
+
+	private static void withFfm(Executable runnable) throws Throwable {
+		try {
+			assertTrue(LocalFileNativesManager.setUsingNative(true, false, true),
+					"can't use the Foreign Function & Memory API");
 			runnable.execute();
 		} finally {
 			LocalFileNativesManager.reset();
