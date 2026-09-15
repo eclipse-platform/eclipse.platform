@@ -86,7 +86,7 @@ public class StyleMap {
 			foregroundRGB = style.getForegroundRGB();
 		}
 		if (foregroundRGB != null) {
-			return new Color(foregroundRGB);
+			return dimmed(style, new Color(foregroundRGB));
 		}
 
 		TerminalColor color;
@@ -101,7 +101,22 @@ public class StyleMap {
 		}
 
 		color = color.convertColor(fInvertColors, style.isBold());
-		return getColor(color);
+		return dimmed(style, getColor(color));
+	}
+
+	/**
+	 * SGR 2 asks for a fainter version of whatever colour is in force. Half way to
+	 * the background keeps the text readable while setting it apart from the rest,
+	 * and it works for any colour rather than only the sixteen named ones.
+	 */
+	private Color dimmed(TerminalStyle style, Color color) {
+		if (!style.isDim()) {
+			return color;
+		}
+		RGB rgb = color.getRGB();
+		RGB background = getBackgroundColor(style).getRGB();
+		return new Color((rgb.red + background.red) / 2, (rgb.green + background.green) / 2,
+				(rgb.blue + background.blue) / 2);
 	}
 
 	public Color getBackgroundColor(TerminalStyle style) {
