@@ -54,6 +54,27 @@ public class MockTerminalControlForText implements ITerminalControlForText {
 
 	}
 
+	private boolean cursorShown = true;
+	private boolean bracketedPaste;
+
+	@Override
+	public void showCursor(boolean show) {
+		cursorShown = show;
+	}
+
+	public boolean isCursorShown() {
+		return cursorShown;
+	}
+
+	@Override
+	public void enableBracketedPaste(boolean enable) {
+		bracketedPaste = enable;
+	}
+
+	public boolean isBracketedPaste() {
+		return bracketedPaste;
+	}
+
 	@Override
 	public void enableApplicationCursorKeys(boolean enable) {
 		throw new UnsupportedOperationException();
