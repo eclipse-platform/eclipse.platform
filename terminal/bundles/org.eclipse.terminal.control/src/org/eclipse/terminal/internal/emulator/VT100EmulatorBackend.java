@@ -354,7 +354,11 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 	 */
 	private void doNewline() {
 		if (fCursorLine == fScrollRegion.getBottomLine()) {
-			scrollUp(1);
+			if (fScrollRegion.getTopLine() == 0) {
+				scrollTopAnchoredRegionUpIntoHistory();
+			} else {
+				scrollUp(1);
+			}
 		} else if (fCursorLine + 1 >= fLines) {
 			int h = fTerminal.getHeight();
 			fTerminal.addLine();
@@ -364,6 +368,26 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 		} else {
 			setCursorLine(fCursorLine + 1);
 		}
+	}
+
+	/**
+	 * Scrolls a scroll region whose top margin is the top of the screen: the displaced top line
+	 * is moved into the scroll-back history (like xterm/VTE) instead of being discarded.
+	 * MUST be called from a synchronized block!
+	 */
+	private void scrollTopAnchoredRegionUpIntoHistory() {
+		// adding a line moves the whole screen window up by one line: the former top line of the
+		// screen (and of the region) becomes the newest scroll-back line and the new bottom line of
+		// the screen is blank
+		fTerminal.addLine();
+		int regionBottom = fScrollRegion.getBottomLine();
+		if (regionBottom < fLines - 1) {
+			// lines below the region must not move: shift them back down by one line, which also
+			// vacates the new bottom line of the region
+			fTerminal.scroll(toAbsoluteLine(regionBottom), fLines - regionBottom, 1);
+		}
+		// the absolute line of the cursor may have changed
+		setCursorLine(fCursorLine);
 	}
 
 	@Override
