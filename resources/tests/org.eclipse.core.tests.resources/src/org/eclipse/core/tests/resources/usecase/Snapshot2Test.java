@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -70,8 +71,10 @@ public class Snapshot2Test {
 		assertTrue(project.exists());
 		assertTrue(project.isOpen());
 
-		// remove all resources
-		IResource[] children = project.members();
+		// remove all resources but .project, deleting it would close the project
+		IResource[] children = Arrays.stream(project.members())
+				.filter(child -> !IProjectDescription.DESCRIPTION_FILE_NAME.equals(child.getName()))
+				.toArray(IResource[]::new);
 		getWorkspace().delete(children, true, null);
 
 		// create some children

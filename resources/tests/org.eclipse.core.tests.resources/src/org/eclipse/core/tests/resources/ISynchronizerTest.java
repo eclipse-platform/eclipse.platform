@@ -155,13 +155,15 @@ public class ISynchronizerTest {
 		};
 		getWorkspace().getRoot().accept(visitor);
 
-		// delete all resources under the projects.
+		// delete all resources under the projects, deleting .project would close them
 		final IProject[] projects = getWorkspace().getRoot().getProjects();
 		IWorkspaceRunnable body = monitor -> {
 			for (IProject project : projects) {
 				IResource[] children = project.members();
 				for (IResource element : children) {
-					element.delete(false, createTestMonitor());
+					if (!IProjectDescription.DESCRIPTION_FILE_NAME.equals(element.getName())) {
+						element.delete(false, createTestMonitor());
+					}
 				}
 			}
 		};

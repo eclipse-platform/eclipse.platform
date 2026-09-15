@@ -23,11 +23,9 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSyst
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.core.internal.resources.ICoreConstants;
-import org.eclipse.core.internal.resources.TestingSupport;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -61,9 +59,6 @@ public class LocalSyncTest implements ICoreConstants {
 
 	@Test
 	public void testProjectDeletion() throws CoreException {
-		//snapshot will recreate the deleted .project file
-		TestingSupport.waitForSnapshot();
-
 		// create resources
 		IResource[] resources = buildResources(project, "/File1", "/Folder1/", "/Folder1/File1", "/Folder1/Folder2/");
 		createInWorkspace(resources);
@@ -72,11 +67,12 @@ public class LocalSyncTest implements ICoreConstants {
 		Workspace.clear(project.getLocation().toFile());
 
 		// run synchronize
-		//The .project file has been deleted, so this will fail
-		assertThrows(CoreException.class, () -> project.refreshLocal(IResource.DEPTH_INFINITE, null));
+		// The .project file has been deleted, so this closes the project
+		project.refreshLocal(IResource.DEPTH_INFINITE, null);
 
-		/* project should still exists */
+		/* project should still exist but be closed */
 		assertTrue(project.exists());
+		assertFalse(project.isOpen());
 
 		/* resources should not exist anymore */
 		for (int i = 1; i < resources.length; i++) {
