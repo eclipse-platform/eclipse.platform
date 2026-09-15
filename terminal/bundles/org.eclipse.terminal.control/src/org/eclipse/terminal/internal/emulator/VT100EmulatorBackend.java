@@ -15,6 +15,7 @@
 package org.eclipse.terminal.internal.emulator;
 
 import org.eclipse.terminal.model.ITerminalTextData;
+import org.eclipse.terminal.internal.model.TerminalTextDataStore;
 import org.eclipse.terminal.model.TerminalStyle;
 
 /**
@@ -92,11 +93,55 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 	int fLines;
 	int fColumns;
 	final private ITerminalTextData fTerminal;
+
+	/**
+	 * What the normal screen held while the alternate one is showing, and null the
+	 * rest of the time, which is also how we know which screen we are on.
+	 */
+	private ITerminalTextData fNormalScreen;
+	private int fNormalMaxHeight;
+	private int fNormalCursorLine;
+	private int fNormalCursorColumn;
 	private boolean fVT100LineWrapping;
 	private ScrollRegion fScrollRegion = ScrollRegion.FULL_WINDOW;
 
 	public VT100EmulatorBackend(ITerminalTextData terminal) {
 		fTerminal = terminal;
+	}
+
+	@Override
+	public void enableAlternateScreen(boolean enable) {
+		synchronized (fTerminal) {
+			if (enable == (fNormalScreen != null)) {
+				// Already on the screen being asked for. Programs do ask twice.
+				return;
+			}
+			if (enable) {
+				fNormalScreen = new TerminalTextDataStore();
+				fNormalScreen.copy(fTerminal);
+				fNormalCursorLine = fCursorLine;
+				fNormalCursorColumn = fCursorColumn;
+				fNormalMaxHeight = fTerminal.getMaxHeight();
+				// clearAll leaves the buffer the size of the screen, which is what the
+				// alternate screen is: no history to scroll back through. Capping the
+				// buffer there keeps it so: scrolling drops the top line instead of
+				// growing the buffer, as a program on this screen expects.
+				clearAll();
+				fTerminal.setMaxHeight(fLines);
+			} else {
+				fTerminal.copy(fNormalScreen);
+				fNormalScreen = null;
+				fTerminal.setMaxHeight(Math.max(fNormalMaxHeight, fTerminal.getHeight()));
+				// The window may have been resized while the program had the screen, and
+				// the buffer put back is the one from before. Narrower, and every write
+				// past its margin throws; shorter than the screen, and the top of the
+				// screen sits above its first line, so every line number comes out negative.
+				if (fTerminal.getHeight() < fLines || fTerminal.getWidth() != fColumns) {
+					fTerminal.setDimensions(Math.max(fTerminal.getHeight(), fLines), fColumns);
+				}
+				setCursor(fNormalCursorLine, fNormalCursorColumn);
+			}
+		}
 	}
 
 	@Override
