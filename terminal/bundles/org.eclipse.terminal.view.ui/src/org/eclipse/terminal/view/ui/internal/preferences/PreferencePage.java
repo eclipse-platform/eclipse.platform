@@ -43,6 +43,7 @@ import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -118,91 +119,7 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage 
 		label.setText(Messages.PreferencePage_label);
 		label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
-		if (!Platform.OS_WIN32.equals(Platform.getOS())) {
-			Group group = new Group(panel, SWT.NONE);
-			group.setText(Messages.PreferencePage_command_label);
-			group.setLayout(new GridLayout(2, false));
-			group.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-
-			command = new Text(group, SWT.SINGLE | SWT.BORDER);
-			command.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-			command.addModifyListener(e -> {
-				boolean valid = true;
-				String message = null;
-
-				String text = command.getText();
-				if (text != null && !"".equals(text.trim())) { //$NON-NLS-1$
-					IPath p = new Path(text.trim());
-					valid = p.toFile().isFile() && p.toFile().canRead() && p.toFile().canExecute();
-					if (!valid) {
-						message = Messages.PreferencePage_command_invalid;
-					}
-				}
-
-				setValid(valid);
-				setErrorMessage(message);
-			});
-
-			commandBrowseButton = new Button(group, SWT.PUSH);
-			commandBrowseButton.setText(Messages.PreferencePage_command_button_browse);
-			layoutData = new GridData(SWT.FILL, SWT.CENTER, false, false);
-			layoutData.widthHint = Dialog.convertWidthInCharsToPixels(gc.getFontMetrics(), 14);
-			commandBrowseButton.setLayoutData(layoutData);
-			commandBrowseButton.addSelectionListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					FileDialog dialog = new FileDialog(parent.getShell(), SWT.OPEN);
-
-					String text = command.getText();
-					if (text != null && !"".equals(text.trim())) { //$NON-NLS-1$
-						IPath p = new Path(text);
-
-						if (p.toFile().isFile() || !p.toFile().exists()) {
-							dialog.setFilterPath(p.removeLastSegments(1).toOSString());
-							dialog.setFileName(p.lastSegment());
-						} else if (p.toFile().isDirectory()) {
-							dialog.setFilterPath(p.toOSString());
-						}
-					}
-
-					String selected = dialog.open();
-					if (selected != null) {
-						IPath sp = new Path(selected);
-						command.setText(sp.toOSString());
-					}
-				}
-			});
-
-			String cmd = UIPlugin.getScopedPreferences()
-					.getString(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX);
-			if (cmd != null && !"".equals(cmd)) { //$NON-NLS-1$
-				command.setText(new Path(cmd).toOSString());
-			}
-
-			Composite argsPanel = new Composite(group, SWT.NONE);
-			GridLayout layout = new GridLayout(2, false);
-			layout.marginHeight = 0;
-			layout.marginWidth = 0;
-			argsPanel.setLayout(layout);
-			layoutData = new GridData(SWT.FILL, SWT.BEGINNING, true, false);
-			layoutData.horizontalSpan = 2;
-			argsPanel.setLayoutData(layoutData);
-
-			label = new Label(argsPanel, SWT.NONE);
-			label.setText(Messages.PreferencePage_command_arguments_label);
-
-			arguments = new Text(argsPanel, SWT.SINGLE | SWT.BORDER);
-			arguments.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-
-			String args = UIPlugin.getScopedPreferences()
-					.getString(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX_ARGS);
-			if (args != null && !"".equals(args)) { //$NON-NLS-1$
-				arguments.setText(args);
-			}
-
-			NoteCompositeHelper.createNoteComposite(group.getFont(), group, Messages.PreferencePage_command_note_label,
-					Messages.PreferencePage_command_note_text);
-		}
+		addShellCommandSection(parent, gc, panel);
 
 		Group group = new Group(panel, SWT.NONE);
 		group.setText(Messages.PreferencePage_workingDir_label);
@@ -591,6 +508,104 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage 
 		return panel;
 	}
 
+	private void addShellCommandSection(final Composite parent, final GC gc, Composite panel) {
+		GridData layoutData;
+		Label label;
+		Group group = new Group(panel, SWT.NONE);
+		group.setText(Messages.PreferencePage_command_label);
+		group.setLayout(new GridLayout(2, false));
+		group.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+
+		command = new Text(group, SWT.SINGLE | SWT.BORDER);
+		command.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		command.addModifyListener(e -> {
+			boolean valid = true;
+			String message = null;
+
+			String text = command.getText();
+			if (text != null && !"".equals(text.trim())) { //$NON-NLS-1$
+				IPath p = new Path(text.trim());
+				valid = p.toFile().isFile() && p.toFile().canRead() && p.toFile().canExecute();
+				if (!valid) {
+					message = Messages.PreferencePage_command_invalid;
+				}
+			}
+
+			setValid(valid);
+			setErrorMessage(message);
+		});
+
+		commandBrowseButton = new Button(group, SWT.PUSH);
+		commandBrowseButton.setText(Messages.PreferencePage_command_button_browse);
+		layoutData = new GridData(SWT.FILL, SWT.CENTER, false, false);
+		layoutData.widthHint = Dialog.convertWidthInCharsToPixels(gc.getFontMetrics(), 14);
+		commandBrowseButton.setLayoutData(layoutData);
+		commandBrowseButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				FileDialog dialog = new FileDialog(parent.getShell(), SWT.OPEN);
+
+				String text = command.getText();
+				if (text != null && !"".equals(text.trim())) { //$NON-NLS-1$
+					IPath p = new Path(text);
+
+					if (p.toFile().isFile() || !p.toFile().exists()) {
+						dialog.setFilterPath(p.removeLastSegments(1).toOSString());
+						dialog.setFileName(p.lastSegment());
+					} else if (p.toFile().isDirectory()) {
+						dialog.setFilterPath(p.toOSString());
+					}
+				}
+
+				String selected = dialog.open();
+				if (selected != null) {
+					IPath sp = new Path(selected);
+					command.setText(sp.toOSString());
+				}
+			}
+		});
+
+		String cmd = UIPlugin.getScopedPreferences().getString(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX);
+		if (cmd != null && !"".equals(cmd)) { //$NON-NLS-1$
+			command.setText(new Path(cmd).toOSString());
+		}
+
+		Composite argsPanel = new Composite(group, SWT.NONE);
+		GridLayout layout = new GridLayout(2, false);
+		layout.marginHeight = 0;
+		layout.marginWidth = 0;
+		argsPanel.setLayout(layout);
+		layoutData = new GridData(SWT.FILL, SWT.BEGINNING, true, false);
+		layoutData.horizontalSpan = 2;
+		argsPanel.setLayoutData(layoutData);
+
+		label = new Label(argsPanel, SWT.NONE);
+		label.setText(Messages.PreferencePage_command_arguments_label);
+
+		arguments = new Text(argsPanel, SWT.SINGLE | SWT.BORDER);
+		arguments.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+
+		String args = UIPlugin.getScopedPreferences()
+				.getString(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX_ARGS);
+		if (args != null && !"".equals(args)) { //$NON-NLS-1$
+			arguments.setText(args);
+		}
+
+		String defaultShellEnvironmentVariable;
+		String defaultShellIfNotSet;
+		if (Platform.OS_WIN32.equals(Platform.getOS())) {
+			defaultShellEnvironmentVariable = "ComSpec"; //$NON-NLS-1$
+			defaultShellIfNotSet = "cmd.exe"; //$NON-NLS-1$
+		} else {
+			defaultShellEnvironmentVariable = "SHELL"; //$NON-NLS-1$
+			defaultShellIfNotSet = "/bin/sh"; //$NON-NLS-1$
+		}
+
+		NoteCompositeHelper.createNoteComposite(group.getFont(), group, Messages.PreferencePage_command_note_label,
+				NLS.bind(Messages.PreferencePage_command_note_text, defaultShellEnvironmentVariable,
+						defaultShellIfNotSet));
+	}
+
 	/**
 	 * Updates the button states.
 	 */
@@ -614,10 +629,8 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage 
 
 	@Override
 	protected void performDefaults() {
-		if (!Platform.OS_WIN32.equals(Platform.getOS())) {
-			command.setText(""); //$NON-NLS-1$
-			arguments.setText(""); //$NON-NLS-1$
-		}
+		command.setText(""); //$NON-NLS-1$
+		arguments.setText(""); //$NON-NLS-1$
 
 		String initialCwd = UIPlugin.getScopedPreferences()
 				.getDefaultString(IPreferenceKeys.PREF_LOCAL_TERMINAL_INITIAL_CWD);
@@ -646,16 +659,16 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage 
 
 	@Override
 	public boolean performOk() {
-		if (!Platform.OS_WIN32.equals(Platform.getOS())) {
-			String text = command.getText();
-			IPath p = new Path(text.trim());
-			UIPlugin.getScopedPreferences().setValue(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX,
-					p.toFile().isFile() && p.toFile().canRead() && p.toFile().canExecute() ? p.toOSString() : ""); //$NON-NLS-1$
+		String commandText = command.getText();
+		IPath commandPath = new Path(commandText.trim());
+		UIPlugin.getScopedPreferences().setValue(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX,
+				commandPath.toFile().isFile() && commandPath.toFile().canRead() && commandPath.toFile().canExecute()
+						? commandPath.toOSString()
+						: ""); //$NON-NLS-1$
 
-			text = arguments.getText();
-			UIPlugin.getScopedPreferences().setValue(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX_ARGS,
-					!"".equals(text.trim()) ? text.trim() : ""); //$NON-NLS-1$ //$NON-NLS-2$
-		}
+		commandText = arguments.getText();
+		UIPlugin.getScopedPreferences().setValue(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX_ARGS,
+				!"".equals(commandText.trim()) ? commandText.trim() : ""); //$NON-NLS-1$ //$NON-NLS-2$
 
 		String text = workingDir.getText();
 		if (text == null || Messages.PreferencePage_workingDir_userhome_label.equals(text) || "".equals(text.trim())) { //$NON-NLS-1$
