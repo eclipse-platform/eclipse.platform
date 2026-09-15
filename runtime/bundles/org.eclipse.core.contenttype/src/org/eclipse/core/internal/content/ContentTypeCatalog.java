@@ -606,19 +606,21 @@ public final class ContentTypeCatalog {
 	 */
 	synchronized private IContentType[][] internalFindContentTypesSorted(ContentTypeMatcher matcher, final String fileName, Comparator<IContentType> sortingPolicy, boolean quickFinish) {
 		IScopeContext context = matcher.getContext();
+		// comparing a project scope context is expensive, so do it once per lookup
+		final boolean defaultContext = context.equals(manager.getContext());
 		IContentType[][] result = { NO_CONTENT_TYPES, NO_CONTENT_TYPES, NO_CONTENT_TYPES };
 
 		Set<ContentType> existing = new HashSet<>();
 
 		final Set<ContentType> allByFileName;
-		if (context.equals(manager.getContext())) {
+		if (defaultContext) {
 			allByFileName = getDirectlyAssociated(fileName, IContentTypeSettings.FILE_NAME_SPEC);
 		} else {
 			allByFileName = new HashSet<>(getDirectlyAssociated(fileName, IContentTypeSettings.FILE_NAME_SPEC | IContentType.IGNORE_USER_DEFINED));
 			allByFileName.addAll(matcher.getDirectlyAssociated(this, fileName, IContentTypeSettings.FILE_NAME_SPEC));
 		}
-		Set<ContentType> selectedByName = selectMatchingByName(context, allByFileName, Collections.emptySet(), fileName,
-				IContentType.FILE_NAME_SPEC);
+		Set<ContentType> selectedByName = selectMatchingByName(context, defaultContext, allByFileName,
+				Collections.emptySet(), fileName, IContentType.FILE_NAME_SPEC);
 		existing.addAll(selectedByName);
 		result[0] = selectedByName.toArray(new IContentType[selectedByName.size()]);
 		if (result[0].length > 1) {
@@ -631,13 +633,14 @@ public final class ContentTypeCatalog {
 		final String fileExtension = ContentTypeManager.getFileExtension(fileName);
 		if (fileExtension != null) {
 			final Set<ContentType> allByFileExtension;
-			if (context.equals(manager.getContext())) {
+			if (defaultContext) {
 				allByFileExtension = getDirectlyAssociated(fileExtension, IContentTypeSettings.FILE_EXTENSION_SPEC);
 			} else {
 				allByFileExtension = new HashSet<>(getDirectlyAssociated(fileExtension, IContentTypeSettings.FILE_EXTENSION_SPEC | IContentType.IGNORE_USER_DEFINED));
 				allByFileExtension.addAll(matcher.getDirectlyAssociated(this, fileExtension, IContentTypeSettings.FILE_EXTENSION_SPEC));
 			}
-			Set<ContentType> selectedByExtension = selectMatchingByName(context, allByFileExtension, selectedByName, fileExtension, IContentType.FILE_EXTENSION_SPEC);
+			Set<ContentType> selectedByExtension = selectMatchingByName(context, defaultContext, allByFileExtension,
+					selectedByName, fileExtension, IContentType.FILE_EXTENSION_SPEC);
 			existing.addAll(selectedByExtension);
 			if (!selectedByExtension.isEmpty()) {
 				result[1] = selectedByExtension.toArray(new IContentType[selectedByExtension.size()]);
@@ -651,7 +654,7 @@ public final class ContentTypeCatalog {
 		}
 
 		final Set<ContentType> allByFilePattern;
-		if (context.equals(manager.getContext())) {
+		if (defaultContext) {
 			allByFilePattern = getMatchingRegexpAssociated(fileName, IContentTypeSettings.FILE_PATTERN_SPEC);
 		} else {
 			allByFilePattern = new HashSet<>(getMatchingRegexpAssociated(fileName,
@@ -787,7 +790,9 @@ public final class ContentTypeCatalog {
 	 * Processes all content types in source, adding those matching the given file spec to the
 	 * destination collection.
 	 */
-	private Set<ContentType> selectMatchingByName(final IScopeContext context, Collection<ContentType> source, final Collection<ContentType> existing, final String fileSpecText, final int fileSpecType) {
+	private Set<ContentType> selectMatchingByName(final IScopeContext context, final boolean defaultContext,
+			Collection<ContentType> source, final Collection<ContentType> existing, final String fileSpecText,
+			final int fileSpecType) {
 		if (source == null || source.isEmpty()) {
 			return Collections.EMPTY_SET;
 		}
@@ -801,7 +806,8 @@ public final class ContentTypeCatalog {
 					// this content type has built-in associations - visit it later as root
 					return ContentTypeVisitor.RETURN;
 				}
-				if (contentType == root && !contentType.hasFileSpec(context, fileSpecText, fileSpecType)) {
+				if (contentType == root
+						&& !contentType.hasFileSpec(context, defaultContext, fileSpecText, fileSpecType)) {
 					// it is the root and does not match the file name - do not add it nor look into its children
 					return ContentTypeVisitor.RETURN;
 				}
