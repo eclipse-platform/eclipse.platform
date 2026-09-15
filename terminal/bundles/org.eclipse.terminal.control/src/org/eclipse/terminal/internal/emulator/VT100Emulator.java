@@ -1264,17 +1264,45 @@ public class VT100Emulator implements ControlListener {
 	}
 
 	private void processDecPrivateCommand_h() {
-		int param = getAnsiParameter(0);
+		// A program may set several modes at once: ncurses turns the mouse on with CSI ? 1006 ; 1000 h.
+		for (int i = 0; i <= nextAnsiParameter; i++) {
+			setDecPrivateMode(getAnsiParameter(i));
+		}
+	}
+
+	private void setDecPrivateMode(int param) {
 		switch (param) {
 		case 1:
 			// Enable Application Cursor Keys (DECCKM)
 			terminal.enableApplicationCursorKeys(true);
+			break;
+		case 25:
+			// Show cursor (DECTCEM).
+			terminal.showCursor(true);
 			break;
 		case 47:
 		case 1047:
 		case 1048:
 		case 1049:
 			// Use Alternate Screen Buffer (ignored).
+			break;
+		case 2026:
+			terminal.enableSynchronizedOutput(true);
+			break;
+		case 2004:
+			// Bracketed paste: pasted text is wrapped so a program can tell it from typing.
+			terminal.enableBracketedPaste(true);
+			break;
+		case 1000: // report button press and release
+		case 1002: // also report drag
+		case 1003: // also report every move
+			terminal.enableMouseReporting(param);
+			break;
+		case 1006:
+			terminal.enableSgrMouseEncoding(true);
+			break;
+		case 1004:
+			terminal.enableFocusReporting(true);
 			break;
 		default:
 			Logger.log("Unsupported command parameter: CSI ?" + param + 'h'); //$NON-NLS-1$
@@ -1283,11 +1311,20 @@ public class VT100Emulator implements ControlListener {
 	}
 
 	private void processDecPrivateCommand_l() {
-		int param = getAnsiParameter(0);
+		for (int i = 0; i <= nextAnsiParameter; i++) {
+			resetDecPrivateMode(getAnsiParameter(i));
+		}
+	}
+
+	private void resetDecPrivateMode(int param) {
 		switch (param) {
 		case 1:
 			// Enable Normal Cursor Keys (DECCKM)
 			terminal.enableApplicationCursorKeys(false);
+			break;
+		case 25:
+			// Hide cursor (DECTCEM).
+			terminal.showCursor(false);
 			break;
 		case 47:
 		case 1047:
@@ -1295,6 +1332,23 @@ public class VT100Emulator implements ControlListener {
 		case 1049:
 			// Use Normal Screen Buffer (ignored, but reset scroll region).
 			text.setScrollRegion(-1, -1);
+			break;
+		case 2026:
+			terminal.enableSynchronizedOutput(false);
+			break;
+		case 2004:
+			terminal.enableBracketedPaste(false);
+			break;
+		case 1000:
+		case 1002:
+		case 1003:
+			terminal.enableMouseReporting(0);
+			break;
+		case 1006:
+			terminal.enableSgrMouseEncoding(false);
+			break;
+		case 1004:
+			terminal.enableFocusReporting(false);
 			break;
 		default:
 			Logger.log("Unsupported command parameter: CSI ?" + param + 'l'); //$NON-NLS-1$

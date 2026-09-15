@@ -166,12 +166,19 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 	private final EditActionAccelerators editActionAccelerators = new EditActionAccelerators();
 
 	private boolean fApplicationCursorKeys;
+	private int fMouseMode;
+
+	private int fLastReportedLine, fLastReportedColumn;
+	private boolean fSgrMouseEncoding;
 
 	/**
 	 * Listens to changes in the preferences
 	 */
 	private final IPropertyChangeListener fPreferenceListener = this::updatePreferences;
 	private final IPropertyChangeListener fFontListener = this::updateFont;
+	private boolean fBracketedPaste;
+	private static final String PASTE_START = "\u001b[200~"; //$NON-NLS-1$
+	private static final String PASTE_END = "\u001b[201~"; //$NON-NLS-1$
 
 	/**
 	 * Is protected by synchronize on this
@@ -308,7 +315,7 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 		if (strText == null) {
 			return false;
 		}
-		sendString(strText);
+		sendString(fBracketedPaste ? bracketed(strText) : strText);
 		return true;
 	}
 
@@ -569,6 +576,16 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 		return getCtlText().getShell();
 	}
 
+	/**
+	 * Marks text as pasted, so that a program takes the newlines in it as part of
+	 * the text rather than as the user pressing return on each line. The end marker
+	 * is taken out of the text itself, or the text could close the bracket early and
+	 * the rest of it would arrive as if it had been typed.
+	 */
+	private static String bracketed(String text) {
+		return PASTE_START + text.replace(PASTE_END, "") + PASTE_END; //$NON-NLS-1$
+	}
+
 	protected void sendChar(char chKey, boolean altKeyPressed) {
 		try {
 			int byteToSend = chKey;
@@ -803,6 +820,8 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 		}
 
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, id);
+		getCtlText().setMouseWheelHandler(this::reportMouseWheel);
+		getCtlText().setMouseButtonHandler(new MouseReporter());
 	}
 
 	@Override
@@ -873,6 +892,7 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 			if (getState() == TerminalState.CONNECTED) {
 				captureKeyEvents(true);
 			}
+			reportFocus(true);
 
 			IContextService contextService = PlatformUI.getWorkbench().getAdapter(IContextService.class);
 			editContextActivation = contextService.activateContext("org.eclipse.terminal.EditContext"); //$NON-NLS-1$
@@ -882,6 +902,7 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 		public void focusLost(FocusEvent event) {
 			// Enable all keybindings.
 			captureKeyEvents(false);
+			reportFocus(false);
 
 			// Restore the command context to its previous value.
 
@@ -1288,6 +1309,11 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 		});
 	}
 
+	@Override
+	public void enableBracketedPaste(boolean enable) {
+		fBracketedPaste = enable;
+	}
+
 	/**
 	 * @param runnable run in display thread
 	 */
@@ -1398,6 +1424,103 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 	}
 
 	@Override
+	public void enableMouseReporting(int mode) {
+		fMouseMode = mode;
+		fLastReportedLine = fLastReportedColumn = -1;
+	}
+
+	@Override
+	public void enableSgrMouseEncoding(boolean enable) {
+		fSgrMouseEncoding = enable;
+	}
+
+	/**
+	 * A wheel notch is reported as a press of button 64 or 65, which is how a
+	 * terminal has always told a program that the wheel moved. Without this the
+	 * wheel only ever scrolled the terminal's own view, and a program drawing its
+	 * own scrollable screen never heard about it.
+	 *
+	 * @return whether the program was told, in which case the canvas stays put
+	 */
+	private boolean reportMouseWheel(int count, int modifiers, int line, int column) {
+		if (fMouseMode == 0 || count == 0) {
+			return false;
+		}
+		int button = (count > 0 ? 64 : 65) + modifiers; // up, down
+		// SWT counts lines; a notch is three of them.
+		int notches = Math.max(1, Math.abs(count) / 3);
+		StringBuilder report = new StringBuilder();
+		for (int i = 0; i < notches; i++) {
+			report.append(mouseReport(button, line, column, true));
+		}
+		sendString(report.toString());
+		return true;
+	}
+
+	/**
+	 * A press, a release and the pointer moving, told to the program the way a
+	 * terminal has always told it, so that a program drawing its own screen can be
+	 * clicked on. The terminal keeps the event when shift is held, which is how a
+	 * selection is still made with the mouse while a program is listening for it.
+	 */
+	private class MouseReporter implements TextCanvas.IMouseButtonHandler {
+		@Override
+		public boolean mouseButton(int button, int modifiers, int line, int column, boolean pressed) {
+			if (fMouseMode == 0 || button < 1 || button > 3) {
+				return false;
+			}
+			sendString(mouseReport(button - 1 + modifiers, line, column, pressed));
+			return true;
+		}
+
+		@Override
+		public boolean mouseMoved(int button, int modifiers, int line, int column) {
+			// 1002 is only interested while a button is held, 1003 in every move.
+			if (fMouseMode < 1002 || (fMouseMode == 1002 && button == 0)) {
+				return false;
+			}
+			if (line == fLastReportedLine && column == fLastReportedColumn) {
+				return true; // still the same cell, and a cell is all the program is told
+			}
+			fLastReportedLine = line;
+			fLastReportedColumn = column;
+			sendString(mouseReport((button == 0 ? 3 : button - 1) + 32 + modifiers, line, column, true));
+			return true;
+		}
+	}
+
+	private boolean fFocusReporting;
+
+	@Override
+	public void enableFocusReporting(boolean enable) {
+		fFocusReporting = enable;
+	}
+
+	/**
+	 * A program that asked for focus reporting stops its cursor blinking and holds
+	 * off work while the terminal is not the window being typed into.
+	 */
+	private void reportFocus(boolean gained) {
+		if (fFocusReporting) {
+			sendString(gained ? "[I" : "[O"); //$NON-NLS-1$ //$NON-NLS-2$
+		}
+	}
+
+	private String mouseReport(int button, int line, int column, boolean pressed) {
+		return mouseReport(fSgrMouseEncoding, button, line, column, pressed);
+	}
+
+	public static String mouseReport(boolean sgr, int button, int line, int column, boolean pressed) {
+		if (sgr) {
+			return "\u001b[<" + button + ';' + column + ';' + line + (pressed ? 'M' : 'm'); //$NON-NLS-1$
+		}
+		// The older spelling has no room past column 223 and no way to say which
+		// button came up, so a release is reported as button 3, meaning "some button".
+		return "\u001b[M" + (char) (32 + (pressed ? button : 3)) + (char) (32 + column) //$NON-NLS-1$
+				+ (char) (32 + line);
+	}
+
+	@Override
 	public void addMouseListener(ITerminalMouseListener listener) {
 		getCtlText().addTerminalMouseListener(listener);
 	}
@@ -1410,6 +1533,20 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 	@Override
 	public String getHoverSelection() {
 		return fCtlText.getHoverSelection();
+	}
+
+	@Override
+	public void showCursor(boolean show) {
+		if (fPollingTextCanvasModel != null) {
+			fPollingTextCanvasModel.setCursorHidden(!show);
+		}
+	}
+
+	@Override
+	public void enableSynchronizedOutput(boolean redrawing) {
+		if (fPollingTextCanvasModel != null) {
+			fPollingTextCanvasModel.setSynchronizedOutput(redrawing);
+		}
 	}
 
 	@Override
