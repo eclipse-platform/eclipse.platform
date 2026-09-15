@@ -1086,4 +1086,151 @@ public class VT100EmulatorBackendTest {
 		assertNull(term.getChars(3));
 		assertEquals("4444", new String(term.getChars(4))); // footer below the region is untouched
 	}
+
+	@Test
+	public void testAppendStringWide() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(4);
+		vt100.setDimensions(4, 10);
+		vt100.setCursor(0, 0);
+		// a wide character takes two cells, the second holding a null filler
+		vt100.appendString("한글");
+		assertEqualsTerm("한 글       \n" + "          \n" + "          \n" + "          ", toMultiLineText(term));
+		assertEquals(4, vt100.getCursorColumn());
+		vt100.setCursor(1, 0);
+		vt100.appendString("a한b");
+		assertEqualsTerm("한 글       \n" + "a한 b      \n" + "          \n" + "          ", toMultiLineText(term));
+		assertEquals(4, vt100.getCursorColumn());
+		// a character beyond the BMP is two chars in two cells
+		vt100.setCursor(2, 0);
+		vt100.appendString("a😀b");
+		assertEquals(4, vt100.getCursorColumn());
+		assertEquals("a😀b", new String(term.getChars(2), 0, 4));
+		// a combining mark takes no cell
+		vt100.setCursor(3, 0);
+		vt100.appendString("e\u0301x");
+		assertEquals(2, vt100.getCursorColumn());
+	}
+
+	@Test
+	public void testAppendStringWideAtMargin() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(4);
+		vt100.setDimensions(4, 5);
+		vt100.setCursor(0, 0);
+		vt100.appendString("abc한");
+		assertEqualsTerm("abc한 \n" + "     \n" + "     \n" + "     ", toMultiLineText(term));
+		// a wide character is never split across the margin: it goes to the next line whole
+		vt100.setCursor(1, 0);
+		vt100.appendString("abcd한");
+		assertEqualsTerm("abc한 \n" + "abcd \n" + "한    \n" + "     ", toMultiLineText(term));
+		assertTrue(term.isWrappedLine(1));
+		assertEquals(2, vt100.getCursorLine());
+		assertEquals(2, vt100.getCursorColumn());
+	}
+
+	@Test
+	public void testOverwriteHalfOfWide() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(4);
+		vt100.setDimensions(4, 10);
+		// writing over the glyph leaves its filler blank, and over the filler leaves the glyph blank
+		vt100.setCursor(0, 0);
+		vt100.appendString("한글");
+		vt100.setCursor(0, 0);
+		vt100.appendString("x");
+		assertEquals("x 글\000", new String(term.getChars(0), 0, 4));
+		vt100.setCursor(1, 0);
+		vt100.appendString("한글");
+		vt100.setCursor(1, 1);
+		vt100.appendString("x");
+		assertEquals(" x글\000", new String(term.getChars(1), 0, 4));
+		vt100.setCursor(2, 0);
+		vt100.appendString("한글");
+		vt100.setCursor(2, 3);
+		vt100.appendString("나");
+		assertEquals("한\000 나\000", new String(term.getChars(2), 0, 5));
+		// narrow over narrow is untouched by any of this
+		vt100.setCursor(3, 0);
+		vt100.appendString("abcd");
+		vt100.setCursor(3, 1);
+		vt100.appendString("XY");
+		assertEquals("aXYd", new String(term.getChars(3), 0, 4));
+	}
+
+	@Test
+	public void testInsertModeWide() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(1);
+		vt100.setDimensions(1, 10);
+		vt100.setCursor(0, 0);
+		vt100.appendString("abcdef");
+		vt100.setCursorColumn(1);
+		vt100.setInsertMode(true);
+		vt100.appendString("한");
+		// pushes the rest along by two cells, not one
+		assertEquals("a한\000bcdef", new String(term.getChars(0), 0, 8));
+	}
+
+	@Test
+	public void testCombiningMarks() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(4);
+		vt100.setDimensions(4, 10);
+		vt100.setCursor(0, 0);
+		// a mark composes with the character before it where the two have one form
+		vt100.appendString("e\u0301x");
+		assertEquals("\u00e9x", new String(term.getChars(0), 0, 2));
+		assertEquals(2, vt100.getCursorColumn());
+		// Hangul conjoining jamo make a syllable, in one wide cell
+		vt100.setCursor(1, 0);
+		vt100.appendString("\u1112\u1161\u11ab|");
+		assertEquals("\ud55c\000|", new String(term.getChars(1), 0, 3));
+		// a mark with no composed form is kept with the character as a cluster
+		vt100.setCursor(2, 0);
+		vt100.appendString("1\ufe0f\u20e3|"); // keycap one
+		assertEquals("1\ufe0f\u20e3", term.getCluster(2, 0));
+		assertEquals('|', term.getChar(2, 2));
+	}
+
+	@Test
+	public void testGraphemeClusters() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(4);
+		vt100.setDimensions(4, 20);
+		String family = "\ud83d\udc68\u200d\ud83d\udc69\u200d\ud83d\udc67"; // man ZWJ woman ZWJ girl
+		String heart = "\u2764\ufe0f"; // heavy black heart + emoji presentation
+		String thumbs = "\ud83d\udc4d\ud83c\udffd"; // thumbs up + medium skin tone
+		String flag = "\ud83c\uddf0\ud83c\uddf7"; // regional indicators K R
+		// a cluster takes two cells however many characters it runs to
+		vt100.setCursor(0, 0);
+		vt100.appendString(family + "|");
+		assertEquals(3, vt100.getCursorColumn());
+		assertEquals("\ud83d\udc68", new String(term.getChars(0), 0, 2)); // the cells hold the first of them
+		assertEquals(family, term.getCluster(0, 0)); // the whole is kept beside them
+		// a narrow character shown as an emoji takes a second cell
+		vt100.setCursor(1, 0);
+		vt100.appendString(heart + "|" + thumbs + "|" + flag + "|");
+		assertEquals(9, vt100.getCursorColumn());
+		assertEquals(heart, term.getCluster(1, 0));
+		assertEquals(thumbs, term.getCluster(1, 3));
+		assertEquals(flag, term.getCluster(1, 6));
+		// writing over a cell forgets the cluster that had it
+		vt100.setCursor(1, 1);
+		vt100.appendString("x");
+		assertNull(term.getCluster(1, 0));
+		// a cluster on the last two cells, with the wrap pending, is still joined
+		vt100.setVT100LineWrapping(true);
+		vt100.setCursor(2, 18);
+		vt100.appendString(family);
+		assertEquals(family, term.getCluster(2, 18));
+		vt100.appendString("y");
+		assertEquals('y', term.getChar(3, 0));
+	}
 }

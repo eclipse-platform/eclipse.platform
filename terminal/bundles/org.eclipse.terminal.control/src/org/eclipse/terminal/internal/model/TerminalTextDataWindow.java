@@ -262,6 +262,18 @@ public class TerminalTextDataWindow implements ITerminalTextData {
 	}
 
 	@Override
+	public String getCluster(int line, int column) {
+		return isInWindow(line) ? fData.getCluster(line - fWindowStartLine, column) : null;
+	}
+
+	@Override
+	public void setCluster(int line, int column, String cluster) {
+		if (isInWindow(line)) {
+			fData.setCluster(line - fWindowStartLine, column, cluster);
+		}
+	}
+
+	@Override
 	public void setWrappedLine(int line) {
 		if (isInWindow(line)) {
 			fData.setWrappedLine(line - fWindowStartLine);
