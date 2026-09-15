@@ -25,9 +25,4 @@
          arch="x86_64"
          version="0.0.0"/>
 
-   <plugin
-         id="org.eclipse.core.filesystem.macosx"
-         os="macosx"
-         version="0.0.0"/>
-
 </feature>
