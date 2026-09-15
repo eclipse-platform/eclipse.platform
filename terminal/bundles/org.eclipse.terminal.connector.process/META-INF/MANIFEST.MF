@@ -8,18 +8,15 @@ Bundle-Vendor: %providerName
 Import-Package: org.eclipse.cdt.utils.pty;mandatory:=native,
  org.eclipse.cdt.utils.spawner;mandatory:=native,
  org.eclipse.terminal.connector;version="[1.0.0,2.0.0)",
- org.eclipse.terminal.connector.provider;version="[1.0.0,2.0.0)",
  org.eclipse.terminal.view.core;version="[1.0.0,2.0.0)",
- org.eclipse.terminal.view.ui;version="[1.0.0,2.0.0)",
  org.eclipse.terminal.view.ui.launcher;version="[1.0.0,2.0.0)",
  org.eclipse.terminal.view.ui.streams;version="[1.0.0,2.0.0)"
-Require-Bundle: org.eclipse.core.expressions;bundle-version="[3.9.400,4)",
- org.eclipse.core.resources;bundle-version="[3.22.200,4)";resolution:=optional,
+Require-Bundle: org.eclipse.core.resources;bundle-version="[3.22.200,4)";resolution:=optional,
  org.eclipse.core.runtime;bundle-version="[3.33.0,4)",
  org.eclipse.ui;bundle-version="[3.208.0,4)"
 Bundle-RequiredExecutionEnvironment: JavaSE-21
 Bundle-ActivationPolicy: lazy
 Bundle-Localization: plugin
-Export-Package: org.eclipse.terminal.connector.process;version="1.0.100",
+Export-Package: org.eclipse.terminal.connector.process;version="1.0.100";uses:="org.eclipse.cdt.utils.pty,org.eclipse.terminal.connector,org.eclipse.terminal.view.ui.streams",
  org.eclipse.terminal.connector.process.internal;x-internal:=true
 Automatic-Module-Name: org.eclipse.terminal.connector.process
