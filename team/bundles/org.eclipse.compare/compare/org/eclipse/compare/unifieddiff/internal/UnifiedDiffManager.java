@@ -871,14 +871,21 @@ public class UnifiedDiffManager {
 				case RangeDifference.NOCHANGE:
 					break;
 				case RangeDifference.CHANGE:
-					var diff = new UnifiedDiff(leftDocument, leftStart, leftEnd, leftDiffSource, rightDocument,
-							rightStart, rightEnd, rightDiffSource, unifiedDiffs, mode);
-					unifiedDiffs.add(diff);
-
 					// line based fine granular diff via DocumentMerger#simpleTokenDiff
 					ITokenComparator l = createTokenComparator(leftDiffSource, tokenComparatorFactory);
 					ITokenComparator r = createTokenComparator(rightDiffSource, tokenComparatorFactory);
 					RangeDifference[] detailedDiffs = RangeDifferencer.findRanges((IRangeComparator) null, l, r);
+					// The token comparator defines what counts as a real difference. When it
+					// reports none, the region is treated as equal in every mode: no annotation
+					// is shown, and REPLACE_MODE leaves the text as it is rather than rewriting
+					// it to a form the comparator considers identical.
+					if (!hasDetailedChanges(detailedDiffs)) {
+						break;
+					}
+					var diff = new UnifiedDiff(leftDocument, leftStart, leftEnd, leftDiffSource, rightDocument,
+							rightStart, rightEnd, rightDiffSource, unifiedDiffs, mode);
+					unifiedDiffs.add(diff);
+
 					for (RangeDifference detailedDiff : detailedDiffs) {
 						if (detailedDiff.kind() == RangeDifference.NOCHANGE) {
 							continue;
@@ -916,6 +923,15 @@ public class UnifiedDiffManager {
 			}
 		}
 		return unifiedDiffs;
+	}
+
+	private static boolean hasDetailedChanges(RangeDifference[] detailedDiffs) {
+		for (RangeDifference detailedDiff : detailedDiffs) {
+			if (detailedDiff.kind() != RangeDifference.NOCHANGE) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public static void error(Exception e) {
