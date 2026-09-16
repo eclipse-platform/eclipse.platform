@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.compare.contentmergeviewer.ITokenComparator;
+import org.eclipse.compare.rangedifferencer.IRangeComparator;
 import org.eclipse.compare.unifieddiff.UnifiedDiff;
 import org.eclipse.compare.unifieddiff.UnifiedDiffMode;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager;
@@ -256,6 +258,41 @@ public class UnifiedDiffManagerTest {
 				"the annotation must cover the text that was inserted into the document");
 	}
 
+	/**
+	 * The token comparator, not the mode, decides what counts as a difference. A
+	 * case-insensitive comparator reports no difference between "line one" and
+	 * "LINE ONE", so REPLACE_MODE must leave the document untouched rather than
+	 * rewrite it to a form the comparator already considers identical.
+	 */
+	@Test
+	public void testReplaceModeKeepsDocumentWhenTokenComparatorTreatsChangeAsEqual() {
+		setEditorContent("line one\n");
+
+		assertTrue(UnifiedDiff.create(editor, "LINE ONE\n", UnifiedDiffMode.REPLACE_MODE).ignoreWhiteSpace(false)
+				.tokenComparatorFactory(CaseInsensitiveTokenComparator::new).open().isOK());
+
+		assertTrue(UnifiedDiffManager.get(viewer()).isEmpty(),
+				"a change the token comparator treats as equal must not be applied, even in REPLACE_MODE");
+		assertEquals("line one\n", document().get(),
+				"REPLACE_MODE must leave the document untouched when the comparator sees no real difference");
+	}
+
+	/**
+	 * The counterpart to {@link #testReplaceModeKeepsDocumentWhenTokenComparatorTreatsChangeAsEqual()}:
+	 * with the default comparator a case change is a real difference, so REPLACE_MODE
+	 * applies it and the document becomes the compared source.
+	 */
+	@Test
+	public void testReplaceModeAppliesCaseChangeWithDefaultComparator() {
+		setEditorContent("line one\n");
+
+		assertTrue(UnifiedDiff.create(editor, "LINE ONE\n", UnifiedDiffMode.REPLACE_MODE).ignoreWhiteSpace(false).open()
+				.isOK());
+
+		assertEquals("LINE ONE\n", document().get(),
+				"with the default comparator a case change is a real difference and must be applied");
+	}
+
 	// ---------------------------------------------------- non modifying modes
 
 	@Test
@@ -333,6 +370,17 @@ public class UnifiedDiffManagerTest {
 
 		assertEquals(1, UnifiedDiffManager.get(viewer()).size(),
 				"with ignoreWhiteSpace(false) the changed indentation is a diff");
+	}
+
+	@Test
+	public void testTokenComparatorCanIgnoreALineChange() {
+		setEditorContent("line one\n");
+
+		assertTrue(UnifiedDiff.create(editor, "LINE ONE\n", UnifiedDiffMode.OVERLAY_MODE)
+				.ignoreWhiteSpace(false).tokenComparatorFactory(CaseInsensitiveTokenComparator::new).open().isOK());
+
+		assertTrue(UnifiedDiffManager.get(viewer()).isEmpty(),
+				"a change ignored by the token comparator must not create a parent diff");
 	}
 
 	/**
@@ -434,6 +482,39 @@ public class UnifiedDiffManagerTest {
 
 		assertTrue(status.isOK(), "open() should return OK status: " + status);
 		assertEquals(right, document().get(), "REPLACE_MODE must transform the document into the compared source");
+	}
+
+	private static final class CaseInsensitiveTokenComparator implements ITokenComparator {
+		private final String text;
+
+		CaseInsensitiveTokenComparator(String text) {
+			this.text = text;
+		}
+
+		@Override
+		public int getRangeCount() {
+			return 1;
+		}
+
+		@Override
+		public int getTokenStart(int index) {
+			return index == 0 ? 0 : text.length();
+		}
+
+		@Override
+		public int getTokenLength(int index) {
+			return index == 0 ? text.length() : 0;
+		}
+
+		@Override
+		public boolean rangesEqual(int thisIndex, IRangeComparator other, int otherIndex) {
+			return other instanceof CaseInsensitiveTokenComparator comparator && text.equalsIgnoreCase(comparator.text);
+		}
+
+		@Override
+		public boolean skipRangeComparison(int length, int maxLength, IRangeComparator other) {
+			return false;
+		}
 	}
 
 	private ITextViewer viewer() {
