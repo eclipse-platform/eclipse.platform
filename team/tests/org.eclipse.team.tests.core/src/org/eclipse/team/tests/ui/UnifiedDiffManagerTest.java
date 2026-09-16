@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.compare.contentmergeviewer.ITokenComparator;
+import org.eclipse.compare.rangedifferencer.IRangeComparator;
 import org.eclipse.compare.unifieddiff.UnifiedDiff;
 import org.eclipse.compare.unifieddiff.UnifiedDiffMode;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager;
@@ -324,6 +326,17 @@ public class UnifiedDiffManagerTest {
 				"with ignoreWhiteSpace(false) the changed indentation is a diff");
 	}
 
+	@Test
+	public void testTokenComparatorCanIgnoreALineChange() {
+		setEditorContent("line one\n");
+
+		assertTrue(UnifiedDiff.create(editor, "LINE ONE\n", UnifiedDiffMode.OVERLAY_MODE)
+				.ignoreWhiteSpace(false).tokenComparatorFactory(CaseInsensitiveTokenComparator::new).open().isOK());
+
+		assertTrue(UnifiedDiffManager.get(viewer()).isEmpty(),
+				"a change ignored by the token comparator must not create a parent diff");
+	}
+
 	/**
 	 * A diff at the very end of the document is shown as a code mining. Only a line
 	 * header mining reserves its height in the text widget, so an emptied file must
@@ -393,6 +406,39 @@ public class UnifiedDiffManagerTest {
 
 		assertTrue(status.isOK(), "open() should return OK status: " + status);
 		assertEquals(right, document().get(), "REPLACE_MODE must transform the document into the compared source");
+	}
+
+	private static final class CaseInsensitiveTokenComparator implements ITokenComparator {
+		private final String text;
+
+		CaseInsensitiveTokenComparator(String text) {
+			this.text = text;
+		}
+
+		@Override
+		public int getRangeCount() {
+			return 1;
+		}
+
+		@Override
+		public int getTokenStart(int index) {
+			return index == 0 ? 0 : text.length();
+		}
+
+		@Override
+		public int getTokenLength(int index) {
+			return index == 0 ? text.length() : 0;
+		}
+
+		@Override
+		public boolean rangesEqual(int thisIndex, IRangeComparator other, int otherIndex) {
+			return other instanceof CaseInsensitiveTokenComparator comparator && text.equalsIgnoreCase(comparator.text);
+		}
+
+		@Override
+		public boolean skipRangeComparison(int length, int maxLength, IRangeComparator other) {
+			return false;
+		}
 	}
 
 	private ITextViewer viewer() {
