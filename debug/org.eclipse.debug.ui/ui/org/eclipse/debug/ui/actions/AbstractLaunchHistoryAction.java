@@ -355,7 +355,7 @@ public abstract class AbstractLaunchHistoryAction implements IActionDelegate2, I
 		for (ILaunchConfiguration launch : favoriteList) {
 			LaunchAction action= new LaunchAction(launch, getMode());
 			if (checkIfLaunchActive(launch, launches)) {
-				action.setText(action.getText() + "  \u2699"); //$NON-NLS-1$
+				action.setText(action.getText() + " (running)"); //$NON-NLS-1$
 			} else {
 				addRecentLaunchTimeTooltip(launch, action);
 			}
@@ -372,7 +372,7 @@ public abstract class AbstractLaunchHistoryAction implements IActionDelegate2, I
 		for (ILaunchConfiguration launch : historyList) {
 			LaunchAction action= new LaunchAction(launch, getMode());
 			if (checkIfLaunchActive(launch, launches)) {
-				action.setText(action.getText() + "  \u2699"); //$NON-NLS-1$
+				action.setText(action.getText() + " (running)"); //$NON-NLS-1$
 			} else {
 				addRecentLaunchTimeTooltip(launch, action);
 			}
