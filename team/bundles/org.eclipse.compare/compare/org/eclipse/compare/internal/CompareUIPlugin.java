@@ -105,6 +105,7 @@ import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IReusableEditor;
 import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -950,8 +951,6 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		}
 		// A deleted file leaves no workspace file to overlay. The version that still
 		// exists is then shown read-only, with its whole content marked as removed.
-		// Two sides that both exist are left to the classic compare editor, because
-		// neither of them is the state on disk.
 		if (rightEditorInput != null && isAbsent(left)) {
 			return new UnifiedDiffCandidate(compareInput, rightEditorInput, right,
 					UnifiedDiffMode.OVERLAY_READ_ONLY_MODE, left);
@@ -959,6 +958,12 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		if (leftEditorInput != null && isAbsent(right)) {
 			return new UnifiedDiffCandidate(compareInput, leftEditorInput, left,
 					UnifiedDiffMode.OVERLAY_READ_ONLY_MODE, right);
+		}
+		// Revision history entries use storage editor inputs. Show the right-hand
+		// revision in a read-only editor and overlay the left-hand revision onto it.
+		if (leftEditorInput instanceof IStorageEditorInput && rightEditorInput instanceof IStorageEditorInput) {
+			return new UnifiedDiffCandidate(compareInput, rightEditorInput, right,
+					UnifiedDiffMode.OVERLAY_READ_ONLY_MODE, left);
 		}
 		return null;
 	}
