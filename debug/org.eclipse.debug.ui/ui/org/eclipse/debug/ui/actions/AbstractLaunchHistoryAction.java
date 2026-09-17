@@ -354,11 +354,7 @@ public abstract class AbstractLaunchHistoryAction implements IActionDelegate2, I
 		ILaunch[] launches = DebugPlugin.getDefault().getLaunchManager().getLaunches();
 		for (ILaunchConfiguration launch : favoriteList) {
 			LaunchAction action= new LaunchAction(launch, getMode());
-			if (checkIfLaunchActive(launch, launches)) {
-				action.setText(action.getText() + "  \u2699"); //$NON-NLS-1$
-			} else {
-				addRecentLaunchTimeTooltip(launch, action);
-			}
+			applyRunningState(action, launch, launches);
 			addToMenu(menu, action, accelerator);
 			accelerator++;
 		}
@@ -371,11 +367,7 @@ public abstract class AbstractLaunchHistoryAction implements IActionDelegate2, I
 		// Add history launches next
 		for (ILaunchConfiguration launch : historyList) {
 			LaunchAction action= new LaunchAction(launch, getMode());
-			if (checkIfLaunchActive(launch, launches)) {
-				action.setText(action.getText() + "  \u2699"); //$NON-NLS-1$
-			} else {
-				addRecentLaunchTimeTooltip(launch, action);
-			}
+			applyRunningState(action, launch, launches);
 			addToMenu(menu, action, accelerator);
 			accelerator++;
 		}
@@ -385,6 +377,15 @@ public abstract class AbstractLaunchHistoryAction implements IActionDelegate2, I
 			action.setEnabled(false);
 			ActionContributionItem item= new ActionContributionItem(action);
 			item.fill(menu, -1);
+		}
+	}
+
+	private void applyRunningState(LaunchAction action, ILaunchConfiguration launch, ILaunch[] launches) {
+		if (checkIfLaunchActive(launch, launches)) {
+			action.setText(action.getText() + "  ⚙"); //$NON-NLS-1$
+			action.setToolTipText(ActionMessages.AbstractLaunchHistoryAction_running);
+		} else {
+			addRecentLaunchTimeTooltip(launch, action);
 		}
 	}
 
