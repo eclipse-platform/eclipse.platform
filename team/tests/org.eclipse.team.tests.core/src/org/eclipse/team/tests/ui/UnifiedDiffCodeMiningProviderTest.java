@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -33,6 +34,7 @@ import java.util.function.Supplier;
 import org.eclipse.compare.unifieddiff.UnifiedDiffMode;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffCodeMiningProvider;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffCodeMiningProvider.FoldedRegionCodeMining;
+import org.eclipse.compare.unifieddiff.internal.UnifiedDiffCodeMiningProvider.UnifiedDiffFooterCodeMining;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffCodeMiningProvider.UnifiedDiffLineHeaderCodeMining;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager.UnifiedDiff;
@@ -44,17 +46,35 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Position;
+import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.codemining.ICodeMining;
 import org.eclipse.jface.text.codemining.ICodeMiningProvider;
+import org.eclipse.jface.text.presentation.IPresentationReconciler;
+import org.eclipse.jface.text.presentation.PresentationReconciler;
+import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
+import org.eclipse.jface.text.rules.IRule;
+import org.eclipse.jface.text.rules.IWordDetector;
+import org.eclipse.jface.text.rules.RuleBasedScanner;
+import org.eclipse.jface.text.rules.Token;
+import org.eclipse.jface.text.rules.WordRule;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.AnnotationModel;
 import org.eclipse.jface.text.source.AnnotationPainter;
 import org.eclipse.jface.text.source.IAnnotationModel;
+import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.jface.text.source.inlined.AbstractInlinedAnnotation;
 import org.eclipse.jface.text.source.projection.ProjectionAnnotation;
 import org.eclipse.jface.text.source.projection.ProjectionAnnotationModel;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.text.undo.DocumentUndoManagerRegistry;
@@ -90,6 +110,7 @@ public class UnifiedDiffCodeMiningProviderTest {
 		document = numberedLines(60);
 		model = new AnnotationModel();
 		viewer = new ProjectionViewer(shell, null, null, false, SWT.V_SCROLL);
+		viewer.configure(syntaxColoringConfiguration());
 		viewer.setDocument(document, model);
 		viewer.enableProjection();
 		DocumentUndoManagerRegistry.connect(document);
@@ -362,7 +383,233 @@ public class UnifiedDiffCodeMiningProviderTest {
 		waitForAttachedMinings(diffs, allRegions().size());
 	}
 
+	/**
+	 * When the document does not end with a newline, the diff at the end cannot
+	 * anchor a line-header mining (there is no following line to indent). A footer
+	 * mining must be created instead.
+	 */
+	@Test
+	public void testFooterMiningIsCreatedWhenDocumentHasNoTrailingNewline() throws Exception {
+		switchToDocument(new Document("line 0\nline 1 changed"));
+
+		IStatus status = UnifiedDiffManager.open(viewer, document, model, null, "line 0\nline 1\n", MODE, null, null,
+				null, true, CONTEXT_LINES);
+		assertTrue(status.isOK(), "open() should succeed: " + status);
+
+		List<ICodeMining> minings = provide();
+		List<UnifiedDiffFooterCodeMining> footers = new ArrayList<>();
+		for (ICodeMining mining : minings) {
+			if (mining instanceof UnifiedDiffFooterCodeMining footer) {
+				footers.add(footer);
+			}
+		}
+		assertThat(footers).as("a footer mining is used for the diff at the end of a document without trailing newline")
+				.isNotEmpty();
+	}
+
+	/**
+	 * A word-level footer highlight following bold text must start after the bold
+	 * text, not where the base font would put it. Inspects the pixels
+	 * {@link UnifiedDiffFooterCodeMining#draw(GC, org.eclipse.swt.custom.StyledText, Color, int, int)}
+	 * paints.
+	 */
+	@Test
+	public void testFooterMiningDetailedDiffUsesStyledTextPosition() throws Exception {
+		// several bold keywords, so the bold/regular difference clearly exceeds a space
+		String keywords = "public public public public public public public public";
+		switchToDocument(new Document("line 0\n" + keywords));
+
+		IStatus status = UnifiedDiffManager.open(viewer, document, model, null, "line 0\n" + keywords + " changed\n",
+				MODE, null, null, null, true, CONTEXT_LINES);
+		assertTrue(status.isOK(), "open() should succeed: " + status);
+
+		List<ICodeMining> minings = provide();
+		UnifiedDiffFooterCodeMining footer = null;
+		for (ICodeMining mining : minings) {
+			if (mining instanceof UnifiedDiffFooterCodeMining f) {
+				footer = f;
+			}
+		}
+		assertNotNull(footer, "a footer mining must be present");
+
+		Color deletionColor = new Color(display, 11, 22, 33);
+		Color detailedDiffColor = new Color(display, 44, 55, 66);
+		UnifiedDiffFooterCodeMining paintingFooter = new UnifiedDiffFooterCodeMining(document, provider,
+				footer.getUnifiedDiff(), 4, deletionColor, detailedDiffColor, viewer);
+		Image image = new Image(display, 1200, 100);
+		GC gc = new GC(image);
+		Font boldFont = null;
+		try {
+			paintingFooter.draw(gc, viewer.getTextWidget(), null, 0, 0);
+
+			Font baseFont = viewer.getTextWidget().getFont();
+			FontData[] boldData = baseFont.getFontData();
+			for (FontData fontData : boldData) {
+				fontData.setStyle(SWT.BOLD);
+			}
+			boldFont = new Font(display, boldData);
+			// stringExtent measures at the display zoom, getImageData() at 100%
+			int zoom = display.getPrimaryMonitor().getZoom();
+			gc.setFont(baseFont);
+			int baseWidth = gc.stringExtent(keywords + " ").x * 100 / zoom;
+			gc.setFont(boldFont);
+			int boldWidth = gc.stringExtent(keywords).x * 100 / zoom;
+			assumeTrue(boldWidth > baseWidth, "the viewer font renders bold no wider than regular, "
+					+ "so this test cannot tell the two measurements apart");
+
+			int firstDetailedColumn = firstColumnWith(image, detailedDiffColor);
+			assertThat(firstDetailedColumn).as("draw() must paint the word-level detailed-diff background")
+					.isGreaterThanOrEqualTo(0);
+			assertThat(firstDetailedColumn)
+					.as("the highlight must be positioned with the bold font, not the narrower base font")
+					.isGreaterThan(baseWidth);
+		} finally {
+			gc.dispose();
+			image.dispose();
+			paintingFooter.dispose();
+			if (boldFont != null) {
+				boldFont.dispose();
+			}
+			deletionColor.dispose();
+			detailedDiffColor.dispose();
+		}
+	}
+
+	/**
+	 * A detailed diff spanning several lines must restart each line's word-level
+	 * highlight at the line start instead of accumulating the width of the
+	 * preceding lines, which would make the highlight cascade to the right.
+	 */
+	@Test
+	public void testFooterMiningMultiLineDetailedDiffResetsPerLine() throws Exception {
+		switchToDocument(new Document("line 0\nx"));
+
+		String target = "line 0\nalpha alpha\nbravo bravo\ncarol carol\n";
+		IStatus status = UnifiedDiffManager.open(viewer, document, model, null, target, MODE, null, null, null, true,
+				CONTEXT_LINES);
+		assertTrue(status.isOK(), "open() should succeed: " + status);
+
+		List<ICodeMining> minings = provide();
+		UnifiedDiffFooterCodeMining footer = null;
+		for (ICodeMining mining : minings) {
+			if (mining instanceof UnifiedDiffFooterCodeMining f) {
+				footer = f;
+			}
+		}
+		assertNotNull(footer, "a footer mining must be present");
+
+		Color deletionColor = new Color(display, 11, 22, 33);
+		Color detailedDiffColor = new Color(display, 44, 55, 66);
+		UnifiedDiffFooterCodeMining paintingFooter = new UnifiedDiffFooterCodeMining(document, provider,
+				footer.getUnifiedDiff(), 4, deletionColor, detailedDiffColor, viewer);
+		Image image = new Image(display, 400, 200);
+		GC gc = new GC(image);
+		try {
+			paintingFooter.draw(gc, viewer.getTextWidget(), null, 0, 0);
+
+			int lineHeight = viewer.getTextWidget().getLineHeight();
+			int lineSpacing = viewer.getTextWidget().getLineSpacing();
+			// the line metrics are at the display zoom, so read the pixels at that zoom
+			int zoom = display.getPrimaryMonitor().getZoom();
+			ImageData data = image.getImageData(zoom);
+			RGB detailedRgb = detailedDiffColor.getRGB();
+
+			List<Integer> paintedLastColumns = new ArrayList<>();
+			for (int lineIndex = 0; lineIndex < 8; lineIndex++) {
+				int yTop = lineIndex * (lineHeight + lineSpacing);
+				int lastColumn = lastColumnWithInBand(data, detailedRgb, yTop, yTop + lineHeight);
+				if (lastColumn >= 0) {
+					paintedLastColumns.add(lastColumn);
+				}
+			}
+			assertThat(paintedLastColumns).as("the multi-line detailed-diff background must span several lines")
+					.hasSizeGreaterThanOrEqualTo(2);
+			// cascading would widen each line by about a full line width
+			int min = paintedLastColumns.stream().mapToInt(Integer::intValue).min().getAsInt();
+			int max = paintedLastColumns.stream().mapToInt(Integer::intValue).max().getAsInt();
+			assertThat(max).as("later lines must not cascade to the right").isLessThanOrEqualTo(min * 2);
+		} finally {
+			gc.dispose();
+			image.dispose();
+			paintingFooter.dispose();
+			deletionColor.dispose();
+			detailedDiffColor.dispose();
+		}
+	}
+
+	/**
+	 * Returns the rightmost column in {@code [yTop, yBottom)} holding
+	 * {@code target}, or {@code -1}. Matches with a small tolerance against
+	 * anti-aliasing.
+	 */
+	private static int lastColumnWithInBand(ImageData data, RGB target, int yTop, int yBottom) {
+		int bottom = Math.min(yBottom, data.height);
+		int last = -1;
+		for (int x = 0; x < data.width; x++) {
+			for (int y = Math.max(0, yTop); y < bottom; y++) {
+				RGB rgb = data.palette.getRGB(data.getPixel(x, y));
+				if (Math.abs(rgb.red - target.red) <= 2 && Math.abs(rgb.green - target.green) <= 2
+						&& Math.abs(rgb.blue - target.blue) <= 2) {
+					last = x;
+					break;
+				}
+			}
+		}
+		return last;
+	}
+
+	/**
+	 * Returns the leftmost column holding {@code color}, or {@code -1}. Matches
+	 * with a small tolerance against anti-aliasing.
+	 */
+	private static int firstColumnWith(Image image, Color color) {
+		ImageData data = image.getImageData();
+		RGB target = color.getRGB();
+		for (int x = 0; x < data.width; x++) {
+			for (int y = 0; y < data.height; y++) {
+				RGB rgb = data.palette.getRGB(data.getPixel(x, y));
+				if (Math.abs(rgb.red - target.red) <= 2 && Math.abs(rgb.green - target.green) <= 2
+						&& Math.abs(rgb.blue - target.blue) <= 2) {
+					return x;
+				}
+			}
+		}
+		return -1;
+	}
+
 	// ------------------------------------------------------------------ helpers
+
+	/**
+	 * A test configuration that colors all text and renders {@code public} in bold.
+	 */
+	private static SourceViewerConfiguration syntaxColoringConfiguration() {
+		return new SourceViewerConfiguration() {
+			@Override
+			public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
+				PresentationReconciler reconciler = new PresentationReconciler();
+				RuleBasedScanner scanner = new RuleBasedScanner();
+				Color fg = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_BLUE);
+				scanner.setDefaultReturnToken(new Token(new TextAttribute(fg)));
+				WordRule publicKeyword = new WordRule(new IWordDetector() {
+					@Override
+					public boolean isWordStart(char character) {
+						return Character.isJavaIdentifierStart(character);
+					}
+
+					@Override
+					public boolean isWordPart(char character) {
+						return Character.isJavaIdentifierPart(character);
+					}
+				});
+				publicKeyword.addWord("public", new Token(new TextAttribute(fg, null, SWT.BOLD)));
+				scanner.setRules(new IRule[] { publicKeyword });
+				DefaultDamagerRepairer dr = new DefaultDamagerRepairer(scanner);
+				reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
+				reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
+				return reconciler;
+			}
+		};
+	}
 
 	/** A provider that answers only when the test lets it, like a slow editor. */
 	private final class PendingProvider implements ICodeMiningProvider {
@@ -422,6 +669,8 @@ public class UnifiedDiffCodeMiningProviderTest {
 		for (ICodeMining mining : minings) {
 			if (mining instanceof UnifiedDiffLineHeaderCodeMining overlay) {
 				shown.add(overlay.getUnifiedDiff());
+			} else if (mining instanceof UnifiedDiffFooterCodeMining footer) {
+				shown.add(footer.getUnifiedDiff());
 			} else if (mining instanceof FoldedRegionCodeMining expander) {
 				expanders.add(Integer.valueOf(expander.getPosition().getOffset()));
 			} else {
@@ -474,6 +723,8 @@ public class UnifiedDiffCodeMiningProviderTest {
 			for (ICodeMining mining : attachedMinings()) {
 				if (mining instanceof UnifiedDiffLineHeaderCodeMining overlay) {
 					shown.add(overlay.getUnifiedDiff());
+				} else if (mining instanceof UnifiedDiffFooterCodeMining footer) {
+					shown.add(footer.getUnifiedDiff());
 				} else if (mining instanceof FoldedRegionCodeMining) {
 					expanders++;
 				}
@@ -570,5 +821,18 @@ public class UnifiedDiffCodeMiningProviderTest {
 			content.append("line ").append(i).append('\n');
 		}
 		return new Document(content.toString());
+	}
+
+	/**
+	 * Replaces the viewer's document mid-test. Disconnects the undo manager from
+	 * the old document, connects it to the new one, and re-wires the viewer.
+	 */
+	private void switchToDocument(IDocument newDocument) {
+		DocumentUndoManagerRegistry.disconnect(document);
+		document = newDocument;
+		model = new AnnotationModel();
+		viewer.setDocument(document, model);
+		DocumentUndoManagerRegistry.connect(document);
+		installCodeMinings(provider);
 	}
 }
