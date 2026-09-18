@@ -146,8 +146,9 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			if (this.foldButtonColor != null && !this.foldButtonColor.isDisposed()) {
 				this.foldButtonColor.dispose();
 			}
-			this.detailedDiffColor = new Color(interpolate(deletionColor, background, 0.9));
-			this.deletionBackgroundColor = new Color(interpolate(deletionColor, background, 0.8));
+			// the word-level diff is tinted stronger so it stands out against the band
+			this.detailedDiffColor = new Color(interpolate(deletionColor, background, 0.8));
+			this.deletionBackgroundColor = new Color(interpolate(deletionColor, background, 0.9));
 			this.foldSeparatorColor = new Color(separatorBackground(background));
 			this.foldButtonColor = new Color(buttonBackground(background));
 			lastIsOverlay = isOverlay;
@@ -316,13 +317,13 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			throws BadLocationException {
 		int end = doc.getLength();
 		if (offset >= end && !startsLine(doc, end)) {
-			return new UnifiedDiffFooterCodeMining(doc, this, null, diff, tabWidth, this.deletionBackgroundColor);
+			return new UnifiedDiffFooterCodeMining(doc, this, diff, tabWidth, this.deletionBackgroundColor, this.detailedDiffColor, tv);
 		}
 		// a position must not reach beyond the document, otherwise the annotation model
 		// silently drops it
 		int start = Math.min(offset, end);
 		return new UnifiedDiffLineHeaderCodeMining(new Position(start, start < end ? 1 : 0), this, diff, tabWidth,
-				this.detailedDiffColor, this.deletionBackgroundColor, tv);
+				this.deletionBackgroundColor, this.detailedDiffColor, tv);
 	}
 
 	private static boolean startsLine(IDocument doc, int offset) throws BadLocationException {
@@ -487,21 +488,103 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		}
 	}
 
-	static class UnifiedDiffFooterCodeMining extends DocumentFooterCodeMining {
+	interface IUnifiedDiffCodeMining {
+		Rectangle getLastRectangle();
+		Color getDeletionBackgroundColor();
+		Color getDetailedDiffColor();
+		int getTabWidth();
+		UnifiedDiff getUnifiedDiff();
+		String getLabel();
+	}
+
+	static class MouseClickConsumer implements Consumer<MouseEvent> {
+
+		private final ITextViewer viewer;
+		private IUnifiedDiffCodeMining mining;
+
+		public MouseClickConsumer(ITextViewer viewer) {
+			this.viewer = viewer;
+		}
+
+		public void setCodeMining(IUnifiedDiffCodeMining mining) {
+			this.mining = mining;
+		}
+
+		@Override
+		public void accept(MouseEvent t) {
+			if (mining == null || viewer == null || mining.getLastRectangle() == null) {
+				return;
+			}
+			StyledText st = viewer.getTextWidget();
+			StyledText overlay = new StyledText(st, SWT.NONE);
+			overlay.setBounds(mining.getLastRectangle());
+			overlay.setFont(st.getFont());
+			overlay.setBackground(mining.getDeletionBackgroundColor());
+			overlay.setLineSpacing(st.getLineSpacing());
+			String txt = mining.getLabel().stripTrailing();
+			overlay.setText(txt);
+			overlay.setFocus();
+			List<StyleRange> backgrounds = createDetailedDiffBackgroundRanges(mining.getUnifiedDiff(),
+					mining.getTabWidth(), mining.getDetailedDiffColor());
+			List<StyleRange> foregrounds = computeStyleRanges(viewer, mining.getUnifiedDiff().leftStart, txt);
+			List<StyleRange> ranges = mergeStyleRanges(backgrounds, foregrounds);
+			overlay.setStyleRanges(ranges.toArray(new StyleRange[] {}));
+			openOverlay(overlay, viewer);
+		}
+	}
+
+	public static class UnifiedDiffFooterCodeMining extends DocumentFooterCodeMining implements IUnifiedDiffCodeMining {
 		private final String unifiedDiffLabel;
 		private final Color deletionBackgroundColor;
+		private final Color detailedDiffColor;
+		private final int tabWidth;
+		private final ITextViewer viewer;
 		private UnifiedDiff diff;
+		private List<StyleRange> styleRanges;
+		private final HashMap<Font, Map<Integer, Font>> styledFonts = new HashMap<>();
+		private Rectangle lastRectangle;
+		private Font cachedFont;
 
 		public UnifiedDiffFooterCodeMining(IDocument document, ICodeMiningProvider provider,
-				Consumer<MouseEvent> action, UnifiedDiff diff, int tabWidth, Color deletionBackgroundColor) {
-			super(document, provider, action);
+				UnifiedDiff diff, int tabWidth, Color deletionBackgroundColor, Color detailedDiffColor,
+				ITextViewer viewer) {
+			super(document, provider, new MouseClickConsumer(viewer));
 			this.deletionBackgroundColor = deletionBackgroundColor;
+			this.detailedDiffColor = detailedDiffColor;
+			this.tabWidth = tabWidth;
+			this.viewer = viewer;
 			if (diff.mode.equals(UnifiedDiffMode.REPLACE_MODE)) {
-				this.unifiedDiffLabel = replaceTabWithSpaces(diff.leftStr, tabWidth);
+				this.unifiedDiffLabel = removeTrailingNewLines(replaceTabWithSpaces(diff.leftStr, tabWidth));
 			} else {
-				this.unifiedDiffLabel = replaceTabWithSpaces(diff.rightStr, tabWidth);
+				this.unifiedDiffLabel = removeTrailingNewLines(replaceTabWithSpaces(diff.rightStr, tabWidth));
 			}
 			this.diff = diff;
+			((MouseClickConsumer) getAction()).setCodeMining(this);
+		}
+
+		@Override
+		public Rectangle getLastRectangle() {
+			return lastRectangle;
+		}
+
+		@Override
+		public Color getDeletionBackgroundColor() {
+			return deletionBackgroundColor;
+		}
+
+		@Override
+		public Color getDetailedDiffColor() {
+			return detailedDiffColor;
+		}
+
+		@Override
+		public int getTabWidth() {
+			return tabWidth;
+		}
+
+		@Override
+		public UnifiedDiff getUnifiedDiff() {
+			return diff;
 		}
 
 		@Override
@@ -509,8 +592,25 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			return this.unifiedDiffLabel;
 		}
 
-		public UnifiedDiff getUnifiedDiff() {
-			return this.diff;
+		@Override
+		public void dispose() {
+			styleRanges = null;
+			lastRectangle = null;
+			cachedFont = null;
+			clearStyledFonts();
+			super.dispose();
+		}
+
+		private void clearStyledFonts() {
+			styledFonts.forEach((font, map) -> map.forEach((style, f) -> f.dispose()));
+			styledFonts.clear();
+		}
+
+		private List<StyleRange> styleRanges(String label) {
+			if (styleRanges == null) {
+				styleRanges = computeStyleRanges(viewer, diff.leftStart, label);
+			}
+			return styleRanges;
 		}
 
 		@Override
@@ -520,18 +620,248 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			gc.setForeground(c);
 			Font font = textWidget.getFont();
 			gc.setFont(font);
+			if (cachedFont != null && (cachedFont.isDisposed() || !cachedFont.equals(font))) {
+				// font might have been changed in the meantime - drop the derived fonts
+				// keyed on the old base font so their native handles are not leaked
+				clearStyledFonts();
+			}
+			cachedFont = font;
 			// first run to get width and height for label
 			// change from https://github.com/eclipse-platform/eclipse.platform.ui/pull/3651
 			// is required so that background correctly drawn with line spacing > 0
 			Point result = super.draw(gc, textWidget, color, x, y);
+			lastRectangle = new Rectangle(x, y, result.x, result.y);
 			// draw background
 			// vs code is drawing the background to the top right of the editor - we do here
 			// the same!
 			gc.fillRectangle(0, y, textWidget.getBounds().width /* result.x */, result.y);
-			// draw foreground again
-			result = super.draw(gc, textWidget, color, x, y);
+
+			String label = getLabel();
+			List<StyleRange> ranges = styleRanges(label);
+			if (ranges.isEmpty()) {
+				// no syntax coloring available; fall back to plain rendering
+				result = super.draw(gc, textWidget, color, x, y);
+				return result;
+			}
+
+			// paint the word-level detailed-diff backgrounds first, then draw the
+			// syntax-colored text transparently on top - same order as the header band
+			fillDetailedDiffBackgrounds(gc, textWidget, label, ranges, x, y);
+			gc.setFont(font);
+			drawStyleRanges(gc, textWidget, ranges, label, styledFonts, x, y, null);
 			return result;
 		}
+
+		/**
+		 * Fills the darker {@code detailedDiffColor} rectangles behind the word-level
+		 * changes. {@link #drawStyleRanges} draws its text transparently and so cannot
+		 * paint a range background itself.
+		 */
+		private void fillDetailedDiffBackgrounds(GC gc, StyledText textWidget, String label, List<StyleRange> ranges,
+				int x, int y) {
+			List<StyleRange> backgrounds = createDetailedDiffBackgroundRanges(diff, tabWidth, detailedDiffColor);
+			if (backgrounds.isEmpty()) {
+				return;
+			}
+			int lineHeight = textWidget.getLineHeight();
+			int lineSpacing = textWidget.getLineSpacing();
+			gc.setBackground(this.detailedDiffColor);
+			for (StyleRange bg : backgrounds) {
+				int pos = bg.start;
+				int end = bg.start + bg.length;
+				// a detailed diff may span lines; fill each line segment on its own line
+				while (pos < end) {
+					int lineStart = label.lastIndexOf('\n', pos - 1) + 1;
+					int lineEnd = label.indexOf('\n', pos);
+					int segmentEnd = lineEnd == -1 ? end : Math.min(end, lineEnd);
+					int lineIndex = (int) label.substring(0, pos).chars().filter(ch -> ch == '\n').count();
+					int startX = styledWidth(gc, label, ranges, lineStart, pos);
+					int width = styledWidth(gc, label, ranges, pos, segmentEnd);
+					if (width > 0) {
+						int rectX = x + startX;
+						int rectY = y + lineIndex * (lineHeight + lineSpacing);
+						gc.fillRectangle(rectX, rectY, width, lineHeight);
+					}
+					pos = segmentEnd == lineEnd ? segmentEnd + 1 : segmentEnd;
+				}
+			}
+		}
+
+		/**
+		 * Measures {@code label[from, to)}, which must lie within a single line, the
+		 * way {@link #drawStyleRanges} paints it. Measuring in the base font would put
+		 * the highlight left of the changed word whenever bold or italic text precedes
+		 * it on the same line.
+		 */
+		private int styledWidth(GC gc, String label, List<StyleRange> ranges, int from, int to) {
+			if (to <= from) {
+				return 0;
+			}
+			Font base = gc.getFont();
+			int width = 0;
+			try {
+				int cursor = from;
+				for (StyleRange range : ranges) {
+					int rangeEnd = range.start + range.length;
+					if (rangeEnd <= cursor || range.start >= to) {
+						continue;
+					}
+					if (range.start > cursor) {
+						width += measure(gc, base, label, cursor, range.start);
+						cursor = range.start;
+					}
+					// drawStyleRanges keeps the base font for whitespace-only ranges
+					boolean blank = label.substring(range.start, Math.min(rangeEnd, label.length())).isBlank();
+					StyleRange rangeWithFont = blank ? range : transformFontStyleToFont(styledFonts, base, range);
+					Font font = rangeWithFont.font != null ? rangeWithFont.font : base;
+					int segmentEnd = Math.min(rangeEnd, to);
+					width += measure(gc, font, label, cursor, segmentEnd);
+					cursor = segmentEnd;
+					if (cursor >= to) {
+						break;
+					}
+				}
+				if (cursor < to) {
+					width += measure(gc, base, label, cursor, to);
+				}
+			} finally {
+				gc.setFont(base);
+			}
+			return width;
+		}
+
+		private int measure(GC gc, Font font, String label, int from, int to) {
+			gc.setFont(font);
+			// gc.stringExtent ignores tabs, and drawStyleRanges drops the CR of a CRLF
+			String text = replaceTabWithSpaces(label.substring(from, to), tabWidth).replace("\r", ""); //$NON-NLS-1$ //$NON-NLS-2$
+			return gc.stringExtent(text).x;
+		}
+	}
+
+	static List<StyleRange> createDetailedDiffBackgroundRanges(UnifiedDiff diff, int tabWidth, Color detailedDiffColor) {
+		List<StyleRange> ranges = new ArrayList<>();
+		String diffStr = diff.mode.equals(UnifiedDiffMode.REPLACE_MODE) ? diff.leftStr : diff.rightStr;
+		String trimmedDiffStr = removeTrailingNewLines(diffStr);
+		int labelLength = replaceTabWithSpaces(trimmedDiffStr, tabWidth).stripTrailing().length();
+		for (var detailedDiff : diff.detailedDiffs) {
+			int detailedDiffStart;
+			int detailedDiffLength;
+			String detailedDiffStr;
+			if (diff.mode.equals(UnifiedDiffMode.REPLACE_MODE)) {
+				detailedDiffStart = detailedDiff.leftStart;
+				detailedDiffLength = detailedDiff.leftLength;
+				detailedDiffStr = detailedDiff.leftStr;
+			} else {
+				detailedDiffStart = detailedDiff.rightStart;
+				detailedDiffLength = detailedDiff.rightLength;
+				detailedDiffStr = detailedDiff.rightStr;
+			}
+			if (detailedDiffStr.trim().length() == 0) {
+				continue;
+			}
+			if (detailedDiffStart + detailedDiffLength >= trimmedDiffStr.length()) {
+				int delta = diffStr.length() - trimmedDiffStr.length();
+				if (detailedDiffLength <= delta) {
+					continue;
+				}
+				detailedDiffLength -= delta;
+			}
+			int expandedStart = mapOffsetToTabExpanded(diffStr, detailedDiffStart, tabWidth);
+			int expandedEnd = mapOffsetToTabExpanded(diffStr, detailedDiffStart + detailedDiffLength, tabWidth);
+			int expandedLength = expandedEnd - expandedStart;
+			if (expandedStart >= 0 && expandedLength > 0 && expandedStart + expandedLength <= labelLength) {
+				StyleRange bgRange = new StyleRange();
+				bgRange.start = expandedStart;
+				bgRange.length = expandedLength;
+				bgRange.background = detailedDiffColor;
+				ranges.add(bgRange);
+			}
+		}
+		return ranges;
+	}
+
+	record ForegroundInfo(int x, int y, String str, Font font, Color background, Color foreground) {
+	}
+
+	/**
+	 * Draws the syntax-colored label using the given style ranges, advancing the
+	 * cursor position range by range. The {@code onForeground} consumer is called
+	 * for each drawn segment and may be {@code null}; the header mining uses it to
+	 * populate its foreground cache so subsequent repaints skip this path.
+	 */
+	static void drawStyleRanges(GC gc, StyledText textWidget, List<StyleRange> ranges, String label,
+			HashMap<Font, Map<Integer, Font>> styledFonts, int x, int y,
+			Consumer<ForegroundInfo> onForeground) {
+		Font font = gc.getFont();
+		int textWidgetLineHeight = textWidget.getLineHeight();
+		int cx = x;
+		int cy = y;
+		for (StyleRange range : ranges) {
+			String sub = label.substring(range.start, range.start + range.length);
+			if (sub.trim().length() > 0) {
+				if (range.background != null) {
+					gc.setBackground(range.background);
+				}
+				if (range.foreground != null) {
+					gc.setForeground(range.foreground);
+				}
+				Font currentFont = gc.getFont();
+				var rangeWithFont = transformFontStyleToFont(styledFonts, currentFont, range);
+				if (rangeWithFont.font != null) {
+					gc.setFont(rangeWithFont.font);
+				}
+				String[] lines = sub.split("\n"); //$NON-NLS-1$
+				if (lines.length > 1) {
+					for (int i = 0; i < lines.length; i++) {
+						String line = lines[i].replace("\r", ""); //$NON-NLS-1$ //$NON-NLS-2$
+						gc.drawString(line, cx, cy, true);
+						if (onForeground != null) {
+							onForeground.accept(new ForegroundInfo(cx - x, cy - y, line, gc.getFont(),
+									gc.getBackground(), gc.getForeground()));
+						}
+						Point p = gc.stringExtent(line);
+						if (i < lines.length - 1) {
+							cy += textWidgetLineHeight + textWidget.getLineSpacing();
+							cx = x;
+						} else {
+							if (sub.endsWith("\n")) { //$NON-NLS-1$
+								cy += textWidgetLineHeight + textWidget.getLineSpacing();
+								cx = x;
+							} else {
+								cx += p.x;
+							}
+						}
+					}
+				} else {
+					gc.drawString(sub, cx, cy, true);
+					if (onForeground != null) {
+						onForeground.accept(new ForegroundInfo(cx - x, cy - y, sub, gc.getFont(),
+								gc.getBackground(), gc.getForeground()));
+					}
+					Point p = gc.stringExtent(sub);
+					if (sub.endsWith("\n")) { //$NON-NLS-1$
+						cy += textWidgetLineHeight + textWidget.getLineSpacing();
+						cx = x;
+					} else {
+						cx += p.x;
+					}
+				}
+				gc.setFont(currentFont);
+			} else {
+				int lfCount = 0;
+				if (sub.contains("\n")) { //$NON-NLS-1$
+					lfCount = sub.split("\n", -1).length - 1; //$NON-NLS-1$
+					sub = sub.substring(sub.lastIndexOf("\n") + 1); //$NON-NLS-1$
+				}
+				Point p = gc.stringExtent(sub);
+				if (lfCount > 0) {
+					cy += lfCount * (textWidgetLineHeight + textWidget.getLineSpacing());
+					cx = x;
+				}
+				cx += p.x;
+			}
+		}
+		gc.setFont(font);
 	}
 
 	private static List<StyleRange> computeStyleRanges(ITextViewer v, int offset, String source) {
@@ -539,8 +869,11 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		if (!(v instanceof SourceViewer sv)) {
 			return result;
 		}
+		IDocument originalDocument = sv.getDocument();
+		if (originalDocument == null) {
+			return result;
+		}
 		try {
-			IDocument originalDocument = sv.getDocument();
 			String prefix = originalDocument.get(0, offset /* diff.leftStart */);
 			IDocument document = new Document(prefix + source);
 			IRegion damage = new Region(prefix.length(), source.length());
@@ -559,7 +892,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		}
 	}
 
-	public static class UnifiedDiffLineHeaderCodeMining extends LineHeaderCodeMining {
+	public static class UnifiedDiffLineHeaderCodeMining extends LineHeaderCodeMining implements IUnifiedDiffCodeMining {
 		private final String unifiedDiffLabel;
 		private final Color deletionBackgroundColor;
 		private final Color detailedDiffColor;
@@ -631,153 +964,34 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			return result;
 		}
 
-		private static final class ForegroundInfo {
-
-			final int x;
-			final int y;
-			final String str;
-			final Font font;
-			final Color background;
-			final Color foreground;
-
-			public ForegroundInfo(int x, int y, String str, Font font, Color background, Color foreground) {
-				this.x = x;
-				this.y = y;
-				this.str = str;
-				this.font = font;
-				this.background = background;
-				this.foreground = foreground;
-			}
-
-		}
-
-		private static class MouseClickConsumer implements Consumer<MouseEvent> {
-
-			private final ITextViewer viewer;
-			private UnifiedDiffLineHeaderCodeMining mining;
-
-			public MouseClickConsumer(ITextViewer viewer) {
-				this.viewer = viewer;
-			}
-
-			public void setCodeMining(UnifiedDiffLineHeaderCodeMining mining) {
-				this.mining = mining;
-			}
-
-			@Override
-			public void accept(MouseEvent t) {
-				if (mining == null || viewer == null || mining.lastRectangle == null) {
-					return;
-				}
-				StyledText st = viewer.getTextWidget();
-				StyledText overlay = new StyledText(st, SWT.NONE);
-				overlay.setBounds(mining.lastRectangle);
-				overlay.setFont(st.getFont());
-				overlay.setBackground(mining.deletionBackgroundColor);
-				overlay.setLineSpacing(st.getLineSpacing());
-				String txt = mining.getLabel().stripTrailing();
-				overlay.setText(txt);
-				overlay.setFocus();
-				List<StyleRange> backgrounds = createDetailedDiffBackgroundRanges(mining, txt);
-				List<StyleRange> foregrounds = computeStyleRanges(viewer, mining.diff.leftStart, txt);
-				List<StyleRange> ranges = mergeStyleRanges(backgrounds, foregrounds);
-				overlay.setStyleRanges(ranges.toArray(new StyleRange[] {}));
-				overlay.addFocusListener(new FocusAdapter() {
-					@Override
-					public void focusLost(FocusEvent e) {
-						overlay.dispose();
-						setTextEditorActionsActivated(true);
-					}
-				});
-				overlay.addKeyListener(new KeyAdapter() {
-					@Override
-					public void keyPressed(KeyEvent e) {
-						if (e.keyCode == SWT.ESC) {
-							overlay.dispose();
-							setTextEditorActionsActivated(true);
-						}
-						e.doit = false;
-					}
-				});
-				setTextEditorActionsActivated(false);
-			}
-
-			private List<StyleRange> createDetailedDiffBackgroundRanges(UnifiedDiffLineHeaderCodeMining miningParam,
-					String txt) {
-				List<StyleRange> ranges = new ArrayList<>();
-				String diffStr = miningParam.diff.mode.equals(UnifiedDiffMode.REPLACE_MODE) ? miningParam.diff.leftStr
-						: miningParam.diff.rightStr;
-				String trimmedDiffStr = removeTrailingNewLines(diffStr);
-				for (var detailedDiff : miningParam.diff.detailedDiffs) {
-					int detailedDiffStart;
-					int detailedDiffLength;
-					String detailedDiffStr;
-					if (miningParam.diff.mode.equals(UnifiedDiffMode.REPLACE_MODE)) {
-						detailedDiffStart = detailedDiff.leftStart;
-						detailedDiffLength = detailedDiff.leftLength;
-						detailedDiffStr = detailedDiff.leftStr;
-					} else {
-						detailedDiffStart = detailedDiff.rightStart;
-						detailedDiffLength = detailedDiff.rightLength;
-						detailedDiffStr = detailedDiff.rightStr;
-					}
-					if (detailedDiffStr.trim().length() == 0) {
-						continue;
-					}
-					if (detailedDiffStart + detailedDiffLength >= trimmedDiffStr.length()) {
-						int delta = diffStr.length() - trimmedDiffStr.length();
-						if (detailedDiffLength <= delta) {
-							continue;
-						}
-						detailedDiffLength -= delta;
-					}
-					int expandedStart = mapOffsetToTabExpanded(diffStr, detailedDiffStart, miningParam.tabWidth);
-					int expandedEnd = mapOffsetToTabExpanded(diffStr, detailedDiffStart + detailedDiffLength,
-							miningParam.tabWidth);
-					int expandedLength = expandedEnd - expandedStart;
-					if (expandedStart >= 0 && expandedLength > 0 && expandedStart + expandedLength <= txt.length()) {
-						StyleRange bgRange = new StyleRange();
-						bgRange.start = expandedStart;
-						bgRange.length = expandedLength;
-						bgRange.background = miningParam.detailedDiffColor;
-						ranges.add(bgRange);
-					}
-				}
-				return ranges;
-			}
-
-			private void setTextEditorActionsActivated(boolean state) {
-				IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-						.getActiveEditor();
-				if (part instanceof MultiPageEditorPart multiPageEditorPart) {
-					Object page = multiPageEditorPart.getSelectedPage();
-					if (page instanceof IEditorPart editorPart) {
-						part = editorPart;
-					}
-				}
-				if (!(part instanceof AbstractTextEditor) || part.getSite().getWorkbenchWindow().isClosing()) {
-					return;
-				}
-				if (UnifiedDiffManager.isViewerInPart(part, viewer)) {
-					try {
-						Method method = AbstractTextEditor.class.getDeclaredMethod("setActionActivation", //$NON-NLS-1$
-								boolean.class);
-						method.setAccessible(true);
-						method.invoke(part, Boolean.valueOf(state));
-					} catch (IllegalArgumentException | ReflectiveOperationException ex) {
-						error(ex);
-					}
-				}
-			}
-		}
-
 		@Override
 		public String getLabel() {
 			return this.unifiedDiffLabel;
 		}
 
+		@Override
 		public UnifiedDiff getUnifiedDiff() {
 			return this.diff;
+		}
+
+		@Override
+		public Rectangle getLastRectangle() {
+			return lastRectangle;
+		}
+
+		@Override
+		public Color getDeletionBackgroundColor() {
+			return deletionBackgroundColor;
+		}
+
+		@Override
+		public Color getDetailedDiffColor() {
+			return detailedDiffColor;
+		}
+
+		@Override
+		public int getTabWidth() {
+			return tabWidth;
 		}
 
 		/**
@@ -847,22 +1061,22 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 				}
 				// foregrounds
 				for (var f : foregrounds) {
-					if (y + f.y < 0) {
+					if (y + f.y() < 0) {
 						continue;
 					}
-					if (f.font == null) {
+					if (f.font() == null) {
 						gc.setFont(cachedFont);
-					} else if (!f.font.isDisposed()) {
-						gc.setFont(f.font);
+					} else if (!f.font().isDisposed()) {
+						gc.setFont(f.font());
 					} else {
 						cleanCachedData();
 						cachedFont = font;
 						fontIsDisposed = true;
 						break;
 					}
-					gc.setBackground(f.background);
-					gc.setForeground(f.foreground);
-					gc.drawString(f.str, x + f.x, y + f.y, true);
+					gc.setBackground(f.background());
+					gc.setForeground(f.foreground());
+					gc.drawString(f.str(), x + f.x(), y + f.y(), true);
 				}
 				if (!fontIsDisposed) {
 					lastRectangle = new Rectangle(x, y, lastRectangle.width, lastRectangle.height);
@@ -1002,70 +1216,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			}
 			foregrounds = new ArrayList<>();
 			gc.setFont(cachedFont);
-			int textWidgetLineHeight = textWidget.getLineHeight();
-			int cx = x;
-			int cy = y;
-			for (StyleRange range : ranges) {
-				String sub = label.substring(range.start, range.start + range.length);
-				if (sub.trim().length() > 0) {
-					if (range.background != null) {
-						gc.setBackground(range.background);
-					}
-					if (range.foreground != null) {
-						gc.setForeground(range.foreground);
-					}
-					Font currentFont = gc.getFont();
-					var rangeWithFont = transformFontStyleToFont(currentFont, range);
-					if (rangeWithFont.font != null) {
-						gc.setFont(rangeWithFont.font);
-					}
-					String[] lines = sub.split("\n"); //$NON-NLS-1$
-					if (lines.length > 1) {
-						for (int i = 0; i < lines.length; i++) {
-							String line = lines[i].replace("\r", ""); //$NON-NLS-1$ //$NON-NLS-2$
-							gc.drawString(line, cx, cy, true);
-							foregrounds.add(new ForegroundInfo(cx - x, cy - y, line, gc.getFont(), gc.getBackground(),
-									gc.getForeground()));
-							Point p = gc.stringExtent(line);
-							if (i < lines.length - 1) {
-								cy += textWidgetLineHeight + textWidget.getLineSpacing();
-								cx = x;
-							} else {
-								if (sub.endsWith("\n")) { //$NON-NLS-1$
-									cy += textWidgetLineHeight + textWidget.getLineSpacing();
-									cx = x;
-								} else {
-									cx += p.x;
-								}
-							}
-						}
-					} else {
-						gc.drawString(sub, cx, cy, true);
-						foregrounds.add(new ForegroundInfo(cx - x, cy - y, sub, gc.getFont(), gc.getBackground(),
-								gc.getForeground()));
-						Point p = gc.stringExtent(sub);
-						if (sub.endsWith("\n")) { //$NON-NLS-1$
-							cy += textWidgetLineHeight + textWidget.getLineSpacing();
-							cx = x;
-						} else {
-							cx += p.x;
-						}
-					}
-					gc.setFont(currentFont);
-				} else {
-					int lfCount = 0;
-					if (sub.contains("\n")) { //$NON-NLS-1$
-						lfCount = sub.split("\n", -1).length - 1; //$NON-NLS-1$
-						sub = sub.substring(sub.lastIndexOf("\n") + 1); //$NON-NLS-1$
-					}
-					Point p = gc.stringExtent(sub);
-					if (lfCount > 0) {
-						cy += lfCount * (textWidgetLineHeight + textWidget.getLineSpacing());
-						cx = x;
-					}
-					cx += p.x;
-				}
-			}
+			drawStyleRanges(gc, textWidget, ranges, label, styledFonts, x, y, foregrounds::add);
 			return result;
 		}
 
@@ -1168,21 +1319,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		}
 
 		private StyleRange transformFontStyleToFont(Font baseFont, StyleRange styleRange) {
-			// as per the StyleRange contract, only consider fontStyle if font is not
-			// already set
-			if (styleRange.font == null && styleRange.fontStyle > 0) {
-				StyleRange newRange = (StyleRange) styleRange.clone();
-				newRange.font = styledFonts.computeIfAbsent(baseFont, f -> new HashMap<>())
-						.computeIfAbsent(Integer.valueOf(styleRange.fontStyle), s -> {
-							FontData[] fontDatas = baseFont.getFontData();
-							for (FontData fontData : fontDatas) {
-								fontData.setStyle(styleRange.fontStyle);
-							}
-							return new Font(baseFont.getDevice(), fontDatas);
-						});
-				return newRange;
-			}
-			return styleRange;
+			return UnifiedDiffCodeMiningProvider.transformFontStyleToFont(styledFonts, baseFont, styleRange);
 		}
 
 		private int getOffsetAtLine(String str, int off) {
@@ -1214,6 +1351,74 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			y += line * (textWidgetLineHeight + textWidget.getLineSpacing());
 			return y;
 		}
+	}
+
+	static void openOverlay(StyledText overlay, ITextViewer viewer) {
+		overlay.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				overlay.dispose();
+				setTextEditorActionsActivated(viewer, true);
+			}
+		});
+		overlay.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.keyCode == SWT.ESC) {
+					overlay.dispose();
+					setTextEditorActionsActivated(viewer, true);
+				}
+				e.doit = false;
+			}
+		});
+		setTextEditorActionsActivated(viewer, false);
+	}
+
+	static void setTextEditorActionsActivated(ITextViewer viewer, boolean state) {
+		IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+		if (part instanceof MultiPageEditorPart multiPageEditorPart) {
+			Object page = multiPageEditorPart.getSelectedPage();
+			if (page instanceof IEditorPart editorPart) {
+				part = editorPart;
+			}
+		}
+		if (!(part instanceof AbstractTextEditor) || part.getSite().getWorkbenchWindow().isClosing()) {
+			return;
+		}
+		if (UnifiedDiffManager.isViewerInPart(part, viewer)) {
+			try {
+				Method method = AbstractTextEditor.class.getDeclaredMethod("setActionActivation", //$NON-NLS-1$
+						boolean.class);
+				method.setAccessible(true);
+				method.invoke(part, Boolean.valueOf(state));
+			} catch (IllegalArgumentException | ReflectiveOperationException ex) {
+				error(ex);
+			}
+		}
+	}
+
+	/**
+	 * Returns a {@link StyleRange} whose {@code font} carries the range's font
+	 * style. Fonts are cached in the caller-owned {@code styledFonts} map so the
+	 * cache lifetime stays tied to the owning mining instance.
+	 */
+	static StyleRange transformFontStyleToFont(Map<Font, Map<Integer, Font>> styledFonts, Font baseFont,
+			StyleRange styleRange) {
+		// as per the StyleRange contract, only consider fontStyle if font is not
+		// already set
+		if (styleRange.font == null && styleRange.fontStyle > 0) {
+			StyleRange newRange = (StyleRange) styleRange.clone();
+			newRange.font = styledFonts.computeIfAbsent(baseFont, f -> new HashMap<>())
+					.computeIfAbsent(Integer.valueOf(styleRange.fontStyle), s -> {
+						FontData[] fontDatas = baseFont.getFontData();
+						for (FontData fontData : fontDatas) {
+							fontData.setStyle(styleRange.fontStyle);
+						}
+						return new Font(baseFont.getDevice(), fontDatas);
+					});
+			return newRange;
+		}
+		return styleRange;
 	}
 
 	// from inner class ColorPalette in TextMergeViewer
