@@ -33,6 +33,7 @@ import java.util.function.Supplier;
 import org.eclipse.compare.unifieddiff.UnifiedDiffMode;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffCodeMiningProvider;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffCodeMiningProvider.FoldedRegionCodeMining;
+import org.eclipse.compare.unifieddiff.internal.UnifiedDiffCodeMiningProvider.UnifiedDiffFooterCodeMining;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffCodeMiningProvider.UnifiedDiffLineHeaderCodeMining;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager.UnifiedDiff;
@@ -44,11 +45,19 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Position;
+import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.codemining.ICodeMining;
 import org.eclipse.jface.text.codemining.ICodeMiningProvider;
+import org.eclipse.jface.text.presentation.IPresentationReconciler;
+import org.eclipse.jface.text.presentation.PresentationReconciler;
+import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
+import org.eclipse.jface.text.rules.RuleBasedScanner;
+import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.AnnotationModel;
 import org.eclipse.jface.text.source.AnnotationPainter;
+import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.inlined.AbstractInlinedAnnotation;
 import org.eclipse.jface.text.source.projection.ProjectionAnnotation;
@@ -58,6 +67,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.text.undo.DocumentUndoManagerRegistry;
+import org.eclipse.swt.graphics.GC;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -90,6 +100,7 @@ public class UnifiedDiffCodeMiningProviderTest {
 		document = numberedLines(60);
 		model = new AnnotationModel();
 		viewer = new ProjectionViewer(shell, null, null, false, SWT.V_SCROLL);
+		viewer.configure(syntaxColoringConfiguration());
 		viewer.setDocument(document, model);
 		viewer.enableProjection();
 		DocumentUndoManagerRegistry.connect(document);
@@ -362,7 +373,89 @@ public class UnifiedDiffCodeMiningProviderTest {
 		waitForAttachedMinings(diffs, allRegions().size());
 	}
 
+	/**
+	 * When the document does not end with a newline, the diff at the end cannot
+	 * anchor a line-header mining (there is no following line to indent). A footer
+	 * mining must be created instead.
+	 */
+	@Test
+	public void testFooterMiningIsCreatedWhenDocumentHasNoTrailingNewline() throws Exception {
+		switchToDocument(new Document("line 0\nline 1 changed"));
+
+		IStatus status = UnifiedDiffManager.open(viewer, document, model, null, "line 0\nline 1\n", MODE, null, null,
+				null, true, CONTEXT_LINES);
+		assertTrue(status.isOK(), "open() should succeed: " + status);
+
+		List<ICodeMining> minings = provide();
+		List<UnifiedDiffFooterCodeMining> footers = new ArrayList<>();
+		for (ICodeMining mining : minings) {
+			if (mining instanceof UnifiedDiffFooterCodeMining footer) {
+				footers.add(footer);
+			}
+		}
+		assertThat(footers).as("a footer mining is used for the diff at the end of a document without trailing newline")
+				.isNotEmpty();
+	}
+
+	/**
+	 * The footer mining draws through the same {@code drawStyleRanges} path as the
+	 * line-header mining. With a presentation reconciler configured,
+	 * {@code computeStyleRanges} yields ranges, so {@code draw()} runs the shared
+	 * syntax-coloring path rather than the no-reconciler fallback; it must complete
+	 * without throwing and set {@code lastRectangle}.
+	 */
+	@Test
+	public void testFooterMiningStyleRangesUseTheSameLogicAsTheHeader() throws Exception {
+		switchToDocument(new Document("line 0\nline 1 changed"));
+
+		IStatus status = UnifiedDiffManager.open(viewer, document, model, null, "line 0\nline 1\n", MODE, null, null,
+				null, true, CONTEXT_LINES);
+		assertTrue(status.isOK(), "open() should succeed: " + status);
+
+		List<ICodeMining> minings = provide();
+		UnifiedDiffFooterCodeMining footer = null;
+		for (ICodeMining mining : minings) {
+			if (mining instanceof UnifiedDiffFooterCodeMining f) {
+				footer = f;
+			}
+		}
+		assertNotNull(footer, "a footer mining must be present");
+		assertThat(footer.getLastRectangle()).as("lastRectangle starts null before the first draw").isNull();
+
+		GC gc = new GC(shell);
+		try {
+			footer.draw(gc, viewer.getTextWidget(), null, 0, 0);
+		} finally {
+			gc.dispose();
+		}
+
+		assertThat(footer.getLastRectangle())
+				.as("draw() must set lastRectangle — it stayed null, so draw() bailed out before rendering")
+				.isNotNull();
+	}
+
 	// ------------------------------------------------------------------ helpers
+
+	/**
+	 * A configuration whose presentation reconciler colors the whole document with
+	 * a single token, so {@code computeStyleRanges} returns ranges and the minings
+	 * exercise their real syntax-coloring path instead of the no-reconciler
+	 * fallback.
+	 */
+	private static SourceViewerConfiguration syntaxColoringConfiguration() {
+		return new SourceViewerConfiguration() {
+			@Override
+			public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
+				PresentationReconciler reconciler = new PresentationReconciler();
+				RuleBasedScanner scanner = new RuleBasedScanner();
+				scanner.setDefaultReturnToken(new Token(new TextAttribute(null)));
+				DefaultDamagerRepairer dr = new DefaultDamagerRepairer(scanner);
+				reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
+				reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
+				return reconciler;
+			}
+		};
+	}
 
 	/** A provider that answers only when the test lets it, like a slow editor. */
 	private final class PendingProvider implements ICodeMiningProvider {
@@ -422,6 +515,8 @@ public class UnifiedDiffCodeMiningProviderTest {
 		for (ICodeMining mining : minings) {
 			if (mining instanceof UnifiedDiffLineHeaderCodeMining overlay) {
 				shown.add(overlay.getUnifiedDiff());
+			} else if (mining instanceof UnifiedDiffFooterCodeMining footer) {
+				shown.add(footer.getUnifiedDiff());
 			} else if (mining instanceof FoldedRegionCodeMining expander) {
 				expanders.add(Integer.valueOf(expander.getPosition().getOffset()));
 			} else {
@@ -474,6 +569,8 @@ public class UnifiedDiffCodeMiningProviderTest {
 			for (ICodeMining mining : attachedMinings()) {
 				if (mining instanceof UnifiedDiffLineHeaderCodeMining overlay) {
 					shown.add(overlay.getUnifiedDiff());
+				} else if (mining instanceof UnifiedDiffFooterCodeMining footer) {
+					shown.add(footer.getUnifiedDiff());
 				} else if (mining instanceof FoldedRegionCodeMining) {
 					expanders++;
 				}
@@ -570,5 +667,18 @@ public class UnifiedDiffCodeMiningProviderTest {
 			content.append("line ").append(i).append('\n');
 		}
 		return new Document(content.toString());
+	}
+
+	/**
+	 * Replaces the viewer's document mid-test. Disconnects the undo manager from
+	 * the old document, connects it to the new one, and re-wires the viewer.
+	 */
+	private void switchToDocument(IDocument newDocument) {
+		DocumentUndoManagerRegistry.disconnect(document);
+		document = newDocument;
+		model = new AnnotationModel();
+		viewer.setDocument(document, model);
+		DocumentUndoManagerRegistry.connect(document);
+		installCodeMinings(provider);
 	}
 }
