@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2024 IBM Corporation and others.
+ * Copyright (c) 2005, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -161,7 +161,7 @@ public abstract class FileStore extends PlatformObject implements IFileStore {
 	 * </ul>
 	 */
 	protected void copyFile(IFileInfo sourceInfo, IFileStore destination, int options, IProgressMonitor monitor) throws CoreException {
-		if ((options & EFS.OVERWRITE) == 0 && destination.fetchInfo().exists()) {
+		if ((options & EFS.OVERWRITE) == 0 && destination.exists()) {
 			Policy.error(EFS.ERROR_EXISTS, NLS.bind(Messages.fileExists, destination));
 		}
 		String sourcePath = toString();
@@ -236,9 +236,7 @@ public abstract class FileStore extends PlatformObject implements IFileStore {
 			return fetchInfo(EFS.NONE, null);
 		} catch (CoreException e) {
 			//there was an error contacting the file system, so treat it as non-existent file
-			FileInfo result = new FileInfo(getName());
-			result.setExists(false);
-			return result;
+			return new FileInfo(getName());
 		}
 	}
 

@@ -56,7 +56,7 @@ public class RefreshLocalAliasVisitor extends RefreshLocalVisitor {
 		IResource[] aliases = workspace.getAliasManager().computeAliases(target, store);
 		if (aliases != null) {
 			boolean wasFilteredOut = false;
-			if (store.fetchInfo() != null && store.fetchInfo().exists()) {
+			if (store.exists()) {
 				wasFilteredOut = target.isFiltered();
 			}
 			for (IResource aliase : aliases) {

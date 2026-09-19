@@ -402,11 +402,11 @@ public class FileSystemResourceManagerTest implements ICoreConstants {
 		// wrap in runnable to prevent snapshot from occurring in the middle.
 		getWorkspace().run((IWorkspaceRunnable) monitor -> {
 			removeFromFileSystem(project);
-			assertFalse(fileStore.fetchInfo().isDirectory());
+			assertFalse(fileStore.isDirectory());
 			//write project in a runnable, otherwise tree will be locked
 			((Project) project).writeDescription(IResource.FORCE);
 		}, null);
-		assertTrue(fileStore.fetchInfo().isDirectory());
+		assertTrue(fileStore.isDirectory());
 		long lastModified = ((Resource) dotProject).getStore().fetchInfo().getLastModified();
 		assertEquals(lastModified, ((Resource) project).getResourceInfo(false, false).getLocalSyncInfo());
 	}

@@ -155,7 +155,7 @@ public class DebugFileStore extends FileStore {
 			}
 		} else {
 			IFileStore parent = getParent();
-			if (parent.fetchInfo().exists()) {
+			if (parent.exists()) {
 				DebugFileSystem.getDefault().setContents(toURI(), DebugFileSystem.DIRECTORY_BYTES);
 			} else if ((options & EFS.SHALLOW) > 0) {
 				throw new CoreException(new Status(IStatus.ERROR, "org.eclipse.jdt.debug.tests", //$NON-NLS-1$

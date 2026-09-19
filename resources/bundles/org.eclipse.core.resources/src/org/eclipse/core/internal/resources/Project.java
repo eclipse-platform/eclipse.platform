@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 import org.eclipse.core.filesystem.EFS;
-import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.events.LifecycleEvent;
 import org.eclipse.core.internal.preferences.EclipsePreferences;
@@ -100,8 +99,7 @@ public class Project extends Container implements IProject {
 		//if the project is in the default location, need to check for collision with existing folder of different case
 		if (!Workspace.caseSensitive) {
 			IFileStore store = getStore();
-			IFileInfo localInfo = store.fetchInfo();
-			if (localInfo.exists()) {
+			if (store.exists()) {
 				String name = getLocalManager().getLocalName(store);
 				if (name != null && !store.getName().equals(name)) {
 					String msg = NLS.bind(Messages.resources_existsLocalDifferentCase, IPath.fromOSString(store.toString()).removeLastSegments(1).append(name).toOSString());

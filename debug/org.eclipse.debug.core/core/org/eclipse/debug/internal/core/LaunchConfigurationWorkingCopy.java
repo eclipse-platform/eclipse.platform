@@ -308,7 +308,7 @@ public class LaunchConfigurationWorkingCopy extends LaunchConfiguration implemen
 					}
 					IFileStore dir = file.getParent();
 					dir.mkdir(EFS.SHALLOW, null);
-					if (!file.fetchInfo().exists()) {
+					if (!file.exists()) {
 						added = true;
 						updateMonitor(lmonitor, 1);
 					}

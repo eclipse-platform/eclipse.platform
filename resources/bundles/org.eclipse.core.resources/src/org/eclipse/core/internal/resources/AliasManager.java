@@ -467,7 +467,7 @@ public class AliasManager implements IManager, ILifecycleListener, IResourceChan
 	 * @exception CoreException
 	 */
 	private boolean checkDeletion(Project project, IFileStore location) throws CoreException {
-		if (project.exists() && !location.fetchInfo().exists()) {
+		if (project.exists() && !location.exists()) {
 			//perform internal deletion of project from workspace tree because
 			// it is already deleted from disk and we can't acquire a different
 			//scheduling rule in this context (none is needed because we are
