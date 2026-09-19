@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2015 IBM Corporation and others.
+ * Copyright (c) 2005, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -223,6 +223,26 @@ public interface IFileStore extends IAdaptable {
 	 * @see IFileTree#getFileInfo(IFileStore)
 	 */
 	public IFileInfo fetchInfo(int options, IProgressMonitor monitor) throws CoreException;
+
+	/**
+	 * Returns whether this file or directory exists in the underlying file system.
+	 *
+	 * @return {@code true} if this file exists, and {@code false} if the file does not exist or an I/O error was encountered.
+	 * @since 1.12
+	 */
+	public default boolean exists() {
+		return fetchInfo().exists();
+	}
+
+	/**
+	 * Returns whether this file is a directory, or {@code false} if this file does not exist.
+	 *
+	 * @return {@code true} if this is an existing directory, and {@code false} otherwise.
+	 * @since 1.12
+	 */
+	public default boolean isDirectory() {
+		return fetchInfo().isDirectory();
+	}
 
 	/**
 	 * Returns a child of this store as specified by the provided path.  The

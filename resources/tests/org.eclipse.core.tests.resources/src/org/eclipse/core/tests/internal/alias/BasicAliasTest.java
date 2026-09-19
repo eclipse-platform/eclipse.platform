@@ -443,12 +443,12 @@ public class BasicAliasTest {
 		// Create the directory to which you will link. The directory needs a single file.
 		IFileStore dirStore = getFileStore(tempDirectory);
 		dirStore.mkdir(EFS.NONE, createTestMonitor());
-		assertTrue(dirStore.fetchInfo().exists());
-		assertTrue(dirStore.fetchInfo().isDirectory());
+		assertTrue(dirStore.exists());
+		assertTrue(dirStore.isDirectory());
 
 		IFileStore childStore = dirStore.getChild("child");
 		createInFileSystem(childStore);
-		assertTrue(childStore.fetchInfo().exists());
+		assertTrue(childStore.exists());
 
 		// Create and open the first project. Project links to the directory.
 		IProject project1 = ResourcesPlugin.getWorkspace().getRoot().getProject("project1");

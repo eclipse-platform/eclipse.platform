@@ -712,9 +712,9 @@ public class IProjectTest  {
 		assertFalse(project.exists());
 		assertFalse(file.exists());
 		assertFalse(otherFile.exists());
-		assertFalse(projectStore.fetchInfo().exists());
-		assertFalse(fileStore.fetchInfo().exists());
-		assertFalse(otherFileStore.fetchInfo().exists());
+		assertFalse(projectStore.exists());
+		assertFalse(fileStore.exists());
+		assertFalse(otherFileStore.exists());
 
 		/* ======================================================================
 		 * Force = FALSE
@@ -742,9 +742,9 @@ public class IProjectTest  {
 		assertFalse(project.exists());
 		assertFalse(file.exists());
 		assertFalse(otherFile.exists());
-		assertFalse(projectStore.fetchInfo().exists());
-		assertFalse(fileStore.fetchInfo().exists());
-		assertFalse(otherFileStore.fetchInfo().exists());
+		assertFalse(projectStore.exists());
+		assertFalse(fileStore.exists());
+		assertFalse(otherFileStore.exists());
 
 		/* ======================================================================
 		 * Force = TRUE
@@ -773,9 +773,9 @@ public class IProjectTest  {
 		assertFalse(project.exists());
 		assertFalse(file.exists());
 		assertFalse(otherFile.exists());
-		assertTrue(projectStore.fetchInfo().exists());
-		assertTrue(fileStore.fetchInfo().exists());
-		assertTrue(otherFileStore.fetchInfo().exists());
+		assertTrue(projectStore.exists());
+		assertTrue(fileStore.exists());
+		assertTrue(otherFileStore.exists());
 		// cleanup
 		projectStore.delete(EFS.NONE, null);
 
@@ -805,9 +805,9 @@ public class IProjectTest  {
 		assertFalse(project.exists());
 		assertFalse(file.exists());
 		assertFalse(otherFile.exists());
-		assertTrue(projectStore.fetchInfo().exists());
-		assertTrue(fileStore.fetchInfo().exists());
-		assertTrue(otherFileStore.fetchInfo().exists());
+		assertTrue(projectStore.exists());
+		assertTrue(fileStore.exists());
+		assertTrue(otherFileStore.exists());
 		// cleanup
 		projectStore.delete(EFS.NONE, null);
 
@@ -837,9 +837,9 @@ public class IProjectTest  {
 		assertFalse(project.exists());
 		assertFalse(file.exists());
 		assertFalse(otherFile.exists());
-		assertTrue(projectStore.fetchInfo().exists());
-		assertTrue(fileStore.fetchInfo().exists());
-		assertTrue(otherFileStore.fetchInfo().exists());
+		assertTrue(projectStore.exists());
+		assertTrue(fileStore.exists());
+		assertTrue(otherFileStore.exists());
 		// cleanup
 		projectStore.delete(EFS.NONE, null);
 
@@ -869,9 +869,9 @@ public class IProjectTest  {
 		assertFalse(project.exists());
 		assertFalse(file.exists());
 		assertFalse(otherFile.exists());
-		assertTrue(projectStore.fetchInfo().exists());
-		assertTrue(fileStore.fetchInfo().exists());
-		assertTrue(otherFileStore.fetchInfo().exists());
+		assertTrue(projectStore.exists());
+		assertTrue(fileStore.exists());
+		assertTrue(otherFileStore.exists());
 		// cleanup
 		projectStore.delete(EFS.NONE, null);
 	}
@@ -904,7 +904,7 @@ public class IProjectTest  {
 		project.close(monitor);
 		monitor.assertUsedUp();
 		createInFileSystem(otherFileStore);
-		assertTrue(otherFileStore.fetchInfo().exists());
+		assertTrue(otherFileStore.exists());
 		assertTrue(project.exists());
 		assertFalse(project.isOpen());
 		assertFalse(project.isAccessible());
@@ -918,9 +918,9 @@ public class IProjectTest  {
 		assertFalse(project.exists());
 		assertFalse(file.exists());
 		assertFalse(otherFile.exists());
-		assertFalse(projectStore.fetchInfo().exists());
-		assertFalse(fileStore.fetchInfo().exists());
-		assertFalse(otherFileStore.fetchInfo().exists());
+		assertFalse(projectStore.exists());
+		assertFalse(fileStore.exists());
+		assertFalse(otherFileStore.exists());
 
 		/* ======================================================================
 		 * Force = FALSE
@@ -937,7 +937,7 @@ public class IProjectTest  {
 		project.close(monitor);
 		monitor.assertUsedUp();
 		createInFileSystem(otherFileStore);
-		assertTrue(otherFileStore.fetchInfo().exists());
+		assertTrue(otherFileStore.exists());
 		assertTrue(project.exists());
 		assertFalse(project.isOpen());
 		assertFalse(project.isAccessible());
@@ -949,9 +949,9 @@ public class IProjectTest  {
 		assertFalse(project.exists());
 		assertFalse(file.exists());
 		assertFalse(otherFile.exists());
-		assertFalse(projectStore.fetchInfo().exists());
-		assertFalse(fileStore.fetchInfo().exists());
-		assertFalse(otherFileStore.fetchInfo().exists());
+		assertFalse(projectStore.exists());
+		assertFalse(fileStore.exists());
+		assertFalse(otherFileStore.exists());
 
 		/* ======================================================================
 		 * Force = TRUE
@@ -968,7 +968,7 @@ public class IProjectTest  {
 		project.close(monitor);
 		monitor.assertUsedUp();
 		createInFileSystem(otherFileStore);
-		assertTrue(otherFileStore.fetchInfo().exists());
+		assertTrue(otherFileStore.exists());
 		assertTrue(project.exists());
 		assertFalse(project.isOpen());
 		assertFalse(project.isAccessible());
@@ -980,9 +980,9 @@ public class IProjectTest  {
 		assertFalse(project.exists());
 		assertFalse(file.exists());
 		assertFalse(otherFile.exists());
-		assertTrue(projectStore.fetchInfo().exists());
-		assertTrue(fileStore.fetchInfo().exists());
-		assertTrue(otherFileStore.fetchInfo().exists());
+		assertTrue(projectStore.exists());
+		assertTrue(fileStore.exists());
+		assertTrue(otherFileStore.exists());
 		// cleanup
 		projectStore.delete(EFS.NONE, null);
 
@@ -1001,7 +1001,7 @@ public class IProjectTest  {
 		project.close(monitor);
 		monitor.assertUsedUp();
 		createInFileSystem(otherFileStore);
-		assertTrue(otherFileStore.fetchInfo().exists());
+		assertTrue(otherFileStore.exists());
 		assertTrue(project.exists());
 		assertFalse(project.isOpen());
 		assertFalse(project.isAccessible());
@@ -1013,9 +1013,9 @@ public class IProjectTest  {
 		assertFalse(project.exists());
 		assertFalse(file.exists());
 		assertFalse(otherFile.exists());
-		assertTrue(projectStore.fetchInfo().exists());
-		assertTrue(fileStore.fetchInfo().exists());
-		assertTrue(otherFileStore.fetchInfo().exists());
+		assertTrue(projectStore.exists());
+		assertTrue(fileStore.exists());
+		assertTrue(otherFileStore.exists());
 		// cleanup
 		projectStore.delete(EFS.NONE, null);
 
@@ -1034,7 +1034,7 @@ public class IProjectTest  {
 		project.close(monitor);
 		monitor.assertUsedUp();
 		createInFileSystem(otherFileStore);
-		assertTrue(otherFileStore.fetchInfo().exists());
+		assertTrue(otherFileStore.exists());
 		assertTrue(project.exists());
 		assertFalse(project.isOpen());
 		assertFalse(project.isAccessible());
@@ -1046,9 +1046,9 @@ public class IProjectTest  {
 		assertFalse(project.exists());
 		assertFalse(file.exists());
 		assertFalse(otherFile.exists());
-		assertTrue(projectStore.fetchInfo().exists());
-		assertTrue(fileStore.fetchInfo().exists());
-		assertTrue(otherFileStore.fetchInfo().exists());
+		assertTrue(projectStore.exists());
+		assertTrue(fileStore.exists());
+		assertTrue(otherFileStore.exists());
 		// cleanup
 		projectStore.delete(EFS.NONE, null);
 
@@ -1067,7 +1067,7 @@ public class IProjectTest  {
 		project.close(monitor);
 		monitor.assertUsedUp();
 		createInFileSystem(otherFileStore);
-		assertTrue(otherFileStore.fetchInfo().exists());
+		assertTrue(otherFileStore.exists());
 		assertTrue(project.exists());
 		assertFalse(project.isOpen());
 		assertFalse(project.isAccessible());
@@ -1079,9 +1079,9 @@ public class IProjectTest  {
 		assertFalse(project.exists());
 		assertFalse(file.exists());
 		assertFalse(otherFile.exists());
-		assertTrue(projectStore.fetchInfo().exists());
-		assertTrue(fileStore.fetchInfo().exists());
-		assertTrue(otherFileStore.fetchInfo().exists());
+		assertTrue(projectStore.exists());
+		assertTrue(fileStore.exists());
+		assertTrue(otherFileStore.exists());
 		// cleanup
 		projectStore.delete(EFS.NONE, null);
 	}
@@ -1121,8 +1121,8 @@ public class IProjectTest  {
 		assertFalse(project.exists());
 		assertFalse(file.exists());
 		// ensure the project directory and files no longer exist
-		assertFalse(projectStore.fetchInfo().exists());
-		assertFalse(fileStore.fetchInfo().exists());
+		assertFalse(projectStore.exists());
+		assertFalse(fileStore.exists());
 		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
@@ -1145,8 +1145,8 @@ public class IProjectTest  {
 		assertFalse(project.exists());
 		assertFalse(file.exists());
 		// ensure the project directory and files no longer exist
-		assertFalse(projectStore.fetchInfo().exists());
-		assertFalse(fileStore.fetchInfo().exists());
+		assertFalse(projectStore.exists());
+		assertFalse(fileStore.exists());
 		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
@@ -1168,8 +1168,8 @@ public class IProjectTest  {
 		monitor.assertUsedUp();
 		assertFalse(project.exists());
 		assertFalse(file.exists());
-		assertTrue(projectStore.fetchInfo().exists());
-		assertTrue(fileStore.fetchInfo().exists());
+		assertTrue(projectStore.exists());
+		assertTrue(fileStore.exists());
 		// cleanup
 		projectStore.delete(EFS.NONE, null);
 
@@ -1192,8 +1192,8 @@ public class IProjectTest  {
 		monitor.assertUsedUp();
 		assertFalse(project.exists());
 		assertFalse(file.exists());
-		assertTrue(projectStore.fetchInfo().exists());
-		assertTrue(fileStore.fetchInfo().exists());
+		assertTrue(projectStore.exists());
+		assertTrue(fileStore.exists());
 		// cleanup
 		projectStore.delete(EFS.NONE, null);
 
@@ -1216,8 +1216,8 @@ public class IProjectTest  {
 		monitor.assertUsedUp();
 		assertFalse(project.exists());
 		assertFalse(file.exists());
-		assertTrue(projectStore.fetchInfo().exists());
-		assertTrue(fileStore.fetchInfo().exists());
+		assertTrue(projectStore.exists());
+		assertTrue(fileStore.exists());
 		// cleanup
 		projectStore.delete(EFS.NONE, null);
 
@@ -1240,8 +1240,8 @@ public class IProjectTest  {
 		monitor.assertUsedUp();
 		assertFalse(project.exists());
 		assertFalse(file.exists());
-		assertTrue(projectStore.fetchInfo().exists());
-		assertTrue(fileStore.fetchInfo().exists());
+		assertTrue(projectStore.exists());
+		assertTrue(fileStore.exists());
 		// cleanup
 		projectStore.delete(EFS.NONE, null);
 	}
@@ -1286,9 +1286,9 @@ public class IProjectTest  {
 		assertFalse(file.exists());
 		assertFalse(otherFile.exists());
 		// ensure the project directory and files no longer exist
-		assertFalse(projectStore.fetchInfo().exists());
-		assertFalse(fileStore.fetchInfo().exists());
-		assertFalse(otherFileStore.fetchInfo().exists());
+		assertFalse(projectStore.exists());
+		assertFalse(fileStore.exists());
+		assertFalse(otherFileStore.exists());
 		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
@@ -1315,9 +1315,9 @@ public class IProjectTest  {
 		assertFalse(file.exists());
 		assertFalse(otherFile.exists());
 		// ensure the project directory and files no longer exist
-		assertFalse(projectStore.fetchInfo().exists());
-		assertFalse(fileStore.fetchInfo().exists());
-		assertFalse(otherFileStore.fetchInfo().exists());
+		assertFalse(projectStore.exists());
+		assertFalse(fileStore.exists());
+		assertFalse(otherFileStore.exists());
 		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
@@ -1343,9 +1343,9 @@ public class IProjectTest  {
 		assertFalse(project.exists());
 		assertFalse(file.exists());
 		assertFalse(otherFile.exists());
-		assertTrue(projectStore.fetchInfo().exists());
-		assertTrue(fileStore.fetchInfo().exists());
-		assertTrue(otherFileStore.fetchInfo().exists());
+		assertTrue(projectStore.exists());
+		assertTrue(fileStore.exists());
+		assertTrue(otherFileStore.exists());
 
 		/* ======================================================================
 		 * Force = FALSE
@@ -1372,9 +1372,9 @@ public class IProjectTest  {
 		assertFalse(project.exists());
 		assertFalse(file.exists());
 		assertFalse(otherFile.exists());
-		assertTrue(projectStore.fetchInfo().exists());
-		assertTrue(fileStore.fetchInfo().exists());
-		assertTrue(otherFileStore.fetchInfo().exists());
+		assertTrue(projectStore.exists());
+		assertTrue(fileStore.exists());
+		assertTrue(otherFileStore.exists());
 
 		/* ======================================================================
 		 * Force = TRUE
@@ -1400,9 +1400,9 @@ public class IProjectTest  {
 		assertFalse(file.exists());
 		assertFalse(otherFile.exists());
 		// don't delete the directory itself since the location is user-defined, but delete the contents
-		assertTrue(projectStore.fetchInfo().exists());
-		assertTrue(fileStore.fetchInfo().exists());
-		assertTrue(otherFileStore.fetchInfo().exists());
+		assertTrue(projectStore.exists());
+		assertTrue(fileStore.exists());
+		assertTrue(otherFileStore.exists());
 
 		/* ======================================================================
 		 * Force = FALSE
@@ -1430,9 +1430,9 @@ public class IProjectTest  {
 		assertFalse(file.exists());
 		assertFalse(otherFile.exists());
 		// don't delete the directory itself since its user-defined, but delete the contents
-		assertTrue(projectStore.fetchInfo().exists());
-		assertTrue(fileStore.fetchInfo().exists());
-		assertTrue(otherFileStore.fetchInfo().exists());
+		assertTrue(projectStore.exists());
+		assertTrue(fileStore.exists());
+		assertTrue(otherFileStore.exists());
 		// cleanup
 		projectStore.delete(EFS.NONE, null);
 	}
@@ -1464,8 +1464,8 @@ public class IProjectTest  {
 		monitor.assertUsedUp();
 		assertFalse(project.exists());
 		assertFalse(file.exists());
-		assertFalse(projectStore.fetchInfo().exists());
-		assertFalse(fileStore.fetchInfo().exists());
+		assertFalse(projectStore.exists());
+		assertFalse(fileStore.exists());
 
 		/* ======================================================================
 		 * Force = FALSE
@@ -1481,8 +1481,8 @@ public class IProjectTest  {
 		monitor.assertUsedUp();
 		assertFalse(project.exists());
 		assertFalse(file.exists());
-		assertFalse(projectStore.fetchInfo().exists());
-		assertFalse(fileStore.fetchInfo().exists());
+		assertFalse(projectStore.exists());
+		assertFalse(fileStore.exists());
 
 		/* ======================================================================
 		 * Force = TRUE
@@ -1498,8 +1498,8 @@ public class IProjectTest  {
 		monitor.assertUsedUp();
 		assertFalse(project.exists());
 		assertFalse(file.exists());
-		assertTrue(projectStore.fetchInfo().exists());
-		assertTrue(fileStore.fetchInfo().exists());
+		assertTrue(projectStore.exists());
+		assertTrue(fileStore.exists());
 
 		/* ======================================================================
 		 * Force = FALSE
@@ -1515,8 +1515,8 @@ public class IProjectTest  {
 		monitor.assertUsedUp();
 		assertFalse(project.exists());
 		assertFalse(file.exists());
-		assertTrue(projectStore.fetchInfo().exists());
-		assertTrue(fileStore.fetchInfo().exists());
+		assertTrue(projectStore.exists());
+		assertTrue(fileStore.exists());
 
 		/* ======================================================================
 		 * Force = TRUE
@@ -1532,8 +1532,8 @@ public class IProjectTest  {
 		monitor.assertUsedUp();
 		assertFalse(project.exists());
 		assertFalse(file.exists());
-		assertFalse(projectStore.fetchInfo().exists());
-		assertFalse(fileStore.fetchInfo().exists());
+		assertFalse(projectStore.exists());
+		assertFalse(fileStore.exists());
 
 		/* ======================================================================
 		 * Force = FALSE
@@ -1549,8 +1549,8 @@ public class IProjectTest  {
 		monitor.assertUsedUp();
 		assertFalse(project.exists());
 		assertFalse(file.exists());
-		assertFalse(projectStore.fetchInfo().exists());
-		assertFalse(fileStore.fetchInfo().exists());
+		assertFalse(projectStore.exists());
+		assertFalse(fileStore.exists());
 	}
 
 	/**
@@ -1582,8 +1582,8 @@ public class IProjectTest  {
 		monitor.assertUsedUp();
 		assertFalse(project.exists());
 		assertFalse(file.exists());
-		assertFalse(projectStore.fetchInfo().exists());
-		assertFalse(fileStore.fetchInfo().exists());
+		assertFalse(projectStore.exists());
+		assertFalse(fileStore.exists());
 
 		/* ======================================================================
 		 * Force = FALSE
@@ -1600,8 +1600,8 @@ public class IProjectTest  {
 		monitor.assertUsedUp();
 		assertFalse(project.exists());
 		assertFalse(file.exists());
-		assertFalse(projectStore.fetchInfo().exists());
-		assertFalse(fileStore.fetchInfo().exists());
+		assertFalse(projectStore.exists());
+		assertFalse(fileStore.exists());
 
 		/* ======================================================================
 		 * Force = TRUE
@@ -1618,8 +1618,8 @@ public class IProjectTest  {
 		monitor.assertUsedUp();
 		assertFalse(project.exists());
 		assertFalse(file.exists());
-		assertTrue(projectStore.fetchInfo().exists());
-		assertTrue(fileStore.fetchInfo().exists());
+		assertTrue(projectStore.exists());
+		assertTrue(fileStore.exists());
 		// cleanup
 		projectStore.delete(EFS.NONE, null);
 
@@ -1638,8 +1638,8 @@ public class IProjectTest  {
 		monitor.assertUsedUp();
 		assertFalse(project.exists());
 		assertFalse(file.exists());
-		assertTrue(projectStore.fetchInfo().exists());
-		assertTrue(fileStore.fetchInfo().exists());
+		assertTrue(projectStore.exists());
+		assertTrue(fileStore.exists());
 		// cleanup
 		projectStore.delete(EFS.NONE, null);
 
@@ -1658,8 +1658,8 @@ public class IProjectTest  {
 		monitor.assertUsedUp();
 		assertFalse(project.exists());
 		assertFalse(file.exists());
-		assertFalse(projectStore.fetchInfo().exists());
-		assertFalse(fileStore.fetchInfo().exists());
+		assertFalse(projectStore.exists());
+		assertFalse(fileStore.exists());
 
 		/* ======================================================================
 		 * Force = FALSE
@@ -1679,8 +1679,8 @@ public class IProjectTest  {
 		});
 		assertTrue(project.exists());
 		assertFalse(file.exists());
-		assertTrue(projectStore.fetchInfo().exists());
-		assertTrue(fileStore.fetchInfo().exists());
+		assertTrue(projectStore.exists());
+		assertTrue(fileStore.exists());
 	}
 
 	/**
@@ -1714,8 +1714,8 @@ public class IProjectTest  {
 		assertFalse(project.exists());
 		assertFalse(file.exists());
 		// ensure the project directory and files no longer exist
-		assertFalse(projectStore.fetchInfo().exists());
-		assertFalse(fileStore.fetchInfo().exists());
+		assertFalse(projectStore.exists());
+		assertFalse(fileStore.exists());
 
 		/* ======================================================================
 		 * Force = FALSE
@@ -1734,8 +1734,8 @@ public class IProjectTest  {
 		assertFalse(project.exists());
 		assertFalse(file.exists());
 		// ensure the project directory and files no longer exist
-		assertFalse(projectStore.fetchInfo().exists());
-		assertFalse(fileStore.fetchInfo().exists());
+		assertFalse(projectStore.exists());
+		assertFalse(fileStore.exists());
 
 		/* ======================================================================
 		 * Force = TRUE
@@ -1753,8 +1753,8 @@ public class IProjectTest  {
 		monitor.assertUsedUp();
 		assertFalse(project.exists());
 		assertFalse(file.exists());
-		assertTrue(projectStore.fetchInfo().exists());
-		assertTrue(fileStore.fetchInfo().exists());
+		assertTrue(projectStore.exists());
+		assertTrue(fileStore.exists());
 
 		/* ======================================================================
 		 * Force = FALSE
@@ -1772,8 +1772,8 @@ public class IProjectTest  {
 		monitor.assertUsedUp();
 		assertFalse(project.exists());
 		assertFalse(file.exists());
-		assertTrue(projectStore.fetchInfo().exists());
-		assertTrue(fileStore.fetchInfo().exists());
+		assertTrue(projectStore.exists());
+		assertTrue(fileStore.exists());
 		// cleanup
 		projectStore.delete(EFS.NONE, null);
 
@@ -1794,8 +1794,8 @@ public class IProjectTest  {
 		assertFalse(project.exists());
 		assertFalse(file.exists());
 		// ensure the project directory and files no longer exist
-		assertFalse(projectStore.fetchInfo().exists());
-		assertFalse(fileStore.fetchInfo().exists());
+		assertFalse(projectStore.exists());
+		assertFalse(fileStore.exists());
 
 		/* ======================================================================
 		 * Force = FALSE
@@ -1814,8 +1814,8 @@ public class IProjectTest  {
 		assertFalse(project.exists());
 		assertFalse(file.exists());
 		// ensure the project directory and files no longer exist
-		assertFalse(projectStore.fetchInfo().exists());
-		assertFalse(fileStore.fetchInfo().exists());
+		assertFalse(projectStore.exists());
+		assertFalse(fileStore.exists());
 	}
 
 	/**
@@ -1855,9 +1855,9 @@ public class IProjectTest  {
 		assertFalse(file.exists());
 		assertFalse(otherFile.exists());
 		// ensure the project directory and files no longer exist
-		assertFalse(projectStore.fetchInfo().exists());
-		assertFalse(fileStore.fetchInfo().exists());
-		assertFalse(otherFileStore.fetchInfo().exists());
+		assertFalse(projectStore.exists());
+		assertFalse(fileStore.exists());
+		assertFalse(otherFileStore.exists());
 		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
@@ -1881,9 +1881,9 @@ public class IProjectTest  {
 		assertFalse(file.exists());
 		assertFalse(otherFile.exists());
 		// ensure the project directory and files no longer exist
-		assertFalse(projectStore.fetchInfo().exists());
-		assertFalse(fileStore.fetchInfo().exists());
-		assertFalse(otherFileStore.fetchInfo().exists());
+		assertFalse(projectStore.exists());
+		assertFalse(fileStore.exists());
+		assertFalse(otherFileStore.exists());
 		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
@@ -1906,9 +1906,9 @@ public class IProjectTest  {
 		assertFalse(project.exists());
 		assertFalse(file.exists());
 		assertFalse(otherFile.exists());
-		assertTrue(projectStore.fetchInfo().exists());
-		assertTrue(fileStore.fetchInfo().exists());
-		assertTrue(otherFileStore.fetchInfo().exists());
+		assertTrue(projectStore.exists());
+		assertTrue(fileStore.exists());
+		assertTrue(otherFileStore.exists());
 		// cleanup
 		projectStore.delete(EFS.NONE, null);
 
@@ -1932,9 +1932,9 @@ public class IProjectTest  {
 		assertFalse(project.exists());
 		assertFalse(file.exists());
 		assertFalse(otherFile.exists());
-		assertTrue(projectStore.fetchInfo().exists());
-		assertTrue(fileStore.fetchInfo().exists());
-		assertTrue(otherFileStore.fetchInfo().exists());
+		assertTrue(projectStore.exists());
+		assertTrue(fileStore.exists());
+		assertTrue(otherFileStore.exists());
 
 		/* ======================================================================
 		 * Force = TRUE
@@ -1957,9 +1957,9 @@ public class IProjectTest  {
 		assertFalse(file.exists());
 		assertFalse(otherFile.exists());
 		// ensure the project directory and files no longer exist
-		assertFalse(projectStore.fetchInfo().exists());
-		assertFalse(fileStore.fetchInfo().exists());
-		assertFalse(otherFileStore.fetchInfo().exists());
+		assertFalse(projectStore.exists());
+		assertFalse(fileStore.exists());
+		assertFalse(otherFileStore.exists());
 
 		/* ======================================================================
 		 * Force = FALSE
@@ -1986,9 +1986,9 @@ public class IProjectTest  {
 		assertFalse(file.exists());
 		assertFalse(otherFile.exists());
 		// don't delete the directory itself since its user-defined, but delete the contents
-		assertTrue(projectStore.fetchInfo().exists());
-		assertFalse(fileStore.fetchInfo().exists());
-		assertTrue(otherFileStore.fetchInfo().exists());
+		assertTrue(projectStore.exists());
+		assertFalse(fileStore.exists());
+		assertTrue(otherFileStore.exists());
 	}
 
 	/**

@@ -406,7 +406,7 @@ public class Bug_032076 {
 			assertNotNull(marker);
 			assertEquals(attributeValue, marker.getAttribute(attributeKey));
 			// project's content area still exists in file system
-			assertThat(projectStore).matches(it -> it.fetchInfo().exists(), "exists");
+			assertThat(projectStore).matches(IFileStore::exists, "exists");
 
 			assertThat(workspace.getRoot()).matches(isSynchronizedDepthInfinite, "is synchronized");
 		} finally {
