@@ -416,7 +416,7 @@ public final class ResourceTestUtil {
 	public static void setReadOnly(IFileStore target, boolean value) throws CoreException {
 		assertThat(isReadOnlySupported()).withFailMessage("setting read only is not supported by local file system")
 				.isTrue();
-		IFileInfo fileInfo = target.fetchInfo();
+		IFileInfo fileInfo = target.fetchInfo(EFS.IGNORE_NAME_CASE, null);
 		fileInfo.setAttribute(EFS.ATTRIBUTE_READ_ONLY, value);
 		target.putInfo(fileInfo, EFS.SET_ATTRIBUTES, null);
 	}

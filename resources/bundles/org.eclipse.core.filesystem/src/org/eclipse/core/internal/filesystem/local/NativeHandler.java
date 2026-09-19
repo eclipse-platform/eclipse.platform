@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -14,6 +14,7 @@
 package org.eclipse.core.internal.filesystem.local;
 
 import java.io.File;
+import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.provider.FileInfo;
 
@@ -23,7 +24,7 @@ import org.eclipse.core.filesystem.provider.FileInfo;
 public abstract class NativeHandler {
 	public abstract int getSupportedAttributes();
 
-	public abstract FileInfo fetchFileInfo(String fileName);
+	public abstract FileInfo fetchFileInfo(String fileName, int options);
 
 	public abstract boolean putFileInfo(String fileName, IFileInfo info);
 
@@ -38,7 +39,7 @@ public abstract class NativeHandler {
 		var directoryContents = listDirectoryNames(fileName);
 		var result = new IFileInfo[directoryContents.length];
 		for (int i = 0; i < directoryContents.length; i++) {
-			result[i] = fetchFileInfo(fileName + File.separator + directoryContents[i]);
+			result[i] = fetchFileInfo(fileName + File.separator + directoryContents[i], EFS.NONE);
 		}
 		return result;
 	}

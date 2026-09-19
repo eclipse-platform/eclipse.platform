@@ -656,7 +656,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 
 		// Set the project read-only
 		projNew.move(projFile, EFS.OVERWRITE, createTestMonitor());
-		IFileInfo info = projFile.fetchInfo(EFS.NONE, createTestMonitor());
+		IFileInfo info = projFile.fetchInfo(EFS.IGNORE_NAME_CASE, createTestMonitor());
 		info.setAttribute(EFS.ATTRIBUTE_READ_ONLY, true);
 		projFile.putInfo(info, EFS.SET_ATTRIBUTES, createTestMonitor());
 		toSetWritable = projFile; /* for cleanup */

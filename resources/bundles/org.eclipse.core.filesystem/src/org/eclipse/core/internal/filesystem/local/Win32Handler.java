@@ -27,13 +27,19 @@ import java.lang.foreign.StructLayout;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.VarHandle;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.nio.file.attribute.DosFileAttributes;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.provider.FileInfo;
@@ -70,7 +76,7 @@ public class Win32Handler extends NativeHandler {
 	 * Depending on the length of the path, this implementation is consequently multiple times, up to a magnitude faster than the mentioned Java API.
 	 */
 	@Override
-	public FileInfo fetchFileInfo(String fileName) {
+	public FileInfo fetchFileInfo(String fileName, int options) {
 		FileInfo fileInfo = new FileInfo();
 
 		String target = toLongWindowsPath(fileName);
@@ -81,6 +87,11 @@ public class Win32Handler extends NativeHandler {
 			// A root path is for example: \\?\c:\
 			fileInfo.setDirectory(true);
 			fileInfo.setExists(Files.exists(file));
+			return fileInfo;
+		}
+		if ((options & EFS.IGNORE_NAME_CASE) != 0) {
+			// Use faster method to read file attributes without determining the real casing of its name
+			readDosFileAttributesIntoFileInfo(fileInfo, file);
 			return fileInfo;
 		}
 		try (Arena arena = Arena.ofConfined()) {
@@ -138,6 +149,25 @@ public class Win32Handler extends NativeHandler {
 
 	private static int GetLastError(MemorySegment capturedError) {
 		return (int) GET_LAST_ERROR_HANDLE.get(capturedError, 0L);
+	}
+
+	private static final IFileInfo[] EMPTY_FILEINFO_ARRAY = {};
+
+	@Override
+	public IFileInfo[] listDirectoryAndGetFileInfos(String fileName) {
+		Path file = Path.of(fileName);
+		List<IFileInfo> children = new ArrayList<>();
+		try (DirectoryStream<Path> directoryContent = Files.newDirectoryStream(file);) {
+			for (Path child : directoryContent) {
+				FileInfo fileInfo = new FileInfo();
+				// The directory stream delivers real names and therefore the faster method can be used
+				readDosFileAttributesIntoFileInfo(fileInfo, child);
+				children.add(fileInfo);
+			}
+		} catch (IOException e) {
+			return EMPTY_FILEINFO_ARRAY;
+		}
+		return children.toArray(IFileInfo[]::new);
 	}
 
 	/**
@@ -213,6 +243,38 @@ public class Win32Handler extends NativeHandler {
 		}
 	}
 
+	/**
+	 * Reads the DOS file attributes of the file without determining its real name
+	 * (which may have different letter case, because the Window file system is case-insensitive).
+	 *
+	 * This is significantly faster than using {@code FindFirstFileW()}, which effectively searches a directory
+	 * and requires two native calls.
+	 */
+	private static void readDosFileAttributesIntoFileInfo(FileInfo fileInfo, Path path) {
+		try {
+			DosFileAttributes attributes = Files.readAttributes(path, DosFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
+
+			fileInfo.setName(path.getFileName().toString()); // path is not a root, so filename is available
+			fileInfo.setExists(true);
+			fileInfo.setLastModified(attributes.lastModifiedTime().toMillis());
+			fileInfo.setLength(attributes.size());
+			fileInfo.setDirectory(attributes.isDirectory());
+			fileInfo.setAttribute(EFS.ATTRIBUTE_ARCHIVE, attributes.isArchive());
+			fileInfo.setAttribute(EFS.ATTRIBUTE_READ_ONLY, attributes.isReadOnly());
+			fileInfo.setAttribute(EFS.ATTRIBUTE_HIDDEN, attributes.isHidden());
+			if (attributes.isSymbolicLink()) {
+				setSymLink(path, fileInfo);
+				// For sym-links, DosFileAttributes.isDirectory() always returns false.
+				// Determine the real type of the link target and follow-links to the eventual target
+				fileInfo.setDirectory(Files.isDirectory(path));
+			}
+		} catch (NoSuchFileException _) { // file just does not exist
+		} catch (IOException _) {
+			// Leave alone and continue.
+			fileInfo.setError(IFileInfo.IO_ERROR);
+		}
+	}
+
 	@SuppressWarnings("static-access")
 	private static void convertFindDataWToFileInfo(MemorySegment mem, FileInfo info, Path file) throws IOException {
 		/**
@@ -240,10 +302,14 @@ public class Win32Handler extends NativeHandler {
 
 		boolean isReparsePoint = isSet(dwFileAttributes, FileAPI.FILE_ATTRIBUTE_REPARSE_POINT());
 		if (isReparsePoint && dwReserved0 == FileAPI.IO_REPARSE_TAG_SYMLINK()) {
-			Path linkTarget = Files.readSymbolicLink(file);
-			info.setAttribute(EFS.ATTRIBUTE_SYMLINK, true);
-			info.setStringAttribute(EFS.ATTRIBUTE_LINK_TARGET, linkTarget.toString());
+			setSymLink(file, info);
 		}
+	}
+
+	private static void setSymLink(Path path, FileInfo info) throws IOException {
+		Path linkTarget = Files.readSymbolicLink(path);
+		info.setAttribute(EFS.ATTRIBUTE_SYMLINK, true);
+		info.setStringAttribute(EFS.ATTRIBUTE_LINK_TARGET, linkTarget.toString());
 	}
 
 	private static final Instant WINDOWS_REFERENCE_DATE = LocalDateTime.of(1601, Month.JANUARY, 1, 0, 0).toInstant(ZoneOffset.UTC);

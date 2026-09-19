@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2024 IBM Corporation and others.
+ * Copyright (c) 2005, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -232,7 +232,7 @@ public class LocalFile extends FileStore {
 
 	@Override
 	public IFileInfo fetchInfo(int options, IProgressMonitor monitor) {
-		FileInfo info = LocalFileNativesManager.fetchFileInfo(filePath);
+		FileInfo info = LocalFileNativesManager.fetchFileInfo(filePath, options);
 		//natives don't set the file name on all platforms
 		if (info.getName().isEmpty()) {
 			String name = file.getName();
@@ -296,7 +296,7 @@ public class LocalFile extends FileStore {
 				/* corePoolSize */ 0, //
 				/* maximumPoolSize */ threadCount, //
 				/* minimumRunnable */ 0, //
-				pool -> true, // if maximumPoolSize would be exceeded, don't throw RejectedExecutionException
+				_ -> true, // if maximumPoolSize would be exceeded, don't throw RejectedExecutionException
 				/* keepAliveTime */ 1, TimeUnit.MINUTES); // pool terminates 1 thread per
 	}
 
@@ -376,7 +376,7 @@ public class LocalFile extends FileStore {
 			}
 
 			// If we got this far, we failed.
-			String message = fetchInfo().getAttribute(EFS.ATTRIBUTE_READ_ONLY) //
+			String message = fetchInfo(EFS.IGNORE_NAME_CASE, null).getAttribute(EFS.ATTRIBUTE_READ_ONLY) //
 					? Messages.couldnotDeleteReadOnly
 
 					// This is the worst-case scenario: something failed but we don't know what. The children were
@@ -499,7 +499,7 @@ public class LocalFile extends FileStore {
 					// source exists but destination doesn't so try to copy below
 				} else {
 					// destination.exists() returns false for broken links, this has to be handled explicitly
-					if (!destination.exists() && !destFile.fetchInfo().getAttribute(EFS.ATTRIBUTE_SYMLINK)) {
+					if (!destination.exists() && !destFile.fetchInfo(EFS.IGNORE_NAME_CASE, null).getAttribute(EFS.ATTRIBUTE_SYMLINK)) {
 						// neither the source nor the destination exist. this is REALLY bad
 						String message = NLS.bind(Messages.failedMove, source.getAbsolutePath(), destination.getAbsolutePath());
 						Policy.error(EFS.ERROR_WRITE, message);

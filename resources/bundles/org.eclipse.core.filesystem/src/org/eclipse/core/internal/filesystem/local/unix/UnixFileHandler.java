@@ -27,7 +27,7 @@ public class UnixFileHandler extends NativeHandler {
 	}
 
 	@Override
-	public FileInfo fetchFileInfo(String fileName) {
+	public FileInfo fetchFileInfo(String fileName, int options) {
 		return UnixFileNatives.fetchFileInfo(fileName);
 	}
 

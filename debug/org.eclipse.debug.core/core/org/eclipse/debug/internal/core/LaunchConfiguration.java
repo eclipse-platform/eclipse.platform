@@ -870,7 +870,7 @@ public class LaunchConfiguration extends PlatformObject implements ILaunchConfig
 		try {
 			IFileStore fileStore = getFileStore();
 			if (fileStore != null) {
-				return fileStore.fetchInfo().getAttribute(EFS.ATTRIBUTE_READ_ONLY);
+				return fileStore.fetchInfo(EFS.IGNORE_NAME_CASE, null).getAttribute(EFS.ATTRIBUTE_READ_ONLY);
 			}
 		} catch (CoreException e) {
 		}

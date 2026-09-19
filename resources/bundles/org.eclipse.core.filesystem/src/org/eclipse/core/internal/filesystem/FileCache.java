@@ -15,10 +15,15 @@ package org.eclipse.core.internal.filesystem;
 
 import java.io.File;
 import java.io.IOException;
-import org.eclipse.core.filesystem.*;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.provider.FileStore;
 import org.eclipse.core.internal.filesystem.local.LocalFile;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osgi.service.environment.Constants;
 import org.eclipse.osgi.util.NLS;
 
@@ -93,7 +98,7 @@ public class FileCache {
 	public java.io.File cache(IFileStore source, IProgressMonitor monitor) throws CoreException {
 		try {
 			SubMonitor subMonitor = SubMonitor.convert(monitor, NLS.bind(Messages.copying, toString()), 3);
-			IFileInfo myInfo = source.fetchInfo(EFS.NONE, subMonitor.newChild(1));
+			IFileInfo myInfo = source.fetchInfo(EFS.IGNORE_NAME_CASE, subMonitor.newChild(1));
 			if (!myInfo.exists()) {
 				return new File(cacheDir, "Non-Existent-" + System.currentTimeMillis()); //$NON-NLS-1$
 			}
@@ -141,7 +146,7 @@ public class FileCache {
 		} else {
 			LocalFile lfile = new LocalFile(target);
 			try {
-				IFileInfo info = lfile.fetchInfo(EFS.NONE, null);
+				IFileInfo info = lfile.fetchInfo(EFS.IGNORE_NAME_CASE, null);
 				if (info.getAttribute(EFS.ATTRIBUTE_IMMUTABLE)) {
 					info.setAttribute(EFS.ATTRIBUTE_IMMUTABLE, false);
 					lfile.putInfo(info, EFS.SET_ATTRIBUTES, null);

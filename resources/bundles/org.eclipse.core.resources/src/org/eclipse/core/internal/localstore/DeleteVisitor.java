@@ -17,15 +17,22 @@ package org.eclipse.core.internal.localstore;
 
 import java.util.Iterator;
 import java.util.List;
-import org.eclipse.core.filesystem.*;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.provider.FileInfo;
 import org.eclipse.core.internal.resources.ICoreConstants;
 import org.eclipse.core.internal.resources.Resource;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.internal.utils.Policy;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osgi.util.NLS;
 
 public class DeleteVisitor implements IUnifiedTreeVisitor, ICoreConstants {
@@ -125,7 +132,11 @@ public class DeleteVisitor implements IUnifiedTreeVisitor, ICoreConstants {
 		} else {
 			IFileInfo info = node.fileInfo;
 			if (info == null) {
-				info = new FileInfo(node.getLocalName());
+				try {
+					info = node.getStore().fetchInfo(EFS.IGNORE_NAME_CASE, null);
+				} catch (CoreException e) {
+					info = new FileInfo(node.getLocalName());
+				}
 			}
 			if (((Workspace) target.getWorkspace()).getFileSystemManager().storeHistory(target)) {
 				store.addState(target.getFullPath(), node.getStore(), info, true);

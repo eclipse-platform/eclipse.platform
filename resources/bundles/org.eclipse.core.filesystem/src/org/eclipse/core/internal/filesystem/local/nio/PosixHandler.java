@@ -43,7 +43,7 @@ public class PosixHandler extends NativeHandler {
 			| EFS.ATTRIBUTE_OTHER_READ | EFS.ATTRIBUTE_OTHER_WRITE | EFS.ATTRIBUTE_OTHER_EXECUTE; // other
 
 	@Override
-	public FileInfo fetchFileInfo(String fileName) {
+	public FileInfo fetchFileInfo(String fileName, int options) {
 		Path path = Paths.get(fileName);
 		FileInfo info = new FileInfo();
 
