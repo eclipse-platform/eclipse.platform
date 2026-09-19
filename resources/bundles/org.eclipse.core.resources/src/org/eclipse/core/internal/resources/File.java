@@ -88,7 +88,7 @@ public class File extends Resource implements IFile {
 				ResourceInfo info = getResourceInfo(false, false);
 				checkAccessible(getFlags(info));
 				workspace.beginOperation(true);
-				IFileInfo fileInfo = getStore().fetchInfo();
+				IFileInfo fileInfo = getStore().fetchInfo(EFS.IGNORE_NAME_CASE, null);
 				internalSetContents(content, fileInfo, updateFlags, true, subMonitor.newChild(99));
 			} catch (OperationCanceledException e) {
 				workspace.getWorkManager().operationCanceled();
@@ -503,7 +503,7 @@ public class File extends Resource implements IFile {
 				ResourceInfo info = getResourceInfo(false, false);
 				checkAccessible(getFlags(info));
 				workspace.beginOperation(true);
-				IFileInfo fileInfo = getStore().fetchInfo();
+				IFileInfo fileInfo = getStore().fetchInfo(EFS.IGNORE_NAME_CASE, null);
 				if (BitMask.isSet(updateFlags, IResource.DERIVED)) {
 					// update of derived flag during IFile.write:
 					info.set(ICoreConstants.M_DERIVED);
@@ -536,7 +536,7 @@ public class File extends Resource implements IFile {
 				ResourceInfo info = getResourceInfo(false, false);
 				checkAccessible(getFlags(info));
 				workspace.beginOperation(true);
-				IFileInfo fileInfo = getStore().fetchInfo();
+				IFileInfo fileInfo = getStore().fetchInfo(EFS.IGNORE_NAME_CASE, null);
 				if (BitMask.isSet(updateFlags, IResource.DERIVED)) {
 					// update of derived flag during IFile.write:
 					info.set(ICoreConstants.M_DERIVED);

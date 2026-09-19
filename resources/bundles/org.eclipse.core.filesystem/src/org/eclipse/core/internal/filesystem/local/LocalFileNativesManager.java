@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2016 IBM Corporation and others.
+ * Copyright (c) 2010, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -88,8 +88,8 @@ public class LocalFileNativesManager {
 		return HANDLER.getSupportedAttributes();
 	}
 
-	public static FileInfo fetchFileInfo(String fileName) {
-		return HANDLER.fetchFileInfo(fileName);
+	public static FileInfo fetchFileInfo(String fileName, int options) {
+		return HANDLER.fetchFileInfo(fileName, options);
 	}
 
 	public static boolean putFileInfo(String fileName, IFileInfo info, int options) {

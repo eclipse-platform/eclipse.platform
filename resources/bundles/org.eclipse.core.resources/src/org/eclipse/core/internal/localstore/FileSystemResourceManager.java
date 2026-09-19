@@ -327,7 +327,12 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 	 */
 	public ResourceAttributes attributes(IResource resource) {
 		IFileStore store = getStore(resource);
-		IFileInfo fileInfo = store.fetchInfo();
+		IFileInfo fileInfo;
+		try {
+			fileInfo = store.fetchInfo(EFS.IGNORE_NAME_CASE, null);
+		} catch (CoreException e) {
+			return null;
+		}
 		if (!fileInfo.exists()) {
 			return null;
 		}
@@ -531,8 +536,8 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 	public boolean fastIsSynchronized(File target) {
 		ResourceInfo info = target.getResourceInfo(false, false);
 		if (target.exists(target.getFlags(info), true)) {
-			IFileInfo fileInfo = getStore(target).fetchInfo();
-			if (!fileInfo.isDirectory() && info.getLocalSyncInfo() == fileInfo.getLastModified()) {
+			IFileInfo fileInfo = fetchResourceInfo(getStore(target));
+			if (fileInfo != null && !fileInfo.isDirectory() && info.getLocalSyncInfo() == fileInfo.getLastModified()) {
 				return true;
 			}
 		}
@@ -542,12 +547,20 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 	public boolean fastIsSynchronized(Folder target) {
 		ResourceInfo info = target.getResourceInfo(false, false);
 		if (target.exists(target.getFlags(info), true)) {
-			IFileInfo fileInfo = getStore(target).fetchInfo();
-			if (!fileInfo.exists() && info.getLocalSyncInfo() == fileInfo.getLastModified()) {
+			IFileInfo fileInfo = fetchResourceInfo(getStore(target));
+			if (fileInfo != null && !fileInfo.exists() && info.getLocalSyncInfo() == fileInfo.getLastModified()) {
 				return true;
 			}
 		}
 		return false;
+	}
+
+	private static IFileInfo fetchResourceInfo(IFileStore store) {
+		try {
+			return store.fetchInfo(EFS.IGNORE_NAME_CASE, null);
+		} catch (CoreException e) {
+			return null;
+		}
 	}
 
 	/**
@@ -751,7 +764,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 			}
 		}
 		IFileStore descriptionFileStore = ((Resource) descriptionFile).getStore();
-		IFileInfo fileInfo = descriptionFileStore.fetchInfo();
+		IFileInfo fileInfo = descriptionFileStore.fetchInfo(EFS.IGNORE_NAME_CASE, null);
 
 		if (fileInfo.getAttribute(EFS.ATTRIBUTE_READ_ONLY)) {
 			IStatus result = getWorkspace().validateEdit(new IFile[] {descriptionFile}, null);
@@ -759,7 +772,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 				throw new ResourceException(result);
 			}
 			// re-read the file info in case the file attributes were modified
-			fileInfo = descriptionFileStore.fetchInfo();
+			fileInfo = descriptionFileStore.fetchInfo(EFS.IGNORE_NAME_CASE, null);
 		}
 
 		//write the project description file (don't use API because scheduling rule might not match)
@@ -790,7 +803,13 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 		if (projectInfo == null) {
 			return false;
 		}
-		return projectInfo.getLocalSyncInfo() == getStore(descriptionFile).fetchInfo().getLastModified();
+		long lastModified;
+		try {
+			lastModified = getStore(descriptionFile).fetchInfo(EFS.IGNORE_NAME_CASE, null).getLastModified();
+		} catch (CoreException e) {
+			lastModified = 0;
+		}
+		return projectInfo.getLocalSyncInfo() == lastModified;
 	}
 
 	/**
@@ -939,7 +958,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 	private IFileStore getFileStore(IFile target, boolean force) throws ResourceException, CoreException {
 		IFileStore store = getStore(target);
 		if (!force) {
-			final IFileInfo fileInfo = store.fetchInfo();
+			final IFileInfo fileInfo = store.fetchInfo(EFS.IGNORE_NAME_CASE, null);
 			Resource resource = (Resource) target;
 			ResourceInfo info = resource.getResourceInfo(true, false);
 			if (info == null) {
@@ -1039,7 +1058,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 				description.updateDynamicState(privateDescription);
 			}
 		}
-		long lastModified = descriptionStore.fetchInfo().getLastModified();
+		long lastModified = descriptionStore.fetchInfo(EFS.IGNORE_NAME_CASE, null).getLastModified();
 		IFile descriptionFile = target.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
 		//don't get a mutable copy because we might be in restore which isn't an operation
 		//it doesn't matter anyway because local sync info is not included in deltas
@@ -1161,11 +1180,11 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 	 */
 	public long setLocalTimeStamp(IResource target, ResourceInfo info, long value) throws CoreException {
 		IFileStore store = getStore(target);
-		IFileInfo fileInfo = store.fetchInfo();
+		IFileInfo fileInfo = store.fetchInfo(EFS.IGNORE_NAME_CASE, null);
 		fileInfo.setLastModified(value);
 		store.putInfo(fileInfo, EFS.SET_LAST_MODIFIED, null);
 		//actual value may be different depending on file system granularity
-		fileInfo = store.fetchInfo();
+		fileInfo = store.fetchInfo(EFS.IGNORE_NAME_CASE, null);
 		long actualValue = fileInfo.getLastModified();
 		updateLocalSync(info, actualValue);
 		return actualValue;
@@ -1204,7 +1223,8 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 		//when the executable bit is changed on a folder a refresh is required
 		boolean refresh = false;
 		if (resource instanceof IContainer && ((store.getFileSystem().attributes() & EFS.ATTRIBUTE_EXECUTABLE) != 0)) {
-			refresh = store.fetchInfo().getAttribute(EFS.ATTRIBUTE_EXECUTABLE) != attributes.isExecutable();
+			IFileInfo info = store.fetchInfo(EFS.IGNORE_NAME_CASE, null);
+			refresh = info.getAttribute(EFS.ATTRIBUTE_EXECUTABLE) != attributes.isExecutable();
 		}
 		store.putInfo(FileUtil.attributesToFileInfo(attributes), EFS.SET_ATTRIBUTES, null);
 		//must refresh in the background because we are not inside an operation
@@ -1302,7 +1322,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 							|| !Platform.getOS().equals(Platform.OS_WIN32)) {
 						throw e;
 					}
-					fileInfo = store.fetchInfo();
+					fileInfo = store.fetchInfo(EFS.IGNORE_NAME_CASE, null);
 					if (!(fileInfo.exists() && fileInfo.getAttribute(EFS.ATTRIBUTE_HIDDEN))) {
 						throw e;
 					}
@@ -1389,7 +1409,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 
 	private void finishWrite(Resource targetResource, IFileStore store) throws CoreException {
 		// get the new last modified time and stash in the info
-		long lastModified = store.fetchInfo().getLastModified();
+		long lastModified = store.fetchInfo(EFS.IGNORE_NAME_CASE, null).getLastModified();
 		ResourceInfo mutableTargetResourceInfo = targetResource.getResourceInfo(false, true);
 		if (mutableTargetResourceInfo == null) {
 			// If the resource info is null, the resource must have been concurrently
@@ -1459,7 +1479,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 	public void write(IFolder target, boolean force, IProgressMonitor monitor) throws CoreException {
 		IFileStore store = getStore(target);
 		if (!force) {
-			IFileInfo fileInfo = store.fetchInfo();
+			IFileInfo fileInfo = store.fetchInfo(EFS.IGNORE_NAME_CASE, null);
 			if (fileInfo.isDirectory()) {
 				String message = NLS.bind(Messages.localstore_resourceExists, target.getFullPath());
 				throw new ResourceException(IResourceStatus.EXISTS_LOCAL, target.getFullPath(), message, null);
@@ -1471,7 +1491,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 		}
 		store.mkdir(EFS.NONE, monitor);
 		ResourceInfo info = ((Resource) target).getResourceInfo(false, true);
-		updateLocalSync(info, store.fetchInfo().getLastModified());
+		updateLocalSync(info, store.fetchInfo(EFS.IGNORE_NAME_CASE, null).getLastModified());
 	}
 
 	/**

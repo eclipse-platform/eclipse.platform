@@ -92,7 +92,12 @@ class ResourceTree implements IResourceTree {
 				return;
 			}
 			IFileStore store = localManager.getStore(file);
-			final IFileInfo fileInfo = store.fetchInfo();
+			IFileInfo fileInfo;
+			try {
+				fileInfo = store.fetchInfo(EFS.IGNORE_NAME_CASE, null);
+			} catch (CoreException e) {
+				return;
+			}
 			if (!fileInfo.exists()) {
 				return;
 			}
@@ -283,7 +288,12 @@ class ResourceTree implements IResourceTree {
 	 * @return The local file system timestamp
 	 */
 	private long internalComputeTimestamp(IFile file) {
-		IFileInfo fileInfo = localManager.getStore(file).fetchInfo();
+		IFileInfo fileInfo;
+		try {
+			fileInfo = localManager.getStore(file).fetchInfo(EFS.IGNORE_NAME_CASE, null);
+		} catch (CoreException e) {
+			return NULL_TIMESTAMP;
+		}
 		return fileInfo.exists() ? fileInfo.getLastModified() : NULL_TIMESTAMP;
 	}
 
