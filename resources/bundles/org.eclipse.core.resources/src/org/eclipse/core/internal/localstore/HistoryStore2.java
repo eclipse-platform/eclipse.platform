@@ -114,7 +114,14 @@ public class HistoryStore2 implements IHistoryStore {
 	public synchronized IFileState addState(IPath key, IFileStore localFile, IFileInfo info, boolean moveContents) {
 		long lastModified = info.getLastModified();
 		if (Policy.DEBUG_HISTORY) {
-			Policy.debug("History: Adding state for key: " + key + ", file: " + localFile + ", timestamp: " + lastModified + ", size: " + localFile.fetchInfo().getLength()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+			long length;
+			try {
+				length = localFile.fetchInfo(EFS.IGNORE_NAME_CASE, null).getLength();
+			} catch (CoreException e) {
+				length = 0;
+			}
+			Policy.debug("History: Adding state for key: " + key + ", file: " + localFile + ", timestamp: " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+					+ lastModified + ", size: " + length); //$NON-NLS-1$
 		}
 		if (!isValid(localFile, info)) {
 			return null;
@@ -291,7 +298,7 @@ public class HistoryStore2 implements IHistoryStore {
 
 	@Override
 	public boolean exists(IFileState target) {
-		return blobStore.fileFor(((FileState) target).getUUID()).fetchInfo().exists();
+		return blobStore.fileFor(((FileState) target).getUUID()).exists();
 	}
 
 	@Override

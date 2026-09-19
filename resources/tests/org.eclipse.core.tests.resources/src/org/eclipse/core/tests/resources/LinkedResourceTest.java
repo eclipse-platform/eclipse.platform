@@ -796,7 +796,7 @@ public class LinkedResourceTest {
 		assertFalse(linkParent.exists());
 		assertFalse(link.exists());
 		assertFalse(linkChild.exists());
-		assertTrue(childStore.fetchInfo().exists());
+		assertTrue(childStore.exists());
 	}
 
 	/**

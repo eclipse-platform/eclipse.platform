@@ -17,7 +17,9 @@ package org.eclipse.core.internal.filesystem.local.nio;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
@@ -34,7 +36,7 @@ public class DefaultHandler extends NativeHandler {
 			| EFS.ATTRIBUTE_READ_ONLY | EFS.ATTRIBUTE_EXECUTABLE; // based on Java API
 
 	@Override
-	public FileInfo fetchFileInfo(String fileName) {
+	public FileInfo fetchFileInfo(String fileName, int options) {
 		Path path = Paths.get(fileName);
 		FileInfo info = new FileInfo();
 		boolean exists = Files.exists(path);

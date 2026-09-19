@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2024 IBM Corporation and others.
+ * Copyright (c) 2005, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -95,7 +95,7 @@ public abstract class FileStore extends PlatformObject implements IFileStore {
 	 */
 	@Override
 	public void copy(IFileStore destination, int options, IProgressMonitor monitor) throws CoreException {
-		final IFileInfo sourceInfo = fetchInfo(EFS.NONE, null);
+		final IFileInfo sourceInfo = fetchInfo(EFS.IGNORE_NAME_CASE, null);
 		if (sourceInfo.isDirectory()) {
 			copyDirectory(sourceInfo, destination, options, monitor);
 		} else {
@@ -161,7 +161,7 @@ public abstract class FileStore extends PlatformObject implements IFileStore {
 	 * </ul>
 	 */
 	protected void copyFile(IFileInfo sourceInfo, IFileStore destination, int options, IProgressMonitor monitor) throws CoreException {
-		if ((options & EFS.OVERWRITE) == 0 && destination.fetchInfo().exists()) {
+		if ((options & EFS.OVERWRITE) == 0 && destination.exists()) {
 			Policy.error(EFS.ERROR_EXISTS, NLS.bind(Messages.fileExists, destination));
 		}
 		String sourcePath = toString();
@@ -178,7 +178,7 @@ public abstract class FileStore extends PlatformObject implements IFileStore {
 			Policy.error(EFS.ERROR_WRITE, NLS.bind(Messages.failedCopy, sourcePath), e);
 		} catch (CoreException e) {
 			//if we failed to write, try to cleanup the half written file
-			if (!destination.fetchInfo(0, null).exists()) {
+			if (!destination.fetchInfo(EFS.IGNORE_NAME_CASE, null).exists()) {
 				destination.delete(EFS.NONE, null);
 			}
 			throw e;
@@ -236,9 +236,7 @@ public abstract class FileStore extends PlatformObject implements IFileStore {
 			return fetchInfo(EFS.NONE, null);
 		} catch (CoreException e) {
 			//there was an error contacting the file system, so treat it as non-existent file
-			FileInfo result = new FileInfo(getName());
-			result.setExists(false);
-			return result;
+			return new FileInfo(getName());
 		}
 	}
 

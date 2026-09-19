@@ -45,7 +45,7 @@ public class ResourceAttributes {
 	 */
 	public static ResourceAttributes fromFile(java.io.File file) {
 		try {
-			return FileUtil.fileInfoToAttributes(EFS.getStore(file.toURI()).fetchInfo());
+			return FileUtil.fileInfoToAttributes(EFS.getStore(file.toURI()).fetchInfo(EFS.IGNORE_NAME_CASE, null));
 		} catch (CoreException e) {
 			//file could not be accessed
 			return new ResourceAttributes();

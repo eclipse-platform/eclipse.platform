@@ -21,9 +21,15 @@ import java.util.Arrays;
 import org.eclipse.core.internal.resources.Resource;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.internal.utils.Policy;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.refresh.IRefreshMonitor;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.osgi.framework.Bundle;
 
@@ -192,7 +198,7 @@ public class PollingMonitor extends Job implements IRefreshMonitor {
 			return;
 		}
 		//don't refresh links with no local content
-		if (resource.isLinked() && !((Resource) resource).getStore().fetchInfo().exists()) {
+		if (resource.isLinked() && !((Resource) resource).getStore().exists()) {
 			return;
 		}
 		//submit refresh request

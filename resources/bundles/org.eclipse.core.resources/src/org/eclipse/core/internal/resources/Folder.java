@@ -15,6 +15,7 @@
 package org.eclipse.core.internal.resources;
 
 import java.net.URI;
+import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.utils.Messages;
@@ -97,7 +98,8 @@ public class Folder extends Container implements IFolder {
 		try {
 			workspace.prepareOperation(rule, newChild);
 			IFileStore store = getStore();
-			IFileInfo localInfo = store.fetchInfo();
+			int fetchOptions = force && !Workspace.caseSensitive ? EFS.NONE : EFS.IGNORE_NAME_CASE;
+			IFileInfo localInfo = store.fetchInfo(fetchOptions, null);
 			assertCreateRequirements(store, localInfo, updateFlags);
 			workspace.beginOperation(true);
 			if (force && !Workspace.caseSensitive && localInfo.exists()) {

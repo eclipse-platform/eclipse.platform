@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2013 IBM Corporation and others.
+ * Copyright (c) 2005, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -104,6 +104,17 @@ public class EFS {
 	 * @see IFileStore#toLocalFile(int, IProgressMonitor)
 	 */
 	public static final int CACHE = 1 << 12;
+
+	/**
+	 * Option flag constant (value 1 &lt;&lt;13) indicating that
+	 * the exact casing of a file's name does not need to be determined.
+	 * <p>
+	 * For case-insensitive file-systems, like on Windows, this can accelerate fetching file information.
+	 * </p>
+	 * @see IFileStore#fetchInfo(int, IProgressMonitor)
+	 * @since 1.12
+	 */
+	public static final int IGNORE_NAME_CASE = 1 << 13;
 
 	/**
 	 * Attribute constant (value 1 &lt;&lt;1) indicating that a

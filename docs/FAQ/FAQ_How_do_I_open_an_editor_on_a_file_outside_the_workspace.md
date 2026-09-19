@@ -11,7 +11,7 @@ Since 3.3 you can use the new EFS support to open an text editor on a file outsi
             return;
         IFileStore fileStore = EFS.getLocalFileSystem().getStore(new Path(filterPath));
         fileStore = fileStore.getChild(names[i]);
-        if (!fileStore.fetchInfo().isDirectory() && fileStore.fetchInfo().exists()) {
+        if (!fileStore.isDirectory() && fileStore.exists()) {
             IWorkbenchPage page=  window.getActivePage();
             try {
                 IDE.openEditorOnFileStore(page, fileStore);

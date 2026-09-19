@@ -321,7 +321,7 @@ public class LaunchConfiguration extends PlatformObject implements ILaunchConfig
 				IFileStore store = getFileStore();
 				if (store != null) {
 					store.delete(EFS.NONE, null);
-					if ((store.fetchInfo().exists())) {
+					if (store.exists()) {
 						throw new DebugException(
 							new Status(IStatus.ERROR, DebugPlugin.getUniqueIdentifier(),
 							 DebugException.REQUEST_FAILED, DebugCoreMessages.LaunchConfiguration_Failed_to_delete_launch_configuration__1, null)
@@ -391,7 +391,7 @@ public class LaunchConfiguration extends PlatformObject implements ILaunchConfig
 		try {
 			IFileStore store = getFileStore();
 			if (store != null) {
-				return store.fetchInfo().exists();
+				return store.exists();
 			}
 		} catch (CoreException e) {
 		}
@@ -870,7 +870,7 @@ public class LaunchConfiguration extends PlatformObject implements ILaunchConfig
 		try {
 			IFileStore fileStore = getFileStore();
 			if (fileStore != null) {
-				return fileStore.fetchInfo().getAttribute(EFS.ATTRIBUTE_READ_ONLY);
+				return fileStore.fetchInfo(EFS.IGNORE_NAME_CASE, null).getAttribute(EFS.ATTRIBUTE_READ_ONLY);
 			}
 		} catch (CoreException e) {
 		}
