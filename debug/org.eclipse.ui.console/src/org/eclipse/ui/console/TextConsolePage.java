@@ -48,6 +48,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.console.actions.ClearOutputAction;
 import org.eclipse.ui.console.actions.TextViewerAction;
+import org.eclipse.ui.internal.console.CompareConsoleWithClipboard;
 import org.eclipse.ui.internal.console.ConsoleMessages;
 import org.eclipse.ui.internal.console.ConsoleResourceBundleMessages;
 import org.eclipse.ui.internal.console.FollowHyperlinkAction;
@@ -366,6 +367,9 @@ public class TextConsolePage implements IPageBookViewPage, IPropertyChangeListen
 		menuManager.add(fGlobalActions.get(ITextEditorActionConstants.FIND_NEXT));
 		menuManager.add(fGlobalActions.get(ITextEditorActionConstants.FIND_PREVIOUS));
 		menuManager.add(new FollowHyperlinkAction(fViewer.getHyperlink()));
+		if (CompareConsoleWithClipboard.isAvailable()) {
+			menuManager.add(new CompareConsoleWithClipboard(fViewer));
+		}
 		menuManager.add(fClearOutputAction);
 
 		menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
