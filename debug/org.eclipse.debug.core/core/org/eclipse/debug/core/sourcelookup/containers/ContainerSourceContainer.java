@@ -105,7 +105,7 @@ public abstract class ContainerSourceContainer extends CompositeSourceContainer 
 				if (fRootFile != null) {
 					// See bug 98090 - we need to handle relative path names
 					IFileStore target = fRootFile.getFileStore(IPath.fromOSString(name));
-					if (target.fetchInfo().exists()) {
+					if (target.exists()) {
 						// We no longer have to account for bug 95832, and URIs take care
 						// of canonical paths (fix to bug 95679 was removed).
 						IFile[] files = fRoot.findFilesForLocationURI(target.toURI());

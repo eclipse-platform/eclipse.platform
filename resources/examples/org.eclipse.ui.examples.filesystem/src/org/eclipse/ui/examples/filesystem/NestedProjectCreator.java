@@ -185,8 +185,7 @@ public class NestedProjectCreator {
 					private void searchInStore(IFileStore store) {
 						try {
 							if (store.getName().equals(IProjectDescription.DESCRIPTION_FILE_NAME)) {
-								IFileInfo info = store.fetchInfo();
-								if (!info.isDirectory()) {
+								if (!store.isDirectory()) {
 									try (InputStream input = store.openInputStream(EFS.NONE, null)) {
 										IProjectDescription description = workspace.loadProjectDescription(input);
 										description.setLocationURI(store.getParent().toURI());

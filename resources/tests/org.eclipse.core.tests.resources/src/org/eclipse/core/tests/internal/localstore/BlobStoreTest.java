@@ -82,17 +82,17 @@ public class BlobStoreTest {
 
 		/* delete blob that does not exist */
 		UniversalUniqueIdentifier uuid = new UniversalUniqueIdentifier();
-		assertTrue(!store.fileFor(uuid).fetchInfo().exists());
+		assertTrue(!store.fileFor(uuid).exists());
 		store.deleteBlob(uuid);
-		assertTrue(!store.fileFor(uuid).fetchInfo().exists());
+		assertTrue(!store.fileFor(uuid).exists());
 
 		/* delete existing blob */
 		IFileStore target = root.getChild("target");
 		createInFileSystem(target);
 		uuid = store.addBlob(target, true);
-		assertTrue(store.fileFor(uuid).fetchInfo().exists());
+		assertTrue(store.fileFor(uuid).exists());
 		store.deleteBlob(uuid);
-		assertFalse(store.fileFor(uuid).fetchInfo().exists());
+		assertFalse(store.fileFor(uuid).exists());
 	}
 
 	@Test

@@ -30,7 +30,7 @@ final class FileSystemTestUtil {
 
 	static void ensureDoesNotExist(IFileStore store) throws CoreException {
 		store.delete(EFS.NONE, getMonitor());
-		assertFalse(store.fetchInfo().exists(), "store was not properly deleted: " + store);
+		assertFalse(store.exists(), "store was not properly deleted: " + store);
 	}
 
 	/**

@@ -127,7 +127,7 @@ public class IFolderTest {
 		createInWorkspace(new IResource[] {folder});
 
 		IFileStore dir = EFS.getLocalFileSystem().fromLocalFile(folder.getLocation().toFile());
-		assertThat(dir).matches(it -> it.fetchInfo().exists(), "exists");
+		assertThat(dir).matches(IFileStore::exists, "exists");
 
 		dir.mkdir(EFS.NONE, null);
 		dir.mkdir(EFS.SHALLOW, null);

@@ -50,7 +50,7 @@ import org.junit.jupiter.api.io.TempDir;
 @ExtendWith(WorkspaceResetExtension.class)
 public class Bug_044106 {
 
-	private static final Predicate<IFileStore> exists = store -> store.fetchInfo().exists();
+	private static final Predicate<IFileStore> exists = IFileStore::exists;
 
 	private @TempDir Path tempDirectory;
 
