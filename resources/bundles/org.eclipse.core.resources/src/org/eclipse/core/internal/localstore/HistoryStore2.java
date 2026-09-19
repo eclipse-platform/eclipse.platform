@@ -291,7 +291,7 @@ public class HistoryStore2 implements IHistoryStore {
 
 	@Override
 	public boolean exists(IFileState target) {
-		return blobStore.fileFor(((FileState) target).getUUID()).fetchInfo().exists();
+		return blobStore.fileFor(((FileState) target).getUUID()).exists();
 	}
 
 	@Override

@@ -397,7 +397,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 
 		SubMonitor subMonitor = SubMonitor.convert(monitor, title, 100);
 		IFileStore destinationStore = getStore(destination);
-		if (destinationStore.fetchInfo().exists()) {
+		if (destinationStore.exists()) {
 			String message = NLS.bind(Messages.localstore_resourceExists, destination.getFullPath());
 			throw new ResourceException(IResourceStatus.FAILED_WRITE_LOCAL, destination.getFullPath(), message, null);
 		}
@@ -575,7 +575,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 	public int getEncoding(File target) throws CoreException {
 		// thread safety: (the location can be null if the project for this file does not exist)
 		IFileStore store = getStore(target);
-		if (!store.fetchInfo().exists()) {
+		if (!store.exists()) {
 			String message = NLS.bind(Messages.localstore_fileNotFound, store.toString());
 			throw new ResourceException(IResourceStatus.FAILED_READ_LOCAL, target.getFullPath(), message, null);
 		}
@@ -675,7 +675,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 	 * Returns whether the project has any local content on disk.
 	 */
 	public boolean hasSavedContent(IProject project) {
-		return getStore(project).fetchInfo().exists();
+		return getStore(project).exists();
 	}
 
 	/**
@@ -684,8 +684,8 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 	public boolean hasSavedDescription(IProject project) {
 		IResource dotProjectResource = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
 		return dotProjectResource.exists() ? //
-			getStore(dotProjectResource).fetchInfo().exists() : //
-			getStore(project).getChild(IProjectDescription.DESCRIPTION_FILE_NAME).fetchInfo().exists();
+				getStore(dotProjectResource).exists() : //
+				getStore(project).getChild(IProjectDescription.DESCRIPTION_FILE_NAME).exists();
 	}
 
 	/**
@@ -1017,7 +1017,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 			if (description != null) {
 				return description;
 			}
-			if (!descriptionStore.fetchInfo().exists()) {
+			if (!descriptionStore.exists()) {
 				String msg = NLS.bind(Messages.resources_missingProjectMeta, target.getName());
 				throw new ResourceException(IResourceStatus.FAILED_READ_METADATA, target.getFullPath(), msg, null);
 			}
@@ -1381,8 +1381,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 		}
 		if (!assumeParentDirectoryExists && !fileInfo.exists()) {
 			IFileStore parent = store.getParent();
-			IFileInfo parentInfo = parent.fetchInfo();
-			if (!parentInfo.exists()) {
+			if (!parent.exists()) {
 				parent.mkdir(EFS.NONE, null);
 			}
 		}
@@ -1436,8 +1435,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 				throw e;
 			}
 			IFileStore parent = store.getParent();
-			IFileInfo parentInfo = parent.fetchInfo();
-			if (parentInfo.exists()) {
+			if (parent.exists()) {
 				throw e;
 			}
 			// create missing folders:

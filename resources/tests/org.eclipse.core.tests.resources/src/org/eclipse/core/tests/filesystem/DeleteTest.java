@@ -43,9 +43,9 @@ public class DeleteTest {
 		IFileStore file = baseStore.getChild("child");
 		ensureExists(file, false);
 
-		assertTrue(file.fetchInfo().exists());
+		assertTrue(file.exists());
 		file.delete(EFS.NONE, getMonitor());
-		assertFalse(file.fetchInfo().exists());
+		assertFalse(file.exists());
 	}
 
 	@Test
@@ -54,9 +54,9 @@ public class DeleteTest {
 		IFileStore dir = baseStore.getChild("child");
 		ensureExists(dir, true);
 
-		assertTrue(dir.fetchInfo().exists());
+		assertTrue(dir.exists());
 		dir.delete(EFS.NONE, getMonitor());
-		assertFalse(dir.fetchInfo().exists());
+		assertFalse(dir.exists());
 	}
 
 	@Test
@@ -65,11 +65,11 @@ public class DeleteTest {
 		ensureExists(localFileBaseStore, true);
 		IFileStore file = localFileBaseStore.getChild("child");
 		ensureExists(file, false);
-		assertTrue(file.fetchInfo().exists());
+		assertTrue(file.exists());
 		ensureReadOnlyLocal(file);
 		file.delete(EFS.NONE, getMonitor());
 		// success: we expect that read-only files can be removed
-		assertFalse(file.fetchInfo().exists());
+		assertFalse(file.exists());
 	}
 
 	/**

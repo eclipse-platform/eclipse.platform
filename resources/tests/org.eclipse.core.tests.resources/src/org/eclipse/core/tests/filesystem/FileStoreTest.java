@@ -74,7 +74,7 @@ public class FileStoreTest {
 	private static final Random RANDOM = new Random();
 
 	private IFileStore createDir(IFileStore store, boolean clear) throws CoreException {
-		if (clear && store.fetchInfo().exists()) {
+		if (clear && store.exists()) {
 			store.delete(EFS.NONE, null);
 		}
 		store.mkdir(EFS.NONE, null);
@@ -190,7 +190,7 @@ public class FileStoreTest {
 		destination = tempDest.getChild(subfolderName);
 		String anotherContent = "nothing..................gnihton";
 		createFile(destination, anotherContent);
-		assertTrue(!destination.fetchInfo().isDirectory());
+		assertTrue(!destination.isDirectory());
 		final IFileStore immutableDestination = destination;
 		assertThrows(CoreException.class, () -> target.copy(immutableDestination, EFS.NONE, null));
 		assertTrue(!verifyTree(getTree(destination)));
@@ -209,7 +209,7 @@ public class FileStoreTest {
 		/* build scenario */
 		IFileStore temp = randomUniqueNotExistingFileStore();
 		temp.mkdir(EFS.NONE, null);
-		assertTrue(temp.fetchInfo().isDirectory());
+		assertTrue(temp.isDirectory());
 		// create tree
 		IFileStore target = temp.getChild("target");
 		target.delete(EFS.NONE, null);
@@ -230,7 +230,7 @@ public class FileStoreTest {
 		// try to copy when parent of destination does not exist
 		assertThrows(CoreException.class, () -> existing.copy(child, EFS.NONE, createTestMonitor()));
 		// destination should not exist
-		assertTrue(!child.fetchInfo().exists());
+		assertTrue(!child.exists());
 	}
 
 	@ParameterizedTest(name = "File size {0} bytes")
@@ -248,7 +248,7 @@ public class FileStoreTest {
 		fileWithSmallName.delete(EFS.NONE, null);
 		createFile(fileWithSmallName, content);
 		System.out.println(fileWithSmallName.fetchInfo().getName());
-		assertTrue(fileWithSmallName.fetchInfo().exists());
+		assertTrue(fileWithSmallName.exists());
 		assertTrue( Arrays.equals(content, fileWithSmallName.readAllBytes(EFS.NONE, null)));
 
 		IFileStore fileWithOtherName = temp.getChild("FILENAME");
@@ -258,11 +258,11 @@ public class FileStoreTest {
 		fileWithSmallName.copy(fileWithOtherName, IResource.DEPTH_INFINITE, null); // a NOP Operation
 		// file content is still the same for both Cases:
 		assertTrue(Arrays.equals(content, fileWithOtherName.readAllBytes(EFS.NONE, null)));
-		assertTrue(fileWithOtherName.fetchInfo().exists());
-		assertTrue(fileWithSmallName.fetchInfo().exists());
+		assertTrue(fileWithOtherName.exists());
+		assertTrue(fileWithSmallName.exists());
 		fileWithOtherName.delete(EFS.NONE, null);
-		assertFalse(fileWithOtherName.fetchInfo().exists());
-		assertFalse(fileWithSmallName.fetchInfo().exists());
+		assertFalse(fileWithOtherName.exists());
+		assertFalse(fileWithSmallName.exists());
 		CoreException exception = assertThrows(CoreException.class,
 				() -> fileWithSmallName.move(fileWithOtherName, EFS.NONE, null));
 		String message = NLS.bind(Messages.couldNotMove, fileWithSmallName.toString());
@@ -281,7 +281,7 @@ public class FileStoreTest {
 		IFileStore target = temp.getChild("target");
 		target.delete(EFS.NONE, null);
 		createFile(target, content);
-		assertTrue(target.fetchInfo().exists());
+		assertTrue(target.exists());
 		assertTrue(Arrays.equals(content, target.readAllBytes(EFS.NONE, null)));
 
 		/* temp\target -> temp\copy of target */
@@ -333,7 +333,7 @@ public class FileStoreTest {
 		IFileStore target = tempSrc.getChild(subfolderName);
 		target.delete(EFS.NONE, null);
 		createFile(target, content);
-		assertTrue(target.fetchInfo().exists());
+		assertTrue(target.exists());
 		assertTrue(Arrays.equals(content, target.readAllBytes(EFS.NONE, null)));
 
 		/* c:\temp\target -> d:\temp\target */
@@ -353,7 +353,7 @@ public class FileStoreTest {
 		destination = tempDest.getChild(subfolderName);
 		String anotherContent = "nothing..................gnihton";
 		createFile(destination, anotherContent);
-		assertTrue(!destination.fetchInfo().isDirectory());
+		assertTrue(!destination.isDirectory());
 		target.copy(destination, IResource.DEPTH_INFINITE, null);
 		assertTrue(Arrays.equals(content, destination.readAllBytes(EFS.NONE, null)));
 		destination.delete(EFS.NONE, null);
@@ -361,13 +361,13 @@ public class FileStoreTest {
 		/* c:\temp\target -> d:\temp\target (but the destination is already a folder */
 		destination = tempDest.getChild(subfolderName);
 		createDir(destination, true);
-		assertTrue(destination.fetchInfo().isDirectory());
+		assertTrue(destination.isDirectory());
 		final IFileStore immutableDestination = destination;
 		assertThrows(CoreException.class, () -> target.copy(immutableDestination, EFS.NONE, null));
 		/* test if the input stream inside the copy method was closed */
 		target.delete(EFS.NONE, null);
 		createFile(target, content);
-		assertTrue(destination.fetchInfo().isDirectory());
+		assertTrue(destination.isDirectory());
 		destination.delete(EFS.NONE, null);
 	}
 
@@ -441,24 +441,24 @@ public class FileStoreTest {
 			}
 
 			createTree(treeItems.toArray(IFileStore[]::new));
-			assertTrue(singleDirectory.fetchInfo().exists());
+			assertTrue(singleDirectory.exists());
 			long n0 = System.nanoTime();
 			singleDirectory.delete(EFS.NONE, null);
 			long n1 = System.nanoTime();
 			System.out.println("delete singleDirectory took ms:" + (n1 - n0) / 1_000_000);
-			assertFalse(singleDirectory.fetchInfo().exists());
+			assertFalse(singleDirectory.exists());
 		}
 
 		{
 			IFileStore binaryTree = tempC.getChild("tree");
 			createDir(binaryTree, true);
 			createChildDirs(binaryTree, 2, 10);
-			assertTrue(binaryTree.fetchInfo().exists());
+			assertTrue(binaryTree.exists());
 			long n0 = System.nanoTime();
 			binaryTree.delete(EFS.NONE, null);
 			long n1 = System.nanoTime();
 			System.out.println("delete binaryTree took ms:" + (n1 - n0) / 1_000_000);
-			assertFalse(binaryTree.fetchInfo().exists());
+			assertFalse(binaryTree.exists());
 		}
 	}
 
@@ -481,7 +481,7 @@ public class FileStoreTest {
 		IFileStore target = tempC.getChild("target");
 		String content = "just a content.....tnetnoc a tsuj";
 		createFile(target, content);
-		assertTrue(target.fetchInfo().exists());
+		assertTrue(target.exists());
 		// create target tree
 		IFileStore tree = tempC.getChild("tree");
 		createDir(tree, true);
@@ -490,37 +490,37 @@ public class FileStoreTest {
 		/* rename file */
 		IFileStore destination = tempC.getChild("destination");
 		target.move(destination, EFS.NONE, null);
-		assertTrue(!destination.fetchInfo().isDirectory());
-		assertTrue(!target.fetchInfo().exists());
+		assertTrue(!destination.isDirectory());
+		assertTrue(!target.exists());
 		destination.move(target, EFS.NONE, null);
-		assertTrue(!target.fetchInfo().isDirectory());
-		assertTrue(!destination.fetchInfo().exists());
+		assertTrue(!target.isDirectory());
+		assertTrue(!destination.exists());
 
 		/* rename file (but destination is already a file) */
 		String anotherContent = "another content";
 		createFile(destination, anotherContent);
 		final IFileStore immutableFileDestination = destination;
 		assertThrows(CoreException.class, () -> target.move(immutableFileDestination, EFS.NONE, null));
-		assertTrue(!target.fetchInfo().isDirectory());
+		assertTrue(!target.isDirectory());
 		destination.delete(EFS.NONE, null);
-		assertTrue(!destination.fetchInfo().exists());
+		assertTrue(!destination.exists());
 
 		/* rename file (but destination is already a folder) */
 		createDir(destination, true);
 		final IFileStore immutableFolderDestination = destination;
 		assertThrows(CoreException.class, () -> target.move(immutableFolderDestination, EFS.NONE, null));
-		assertTrue(!target.fetchInfo().isDirectory());
+		assertTrue(!target.isDirectory());
 		destination.delete(EFS.NONE, null);
-		assertTrue(!destination.fetchInfo().exists());
+		assertTrue(!destination.exists());
 
 		/* rename folder */
 		destination = tempC.getChild("destination");
 		tree.move(destination, EFS.NONE, null);
 		assertTrue(verifyTree(getTree(destination)));
-		assertTrue(!tree.fetchInfo().exists());
+		assertTrue(!tree.exists());
 		destination.move(tree, EFS.NONE, null);
 		assertTrue(verifyTree(getTree(tree)));
-		assertTrue(!destination.fetchInfo().exists());
+		assertTrue(!destination.exists());
 	}
 
 	@Test
@@ -542,7 +542,7 @@ public class FileStoreTest {
 		IFileStore target = tempSrc.getChild(subfolderName);
 		String content = "just a content.....tnetnoc a tsuj";
 		createFile(target, content);
-		assertTrue(target.fetchInfo().exists());
+		assertTrue(target.exists());
 		// create target tree
 		IFileStore tree = tempSrc.getChild("tree");
 		createDir(tree, true);
@@ -551,20 +551,20 @@ public class FileStoreTest {
 		/* move file across volumes */
 		IFileStore destination = tempDest.getChild(subfolderName);
 		target.move(destination, EFS.NONE, null);
-		assertTrue(!destination.fetchInfo().isDirectory());
-		assertTrue(!target.fetchInfo().exists());
+		assertTrue(!destination.isDirectory());
+		assertTrue(!target.exists());
 		destination.move(target, EFS.NONE, null);
-		assertTrue(!target.fetchInfo().isDirectory());
-		assertTrue(!destination.fetchInfo().exists());
+		assertTrue(!target.isDirectory());
+		assertTrue(!destination.exists());
 
 		/* move folder across volumes */
 		destination = tempDest.getChild(subfolderName);
 		tree.move(destination, EFS.NONE, null);
 		assertTrue(verifyTree(getTree(destination)));
-		assertTrue(!tree.fetchInfo().exists());
+		assertTrue(!tree.exists());
 		destination.move(tree, EFS.NONE, null);
 		assertTrue(verifyTree(getTree(tree)));
-		assertTrue(!destination.fetchInfo().exists());
+		assertTrue(!destination.exists());
 	}
 
 	@Test
@@ -576,7 +576,7 @@ public class FileStoreTest {
 		// try to move when parent of destination does not exist
 		assertThrows(CoreException.class, () -> existing.move(child, EFS.NONE, createTestMonitor()));
 		// destination should not exist
-		assertTrue(!child.fetchInfo().exists());
+		assertTrue(!child.exists());
 	}
 
 	/**
@@ -775,7 +775,7 @@ public class FileStoreTest {
 	private boolean verifyNode(IFileStore node) {
 		char type = node.getName().charAt(0);
 		// if the name starts with d it must be a directory
-		return (type == 'd') == node.fetchInfo().isDirectory();
+		return (type == 'd') == node.isDirectory();
 	}
 
 	private boolean verifyTree(IFileStore[] tree) {
