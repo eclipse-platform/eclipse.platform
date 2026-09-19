@@ -210,9 +210,14 @@ public interface IFileStore extends IAdaptable {
 	 * file, the returned info will include the file's name and will return <code>false</code>
 	 * when IFileInfo#exists() is called, but all other information will assume default
 	 * values.
+	 * </p>
+	 * <p>
+	 * The {@link EFS#IGNORE_NAME_CASE} option flag indicates if
+	 * the casing of this file's name on the file-system is determined or not.
+	 * This is only relevant for case-insensitive file-systems, but can accelerate the fetch.
+	 * </p>
 	 *
-	 * @param options bit-wise or of option flag constants (currently only {@link EFS#NONE}
-	 * is applicable).
+	 * @param options bit-wise or of option flag constants ({@link EFS#NONE} or {@link EFS#IGNORE_NAME_CASE}).
 	 * @param monitor a progress monitor, or <code>null</code> if progress
 	 *    reporting and cancellation are not desired
 	 * @return A structure containing information about this file.
@@ -221,6 +226,7 @@ public interface IFileStore extends IAdaptable {
 	 * <li>Problems occurred while contacting the file system.</li>
 	 * </ul>
 	 * @see IFileTree#getFileInfo(IFileStore)
+	 * @see EFS#IGNORE_NAME_CASE
 	 */
 	public IFileInfo fetchInfo(int options, IProgressMonitor monitor) throws CoreException;
 
@@ -231,7 +237,11 @@ public interface IFileStore extends IAdaptable {
 	 * @since 1.12
 	 */
 	public default boolean exists() {
-		return fetchInfo().exists();
+		try {
+			return fetchInfo(EFS.IGNORE_NAME_CASE, null).exists();
+		} catch (CoreException e) {
+			return false;
+		}
 	}
 
 	/**
@@ -241,7 +251,11 @@ public interface IFileStore extends IAdaptable {
 	 * @since 1.12
 	 */
 	public default boolean isDirectory() {
-		return fetchInfo().isDirectory();
+		try {
+			return fetchInfo(EFS.IGNORE_NAME_CASE, null).isDirectory();
+		} catch (CoreException e) {
+			return false;
+		}
 	}
 
 	/**

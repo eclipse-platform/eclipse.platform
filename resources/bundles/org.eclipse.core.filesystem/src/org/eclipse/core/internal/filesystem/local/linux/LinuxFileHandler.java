@@ -27,7 +27,7 @@ public class LinuxFileHandler extends NativeHandler {
 	}
 
 	@Override
-	public FileInfo fetchFileInfo(String fileName) {
+	public FileInfo fetchFileInfo(String fileName, int options) {
 		return LinuxFileNatives.fetchFileInfo(fileName);
 	}
 

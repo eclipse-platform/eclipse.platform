@@ -36,7 +36,7 @@ public class DefaultHandler extends NativeHandler {
 			| EFS.ATTRIBUTE_READ_ONLY | EFS.ATTRIBUTE_EXECUTABLE; // based on Java API
 
 	@Override
-	public FileInfo fetchFileInfo(String fileName) {
+	public FileInfo fetchFileInfo(String fileName, int options) {
 		Path path = Paths.get(fileName);
 		FileInfo info = new FileInfo();
 		boolean exists = Files.exists(path);

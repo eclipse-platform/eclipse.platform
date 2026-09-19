@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import java.io.ByteArrayInputStream;
+import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.provider.FileInfo;
 import org.eclipse.core.internal.filesystem.local.LocalFileNativesManager;
 import org.eclipse.core.resources.IFile;
@@ -93,7 +94,7 @@ public class Bug_530868 {
 	private long getLastModificationTimestamp() {
 		IPath testFileLocation = testFile.getLocation();
 		String filePath = testFileLocation.toOSString();
-		FileInfo testFileInfo = LocalFileNativesManager.fetchFileInfo(filePath);
+		FileInfo testFileInfo = LocalFileNativesManager.fetchFileInfo(filePath, EFS.NONE);
 		return testFileInfo.getLastModified();
 	}
 

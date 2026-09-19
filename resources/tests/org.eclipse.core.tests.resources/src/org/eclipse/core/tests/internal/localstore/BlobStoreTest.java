@@ -68,7 +68,7 @@ public class BlobStoreTest {
 	private IFileStore createStore() throws CoreException {
 		IFileStore root = fileStoreExtension.getTempStore();
 		root.mkdir(EFS.NONE, null);
-		IFileInfo info = root.fetchInfo();
+		IFileInfo info = root.fetchInfo(EFS.IGNORE_NAME_CASE, null);
 		assertTrue(info.exists());
 		assertTrue(info.isDirectory());
 		return root;
