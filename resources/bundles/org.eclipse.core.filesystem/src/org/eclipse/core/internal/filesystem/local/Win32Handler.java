@@ -14,9 +14,6 @@
  *******************************************************************************/
 package org.eclipse.core.internal.filesystem.local;
 
-import static org.eclipse.core.internal.filesystem.local.Convert.WIN32_RAW_PATH_PREFIX;
-import static org.eclipse.core.internal.filesystem.local.Convert.WIN32_UNC_RAW_PATH_PREFIX;
-
 import com.microsoft.windows.FILETIME;
 import com.microsoft.windows.FileAPI;
 import com.microsoft.windows.WIN32_FIND_DATAW;
@@ -48,6 +45,10 @@ import org.eclipse.core.filesystem.provider.FileInfo;
  * See the implementation notes for the rational for direct native method invocations.
  */
 public class Win32Handler extends NativeHandler {
+
+	private static final String WIN32_RAW_PATH_PREFIX = "\\\\?\\"; //$NON-NLS-1$
+	private static final String WIN32_UNC_RAW_PATH_PREFIX = "\\\\?\\UNC"; //$NON-NLS-1$
+
 	private static final int ATTRIBUTES = EFS.ATTRIBUTE_SYMLINK | EFS.ATTRIBUTE_LINK_TARGET // symbolic link support
 			| EFS.ATTRIBUTE_ARCHIVE | EFS.ATTRIBUTE_READ_ONLY | EFS.ATTRIBUTE_HIDDEN; // standard DOS attributes
 
@@ -73,12 +74,13 @@ public class Win32Handler extends NativeHandler {
 		FileInfo fileInfo = new FileInfo();
 
 		String target = toLongWindowsPath(fileName);
+		Path file = Path.of(target);
 
 		if (target.length() == 7 && target.startsWith(WIN32_RAW_PATH_PREFIX) && target.endsWith(":\\")) { //$NON-NLS-1$
 			// FindFirstFile does not work at the root level. However, we don't need it because the root will never change time-stamp.
 			// A root path is for example: \\?\c:\
 			fileInfo.setDirectory(true);
-			fileInfo.setExists(Files.exists(Path.of(target.substring(WIN32_RAW_PATH_PREFIX.length()))));
+			fileInfo.setExists(Files.exists(file));
 			return fileInfo;
 		}
 		try (Arena arena = Arena.ofConfined()) {
@@ -100,7 +102,7 @@ public class Win32Handler extends NativeHandler {
 			}
 			FileAPI.FindClose(handle);
 
-			convertFindDataWToFileInfo(lpFindFileData, fileInfo, fileName);
+			convertFindDataWToFileInfo(lpFindFileData, fileInfo, file);
 		} catch (IOException e) {
 			// Leave alone and continue. The name is set before an IOException can be thrown
 			fileInfo.setError(IFileInfo.IO_ERROR);
@@ -111,7 +113,7 @@ public class Win32Handler extends NativeHandler {
 	private static final StructLayout LAST_ERROR_CAPTURE_LAYOUT = Linker.Option.captureStateLayout();
 	private static final VarHandle GET_LAST_ERROR_HANDLE = LAST_ERROR_CAPTURE_LAYOUT.varHandle(//
 			MemoryLayout.PathElement.groupElement("GetLastError")); //$NON-NLS-1$
-	private static final MethodHandle FIND_FIRST_FILE__W_HANDLE = Linker.nativeLinker().downcallHandle( //
+	private static final MethodHandle FIND_FIRST_FILE_W_HANDLE = Linker.nativeLinker().downcallHandle( //
 			FileAPI.FindFirstFileW$address(), FileAPI.FindFirstFileW$descriptor(), //
 			Linker.Option.captureCallState("GetLastError")); //$NON-NLS-1$
 
@@ -126,7 +128,7 @@ public class Win32Handler extends NativeHandler {
 	 */
 	private static MemorySegment FindFirstFileW(MemorySegment lpFileName, MemorySegment lpFindFileData, MemorySegment capturedError) {
 		try {
-			return (MemorySegment) FIND_FIRST_FILE__W_HANDLE.invokeExact(capturedError, lpFileName, lpFindFileData);
+			return (MemorySegment) FIND_FIRST_FILE_W_HANDLE.invokeExact(capturedError, lpFileName, lpFindFileData);
 		} catch (Error | RuntimeException e) {
 			throw e;
 		} catch (Throwable e) {
@@ -199,18 +201,20 @@ public class Win32Handler extends NativeHandler {
 
 	private static String toLongWindowsPath(String fileName) {
 		// See https://learn.microsoft.com/en-us/windows/win32/fileio/naming-a-file
-		if (fileName.startsWith("\\\\") && !fileName.startsWith(WIN32_UNC_RAW_PATH_PREFIX)) { //$NON-NLS-1$
+		// https://learn.microsoft.com/en-us/dotnet/standard/io/file-path-formats#dos-device-paths
+		if (fileName.startsWith(WIN32_RAW_PATH_PREFIX)) {
+			return fileName;
+		} else if (fileName.startsWith("\\\\")) { //$NON-NLS-1$
 			//convert UNC path of form \\server\path to long/unicode form \\?\UNC\server\path
 			return WIN32_UNC_RAW_PATH_PREFIX + fileName.substring(1);
-		} else if (!fileName.startsWith(WIN32_RAW_PATH_PREFIX)) {
+		} else {
 			//convert simple path of form C:\path to long/unicode form \\?\C:\path
 			return WIN32_RAW_PATH_PREFIX + fileName;
 		}
-		return fileName;
 	}
 
 	@SuppressWarnings("static-access")
-	private static void convertFindDataWToFileInfo(MemorySegment mem, FileInfo info, String fileName) throws IOException {
+	private static void convertFindDataWToFileInfo(MemorySegment mem, FileInfo info, Path file) throws IOException {
 		/**
 		 * For possible values of dwFileAttributes and their descriptions,
 		 * see <a href="https://learn.microsoft.com/en-us/windows/win32/fileio/file-attribute-constants">File Attribute Constants</a>.
@@ -236,7 +240,7 @@ public class Win32Handler extends NativeHandler {
 
 		boolean isReparsePoint = isSet(dwFileAttributes, FileAPI.FILE_ATTRIBUTE_REPARSE_POINT());
 		if (isReparsePoint && dwReserved0 == FileAPI.IO_REPARSE_TAG_SYMLINK()) {
-			Path linkTarget = Files.readSymbolicLink(Path.of(fileName));
+			Path linkTarget = Files.readSymbolicLink(file);
 			info.setAttribute(EFS.ATTRIBUTE_SYMLINK, true);
 			info.setStringAttribute(EFS.ATTRIBUTE_LINK_TARGET, linkTarget.toString());
 		}
