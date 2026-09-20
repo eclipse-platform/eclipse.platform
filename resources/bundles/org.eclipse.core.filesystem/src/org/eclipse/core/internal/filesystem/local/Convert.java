@@ -22,9 +22,6 @@ public class Convert {
 	/** Indicates the default native encoding on this platform */
 	private static String defaultEncoding = Platform.getSystemCharset().name();
 
-	public static final String WIN32_RAW_PATH_PREFIX = "\\\\?\\"; //$NON-NLS-1$
-	public static final String WIN32_UNC_RAW_PATH_PREFIX = "\\\\?\\UNC"; //$NON-NLS-1$
-
 	/**
 	 * Calling new String(byte[] s) creates a new encoding object and other garbage.
 	 * This can be avoided by calling new String(byte[] s, String encoding) instead.
