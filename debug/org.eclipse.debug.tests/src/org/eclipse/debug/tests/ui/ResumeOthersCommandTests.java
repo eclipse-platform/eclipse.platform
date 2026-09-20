@@ -64,7 +64,7 @@ public class ResumeOthersCommandTests {
 
 	private static IDebugTarget createTargetProxy(Supplier<IThread[]> threadsSupplier) {
 		return (IDebugTarget) Proxy.newProxyInstance(ResumeOthersCommandTests.class.getClassLoader(), new Class<?>[] {
-				IDebugTarget.class }, (proxy, method, args) -> (switch (method.getName()) {
+				IDebugTarget.class }, (proxy, method, _) -> (switch (method.getName()) {
 					case "getThreads" -> threadsSupplier.get();
 					case "hasThreads" -> {
 						IThread[] threads = threadsSupplier.get();
@@ -78,7 +78,7 @@ public class ResumeOthersCommandTests {
 	private static IThread createThreadProxy(Supplier<IDebugTarget> targetSupplier) {
 		AtomicBoolean suspended = new AtomicBoolean(true);
 		return (IThread) Proxy.newProxyInstance(ResumeOthersCommandTests.class.getClassLoader(), new Class<?>[] {
-				IThread.class }, (proxy, method, args) -> (switch (method.getName()) {
+				IThread.class }, (_, method, _) -> (switch (method.getName()) {
 					case "canResume" -> suspended.get();
 					case "resume" -> {
 						suspended.set(false);

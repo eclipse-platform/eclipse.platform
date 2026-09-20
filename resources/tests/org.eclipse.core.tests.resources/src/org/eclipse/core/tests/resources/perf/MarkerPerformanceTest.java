@@ -43,7 +43,7 @@ public class MarkerPerformanceTest {
 	@Test
 	public void testSetAttributes1() throws Exception {
 		//benchmark setting many attributes in a single operation
-		final IWorkspaceRunnable runnable = monitor -> {
+		final IWorkspaceRunnable runnable = _ -> {
 			//set all attributes for each marker
 			for (int i = 0; i < NUM_MARKERS; i++) {
 				for (int j = 0; j < REPEAT; j++) {
@@ -64,7 +64,7 @@ public class MarkerPerformanceTest {
 	@Test
 	public void testSetAttributes2() throws Exception {
 		//benchmark setting many attributes in a single operation
-		final IWorkspaceRunnable runnable = monitor -> {
+		final IWorkspaceRunnable runnable = _ -> {
 			//set one attribute per marker, repeat for all attributes
 			for (int j = 0; j < REPEAT; j++) {
 				for (int i = 0; i < NUM_MARKERS; i++) {
@@ -84,7 +84,7 @@ public class MarkerPerformanceTest {
 	public void setUp(TestInfo info) throws Exception {
 		testInfo = info;
 		final IMarker[] createdMarkers = new IMarker[NUM_MARKERS];
-		IWorkspaceRunnable runnable = monitor -> {
+		IWorkspaceRunnable runnable = _ -> {
 			//create resources
 			project = getWorkspace().getRoot().getProject("TestProject");
 			project.create(null);

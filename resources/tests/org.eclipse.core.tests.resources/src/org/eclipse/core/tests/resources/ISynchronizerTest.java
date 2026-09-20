@@ -87,7 +87,7 @@ public class ISynchronizerTest {
 
 		final ISynchronizer synchronizer = getWorkspace().getSynchronizer();
 		final QualifiedName[] partners = synchronizer.getPartners();
-		IWorkspaceRunnable body = monitor -> {
+		IWorkspaceRunnable body = _ -> {
 			IResourceVisitor visitor = resource -> {
 				for (QualifiedName partner : partners) {
 					synchronizer.setSyncInfo(partner, resource, null);
@@ -157,7 +157,7 @@ public class ISynchronizerTest {
 
 		// delete all resources under the projects.
 		final IProject[] projects = getWorkspace().getRoot().getProjects();
-		IWorkspaceRunnable body = monitor -> {
+		IWorkspaceRunnable body = _ -> {
 			for (IProject project : projects) {
 				IResource[] children = project.members();
 				for (IResource element : children) {
@@ -221,7 +221,7 @@ public class ISynchronizerTest {
 
 		// delete all resources under the projects.
 		final IProject[] projects = getWorkspace().getRoot().getProjects();
-		IWorkspaceRunnable body = monitor -> {
+		IWorkspaceRunnable body = _ -> {
 			for (IProject project : projects) {
 				for (IResource element : project.members()) {
 					if (!element.getName().equals(IProjectDescription.DESCRIPTION_FILE_NAME)) {
@@ -242,7 +242,7 @@ public class ISynchronizerTest {
 		getWorkspace().getRoot().accept(visitor);
 
 		// remove the sync info for the immediate children of the projects.
-		body = monitor -> {
+		body = _ -> {
 			for (IProject project : projects) {
 				for (IResource element : project.members(true)) {
 					synchronizer.setSyncInfo(qname, element, null);
@@ -439,7 +439,7 @@ public class ISynchronizerTest {
 		// read in the data
 		try (InputStream fileInput = Files.newInputStream(file.toPath())) {
 			try (DataInputStream input = new DataInputStream(fileInput)) {
-				IWorkspaceRunnable body = monitor -> {
+				IWorkspaceRunnable body = _ -> {
 					SyncInfoReader reader = new SyncInfoReader((Workspace) getWorkspace(), synchronizer);
 					try {
 						reader.readSyncInfo(input);

@@ -82,7 +82,7 @@ public class Bug_026294 {
 		assertExistsInFileSystem(projectFile);
 
 		// opens a file so it cannot be removed on Windows
-		try (InputStream input = file1.getContents()) {
+		try (InputStream _ = file1.getContents()) {
 			assertThat(projectFile).matches(IResource::exists, "exists");
 			assertThat(projectFile).matches(isSynchronizedDepthInfinite, "is synchronized");
 
@@ -193,7 +193,7 @@ public class Bug_026294 {
 		IPath projectRoot = project.getLocation();
 
 		// opens a file so it cannot be removed on Windows
-		try (InputStream input = file1.getContents()) {
+		try (InputStream _ = file1.getContents()) {
 			project.close(createTestMonitor());
 			assertThrows(CoreException.class,
 					() -> project.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, createTestMonitor()));
@@ -269,7 +269,7 @@ public class Bug_026294 {
 		createInWorkspace(new IResource[] { file1, file3 });
 
 		// opens a file so it cannot be removed on Windows
-		try (InputStream input = file1.getContents()) {
+		try (InputStream _ = file1.getContents()) {
 			assertThrows(CoreException.class, () -> folder.delete(IResource.FORCE, createTestMonitor()));
 			assertThat(file1).matches(IResource::exists, "exists");
 			assertThat(file3).matches(not(IResource::exists), "not exists");

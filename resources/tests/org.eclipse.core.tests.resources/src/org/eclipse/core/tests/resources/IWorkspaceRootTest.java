@@ -313,16 +313,16 @@ public class IWorkspaceRootTest {
 		final IWorkspaceRoot root = getWorkspace().getRoot();
 		final String value = "this is a test property value";
 		final QualifiedName name = new QualifiedName("test", "testProperty");
-		getWorkspace().run((IWorkspaceRunnable) monitor -> root.setPersistentProperty(name, value), createTestMonitor());
+		getWorkspace().run((IWorkspaceRunnable) _ -> root.setPersistentProperty(name, value), createTestMonitor());
 
 		final String[] storedValue = new String[1];
-		getWorkspace().run((IWorkspaceRunnable) monitor -> storedValue[0] = root.getPersistentProperty(name),
+		getWorkspace().run((IWorkspaceRunnable) _ -> storedValue[0] = root.getPersistentProperty(name),
 				createTestMonitor());
 		assertEquals(value, storedValue[0]);
 
 		final QualifiedName name2 = new QualifiedName("test", "testNonProperty");
 		final String[] changedStoredValue = new String[1];
-		getWorkspace().run((IWorkspaceRunnable) monitor -> changedStoredValue[0] = root.getPersistentProperty(name2),
+		getWorkspace().run((IWorkspaceRunnable) _ -> changedStoredValue[0] = root.getPersistentProperty(name2),
 				createTestMonitor());
 		assertEquals(null, changedStoredValue[0]);
 	}

@@ -35,10 +35,10 @@ public class AsyncExecTests {
 	public void testQueueAdd() {
 		WorkQueue q = new WorkQueue();
 		assertTrue(q.isEmpty());
-		IRunnableWithProgress r = monitor -> {
+		IRunnableWithProgress r = _ -> {
 			// Nothing to do for now
 		};
-		IRunnableWithProgress r2 = monitor -> {
+		IRunnableWithProgress r2 = _ -> {
 			// Nothing to do for now
 		};
 		// Ensure that adding an element adds it

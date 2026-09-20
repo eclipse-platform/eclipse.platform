@@ -86,7 +86,7 @@ public class XMLCompareAddIdMapDialog extends StatusDialog {
 		data.widthHint = convertWidthInCharsToPixels(30);
 		fIdMapText.setLayoutData(data);
 		fIdMapText.setText(fIdMap.getName());
-		fIdMapText.addModifyListener(e -> doValidation());
+		fIdMapText.addModifyListener(_ -> doValidation());
 
 		label= new Label(inner, SWT.NULL);
 		label.setText(XMLCompareMessages.XMLCompareAddIdMapDialog_extlabel);
@@ -97,7 +97,7 @@ public class XMLCompareAddIdMapDialog extends StatusDialog {
 		data.widthHint = convertWidthInCharsToPixels(30);
 		fIdMapExtText.setLayoutData(data);
 		fIdMapExtText.setText(fIdMap.getExtension());
-		fIdMapExtText.addModifyListener(e -> doValidation());
+		fIdMapExtText.addModifyListener(_ -> doValidation());
 
 
 		fIdMapText.setFocus();

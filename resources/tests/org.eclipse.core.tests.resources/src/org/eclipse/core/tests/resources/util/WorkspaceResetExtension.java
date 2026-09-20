@@ -77,7 +77,7 @@ public class WorkspaceResetExtension implements AfterEachCallback, BeforeEachCal
 		// Wait for any build job that may still be executed
 		waitForBuild();
 		try {
-			getWorkspace().run((IWorkspaceRunnable) monitor -> {
+			getWorkspace().run((IWorkspaceRunnable) _ -> {
 				getWorkspace().getRoot().delete(true, true, createTestMonitor());
 			}, null);
 		} catch (CoreException e) {

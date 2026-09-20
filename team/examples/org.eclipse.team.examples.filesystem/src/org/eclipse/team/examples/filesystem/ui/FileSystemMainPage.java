@@ -226,7 +226,7 @@ public class FileSystemMainPage extends WizardPage {
 		Button browse = new Button(composite, SWT.NULL);
 		browse.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
 		browse.setText(Policy.bind("FileSystemMainPage.browseDir")); //$NON-NLS-1$
-		browse.addListener(SWT.Selection, event -> {
+		browse.addListener(SWT.Selection, _ -> {
 			DirectoryDialog d = new DirectoryDialog(getShell());
 			String directory = d.open();
 			if(directory!=null) {

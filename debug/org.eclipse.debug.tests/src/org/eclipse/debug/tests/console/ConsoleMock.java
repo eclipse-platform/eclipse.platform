@@ -87,7 +87,7 @@ final class ConsoleMock implements IConsole {
 				super.createControl(parent);
 				// This listener is get called if the page is really shown
 				// in the console view
-				getControl().addListener(SWT.Show, event -> {
+				getControl().addListener(SWT.Show, _ -> {
 					int count = showCalled.incrementAndGet();
 					if (count == 1) {
 						count = allShownConsoles.incrementAndGet();

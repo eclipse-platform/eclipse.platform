@@ -49,7 +49,7 @@ public class BenchWorkspace {
 	 * Creates the given number of problem markers on each resource in the workspace.
 	 */
 	private void addProblems(final int problemCount) throws CoreException {
-		IWorkspaceRunnable runnable = monitor -> getWorkspace().getRoot().accept(resource -> {
+		IWorkspaceRunnable runnable = _ -> getWorkspace().getRoot().accept(resource -> {
 			for (int i = 0; i < problemCount; i++) {
 				IMarker marker = resource.createMarker(IMarker.PROBLEM);
 				marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
@@ -113,7 +113,7 @@ public class BenchWorkspace {
 	@BeforeEach
 	public void setUp(TestInfo info) throws Exception {
 		testInfo = info;
-		IWorkspaceRunnable runnable = monitor -> {
+		IWorkspaceRunnable runnable = _ -> {
 			//create resources
 			project = getWorkspace().getRoot().getProject("TestProject");
 			project.create(null);
@@ -153,7 +153,7 @@ public class BenchWorkspace {
 	@Test
 	public void testCountResourcesDuringOperation() throws Exception {
 		final Workspace workspace = (Workspace) getWorkspace();
-		IWorkspaceRunnable runnable = monitor -> {
+		IWorkspaceRunnable runnable = _ -> {
 			//touch all files
 			workspace.getRoot().accept(resource -> {
 				resource.touch(null);

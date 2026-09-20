@@ -69,7 +69,7 @@ public class NestedProjectCreator {
 
 	private void doCreateNestedProjects(final IProject[] projects, Shell shell) throws InvocationTargetException, InterruptedException {
 		final Object[] result = new Object[1];
-		context.run(true, true, monitor -> result[0] = findNestedProjects(projects));
+		context.run(true, true, _ -> result[0] = findNestedProjects(projects));
 		if (result[0] == null)
 			return;
 		IProjectDescription[] rawDescriptions = (IProjectDescription[]) result[0];

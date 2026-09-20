@@ -148,7 +148,7 @@ public class AutoBuildJobTest {
 			public IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
 				// Simulate someone requests autobuild in parallel to already running autobuild.
 				// That shouldn't be ignored, otherwise no build may happen
-				Job job = Job.createSystem("", (ICoreRunnable) m -> requestAutoBuildJobExecution());
+				Job job = Job.createSystem("", (ICoreRunnable) _ -> requestAutoBuildJobExecution());
 				job.schedule();
 				try {
 					job.join();

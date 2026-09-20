@@ -541,8 +541,7 @@ public class ModelObjectReaderWriterTest {
 		ProjectDescriptionReader reader = new ProjectDescriptionReader(getWorkspace());
 
 		for (int i = 0; i < members.length; i++) {
-			URL currentURL = null;
-			currentURL = new URL(whereToLook, members[i]);
+			URL currentURL = whereToLook.toURI().resolve(members[i]).toURL();
 			try (InputStream is = currentURL.openStream()) {
 				InputSource in = new InputSource(is);
 				ProjectDescription description = reader.read(in);

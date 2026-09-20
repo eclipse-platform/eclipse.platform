@@ -98,7 +98,7 @@ public class ProcessConsoleTests {
 	private final List<IStatus> loggedErrors = Collections.synchronizedList(new ArrayList<>());
 
 	/** Listener to count error messages in {@link ConsolePlugin} log. */
-	private final ILogListener errorLogListener = (status, plugin) -> {
+	private final ILogListener errorLogListener = (status, _) -> {
 			if (status.matches(IStatus.ERROR)) {
 				loggedErrors.add(status);
 			}

@@ -90,7 +90,7 @@ public class XMLCompareEditMappingDialog extends StatusDialog {
 		fElementText= new Text(inner, SWT.BORDER);
 		fElementText.setText(fMapping.getElement());
 		fElementText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		fElementText.addModifyListener(e -> doValidation());
+		fElementText.addModifyListener(_ -> doValidation());
 
 		//Signature
 		label= new Label(inner, SWT.NULL);
@@ -102,7 +102,7 @@ public class XMLCompareEditMappingDialog extends StatusDialog {
 		GridData data= new GridData(GridData.FILL_HORIZONTAL);
 		data.widthHint= convertWidthInCharsToPixels(50);
 		fSignatureText.setLayoutData(data);
-		fSignatureText.addModifyListener(e -> doValidation());
+		fSignatureText.addModifyListener(_ -> doValidation());
 
 		//Id Attribute
 		label= new Label(inner, SWT.NULL);
@@ -112,7 +112,7 @@ public class XMLCompareEditMappingDialog extends StatusDialog {
 		fIdAttributeText= new Text(inner, SWT.BORDER);
 
 		fIdAttributeText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		fIdAttributeText.addModifyListener(e -> doValidation());
+		fIdAttributeText.addModifyListener(_ -> doValidation());
 
 		//Id Source
 		createIdSourceGroup(inner);

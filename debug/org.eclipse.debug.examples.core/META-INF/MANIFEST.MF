@@ -14,7 +14,7 @@ Export-Package: org.eclipse.debug.examples.core.midi.launcher;x-friends:="org.ec
  org.eclipse.debug.examples.core.pda.protocol;x-friends:="org.eclipse.debug.examples.ui",
  org.eclipse.debug.examples.core.pda.sourcelookup;x-friends:="org.eclipse.debug.examples.ui",
  org.eclipse.debug.examples.pdavm;x-friends:="org.eclipse.debug.examples.ui"
-Bundle-RequiredExecutionEnvironment: JavaSE-21
+Bundle-RequiredExecutionEnvironment: JavaSE-25
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: %Bundle-Vendor
 Automatic-Module-Name: org.eclipse.debug.examples.core

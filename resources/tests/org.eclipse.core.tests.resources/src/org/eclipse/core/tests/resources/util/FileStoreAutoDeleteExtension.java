@@ -67,7 +67,7 @@ public class FileStoreAutoDeleteExtension implements AfterEachCallback {
 
 	@Override
 	public void afterEach(ExtensionContext context) throws Exception {
-		getWorkspace().run((IWorkspaceRunnable) monitor -> {
+		getWorkspace().run((IWorkspaceRunnable) _ -> {
 			getWorkspace().getRoot().delete(true, true, createTestMonitor());
 			// clear stores in workspace runnable to avoid interaction with resource jobs
 			for (IFileStore element : storesToDelete) {

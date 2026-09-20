@@ -140,12 +140,12 @@ public class Bug_378156 {
 		SignaledBuilder builder = SignaledBuilder.getInstance(project1);
 		builder.reset();
 
-		getWorkspace().run((IWorkspaceRunnable) monitor -> {
+		getWorkspace().run((IWorkspaceRunnable) _ -> {
 			//modify the file so autobuild is needed
 			file.setContents(createRandomContentsStream(), IResource.NONE, null);
 			//create a nested operation that immediately cancels
 			try {
-				getWorkspace().run((IWorkspaceRunnable) monitor1 -> {
+				getWorkspace().run((IWorkspaceRunnable) _ -> {
 					throw new OperationCanceledException();
 				}, null);
 			} catch (OperationCanceledException e) {

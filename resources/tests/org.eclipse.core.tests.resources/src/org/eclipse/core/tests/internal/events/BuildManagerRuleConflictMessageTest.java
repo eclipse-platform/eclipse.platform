@@ -106,7 +106,7 @@ public class BuildManagerRuleConflictMessageTest {
 
 	private static IBuildConfiguration stubBuildConfiguration(IProject project) {
 		return (IBuildConfiguration) Proxy.newProxyInstance(IBuildConfiguration.class.getClassLoader(),
-				new Class<?>[] { IBuildConfiguration.class }, (proxy, method, args) -> {
+				new Class<?>[] { IBuildConfiguration.class }, (_, method, _) -> {
 					if ("getProject".equals(method.getName())) {
 						return project;
 					}
@@ -117,7 +117,7 @@ public class BuildManagerRuleConflictMessageTest {
 	private static IProject stubProject(String path) {
 		IPath fullPath = IPath.fromPortableString(path);
 		return (IProject) Proxy.newProxyInstance(IProject.class.getClassLoader(),
-				new Class<?>[] { IProject.class }, (proxy, method, args) -> {
+				new Class<?>[] { IProject.class }, (_, method, _) -> {
 					if ("getFullPath".equals(method.getName())) {
 						return fullPath;
 					}

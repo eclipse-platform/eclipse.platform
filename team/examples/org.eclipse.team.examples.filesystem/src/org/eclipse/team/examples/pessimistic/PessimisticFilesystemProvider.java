@@ -640,7 +640,7 @@ public class PessimisticFilesystemProvider extends RepositoryProvider  {
 			Thread t= new Thread(() -> {
 				try {
 					ResourcesPlugin.getWorkspace().run(
-							(IWorkspaceRunnable) monitor -> {
+							(IWorkspaceRunnable) _ -> {
 							},
 							null);
 				} catch (CoreException e) {

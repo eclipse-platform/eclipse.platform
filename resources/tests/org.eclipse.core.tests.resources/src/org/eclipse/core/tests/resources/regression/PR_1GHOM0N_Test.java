@@ -48,7 +48,7 @@ public class PR_1GHOM0N_Test {
 
 		// try and reproduce the error (there are problems when calling an incremental
 		// build from within an operation...it leaves the tree immutable)
-		IWorkspaceRunnable body = monitor -> {
+		IWorkspaceRunnable body = _ -> {
 			project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 			IFile file = project.getFile("test.txt");
 			file.create(createRandomContentsStream(), true, createTestMonitor());

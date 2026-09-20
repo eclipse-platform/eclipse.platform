@@ -86,7 +86,7 @@ public class Bug_032076 {
 		markerId = bookmark.getId();
 
 		// opens the file so it cannot be removed on Windows
-		try (InputStream input = sourceFile.getContents()) {
+		try (InputStream _ = sourceFile.getContents()) {
 			assertThrows(CoreException.class,
 					() -> sourceFile.move(destinationFile.getFullPath(), IResource.FORCE, createTestMonitor()));
 
@@ -140,7 +140,7 @@ public class Bug_032076 {
 		markerId = bookmark.getId();
 
 		// opens a file so it (and its parent) cannot be removed on Windows
-		try (InputStream input = file1.getContents()) {
+		try (InputStream _ = file1.getContents()) {
 			assertThrows(CoreException.class,
 					() -> folder.move(destinationFolder.getFullPath(), IResource.FORCE, createTestMonitor()));
 

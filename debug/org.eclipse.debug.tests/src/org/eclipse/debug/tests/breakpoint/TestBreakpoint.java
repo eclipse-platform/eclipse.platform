@@ -42,7 +42,7 @@ public class TestBreakpoint extends Breakpoint {
 
 	TestBreakpoint(String text, final String markerType) {
 		final IResource resource = ResourcesPlugin.getWorkspace().getRoot();
-		IWorkspaceRunnable wr = monitor -> {
+		IWorkspaceRunnable wr = _ -> {
 			// create the marker
 			setMarker(resource.createMarker(markerType));
 			ensureMarker().setAttribute(ID, getModelIdentifier());

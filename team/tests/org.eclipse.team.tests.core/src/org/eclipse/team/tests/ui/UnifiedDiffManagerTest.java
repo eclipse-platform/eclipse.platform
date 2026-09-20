@@ -80,7 +80,7 @@ public class UnifiedDiffManagerTest {
 	private IFile file;
 	private ITextEditor editor;
 	private final List<IStatus> loggedErrors = synchronizedList(new ArrayList<>());
-	private final ILogListener logListener = (status, plugin) -> {
+	private final ILogListener logListener = (status, _) -> {
 		if (status.getSeverity() == IStatus.ERROR) {
 			loggedErrors.add(status);
 		}

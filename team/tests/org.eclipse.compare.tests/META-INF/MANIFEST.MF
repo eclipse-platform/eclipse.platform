@@ -23,7 +23,7 @@ Import-Package: org.assertj.core.api,
 Bundle-Activator: org.eclipse.compare.tests.CompareTestPlugin
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: %providerName
-Bundle-RequiredExecutionEnvironment: JavaSE-21
+Bundle-RequiredExecutionEnvironment: JavaSE-25
 Bundle-Localization: plugin
 Export-Package: org.eclipse.compare.tests,
  org.eclipse.compare.tests.performance

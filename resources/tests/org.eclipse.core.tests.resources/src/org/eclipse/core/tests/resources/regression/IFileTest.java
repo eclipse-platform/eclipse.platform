@@ -146,7 +146,7 @@ public class IFileTest {
 		// Can't use `Job.cancel()`, it makes `getResult()` unstable.
 		// https://github.com/eclipse-platform/eclipse.platform/issues/2339
 		AtomicBoolean keepRunning = new AtomicBoolean(true);
-		Job createDelete = Job.create("Create/delete", ignored -> {
+		Job createDelete = Job.create("Create/delete", _ -> {
 			try {
 				jobStart.await();
 				while (keepRunning.get()) {

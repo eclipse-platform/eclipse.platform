@@ -139,7 +139,7 @@ public class IResourceChangeListenerTest {
 						fCounter = 0;
 						long start = System.currentTimeMillis();
 						IResourceDelta delta = event.getDelta();
-						delta.accept(delta2 -> {
+						delta.accept(_ -> {
 							fCounter++;
 							return true;
 						});
@@ -155,7 +155,7 @@ public class IResourceChangeListenerTest {
 		// add the listener
 		getWorkspace().addResourceChangeListener(listener);
 		// setup the test data
-		IWorkspaceRunnable body = monitor -> {
+		IWorkspaceRunnable body = _ -> {
 			IProject project = getWorkspace().getRoot().getProject("Test");
 			IProjectDescription description = getWorkspace().newProjectDescription(project.getName());
 			IPath root = getWorkspace().getRoot().getLocation();
@@ -169,7 +169,7 @@ public class IResourceChangeListenerTest {
 		getWorkspace().run(body, createTestMonitor());
 
 		// touch all resources (so that they appear in the delta)
-		body = monitor -> {
+		body = _ -> {
 			IResourceVisitor visitor = resource -> {
 				resource.touch(createTestMonitor());
 				return true;
@@ -241,7 +241,7 @@ public class IResourceChangeListenerTest {
 		project1MetaData = project1.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
 		project2MetaData = project2.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
 		// Create and open a project, folder and file
-		IWorkspaceRunnable body = monitor -> {
+		IWorkspaceRunnable body = _ -> {
 			project1.create(createTestMonitor());
 			project1.open(createTestMonitor());
 			folder1.create(true, true, createTestMonitor());
@@ -276,7 +276,7 @@ public class IResourceChangeListenerTest {
 		// create the resource change listener
 		IResourceChangeListener listener = event -> {
 			try {
-				IWorkspaceRunnable body = monitor -> {
+				IWorkspaceRunnable body = _ -> {
 					// modify the tree.
 					IResourceDeltaVisitor visitor = delta -> {
 						IResource resource = delta.getResource();
@@ -407,7 +407,7 @@ public class IResourceChangeListenerTest {
 		// create the resource change listener
 		IResourceChangeListener listener = event -> {
 			try {
-				IWorkspaceRunnable body = monitor -> {
+				IWorkspaceRunnable body = _ -> {
 					// modify the tree.
 					IResourceDeltaVisitor visitor = delta -> {
 						IResource resource = delta.getResource();
@@ -476,7 +476,7 @@ public class IResourceChangeListenerTest {
 				assertEquals(trigger, postBuild.trigger, i + "");
 				assertEquals(0, postChange.trigger, i + "");
 
-				workspace.run((IWorkspaceRunnable) monitor -> {
+				workspace.run((IWorkspaceRunnable) _ -> {
 					file1.touch(null);
 					project1.build(trigger, createTestMonitor());
 				}, createTestMonitor());
@@ -569,7 +569,7 @@ public class IResourceChangeListenerTest {
 	public void testChangeFolderToFile() throws CoreException {
 		/* change to a folder */
 		verifier.reset();
-		getWorkspace().run((IWorkspaceRunnable) m -> {
+		getWorkspace().run((IWorkspaceRunnable) _ -> {
 			file1.delete(true, createTestMonitor());
 			folder3.create(true, true, createTestMonitor());
 		}, null);
@@ -591,7 +591,7 @@ public class IResourceChangeListenerTest {
 	@Test
 	public void testChangeProject() throws CoreException {
 		verifier.reset();
-		getWorkspace().run((IWorkspaceRunnable) m -> {
+		getWorkspace().run((IWorkspaceRunnable) _ -> {
 			project2.create(createTestMonitor());
 			project2.open(createTestMonitor());
 		}, null);
@@ -682,7 +682,7 @@ public class IResourceChangeListenerTest {
 		// register the listener with the workspace.
 		getWorkspace().addResourceChangeListener(listener, IResourceChangeEvent.POST_BUILD);
 		try {
-			getWorkspace().run((IWorkspaceRunnable) monitor -> getWorkspace().getRoot().accept(resource -> {
+			getWorkspace().run((IWorkspaceRunnable) _ -> getWorkspace().getRoot().accept(resource -> {
 				resource.touch(createTestMonitor());
 				return true;
 			}), createTestMonitor());
@@ -989,7 +989,7 @@ public class IResourceChangeListenerTest {
 		removeFromWorkspace(phantomResources);
 		try {
 			//create a phantom folder
-			workspace.run((IWorkspaceRunnable) monitor -> workspace.getSynchronizer().setSyncInfo(partner, phantomFolder, new byte[] {1}), createTestMonitor());
+			workspace.run((IWorkspaceRunnable) _ -> workspace.getSynchronizer().setSyncInfo(partner, phantomFolder, new byte[] {1}), createTestMonitor());
 			//create children in phantom folder
 			IFile fileInFolder = phantomFolder.getFile("FileInPrivateFolder");
 			workspace.getSynchronizer().setSyncInfo(partner, fileInFolder, new byte[] {1});
@@ -998,12 +998,12 @@ public class IResourceChangeListenerTest {
 			//delete children in phantom folder
 			workspace.getSynchronizer().flushSyncInfo(partner, fileInFolder, IResource.DEPTH_INFINITE);
 			//delete phantom folder and change some other file
-			workspace.run((IWorkspaceRunnable) monitor -> {
+			workspace.run((IWorkspaceRunnable) _ -> {
 				phantomFolder.delete(IResource.NONE, createTestMonitor());
 				file1.setContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 			}, createTestMonitor());
 			//create phantom file
-			workspace.run((IWorkspaceRunnable) monitor -> workspace.getSynchronizer().setSyncInfo(partner, phantomFile, new byte[] {2}), createTestMonitor());
+			workspace.run((IWorkspaceRunnable) _ -> workspace.getSynchronizer().setSyncInfo(partner, phantomFile, new byte[] {2}), createTestMonitor());
 			//modify phantom file
 			workspace.getSynchronizer().setSyncInfo(partner, phantomFile, new byte[] {3});
 			//delete phantom file
@@ -1038,7 +1038,7 @@ public class IResourceChangeListenerTest {
 		workspace.addResourceChangeListener(listener);
 		try {
 			//create a team private folder
-			workspace.run((IWorkspaceRunnable) monitor -> {
+			workspace.run((IWorkspaceRunnable) _ -> {
 				teamPrivateFolder.create(true, true, createTestMonitor());
 				teamPrivateFolder.setTeamPrivateMember(true);
 			}, createTestMonitor());
@@ -1050,12 +1050,12 @@ public class IResourceChangeListenerTest {
 			//delete children in team private folder
 			fileInFolder.delete(IResource.NONE, createTestMonitor());
 			//delete team private folder and change some other file
-			workspace.run((IWorkspaceRunnable) monitor -> {
+			workspace.run((IWorkspaceRunnable) _ -> {
 				teamPrivateFolder.delete(IResource.NONE, createTestMonitor());
 				file1.setContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 			}, createTestMonitor());
 			//create team private file
-			workspace.run((IWorkspaceRunnable) monitor -> {
+			workspace.run((IWorkspaceRunnable) _ -> {
 				teamPrivateFile.create(createRandomContentsStream(), true, createTestMonitor());
 				teamPrivateFile.setTeamPrivateMember(true);
 			}, createTestMonitor());
@@ -1495,7 +1495,7 @@ public class IResourceChangeListenerTest {
 		folder2 = project1.getFolder("Folder2");
 		folder3 = project1.getFolder("Folder3");
 		verifier.reset();
-		getWorkspace().run((IWorkspaceRunnable) m -> {
+		getWorkspace().run((IWorkspaceRunnable) _ -> {
 			file1.delete(false, null);
 			folder2.create(false, true, null);
 		}, null);
@@ -1539,7 +1539,7 @@ public class IResourceChangeListenerTest {
 		file2 = project1.getFile("File2");
 		file3 = project1.getFile("File3");
 		verifier.reset();
-		getWorkspace().run((IWorkspaceRunnable) m -> {
+		getWorkspace().run((IWorkspaceRunnable) _ -> {
 			file1.create(new ByteArrayInputStream(new byte[] { 65 }), false, null);
 			file2.create(new ByteArrayInputStream(new byte[] { 67 }), false, null);
 		}, null);
@@ -1564,7 +1564,7 @@ public class IResourceChangeListenerTest {
 	@Test
 	public void testSwapFolders() throws CoreException {
 		verifier.reset();
-		getWorkspace().run((IWorkspaceRunnable) m -> {
+		getWorkspace().run((IWorkspaceRunnable) _ -> {
 			folder2 = project1.getFolder("Folder2");
 			folder3 = project1.getFolder("Folder3");
 			file1.delete(false, null);
@@ -1598,7 +1598,7 @@ public class IResourceChangeListenerTest {
 		// create a team private folder
 		verifier.reset();
 		verifier.addExpectedChange(teamPrivateFolder, IResourceDelta.ADDED, 0);
-		workspace.run((IWorkspaceRunnable) monitor -> {
+		workspace.run((IWorkspaceRunnable) _ -> {
 			teamPrivateFolder.create(true, true, createTestMonitor());
 			teamPrivateFolder.setTeamPrivateMember(true);
 		}, createTestMonitor());
@@ -1623,7 +1623,7 @@ public class IResourceChangeListenerTest {
 		// delete team private folder and change some other file
 		verifier.addExpectedChange(teamPrivateFolder, IResourceDelta.REMOVED, 0);
 		verifier.addExpectedChange(file1, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
-		workspace.run((IWorkspaceRunnable) monitor -> {
+		workspace.run((IWorkspaceRunnable) _ -> {
 			teamPrivateFolder.delete(IResource.NONE, createTestMonitor());
 			file1.setContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 		}, createTestMonitor());
@@ -1631,7 +1631,7 @@ public class IResourceChangeListenerTest {
 		verifier.reset();
 		// create team private file
 		verifier.addExpectedChange(teamPrivateFile, IResourceDelta.ADDED, 0);
-		workspace.run((IWorkspaceRunnable) monitor -> {
+		workspace.run((IWorkspaceRunnable) _ -> {
 			teamPrivateFile.create(createRandomContentsStream(), true, createTestMonitor());
 			teamPrivateFile.setTeamPrivateMember(true);
 		}, createTestMonitor());

@@ -67,7 +67,7 @@ public class WorkspacePerformanceTest {
 	 * Creates a project and fills it with contents
 	 */
 	void createAndPopulateProject(final int totalResources) throws CoreException {
-		getWorkspace().run((IWorkspaceRunnable) monitor -> {
+		getWorkspace().run((IWorkspaceRunnable) _ -> {
 			testProject.create(createTestMonitor());
 			testProject.open(createTestMonitor());
 			createFolder(testFolder, totalResources);

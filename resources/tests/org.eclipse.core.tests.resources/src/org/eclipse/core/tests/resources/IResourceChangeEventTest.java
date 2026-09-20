@@ -74,7 +74,7 @@ public class IResourceChangeEventTest {
 		allResources = new IResource[] {project1, project2, folder1, folder2, folder3, file1, file2, file3};
 
 		// Create and open the resources
-		IWorkspaceRunnable body = monitor -> {
+		IWorkspaceRunnable body = _ -> {
 			createInWorkspace(allResources);
 			marker2 = file2.createMarker(IMarker.BOOKMARK);
 			marker3 = file3.createMarker(IMarker.BOOKMARK);
@@ -125,7 +125,7 @@ public class IResourceChangeEventTest {
 		getWorkspace().addResourceChangeListener(listener);
 
 		//do the work
-		IWorkspaceRunnable body = monitor -> {
+		IWorkspaceRunnable body = _ -> {
 			marker1 = file1.createMarker(IMarker.BOOKMARK);
 			marker2.delete();
 			marker3.setAttribute("Foo", true);
