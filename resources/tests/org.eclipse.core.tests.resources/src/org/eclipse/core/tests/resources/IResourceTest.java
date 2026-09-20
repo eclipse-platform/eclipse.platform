@@ -729,16 +729,16 @@ public class IResourceTest {
 		createInWorkspace(project);
 
 		// pass DEPTH_ONE to avoid using proxy visitor
-		assertThrows(CoreException.class, () -> a.accept((IResourceVisitor) resource -> true, IResource.DEPTH_ONE, IResource.NONE));
+		assertThrows(CoreException.class, () -> a.accept((IResourceVisitor) _ -> true, IResource.DEPTH_ONE, IResource.NONE));
 
-		assertThrows(CoreException.class, () -> a.accept(proxy -> true, IResource.NONE));
+		assertThrows(CoreException.class, () -> a.accept(_ -> true, IResource.NONE));
 
 		// pass DEPTH_ONE to avoid using proxy visitor
 		// if we don't check for existence, then no exception should be thrown
-		a.accept((IResourceVisitor) resource -> true, IResource.DEPTH_ONE, IContainer.DO_NOT_CHECK_EXISTENCE);
+		a.accept((IResourceVisitor) _ -> true, IResource.DEPTH_ONE, IContainer.DO_NOT_CHECK_EXISTENCE);
 
 		// if we don't check for existence, then no exception should be thrown
-		a.accept(proxy -> true, IContainer.DO_NOT_CHECK_EXISTENCE);
+		a.accept(_ -> true, IContainer.DO_NOT_CHECK_EXISTENCE);
 	}
 
 	@Test
@@ -1795,7 +1795,7 @@ public class IResourceTest {
 		assertNotEquals(modificationStamp, IResource.NULL_STAMP);
 
 		// Remove and re-create the file in a workspace operation
-		getWorkspace().run((IWorkspaceRunnable) monitor -> {
+		getWorkspace().run((IWorkspaceRunnable) _ -> {
 			file.delete(false, createTestMonitor());
 			file.create(nullInputStream(), true, createTestMonitor());
 		}, createTestMonitor());

@@ -36,7 +36,7 @@ public class ConcurrencyPerformanceTest {
 
 	@Test
 	public void testSimpleCalls() throws Exception {
-		final IWorkspaceRunnable job = monitor -> {
+		final IWorkspaceRunnable job = _ -> {
 			// do nothing
 		};
 		new PerformanceTestRunner() {

@@ -69,7 +69,7 @@ public class MultiProjectBuildTest {
 	 * Modifies any files in the given projects, all in a single operation
 	 */
 	private void dirty(final IProject[] projects) throws CoreException {
-		getWorkspace().run((IWorkspaceRunnable) monitor -> {
+		getWorkspace().run((IWorkspaceRunnable) _ -> {
 			for (IProject project : projects) {
 				for (IResource member : project.members()) {
 					if (member.getType() == IResource.FILE && !member.getName().equals(IProjectDescription.DESCRIPTION_FILE_NAME)) {

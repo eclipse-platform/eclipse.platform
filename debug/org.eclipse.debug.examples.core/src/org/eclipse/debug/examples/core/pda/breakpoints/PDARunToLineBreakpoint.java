@@ -36,7 +36,7 @@ public class PDARunToLineBreakpoint extends PDALineBreakpoint {
 	 * @exception DebugException if unable to create the breakpoint
 	 */
 	public PDARunToLineBreakpoint(final IFile resource, final int lineNumber) throws DebugException {
-		IWorkspaceRunnable runnable = monitor -> {
+		IWorkspaceRunnable runnable = _ -> {
 			// associate with workspace root to avoid drawing in editor ruler
 			IMarker marker = ResourcesPlugin.getWorkspace().getRoot().createMarker("org.eclipse.debug.examples.core.pda.markerType.lineBreakpoint"); //$NON-NLS-1$
 			setMarker(marker);

@@ -108,7 +108,7 @@ public class IWorkspaceTest {
 	 */
 	@Test
 	public void testCancelRunnable() {
-		assertThrows(OperationCanceledException.class, () -> getWorkspace().run((IWorkspaceRunnable) monitor -> {
+		assertThrows(OperationCanceledException.class, () -> getWorkspace().run((IWorkspaceRunnable) _ -> {
 			throw new OperationCanceledException();
 		}, createTestMonitor()));
 	}
@@ -638,7 +638,7 @@ public class IWorkspaceTest {
 	public void testMultiCreation() throws Throwable {
 		final IProject project = getWorkspace().getRoot().getProject("bar");
 		final IResource[] resources = buildResources(project, "a/", "a/b");
-		IWorkspaceRunnable body = monitor -> {
+		IWorkspaceRunnable body = _ -> {
 			project.create(null);
 			project.open(null);
 			// define an operation which will create a bunch of resources including a project.

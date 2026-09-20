@@ -14,5 +14,5 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime;bundle-version="[3.29.0,4.0.0)",
  org.eclipse.debug.ui;bundle-version="3.10.0"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-21
+Bundle-RequiredExecutionEnvironment: JavaSE-25
 Automatic-Module-Name: org.eclipse.debug.examples.memory

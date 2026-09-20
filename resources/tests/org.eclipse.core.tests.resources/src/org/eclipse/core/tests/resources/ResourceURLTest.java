@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import org.eclipse.core.internal.resources.PlatformURLResourceConnection;
 import org.eclipse.core.resources.IFile;
@@ -65,7 +66,7 @@ public class ResourceURLTest {
 	}
 
 	private URL getURL(IPath path) throws Throwable {
-		return new URL("platform:/resource" + path.makeAbsolute().toString());
+		return new URI("platform:/resource" + path.makeAbsolute().toString()).toURL();
 	}
 
 	private URL getURL(IResource resource) throws Throwable {
@@ -112,7 +113,7 @@ public class ResourceURLTest {
 		IProject project = getWorkspace().getRoot().getProject("My Project");
 		IFile file = project.getFile("a.txt");
 		createInWorkspace(file, CONTENT);
-		URL url = new URL(PlatformURLResourceConnection.RESOURCE_URL_STRING + "My%20Project/a.txt");
+		URL url = new URI(PlatformURLResourceConnection.RESOURCE_URL_STRING + "My%20Project/a.txt").toURL();
 		try (InputStream stream = url.openStream()) {
 			assertThat(stream).hasContent(CONTENT);
 		}

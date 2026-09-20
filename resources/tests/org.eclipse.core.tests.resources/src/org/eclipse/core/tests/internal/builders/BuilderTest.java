@@ -373,7 +373,7 @@ public class BuilderTest {
 		// Create some resource handles
 		final boolean[] notified = new boolean[] {false};
 		IProject proj1 = workspace.getRoot().getProject("PROJECT" + 1);
-		final IResourceChangeListener listener = event -> notified[0] = true;
+		final IResourceChangeListener listener = _ -> notified[0] = true;
 		try {
 			workspace.addResourceChangeListener(listener, IResourceChangeEvent.PRE_BUILD);
 			// Turn auto-building off
@@ -483,7 +483,7 @@ public class BuilderTest {
 		setAutoBuilding(true);
 		setBuildOrder((IProject[]) null);
 		// Create and set a build spec for project two
-		getWorkspace().run((IWorkspaceRunnable) monitor -> {
+		getWorkspace().run((IWorkspaceRunnable) _ -> {
 			proj2.create(createTestMonitor());
 			proj2.open(createTestMonitor());
 			IProjectDescription desc = proj2.getDescription();
@@ -497,7 +497,7 @@ public class BuilderTest {
 		verifier.reset();
 		//create project two and establish a build order by adding a dynamic
 		//reference from proj2->proj1 in the same operation
-		getWorkspace().run((IWorkspaceRunnable) monitor -> extracted(proj1, proj2), createTestMonitor());
+		getWorkspace().run((IWorkspaceRunnable) _ -> extracted(proj1, proj2), createTestMonitor());
 
 		waitForBuild();
 		//ensure the build happened in the correct order, and that both projects were built
@@ -557,7 +557,7 @@ public class BuilderTest {
 				Function::identity);
 
 		// Add pre-build listener that swap around the dependencies
-		IResourceChangeListener buildListener = event -> {
+		IResourceChangeListener buildListener = _ -> {
 			try {
 				IProjectDescription desc1 = proj1.getDescription();
 				IProjectDescription desc2 = proj2.getDescription();
@@ -811,7 +811,7 @@ public class BuilderTest {
 		project.setDescription(desc, createTestMonitor());
 
 		final AtomicReference<Boolean> listenerCalled = new AtomicReference<>();
-		IResourceChangeListener listener = event -> listenerCalled.set(true);
+		IResourceChangeListener listener = _ -> listenerCalled.set(true);
 		try {
 			getWorkspace().addResourceChangeListener(listener, IResourceChangeEvent.POST_BUILD);
 			// do an incremental build -- build should fail, but POST_BUILD should still
@@ -902,7 +902,7 @@ public class BuilderTest {
 		//change the file and then immediately perform build
 		final ByteArrayOutputStream out = new ByteArrayOutputStream();
 		AtomicReference<IOException> exception = new AtomicReference<>();
-		getWorkspace().run((IWorkspaceRunnable) monitor -> {
+		getWorkspace().run((IWorkspaceRunnable) _ -> {
 			input.setContents(new byte[] { 5, 4, 3, 2, 1 }, IResource.NONE, createTestMonitor());
 			project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 			try (InputStream inputStream = output.getContents()) {
@@ -950,7 +950,7 @@ public class BuilderTest {
 		final TestBarrier2 barrier = new TestBarrier2();
 		barrier.setStatus(TestBarrier2.STATUS_WAIT_FOR_START);
 		//install a listener that will cause autobuild to be interrupted
-		IResourceChangeListener listener = event -> {
+		IResourceChangeListener listener = _ -> {
 			blockedJob.schedule();
 			//wait for autobuild to become blocking
 			while (!Job.getJobManager().currentJob().isBlocking()) {
@@ -1115,7 +1115,7 @@ public class BuilderTest {
 
 		// Now make a change and then turn autobuild on. Turning it on should
 		// cause a build.
-		IWorkspaceRunnable r = monitor -> {
+		IWorkspaceRunnable r = _ -> {
 			file.setContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 			IWorkspaceDescription description = getWorkspace().getDescription();
 			description.setAutoBuilding(true);

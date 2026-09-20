@@ -413,7 +413,7 @@ public class JFaceViewerTopIndexTests extends AbstractViewerModelTest implements
 		// Update the viewer with new selection delta to something new in the view
 		TreePath pathToBeRevealed = model.findElement("2.1"); //$NON-NLS-1$
 		ModelDelta revealDelta = model.makeElementDelta(pathToBeRevealed, IModelDelta.REVEAL);
-		revealDelta.accept((delta, depth) -> {
+		revealDelta.accept((delta, _) -> {
 			((ModelDelta) delta).setFlags(delta.getFlags() | IModelDelta.EXPAND);
 			return true;
 		});

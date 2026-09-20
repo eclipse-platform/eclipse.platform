@@ -58,7 +58,7 @@ public class ComputeProjectOrderTest {
 		}
 		// keep everything
 		long timestamp = System.currentTimeMillis();
-		Digraph<Object> filtered = ComputeProjectOrder.buildFilteredDigraph(digraph, o -> false, Object.class);
+		Digraph<Object> filtered = ComputeProjectOrder.buildFilteredDigraph(digraph, _ -> false, Object.class);
 		assertEquals(digraph.vertexMap.keySet(), filtered.vertexMap.keySet());
 		long duration = System.currentTimeMillis() - timestamp;
 		System.err.println(duration);

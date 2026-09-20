@@ -445,7 +445,7 @@ public class TeamPrivateMemberTest {
 		final ResourceDeltaVerifier listener = new ResourceDeltaVerifier();
 		getWorkspace().addResourceChangeListener(listener);
 		try {
-			IWorkspaceRunnable body = monitor -> createInWorkspace(resources);
+			IWorkspaceRunnable body = _ -> createInWorkspace(resources);
 			listener.addExpectedChange(resources, IResourceDelta.ADDED, IResource.NONE);
 			listener.addExpectedChange(project, IResourceDelta.ADDED, IResourceDelta.OPEN);
 			listener.addExpectedChange(description, IResourceDelta.ADDED, IResource.NONE);
@@ -460,7 +460,7 @@ public class TeamPrivateMemberTest {
 		// set the folder to be team private and do the same test
 		getWorkspace().addResourceChangeListener(listener);
 		try {
-			IWorkspaceRunnable body = monitor -> {
+			IWorkspaceRunnable body = _ -> {
 				createInWorkspace(resources);
 				setTeamPrivateMember(folder, true, IResource.DEPTH_ZERO);
 			};
@@ -478,7 +478,7 @@ public class TeamPrivateMemberTest {
 		// set all resources to be team private and do the same test
 		getWorkspace().addResourceChangeListener(listener);
 		try {
-			IWorkspaceRunnable body = monitor -> {
+			IWorkspaceRunnable body = _ -> {
 				createInWorkspace(resources);
 				setTeamPrivateMember(project, true, IResource.DEPTH_INFINITE);
 			};

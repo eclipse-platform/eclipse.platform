@@ -37,7 +37,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 public class IWorkspaceRunnableUseCaseTest {
 
 	protected IWorkspaceRunnable createRunnable(final IProject project, final IWorkspaceRunnable nestedOperation, final boolean triggerBuild, final Exception exceptionToThrow) {
-		return monitor -> {
+		return _ -> {
 			if (exceptionToThrow != null) {
 				if (exceptionToThrow instanceof CoreException ce) {
 					throw ce;

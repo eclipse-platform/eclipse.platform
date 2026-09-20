@@ -558,7 +558,7 @@ public class IFileTest {
 			assertEquals(!deleteBefore, derived.exists());
 			FussyProgressMonitor monitor = new FussyProgressMonitor();
 			AtomicInteger changeCount = new AtomicInteger();
-			ResourcesPlugin.getWorkspace().addResourceChangeListener(event -> changeCount.incrementAndGet());
+			ResourcesPlugin.getWorkspace().addResourceChangeListener(_ -> changeCount.incrementAndGet());
 			derived.write(("updateOrCreate" + i).getBytes(), false, setDerived, keepHistory, monitor);
 			assertEquals(1, changeCount.get(), "not atomic");
 			monitor.assertUsedUp();
@@ -635,7 +635,7 @@ public class IFileTest {
 			assertEquals(!deleteBefore, derived.exists());
 			FussyProgressMonitor monitor = new FussyProgressMonitor();
 			AtomicInteger changeCount = new AtomicInteger();
-			ResourcesPlugin.getWorkspace().addResourceChangeListener(event -> changeCount.incrementAndGet());
+			ResourcesPlugin.getWorkspace().addResourceChangeListener(_ -> changeCount.incrementAndGet());
 			String derivedContent = "updateOrCreate" + i;
 			String otherContent = "other" + i;
 			ResourcesPlugin.getWorkspace().write(
@@ -676,15 +676,15 @@ public class IFileTest {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		resource.delete(false, null);
 		AtomicInteger changeCount = new AtomicInteger();
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(event -> changeCount.incrementAndGet());
-		workspace.run(pm -> {
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(_ -> changeCount.incrementAndGet());
+		workspace.run(_ -> {
 			resource.write(("create").getBytes(), false, false, false, null);
 		}, workspace.getRuleFactory().createRule(resource), IWorkspace.AVOID_UPDATE, null);
 		assertTrue(resource.exists());
 		assertEquals(1, changeCount.get(), "not atomic");
 		// test that modifyRule can be used for IFile.write() if the file already exits:
 		changeCount.set(0);
-		workspace.run(pm -> {
+		workspace.run(_ -> {
 			resource.write(("replace").getBytes(), false, false, false, null);
 		}, workspace.getRuleFactory().modifyRule(resource), IWorkspace.AVOID_UPDATE, null);
 		assertTrue(resource.exists());
@@ -1029,16 +1029,16 @@ public class IFileTest {
 		ensureOutOfSync(target);
 
 		CoreException firstException = assertThrows(CoreException.class, () -> {
-			try (InputStream content = target.getContents(false)) {
+			try (InputStream _ = target.getContents(false)) {
 			}
 		});
 		assertEquals(IResourceStatus.OUT_OF_SYNC_LOCAL, firstException.getStatus().getCode());
 
-		try (InputStream content = target.getContents(true)) {
+		try (InputStream _ = target.getContents(true)) {
 		}
 
 		CoreException secondException = assertThrows(CoreException.class, () -> {
-			try (InputStream content = target.getContents(false)) {
+			try (InputStream _ = target.getContents(false)) {
 			}
 		});
 		assertEquals(IResourceStatus.OUT_OF_SYNC_LOCAL, secondException.getStatus().getCode());

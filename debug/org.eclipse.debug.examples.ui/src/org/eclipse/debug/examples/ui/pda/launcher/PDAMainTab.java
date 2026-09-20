@@ -73,7 +73,7 @@ public class PDAMainTab extends AbstractLaunchConfigurationTab {
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		fProgramText.setLayoutData(gd);
 		fProgramText.setFont(font);
-		fProgramText.addModifyListener(event -> updateLaunchConfigurationDialog());
+		fProgramText.addModifyListener(_ -> updateLaunchConfigurationDialog());
 
 		fProgramButton = createPushButton(comp, "&Browse...", null); //$NON-NLS-1$
 		fProgramButton.addSelectionListener(new SelectionAdapter() {

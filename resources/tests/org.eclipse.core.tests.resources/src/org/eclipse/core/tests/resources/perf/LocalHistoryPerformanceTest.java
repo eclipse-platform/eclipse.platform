@@ -70,7 +70,7 @@ public class LocalHistoryPerformanceTest {
 		folders[3] = folders[2].getFolder("folder4");
 		folders[4] = folders[3].getFolder("folder5");
 		final IWorkspace workspace = getWorkspace();
-		workspace.run((IWorkspaceRunnable) monitor -> {
+		workspace.run((IWorkspaceRunnable) _ -> {
 			createInWorkspace(folders);
 			for (IFolder folder : folders) {
 				for (int j = 0; j < filesPerFolder; j++) {

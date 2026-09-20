@@ -39,7 +39,7 @@ public class Bug_127562 {
 		createInWorkspace(project);
 		IProjectDescription description = project.getDescription();
 		description.setComment("Foo");
-		getWorkspace().run((IWorkspaceRunnable) monitor -> project.setDescription(description, createTestMonitor()),
+		getWorkspace().run((IWorkspaceRunnable) _ -> project.setDescription(description, createTestMonitor()),
 				getWorkspace().getRoot(), IResource.NONE, createTestMonitor());
 	}
 

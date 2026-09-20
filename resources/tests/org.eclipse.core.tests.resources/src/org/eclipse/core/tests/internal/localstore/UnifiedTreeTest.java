@@ -70,7 +70,7 @@ public class UnifiedTreeTest {
 
 	protected void createFiles(final IContainer target, final Hashtable<String, String> set) throws CoreException {
 		final Workspace workspace = (Workspace) getWorkspace();
-		IWorkspaceRunnable operation = monitor -> {
+		IWorkspaceRunnable operation = _ -> {
 			for (int i = 0; i < LIMIT; i++) {
 				IFile child = target.getFile(IPath.fromOSString("wbFile" + i));
 				workspace.createResource(child, false);

@@ -59,7 +59,7 @@ public class Bug_025457 {
 		createInWorkspace(sourceFile, content);
 
 		//open a stream in the source to cause the rename to fail
-		try (InputStream stream = sourceFile.getContents()) {
+		try (InputStream _ = sourceFile.getContents()) {
 			//try to rename the file (should fail)
 			assertThrows(CoreException.class,
 					() -> sourceFile.move(destFile.getFullPath(), IResource.NONE, createTestMonitor()));
@@ -87,7 +87,7 @@ public class Bug_025457 {
 		createInWorkspace(sourceFile);
 
 		//open a stream in the source to cause the rename to fail
-		try (InputStream stream = sourceFile.getContents()) {
+		try (InputStream _ = sourceFile.getContents()) {
 			//try to rename the project (should fail)
 			assertThrows(CoreException.class,
 					() -> sourceFolder.move(destFolder.getFullPath(), IResource.NONE, createTestMonitor()));
@@ -114,7 +114,7 @@ public class Bug_025457 {
 		createInWorkspace(sourceFile);
 
 		//open a stream in the source to cause the rename to fail
-		try (InputStream stream = sourceFile.getContents()) {
+		try (InputStream _ = sourceFile.getContents()) {
 			//try to rename the project (should fail)
 			assertThrows(CoreException.class,
 					() -> source.move(destination.getFullPath(), IResource.NONE, createTestMonitor()));

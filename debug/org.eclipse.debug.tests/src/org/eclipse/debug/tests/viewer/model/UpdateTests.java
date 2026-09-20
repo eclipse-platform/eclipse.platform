@@ -308,7 +308,7 @@ abstract public class UpdateTests extends AbstractViewerModelTest implements ITe
 		final int insertIndex = model.getRootElement().getChildren().length;
 		ModelDelta delta = model.insertElementChild(TreePath.EMPTY, insertIndex, new TestElement(model, "last - invalid index", new TestElement[0])); //$NON-NLS-1$
 		// Change insert index to out of range
-		delta.accept((visitorDelta, depth) -> {
+		delta.accept((visitorDelta, _) -> {
 			if ((visitorDelta.getFlags() & IModelDelta.INSERTED) != 0) {
 				((ModelDelta) visitorDelta).setIndex(insertIndex + 1);
 				return false;

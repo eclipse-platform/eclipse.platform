@@ -23,7 +23,7 @@ Export-Package: org.eclipse.debug.examples.ui.midi.adapters;x-internal:=true,
  org.eclipse.debug.examples.ui.pda.launcher;x-internal:=true,
  org.eclipse.debug.examples.ui.pda.presentation;x-internal:=true,
  org.eclipse.debug.examples.ui.pda.views;x-internal:=true
-Bundle-RequiredExecutionEnvironment: JavaSE-21
+Bundle-RequiredExecutionEnvironment: JavaSE-25
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: %Bundle-Vendor
 Automatic-Module-Name: org.eclipse.debug.examples.ui

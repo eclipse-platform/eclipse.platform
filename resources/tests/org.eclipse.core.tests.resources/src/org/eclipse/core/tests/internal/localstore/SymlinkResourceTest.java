@@ -103,7 +103,7 @@ public class SymlinkResourceTest {
 			createInWorkspace(project);
 
 			/* Re-use projects which are cleaned up automatically */
-			getWorkspace().run((IWorkspaceRunnable) monitor -> {
+			getWorkspace().run((IWorkspaceRunnable) _ -> {
 				/* delete open project because we must re-open with BACKGROUND_REFRESH */
 				project.delete(IResource.NEVER_DELETE_PROJECT_CONTENT, createTestMonitor());
 				project.create(null);
@@ -178,7 +178,7 @@ public class SymlinkResourceTest {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		createInWorkspace(project);
 		/* Re-use projects which are cleaned up automatically */
-		getWorkspace().run((IWorkspaceRunnable) monitor -> {
+		getWorkspace().run((IWorkspaceRunnable) _ -> {
 			/* delete open project because we must re-open with BACKGROUND_REFRESH */
 			project.delete(IResource.NEVER_DELETE_PROJECT_CONTENT, createTestMonitor());
 			project.create(null);
@@ -216,7 +216,7 @@ public class SymlinkResourceTest {
 			IProject project = getWorkspace().getRoot().getProject("Project");
 			createInWorkspace(project);
 			/* Re-use projects which are cleaned up automatically */
-			getWorkspace().run((IWorkspaceRunnable) monitor -> {
+			getWorkspace().run((IWorkspaceRunnable) _ -> {
 				/* delete open project because we must re-open with BACKGROUND_REFRESH */
 				project.delete(IResource.NEVER_DELETE_PROJECT_CONTENT, createTestMonitor());
 				project.create(null);
@@ -231,7 +231,7 @@ public class SymlinkResourceTest {
 			// wait for BACKGROUND_REFRESH to complete.
 			waitForRefresh();
 			final int resourceCount[] = new int[] { 0 };
-			project.accept(resource -> {
+			project.accept(_ -> {
 				resourceCount[0]++;
 				return true;
 			});

@@ -452,7 +452,7 @@ public class HiddenResourceTest {
 		final IResource[] resources = new IResource[] { project, folder, file, subFile, settings, prefs };
 		final ResourceDeltaVerifier listener = new ResourceDeltaVerifier();
 		try {
-			IWorkspaceRunnable body = monitor -> createInWorkspace(resources);
+			IWorkspaceRunnable body = _ -> createInWorkspace(resources);
 			listener.addExpectedChange(resources, IResourceDelta.ADDED, IResource.NONE);
 			listener.addExpectedChange(project, IResourceDelta.ADDED, IResourceDelta.OPEN);
 			listener.addExpectedChange(description, IResourceDelta.ADDED, IResource.NONE);
@@ -469,7 +469,7 @@ public class HiddenResourceTest {
 		}
 
 		try {
-			IWorkspaceRunnable body = monitor -> {
+			IWorkspaceRunnable body = _ -> {
 				createInWorkspace(resources);
 				setHidden(folder, true, IResource.DEPTH_ZERO);
 			};
@@ -488,7 +488,7 @@ public class HiddenResourceTest {
 		}
 
 		try {
-			IWorkspaceRunnable body = monitor -> {
+			IWorkspaceRunnable body = _ -> {
 				createInWorkspace(resources);
 				setHidden(project, true, IResource.DEPTH_INFINITE);
 			};
@@ -512,14 +512,14 @@ public class HiddenResourceTest {
 		// otherwise it would be removed while auto refresh is running
 		// and might even get called in another thread after removing in this thread
 		listener.shutDown();
-		getWorkspace().run(p -> getWorkspace().removeResourceChangeListener(listener), null);
+		getWorkspace().run(_ -> getWorkspace().removeResourceChangeListener(listener), null);
 	}
 
 	private void addResourceChangeListener(ResourceDeltaVerifier listener) throws CoreException {
 		// addResourceChangeListener need to happen in an atomic workspace operation
 		// otherwise it would be added while auto refresh is running
 		// and might get called in another thread before explicit refresh in this thread
-		getWorkspace().run(p -> {
+		getWorkspace().run(_ -> {
 			getWorkspace().addResourceChangeListener(listener);
 			listener.active();
 		}, null);

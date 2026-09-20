@@ -37,7 +37,7 @@ public class ShowHistoryAction extends ActionDelegate implements IObjectActionDe
 	public void run(IAction action) {
 		final Shell shell = Display.getDefault().getActiveShell();
 		try {
-			new ProgressMonitorDialog(shell).run(true, true, monitor -> {
+			new ProgressMonitorDialog(shell).run(true, true, _ -> {
 				final IResource resource = (IResource) fSelection.getFirstElement();
 				Runnable r = () -> TeamUI.showHistoryFor(TeamUIPlugin.getActivePage(), resource, null);
 

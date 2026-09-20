@@ -97,7 +97,7 @@ public class MarkerTest {
 		// and might even get called in another thread after removing in this thread
 		// listener.shutDown();
 		if (registeredResourceChangeLister != null) {
-			getWorkspace().run(p -> getWorkspace().removeResourceChangeListener(registeredResourceChangeLister), null);
+			getWorkspace().run(_ -> getWorkspace().removeResourceChangeListener(registeredResourceChangeLister), null);
 		}
 		registeredResourceChangeLister = listener;
 		if (listener == null) {
@@ -106,7 +106,7 @@ public class MarkerTest {
 		// addResourceChangeListener need to happen in an atomic workspace operation
 		// otherwise it would be added while auto refresh is running
 		// and might get called in another thread before explicit refresh in this thread
-		getWorkspace().run(p -> {
+		getWorkspace().run(_ -> {
 			getWorkspace().addResourceChangeListener(listener);
 			// listener.active();
 		}, null);
@@ -184,7 +184,7 @@ public class MarkerTest {
 
 	protected IMarker[] createMarkers(final IResource[] hosts, final String type) throws CoreException {
 		final IMarker[] result = new IMarker[hosts.length];
-		getWorkspace().run((IWorkspaceRunnable) monitor -> {
+		getWorkspace().run((IWorkspaceRunnable) _ -> {
 			for (int i = 0; i < hosts.length; i++) {
 				result[i] = hosts[i].createMarker(type);
 			}
@@ -714,7 +714,7 @@ public class MarkerTest {
 	public void testMarkerDeltaAttributes() throws CoreException {
 		// create markers on various resources
 		final IMarker[] markers = new IMarker[3];
-		IWorkspaceRunnable body = monitor -> {
+		IWorkspaceRunnable body = _ -> {
 			markers[0] = resources[0].createMarker(IMarker.BOOKMARK);
 			markers[1] = resources[1].createMarker(IMarker.BOOKMARK);
 			markers[1].setAttribute(IMarker.CHAR_START, 5);
@@ -751,7 +751,7 @@ public class MarkerTest {
 
 		// add+change
 		listener.expectChanges(markers[1]);
-		getWorkspace().run((IWorkspaceRunnable) monitor -> {
+		getWorkspace().run((IWorkspaceRunnable) _ -> {
 			markers[1].setAttribute(IMarker.CHAR_START, 5);
 			markers[1].setAttribute(IMarker.CHAR_END, 10);
 		}, createTestMonitor());
@@ -759,7 +759,7 @@ public class MarkerTest {
 
 		// change+remove same marker
 		listener.expectChanges(markers[1]);
-		getWorkspace().run((IWorkspaceRunnable) monitor -> {
+		getWorkspace().run((IWorkspaceRunnable) _ -> {
 			markers[1].setAttribute(IMarker.CHAR_START, 5);
 			markers[1].setAttribute(IMarker.CHAR_START, null);
 		}, createTestMonitor());
@@ -767,7 +767,7 @@ public class MarkerTest {
 
 		// change multiple markers
 		listener.expectChanges(markers);
-		getWorkspace().run((IWorkspaceRunnable) monitor -> {
+		getWorkspace().run((IWorkspaceRunnable) _ -> {
 			markers[0].setAttribute(IMarker.CHAR_START, 5);
 			markers[1].setAttribute(IMarker.CHAR_START, 10);
 			markers[2].setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_LOW);
@@ -788,7 +788,7 @@ public class MarkerTest {
 		final Hashtable<IResource, IMarker> table = new Hashtable<>(1);
 		final int[] count = new int[1];
 		count[0] = 0;
-		IWorkspaceRunnable body = monitor -> {
+		IWorkspaceRunnable body = _ -> {
 			IResourceVisitor visitor = resource -> {
 				if (resource.getType() == IResource.ROOT || resource.getType() == IResource.PROJECT) {
 					return true;
@@ -827,7 +827,7 @@ public class MarkerTest {
 
 		for (final IResource resource : resources) {
 			// ADD + REMOVE = nothing
-			IWorkspaceRunnable addAndRemoveOperation = monitor -> {
+			IWorkspaceRunnable addAndRemoveOperation = _ -> {
 				listener.reset();
 				IMarker marker = resource.createMarker(IMarker.PROBLEM);
 				assertMarkerExists(marker);
@@ -842,7 +842,7 @@ public class MarkerTest {
 			// cannot re-assign variable value within the code below, so must
 			// put our marker value inside an array and set the element.
 			AtomicReference<IMarker> addAndChangeMarker = new AtomicReference<>();
-			IWorkspaceRunnable addAndChangeOperation = monitor -> {
+			IWorkspaceRunnable addAndChangeOperation = _ -> {
 				listener.reset();
 				addAndChangeMarker.set(resource.createMarker(IMarker.PROBLEM));
 				assertMarkerExists(addAndChangeMarker.get());
@@ -881,7 +881,7 @@ public class MarkerTest {
 
 			IMarker changeAndChangeMarker = resource.createMarker(IMarker.PROBLEM);
 			assertMarkerExists(changeAndChangeMarker);
-			IWorkspaceRunnable changeAndChangeOperation = monitor -> {
+			IWorkspaceRunnable changeAndChangeOperation = _ -> {
 				listener.reset();
 				changeAndChangeMarker.setAttribute(IMarker.MESSAGE, "my message text");
 				assertMarkerHasAttributeValue(changeAndChangeMarker, IMarker.MESSAGE, "my message text");
@@ -896,7 +896,7 @@ public class MarkerTest {
 			// CHANGE + REMOVE = REMOVE
 			IMarker changeAndRemoveMarker = resource.createMarker(IMarker.PROBLEM);
 			assertMarkerExists(changeAndRemoveMarker);
-			IWorkspaceRunnable changeAndRemoveOperation = monitor -> {
+			IWorkspaceRunnable changeAndRemoveOperation = _ -> {
 				listener.reset();
 				changeAndRemoveMarker.setAttribute(IMarker.MESSAGE, "my message text");
 				assertMarkerHasAttributeValue(changeAndRemoveMarker, IMarker.MESSAGE, "my message text");
@@ -1017,7 +1017,7 @@ public class MarkerTest {
 		final Hashtable<IResource, IMarker> table = new Hashtable<>(1);
 		final int[] count = new int[1];
 		count[0] = 0;
-		IWorkspaceRunnable body = monitor -> {
+		IWorkspaceRunnable body = _ -> {
 			IResourceVisitor visitor = resource -> {
 				if (resource.getType() == IResource.ROOT) {
 					return true;
@@ -1112,7 +1112,7 @@ public class MarkerTest {
 		// read in the markers from the file
 		try (InputStream fileInput = Files.newInputStream(file.toPath())) {
 			try (DataInputStream input = new DataInputStream(fileInput)) {
-				IWorkspaceRunnable body = monitor -> {
+				IWorkspaceRunnable body = _ -> {
 					MarkerReader reader = new MarkerReader((Workspace) getWorkspace());
 					try {
 						reader.read(input, true);
@@ -1201,7 +1201,7 @@ public class MarkerTest {
 		// read in the markers from the file
 		try (InputStream fileInput = Files.newInputStream(file.toPath())) {
 			try (DataInputStream input = new DataInputStream(fileInput)) {
-				IWorkspaceRunnable body = monitor -> {
+				IWorkspaceRunnable body = _ -> {
 					MarkerReader reader = new MarkerReader((Workspace) getWorkspace());
 					try {
 						reader.read(input, true);

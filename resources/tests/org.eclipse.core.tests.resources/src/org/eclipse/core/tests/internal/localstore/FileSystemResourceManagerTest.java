@@ -202,7 +202,7 @@ public class FileSystemResourceManagerTest implements ICoreConstants {
 
 		// test the depth parameter
 		final IFolder folder = project.getFolder("Folder1");
-		IWorkspaceRunnable operation = monitor -> {
+		IWorkspaceRunnable operation = _ -> {
 			IResource[] members = folder.members();
 			for (IResource member : members) {
 				((Resource) member).getResourceInfo(false, true).clear(M_LOCAL_EXISTS);
@@ -400,7 +400,7 @@ public class FileSystemResourceManagerTest implements ICoreConstants {
 		final IFileStore fileStore = ((Resource) project).getStore();
 		// create project and then delete from file system
 		// wrap in runnable to prevent snapshot from occurring in the middle.
-		getWorkspace().run((IWorkspaceRunnable) monitor -> {
+		getWorkspace().run((IWorkspaceRunnable) _ -> {
 			removeFromFileSystem(project);
 			assertFalse(fileStore.fetchInfo().isDirectory());
 			//write project in a runnable, otherwise tree will be locked
@@ -459,7 +459,7 @@ public class FileSystemResourceManagerTest implements ICoreConstants {
 	}
 
 	private void write(final IFolder folder, final boolean force, IProgressMonitor monitor) throws CoreException {
-		IWorkspaceRunnable operation = pm -> getLocalManager().write(folder, force, monitor);
+		IWorkspaceRunnable operation = _ -> getLocalManager().write(folder, force, monitor);
 		getWorkspace().run(operation, monitor);
 	}
 

@@ -21,6 +21,6 @@ Import-Package: org.assertj.core.api,
  org.junit.jupiter.api.function;version="[5.14.0,6.0.0)",
  org.junit.platform.suite.api;version="[1.14.0,2.0.0)"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-21
+Bundle-RequiredExecutionEnvironment: JavaSE-25
 Eclipse-BundleShape: dir
 Automatic-Module-Name: org.eclipse.ant.tests.core

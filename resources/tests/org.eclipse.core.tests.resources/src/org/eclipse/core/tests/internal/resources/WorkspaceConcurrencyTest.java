@@ -62,7 +62,7 @@ public class WorkspaceConcurrencyTest {
 	public void testEndRuleInWorkspaceOperation() {
 		final IProject project = getWorkspace().getRoot().getProject("testEndRuleInWorkspaceOperation");
 		assertThrows(RuntimeException.class,
-				() -> getWorkspace().run((IWorkspaceRunnable) monitor -> Job.getJobManager().endRule(project), project,
+				() -> getWorkspace().run((IWorkspaceRunnable) _ -> Job.getJobManager().endRule(project), project,
 						IResource.NONE, createTestMonitor()));
 	}
 
@@ -78,7 +78,7 @@ public class WorkspaceConcurrencyTest {
 		//simulating a scenario where workspace lock is held indefinitely
 		final AtomicIntegerArray barrier = new AtomicIntegerArray(new int[1]);
 		final AtomicReference<Throwable> errorInListener = new AtomicReference<>();
-		IResourceChangeListener listener = event -> {
+		IResourceChangeListener listener = _ -> {
 			//block until we are told to do otherwise
 			barrier.set(0, TestBarrier2.STATUS_START);
 			try {
@@ -105,7 +105,7 @@ public class WorkspaceConcurrencyTest {
 			final AtomicReference<Throwable> errorInThread = new AtomicReference<>();
 			Thread t2 = new Thread(() -> {
 				try {
-					getWorkspace().run((IWorkspaceRunnable) monitor -> {
+					getWorkspace().run((IWorkspaceRunnable) _ -> {
 						//no-op
 					}, new CancelingProgressMonitor());
 				} catch (CoreException e1) {
@@ -150,7 +150,7 @@ public class WorkspaceConcurrencyTest {
 				return schedulingRule == this;
 			}
 		};
-		getWorkspace().run((IWorkspaceRunnable) monitor -> {
+		getWorkspace().run((IWorkspaceRunnable) _ -> {
 			// noop
 		}, rule, IResource.NONE, createTestMonitor());
 	}
@@ -177,7 +177,7 @@ public class WorkspaceConcurrencyTest {
 		createInWorkspace(touch);
 		createInWorkspace(ruleFile);
 		AtomicReference<Throwable> failure = new AtomicReference<>();
-		IResourceChangeListener listener = event -> {
+		IResourceChangeListener listener = _ -> {
 			try {
 				touch.touch(null);
 			} catch (CoreException | RuntimeException e2) {
@@ -215,7 +215,7 @@ public class WorkspaceConcurrencyTest {
 				@Override
 				protected IStatus run(IProgressMonitor monitor) {
 					try {
-						workspace.run((IWorkspaceRunnable) monitor1 -> {
+						workspace.run((IWorkspaceRunnable) _ -> {
 							//signal that this job has started
 							status.set(1, TestBarrier2.STATUS_RUNNING);
 							//let job one finish
@@ -235,7 +235,7 @@ public class WorkspaceConcurrencyTest {
 				@Override
 				protected IStatus run(IProgressMonitor monitor) {
 					try {
-						workspace.run((IWorkspaceRunnable) monitor1 -> {
+						workspace.run((IWorkspaceRunnable) _ -> {
 							//signal that this job has started
 							status.set(2, TestBarrier2.STATUS_RUNNING);
 							//let job two finish

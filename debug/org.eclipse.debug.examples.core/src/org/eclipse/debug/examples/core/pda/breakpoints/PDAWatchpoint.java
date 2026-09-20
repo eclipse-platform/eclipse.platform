@@ -66,7 +66,7 @@ public class PDAWatchpoint extends PDALineBreakpoint implements IWatchpoint {
 	 * @throws CoreException if unable to create the watchpoint
 	 */
 	public PDAWatchpoint(final IResource resource, final int lineNumber, final String functionName, final String varName, final boolean access, final boolean modification) throws CoreException {
-		IWorkspaceRunnable runnable = monitor -> {
+		IWorkspaceRunnable runnable = _ -> {
 			IMarker marker = resource.createMarker("org.eclipse.debug.examples.core.pda.markerType.watchpoint"); //$NON-NLS-1$
 			setMarker(marker);
 			setEnabled(true);

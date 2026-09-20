@@ -78,7 +78,7 @@ public class MidiMainTab extends AbstractLaunchConfigurationTab {
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		fFileText.setLayoutData(gd);
 		fFileText.setFont(font);
-		fFileText.addModifyListener(event -> updateLaunchConfigurationDialog());
+		fFileText.addModifyListener(_ -> updateLaunchConfigurationDialog());
 
 		fFileButton = createPushButton(comp, "&Browse...", null); //$NON-NLS-1$
 		fFileButton.addSelectionListener(new SelectionAdapter() {

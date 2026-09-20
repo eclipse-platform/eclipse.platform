@@ -61,7 +61,7 @@ public class PDALineBreakpoint extends LineBreakpoint implements IPDAEventListen
 	 * @throws CoreException if unable to create the breakpoint
 	 */
 	public PDALineBreakpoint(final IResource resource, final int lineNumber) throws CoreException {
-		IWorkspaceRunnable runnable = monitor -> {
+		IWorkspaceRunnable runnable = _ -> {
 			IMarker marker = resource.createMarker("org.eclipse.debug.examples.core.pda.markerType.lineBreakpoint"); //$NON-NLS-1$
 			setMarker(marker);
 			marker.setAttribute(IBreakpoint.ENABLED, Boolean.TRUE);

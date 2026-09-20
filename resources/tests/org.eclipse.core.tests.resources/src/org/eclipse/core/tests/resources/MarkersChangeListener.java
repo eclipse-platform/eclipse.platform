@@ -113,7 +113,7 @@ public class MarkersChangeListener implements IResourceChangeListener {
 		}
 		if ((delta.getFlags() & IResourceDelta.MARKERS) != 0) {
 			IPath path = delta.getFullPath();
-			List<IMarkerDelta> v = changes.computeIfAbsent(path, p -> Collections.synchronizedList(new ArrayList<>()));
+			List<IMarkerDelta> v = changes.computeIfAbsent(path, _ -> Collections.synchronizedList(new ArrayList<>()));
 			IMarkerDelta[] markerDeltas = delta.getMarkerDeltas();
 			for (IMarkerDelta markerDelta : markerDeltas) {
 				v.add(markerDelta);

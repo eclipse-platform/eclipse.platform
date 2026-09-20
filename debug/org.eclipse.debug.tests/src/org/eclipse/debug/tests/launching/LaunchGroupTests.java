@@ -393,7 +393,7 @@ public class LaunchGroupTests {
 
 	private static DummyStream attachDummyProcess(final ILaunch l) {
 		final DummyStream dummy = new DummyStream();
-		final InvocationHandler streamProxyHandler = (proxy, method, args) -> {
+		final InvocationHandler streamProxyHandler = (_, method, _) -> {
 			String name = method.getName();
 			if (name.equals("getOutputStreamMonitor")) { //$NON-NLS-1$
 				return dummy;

@@ -72,7 +72,7 @@ public class IResourceDeltaTest {
 		allResources = new IResource[] {project1, project2, folder1, folder2, folder3, file1, file2, file3};
 
 		// Create and open the resources
-		IWorkspaceRunnable body = monitor -> createInWorkspace(allResources);
+		IWorkspaceRunnable body = _ -> createInWorkspace(allResources);
 		getWorkspace().run(body, createTestMonitor());
 	}
 
@@ -119,7 +119,7 @@ public class IResourceDeltaTest {
 		getWorkspace().addResourceChangeListener(listener);
 
 		//do the work
-		IWorkspaceRunnable body = monitor -> {
+		IWorkspaceRunnable body = _ -> {
 			file1.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 			folder2.delete(true, createTestMonitor());
 			file4.create(createRandomContentsStream(), true, createTestMonitor());

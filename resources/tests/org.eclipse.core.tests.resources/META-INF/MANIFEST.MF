@@ -45,6 +45,6 @@ Import-Package: org.assertj.core.api,
  org.junit.platform.suite.api;version="[1.14.0,2.0.0)",
  org.mockito
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-25
 Eclipse-BundleShape: dir
 Automatic-Module-Name: org.eclipse.core.tests.resources

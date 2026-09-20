@@ -605,7 +605,7 @@ public class RelaxedSchedRuleBuilderTest {
 	private static class ErrorLogging {
 		private final Queue<IStatus> loggedErrors = new ConcurrentLinkedQueue<>();
 
-		private final ILogListener errorLogListener = (IStatus status, String plugin) -> {
+		private final ILogListener errorLogListener = (IStatus status, String _) -> {
 			if (status.matches(IStatus.ERROR)) {
 				loggedErrors.add(status);
 			}

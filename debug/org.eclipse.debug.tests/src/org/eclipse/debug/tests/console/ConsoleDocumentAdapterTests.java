@@ -943,7 +943,7 @@ public class ConsoleDocumentAdapterTests {
 	@Test
 	public void testInvalidInvocations() {
 		final AtomicInteger expectedErrors = new AtomicInteger(0);
-		final ILogListener logListener = (status, plugin) -> {
+		final ILogListener logListener = (status, _) -> {
 			if (status.matches(IStatus.ERROR)) {
 				expectedErrors.decrementAndGet();
 			}

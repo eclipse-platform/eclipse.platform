@@ -264,7 +264,7 @@ public class ProjectDynamicReferencesTest {
 		}
 
 		public static void addReference(IProject project, IProject dependentProject) {
-			List<IProject> depProjects = dependentProjects.computeIfAbsent(project, proj -> new ArrayList<>());
+			List<IProject> depProjects = dependentProjects.computeIfAbsent(project, _ -> new ArrayList<>());
 			depProjects.add(dependentProject);
 		}
 

@@ -14,7 +14,7 @@ Require-Bundle: org.eclipse.ui;bundle-version="[3.208.0,4.0.0)",
  org.eclipse.jface.text;bundle-version="[3.30.0,4.0.0)",
  org.eclipse.ui.workbench.texteditor;bundle-version="[3.20.0,4.0.0)"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-21
+Bundle-RequiredExecutionEnvironment: JavaSE-25
 Bundle-Vendor: %providerName
 Export-Package: org.eclipse.debug.tests,
  org.eclipse.debug.tests.breakpoint,
