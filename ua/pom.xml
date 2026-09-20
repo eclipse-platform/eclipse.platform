@@ -44,6 +44,7 @@
     <module>org.eclipse.tips.feature</module>
     <module>org.eclipse.tips.tests</module>
     
-    <module>infocenter-web</module>
+    <module>infocenter-web/infocenter-product</module>
+    <module>infocenter-web/infocenter-app</module>
   </modules>
 </project>
