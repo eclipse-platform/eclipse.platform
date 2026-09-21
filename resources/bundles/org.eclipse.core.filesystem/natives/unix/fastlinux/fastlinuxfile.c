@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -131,96 +131,6 @@ jint convertStatToObject(JNIEnv *env, struct stat info, int errnoValue, jobject 
 	(*env)->SetLongField(env, stat_object, attrs_st_mtime_msec, (info.st_mtim.tv_nsec / (1000 * 1000)));
 
 	return 0;
-}
-
-/*
- * Class:     org_eclipse_core_internal_filesystem_local_linux_LinuxFileNatives
- * Method:    chmod
- * Signature: ([BI)I
- */
-JNIEXPORT jint JNICALL Java_org_eclipse_core_internal_filesystem_local_linux_LinuxFileNatives_chmod
-  (JNIEnv *env, jclass clazz, jbyteArray path, jint mode)
-{
-	int code;
-	char *name;
-
-	name = (char*) getByteArray(env, path);
-	if (name == NULL) {
-		return -1;
-	}
-	code = chmod(name, mode);
-	free(name);
-	return code;
-}
-
-/*
- * Class:     org_eclipse_core_internal_filesystem_local_linux_LinuxFileNatives
- * Method:    stat
- * Signature: ([BLorg/eclipse/core/internal/filesystem/local/linux/LinuxStructStat;)I
- */
-JNIEXPORT jint JNICALL Java_org_eclipse_core_internal_filesystem_local_linux_LinuxFileNatives_stat
-  (JNIEnv *env, jclass clazz, jbyteArray path, jobject buf)
-{
-	jint code;
-	char *name;
-	struct stat info = {0};
-
-	name = (char*) getByteArray(env, path);
-	if (name == NULL) {
-		return -1;
-	}
-	code = fstatat(AT_FDCWD, name, &info, 0);
-	free(name);
-	return convertStatToObject(env, info, code == 0 ? 0 : errno, buf);
-}
-
-/*
- * Class:     org_eclipse_core_internal_filesystem_local_linux_LinuxFileNatives
- * Method:    lstat
- * Signature: ([BLorg/eclipse/core/internal/filesystem/local/linux/LinuxStructStat;)I
- */
-JNIEXPORT jint JNICALL Java_org_eclipse_core_internal_filesystem_local_linux_LinuxFileNatives_lstat
-  (JNIEnv *env, jclass clazz, jbyteArray path, jobject buf)
-{
-	jint code;
-	char *name;
-	struct stat info = {0};
-
-	name = (char*) getByteArray(env, path);
-	if (name == NULL) {
-		return -1;
-	}
-	code = fstatat(AT_FDCWD, name, &info, AT_SYMLINK_NOFOLLOW);
-	free(name);
-	return convertStatToObject(env, info, code == 0 ? 0 : errno, buf);
-}
-
-/*
- * Class:     org_eclipse_core_internal_filesystem_local_linux_LinuxFileNatives
- * Method:    readlink
- * Signature: ([B[BJ)I
- */
-JNIEXPORT jint JNICALL Java_org_eclipse_core_internal_filesystem_local_linux_LinuxFileNatives_readlink
-    (JNIEnv *env, jclass clazz, jbyteArray path, jbyteArray buf, jlong bufsiz) {
-	jbyte *name;
-	int len;
-	char temp[PATH_MAX+1];
-
-	name = getByteArray(env, path);
-	if (name == NULL) {
-		return -1;
-	}
-  	len = readlink((const char*)name, temp, PATH_MAX);
-  	free(name);
-	if (len > 0) {
-		temp[len] = 0;
-		(*env)->SetByteArrayRegion(env, buf, 0, len, (jbyte*) temp);
-	}
-	else {
-		temp[0] = 0;
-		(*env)->SetByteArrayRegion(env, buf, 0, 0, (jbyte*) temp);
-	}
-	return len;
 }
 
 /*

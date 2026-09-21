@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2016 IBM Corporation and others.
+ * Copyright (c) 2010, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -22,21 +22,11 @@ import org.eclipse.core.internal.filesystem.local.linux.LinuxFileHandler;
 import org.eclipse.core.internal.filesystem.local.linux.LinuxFileNatives;
 import org.eclipse.core.internal.filesystem.local.nio.DefaultHandler;
 import org.eclipse.core.internal.filesystem.local.nio.PosixHandler;
-import org.eclipse.core.internal.filesystem.local.unix.UnixFileHandler;
-import org.eclipse.core.internal.filesystem.local.unix.UnixFileNatives;
 import org.eclipse.core.runtime.Platform;
 
 /**
  * <p>Dispatches methods backed by native code to the appropriate platform specific
- * implementation depending on a library provided by a fragment. Failing this it tries
- * to use Java 7 NIO/2 API's.</p>
- *
- * <p>Use of native libraries can be disabled by adding -Declipse.filesystem.useNatives=false
- * to VM arguments.</p>
- *
- * <p>Please notice that the native implementation is significantly faster than the non-native
- * one. The BenchFileStore test runs 3.1 times faster on Linux with the native code than
- * without it.</p>
+ * implementation.</p>
  */
 public class LocalFileNativesManager {
 	public static final boolean PROPERTY_USE_NATIVE_DEFAULT = true;
@@ -66,9 +56,6 @@ public class LocalFileNativesManager {
 		if (useNatives && useFastLinuxNatives && Platform.OS.isLinux() && Platform.ARCH_X86_64.equals(Platform.getOSArch()) && LinuxFileNatives.isUsingNatives()) {
 			// Linux x86_64 architecture supports faster (bulk) file info fetching.
 			HANDLER = new LinuxFileHandler();
-			nativesAreUsed = true;
-		} else if (useNatives && !Platform.OS.isWindows() && UnixFileNatives.isUsingNatives()) {
-			HANDLER = new UnixFileHandler();
 			nativesAreUsed = true;
 		} else {
 			nativesAreUsed = false;

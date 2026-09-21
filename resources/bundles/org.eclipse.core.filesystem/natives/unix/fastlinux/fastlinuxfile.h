@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -42,38 +42,6 @@ extern "C" {
  */
 JNIEXPORT void JNICALL Java_org_eclipse_core_internal_filesystem_local_linux_LinuxFileNatives_initializeLinuxStructStatFieldIDs
   (JNIEnv *, jclass);
-
-/*
- * Class:     org_eclipse_core_internal_filesystem_local_linux_LinuxFileNatives
- * Method:    chmod
- * Signature: ([BI)I
- */
-JNIEXPORT jint JNICALL Java_org_eclipse_core_internal_filesystem_local_linux_LinuxFileNatives_chmod
-  (JNIEnv *, jclass, jbyteArray, jint);
-
-/*
- * Class:     org_eclipse_core_internal_filesystem_local_linux_LinuxFileNatives
- * Method:    stat
- * Signature: ([BLorg/eclipse/core/internal/filesystem/local/linux/LinuxStructStat;)I
- */
-JNIEXPORT jint JNICALL Java_org_eclipse_core_internal_filesystem_local_linux_LinuxFileNatives_stat
-  (JNIEnv *, jclass, jbyteArray, jobject);
-
-/*
- * Class:     org_eclipse_core_internal_filesystem_local_linux_LinuxFileNatives
- * Method:    lstat
- * Signature: ([BLorg/eclipse/core/internal/filesystem/local/linux/LinuxStructStat;)I
- */
-JNIEXPORT jint JNICALL Java_org_eclipse_core_internal_filesystem_local_linux_LinuxFileNatives_lstat
-  (JNIEnv *, jclass, jbyteArray, jobject);
-
-/*
- * Class:     org_eclipse_core_internal_filesystem_local_linux_LinuxFileNatives
- * Method:    readlink
- * Signature: ([B[BJ)I
- */
-JNIEXPORT jint JNICALL Java_org_eclipse_core_internal_filesystem_local_linux_LinuxFileNatives_readlink
-  (JNIEnv *, jclass, jbyteArray, jbyteArray, jlong);
 
 /*
  * Class:     org_eclipse_core_internal_filesystem_local_linux_LinuxFileNatives
