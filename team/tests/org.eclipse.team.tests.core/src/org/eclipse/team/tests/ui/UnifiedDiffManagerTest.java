@@ -44,8 +44,14 @@ import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.inlined.LineHeaderAnnotation;
+import org.eclipse.jface.text.source.projection.ProjectionViewer;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseMoveListener;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
@@ -65,6 +71,10 @@ public class UnifiedDiffManagerTest {
 	private static final String DELETION_ANNO_TYPE = "org.eclipse.compare.unifieddiff.internal.deletion";
 	private static final String DETAILED_ADDITION_ANNO_TYPE = "org.eclipse.compare.unifieddiff.internal.detailedAddition";
 	private static final String DETAILED_DELETION_ANNO_TYPE = "org.eclipse.compare.unifieddiff.internal.detailedDeletion";
+	// StyledText#getData(...) keys used by UnifiedDiffManager to remember the
+	// per-diff toolbar and the annotation it was opened for.
+	private static final String TOOLBAR_COMPOSITE_FOR_ONE_DIFF_KEY = "TOOLBAR_COMPOSITE_FOR_ONE_DIFF_KEY";
+	private static final String CURRENT_SELECTED_UNIFIED_DIFF_ANNO_KEY = "CURRENT_SELECTED_UNIFIED_DIFF_ANNO_KEY";
 
 	private static final String LEFT = """
 			line one
@@ -384,6 +394,34 @@ public class UnifiedDiffManagerTest {
 		assertNull(UnifiedDiffManager.get(viewer), "the manager must forget the viewer when it is disposed");
 	}
 
+	// ------------------------------------------------------ mouse move listener
+
+	/** Hovering over a diff must open its toolbar. */
+	@Test
+	public void testMouseMoveOpensTheToolbarForTheHoveredDiff() throws BadLocationException {
+		setEditorContent(LEFT);
+		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.OVERLAY_READ_ONLY_MODE).open().isOK());
+
+		IAnnotationModel model = annotationModel();
+		List<Annotation> deletions = annotations(model, DELETION_ANNO_TYPE);
+		assertEquals(1, deletions.size(), "the sample only contains a single changed line");
+		Position pos = model.getPosition(deletions.get(0));
+		int expectedLine = document().getLineOfOffset(pos.offset);
+
+		StyledText tw = viewer().getTextWidget();
+		fireMouseMove(tw, tw.getLinePixel(widgetLineOfModelOffset(viewer(), pos.offset)) + 2);
+		processEvents();
+
+		Composite toolbar = (Composite) tw.getData(TOOLBAR_COMPOSITE_FOR_ONE_DIFF_KEY);
+		assertNotNull(toolbar, "hovering over a diff must show its toolbar");
+		assertTrue(toolbar.getVisible(), "the toolbar must be made visible");
+		Annotation selected = (Annotation) toolbar.getData(CURRENT_SELECTED_UNIFIED_DIFF_ANNO_KEY);
+		assertNotNull(selected, "the toolbar must remember which diff it was opened for");
+		Position selectedPos = model.getPosition(selected);
+		assertEquals(expectedLine, document().getLineOfOffset(selectedPos.offset),
+				"the diff under the mouse cursor must be the one whose toolbar is shown");
+	}
+
 	// ------------------------------------------------------------------ helpers
 
 	private void assertReplaceModeYields(String left, String right) {
@@ -399,6 +437,29 @@ public class UnifiedDiffManagerTest {
 		ITextViewer viewer = editor.getAdapter(ITextViewer.class);
 		assertNotNull(viewer, "editor must adapt to ITextViewer");
 		return viewer;
+	}
+
+	/**
+	 * Dispatches a synthetic {@link SWT#MouseMove} event with the given
+	 * widget-relative y coordinate to every {@link MouseMoveListener} attached to
+	 * the widget, in particular {@code UnifiedDiffManager}'s own listener.
+	 */
+	private static void fireMouseMove(StyledText tw, int y) {
+		Event event = new Event();
+		event.widget = tw;
+		event.x = 5;
+		event.y = y;
+		MouseEvent mouseEvent = new MouseEvent(event);
+		tw.getTypedListeners(SWT.MouseMove, MouseMoveListener.class).forEach(listener -> listener.mouseMove(mouseEvent));
+	}
+
+	/** The widget line the given model (document) offset is displayed on. */
+	private static int widgetLineOfModelOffset(ITextViewer viewer, int modelOffset) {
+		int widgetOffset = modelOffset;
+		if (viewer instanceof ProjectionViewer pv) {
+			widgetOffset = pv.modelOffset2WidgetOffset(modelOffset);
+		}
+		return viewer.getTextWidget().getLineAtOffset(widgetOffset);
 	}
 
 	private IDocument document() {

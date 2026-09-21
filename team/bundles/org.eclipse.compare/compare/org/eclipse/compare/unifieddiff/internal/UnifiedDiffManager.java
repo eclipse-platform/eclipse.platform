@@ -72,6 +72,7 @@ import org.eclipse.jface.text.source.AnnotationModel;
 import org.eclipse.jface.text.source.AnnotationModelEvent;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.IAnnotationModelExtension;
+import org.eclipse.jface.text.source.IAnnotationModelExtension2;
 import org.eclipse.jface.text.source.IAnnotationModelListener;
 import org.eclipse.jface.text.source.IAnnotationModelListenerExtension;
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -1359,6 +1360,8 @@ public class UnifiedDiffManager {
 			return;
 		}
 		tw.setData(TOOLBAR_COMPOSITE_FOR_ONE_DIFF_KEY, null);
+		tw.getTypedListeners(SWT.MouseMove, UnifiedDiffMouseMoveListener.class)
+				.forEach(UnifiedDiffMouseMoveListener::resetLastMouseLine);
 	}
 
 	private static void disposeToolbarForAllDiffs(Composite toolbarShellForAllDiffs, ITextViewer tv) {
@@ -1517,6 +1520,7 @@ public class UnifiedDiffManager {
 		private final IAnnotationModel model;
 		private final ITextViewer tv;
 		private final StyledText textWidget;
+		private int lastMouseLine = -1;
 
 		public UnifiedDiffMouseMoveListener(IAnnotationModel model, ITextViewer tv) {
 			this.model = model;
@@ -1524,33 +1528,70 @@ public class UnifiedDiffManager {
 			this.textWidget = tv.getTextWidget();
 		}
 
+		private void resetLastMouseLine() {
+			this.lastMouseLine = -1;
+		}
+
 		@Override
 		public void mouseMove(MouseEvent e) {
-			Iterator<Annotation> it = this.model.getAnnotationIterator();
+			if (e.y > this.textWidget.getLinePixel(this.textWidget.getLineCount())) {
+				return;
+			}
+			int mouseLine = this.textWidget.getLineIndex(e.y);
+			if (mouseLine == this.lastMouseLine) {
+				return;
+			}
+			this.lastMouseLine = mouseLine;
+			Iterator<Annotation> it = annotationIteratorForLine(mouseLine);
 			while (it.hasNext()) {
 				Annotation anno = getUnifiedDiffAnnotationFromIterator(it);
 				if (anno == null) {
 					continue;
 				}
 				Position pos = this.model.getPosition(anno);
+				if (pos == null) {
+					continue;
+				}
 				int startOffset = pos.offset;
 				if (tv instanceof ProjectionViewer pv) {
 					startOffset = pv.modelOffset2WidgetOffset(pos.offset);
+					if (startOffset < 0) {
+						continue;
+					}
 				}
 				int endOffset = startOffset + pos.length;
 				try {
-					Rectangle startBounds = this.textWidget.getTextBounds(startOffset, startOffset);
-					Rectangle endBounds = this.textWidget.getTextBounds(endOffset, endOffset);
-					if (startBounds.y == endBounds.y) {
-						endBounds.y += endBounds.height;
-					}
-					if (e.y >= startBounds.y && e.y <= endBounds.y) {
+					int startLine = this.textWidget.getLineAtOffset(startOffset);
+					int endLine = this.textWidget.getLineAtOffset(Math.max(startOffset, endOffset - 1));
+					if (mouseLine >= startLine && mouseLine <= endLine) {
 						setToolbarLocationForOneDiff(this.tv, this.model, anno);
 						return;
 					}
 				} catch (IllegalArgumentException ex) { // NOPMD silently ignored
 				}
 			}
+		}
+
+		private Iterator<Annotation> annotationIteratorForLine(int widgetLine) {
+			if (this.model instanceof IAnnotationModelExtension2 ext) {
+				try {
+					int widgetStart = this.textWidget.getOffsetAtLine(widgetLine);
+					int widgetEnd = widgetLine + 1 < this.textWidget.getLineCount()
+							? this.textWidget.getOffsetAtLine(widgetLine + 1)
+							: this.textWidget.getCharCount();
+					int modelStart = widgetStart;
+					int modelEnd = widgetEnd;
+					if (tv instanceof ProjectionViewer pv) {
+						modelStart = pv.widgetOffset2ModelOffset(widgetStart);
+						modelEnd = pv.widgetOffset2ModelOffset(widgetEnd);
+					}
+					if (modelStart >= 0 && modelEnd >= modelStart) {
+						return ext.getAnnotationIterator(modelStart, modelEnd - modelStart, true, true);
+					}
+				} catch (IllegalArgumentException ex) { // NOPMD fall back to the full iterator
+				}
+			}
+			return this.model.getAnnotationIterator();
 		}
 	}
 
