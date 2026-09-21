@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2012 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -24,6 +24,7 @@ import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.ILineBreakpoint;
 import org.eclipse.debug.internal.core.IInternalDebugCoreConstants;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
+import org.eclipse.debug.internal.ui.IInternalDebugUIConstants;
 import org.eclipse.jface.viewers.IBasicPropertyConstants;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.StructuredViewer;
@@ -64,6 +65,27 @@ public class BreakpointsComparator extends ViewerComparator {
 		}
 
 		IBreakpoint b2= (IBreakpoint)e2;
+		IMarker marker1= b1.getMarker();
+		IMarker marker2= b2.getMarker();
+		if (!marker1.exists() || !marker2.exists()) {
+			return 0;
+		}
+
+		int sortingOrder= DebugUIPlugin.getDefault().getPreferenceStore().getInt(IInternalDebugUIConstants.PREF_BREAKPOINT_SORTING_ORDER);
+		if (sortingOrder == IInternalDebugUIConstants.BREAKPOINT_SORTING_ORDER_CREATION_TIME) {
+			try {
+				long b1CreationTime = marker1.getCreationTime();
+				long b2CreationTime = marker2.getCreationTime();
+				if (b1CreationTime > b2CreationTime) {
+					return -1;
+				} else if (b1CreationTime < b2CreationTime) {
+					return 1;
+				}
+			} catch (CoreException e) {
+				DebugUIPlugin.log(e);
+			}
+		}
+
 		String modelId1= b1.getModelIdentifier();
 		String modelId2= b2.getModelIdentifier();
 		int result= modelId1.compareTo(modelId2);
@@ -72,20 +94,12 @@ public class BreakpointsComparator extends ViewerComparator {
 		}
 		String type1= IInternalDebugCoreConstants.EMPTY_STRING;
 		String type2= IInternalDebugCoreConstants.EMPTY_STRING;
-		IMarker marker1= b1.getMarker();
-		if (!marker1.exists()) {
-			return 0;
-		}
 		try {
 			type1= marker1.getType();
 		} catch (CoreException ce) {
 			DebugUIPlugin.log(ce);
 		}
 		try {
-			IMarker marker2= b2.getMarker();
-			if (!marker2.exists()) {
-				return 0;
-			}
 			type2= marker2.getType();
 		} catch (CoreException e) {
 			DebugUIPlugin.log(e);
