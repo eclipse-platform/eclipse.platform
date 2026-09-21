@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2015 IBM Corporation and others.
+ *  Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -23,6 +23,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.ILineBreakpoint;
 import org.eclipse.debug.core.model.IValue;
+import org.eclipse.debug.internal.ui.DebugUIPlugin;
+import org.eclipse.debug.internal.ui.IInternalDebugUIConstants;
 import org.eclipse.debug.internal.ui.views.breakpoints.BreakpointsComparator;
 import org.eclipse.debug.tests.DebugTestExtension;
 import org.eclipse.debug.ui.IDebugModelPresentation;
@@ -283,6 +285,8 @@ public class BreakpointOrderingTests {
 	 * Expecting the same ordering as in which the BP's are returned by createTestBreakpoints.
 	 */
 	void executeTest(TestBreakpoint[] testBps) throws CoreException {
+		int origSort = DebugUIPlugin.getDefault().getPreferenceStore().getInt(IInternalDebugUIConstants.PREF_BREAKPOINT_SORTING_ORDER);
+		DebugUIPlugin.getDefault().getPreferenceStore().setValue(IInternalDebugUIConstants.PREF_BREAKPOINT_SORTING_ORDER, IInternalDebugUIConstants.BREAKPOINT_SORTING_ORDER_NAME);
 		BreakpointsComparator bpCompare = new BreakpointsComparator();
 		try {
 			boolean failed = false;
@@ -305,6 +309,7 @@ public class BreakpointOrderingTests {
 			}
 			assertFalse(failed);
 		} finally {
+			DebugUIPlugin.getDefault().getPreferenceStore().setValue(IInternalDebugUIConstants.PREF_BREAKPOINT_SORTING_ORDER, origSort);
 			for (TestBreakpoint testBp : testBps) {
 				testBp.delete();
 			}
