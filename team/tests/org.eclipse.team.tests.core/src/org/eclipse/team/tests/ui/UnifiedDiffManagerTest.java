@@ -20,6 +20,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspac
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -409,12 +410,14 @@ public class UnifiedDiffManagerTest {
 		int expectedLine = document().getLineOfOffset(pos.offset);
 
 		StyledText tw = viewer().getTextWidget();
+		Composite toolbarBefore = (Composite) tw.getData(TOOLBAR_COMPOSITE_FOR_ONE_DIFF_KEY);
+
 		fireMouseMove(tw, tw.getLinePixel(widgetLineOfModelOffset(viewer(), pos.offset)) + 2);
 		processEvents();
 
 		Composite toolbar = (Composite) tw.getData(TOOLBAR_COMPOSITE_FOR_ONE_DIFF_KEY);
 		assertNotNull(toolbar, "hovering over a diff must show its toolbar");
-		assertTrue(toolbar.getVisible(), "the toolbar must be made visible");
+		assertNotSame(toolbarBefore, toolbar, "hovering over a diff must create a new toolbar composite");
 		Annotation selected = (Annotation) toolbar.getData(CURRENT_SELECTED_UNIFIED_DIFF_ANNO_KEY);
 		assertNotNull(selected, "the toolbar must remember which diff it was opened for");
 		Position selectedPos = model.getPosition(selected);
