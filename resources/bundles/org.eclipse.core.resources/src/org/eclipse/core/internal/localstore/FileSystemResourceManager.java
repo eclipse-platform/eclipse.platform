@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2025 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -372,20 +372,28 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 			}
 			return null;
 		}
+		int locationSegments = location.segmentCount();
 		int resultProjectPathSegments = 0;
 		IResource result = null;
-		IProject[] projects = getWorkspace().getRoot().getProjects(IContainer.INCLUDE_HIDDEN);
-		for (IProject project : projects) {
+		for (IProject project : workspace.getRoot().getProjects(IContainer.INCLUDE_HIDDEN)) {
 			IPath projectLocation = project.getLocation();
-			if (projectLocation != null && projectLocation.isPrefixOf(location)) {
-				int segmentsToRemove = projectLocation.segmentCount();
-				if (segmentsToRemove > resultProjectPathSegments) {
-					IPath path = project.getFullPath().append(location.removeFirstSegments(segmentsToRemove));
-					IResource resource = resourceFor(path, files);
-					if (resource != null && !((Resource) resource).isFiltered()) {
-						resultProjectPathSegments = segmentsToRemove;
-						result = resource;
-					}
+			if (projectLocation == null) {
+				continue;
+			}
+			int segmentsToRemove = projectLocation.segmentCount();
+			// cheap segment count checks first, the prefix check is more expensive
+			if (segmentsToRemove <= resultProjectPathSegments || segmentsToRemove > locationSegments
+					|| !projectLocation.isPrefixOf(location)) {
+				continue;
+			}
+			IPath path = project.getFullPath().append(location.removeFirstSegments(segmentsToRemove));
+			IResource resource = resourceFor(path, files);
+			if (resource != null && !((Resource) resource).isFiltered()) {
+				resultProjectPathSegments = segmentsToRemove;
+				result = resource;
+				if (segmentsToRemove == locationSegments) {
+					// no other project can have a longer matching location
+					break;
 				}
 			}
 		}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2023 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -34,12 +34,14 @@ import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.internal.resources.Workspace;
+import org.eclipse.core.resources.FileInfoMatcherDescription;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceFilterDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
@@ -412,6 +414,135 @@ public class IWorkspaceRootTest {
 		container = root.getContainerForLocation(containerLocation);
 		assertNotNull(container);
 		assertEquals(subProject, container.getProject());
+	}
+
+	/**
+	 * The location of a project itself maps to the project as container and to
+	 * no file.
+	 */
+	@Test
+	public void testGetForLocationOfProjectLocation() throws CoreException {
+		IWorkspaceRoot root = getWorkspace().getRoot();
+		IProject project = root.getProject("p");
+		createInWorkspace(project);
+
+		assertEquals(project, root.getContainerForLocation(project.getLocation()));
+		assertNull(root.getFileForLocation(project.getLocation()));
+	}
+
+	/**
+	 * Locations outside of any project do not map to any resource.
+	 */
+	@Test
+	public void testGetForLocationOutsideOfProjects() throws CoreException {
+		IWorkspaceRoot root = getWorkspace().getRoot();
+		IProject project = root.getProject("p");
+		createInWorkspace(project);
+
+		IPath outside = root.getLocation().append("notAProject").append("file.txt");
+		assertNull(root.getFileForLocation(outside));
+		assertNull(root.getContainerForLocation(outside));
+	}
+
+	/**
+	 * A project location must be a segment-wise prefix of the given location, a
+	 * plain string prefix (e.g. "p" for "p2") must not match.
+	 */
+	@Test
+	public void testGetForLocationWithStringPrefixProjectName() throws CoreException {
+		IWorkspaceRoot root = getWorkspace().getRoot();
+		IProject project = root.getProject("p");
+		IProject project2 = root.getProject("p2");
+		createInWorkspace(new IResource[] { project, project2 });
+
+		IPath fileLocation = project2.getLocation().append("file.txt");
+		assertEquals(project2.getFile("file.txt"), root.getFileForLocation(fileLocation));
+		assertEquals(project2.getFolder("file.txt"), root.getContainerForLocation(fileLocation));
+	}
+
+	/**
+	 * The nested project wins regardless of the order in which projects are
+	 * iterated (see also {@link #testBug476585()} for the opposite order).
+	 */
+	@Test
+	public void testGetForLocationNestedProjectIteratedFirst() throws CoreException {
+		IWorkspaceRoot root = getWorkspace().getRoot();
+		IProject outer = root.getProject("z_outer");
+		createInWorkspace(outer);
+		IProject inner = createProjectAt("a_inner", outer.getLocation().append("nested"));
+
+		IPath fileLocation = inner.getLocation().append("folder").append("file.txt");
+		assertEquals(inner.getFile("folder/file.txt"), root.getFileForLocation(fileLocation));
+		assertEquals(inner.getFolder("folder/file.txt"), root.getContainerForLocation(fileLocation));
+	}
+
+	/**
+	 * The location of a nested project maps to the nested project as container,
+	 * but to a file of the enclosing project, since a project location can never
+	 * be a file of the nested project itself.
+	 */
+	@Test
+	public void testGetForLocationOfNestedProjectLocation() throws CoreException {
+		IWorkspaceRoot root = getWorkspace().getRoot();
+		for (String[] names : new String[][] { { "a_outer", "z_inner" }, { "z_outer", "a_inner" } }) {
+			IProject outer = root.getProject(names[0]);
+			createInWorkspace(outer);
+			IProject inner = createProjectAt(names[1], outer.getLocation().append("nested"));
+
+			assertEquals(inner, root.getContainerForLocation(inner.getLocation()));
+			assertEquals(outer.getFile("nested"), root.getFileForLocation(inner.getLocation()));
+
+			removeFromWorkspace(new IResource[] { inner, outer });
+		}
+	}
+
+	/**
+	 * If the resource in the nested project is filtered out, the resource of the
+	 * enclosing project is returned instead.
+	 */
+	@Test
+	public void testGetForLocationFilteredInNestedProject() throws CoreException {
+		IWorkspaceRoot root = getWorkspace().getRoot();
+		for (String[] names : new String[][] { { "a_outer", "z_inner" }, { "z_outer", "a_inner" } }) {
+			IProject outer = root.getProject(names[0]);
+			createInWorkspace(outer);
+			IProject inner = createProjectAt(names[1], outer.getLocation().append("nested"));
+			inner.createFilter(
+					IResourceFilterDescription.EXCLUDE_ALL | IResourceFilterDescription.FOLDERS
+							| IResourceFilterDescription.FILES | IResourceFilterDescription.INHERITABLE,
+					new FileInfoMatcherDescription("org.eclipse.core.resources.regexFilterMatcher", "folder"), 0,
+					createTestMonitor());
+
+			IPath fileLocation = inner.getLocation().append("folder").append("file.txt");
+			assertEquals(outer.getFile("nested/folder/file.txt"), root.getFileForLocation(fileLocation));
+			assertEquals(outer.getFolder("nested/folder/file.txt"), root.getContainerForLocation(fileLocation));
+
+			removeFromWorkspace(new IResource[] { inner, outer });
+		}
+	}
+
+	/**
+	 * Files and folders of hidden projects are found as well.
+	 */
+	@Test
+	public void testGetForLocationInHiddenProject() throws CoreException {
+		IWorkspaceRoot root = getWorkspace().getRoot();
+		IProject hiddenProject = root.getProject(createUniqueString());
+		hiddenProject.create(null, IResource.HIDDEN, createTestMonitor());
+		hiddenProject.open(createTestMonitor());
+
+		IPath fileLocation = hiddenProject.getLocation().append("file.txt");
+		assertEquals(hiddenProject.getFile("file.txt"), root.getFileForLocation(fileLocation));
+		assertEquals(hiddenProject.getFolder("file.txt"), root.getContainerForLocation(fileLocation));
+	}
+
+	private IProject createProjectAt(String name, IPath location) throws CoreException {
+		IProject project = getWorkspace().getRoot().getProject(name);
+		IProjectDescription description = getWorkspace().newProjectDescription(name);
+		description.setLocation(location);
+		project.create(description, createTestMonitor());
+		project.open(createTestMonitor());
+		return project;
 	}
 
 	/*
