@@ -15,6 +15,7 @@ package org.eclipse.compare.unifieddiff.internal;
 
 import static org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager.error;
 import static org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager.isOverlay;
+import static org.eclipse.compare.unifieddiff.internal.UnifiedDiffText.clampDetailedDiffLength;
 import static org.eclipse.compare.unifieddiff.internal.UnifiedDiffText.countLines;
 import static org.eclipse.compare.unifieddiff.internal.UnifiedDiffText.mapOffsetToTabExpanded;
 import static org.eclipse.compare.unifieddiff.internal.UnifiedDiffText.mergeStyleRanges;
@@ -759,12 +760,9 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			if (detailedDiffStr.trim().length() == 0) {
 				continue;
 			}
-			if (detailedDiffStart + detailedDiffLength >= trimmedDiffStr.length()) {
-				int delta = diffStr.length() - trimmedDiffStr.length();
-				if (detailedDiffLength <= delta) {
-					continue;
-				}
-				detailedDiffLength -= delta;
+			detailedDiffLength = clampDetailedDiffLength(detailedDiffStart, detailedDiffLength, trimmedDiffStr.length());
+			if (detailedDiffLength <= 0) {
+				continue;
 			}
 			int expandedStart = mapOffsetToTabExpanded(diffStr, detailedDiffStart, tabWidth);
 			int expandedEnd = mapOffsetToTabExpanded(diffStr, detailedDiffStart + detailedDiffLength, tabWidth);
@@ -940,7 +938,6 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 					|| diff.mode.equals(UnifiedDiffMode.REVERT_MODE);
 			String fullDiffStr = useRight ? diff.rightStr : diff.leftStr;
 			String diffStr = removeTrailingNewLines(fullDiffStr);
-			int diffStrDelta = fullDiffStr.length() - diffStr.length();
 			List<DetailedDiffRange> result = new ArrayList<>();
 			for (var detailedDiff : diff.detailedDiffs) {
 				String detailedDiffStr = useRight ? detailedDiff.rightStr : detailedDiff.leftStr;
@@ -949,11 +946,9 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 				if (detailedDiffStr.trim().length() == 0) {
 					continue;
 				}
-				if (detailedDiffStart + detailedDiffLength >= diffStr.length()) {
-					if (detailedDiffLength <= diffStrDelta) {
-						continue;
-					}
-					detailedDiffLength -= diffStrDelta;
+				detailedDiffLength = clampDetailedDiffLength(detailedDiffStart, detailedDiffLength, diffStr.length());
+				if (detailedDiffLength <= 0) {
+					continue;
 				}
 				// String#split drops trailing empty strings, so it must not be used to
 				// count lines: a prefix ending with \n starts the next line
@@ -1228,19 +1223,19 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			return delim.length();
 		}
 
-		private static class RangeInfo {
+		public static class RangeInfo {
 			int rangeIndex;
 			int offset;
 			Point position;
 
-			RangeInfo(int rangeIndex, int offset, Point position) {
+			public RangeInfo(int rangeIndex, int offset, Point position) {
 				this.rangeIndex = rangeIndex;
 				this.offset = offset;
 				this.position = position;
 			}
 		}
 
-		private Point getPositionForOffset(StyledText tw, GC gc, int offset, String str, List<StyleRange> ranges,
+		public Point getPositionForOffset(StyledText tw, GC gc, int offset, String str, List<StyleRange> ranges,
 				RangeInfo rangeInfo) {
 			String sub = str.substring(0, offset);
 			Point result = null;
@@ -1268,7 +1263,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 							}
 						}
 						int lfIdx = sub.lastIndexOf("\n"); //$NON-NLS-1$
-						if (lfIdx > 0) {
+						if (lfIdx >= 0) {
 							if (lfIdx == sub.length() - 1 && isLastForCurrentOffset(ranges, i, offset)) {
 								sub = sub.substring(0, lfIdx);
 							} else {

@@ -162,4 +162,17 @@ public final class UnifiedDiffText {
 		}
 		return r;
 	}
+
+	/**
+	 * Clamps {@code length} so that {@code start + length} does not exceed
+	 * {@code trimmedEnd}. Returns the clamped length, or {@code <= 0} when the
+	 * range falls entirely outside.
+	 */
+	public static int clampDetailedDiffLength(int start, int length, int trimmedEnd) {
+		int end = start + length;
+		if (end > trimmedEnd) {
+			length -= end - trimmedEnd;
+		}
+		return length;
+	}
 }

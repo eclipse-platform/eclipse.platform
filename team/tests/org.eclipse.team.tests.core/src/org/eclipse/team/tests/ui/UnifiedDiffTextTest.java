@@ -13,21 +13,35 @@
  *******************************************************************************/
 package org.eclipse.team.tests.ui;
 
+import static org.eclipse.compare.unifieddiff.internal.UnifiedDiffText.clampDetailedDiffLength;
 import static org.eclipse.compare.unifieddiff.internal.UnifiedDiffText.countLines;
 import static org.eclipse.compare.unifieddiff.internal.UnifiedDiffText.mapOffsetToTabExpanded;
 import static org.eclipse.compare.unifieddiff.internal.UnifiedDiffText.mergeStyleRanges;
 import static org.eclipse.compare.unifieddiff.internal.UnifiedDiffText.replaceTabWithSpaces;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
+import org.eclipse.compare.unifieddiff.UnifiedDiffMode;
+import org.eclipse.compare.unifieddiff.internal.UnifiedDiffCodeMiningProvider.UnifiedDiffLineHeaderCodeMining;
+import org.eclipse.compare.unifieddiff.internal.UnifiedDiffCodeMiningProvider.UnifiedDiffLineHeaderCodeMining.RangeInfo;
+import org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager.UnifiedDiff;
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.Position;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -36,12 +50,34 @@ import org.junit.jupiter.api.Test;
  * painted, so an off-by-one here shows up as a misplaced highlight that is easy
  * to miss in a manual test.
  */
+@SuppressWarnings("restriction")
 public class UnifiedDiffTextTest {
 
 	private static final Color BACKGROUND_1 = systemColor(SWT.COLOR_RED);
 	private static final Color BACKGROUND_2 = systemColor(SWT.COLOR_GREEN);
 	private static final Color FOREGROUND_1 = systemColor(SWT.COLOR_BLUE);
 	private static final Color FOREGROUND_2 = systemColor(SWT.COLOR_YELLOW);
+
+	private Shell shell;
+	private StyledText styledText;
+	private GC gc;
+
+	@BeforeEach
+	public void setUp() {
+		shell = new Shell(Display.getDefault());
+		styledText = new StyledText(shell, SWT.NONE);
+		gc = new GC(styledText);
+	}
+
+	@AfterEach
+	public void tearDown() {
+		if (gc != null && !gc.isDisposed()) {
+			gc.dispose();
+		}
+		if (shell != null && !shell.isDisposed()) {
+			shell.dispose();
+		}
+	}
 
 	// ---------------------------------------------------------------- countLines
 
@@ -221,6 +257,59 @@ public class UnifiedDiffTextTest {
 		assertTilesForegrounds(result, foregrounds);
 	}
 
+	// ------------------------------------------- clampDetailedDiffLength
+
+	@Test
+	public void testClampDetailedDiffLengthEndExactlyAtTrimmedEnd() {
+		// diff ends exactly at the last char of the trimmed string — must not clip
+		assertEquals(4, clampDetailedDiffLength(22, 4, 26));
+	}
+
+	@Test
+	public void testClampDetailedDiffLengthEndBeyondTrimmedEnd() {
+		// diff overshoots by 1 (e.g. includes a stripped trailing newline) — clip by 1
+		assertEquals(4, clampDetailedDiffLength(22, 5, 26));
+	}
+
+	@Test
+	public void testClampDetailedDiffLengthFullyOutside() {
+		// diff is entirely in the stripped region — result is <= 0
+		assertTrue(clampDetailedDiffLength(26, 1, 26) <= 0);
+	}
+
+	@Test
+	public void testClampDetailedDiffLengthNoOvershoot() {
+		// diff well within bounds — unchanged
+		assertEquals(3, clampDetailedDiffLength(5, 3, 20));
+	}
+
+	// ------------------------------------------- getPositionForOffset
+
+	@Test
+	public void testGetPositionForOffsetResetsXAfterNewlineAtRangeStart() throws Exception {
+		// Label: "abc\nxyz" — two lines, 3 chars each.
+		// Range [0, 3): "abc" — first line only, no newline.
+		// Range [3, 7): "\nxyz" — starts with \n at index 0 (lfIdx == 0).
+		// Querying the position of offset 7 (end of "xyz") must return x=width("xyz"),
+		// not x=width("abc")+width("xyz"), because the \n resets the x accumulator.
+		String str = "abc\nxyz";
+		List<StyleRange> ranges = List.of(styledRange(0, 3), styledRange(3, 4));
+
+		Document doc = new Document(str);
+		UnifiedDiff diff = new UnifiedDiff(doc, 0, str.length(), str, doc, 0, str.length(), str,
+				List.of(), UnifiedDiffMode.REPLACE_MODE);
+		UnifiedDiffLineHeaderCodeMining mining = new UnifiedDiffLineHeaderCodeMining(
+				new Position(0, 1), null, diff, 4, null, null, null);
+
+		gc.setFont(styledText.getFont());
+		Point result = mining.getPositionForOffset(styledText, gc, 7, str, ranges, new RangeInfo(-1, -1, null));
+
+		assertNotNull(result, "position must not be null");
+		Point expected = gc.stringExtent("xyz");
+		assertEquals(expected.x, result.x,
+				"x must equal the width of 'xyz' alone, not width('abc')+width('xyz')");
+	}
+
 	// ------------------------------------------------------------------ helpers
 
 	/**
@@ -291,5 +380,13 @@ public class UnifiedDiffTextTest {
 
 	private static Color systemColor(int id) {
 		return Display.getDefault().getSystemColor(id);
+	}
+
+	private static StyleRange styledRange(int start, int length) {
+		StyleRange range = new StyleRange();
+		range.start = start;
+		range.length = length;
+		range.foreground = systemColor(SWT.COLOR_BLUE);
+		return range;
 	}
 }
