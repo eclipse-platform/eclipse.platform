@@ -94,6 +94,14 @@ public class PosixHandler extends NativeHandler {
 	}
 
 	@Override
+	public IFileInfo[] listDirectoryAndGetFileInfos(String fileName) {
+		if (LinuxDirectoryReader.isAvailable()) {
+			return LinuxDirectoryReader.listDirectoryAndGetFileInfos(fileName);
+		}
+		return super.listDirectoryAndGetFileInfos(fileName);
+	}
+
+	@Override
 	public boolean putFileInfo(String fileName, IFileInfo info) {
 		Path path = Paths.get(fileName);
 		Set<PosixFilePermission> perms = new HashSet<>();
