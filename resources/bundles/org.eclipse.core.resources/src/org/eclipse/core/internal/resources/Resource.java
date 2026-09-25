@@ -221,7 +221,7 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 		// Check if the file exists.
 		URI resolved = getPathVariableManager().resolveURI(localLocation);
 		IFileStore store = EFS.getStore(resolved);
-		IFileInfo fileInfo = store.fetchInfo(EFS.IGNORE_NAME_CASE, null);
+		IFileInfo fileInfo = FileSystemResourceManager.fetchInfoIgnoringNameCase(store);
 		boolean localExists = fileInfo.exists();
 		if (!allowMissingLocal && !localExists) {
 			String msg = NLS.bind(Messages.links_localDoesNotExist, store.toString());

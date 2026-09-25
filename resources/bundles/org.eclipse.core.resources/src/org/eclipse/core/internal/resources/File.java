@@ -16,6 +16,8 @@
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
+import static org.eclipse.core.internal.localstore.FileSystemResourceManager.fetchInfoIgnoringNameCase;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -88,7 +90,7 @@ public class File extends Resource implements IFile {
 				ResourceInfo info = getResourceInfo(false, false);
 				checkAccessible(getFlags(info));
 				workspace.beginOperation(true);
-				IFileInfo fileInfo = getStore().fetchInfo(EFS.IGNORE_NAME_CASE, null);
+				IFileInfo fileInfo = fetchInfoIgnoringNameCase(getStore());
 				internalSetContents(content, fileInfo, updateFlags, true, subMonitor.newChild(99));
 			} catch (OperationCanceledException e) {
 				workspace.getWorkManager().operationCanceled();
@@ -503,7 +505,7 @@ public class File extends Resource implements IFile {
 				ResourceInfo info = getResourceInfo(false, false);
 				checkAccessible(getFlags(info));
 				workspace.beginOperation(true);
-				IFileInfo fileInfo = getStore().fetchInfo(EFS.IGNORE_NAME_CASE, null);
+				IFileInfo fileInfo = fetchInfoIgnoringNameCase(getStore());
 				if (BitMask.isSet(updateFlags, IResource.DERIVED)) {
 					// update of derived flag during IFile.write:
 					info.set(ICoreConstants.M_DERIVED);
@@ -536,7 +538,7 @@ public class File extends Resource implements IFile {
 				ResourceInfo info = getResourceInfo(false, false);
 				checkAccessible(getFlags(info));
 				workspace.beginOperation(true);
-				IFileInfo fileInfo = getStore().fetchInfo(EFS.IGNORE_NAME_CASE, null);
+				IFileInfo fileInfo = fetchInfoIgnoringNameCase(getStore());
 				if (BitMask.isSet(updateFlags, IResource.DERIVED)) {
 					// update of derived flag during IFile.write:
 					info.set(ICoreConstants.M_DERIVED);
