@@ -499,7 +499,7 @@ public class LocalFile extends FileStore {
 					// source exists but destination doesn't so try to copy below
 				} else {
 					// destination.exists() returns false for broken links, this has to be handled explicitly
-					if (!destination.exists() && !destFile.fetchInfo(EFS.IGNORE_NAME_CASE, null).getAttribute(EFS.ATTRIBUTE_SYMLINK)) {
+					if (!destination.exists() && !destinationFile.fetchInfo(EFS.IGNORE_NAME_CASE, null).getAttribute(EFS.ATTRIBUTE_SYMLINK)) {
 						// neither the source nor the destination exist. this is REALLY bad
 						String message = NLS.bind(Messages.failedMove, source.getAbsolutePath(), destination.getAbsolutePath());
 						Policy.error(EFS.ERROR_WRITE, message);
