@@ -132,11 +132,7 @@ public class DeleteVisitor implements IUnifiedTreeVisitor, ICoreConstants {
 		} else {
 			IFileInfo info = node.fileInfo;
 			if (info == null) {
-				try {
-					info = node.getStore().fetchInfo(EFS.IGNORE_NAME_CASE, null);
-				} catch (CoreException e) {
-					info = new FileInfo(node.getLocalName());
-				}
+				info = new FileInfo(node.getLocalName());
 			}
 			if (((Workspace) target.getWorkspace()).getFileSystemManager().storeHistory(target)) {
 				store.addState(target.getFullPath(), node.getStore(), info, true);

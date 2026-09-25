@@ -14,6 +14,8 @@
 *******************************************************************************/
 package org.eclipse.core.internal.localstore;
 
+import static org.eclipse.core.internal.localstore.FileSystemResourceManager.fetchInfoIgnoringNameCase;
+
 import java.net.URI;
 import java.util.LinkedList;
 import org.eclipse.core.filesystem.EFS;
@@ -124,8 +126,7 @@ public class CopyVisitor implements IUnifiedTreeVisitor {
 			sourceStore.copy(destinationStore, EFS.SHALLOW, subMonitor.newChild(1));
 			//create the destination in the workspace
 			ResourceInfo info = localManager.getWorkspace().createResource(destination, updateFlags);
-			localManager.updateLocalSync(info,
-					destinationStore.fetchInfo(EFS.IGNORE_NAME_CASE, null).getLastModified());
+			localManager.updateLocalSync(info, fetchInfoIgnoringNameCase(destinationStore).getLastModified());
 			//update timestamps on aliases
 			getWorkspace().getAliasManager().updateAliases(destination, destinationStore, IResource.DEPTH_ZERO, monitor);
 			if (destination.getType() == IResource.FILE) {

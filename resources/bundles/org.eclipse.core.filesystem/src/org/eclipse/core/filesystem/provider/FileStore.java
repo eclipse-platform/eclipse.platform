@@ -178,7 +178,7 @@ public abstract class FileStore extends PlatformObject implements IFileStore {
 			Policy.error(EFS.ERROR_WRITE, NLS.bind(Messages.failedCopy, sourcePath), e);
 		} catch (CoreException e) {
 			//if we failed to write, try to cleanup the half written file
-			if (!destination.fetchInfo(EFS.IGNORE_NAME_CASE, null).exists()) {
+			if (!destination.exists()) {
 				destination.delete(EFS.NONE, null);
 			}
 			throw e;
