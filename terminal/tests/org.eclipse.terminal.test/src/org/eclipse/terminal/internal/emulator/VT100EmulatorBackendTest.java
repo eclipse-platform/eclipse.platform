@@ -1086,4 +1086,117 @@ public class VT100EmulatorBackendTest {
 		assertNull(term.getChars(3));
 		assertEquals("4444", new String(term.getChars(4))); // footer below the region is untouched
 	}
+
+	@Test
+	public void testAppendStringWide() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(4);
+		vt100.setDimensions(4, 10);
+		vt100.setCursor(0, 0);
+		// a wide character takes two cells, the second holding a null filler
+		vt100.appendString("한글");
+		assertEqualsTerm("한 글       \n" + "          \n" + "          \n" + "          ", toMultiLineText(term));
+		assertEquals(4, vt100.getCursorColumn());
+		vt100.setCursor(1, 0);
+		vt100.appendString("a한b");
+		assertEqualsTerm("한 글       \n" + "a한 b      \n" + "          \n" + "          ", toMultiLineText(term));
+		assertEquals(4, vt100.getCursorColumn());
+		// a character beyond the BMP is two chars in two cells
+		vt100.setCursor(2, 0);
+		vt100.appendString("a😀b");
+		assertEquals(4, vt100.getCursorColumn());
+		assertEquals("a😀b", new String(term.getChars(2), 0, 4));
+		// a combining mark takes no cell
+		vt100.setCursor(3, 0);
+		vt100.appendString("e\u0301x");
+		assertEquals(2, vt100.getCursorColumn());
+	}
+
+	@Test
+	public void testAppendStringWideAtMargin() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(4);
+		vt100.setDimensions(4, 5);
+		vt100.setCursor(0, 0);
+		vt100.appendString("abc한");
+		assertEqualsTerm("abc한 \n" + "     \n" + "     \n" + "     ", toMultiLineText(term));
+		// a wide character is never split across the margin: it goes to the next line whole
+		vt100.setCursor(1, 0);
+		vt100.appendString("abcd한");
+		assertEqualsTerm("abc한 \n" + "abcd \n" + "한    \n" + "     ", toMultiLineText(term));
+		assertTrue(term.isWrappedLine(1));
+		assertEquals(2, vt100.getCursorLine());
+		assertEquals(2, vt100.getCursorColumn());
+	}
+
+	@Test
+	public void testOverwriteHalfOfWide() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(4);
+		vt100.setDimensions(4, 10);
+		// writing over the glyph leaves its filler blank, and over the filler leaves the glyph blank
+		vt100.setCursor(0, 0);
+		vt100.appendString("한글");
+		vt100.setCursor(0, 0);
+		vt100.appendString("x");
+		assertEquals("x 글\000", new String(term.getChars(0), 0, 4));
+		vt100.setCursor(1, 0);
+		vt100.appendString("한글");
+		vt100.setCursor(1, 1);
+		vt100.appendString("x");
+		assertEquals(" x글\000", new String(term.getChars(1), 0, 4));
+		vt100.setCursor(2, 0);
+		vt100.appendString("한글");
+		vt100.setCursor(2, 3);
+		vt100.appendString("나");
+		assertEquals("한\000 나\000", new String(term.getChars(2), 0, 5));
+		// narrow over narrow is untouched by any of this
+		vt100.setCursor(3, 0);
+		vt100.appendString("abcd");
+		vt100.setCursor(3, 1);
+		vt100.appendString("XY");
+		assertEquals("aXYd", new String(term.getChars(3), 0, 4));
+	}
+
+	@Test
+	public void testInsertModeWide() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(1);
+		vt100.setDimensions(1, 10);
+		vt100.setCursor(0, 0);
+		vt100.appendString("abcdef");
+		vt100.setCursorColumn(1);
+		vt100.setInsertMode(true);
+		vt100.appendString("한");
+		// pushes the rest along by two cells, not one
+		assertEquals("a한\000bcdef", new String(term.getChars(0), 0, 8));
+	}
+
+	@Test
+	public void testWrappedLineMarkComesOff() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(3);
+		vt100.setDimensions(3, 5);
+		vt100.setCursor(0, 0);
+		// a line the terminal folded is marked as running on to the next
+		vt100.appendString("abcdefg");
+		assertTrue(term.isWrappedLine(0));
+		assertFalse(term.isWrappedLine(1));
+		// drawn over shorter, the line ends there and the mark comes off
+		vt100.setCursor(0, 0);
+		vt100.appendString("xyz");
+		assertFalse(term.isWrappedLine(0));
+		// erasing to the end of the line says the same
+		vt100.setCursor(0, 0);
+		vt100.appendString("abcdefg");
+		assertTrue(term.isWrappedLine(0));
+		vt100.setCursor(0, 3);
+		vt100.eraseLineToEnd();
+		assertFalse(term.isWrappedLine(0));
+	}
 }

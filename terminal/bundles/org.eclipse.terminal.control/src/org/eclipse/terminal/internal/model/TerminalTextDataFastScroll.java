@@ -308,4 +308,10 @@ public class TerminalTextDataFastScroll implements ITerminalTextData {
 		fData.setWrappedLine(getPositionOfLine(line));
 	}
 
+	@Override
+	public void clearWrappedLine(int line) {
+		validateLineParameter(line);
+		fData.clearWrappedLine(getPositionOfLine(line));
+	}
+
 }
