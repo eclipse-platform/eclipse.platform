@@ -157,4 +157,14 @@ public class SynchronizedTerminalTextData implements ITerminalTextData {
 	synchronized public void setWrappedLine(int line) {
 		fData.setWrappedLine(line);
 	}
+
+	@Override
+	synchronized public String getCluster(int line, int column) {
+		return fData.getCluster(line, column);
+	}
+
+	@Override
+	synchronized public void setCluster(int line, int column, String cluster) {
+		fData.setCluster(line, column, cluster);
+	}
 }

@@ -334,4 +334,15 @@ public class TerminalTextData implements ITerminalTextData {
 	public void setWrappedLine(int line) {
 		fData.setWrappedLine(line);
 	}
+
+	@Override
+	public String getCluster(int line, int column) {
+		return fData.getCluster(line, column);
+	}
+
+	@Override
+	public void setCluster(int line, int column, String cluster) {
+		fData.setCluster(line, column, cluster);
+		sendLineChangedToSnapshots(line);
+	}
 }
