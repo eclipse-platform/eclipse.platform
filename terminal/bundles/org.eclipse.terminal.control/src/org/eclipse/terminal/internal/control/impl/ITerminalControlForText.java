@@ -47,4 +47,19 @@ public interface ITerminalControlForText {
 	 */
 	void enableApplicationCursorKeys(boolean enable);
 
+	/**
+	 * A program that asks for bracketed paste (CSI ?2004) wants pasted text marked
+	 * as such, so that it can take it as text rather than as something typed.
+	 */
+	default void enableBracketedPaste(boolean enable) {
+	}
+
+	/**
+	 * Shows or hides the cursor at the program's request (DEC mode 25).
+	 *
+	 * @param show whether the cursor is to be drawn
+	 */
+	default void showCursor(boolean show) {
+	}
+
 }
