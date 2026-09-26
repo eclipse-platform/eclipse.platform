@@ -11,6 +11,8 @@ package org.eclipse.terminal.internal.emulator;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -375,4 +377,32 @@ public class VT100EmulatorTest {
 				() -> assertEquals(List.of("TITLE1", "TITLE2"), control.getAllTitles()));
 	}
 
+	@Test
+	public void testDecPrivateModes() {
+		// the cursor hidden and shown again by a program
+		run("\u001b[?25l");
+		assertFalse(control.isCursorShown());
+		run("\u001b[?25h");
+		assertTrue(control.isCursorShown());
+		// several modes in one sequence, as ncurses sends them: every one of them counts
+		run("\u001b[?2004;25l");
+		assertAll(() -> assertFalse(control.isCursorShown()), () -> assertFalse(control.isBracketedPaste()));
+		run("\u001b[?25;2004h");
+		assertAll(() -> assertTrue(control.isCursorShown()), () -> assertTrue(control.isBracketedPaste()));
+	}
+
+	@Test
+	public void testMouseModes() {
+		// how ncurses turns the mouse on: both modes in one sequence
+		run("\u001b[?1006;1000h");
+		assertAll(() -> assertEquals(1000, control.getMouseMode()), () -> assertTrue(control.isSgrMouseEncoding()));
+		run("\u001b[?1002h");
+		assertEquals(1002, control.getMouseMode());
+		run("\u001b[?1000;1006l");
+		assertAll(() -> assertEquals(0, control.getMouseMode()), () -> assertFalse(control.isSgrMouseEncoding()));
+		run("\u001b[?1004h");
+		assertTrue(control.isFocusReporting());
+		run("\u001b[?1004l");
+		assertFalse(control.isFocusReporting());
+	}
 }
