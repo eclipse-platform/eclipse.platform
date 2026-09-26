@@ -23,6 +23,7 @@ import org.junit.platform.suite.api.Suite;
 @Suite
 @SelectClasses({ //
 		org.eclipse.core.tests.filesystem.AllFileSystemTests.class, //
+		org.eclipse.core.tests.filesystem.zip.AllZipFileSystemTests.class, //
 		org.eclipse.core.tests.internal.alias.AllAliasTests.class, //
 		org.eclipse.core.tests.internal.builders.AllBuilderTests.class, //
 		org.eclipse.core.tests.internal.dtree.AllDtreeTests.class, //
