@@ -914,6 +914,10 @@ public class VT100Emulator implements ControlListener {
 				style = style.setBold(true);
 				break;
 
+			case 2:
+				style = style.setDim(true);
+				break;
+
 			case 4:
 				style = style.setUnderline(true);
 				break;
@@ -931,7 +935,8 @@ public class VT100Emulator implements ControlListener {
 
 			case 21:
 			case 22:
-				style = style.setBold(false);
+				// Normal intensity: undoes both of the two that change it.
+				style = style.setBold(false).setDim(false);
 				break;
 
 			case 24:
