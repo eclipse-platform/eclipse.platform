@@ -262,9 +262,16 @@ public class TerminalTextData implements ITerminalTextData {
 
 	@Override
 	public void copy(ITerminalTextData source) {
+		int height = getHeight(), width = getWidth();
 		fData.copy(source);
 		fCursorLine = source.getCursorLine();
 		fCursorColumn = source.getCursorColumn();
+		// Every line and the size of the buffer with them. Without saying so the view
+		// keeps drawing what it last saw, which is the screen a program left behind.
+		sendLinesChangedToSnapshot(0, Math.max(height, getHeight()));
+		if (height != getHeight() || width != getWidth()) {
+			sendDimensionsChanged();
+		}
 	}
 
 	@Override
