@@ -42,16 +42,103 @@ public class UrlUtil {
 	static final Pattern safariPattern = Pattern.compile(
 			"Safari/(\\d+)(?:\\.|\\s|$)", Pattern.CASE_INSENSITIVE); //$NON-NLS-1$
 
-	// Default locale to use for serving requests to help
-	private static String defaultLocale;
-	// Locales that infocenter can serve in addition to the default locale.
-	// null indicates that infocenter can serve every possible client locale.
-	private static Collection<String> locales;
-
 	private static final int INFOCENTER_DIRECTION_BY_LOCALE = 1;
 	private static final int INFOCENTER_DIRECTION_LTR = 2;
 	private static final int INFOCENTER_DIRECTION_RTL = 3;
-	private static int infocenterDirection = INFOCENTER_DIRECTION_BY_LOCALE;
+
+	private static class Holder {
+
+		/** Default locale to use for serving requests to help. */
+		private static final String DEFAULT_LOCALE;
+
+		/**
+		 * The locales that an infocenter can serve in addition to the default locale.
+		 * {@code null} indicates that infocenter can serve every possible client
+		 * locale.
+		 */
+		private static final Collection<String> LOCALES;
+
+		private static final int INFOCENTER_DIRECTION;
+
+		static {
+			String defaultLocale = Platform.getNL();
+			Collection<String> locales = null;
+			int infocenterDirection = INFOCENTER_DIRECTION_BY_LOCALE;
+
+			// initialize default locale
+			if (defaultLocale == null) {
+				defaultLocale = Locale.getDefault().toString();
+			}
+			if (BaseHelpSystem.getMode() == BaseHelpSystem.MODE_INFOCENTER) {
+
+				// locale strings as passed in command line or in preferences
+				final List<String> infocenterLocales = new ArrayList<>();
+
+				// first check if locales passed as command line arguments
+				String[] args = Platform.getCommandLineArgs();
+				boolean localeOption = false;
+				for (String arg : args) {
+					if ("-locales".equalsIgnoreCase(arg)) { //$NON-NLS-1$
+						localeOption = true;
+						continue;
+					} else if (arg.startsWith("-")) { //$NON-NLS-1$
+						localeOption = false;
+						continue;
+					}
+					if (localeOption) {
+						infocenterLocales.add(arg);
+					}
+				}
+				// if no locales from command line, get them from preferences
+				if (infocenterLocales.isEmpty()) {
+					String preferredLocales = Platform.getPreferencesService().getString(HelpBasePlugin.PLUGIN_ID,
+							("locales"), "", null); //$NON-NLS-1$ //$NON-NLS-2$
+					StringTokenizer tokenizer = new StringTokenizer(preferredLocales, " ,\t"); //$NON-NLS-1$
+					while (tokenizer.hasMoreTokens()) {
+						infocenterLocales.add(tokenizer.nextToken());
+					}
+				}
+
+				// format locales and collect in a set for lookup
+				if (!infocenterLocales.isEmpty()) {
+					locales = new HashSet<>(10, 0.4f);
+					for (String locale : infocenterLocales) {
+						if (locale.length() >= 5) {
+							locales.add(locale.substring(0, 2).toLowerCase(Locale.ENGLISH) + "_" //$NON-NLS-1$
+									+ locale.substring(3, 5).toUpperCase(Locale.ENGLISH));
+
+						} else if (locale.length() >= 2) {
+							locales.add(locale.substring(0, 2).toLowerCase(Locale.ENGLISH));
+						}
+					}
+				}
+
+				// initialize direction
+				// from property
+				String orientation = System.getProperty("eclipse.orientation"); //$NON-NLS-1$
+				if ("rtl".equals(orientation)) { //$NON-NLS-1$
+					infocenterDirection = INFOCENTER_DIRECTION_RTL;
+				} else if ("ltr".equals(orientation)) { //$NON-NLS-1$
+					infocenterDirection = INFOCENTER_DIRECTION_LTR;
+				} else {
+					// from command line
+					for (int i = 0; i < args.length; i++) {
+						if ("-dir".equalsIgnoreCase(args[i])) { //$NON-NLS-1$
+							if ((i + 1) < args.length && "rtl".equalsIgnoreCase(args[i + 1])) { //$NON-NLS-1$
+								infocenterDirection = INFOCENTER_DIRECTION_RTL;
+								break;
+							}
+							infocenterDirection = INFOCENTER_DIRECTION_LTR;
+							break;
+						}
+					}
+				}
+			}
+			DEFAULT_LOCALE = defaultLocale;
+			LOCALES = locales;
+			INFOCENTER_DIRECTION = infocenterDirection;
+		}
+	}
 
 	/**
 	 * Encodes string for embedding in JavaScript source
@@ -467,36 +554,33 @@ public class UrlUtil {
 	 */
 	public static String getLocale(HttpServletRequest request,
 			HttpServletResponse response) {
-		if (defaultLocale == null) {
-			initializeNL();
-		}
 		if ((BaseHelpSystem.getMode() != BaseHelpSystem.MODE_INFOCENTER)
 				|| request == null) {
-			return defaultLocale;
+			return Holder.DEFAULT_LOCALE;
 		}
 
 		// use locale passed in a request in current user session
 		String forcedLocale = getForcedLocale(request, response);
 		if (forcedLocale != null) {
-			if (locales == null) {
+			if (Holder.LOCALES == null) {
 				// infocenter set up to serve any locale
 				return forcedLocale;
 			}
 			// match forced locale with one of infocenter locales
-			if (locales.contains(forcedLocale)) {
+			if (Holder.LOCALES.contains(forcedLocale)) {
 				return forcedLocale;
 			}
 			// match language of forced locale with one of infocenter locales
 			if (forcedLocale.length() > 2) {
 				String ll = forcedLocale.substring(0, 2);
-				if (locales.contains(ll)) {
+				if (Holder.LOCALES.contains(ll)) {
 					return ll;
 				}
 			}
 		}
 
 		// use one of the browser locales
-		if (locales == null) {
+		if (Holder.LOCALES == null) {
 			// infocenter set up to serve any locale
 			return request.getLocale().toString();
 		}
@@ -505,21 +589,21 @@ public class UrlUtil {
 			String locale = e.nextElement().toString();
 			if (locale.length() >= 5) {
 				String ll_CC = locale.substring(0, 5);
-				if (locales.contains(ll_CC)) {
+				if (Holder.LOCALES.contains(ll_CC)) {
 					// client locale available
 					return ll_CC;
 				}
 			}
 			if (locale.length() >= 2) {
 				String ll = locale.substring(0, 2);
-				if (locales.contains(ll)) {
+				if (Holder.LOCALES.contains(ll)) {
 					// client language available
 					return ll;
 				}
 			}
 		}
 		// no match
-		return defaultLocale;
+		return Holder.DEFAULT_LOCALE;
 	}
 
 	/*
@@ -587,119 +671,20 @@ public class UrlUtil {
 		return forcedLocale;
 	}
 
-	/**
-	 * If locales for infocenter specified in prefernces or as command line
-	 * parameters, this methods stores these locales in locales local variable
-	 * for later access.
-	 */
-	private static synchronized void initializeNL() {
-		if (defaultLocale != null) {
-			// already initialized
-			return;
-		}
-		initializeLocales();
-		if ((BaseHelpSystem.getMode() == BaseHelpSystem.MODE_INFOCENTER)) {
-			initializeIcDirection();
-		}
-
-	}
-	private static void initializeLocales() {
-		// initialize default locale
-		defaultLocale = Platform.getNL();
-		if (defaultLocale == null) {
-			defaultLocale = Locale.getDefault().toString();
-		}
-		if (BaseHelpSystem.getMode() != BaseHelpSystem.MODE_INFOCENTER) {
-			return;
-		}
-
-		// locale strings as passed in command line or in preferences
-		final List<String> infocenterLocales= new ArrayList<>();
-
-		// first check if locales passed as command line arguments
-		String[] args = Platform.getCommandLineArgs();
-		boolean localeOption = false;
-		for (String arg : args) {
-			if ("-locales".equalsIgnoreCase(arg)) { //$NON-NLS-1$
-				localeOption = true;
-				continue;
-			} else if (arg.startsWith("-")) { //$NON-NLS-1$
-				localeOption = false;
-				continue;
-			}
-			if (localeOption) {
-				infocenterLocales.add(arg);
-			}
-		}
-		// if no locales from command line, get them from preferences
-		if (infocenterLocales.isEmpty()) {
-			String preferredLocales = Platform.getPreferencesService().getString
-				(HelpBasePlugin.PLUGIN_ID, ("locales"), "", null); //$NON-NLS-1$ //$NON-NLS-2$
-			StringTokenizer tokenizer = new StringTokenizer(preferredLocales,
-					" ,\t"); //$NON-NLS-1$
-			while (tokenizer.hasMoreTokens()) {
-				infocenterLocales.add(tokenizer.nextToken());
-			}
-		}
-
-		// format locales and collect in a set for lookup
-		if (!infocenterLocales.isEmpty()) {
-			locales = new HashSet<>(10, 0.4f);
-			for (String locale : infocenterLocales) {
-				if (locale.length() >= 5) {
-					locales.add(locale.substring(0, 2).toLowerCase(Locale.ENGLISH) + "_" //$NON-NLS-1$
-							+ locale.substring(3, 5).toUpperCase(Locale.ENGLISH));
-
-				} else if (locale.length() >= 2) {
-					locales.add(locale.substring(0, 2).toLowerCase(Locale.ENGLISH));
-				}
-			}
-		}
-	}
-
-	private static void initializeIcDirection() {
-		// from property
-		String orientation = System.getProperty("eclipse.orientation"); //$NON-NLS-1$
-		if ("rtl".equals(orientation)) { //$NON-NLS-1$
-			infocenterDirection = INFOCENTER_DIRECTION_RTL;
-			return;
-		} else if ("ltr".equals(orientation)) { //$NON-NLS-1$
-			infocenterDirection = INFOCENTER_DIRECTION_LTR;
-			return;
-		}
-		// from command line
-		String[] args = Platform.getCommandLineArgs();
-		for (int i = 0; i < args.length; i++) {
-			if ("-dir".equalsIgnoreCase(args[i])) { //$NON-NLS-1$
-				if ((i + 1) < args.length
-						&& "rtl".equalsIgnoreCase(args[i + 1])) { //$NON-NLS-1$
-					infocenterDirection = INFOCENTER_DIRECTION_RTL;
-					return;
-				}
-				infocenterDirection = INFOCENTER_DIRECTION_LTR;
-				return;
-			}
-		}
-		// by client locale
-	}
-
 	public static boolean isRTL(HttpServletRequest request,
 			HttpServletResponse response) {
 		if (BaseHelpSystem.getMode() != BaseHelpSystem.MODE_INFOCENTER) {
 			return ProductPreferences.isRTL();
 		}
-		if (infocenterDirection == INFOCENTER_DIRECTION_RTL) {
+		if (Holder.INFOCENTER_DIRECTION == INFOCENTER_DIRECTION_RTL) {
 			return true;
-		} else if (infocenterDirection == INFOCENTER_DIRECTION_LTR) {
+		} else if (Holder.INFOCENTER_DIRECTION == INFOCENTER_DIRECTION_LTR) {
 			return false;
 		}
 		String locale = getLocale(request, response);
-		if (locale.startsWith("ar") || locale.startsWith("fa") //$NON-NLS-1$ //$NON-NLS-2$
+		return (locale.startsWith("ar") || locale.startsWith("fa") //$NON-NLS-1$ //$NON-NLS-2$
 				|| locale.startsWith("he") || locale.startsWith("iw") //$NON-NLS-1$ //$NON-NLS-2$
-				|| locale.startsWith("ur")) { //$NON-NLS-1$
-			return true;
-		}
-		return false;
+				|| locale.startsWith("ur")); //$NON-NLS-1$
 	}
 
 	// Return true if the URI is of the form /<context>/nav/*
