@@ -15,11 +15,13 @@ package org.eclipse.debug.tests.console;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
 import org.eclipse.core.runtime.ILog;
@@ -80,6 +82,57 @@ public class InputStreamMonitorTests {
 			return true;
 		}, CONDITION_TIMEOUT_IN_MILLIS);
 		assertThat(sysin.available()).isEqualTo(numberOfElements);
+	}
+
+	/**
+	 * Data written before {@link InputStreamMonitor#closeInputStream()} must reach
+	 * the stream before it is closed.
+	 */
+	@Test
+	public void testCloseInputStreamWritesPendingData() throws Exception {
+		ByteArrayOutputStream written = new ByteArrayOutputStream();
+		AtomicBoolean writtenAfterClose = new AtomicBoolean();
+		AtomicBoolean closed = new AtomicBoolean();
+		OutputStream slowStream = new OutputStream() {
+			@Override
+			public void write(int b) throws IOException {
+				write(new byte[] { (byte) b }, 0, 1);
+			}
+
+			@Override
+			public void write(byte[] b, int off, int len) throws IOException {
+				if (closed.get()) {
+					writtenAfterClose.set(true);
+				}
+				try {
+					Thread.sleep(5);
+				} catch (InterruptedException e) {
+					Thread.currentThread().interrupt();
+				}
+				written.write(b, off, len);
+			}
+
+			@Override
+			public void close() {
+				closed.set(true);
+			}
+		};
+		InputStreamMonitor monitor = new InputStreamMonitor(slowStream);
+		try {
+			monitor.startMonitoring();
+			byte[] chunk = new byte[] { 1, 2, 3, 4 };
+			int chunks = 20;
+			for (int i = 0; i < chunks; i++) {
+				monitor.write(chunk, 0, chunk.length);
+			}
+			monitor.closeInputStream();
+			TestUtil.waitWhile(() -> !closed.get(), CONDITION_TIMEOUT_IN_MILLIS);
+			assertThat(closed.get()).withFailMessage("stream not closed").isTrue();
+			assertThat(written.size()).as("bytes written before close").isEqualTo(chunks * chunk.length);
+			assertThat(writtenAfterClose.get()).as("data written after close").isFalse();
+		} finally {
+			monitor.close();
+		}
 	}
 
 	/**

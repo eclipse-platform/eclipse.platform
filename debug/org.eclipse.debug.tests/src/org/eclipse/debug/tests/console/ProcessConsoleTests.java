@@ -587,6 +587,39 @@ public class ProcessConsoleTests {
 	}
 
 	/**
+	 * Test that a process reading its standard input from a file receives EOF
+	 * after the whole file content.
+	 */
+	@Test
+	public void testInputFromFileSendsEof() throws Exception {
+		byte[] input = "0 8 1\n2 7 1\n3 4 2\n".getBytes(StandardCharsets.US_ASCII);
+		String consoleEncoding = StandardCharsets.UTF_8.name();
+
+		final File inFile = createTmpFile("testinput-eof.txt");
+		Files.write(inFile.toPath(), input);
+		final MockProcess mockProcess = new MockProcess(MockProcess.RUN_FOREVER);
+		try {
+			Map<String, Object> launchConfigAttributes = new HashMap<>();
+			launchConfigAttributes.put(DebugPlugin.ATTR_CONSOLE_ENCODING, consoleEncoding);
+			launchConfigAttributes.put(IDebugUIConstants.ATTR_CAPTURE_STDIN_FILE, inFile.getCanonicalPath());
+			launchConfigAttributes.put(IDebugUIConstants.ATTR_CAPTURE_IN_CONSOLE, false);
+			final IProcess process = mockProcess.toRuntimeProcess("inputFromFileEof", launchConfigAttributes);
+			final ProcessConsole console = new ProcessConsole(process, new ConsoleColorProvider(), consoleEncoding);
+			try {
+				console.initialize();
+				waitWhile(() -> !mockProcess.isStdinClosed(), () -> "Process stdin was not closed after input file was read.");
+			} finally {
+				console.destroy();
+			}
+		} finally {
+			mockProcess.destroy();
+		}
+
+		byte[] receivedInput = mockProcess.getReceivedInput();
+		assertThat(receivedInput).as("received input").isEqualTo(input);
+	}
+
+	/**
 	 * Test that console name updates (elapsed time) only happen for visible
 	 * consoles. Hidden consoles should not update their name. When a hidden
 	 * console is brought to front, it should start updating. When the console

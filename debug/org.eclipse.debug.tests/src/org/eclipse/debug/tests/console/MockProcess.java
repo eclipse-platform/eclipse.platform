@@ -43,7 +43,13 @@ public class MockProcess extends Process {
 	public static final int RUN_FOREVER = -1;
 
 	/** Mockup processe's standard streams. */
-	private final ByteArrayOutputStream stdin = new ByteArrayOutputStream();
+	private final ByteArrayOutputStream stdin = new ByteArrayOutputStream() {
+		@Override
+		public void close() {
+			stdinClosed = true;
+		}
+	};
+	private volatile boolean stdinClosed;
 	private final InputStream stdout;
 	private final InputStream stderr;
 
@@ -213,6 +219,14 @@ public class MockProcess extends Process {
 		stdin.reset();
 		receivedInput.addAndGet(content.length);
 		return content;
+	}
+
+	/**
+	 * @return whether the standard input stream of this process was closed, i.e.
+	 *         the process would read EOF
+	 */
+	public boolean isStdinClosed() {
+		return stdinClosed;
 	}
 
 	@Override
