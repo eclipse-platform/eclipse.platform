@@ -390,4 +390,13 @@ public class VT100EmulatorTest {
 		run("\u001b[?25;2004h");
 		assertAll(() -> assertTrue(control.isCursorShown()), () -> assertTrue(control.isBracketedPaste()));
 	}
+
+	@Test
+	public void testResetStateEndsDecPrivateModes() {
+		run("\u001b[?25l\u001b[?2004h");
+		assertAll(() -> assertFalse(control.isCursorShown()), () -> assertTrue(control.isBracketedPaste()));
+		// the connection ends while the program has them set; the next one starts clean
+		emulator.resetState();
+		assertAll(() -> assertTrue(control.isCursorShown()), () -> assertFalse(control.isBracketedPaste()));
+	}
 }

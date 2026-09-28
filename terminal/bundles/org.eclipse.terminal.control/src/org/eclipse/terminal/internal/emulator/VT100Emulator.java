@@ -1590,6 +1590,10 @@ public class VT100Emulator implements ControlListener {
 		text.setStyle(text.getDefaultStyle());
 		text.setScrollRegion(-1, -1);
 		text.setInsertMode(false);
+		// the modes a program asked for end with its connection: a program that
+		// hid the cursor and was cut off must not leave the next shell without one
+		terminal.showCursor(true);
+		terminal.enableBracketedPaste(false);
 	}
 
 	//	public OutputStream getOutputStream() {
