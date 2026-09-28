@@ -279,6 +279,21 @@ public class VT100EmulatorTest {
 		assertAll(() -> assertCursorLocation(0, 0), () -> assertTextEquals(""));
 	}
 
+	@Test
+	public void testClearScreenKeepsItInHistory() {
+		data.setMaxHeight(1000);
+		for (int i = 0; i < 30; i++) {
+			run("Hello " + i + "\r\n");
+		}
+		// what ConPTY sends at the start of every connection on Windows
+		run(CLEAR_ENTIRE_SCREEN + "\u001b[m" + CURSOR_POSITION_TOP_LEFT + "prompt$ ");
+		int top = data.getHeight() - WINDOW_LINES; // first line of the screen
+		assertAll(() -> assertEquals("Hello 29", new String(data.getChars(top - 1)).trim()),
+				() -> assertEquals("Hello 0", new String(data.getChars(0)).trim()),
+				() -> assertEquals("prompt$", new String(data.getChars(top)).replace('\000', ' ').trim()),
+				() -> assertCursorLocation(top, 8)); // the top of the screen, counted in the buffer
+	}
+
 	/**
 	 * Runs what "up arrow" would send back to terminal in less/man/etc.
 	 */
@@ -458,7 +473,12 @@ public class VT100EmulatorTest {
 		// a late request to leave does not bring back the screen from before the reset
 		run("after");
 		run(ALTERNATE_SCREEN_OFF);
-		assertTextEquals("after");
+		// the reset kept the shell's lines in the history, and the screen shows what came after
+		assertEquals("after", new String(data.getChars(data.getHeight() - WINDOW_LINES), 0, 5));
+		for (int line = 0; line < data.getHeight(); line++) {
+			char[] chars = data.getChars(line);
+			assertTrue(chars == null || !new String(chars).contains("Full screen"), "line " + line);
+		}
 	}
 
 	@Test
@@ -520,5 +540,26 @@ public class VT100EmulatorTest {
 		emulator.setBufferLineLimit(emulator.getBufferLineLimit()); // read and written back
 		run(ALTERNATE_SCREEN_OFF);
 		assertEquals(1000, data.getMaxHeight());
+	}
+
+	@Test
+	public void testRedrawingOnTheAlternateScreenKeepsTheHistory() {
+		data.setMaxHeight(1000);
+		run("Hello 1\r\nHello 2");
+		int height = data.getHeight();
+		// a full screen program redraws with CSI 2 J; its frames do not go into the history
+		run(ALTERNATE_SCREEN_ON);
+		for (int i = 0; i < 5; i++) {
+			run("\u001b[2J\u001b[H", "frame " + i);
+		}
+		run(ALTERNATE_SCREEN_OFF);
+		assertEquals(height, data.getHeight());
+		for (int line = 0; line < data.getHeight(); line++) {
+			char[] chars = data.getChars(line);
+			assertTrue(chars == null || !new String(chars).contains("frame"), "line " + line);
+		}
+		// back on the normal screen, clearing it keeps it again
+		run("\u001b[2J");
+		assertEquals(height + 2, data.getHeight());
 	}
 }

@@ -376,10 +376,43 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 	@Override
 	public void eraseAll() {
 		synchronized (fTerminal) {
+			// What is on the screen goes into the history before it is erased, as in
+			// Windows Terminal and VTE, so that clearing the screen does not destroy
+			// what the user was reading. It matters on Windows, where ConPTY clears
+			// the screen at the start of every connection. Blank lines at the bottom
+			// of the screen are left out, but not the row a line runs on to: the
+			// history ends where a line ends. The alternate screen keeps no history,
+			// so there the lines simply go.
+			int used = fLines;
+			while (used > 0 && isBlank(toAbsoluteLine(used - 1))) {
+				used--;
+			}
+			while (used > 0 && used < fLines && fTerminal.isWrappedLine(toAbsoluteLine(used - 1))) {
+				used++;
+			}
+			for (int i = 0; i < used; i++) {
+				fTerminal.addLine();
+			}
+			if (used > 0) {
+				// the screen moved down the buffer: the cursor stays on its row of it
+				setCursorLine(fCursorLine);
+			}
 			for (int line = toAbsoluteLine(0); line < toAbsoluteLine(fLines); line++) {
 				fTerminal.cleanLine(line);
 			}
 		}
+	}
+
+	private boolean isBlank(int line) {
+		char[] chars = fTerminal.getChars(line);
+		if (chars != null) {
+			for (char c : chars) {
+				if (c != '\000' && c != ' ') {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	@Override
