@@ -1622,6 +1622,10 @@ public class VT100Emulator implements ControlListener {
 		// hid the cursor and was cut off must not leave the next shell without one
 		terminal.showCursor(true);
 		terminal.enableBracketedPaste(false);
+		terminal.enableMouseReporting(0);
+		terminal.enableSgrMouseEncoding(false);
+		terminal.enableFocusReporting(false);
+		terminal.enableSynchronizedOutput(false); // or the screen would stay frozen
 	}
 
 	//	public OutputStream getOutputStream() {

@@ -106,6 +106,17 @@ public class MockTerminalControlForText implements ITerminalControlForText {
 		return focusReporting;
 	}
 
+	private boolean synchronizedOutput;
+
+	@Override
+	public void enableSynchronizedOutput(boolean redrawing) {
+		synchronizedOutput = redrawing;
+	}
+
+	public boolean isSynchronizedOutput() {
+		return synchronizedOutput;
+	}
+
 	@Override
 	public void enableApplicationCursorKeys(boolean enable) {
 		throw new UnsupportedOperationException();

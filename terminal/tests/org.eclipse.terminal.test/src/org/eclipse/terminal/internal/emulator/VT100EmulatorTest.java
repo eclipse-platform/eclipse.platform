@@ -414,4 +414,16 @@ public class VT100EmulatorTest {
 		run("\u001b[?1004l");
 		assertFalse(control.isFocusReporting());
 	}
+
+	@Test
+	public void testResetStateEndsMouseModes() {
+		run("\u001b[?1002;1006;1004h\u001b[?2026h");
+		assertAll(() -> assertEquals(1002, control.getMouseMode()), () -> assertTrue(control.isSgrMouseEncoding()),
+				() -> assertTrue(control.isFocusReporting()), () -> assertTrue(control.isSynchronizedOutput()));
+		// a program cut off while listening to the mouse, or in the middle of a
+		// synchronized update, must not leave the next connection with it
+		emulator.resetState();
+		assertAll(() -> assertEquals(0, control.getMouseMode()), () -> assertFalse(control.isSgrMouseEncoding()),
+				() -> assertFalse(control.isFocusReporting()), () -> assertFalse(control.isSynchronizedOutput()));
+	}
 }

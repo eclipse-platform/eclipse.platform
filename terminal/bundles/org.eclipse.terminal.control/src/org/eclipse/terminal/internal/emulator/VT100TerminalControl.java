@@ -1443,7 +1443,7 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 	 * @return whether the program was told, in which case the canvas stays put
 	 */
 	private boolean reportMouseWheel(int count, int modifiers, int line, int column) {
-		if (fMouseMode == 0 || count == 0) {
+		if (fMouseMode == 0 || count == 0 || !isConnected()) {
 			return false;
 		}
 		int button = (count > 0 ? 64 : 65) + modifiers; // up, down
@@ -1466,7 +1466,7 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 	private class MouseReporter implements TextCanvas.IMouseButtonHandler {
 		@Override
 		public boolean mouseButton(int button, int modifiers, int line, int column, boolean pressed) {
-			if (fMouseMode == 0 || button < 1 || button > 3) {
+			if (fMouseMode == 0 || button < 1 || button > 3 || !isConnected()) {
 				return false;
 			}
 			sendString(mouseReport(button - 1 + modifiers, line, column, pressed));
@@ -1476,7 +1476,7 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 		@Override
 		public boolean mouseMoved(int button, int modifiers, int line, int column) {
 			// 1002 is only interested while a button is held, 1003 in every move.
-			if (fMouseMode < 1002 || (fMouseMode == 1002 && button == 0)) {
+			if (fMouseMode < 1002 || (fMouseMode == 1002 && button == 0) || !isConnected()) {
 				return false;
 			}
 			if (line == fLastReportedLine && column == fLastReportedColumn) {
@@ -1501,7 +1501,8 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 	 * off work while the terminal is not the window being typed into.
 	 */
 	private void reportFocus(boolean gained) {
-		if (fFocusReporting) {
+		// nobody to tell once the connection is gone, and no stream to tell it on
+		if (fFocusReporting && isConnected()) {
 			sendString(gained ? "[I" : "[O"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
