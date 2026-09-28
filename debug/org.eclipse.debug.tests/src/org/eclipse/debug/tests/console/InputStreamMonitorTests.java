@@ -89,6 +89,7 @@ public class InputStreamMonitorTests {
 	 * the stream before it is closed.
 	 */
 	@Test
+	@SuppressWarnings("resource")
 	public void testCloseInputStreamWritesPendingData() throws Exception {
 		ByteArrayOutputStream written = new ByteArrayOutputStream();
 		AtomicBoolean writtenAfterClose = new AtomicBoolean();

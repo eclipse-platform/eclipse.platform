@@ -203,7 +203,7 @@ public class InputStreamMonitor {
 				// Queue could receive more input between last empty check and
 				// lock acquire. See https://bugs.eclipse.org/550834
 				// Use while instead of if to guard against spurious wakeups.
-				while (fQueue.isEmpty()) {
+				while (fQueue.isEmpty() && !fClosed) {
 					fLock.wait();
 				}
 			}
@@ -230,8 +230,11 @@ public class InputStreamMonitor {
 				fLock.notifyAll();
 				return;
 			}
+			// Set under the lock so a writer thread started concurrently by
+			// startMonitoring() sees it and does not wait for data forever.
+			fClosed = true;
+			fLock.notifyAll();
 		}
-		fClosed = true;
 		fStream.close();
 	}
 }
