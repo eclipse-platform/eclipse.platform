@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2017 IBM Corporation and others.
+ * Copyright (c) 2010, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -19,7 +19,9 @@ package org.eclipse.e4.core.di.internal.extensions;
 import jakarta.annotation.PreDestroy;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayDeque;
 import java.util.Collection;
+import java.util.Deque;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -66,7 +68,19 @@ public class EventObjectSupplier extends ExtendedObjectSupplier implements Event
 		this.eventAdmin = eventAdmin;
 	}
 
-	protected Map<String, Event> currentEvents = new HashMap<>();
+	/**
+	 * The events currently being dispatched, per thread and topic.
+	 * <p>
+	 * Events may be dispatched concurrently by several threads (and even
+	 * re-entrantly on the same thread if an event handler sends another event).
+	 * Since the event is published here only to be picked up by
+	 * {@link #get(IObjectDescriptor, IRequestor, boolean, boolean)} while the
+	 * arguments of the requestor are resolved - which happens on the very same
+	 * thread - the events are tracked per thread. A stack is used per topic to
+	 * support nested dispatching of the same topic.
+	 * </p>
+	 */
+	private final ThreadLocal<Map<String, Deque<Event>>> currentEvents = new ThreadLocal<>();
 
 	class DIEventHandler implements EventHandler {
 
@@ -86,8 +100,11 @@ public class EventObjectSupplier extends ExtendedObjectSupplier implements Event
 			}
 
 			addCurrentEvent(topic, event);
-			requestor.resolveArguments(false);
-			removeCurrentEvent(topic);
+			try {
+				requestor.resolveArguments(false);
+			} finally {
+				removeCurrentEvent(topic);
+			}
 
 			requestor.execute();
 		}
@@ -136,15 +153,40 @@ public class EventObjectSupplier extends ExtendedObjectSupplier implements Event
 	private final Map<Subscriber, ServiceRegistration<EventHandler>> registrations = new HashMap<>();
 
 	protected void addCurrentEvent(String topic, Event event) {
-		synchronized (currentEvents) {
-			currentEvents.put(topic, event);
+		Map<String, Deque<Event>> events = currentEvents.get();
+		if (events == null) {
+			events = new HashMap<>(2);
+			currentEvents.set(events);
 		}
+		// the stack grows at the head: the innermost delivery is the current one
+		events.computeIfAbsent(topic, key -> new ArrayDeque<>(1)).addFirst(event);
 	}
 
 	protected void removeCurrentEvent(String topic) {
-		synchronized (currentEvents) {
-			currentEvents.remove(topic);
+		Map<String, Deque<Event>> events = currentEvents.get();
+		if (events == null) {
+			return;
 		}
+		Deque<Event> stack = events.get(topic);
+		if (stack != null) {
+			stack.pollFirst();
+			if (stack.isEmpty()) {
+				events.remove(topic);
+			}
+		}
+		if (events.isEmpty()) {
+			// don't hold on to the map, this thread may not dispatch events again
+			currentEvents.remove();
+		}
+	}
+
+	private Event getCurrentEvent(String topic) {
+		Map<String, Deque<Event>> events = currentEvents.get();
+		if (events == null) {
+			return null;
+		}
+		Deque<Event> stack = events.get(topic);
+		return stack == null ? null : stack.peekFirst();
 	}
 
 	@Override
@@ -163,17 +205,18 @@ public class EventObjectSupplier extends ExtendedObjectSupplier implements Event
 			unsubscribe(requestor);
 		}
 
-		if (!currentEvents.containsKey(topic)) {
+		Event currentEvent = getCurrentEvent(topic);
+		if (currentEvent == null) {
 			return IInjector.NOT_A_VALUE;
 		}
 
 		// convert to fit destination
 		Class<?> descriptorsClass = getDesiredClass(descriptor.getDesiredType());
-		if (descriptorsClass.equals(Event.class)) {
-			return currentEvents.get(topic);
+		if (Event.class.equals(descriptorsClass)) {
+			return currentEvent;
 		}
 
-		return currentEvents.get(topic).getProperty(DATA);
+		return currentEvent.getProperty(DATA);
 	}
 
 	private void subscribe(String topic, IRequestor requestor) {
@@ -211,7 +254,7 @@ public class EventObjectSupplier extends ExtendedObjectSupplier implements Event
 			return null;
 		}
 		EventTopic qualifier = descriptor.getQualifier(EventTopic.class);
-		return qualifier.value();
+		return qualifier == null ? null : qualifier.value();
 	}
 
 	protected void unsubscribe(IRequestor requestor) {
