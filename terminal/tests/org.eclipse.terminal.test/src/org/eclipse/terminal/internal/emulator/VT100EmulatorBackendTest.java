@@ -320,7 +320,31 @@ public class VT100EmulatorBackendTest {
 		vt100.setDimensions(3, 4);
 		fill(term, "0000\n" + "1111\n" + "2222\n" + "3333\n" + "4444\n" + "5555");
 		vt100.eraseAll();
-		assertEqualsTerm("0000\n" + "1111\n" + "2222\n" + "    \n" + "    \n" + "    ", toMultiLineText(term));
+		// the screen goes into the history; with no room to grow, the oldest lines make way
+		assertEqualsTerm("3333\n" + "4444\n" + "5555\n" + "    \n" + "    \n" + "    ", toMultiLineText(term));
+	}
+
+	@Test
+	public void testEraseAllKeepsTheScreenInHistory() {
+		// also on the buffer the terminal actually uses
+		for (ITerminalTextData term : new ITerminalTextData[] { makeITerminalTextData(), new TerminalTextData() }) {
+			IVT100EmulatorBackend vt100 = makeBakend(term);
+			term.setMaxHeight(100);
+			vt100.setDimensions(4, 4);
+			fill(term, "0000\n" + "1111\n" + "2222\n" + "3333\n" + "4444\n" + "    ");
+			vt100.setCursor(2, 1);
+			vt100.eraseAll();
+			// the screen was 2222, 3333, 4444 and a blank line, which is not kept
+			assertEqualsTerm("0000\n" + "1111\n" + "2222\n" + "3333\n" + "4444\n" + "    \n" + "    \n" + "    \n" + "    ",
+					toMultiLineText(term));
+			// erasing does not move the cursor
+			assertEquals(2, vt100.getCursorLine());
+			assertEquals(1, vt100.getCursorColumn());
+			assertEquals(7, term.getCursorLine()); // the model's cursor too, on the screen's row 2
+			// a blank screen adds nothing
+			vt100.eraseAll();
+			assertEquals(9, term.getHeight());
+		}
 	}
 
 	@Test
@@ -1554,5 +1578,47 @@ public class VT100EmulatorBackendTest {
 		vt100.enableAlternateScreen(false);
 		// the shell goes on in its red, and nothing of the program's bold leaks into it
 		assertEquals(red, vt100.getStyle());
+	}
+
+	@Test
+	public void testEraseAllEndsTheHistoryOnALineEnd() {
+		// immediate wrapping: the line runs on to the empty row below, or over a row of spaces first
+		for (String text : new String[] { "ABCD", "ABCD    " }) {
+			for (ITerminalTextData term : new ITerminalTextData[] { makeITerminalTextData(), new TerminalTextData() }) {
+				IVT100EmulatorBackend vt100 = makeBakend(term);
+				term.setMaxHeight(100);
+				vt100.setDimensions(4, 4);
+				vt100.setCursor(0, 0);
+				vt100.appendString(text);
+				assertTrue(term.isWrappedLine(term.getHeight() - 4));
+				vt100.eraseAll();
+				// the rows it runs on to go into the history with it, so the history ends on a line end
+				int top = term.getHeight() - 4;
+				assertFalse(term.isWrappedLine(top - 1), text);
+			}
+		}
+	}
+
+	@Test
+	public void testEraseAllOnTheAlternateScreenKeepsNothing() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(100);
+		vt100.setDimensions(3, 6);
+		vt100.setCursor(0, 0);
+		vt100.appendString("shell");
+		int height = term.getHeight();
+		vt100.enableAlternateScreen(true);
+		vt100.setCursor(0, 0);
+		vt100.appendString("frame");
+		vt100.eraseAll();
+		// a program redrawing there pushes no frames into the history
+		assertEquals(3, term.getHeight());
+		vt100.enableAlternateScreen(false);
+		assertEquals(height, term.getHeight());
+		vt100.setCursor(0, 0);
+		vt100.appendString("again");
+		vt100.eraseAll();
+		assertEquals(height + 1, term.getHeight());
 	}
 }
