@@ -197,6 +197,13 @@ public class VT100Emulator implements ControlListener {
 		fReader = reader;
 	}
 
+	/**
+	 * @see IVT100EmulatorBackend#setBufferLineLimit(int)
+	 */
+	public void setBufferLineLimit(int bufferLineLimit) {
+		text.setBufferLineLimit(bufferLineLimit);
+	}
+
 	public void setDimensions(int lines, int cols) {
 		text.setDimensions(lines, cols);
 		ITerminalConnector telnetConnection = getConnector();
@@ -1295,8 +1302,8 @@ public class VT100Emulator implements ControlListener {
 		case 47:
 		case 1047:
 		case 1049:
-			// Use Normal Screen Buffer, putting back what was on it.
-			text.setScrollRegion(-1, -1);
+			// Use Normal Screen Buffer, putting back what was on it. Leaving also resets
+			// the margins, which a repeated request must not do to the normal screen.
 			text.enableAlternateScreen(false);
 			break;
 		case 1048:
@@ -1570,6 +1577,9 @@ public class VT100Emulator implements ControlListener {
 		text.setStyle(text.getDefaultStyle());
 		text.setScrollRegion(-1, -1);
 		text.setInsertMode(false);
+		// a new connection starts on the normal screen, even if the last one ended
+		// while a full screen program had the alternate one
+		text.enableAlternateScreen(false);
 	}
 
 	//	public OutputStream getOutputStream() {

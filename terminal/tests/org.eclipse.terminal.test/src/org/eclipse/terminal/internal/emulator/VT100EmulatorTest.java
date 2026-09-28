@@ -397,4 +397,51 @@ public class VT100EmulatorTest {
 		run(ALTERNATE_SCREEN_OFF); // harmless twice as well
 		assertAll(() -> assertCursorLocation(1, 7), () -> assertTextEquals("Hello 1", "Hello 2"));
 	}
+
+	@Test
+	public void testResetStateLeavesAlternateScreen() {
+		data.setMaxHeight(1000);
+		run("Hello 1\r\nHello 2");
+		run(ALTERNATE_SCREEN_ON);
+		run("Full screen");
+		// the connection ends while the program has the screen; the next one starts
+		// on the normal screen, with its history back
+		emulator.resetState();
+		assertAll(() -> assertTextEquals("Hello 1", "Hello 2"), () -> assertEquals(1000, data.getMaxHeight()));
+		// a late request to leave does not bring back the old program's screen
+		run(ALTERNATE_SCREEN_OFF);
+		assertTextEquals("Hello 1", "Hello 2");
+		for (int i = 0; i < WINDOW_LINES; i++) {
+			run("\r\nmore");
+		}
+		assertEquals(WINDOW_LINES + 2, data.getHeight()); // history accumulates again
+	}
+
+	@Test
+	public void testRepeatedAlternateScreenOffKeepsMargins() {
+		run("A\r\nB\r\nC");
+		run(SCROLL_REGION(1, 2));
+		run(ALTERNATE_SCREEN_OFF); // already on the normal screen: must change nothing
+		run(CURSOR_POSITION(2, 1), "\n");
+		// the newline on the bottom margin scrolls rows 1 and 2 only
+		assertTextEquals("B", "", "C");
+	}
+
+	@Test
+	public void testBufferLineLimitWhileAlternateScreen() {
+		data.setMaxHeight(1000);
+		emulator.setBufferLineLimit(300);
+		assertEquals(300, data.getMaxHeight());
+		run(ALTERNATE_SCREEN_ON);
+		// a preference change must not give the alternate screen a history
+		emulator.setBufferLineLimit(500);
+		assertEquals(WINDOW_LINES, data.getMaxHeight());
+		for (int i = 0; i < 2 * WINDOW_LINES; i++) {
+			run("line\r\n");
+		}
+		assertEquals(WINDOW_LINES, data.getHeight());
+		// and the new limit is the normal screen's once it is back
+		run(ALTERNATE_SCREEN_OFF);
+		assertEquals(500, data.getMaxHeight());
+	}
 }

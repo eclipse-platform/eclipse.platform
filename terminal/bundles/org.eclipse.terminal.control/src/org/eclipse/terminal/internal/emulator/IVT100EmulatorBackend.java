@@ -36,6 +36,15 @@ public interface IVT100EmulatorBackend {
 	void enableAlternateScreen(boolean enable);
 
 	/**
+	 * Sets how many lines the normal screen keeps, history included. While the
+	 * alternate screen is showing, the limit is kept for the normal screen and
+	 * applies once it is back, since the alternate screen keeps no history.
+	 *
+	 * @param bufferLineLimit the maximum number of lines, ignored when not positive
+	 */
+	void setBufferLineLimit(int bufferLineLimit);
+
+	/**
 	 * Sets the Dimensions of the addressable scroll space of the screen....
 	 * Keeps the cursor position relative to the bottom of the screen!
 	 * @param lines

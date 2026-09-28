@@ -45,6 +45,12 @@ public class VT100BackendTraceDecorator implements IVT100EmulatorBackend {
 	}
 
 	@Override
+	public void setBufferLineLimit(int bufferLineLimit) {
+		fWriter.println("setBufferLineLimit(" + bufferLineLimit + ')'); //$NON-NLS-1$
+		fBackend.setBufferLineLimit(bufferLineLimit);
+	}
+
+	@Override
 	public void deleteCharacters(int n) {
 		fWriter.println("deleteCharacters(" + n + ")"); //$NON-NLS-1$ //$NON-NLS-2$
 		fBackend.deleteCharacters(n);

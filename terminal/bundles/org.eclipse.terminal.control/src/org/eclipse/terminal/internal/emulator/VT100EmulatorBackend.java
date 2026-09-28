@@ -132,6 +132,8 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 			} else {
 				fTerminal.copy(fNormalScreen);
 				fNormalScreen = null;
+				// the margins were the full screen program's, not the shell's
+				fScrollRegion = ScrollRegion.FULL_WINDOW;
 				fTerminal.setMaxHeight(Math.max(fNormalMaxHeight, fTerminal.getHeight()));
 				// The window may have been resized while the program had the screen, and
 				// the buffer put back is the one from before. Narrower, and every write
@@ -143,6 +145,24 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 				// back to the line the cursor was on, wherever it is on the screen now
 				setCursor(fNormalCursorLine - (fTerminal.getHeight() - fLines), fNormalCursorColumn);
 			}
+		}
+	}
+
+	@Override
+	public void setBufferLineLimit(int bufferLineLimit) {
+		if (bufferLineLimit <= 0) {
+			return;
+		}
+		synchronized (fTerminal) {
+			if (fNormalScreen != null) {
+				// the alternate screen keeps its cap; the normal screen gets the limit back
+				fNormalMaxHeight = bufferLineLimit;
+				return;
+			}
+			if (fTerminal.getHeight() > bufferLineLimit) {
+				fTerminal.setDimensions(bufferLineLimit, fTerminal.getWidth());
+			}
+			fTerminal.setMaxHeight(bufferLineLimit);
 		}
 	}
 
