@@ -79,13 +79,19 @@ public final class CharWidth {
 	 * A {@code '\000'} means one of two things in a line of cells: the filler that
 	 * a wide character puts in the cell it also covers, which carries no text of
 	 * its own, or a cell that was never written or has been erased, which reads as
-	 * a space.
+	 * a space. Only a wide character of the BMP leaves a filler: one beyond the
+	 * BMP already covers its two cells with its two surrogates, so a null after it
+	 * is an ordinary empty cell.
 	 *
 	 * @return whether the cell at {@code index} is the filler of the character
 	 *         before it
 	 */
 	public static boolean isFiller(CharSequence text, int index) {
-		return text.charAt(index) == '\000' && index > 0 && of(Character.codePointBefore(text, index)) == 2;
+		if (index == 0 || text.charAt(index) != '\000') {
+			return false;
+		}
+		char before = text.charAt(index - 1);
+		return !Character.isSurrogate(before) && of(before) == 2;
 	}
 
 	private static boolean isZeroWidth(int codePoint) {
