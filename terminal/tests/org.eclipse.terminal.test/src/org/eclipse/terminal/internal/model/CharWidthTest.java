@@ -60,7 +60,10 @@ public class CharWidthTest {
 	@Test
 	public void testIsFiller() {
 		assertTrue(CharWidth.isFiller("가\000", 1));
-		assertTrue(CharWidth.isFiller("😀\000", 2));
+		// a character beyond the BMP covers its two cells with its surrogates,
+		// so the null after it is an empty cell, not a filler
+		assertFalse(CharWidth.isFiller("😀\000", 2));
+		assertFalse(CharWidth.isFiller("😀\000a", 2));
 		assertFalse(CharWidth.isFiller("a\000", 1)); // an empty cell after a narrow character
 		assertFalse(CharWidth.isFiller("\000a", 0));
 		assertFalse(CharWidth.isFiller("ab", 1));

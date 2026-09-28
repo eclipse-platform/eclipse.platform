@@ -560,7 +560,14 @@ public class TextCanvas extends GridCanvas {
 		if (col <= 0 || col >= text.getWidth() || line < 0 || line >= text.getHeight()) {
 			return false;
 		}
-		return text.getChar(line, col) == '\000' && CharWidth.of(text.getChar(line, col - 1)) == 2;
+		char c = text.getChar(line, col);
+		char before = text.getChar(line, col - 1);
+		// the filler of a wide character of the BMP, or the low half of a surrogate
+		// pair, whose high half sits in the cell before
+		if (Character.isLowSurrogate(c)) {
+			return Character.isHighSurrogate(before);
+		}
+		return c == '\000' && !Character.isSurrogate(before) && CharWidth.of(before) == 2;
 	}
 
 	@Override

@@ -164,12 +164,15 @@ public class TextLineRenderer implements ILinelRenderer {
 			for (int i = 0; i < text.length(); i++) {
 				char c = text.charAt(i);
 				int cells = cellsAt(text, i);
+				// a character beyond the BMP is drawn whole, both surrogates at once
+				int n = Character.charCount(text.codePointAt(i));
 				// TODO why do I have to draw the background character by character??????
 				gc.fillRectangle(xx, y, cells * fStyleMap.getFontWidth(), fStyleMap.getFontHeight());
 				if (c != ' ' && c != '\000') {
-					gc.drawString(String.valueOf(c), fStyleMap.getCharOffset(c) + xx, y, false);
+					gc.drawString(text.substring(i, i + n), fStyleMap.getCharOffset(c) + xx, y, false);
 				}
 				xx += cells * fStyleMap.getFontWidth();
+				i += n - 1;
 			}
 		} else {
 			// One call keeps whatever the font does with the run, ligatures included,
