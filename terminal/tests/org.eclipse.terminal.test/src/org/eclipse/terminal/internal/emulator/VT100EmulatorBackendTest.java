@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.eclipse.terminal.internal.model.TerminalTextData;
 import org.eclipse.terminal.internal.model.TerminalTextDataStore;
 import org.eclipse.terminal.internal.model.TerminalTextTestHelper;
 import org.eclipse.terminal.model.ITerminalTextData;
@@ -1132,21 +1133,31 @@ public class VT100EmulatorBackendTest {
 
 	@Test
 	public void testAlternateScreenShrunkKeepsNoHistory() {
-		ITerminalTextData term = makeITerminalTextData();
-		IVT100EmulatorBackend vt100 = makeBakend(term);
-		term.setMaxHeight(100);
-		vt100.setDimensions(5, 10);
-		vt100.enableAlternateScreen(true);
-		vt100.setCursor(0, 0);
-		vt100.setDimensions(3, 10);
-		assertEquals(3, term.getMaxHeight());
-		for (int i = 0; i < 6; i++) {
-			vt100.appendString("x");
-			vt100.processNewline();
+		// also on the buffer the terminal actually uses, which rejects a cap below its height
+		for (ITerminalTextData term : new ITerminalTextData[] { makeITerminalTextData(), new TerminalTextData() }) {
+			IVT100EmulatorBackend vt100 = makeBakend(term);
+			term.setMaxHeight(100);
+			vt100.setDimensions(5, 10);
+			vt100.enableAlternateScreen(true);
+			vt100.setCursor(4, 0);
+			vt100.appendString("bottom");
+			vt100.setDimensions(3, 10);
+			assertEquals(3, term.getHeight());
+			assertEquals(3, term.getMaxHeight());
+			// the lines above the cursor went, the cursor and its line stayed
+			assertEquals(2, vt100.getCursorLine());
+			assertEquals("bottom", new String(term.getChars(2), 0, 6));
+			for (int i = 0; i < 6; i++) {
+				vt100.processNewline();
+				vt100.appendString("x");
+			}
+			// scrolling drops the top line instead of growing back to the old height
+			assertEquals(3, term.getHeight());
+			vt100.setDimensions(6, 10);
+			assertEquals(6, term.getHeight());
+			assertEquals(6, term.getMaxHeight());
+			vt100.enableAlternateScreen(false);
+			assertEquals(100, term.getMaxHeight());
 		}
-		// scrolling drops the top line instead of growing back to the old height
-		assertEquals(3, term.getHeight());
-		vt100.enableAlternateScreen(false);
-		assertEquals(100, term.getMaxHeight());
 	}
 }

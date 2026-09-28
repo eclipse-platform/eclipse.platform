@@ -169,6 +169,22 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 			// relative cursor line
 			int cl = getCursorLine();
 			int cc = getCursorColumn();
+			if (fNormalScreen != null) {
+				// The alternate screen has no history, so its buffer stays exactly as
+				// high as the screen. On a shorter screen the lines above the cursor go
+				// first, as many as it takes to keep the cursor on it; the cap follows
+				// once the buffer is no higher than it, which the buffer requires.
+				int drop = Math.max(0, cl + 1 - lines);
+				if (drop > 0) {
+					fTerminal.scroll(0, fTerminal.getHeight(), -drop);
+				}
+				fLines = lines;
+				fColumns = cols;
+				fTerminal.setDimensions(lines, cols);
+				fTerminal.setMaxHeight(lines);
+				setCursor(cl - drop, cc);
+				return;
+			}
 			int height = fTerminal.getHeight();
 			// absolute cursor line
 			int acl = cl + height - fLines;
@@ -185,10 +201,6 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 			fColumns = cols;
 			// make the terminal at least as high as we need lines
 			fTerminal.setDimensions(newLines, fColumns);
-			if (fNormalScreen != null) {
-				// the alternate screen keeps no history at its new height either
-				fTerminal.setMaxHeight(fLines);
-			}
 			// compute relative cursor line
 			cl = acl - (newLines - fLines);
 			setCursor(cl, cc);
