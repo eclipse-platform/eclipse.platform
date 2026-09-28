@@ -100,6 +100,7 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 	 */
 	private ITerminalTextData fNormalScreen;
 	private int fNormalMaxHeight;
+	/** in the normal buffer, not on the screen: the screen may be resized meanwhile */
 	private int fNormalCursorLine;
 	private int fNormalCursorColumn;
 	private boolean fVT100LineWrapping;
@@ -119,7 +120,7 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 			if (enable) {
 				fNormalScreen = new TerminalTextDataStore();
 				fNormalScreen.copy(fTerminal);
-				fNormalCursorLine = fCursorLine;
+				fNormalCursorLine = toAbsoluteLine(fCursorLine);
 				fNormalCursorColumn = fCursorColumn;
 				fNormalMaxHeight = fTerminal.getMaxHeight();
 				// clearAll leaves the buffer the size of the screen, which is what the
@@ -139,7 +140,8 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 				if (fTerminal.getHeight() < fLines || fTerminal.getWidth() != fColumns) {
 					fTerminal.setDimensions(Math.max(fTerminal.getHeight(), fLines), fColumns);
 				}
-				setCursor(fNormalCursorLine, fNormalCursorColumn);
+				// back to the line the cursor was on, wherever it is on the screen now
+				setCursor(fNormalCursorLine - (fTerminal.getHeight() - fLines), fNormalCursorColumn);
 			}
 		}
 	}
@@ -183,6 +185,10 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 			fColumns = cols;
 			// make the terminal at least as high as we need lines
 			fTerminal.setDimensions(newLines, fColumns);
+			if (fNormalScreen != null) {
+				// the alternate screen keeps no history at its new height either
+				fTerminal.setMaxHeight(fLines);
+			}
 			// compute relative cursor line
 			cl = acl - (newLines - fLines);
 			setCursor(cl, cc);

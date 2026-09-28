@@ -1125,5 +1125,28 @@ public class VT100EmulatorBackendTest {
 		assertEquals("last", new String(term.getChars(term.getHeight() - 1), 0, 4));
 		vt100.appendString("x"); // a write past the old margin used to throw
 		assertEquals(5, vt100.getCursorColumn());
+		// the cursor is back on the line it left, now the bottom of a taller screen
+		assertEquals(4, vt100.getCursorLine());
+		assertEquals("lastx", new String(term.getChars(term.getHeight() - 1), 0, 5));
+	}
+
+	@Test
+	public void testAlternateScreenShrunkKeepsNoHistory() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(100);
+		vt100.setDimensions(5, 10);
+		vt100.enableAlternateScreen(true);
+		vt100.setCursor(0, 0);
+		vt100.setDimensions(3, 10);
+		assertEquals(3, term.getMaxHeight());
+		for (int i = 0; i < 6; i++) {
+			vt100.appendString("x");
+			vt100.processNewline();
+		}
+		// scrolling drops the top line instead of growing back to the old height
+		assertEquals(3, term.getHeight());
+		vt100.enableAlternateScreen(false);
+		assertEquals(100, term.getMaxHeight());
 	}
 }
