@@ -154,4 +154,9 @@ public class Messages extends NLS {
 	public static String RenameTerminalAction_inputdialog_title;
 	public static String RenameTerminalAction_tooltip;
 	public static String RenameTerminalAction_menu;
+
+	public static String MaximizeViewHandler_maximize;
+	public static String MaximizeViewHandler_maximizeTooltip;
+	public static String MaximizeViewHandler_minimize;
+	public static String MaximizeViewHandler_minimizeTooltip;
 }
