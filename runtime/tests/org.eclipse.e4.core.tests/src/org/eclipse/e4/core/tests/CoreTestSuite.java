@@ -56,6 +56,7 @@ import org.eclipse.e4.core.internal.tests.di.InjectionResultLeakTest;
 import org.eclipse.e4.core.internal.tests.di.InvokeTest;
 import org.eclipse.e4.core.internal.tests.di.InvokeTestMissingAnnotation;
 import org.eclipse.e4.core.internal.tests.di.RecursiveObjectCreationTest;
+import org.eclipse.e4.core.internal.tests.di.extensions.EventObjectSupplierRaceTest;
 import org.eclipse.e4.core.internal.tests.di.extensions.ExtendedSupplierInjectionTests;
 import org.eclipse.e4.core.internal.tests.di.extensions.InjectionEventTest;
 import org.eclipse.e4.core.internal.tests.di.extensions.InjectionMixedSuppliersTest;
@@ -74,6 +75,7 @@ import org.junit.platform.suite.api.Suite;
 		InjectionPreferencesTest.class,
 		InjectionMixedSuppliersTest.class,
 		InjectionEventTest.class,
+		EventObjectSupplierRaceTest.class,
 		InjectionOSGiTest.class,
 		InjectionOSGiHandlerTest.class,
 		ServiceSupplierTestCase.class,

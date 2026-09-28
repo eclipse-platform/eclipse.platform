@@ -19,7 +19,7 @@ Import-Package: jakarta.annotation;version="[2.0.0,4.0.0)",
  org.osgi.service.log;version="[1.4.0,2)",
  org.osgi.util.tracker;version="[1.5.3,2.0.0)"
 Bundle-ActivationPolicy: lazy
-Export-Package: org.eclipse.e4.core.di.internal.extensions;version="0.15.0";x-friends:="org.eclipse.e4.ui.di",
+Export-Package: org.eclipse.e4.core.di.internal.extensions;version="0.15.0";x-friends:="org.eclipse.e4.ui.di,org.eclipse.e4.core.tests",
  org.eclipse.e4.core.di.internal.extensions.util;version="0.15.0";x-internal:=true
 Automatic-Module-Name: org.eclipse.e4.core.di.extensions.supplier
 Service-Component: OSGI-INF/org.eclipse.e4.core.di.internal.extensions.EventObjectSupplier.xml,
