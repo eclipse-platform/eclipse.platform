@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <!--
-    Copyright (c) 2018 Red Hat and others.
+    Copyright (c) 2026 Red Hat and others.
     This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -126,7 +126,7 @@
                label="%toolbar.terminal.label">
 	         <command
 	               commandId="org.eclipse.terminal.view.ui.command.launchToolbar"
-	               icon="icons/eview16/console_view.svg"
+	               icon="icons/eview16/terminal_view.svg"
 	               id="org.eclipse.terminal.view.ui.commands.launchToolbar"
 	               label="%command.launch.label"
 	               style="push"
