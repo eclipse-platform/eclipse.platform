@@ -22,15 +22,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Function;
 
 import org.eclipse.compare.contentmergeviewer.ITokenComparator;
 import org.eclipse.compare.rangedifferencer.IRangeComparator;
 import org.eclipse.compare.unifieddiff.UnifiedDiff;
+import org.eclipse.compare.unifieddiff.UnifiedDiff.ToolbarAction;
 import org.eclipse.compare.unifieddiff.UnifiedDiffMode;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager;
 import org.eclipse.core.resources.IFile;
@@ -55,6 +58,8 @@ import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
@@ -77,6 +82,7 @@ public class UnifiedDiffManagerTest {
 	// StyledText#getData(...) keys used by UnifiedDiffManager to remember the
 	// per-diff toolbar and the annotation it was opened for.
 	private static final String TOOLBAR_COMPOSITE_FOR_ONE_DIFF_KEY = "TOOLBAR_COMPOSITE_FOR_ONE_DIFF_KEY";
+	private static final String TOOLBAR_COMPOSITE_FOR_ALL_DIFFS_KEY = "TOOLBAR_COMPOSITE_FOR_ALL_DIFFS_KEY";
 	private static final String CURRENT_SELECTED_UNIFIED_DIFF_ANNO_KEY = "CURRENT_SELECTED_UNIFIED_DIFF_ANNO_KEY";
 
 	private static final String LEFT = """
@@ -473,6 +479,131 @@ public class UnifiedDiffManagerTest {
 				"the diff under the mouse cursor must be the one whose toolbar is shown");
 	}
 
+	@Test
+	public void testToolbarActionPresentationCanOverrideTextAndRemoveImage() throws BadLocationException {
+		setEditorContent(LEFT);
+
+		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.OVERLAY_MODE)
+				.toolbarActionText(ToolbarAction.ACCEPT_ALL, "Apply all changes")
+				.toolbarActionImage(ToolbarAction.ACCEPT_ALL, null)
+				.toolbarActionText(ToolbarAction.ACCEPT, "Apply change")
+				.toolbarActionImage(ToolbarAction.ACCEPT, null).open().isOK());
+
+		StyledText tw = viewer().getTextWidget();
+		Composite allDiffsToolbar = (Composite) tw.getData(TOOLBAR_COMPOSITE_FOR_ALL_DIFFS_KEY);
+		assertNotNull(allDiffsToolbar, "the all-diffs toolbar must be shown");
+		assertTextOnlyToolbarItem(toolbar(allDiffsToolbar), "Apply all changes");
+
+		Position pos = annotationModel().getPosition(annotations(annotationModel(), DELETION_ANNO_TYPE).get(0));
+		fireMouseMove(tw, tw.getLinePixel(widgetLineOfModelOffset(viewer(), pos.offset)) + 2);
+		processEvents();
+
+		Composite oneDiffToolbar = (Composite) tw.getData(TOOLBAR_COMPOSITE_FOR_ONE_DIFF_KEY);
+		assertNotNull(oneDiffToolbar, "the per-diff toolbar must be shown");
+		assertTextOnlyToolbarItem(toolbar(oneDiffToolbar), "Apply change");
+	}
+
+	@Test
+	public void testToolbarActionPresentationInRevertMode() throws BadLocationException {
+		setEditorContent(LEFT);
+
+		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.REVERT_MODE)
+				.toolbarActionText(ToolbarAction.REVERT_ALL, "Revert everything")
+				.toolbarActionImage(ToolbarAction.REVERT_ALL, null)
+				.toolbarActionText(ToolbarAction.REVERT, "Revert this")
+				.toolbarActionImage(ToolbarAction.REVERT, null).open().isOK());
+
+		StyledText tw = viewer().getTextWidget();
+		assertTextOnlyToolbarItem(toolbar((Composite) tw.getData(TOOLBAR_COMPOSITE_FOR_ALL_DIFFS_KEY)),
+				"Revert everything");
+
+		Position pos = annotationModel().getPosition(annotations(annotationModel(), ADDITION_ANNO_TYPE).get(0));
+		fireMouseMove(tw, tw.getLinePixel(widgetLineOfModelOffset(viewer(), pos.offset)) + 2);
+		processEvents();
+
+		assertTextOnlyToolbarItem(toolbar((Composite) tw.getData(TOOLBAR_COMPOSITE_FOR_ONE_DIFF_KEY)), "Revert this");
+	}
+
+	@Test
+	public void testToolbarActionPresentationInKeepUndoMode() throws BadLocationException {
+		setEditorContent(LEFT);
+
+		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.REPLACE_MODE)
+				.toolbarActionText(ToolbarAction.KEEP_ALL, "Keep everything")
+				.toolbarActionText(ToolbarAction.KEEP, "Keep this").open().isOK());
+
+		StyledText tw = viewer().getTextWidget();
+		assertTextOnlyToolbarItem(toolbar((Composite) tw.getData(TOOLBAR_COMPOSITE_FOR_ALL_DIFFS_KEY)),
+				"Keep everything");
+
+		Position pos = annotationModel().getPosition(annotations(annotationModel(), ADDITION_ANNO_TYPE).get(0));
+		fireMouseMove(tw, tw.getLinePixel(widgetLineOfModelOffset(viewer(), pos.offset)) + 2);
+		processEvents();
+
+		assertTextOnlyToolbarItem(toolbar((Composite) tw.getData(TOOLBAR_COMPOSITE_FOR_ONE_DIFF_KEY)), "Keep this");
+	}
+
+	/**
+	 * Overriding text without overriding the image must leave the default image in
+	 * place (the two overrides are independent).
+	 */
+	@Test
+	public void testToolbarActionTextOnlyOverrideKeepsDefaultImage() throws BadLocationException {
+		setEditorContent(LEFT);
+
+		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.OVERLAY_MODE)
+				.toolbarActionText(ToolbarAction.ACCEPT_ALL, "My custom label").open().isOK());
+
+		StyledText tw = viewer().getTextWidget();
+		ToolBar toolbar = toolbar((Composite) tw.getData(TOOLBAR_COMPOSITE_FOR_ALL_DIFFS_KEY));
+		// an action with an image shows its text only as the tooltip
+		ToolItem item = findToolbarItem(toolbar, ToolItem::getToolTipText, "My custom label");
+		assertNotNull(item, "toolbar item with overridden tooltip must exist");
+		assertNotNull(item.getImage(), "a text-only override must not remove the default image");
+	}
+
+	/**
+	 * Opening a second diff on the same editor must replace the first toolbar
+	 * presentations, not accumulate them.
+	 */
+	@Test
+	public void testReopeningReplacesToolbarPresentations() throws BadLocationException {
+		setEditorContent(LEFT);
+
+		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.OVERLAY_MODE)
+				.toolbarActionText(ToolbarAction.ACCEPT_ALL, "First label")
+				.toolbarActionImage(ToolbarAction.ACCEPT_ALL, null).open().isOK());
+
+		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.OVERLAY_MODE)
+				.toolbarActionText(ToolbarAction.ACCEPT_ALL, "Second label")
+				.toolbarActionImage(ToolbarAction.ACCEPT_ALL, null).open().isOK());
+
+		StyledText tw = viewer().getTextWidget();
+		ToolBar toolbar = toolbar((Composite) tw.getData(TOOLBAR_COMPOSITE_FOR_ALL_DIFFS_KEY));
+		assertNull(findToolbarItem(toolbar, ToolItem::getText, "First label"),
+				"first label must no longer appear after re-open");
+		assertNotNull(findToolbarItem(toolbar, ToolItem::getText, "Second label"),
+				"second label must be shown after re-open");
+	}
+
+	@Test
+	public void testToolbarActionTextRejectsNullAction() {
+		assertThrows(NullPointerException.class, () -> UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.OVERLAY_MODE)
+				.toolbarActionText(null, "some text"));
+	}
+
+	@Test
+	public void testToolbarActionTextRejectsNullText() {
+		assertThrows(NullPointerException.class, () -> UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.OVERLAY_MODE)
+				.toolbarActionText(ToolbarAction.ACCEPT_ALL, null));
+	}
+
+	@Test
+	public void testToolbarActionImageRejectsNullAction() {
+		assertThrows(NullPointerException.class, () -> UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.OVERLAY_MODE)
+				.toolbarActionImage(null, null));
+	}
+
 	// ------------------------------------------------------------------ helpers
 
 	private void assertReplaceModeYields(String left, String right) {
@@ -535,6 +666,32 @@ public class UnifiedDiffManagerTest {
 		event.y = y;
 		MouseEvent mouseEvent = new MouseEvent(event);
 		tw.getTypedListeners(SWT.MouseMove, MouseMoveListener.class).forEach(listener -> listener.mouseMove(mouseEvent));
+	}
+
+	private static ToolBar toolbar(Composite composite) {
+		assertNotNull(composite, "the toolbar composite must be shown");
+		for (var child : composite.getChildren()) {
+			if (child instanceof ToolBar toolbar) {
+				return toolbar;
+			}
+		}
+		throw new AssertionError("toolbar control not found");
+	}
+
+	private static ToolItem findToolbarItem(ToolBar toolbar, Function<ToolItem, String> property, String expected) {
+		for (ToolItem item : toolbar.getItems()) {
+			if (expected.equals(property.apply(item))) {
+				return item;
+			}
+		}
+		return null;
+	}
+
+	/** Asserts that an action without an image is shown with the given text. */
+	private static void assertTextOnlyToolbarItem(ToolBar toolbar, String text) {
+		ToolItem item = findToolbarItem(toolbar, ToolItem::getText, text);
+		assertNotNull(item, "toolbar item not found: " + text);
+		assertNull(item.getImage(), "an action without an image must display its text");
 	}
 
 	/** The widget line the given model (document) offset is displayed on. */
