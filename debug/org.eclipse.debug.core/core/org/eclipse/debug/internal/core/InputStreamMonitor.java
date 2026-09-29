@@ -61,7 +61,7 @@ public class InputStreamMonitor {
 	/**
 	 * Whether {@link #closeInputStream()} was called. Guarded by {@link #fLock}.
 	 */
-	private boolean fCloseRequested = false;
+	private boolean fCloseRequested;
 
 	/**
 	 * Queued after the last data to make the writer thread close the stream once
