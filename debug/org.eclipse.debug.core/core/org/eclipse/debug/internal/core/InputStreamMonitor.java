@@ -213,8 +213,10 @@ public class InputStreamMonitor {
 
 	/**
 	 * Closes the output stream attached to the standard input stream of this
-	 * monitor's process. If monitoring was started, data queued before this call
-	 * is written first and the stream is closed afterwards by the writer thread.
+	 * monitor's process. Data queued before this call is written first and the
+	 * stream is closed afterwards by the writer thread, also if monitoring is
+	 * started only later. Without pending data and a writer thread the stream is
+	 * closed immediately.
 	 *
 	 * @exception IOException if an exception occurs closing the input stream or
 	 *                stream is already closed
@@ -225,7 +227,7 @@ public class InputStreamMonitor {
 				throw new IOException();
 			}
 			fCloseRequested = true;
-			if (fThread != null) {
+			if (fThread != null || !fQueue.isEmpty()) {
 				fQueue.offer(CLOSE_MARKER);
 				fLock.notifyAll();
 				return;
