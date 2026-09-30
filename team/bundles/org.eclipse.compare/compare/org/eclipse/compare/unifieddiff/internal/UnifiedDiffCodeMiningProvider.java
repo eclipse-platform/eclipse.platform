@@ -739,7 +739,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		}
 	}
 
-	static List<StyleRange> createDetailedDiffBackgroundRanges(UnifiedDiff diff, int tabWidth, Color detailedDiffColor) {
+	public static List<StyleRange> createDetailedDiffBackgroundRanges(UnifiedDiff diff, int tabWidth, Color detailedDiffColor) {
 		List<StyleRange> ranges = new ArrayList<>();
 		String diffStr = diff.mode.equals(UnifiedDiffMode.REPLACE_MODE) ? diff.leftStr : diff.rightStr;
 		String trimmedDiffStr = removeTrailingNewLines(diffStr);
@@ -767,7 +767,8 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			int expandedStart = mapOffsetToTabExpanded(diffStr, detailedDiffStart, tabWidth);
 			int expandedEnd = mapOffsetToTabExpanded(diffStr, detailedDiffStart + detailedDiffLength, tabWidth);
 			int expandedLength = expandedEnd - expandedStart;
-			if (expandedStart >= 0 && expandedLength > 0 && expandedStart + expandedLength <= labelLength) {
+			expandedLength = clampDetailedDiffLength(expandedStart, expandedLength, labelLength);
+			if (expandedStart >= 0 && expandedLength > 0) {
 				StyleRange bgRange = new StyleRange();
 				bgRange.start = expandedStart;
 				bgRange.length = expandedLength;
