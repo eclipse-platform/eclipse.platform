@@ -657,9 +657,12 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 		setupControls(parent);
 		setCommandInputField(fCommandInputField);
 		setupListeners();
-		if (fPreferenceStore != null && wasDisposed) {
+		if (fPreferenceStore != null) {
+			// new controls after a drag and drop need the colors and font as well
 			updatePreferences(null);
-			fPreferenceStore.addPropertyChangeListener(fPreferenceListener);
+			if (wasDisposed) {
+				fPreferenceStore.addPropertyChangeListener(fPreferenceListener);
+			}
 		}
 		JFaceResources.getFontRegistry().addListener(fFontListener);
 		setupHelp(fWndParent, TerminalPlugin.HELP_VIEW);
@@ -763,7 +766,10 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 		snapshot.updateSnapshot(false);
 		fPollingTextCanvasModel = new PollingTextCanvasModel(snapshot);
 		fCtlText = new TextCanvas(fWndParent, fPollingTextCanvasModel, SWT.NONE,
-				new TextLineRenderer(() -> fCtlText, fPollingTextCanvasModel));
+				// While the canvas is being created, fCtlText may still be the canvas disposed by a
+				// drag and drop to another tab folder: measure on the display then
+				new TextLineRenderer(() -> fCtlText != null && !fCtlText.isDisposed() ? fCtlText : null,
+						fPollingTextCanvasModel));
 
 		fCtlText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		fCtlText.addResizeHandler((lines, columns) -> fTerminalText.setDimensions(lines, columns));
