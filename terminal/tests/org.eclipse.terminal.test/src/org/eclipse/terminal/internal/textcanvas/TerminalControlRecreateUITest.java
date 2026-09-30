@@ -68,6 +68,8 @@ public class TerminalControlRecreateUITest {
 
 	@AfterEach
 	public void dispose() {
+		// as the terminals view does when a terminal tab is closed
+		terminal.disposeTerminal();
 		shell.dispose();
 		if (display != null) {
 			display.dispose();
