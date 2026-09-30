@@ -1175,4 +1175,39 @@ public class VT100EmulatorBackendTest {
 		// pushes the rest along by two cells, not one
 		assertEquals("a한\000bcdef", new String(term.getChars(0), 0, 8));
 	}
+
+	@Test
+	public void testInsertModeBeyondBmp() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(4);
+		vt100.setDimensions(4, 10);
+		vt100.setCursor(0, 0);
+		vt100.appendString("abc");
+		vt100.setCursorColumn(0);
+		vt100.setInsertMode(true);
+		// U+1D400 is one column wide, but its two chars still take two cells: insert room for both
+		vt100.appendString("\uD835\uDC00");
+		vt100.setInsertMode(false);
+		assertEquals("\uD835\uDC00abc", new String(term.getChars(0), 0, 5));
+	}
+
+	@Test
+	public void testOverwriteHalfOfBeyondBmp() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(4);
+		vt100.setDimensions(4, 10);
+		// writing over either cell of a surrogate pair blanks the other one
+		vt100.setCursor(0, 0);
+		vt100.appendString("a😀b");
+		vt100.setCursor(0, 2);
+		vt100.appendString("x");
+		assertEquals("a xb", new String(term.getChars(0), 0, 4));
+		vt100.setCursor(1, 0);
+		vt100.appendString("a😀b");
+		vt100.setCursor(1, 1);
+		vt100.appendString("x");
+		assertEquals("ax b", new String(term.getChars(1), 0, 4));
+	}
 }
