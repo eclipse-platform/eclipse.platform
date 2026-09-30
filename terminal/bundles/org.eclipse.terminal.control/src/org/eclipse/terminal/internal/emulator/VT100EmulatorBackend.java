@@ -312,7 +312,7 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 		synchronized (fTerminal) {
 			char[] chars = buffer.toCharArray();
 			if (fInsertMode) {
-				insertCharacters(CharWidth.ofString(buffer)); // room in cells, not characters
+				insertCharacters(cellWidth(buffer)); // room in cells, not characters
 			}
 			int line = toAbsoluteLine(fCursorLine);
 			int i = 0;
@@ -332,15 +332,11 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 				} else {
 					int codePoint = Character.codePointAt(chars, i);
 					int charsUsed = Character.charCount(codePoint);
-					int width = CharWidth.of(codePoint);
+					int width = cellWidth(codePoint);
 					if (width == 0) {
 						// combining marks and other non-printing code points occupy no cell
 						i += charsUsed;
 						continue;
-					}
-					// a surrogate pair cannot share a cell, so it always takes two
-					if (charsUsed == 2) {
-						width = 2;
 					}
 					if (width > room) {
 						if (fCursorColumn > 0) {
@@ -391,13 +387,36 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 			return;
 		}
 		char c = fTerminal.getChar(line, col);
-		if (c == '\000') {
+		if (Character.isLowSurrogate(c)) {
+			// second cell of a character beyond the BMP
+			if (col > 0 && Character.isHighSurrogate(fTerminal.getChar(line, col - 1))) {
+				blank(line, col - 1);
+			}
+		} else if (Character.isHighSurrogate(c)) {
+			if (col + 1 < fColumns && Character.isLowSurrogate(fTerminal.getChar(line, col + 1))) {
+				blank(line, col + 1);
+			}
+		} else if (c == '\000') {
 			if (col > 0 && CharWidth.of(fTerminal.getChar(line, col - 1)) == 2) {
 				blank(line, col - 1);
 			}
 		} else if (CharWidth.of(c) == 2 && col + 1 < fColumns && fTerminal.getChar(line, col + 1) == '\000') {
 			blank(line, col + 1);
 		}
+	}
+
+	/**
+	 * Cells a code point takes on the screen: its display width, except that a
+	 * printable character beyond the BMP always takes two, since its two chars
+	 * cannot share a cell.
+	 */
+	private static int cellWidth(int codePoint) {
+		int width = CharWidth.of(codePoint);
+		return width != 0 && Character.charCount(codePoint) == 2 ? 2 : width;
+	}
+
+	private static int cellWidth(String text) {
+		return text.codePoints().map(VT100EmulatorBackend::cellWidth).sum();
 	}
 
 	private void blank(int line, int col) {
