@@ -62,7 +62,11 @@ public class NextRunnable implements Runnable {
 		}
 		int offset = sel.getOffset();
 		List<UnifiedDiff> diffs1 = get(tv);
-		if (diffs1 == null || diffs1.size() == 0) {
+		if (diffs1 == null) {
+			return;
+		}
+		if (diffs1.isEmpty()) {
+			UnifiedDiffManager.endReached(tv, true);
 			return;
 		}
 		// get next UnifiedDiff for given offset
@@ -78,6 +82,9 @@ public class NextRunnable implements Runnable {
 			}
 		}
 		if (nextDiff == null) {
+			if (UnifiedDiffManager.endReached(tv, true)) {
+				return;
+			}
 			nextDiff = diffs1.get(0);
 		}
 		List<Annotation> all = getAllAnnotationsForUnifiedDiff(model, nextDiff);
