@@ -87,8 +87,8 @@ public class TerminalControlRecreateUITest {
 
 	@Test
 	public void recreatedCanvasKeepsThePreferences() {
-		assertEquals(BACKGROUND, ((TextCanvas) terminal.getControl()).getTerminalBackgroundColor(shell.getDisplay()).getRGB());
+		assertEquals(BACKGROUND, ((TextCanvas) terminal.getControl()).getCellRenderer().getDefaultBackgroundColor().getRGB());
 		recreateInNewParent();
-		assertEquals(BACKGROUND, ((TextCanvas) terminal.getControl()).getTerminalBackgroundColor(shell.getDisplay()).getRGB());
+		assertEquals(BACKGROUND, ((TextCanvas) terminal.getControl()).getCellRenderer().getDefaultBackgroundColor().getRGB());
 	}
 }
