@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2025 IBM Corporation and others.
+ * Copyright (c) 2004, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -25,11 +25,13 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.touchInFilesyste
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -53,6 +55,7 @@ import java.util.Properties;
 import org.eclipse.core.internal.preferences.EclipsePreferences;
 import org.eclipse.core.internal.resources.ProjectPreferences;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -70,6 +73,7 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChange
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.core.tests.harness.FileSystemHelper;
 import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -1475,6 +1479,78 @@ public class ProjectPreferencesTest {
 		prefs1.put(key, value);
 		prefs1.flush();
 		assertEquals(value, prefs1.get(key, null));
+	}
+
+	@Test
+	public void testSymLinkedProjectPreferences() throws CoreException, BackingStoreException, IOException {
+		assumeTrue(FileSystemHelper.canCreateSymLinks(), "only relevant for platforms supporting symbolic links");
+		doTestLinkedProjectPreferences((prefFile1, prefFile2) -> {
+			IPath prefPath1 = prefFile1.getLocation();
+			IPath prefPath2 = prefFile2.getLocation();
+			FileSystemHelper.createSymLink(prefPath2.toFile().getParentFile(), prefPath2.lastSegment(),
+					prefPath1.toOSString(), true);
+			prefFile2.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
+			assertTrue(prefFile2.exists());
+			assertFalse(prefFile2.isLinked());
+		});
+	}
+
+	@Test
+	public void testLinkedProjectPreferences() throws CoreException, BackingStoreException, IOException {
+		doTestLinkedProjectPreferences((prefFile1, prefFile2) -> {
+			prefFile2.createLink(prefFile1.getLocationURI(), IResource.ALLOW_MISSING_LOCAL, createTestMonitor());
+			assertTrue(prefFile2.exists());
+			assertTrue(prefFile2.isLinked());
+		});
+	}
+
+	@Test
+	public void testLinkedProjectPreferencesFolder() throws CoreException, BackingStoreException, IOException {
+		doTestLinkedProjectPreferences((prefFile1, prefFile2) -> {
+			IFolder prefFolder1 = (IFolder) prefFile1.getParent();
+			IFolder prefFolder2 = (IFolder) prefFile2.getParent();
+			prefFolder2.delete(true, createTestMonitor());
+			prefFolder2.createLink(prefFolder1.getLocationURI(), IResource.ALLOW_MISSING_LOCAL, createTestMonitor());
+			assertTrue(prefFolder2.exists());
+			assertTrue(prefFolder2.isLinked());
+		});
+	}
+
+	private void doTestLinkedProjectPreferences(FailableBiConsumer<IFile, IFile> consumer)
+			throws CoreException, BackingStoreException, IOException {
+		String nodeName = "testNode";
+		String prefName = "key";
+
+		IProject project1 = getProject(createUniqueString());
+		project1.create(createTestMonitor());
+		project1.open(createTestMonitor());
+
+		IEclipsePreferences prefs1 = new ProjectScope(project1).getNode(nodeName);
+		prefs1.putInt(prefName, 1);
+		prefs1.flush();
+
+		IProject project2 = getProject(createUniqueString());
+		project2.create(createTestMonitor());
+		project2.open(createTestMonitor());
+
+		IFile prefFile1 = getFileInWorkspace(project1, nodeName);
+		IFile prefFile2 = getFileInWorkspace(project2, nodeName);
+		consumer.accept(prefFile1, prefFile2);
+
+		IEclipsePreferences prefs2 = new ProjectScope(project2).getNode(nodeName);
+		// Simple check whether shared preferences work
+		assertEquals(1, prefs2.getInt(prefName, -1), "Linked preferences no longer in sync");
+
+		// Synchronize shared preferences after external file change
+		Files.writeString(prefFile1.getLocation().toPath(), "%s=4".formatted(prefName));
+		touchInFilesystem(prefFile1);
+		assertNotEquals(4, prefs2.getInt(prefName, -1), "Linked preferences updated without refresh");
+		prefFile1.refreshLocal(IResource.DEPTH_ZERO, createTestMonitor());
+		assertEquals(4, prefs2.getInt(prefName, -1), "Linked preferences no longer in sync");
+	}
+
+	private static interface FailableBiConsumer<T, U> {
+		void accept(T t, U u) throws IOException, CoreException;
 	}
 
 }
