@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Core LLM
+Bundle-SymbolicName: org.eclipse.core.llm;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Eclipse.org
+Export-Package: org.eclipse.core.llm
+Require-Bundle: org.eclipse.swt,
+ org.eclipse.jface
+Bundle-RequiredExecutionEnvironment: JavaSE-21
+Automatic-Module-Name: org.eclipse.core.llm
