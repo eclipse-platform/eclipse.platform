@@ -141,6 +141,7 @@ See `docs/VersionNumbering.md` and `docs/Evolving-Java-based-APIs.md` for comple
 - `docs/Naming_Conventions.md` - Package/class naming rules
 - Indent with tabs (4 spaces wide)
 - Encoding: UTF-8 (see `.settings/org.eclipse.core.resources.prefs`)
+- Javadoc is concise and focused
 
 ## Common Pitfalls & Solutions
 
@@ -198,7 +199,7 @@ mvn verify -Pbuild-individual-bundles  # May need 180-300 seconds
 2. **Make Code Changes:**
    - Edit Java sources in bundle's `src/` directory
    - Follow coding conventions (see `docs/Coding_Conventions.md`)
-   - Add/update Javadoc for public APIs
+   - Add/update concise Javadoc for public APIs (see Coding Standards)
 
 3. **Update MANIFEST.MF if needed:**
    - Changed API? Update `Bundle-Version` following semantic versioning
@@ -214,8 +215,9 @@ mvn verify -Pbuild-individual-bundles  # May need 180-300 seconds
    - Check `target/apianalysis/*.xml` for API baseline errors
    - Address any version increment requirements
 
-6. **Commit:**
-   - Write clear commit message
+6. **Commit and open the PR:**
+   - Keep the commit message concise: a short subject line and a body of a few sentences saying what changed and why
+   - Keep the PR description concise too: a few sentences of prose on what changed and why, without an implementation plan, test plan or bullet-list changelog
    - Reference issue number if applicable
 
 ## File Locations Reference
