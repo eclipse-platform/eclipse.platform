@@ -24,9 +24,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.compare.unifieddiff.UnifiedDiffMode;
+import org.eclipse.compare.unifieddiff.internal.UnifiedDiffCodeMiningProvider;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffCodeMiningProvider.UnifiedDiffLineHeaderCodeMining;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffCodeMiningProvider.UnifiedDiffLineHeaderCodeMining.RangeInfo;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager.UnifiedDiff;
@@ -283,6 +286,22 @@ public class UnifiedDiffTextTest {
 		assertEquals(3, clampDetailedDiffLength(5, 3, 20));
 	}
 
+	// --------------------------------- createDetailedDiffBackgroundRanges
+
+	/** A detailed diff reaching into trailing spaces is trimmed to the visible label, not dropped. */
+	@Test
+	public void testDetailedDiffRunningIntoTrailingSpacesIsTrimmedNotDropped() {
+		String diffStr = "foo bar   ";
+		UnifiedDiff diff = replaceDiff(diffStr, detailedDiff(diffStr, 4, 6));
+
+		List<StyleRange> ranges = UnifiedDiffCodeMiningProvider.createDetailedDiffBackgroundRanges(diff, 4,
+				BACKGROUND_1);
+
+		assertEquals(1, ranges.size(), "the highlight must survive, trimmed to the visible label");
+		assertEquals(4, ranges.get(0).start, "highlight starts at 'bar'");
+		assertEquals(3, ranges.get(0).length, "highlight is trimmed to 'bar', dropping the trailing spaces");
+	}
+
 	// ------------------------------------------- getPositionForOffset
 
 	@Test
@@ -311,6 +330,21 @@ public class UnifiedDiffTextTest {
 	}
 
 	// ------------------------------------------------------------------ helpers
+
+	private static UnifiedDiff replaceDiff(String diffStr, UnifiedDiff... detailedDiffs) {
+		Document doc = new Document(diffStr);
+		UnifiedDiff diff = new UnifiedDiff(doc, 0, diffStr.length(), diffStr, doc, 0, diffStr.length(), diffStr,
+				new ArrayList<>(), UnifiedDiffMode.REPLACE_MODE);
+		Collections.addAll(diff.detailedDiffs, detailedDiffs);
+		return diff;
+	}
+
+	private static UnifiedDiff detailedDiff(String diffStr, int start, int length) {
+		Document doc = new Document(diffStr);
+		String sub = diffStr.substring(start, start + length);
+		return new UnifiedDiff(doc, start, start + length, sub, doc, start, start + length, sub, List.of(),
+				UnifiedDiffMode.REPLACE_MODE);
+	}
 
 	/**
 	 * The merged ranges are handed to {@code StyledText#setStyleRanges}, which
