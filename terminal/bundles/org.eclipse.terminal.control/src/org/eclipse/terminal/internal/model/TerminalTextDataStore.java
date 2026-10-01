@@ -14,7 +14,9 @@ package org.eclipse.terminal.internal.model;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.terminal.model.ITerminalTextData;
 import org.eclipse.terminal.model.ITerminalTextDataSnapshot;
@@ -34,10 +36,13 @@ public class TerminalTextDataStore implements ITerminalTextData {
 	private int fCursorColumn;
 	private int fCursorLine;
 	final private BitSet fWrappedLines = new BitSet();
+	/** per line, the clusters on it by first column; sparse, most lines have none */
+	private Map<Integer, String>[] fClusters;
 
 	public TerminalTextDataStore() {
 		fChars = new char[0][];
 		fStyle = new TerminalStyle[0][];
+		fClusters = newClusters(0);
 		fWidth = 0;
 	}
 
@@ -52,6 +57,7 @@ public class TerminalTextDataStore implements ITerminalTextData {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public void setDimensions(int height, int width) {
 		if (height < 0) {
 			throw new IllegalArgumentException("Parameter 'height' can't be negative value:" + height); //$NON-NLS-1$
@@ -67,6 +73,7 @@ public class TerminalTextDataStore implements ITerminalTextData {
 			}
 			fStyle = (TerminalStyle[][]) resizeArray(fStyle, height);
 			fChars = (char[][]) resizeArray(fChars, height);
+			fClusters = (Map<Integer, String>[]) resizeArray(fClusters, height);
 		}
 		// clean the new lines
 		if (height > fHeight) {
@@ -192,6 +199,7 @@ public class TerminalTextDataStore implements ITerminalTextData {
 		ensureLineLength(line, column + 1);
 		fChars[line][column] = c;
 		fStyle[line][column] = style;
+		forgetClusters(line, column, 1);
 	}
 
 	@Override
@@ -210,6 +218,37 @@ public class TerminalTextDataStore implements ITerminalTextData {
 			fChars[line][column + i] = chars[i + start];
 			fStyle[line][column + i] = style;
 		}
+		forgetClusters(line, column, len);
+	}
+
+	/** Writing a cell ends any cluster that had it, whether as its first cell or its second. */
+	private void forgetClusters(int line, int column, int len) {
+		Map<Integer, String> clusters = fClusters[line];
+		if (clusters == null || clusters.isEmpty()) {
+			return;
+		}
+		for (int col = column - 1; col < column + len; col++) {
+			clusters.remove(col);
+		}
+	}
+
+	@Override
+	public String getCluster(int line, int column) {
+		Map<Integer, String> clusters = fClusters[line];
+		return clusters == null ? null : clusters.get(column);
+	}
+
+	@Override
+	public void setCluster(int line, int column, String cluster) {
+		if (fClusters[line] == null) {
+			fClusters[line] = new HashMap<>();
+		}
+		fClusters[line].put(column, cluster);
+	}
+
+	@SuppressWarnings("unchecked")
+	private static Map<Integer, String>[] newClusters(int n) {
+		return new Map[n];
 	}
 
 	@Override
@@ -224,6 +263,7 @@ public class TerminalTextDataStore implements ITerminalTextData {
 			for (int i = startLine; i < startLine + size + shift; i++) {
 				fChars[i] = fChars[i - shift];
 				fStyle[i] = fStyle[i - shift];
+				fClusters[i] = fClusters[i - shift];
 				fWrappedLines.set(i, fWrappedLines.get(i - shift));
 			}
 			// then clean the opened lines
@@ -233,6 +273,7 @@ public class TerminalTextDataStore implements ITerminalTextData {
 			for (int i = startLine + size - 1; i >= startLine && i - shift >= 0; i--) {
 				fChars[i] = fChars[i - shift];
 				fStyle[i] = fStyle[i - shift];
+				fClusters[i] = fClusters[i - shift];
 				fWrappedLines.set(i, fWrappedLines.get(i - shift));
 			}
 			cleanLines(startLine, Math.min(shift, getHeight() - startLine));
@@ -289,6 +330,7 @@ public class TerminalTextDataStore implements ITerminalTextData {
 		if (getHeight() != n) {
 			fChars = new char[n][];
 			fStyle = new TerminalStyle[n][];
+			fClusters = newClusters(n);
 		}
 		for (int i = 0; i < n; i++) {
 			copyLine(source, i, i);
@@ -324,6 +366,15 @@ public class TerminalTextDataStore implements ITerminalTextData {
 		fChars[destLine] = source.getChars(sourceLine);
 		fStyle[destLine] = source.getStyles(sourceLine);
 		fWrappedLines.set(destLine, source.isWrappedLine(sourceLine));
+		fClusters[destLine] = null;
+		if (fChars[destLine] != null) {
+			for (int col = 0; col < fChars[destLine].length; col++) {
+				String cluster = source.getCluster(sourceLine, col);
+				if (cluster != null) {
+					setCluster(destLine, col, cluster);
+				}
+			}
+		}
 	}
 
 	@Override
@@ -346,6 +397,7 @@ public class TerminalTextDataStore implements ITerminalTextData {
 		fChars[line] = chars.clone();
 		fStyle[line] = styles.clone();
 		fWrappedLines.clear(line);
+		fClusters[line] = null;
 	}
 
 	@Override
@@ -363,6 +415,7 @@ public class TerminalTextDataStore implements ITerminalTextData {
 		fChars[line] = null;
 		fStyle[line] = null;
 		fWrappedLines.clear(line);
+		fClusters[line] = null;
 	}
 
 	@Override

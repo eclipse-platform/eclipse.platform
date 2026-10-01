@@ -13,6 +13,7 @@ package org.eclipse.terminal.internal.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -654,5 +655,36 @@ abstract public class AbstractITerminalTextDataTest {
 		assertTrue(term.isWrappedLine(3));
 		term.cleanLine(0);
 		assertFalse(term.isWrappedLine(0));
+	}
+
+	@Test
+	public void testClusters() {
+		ITerminalTextData term = makeITerminalTextData();
+		term.setDimensions(4, 6);
+		term.setMaxHeight(4);
+		fill(term, "abcdef\nghijkl\nmnopqr\nstuvwx");
+		assertNull(term.getCluster(1, 2));
+		term.setCluster(1, 2, "ij\u200d");
+		assertEquals("ij\u200d", term.getCluster(1, 2));
+		// writing either of its cells forgets a cluster
+		term.setChar(1, 3, 'X', null);
+		assertNull(term.getCluster(1, 2));
+		term.setCluster(1, 2, "ij\u200d");
+		term.setChars(1, 0, new char[] { 'y', 'z' }, null);
+		assertEquals("ij\u200d", term.getCluster(1, 2)); // untouched cells keep theirs
+		term.setChars(1, 1, new char[] { 'y', 'z' }, null);
+		assertNull(term.getCluster(1, 2));
+		// a cluster goes with its line when lines scroll, and is gone with a cleaned line
+		term.setCluster(2, 0, "mn\u200d");
+		term.scroll(0, 4, -1);
+		assertEquals("mn\u200d", term.getCluster(1, 0));
+		assertNull(term.getCluster(2, 0));
+		term.cleanLine(1);
+		assertNull(term.getCluster(1, 0));
+		// and is copied with its line
+		term.setCluster(0, 4, "ef\u200d");
+		ITerminalTextData copy = makeITerminalTextData();
+		copy.copy(term);
+		assertEquals("ef\u200d", copy.getCluster(0, 4));
 	}
 }
