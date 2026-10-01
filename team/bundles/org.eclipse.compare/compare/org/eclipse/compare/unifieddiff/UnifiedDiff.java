@@ -18,8 +18,10 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
+import org.eclipse.compare.ICompareFilter;
 import org.eclipse.compare.contentmergeviewer.IIgnoreWhitespaceContributor;
 import org.eclipse.compare.contentmergeviewer.ITokenComparator;
+import org.eclipse.compare.internal.MergeViewerContentProvider;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.action.Action;
@@ -62,6 +64,9 @@ public final class UnifiedDiff {
 		private List<Action> additionalActions;
 		private TokenComparatorFactory tokenComparatorFactory;
 		private IgnoreWhitespaceContributorFactory ignoreWhitespaceContributorFactory;
+		private ICompareFilter[] compareFilters;
+		private char editorContributor = MergeViewerContentProvider.LEFT_CONTRIBUTOR;
+		private char sourceContributor = MergeViewerContentProvider.RIGHT_CONTRIBUTOR;
 		private int foldContextLines = -1;
 
 		private Builder(ITextEditor editor, String source, UnifiedDiffMode mode) {
@@ -90,6 +95,18 @@ public final class UnifiedDiff {
 			return this;
 		}
 
+		public Builder compareFilters(ICompareFilter[] filters) {
+			return compareFilters(filters, MergeViewerContentProvider.LEFT_CONTRIBUTOR,
+					MergeViewerContentProvider.RIGHT_CONTRIBUTOR);
+		}
+
+		public Builder compareFilters(ICompareFilter[] filters, char editorSide, char sourceSide) {
+			this.compareFilters = filters;
+			this.editorContributor = editorSide;
+			this.sourceContributor = sourceSide;
+			return this;
+		}
+
 		/**
 		 * Collapses unchanged regions between diffs, keeping the given number of
 		 * context lines (at least one) around each change. A negative value disables
@@ -106,7 +123,8 @@ public final class UnifiedDiff {
 
 		public IStatus open() {
 			return UnifiedDiffManager.open(editor, source, mode, additionalActions, tokenComparatorFactory,
-					ignoreWhitespaceContributorFactory, ignoreWhiteSpace, foldContextLines);
+					ignoreWhitespaceContributorFactory, compareFilters, editorContributor, sourceContributor,
+					ignoreWhiteSpace, foldContextLines);
 		}
 	}
 }
