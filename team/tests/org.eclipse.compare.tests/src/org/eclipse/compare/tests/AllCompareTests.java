@@ -40,6 +40,7 @@ import org.junit.platform.suite.api.Suite;
 	CompareUIPluginTest.class,
 	CompareOpenEfficiencyTest.class,
 	UnifiedDiffOpenTest.class,
+	UnifiedDiffFilesTest.class,
 	StructureCreatorTest.class,
 	CompareFileRevisionEditorInputTest.class})
 public class AllCompareTests {
