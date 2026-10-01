@@ -71,6 +71,7 @@ import org.eclipse.debug.core.model.IFlushableStreamMonitor;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IStreamsProxy;
+import org.eclipse.debug.core.model.IStreamsProxy2;
 import org.eclipse.debug.core.sourcelookup.containers.LocalFileStorage;
 import org.eclipse.debug.internal.core.IInternalDebugCoreConstants;
 import org.eclipse.debug.internal.ui.DebugPluginImages;
@@ -1022,6 +1023,7 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 			if (readingStream == null || isStreamClosed()) {
 				return monitor.isCanceled() ? Status.CANCEL_STATUS : Status.OK_STATUS;
 			}
+			boolean endOfInput = false;
 			if (streamsProxy instanceof IBinaryStreamsProxy proxy) {
 				// Pass data without processing. The preferred variant. There is no need for
 				// this job to know about encodings.
@@ -1037,6 +1039,7 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 							proxy.write(buffer, 0, bytesRead);
 						}
 					}
+					endOfInput = bytesRead < 0;
 				} catch (IOException e) {
 					if (!isStreamClosed()) {
 						DebugUIPlugin.log(e);
@@ -1062,10 +1065,21 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 							streamsProxy.write(s);
 						}
 					}
+					endOfInput = charRead < 0;
 				} catch (IOException e) {
 					if (!isStreamClosed()) {
 						DebugUIPlugin.log(e);
 					}
+				}
+			}
+			// Input redirected from a file must reach the process as EOF once the file is
+			// exhausted, otherwise programs reading stdin until EOF never terminate.
+			if (endOfInput && readingStream != fUserInput && !isStreamClosed()
+					&& streamsProxy instanceof IStreamsProxy2 proxy2) {
+				try {
+					proxy2.closeInputStream();
+				} catch (IOException e) {
+					// already closed, e.g. process terminated
 				}
 			}
 			return monitor.isCanceled() ? Status.CANCEL_STATUS : Status.OK_STATUS;

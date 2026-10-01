@@ -59,6 +59,17 @@ public class InputStreamMonitor {
 	private volatile boolean fClosed = false;
 
 	/**
+	 * Whether {@link #closeInputStream()} was called. Guarded by {@link #fLock}.
+	 */
+	private boolean fCloseRequested;
+
+	/**
+	 * Queued after the last data to make the writer thread close the stream once
+	 * all previously queued data is written. Compared by identity.
+	 */
+	private static final byte[] CLOSE_MARKER = new byte[0];
+
+	/**
 	 * The charset of the input stream.
 	 */
 	private final Charset fCharset;
@@ -109,10 +120,10 @@ public class InputStreamMonitor {
 	}
 
 	private void write(byte[] copy) {
-		if (fClosed) {
-			return; // drop data;
-		}
 		synchronized (fLock) {
+			if (fClosed || fCloseRequested) {
+				return; // drop data;
+			}
 			fQueue.offer(copy);
 			fLock.notifyAll();
 		}
@@ -158,7 +169,7 @@ public class InputStreamMonitor {
 	private void write() {
 		try {
 			try {
-				while (fThread != null) {
+				while (fThread != null && !fClosed) {
 					writeNext();
 				}
 			} finally {
@@ -179,6 +190,11 @@ public class InputStreamMonitor {
 	private void writeNext() throws IOException {
 		while (!fQueue.isEmpty() && !fClosed) {
 			byte[] data = fQueue.poll();
+			if (data == CLOSE_MARKER) {
+				fClosed = true;
+				fStream.close();
+				return;
+			}
 			fStream.write(data);
 			fStream.flush();
 		}
@@ -187,7 +203,7 @@ public class InputStreamMonitor {
 				// Queue could receive more input between last empty check and
 				// lock acquire. See https://bugs.eclipse.org/550834
 				// Use while instead of if to guard against spurious wakeups.
-				while (fQueue.isEmpty()) {
+				while (fQueue.isEmpty() && !fClosed) {
 					fLock.wait();
 				}
 			}
@@ -197,19 +213,31 @@ public class InputStreamMonitor {
 
 	/**
 	 * Closes the output stream attached to the standard input stream of this
-	 * monitor's process.
+	 * monitor's process. Data queued before this call is written first and the
+	 * stream is closed afterwards by the writer thread, also if monitoring is
+	 * started only later. Without pending data and a writer thread the stream is
+	 * closed immediately.
 	 *
 	 * @exception IOException if an exception occurs closing the input stream or
 	 *                stream is already closed
 	 */
 	public void closeInputStream() throws IOException {
-		if (!fClosed) {
+		synchronized (fLock) {
+			if (fClosed || fCloseRequested) {
+				throw new IOException();
+			}
+			fCloseRequested = true;
+			if (fThread != null || !fQueue.isEmpty()) {
+				fQueue.offer(CLOSE_MARKER);
+				fLock.notifyAll();
+				return;
+			}
+			// Set under the lock so a writer thread started concurrently by
+			// startMonitoring() sees it and does not wait for data forever.
 			fClosed = true;
-			fStream.close();
-		} else {
-			throw new IOException();
+			fLock.notifyAll();
 		}
-
+		fStream.close();
 	}
 }
 
