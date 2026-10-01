@@ -31,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
+import org.eclipse.compare.internal.MergeViewerContentProvider;
 import org.eclipse.compare.unifieddiff.UnifiedDiffMode;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffCodeMiningProvider;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffCodeMiningProvider.FoldedRegionCodeMining;
@@ -393,7 +394,8 @@ public class UnifiedDiffCodeMiningProviderTest {
 		switchToDocument(new Document("line 0\nline 1 changed"));
 
 		IStatus status = UnifiedDiffManager.open(viewer, document, model, null, "line 0\nline 1\n", MODE, null, null,
-				null, true, CONTEXT_LINES);
+				null, null, MergeViewerContentProvider.LEFT_CONTRIBUTOR,
+				MergeViewerContentProvider.RIGHT_CONTRIBUTOR, true, CONTEXT_LINES);
 		assertTrue(status.isOK(), "open() should succeed: " + status);
 
 		List<ICodeMining> minings = provide();
@@ -420,7 +422,8 @@ public class UnifiedDiffCodeMiningProviderTest {
 		switchToDocument(new Document("line 0\n" + keywords));
 
 		IStatus status = UnifiedDiffManager.open(viewer, document, model, null, "line 0\n" + keywords + " changed\n",
-				MODE, null, null, null, true, CONTEXT_LINES);
+				MODE, null, null, null, null, MergeViewerContentProvider.LEFT_CONTRIBUTOR,
+				MergeViewerContentProvider.RIGHT_CONTRIBUTOR, true, CONTEXT_LINES);
 		assertTrue(status.isOK(), "open() should succeed: " + status);
 
 		List<ICodeMining> minings = provide();
@@ -485,7 +488,8 @@ public class UnifiedDiffCodeMiningProviderTest {
 		switchToDocument(new Document("line 0\nx"));
 
 		String target = "line 0\nalpha alpha\nbravo bravo\ncarol carol\n";
-		IStatus status = UnifiedDiffManager.open(viewer, document, model, null, target, MODE, null, null, null, true,
+		IStatus status = UnifiedDiffManager.open(viewer, document, model, null, target, MODE, null, null, null, null,
+				MergeViewerContentProvider.LEFT_CONTRIBUTOR, MergeViewerContentProvider.RIGHT_CONTRIBUTOR, true,
 				CONTEXT_LINES);
 		assertTrue(status.isOK(), "open() should succeed: " + status);
 
@@ -636,7 +640,8 @@ public class UnifiedDiffCodeMiningProviderTest {
 	}
 
 	private IStatus open(String source) {
-		return UnifiedDiffManager.open(viewer, document, model, null, source, MODE, null, null, null, true,
+		return UnifiedDiffManager.open(viewer, document, model, null, source, MODE, null, null, null, null,
+				MergeViewerContentProvider.LEFT_CONTRIBUTOR, MergeViewerContentProvider.RIGHT_CONTRIBUTOR, true,
 				CONTEXT_LINES);
 	}
 

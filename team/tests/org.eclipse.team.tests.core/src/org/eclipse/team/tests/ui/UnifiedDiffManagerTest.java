@@ -25,10 +25,13 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.compare.ICompareFilter;
 import org.eclipse.compare.contentmergeviewer.ITokenComparator;
+import org.eclipse.compare.internal.MergeViewerContentProvider;
 import org.eclipse.compare.rangedifferencer.IRangeComparator;
 import org.eclipse.compare.unifieddiff.UnifiedDiff;
 import org.eclipse.compare.unifieddiff.UnifiedDiffMode;
@@ -41,8 +44,10 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Position;
+import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -293,6 +298,64 @@ public class UnifiedDiffManagerTest {
 				"with the default comparator a case change is a real difference and must be applied");
 	}
 
+	// ------------------------------------------------------- compare filters
+
+	/**
+	 * A compare filter that strips a known suffix from every line before
+	 * comparison. Lines that differ only in that suffix must not produce a diff.
+	 */
+	@Test
+	public void testCompareFilterSuppressesDiffForFilteredRegion() {
+		// left: "line one[IGNORED]", right: "line one[DIFFERENT]"
+		// Without a filter these two lines differ; with a filter that strips
+		// everything from the 9th character onwards they are equal.
+		String left = "line one[IGNORED]\n";
+		String right = "line one[DIFFERENT]\n";
+		setEditorContent(left);
+
+		ICompareFilter suffixFilter = new SuffixStrippingFilter(8); // strips from offset 8 onward
+		assertTrue(UnifiedDiff.create(editor, right, UnifiedDiffMode.OVERLAY_MODE)
+				.ignoreWhiteSpace(false)
+				.compareFilters(new ICompareFilter[] { suffixFilter })
+				.open().isOK());
+
+		assertTrue(UnifiedDiffManager.get(viewer()).isEmpty(),
+				"a difference covered entirely by the compare filter must not produce a diff");
+	}
+
+	/**
+	 * A compare filter that returns {@code null} regions (no-op) must not prevent
+	 * real differences from being reported.
+	 */
+	@Test
+	public void testNoOpCompareFilterStillReportsDiff() {
+		setEditorContent("line one\nline two\n");
+
+		ICompareFilter noOpFilter = new SuffixStrippingFilter(-1); // strips nothing
+		assertTrue(UnifiedDiff.create(editor, "line one\nline TWO\n", UnifiedDiffMode.OVERLAY_MODE)
+				.ignoreWhiteSpace(false)
+				.compareFilters(new ICompareFilter[] { noOpFilter })
+				.open().isOK());
+
+		assertEquals(1, UnifiedDiffManager.get(viewer()).size(),
+				"a no-op compare filter must not suppress a real difference");
+	}
+
+	@Test
+	public void testCompareFilterReceivesContributorIdentities() {
+		setEditorContent("left\n");
+
+		ContributorRecordingFilter filter = new ContributorRecordingFilter();
+		assertTrue(UnifiedDiff.create(editor, "right\n", UnifiedDiffMode.OVERLAY_MODE)
+				.ignoreWhiteSpace(false)
+				.compareFilters(new ICompareFilter[] { filter }, MergeViewerContentProvider.RIGHT_CONTRIBUTOR,
+						MergeViewerContentProvider.LEFT_CONTRIBUTOR)
+				.open().isOK());
+
+		assertTrue(filter.comparisons.contains("R:L"), "the editor must retain its logical contributor identity");
+		assertTrue(filter.comparisons.contains("L:R"), "the source must retain its logical contributor identity");
+	}
+
 	// ---------------------------------------------------- non modifying modes
 
 	@Test
@@ -513,6 +576,70 @@ public class UnifiedDiffManagerTest {
 
 		@Override
 		public boolean skipRangeComparison(int length, int maxLength, IRangeComparator other) {
+			return false;
+		}
+	}
+
+	/**
+	 * A compare filter that strips every character from {@code stripFromOffset}
+	 * onwards (like a suffix). Pass {@code -1} to strip nothing (no-op).
+	 */
+	private static final class SuffixStrippingFilter implements ICompareFilter {
+		private final int stripFromOffset;
+
+		SuffixStrippingFilter(int stripFromOffset) {
+			this.stripFromOffset = stripFromOffset;
+		}
+
+		@Override
+		public void setInput(Object input, Object ancestor, Object left, Object right) {
+			// nothing to store
+		}
+
+		@Override
+		public IRegion[] getFilteredRegions(@SuppressWarnings("rawtypes") HashMap lineComparison) {
+			if (stripFromOffset < 0) {
+				return null;
+			}
+			String line = (String) lineComparison.get(THIS_LINE);
+			if (line == null || stripFromOffset >= line.length()) {
+				return null;
+			}
+			return new IRegion[] { new Region(stripFromOffset, line.length() - stripFromOffset) };
+		}
+
+		@Override
+		public boolean isEnabledInitially() {
+			return true;
+		}
+
+		@Override
+		public boolean canCacheFilteredRegions() {
+			return true;
+		}
+	}
+
+	private static final class ContributorRecordingFilter implements ICompareFilter {
+		private final List<String> comparisons = new ArrayList<>();
+
+		@Override
+		public void setInput(Object input, Object ancestor, Object left, Object right) {
+			// nothing to store
+		}
+
+		@Override
+		public IRegion[] getFilteredRegions(@SuppressWarnings("rawtypes") HashMap lineComparison) {
+			comparisons.add(lineComparison.get(THIS_CONTRIBUTOR) + ":" + lineComparison.get(OTHER_CONTRIBUTOR));
+			return null;
+		}
+
+		@Override
+		public boolean isEnabledInitially() {
+			return true;
+		}
+
+		@Override
+		public boolean canCacheFilteredRegions() {
 			return false;
 		}
 	}
