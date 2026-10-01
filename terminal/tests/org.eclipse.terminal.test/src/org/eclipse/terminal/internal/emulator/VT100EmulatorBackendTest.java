@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.eclipse.terminal.internal.model.TerminalTextData;
 import org.eclipse.terminal.internal.model.TerminalTextDataStore;
 import org.eclipse.terminal.internal.model.TerminalTextTestHelper;
 import org.eclipse.terminal.model.ITerminalTextData;
@@ -318,7 +319,30 @@ public class VT100EmulatorBackendTest {
 		vt100.setDimensions(3, 4);
 		fill(term, "0000\n" + "1111\n" + "2222\n" + "3333\n" + "4444\n" + "5555");
 		vt100.eraseAll();
-		assertEqualsTerm("0000\n" + "1111\n" + "2222\n" + "    \n" + "    \n" + "    ", toMultiLineText(term));
+		// the screen goes into the history; with no room to grow, the oldest lines make way
+		assertEqualsTerm("3333\n" + "4444\n" + "5555\n" + "    \n" + "    \n" + "    ", toMultiLineText(term));
+	}
+
+	@Test
+	public void testEraseAllKeepsTheScreenInHistory() {
+		// also on the buffer the terminal actually uses
+		for (ITerminalTextData term : new ITerminalTextData[] { makeITerminalTextData(), new TerminalTextData() }) {
+			IVT100EmulatorBackend vt100 = makeBakend(term);
+			term.setMaxHeight(100);
+			vt100.setDimensions(4, 4);
+			fill(term, "0000\n" + "1111\n" + "2222\n" + "3333\n" + "4444\n" + "    ");
+			vt100.setCursor(2, 1);
+			vt100.eraseAll();
+			// the screen was 2222, 3333, 4444 and a blank line, which is not kept
+			assertEqualsTerm("0000\n" + "1111\n" + "2222\n" + "3333\n" + "4444\n" + "    \n" + "    \n" + "    \n" + "    ",
+					toMultiLineText(term));
+			// erasing does not move the cursor
+			assertEquals(2, vt100.getCursorLine());
+			assertEquals(1, vt100.getCursorColumn());
+			// a blank screen adds nothing
+			vt100.eraseAll();
+			assertEquals(9, term.getHeight());
+		}
 	}
 
 	@Test
