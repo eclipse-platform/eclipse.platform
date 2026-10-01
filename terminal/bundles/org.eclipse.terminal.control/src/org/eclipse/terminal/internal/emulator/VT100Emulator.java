@@ -197,6 +197,13 @@ public class VT100Emulator implements ControlListener {
 		fReader = reader;
 	}
 
+	/**
+	 * @see IVT100EmulatorBackend#setBufferLineLimit(int)
+	 */
+	public void setBufferLineLimit(int bufferLineLimit) {
+		text.setBufferLineLimit(bufferLineLimit);
+	}
+
 	public void setDimensions(int lines, int cols) {
 		text.setDimensions(lines, cols);
 		ITerminalConnector telnetConnection = getConnector();
@@ -1272,9 +1279,12 @@ public class VT100Emulator implements ControlListener {
 			break;
 		case 47:
 		case 1047:
-		case 1048:
 		case 1049:
-			// Use Alternate Screen Buffer (ignored).
+			// Use Alternate Screen Buffer.
+			text.enableAlternateScreen(true);
+			break;
+		case 1048:
+			// Save cursor position (ignored).
 			break;
 		default:
 			Logger.log("Unsupported command parameter: CSI ?" + param + 'h'); //$NON-NLS-1$
@@ -1291,10 +1301,13 @@ public class VT100Emulator implements ControlListener {
 			break;
 		case 47:
 		case 1047:
-		case 1048:
 		case 1049:
-			// Use Normal Screen Buffer (ignored, but reset scroll region).
-			text.setScrollRegion(-1, -1);
+			// Use Normal Screen Buffer, putting back what was on it. Leaving also resets
+			// the margins, which a repeated request must not do to the normal screen.
+			text.enableAlternateScreen(false);
+			break;
+		case 1048:
+			// Restore cursor position (ignored).
 			break;
 		default:
 			Logger.log("Unsupported command parameter: CSI ?" + param + 'l'); //$NON-NLS-1$
@@ -1564,6 +1577,9 @@ public class VT100Emulator implements ControlListener {
 		text.setStyle(text.getDefaultStyle());
 		text.setScrollRegion(-1, -1);
 		text.setInsertMode(false);
+		// a new connection starts on the normal screen, even if the last one ended
+		// while a full screen program had the alternate one
+		text.enableAlternateScreen(false);
 	}
 
 	//	public OutputStream getOutputStream() {
