@@ -373,6 +373,13 @@ public class CompareEditor extends EditorPart
 						if (hadPreviousInput || (knownSaveables != null && !isAllSaveablesKnown())) {
 							registerSaveable();
 						}
+						// Check if the contents are being created right now, e.g. by the "still
+						// initializing" timer, with this syncExec dispatched by the event loop of
+						// the first diff. Creating them again would leave a second, orphaned
+						// content tree, whose viewer later diffs against a disposed input.
+						if (CompareEditor.this.getState() == CREATING_CONTROL) {
+							return;
+						}
 						setState(newState[0]);
 						createCompareControl();
 					});
