@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2013 IBM Corporation and others.
+ * Copyright (c) 2006, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -14,6 +14,9 @@
  *******************************************************************************/
 package org.eclipse.debug.internal.ui.model.elements;
 
+import java.util.Optional;
+
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.debug.core.DebugPlugin;
@@ -31,6 +34,7 @@ import org.eclipse.debug.internal.ui.viewers.model.provisional.IPresentationCont
 import org.eclipse.debug.internal.ui.viewers.model.provisional.IViewerUpdate;
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.IDebugUIConstants;
+import org.eclipse.debug.ui.IWatchExpressionCellEditorFactory;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellModifier;
@@ -85,7 +89,9 @@ public class ExpressionManagerContentProvider extends ElementContentProvider {
 
 		@Override
 		public CellEditor getCellEditor(IPresentationContext context, String columnId, Object element, Composite parent) {
-			return new TextCellEditor(parent);
+			return Optional.ofNullable(Adapters.adapt(DebugUITools.getDebugContext(), IWatchExpressionCellEditorFactory.class))
+					.flatMap(factory -> factory.createCellEditor(parent))
+					.orElseGet(() -> new TextCellEditor(parent));
 		}
 
 		@Override
