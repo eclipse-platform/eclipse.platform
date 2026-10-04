@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2025 Wind River Systems, Inc. and others. All rights reserved.
+ * Copyright (c) 2011, 2026 Wind River Systems, Inc. and others. All rights reserved.
  * This program and the accompanying materials are made available under the terms
  * of the Eclipse Public License 2.0 which accompanies this distribution, and is
  * available at https://www.eclipse.org/legal/epl-2.0/
@@ -9,12 +9,14 @@
  * Contributors:
  * Wind River Systems - initial API and implementation
  * Alexander Fedorov (ArSysOp) - further evolution
+ * IBM Corporation - Close tabs
  *******************************************************************************/
 package org.eclipse.terminal.view.ui.internal.tabs;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.PlatformObject;
@@ -23,16 +25,21 @@ import org.eclipse.jface.action.IMenuListener2;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.terminal.connector.TerminalState;
 import org.eclipse.terminal.control.ITerminalViewControl;
 import org.eclipse.terminal.view.core.ITerminalsConnectorConstants;
 import org.eclipse.terminal.view.ui.ITerminalsView;
+import org.eclipse.terminal.view.ui.internal.Messages;
 import org.eclipse.terminal.view.ui.internal.actions.AbstractTerminalAction;
 import org.eclipse.terminal.view.ui.internal.actions.InvertColorsAction;
 import org.eclipse.terminal.view.ui.internal.actions.RenameTerminalAction;
@@ -55,6 +62,9 @@ public class TabFolderMenuHandler extends PlatformObject {
 	private Menu contextMenu;
 	// The list of actions available within the context menu
 	private final List<AbstractTerminalAction> contextMenuActions = new ArrayList<>();
+
+	// Tab-item (tab-strip) context menu
+	private Menu tabItemMenu;
 
 	// The list of invalid context menu contributions "startsWith" expressions
 	/* default */ static final String[] INVALID_CONTRIBUTIONS_STARTS_WITH = { "org.eclipse.cdt", "org.eclipse.ui.edit" //$NON-NLS-1$ //$NON-NLS-2$
@@ -147,6 +157,11 @@ public class TabFolderMenuHandler extends PlatformObject {
 			contextMenuManager.dispose();
 			contextMenuManager = null;
 		}
+		// Dispose the tab-item menu
+		if (tabItemMenu != null && !tabItemMenu.isDisposed()) {
+			tabItemMenu.dispose();
+			tabItemMenu = null;
+		}
 		// Clear all actions
 		contextMenuActions.clear();
 	}
@@ -196,6 +211,107 @@ public class TabFolderMenuHandler extends PlatformObject {
 
 		// Create and associated the menu listener
 		contextMenuManager.addMenuListener(new MenuListener());
+
+		// Build the tab-item (tab-strip) popup menu with close actions.
+		CTabItem[] target = new CTabItem[1];
+		tabItemMenu = new Menu(tabFolder);
+
+		addMenuItem(tabItemMenu, Messages.TabItemAction_close, e -> {
+			if (target[0] != null && !target[0].isDisposed()) {
+				target[0].dispose();
+			}
+		});
+
+		MenuItem miCloseOthers = addMenuItem(tabItemMenu, Messages.TabItemAction_closeOthers, e -> {
+			if (target[0] == null || target[0].isDisposed()) {
+				return;
+			}
+			CTabFolder folder = target[0].getParent();
+			for (CTabItem tab : folder.getItems()) {
+				if (!tab.isDisposed() && tab != target[0]) {
+					tab.dispose();
+				}
+			}
+		});
+
+		new MenuItem(tabItemMenu, SWT.SEPARATOR);
+
+		MenuItem miCloseLeft = addMenuItem(tabItemMenu, Messages.TabItemAction_closeTerminalsToTheLeft, e -> {
+			if (target[0] == null || target[0].isDisposed()) {
+				return;
+			}
+			CTabFolder folder = target[0].getParent();
+			for (int i = folder.indexOf(target[0]) - 1; i >= 0; i--) {
+				CTabItem tab = folder.getItem(i);
+				if (!tab.isDisposed()) {
+					tab.dispose();
+				}
+			}
+		});
+
+		MenuItem miCloseRight = addMenuItem(tabItemMenu, Messages.TabItemAction_closeTerminalsToTheRight, e -> {
+			if (target[0] == null || target[0].isDisposed()) {
+				return;
+			}
+			CTabFolder folder = target[0].getParent();
+			for (int i = folder.getItemCount() - 1; i > folder.indexOf(target[0]); i--) {
+				CTabItem tab = folder.getItem(i);
+				if (!tab.isDisposed()) {
+					tab.dispose();
+				}
+			}
+		});
+
+		new MenuItem(tabItemMenu, SWT.SEPARATOR);
+
+		addMenuItem(tabItemMenu, Messages.TabItemAction_closeAll, e -> {
+			if (target[0] == null || target[0].isDisposed()) {
+				return;
+			}
+			for (CTabItem tab : target[0].getParent().getItems()) {
+				if (!tab.isDisposed()) {
+					tab.dispose();
+				}
+			}
+		});
+
+		// Listen for right-clicks on the tab strip
+		tabFolder.addListener(SWT.MenuDetect, event -> {
+			CTabFolder folder = getTabFolder();
+			if (folder == null || folder.isDisposed() || tabItemMenu == null || tabItemMenu.isDisposed()) {
+				return;
+			}
+			CTabItem clicked = folder.getItem(folder.toControl(event.x, event.y));
+			if (clicked == null) {
+				return;
+			}
+			event.doit = false;
+			target[0] = clicked;
+			folder.setSelection(clicked);
+			int index = folder.indexOf(clicked);
+			int count = folder.getItemCount();
+			miCloseOthers.setEnabled(count > 1);
+			miCloseLeft.setEnabled(index > 0);
+			miCloseRight.setEnabled(index < count - 1);
+			tabItemMenu.setLocation(event.x, event.y);
+			tabItemMenu.setVisible(true);
+		});
+	}
+
+	/**
+	 * Appends a push {@link MenuItem} with the given label to <code>menu</code>
+	 * and registers <code>handler</code> as its selection callback.
+	 *
+	 * @param menu    the menu to append the item to
+	 * @param label    the item label
+	 * @param handler the callback invoked when the item is selected
+	 * @return the newly created {@link MenuItem}
+	 */
+	private MenuItem addMenuItem(Menu menu, String label, Consumer<SelectionEvent> handler) {
+		MenuItem item = new MenuItem(menu, SWT.PUSH);
+		item.setText(label);
+		item.addSelectionListener(SelectionListener.widgetSelectedAdapter(handler));
+		return item;
 	}
 
 	/**
