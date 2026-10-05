@@ -152,6 +152,19 @@
                tooltip="%command.disconnect.tooltip">
          </command>
       </menuContribution>
+      <menuContribution locationURI="menu:org.eclipse.terminal.view.ui.TerminalsView">
+         <separator
+               name="preferences"
+               visible="false">
+         </separator>
+         <command
+               commandId="org.eclipse.terminal.view.ui.command.showPreferences"
+               id="org.eclipse.terminal.view.ui.commands.showPreferences"
+               label="%command.showPreferences.label"
+               style="push"
+               tooltip="%command.showPreferences.tooltip">
+         </command>
+      </menuContribution>
       <menuContribution locationURI="popup:org.eclipse.terminal.view.ui.TerminalsView?after=additions">
          <command
                commandId="org.eclipse.terminal.maximize"
@@ -321,11 +334,16 @@
             id="org.eclipse.terminal.view.ui.command.launch"
             name="%command.launch.selection.name">
       </command>
-    <command
-            categoryId="org.eclipse.terminal.view.ui.commands.category"
-            helpContextId="org.eclipse.terminal.view.ui.command_Launch"
-            id="org.eclipse.terminal.view.ui.command.launchConsole"
-            name="%command.launch.selection.name">
+      <command
+          	categoryId="org.eclipse.terminal.view.ui.commands.category"
+          	helpContextId="org.eclipse.terminal.view.ui.command_Launch"
+          	id="org.eclipse.terminal.view.ui.command.launchConsole"
+          	name="%command.launch.selection.name">
+      </command>
+      <command
+          	categoryId="org.eclipse.terminal.view.ui.commands.category"
+          	id="org.eclipse.terminal.view.ui.command.showPreferences"
+          	name="%command.showPreferences.label">
       </command>
       <command
             categoryId="org.eclipse.terminal.view.ui.commands.category"
@@ -405,6 +423,11 @@
                   <equals value="org.eclipse.terminal.view.ui.TerminalsView"/>
                </with>
             </activeWhen>
+      </handler>
+
+      <handler
+            class="org.eclipse.terminal.view.ui.internal.handler.ShowPreferencesHandler"
+            commandId="org.eclipse.terminal.view.ui.command.showPreferences">
       </handler>
    </extension>
    <extension point="org.eclipse.help.contexts">

@@ -159,4 +159,7 @@ public class Messages extends NLS {
 	public static String MaximizeViewHandler_maximizeTooltip;
 	public static String MaximizeViewHandler_minimize;
 	public static String MaximizeViewHandler_minimizeTooltip;
+
+	public static String TerminalShowPreferencesAction_label;
+	public static String TerminalShowPreferencesAction_tooltip;
 }
