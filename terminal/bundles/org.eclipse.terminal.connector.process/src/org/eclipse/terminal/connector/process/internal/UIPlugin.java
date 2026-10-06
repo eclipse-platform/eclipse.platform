@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.terminal.connector.process.internal;
 
+import java.util.concurrent.TimeUnit;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -60,6 +62,7 @@ public class UIPlugin extends AbstractUIPlugin {
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
+		ProcessDestroyer.awaitPending(2, TimeUnit.SECONDS);
 		plugin = null;
 		super.stop(context);
 	}
