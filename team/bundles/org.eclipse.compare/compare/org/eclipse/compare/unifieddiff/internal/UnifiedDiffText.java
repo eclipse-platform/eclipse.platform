@@ -16,8 +16,10 @@ package org.eclipse.compare.unifieddiff.internal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.compare.internal.DiffColors;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 
 /**
  * Side-effect free text and style-range helpers used to lay out the unified
@@ -26,6 +28,25 @@ import org.eclipse.swt.graphics.Color;
 public final class UnifiedDiffText {
 
 	private UnifiedDiffText() {
+	}
+
+	/** Border color scale; matches {@code TextMergeViewer}'s {@code normal} color. */
+	public static final double BORDER_SCALE = DiffColors.BORDER_SCALE;
+
+	/** Fill band color scale. */
+	public static final double FILL_SCALE = DiffColors.FILL_SCALE;
+
+	/** Border color of an addition/deletion hunk; darker than the fill band. */
+	public static RGB borderColor(RGB diffColor, RGB background) {
+		return DiffColors.borderColor(diffColor, background);
+	}
+
+	/**
+	 * Linearly interpolates between {@code fg} and {@code bg}: scale 0 returns
+	 * {@code fg}, scale 1 returns {@code bg}.
+	 */
+	public static RGB interpolate(RGB fg, RGB bg, double scale) {
+		return DiffColors.interpolate(fg, bg, scale);
 	}
 
 	/**
