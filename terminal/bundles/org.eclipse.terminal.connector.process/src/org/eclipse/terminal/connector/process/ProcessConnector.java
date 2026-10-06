@@ -37,6 +37,7 @@ import org.eclipse.terminal.connector.NullSettingsStore;
 import org.eclipse.terminal.connector.TerminalState;
 import org.eclipse.terminal.connector.process.internal.Env;
 import org.eclipse.terminal.connector.process.internal.Messages;
+import org.eclipse.terminal.connector.process.internal.ProcessDestroyer;
 import org.eclipse.terminal.connector.process.internal.ProcessMonitor;
 import org.eclipse.terminal.connector.process.internal.UIPlugin;
 import org.eclipse.terminal.view.core.ILineSeparatorConstants;
@@ -248,9 +249,9 @@ public class ProcessConnector extends AbstractStreamsConnector {
 		boolean isWindows = Platform.OS_WIN32.equals(Platform.getOS());
 
 		if (!isWindows) {
-			// Destroy the process first, except on windows (Bug 465674)
+			// Start destroying the process first, except on windows (Bug 465674)
 			if (process != null) {
-				process.destroy();
+				ProcessDestroyer.destroy(process);
 				process = null;
 			}
 		}
@@ -261,7 +262,7 @@ public class ProcessConnector extends AbstractStreamsConnector {
 		if (isWindows) {
 			// On Windows destroy the process after closing streams
 			if (process != null) {
-				process.destroy();
+				ProcessDestroyer.destroy(process);
 				process = null;
 			}
 		}
