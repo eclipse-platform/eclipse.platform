@@ -434,8 +434,9 @@ public class UnifiedDiffCodeMiningProviderTest {
 
 		Color deletionColor = new Color(display, 11, 22, 33);
 		Color detailedDiffColor = new Color(display, 44, 55, 66);
+		Color borderColor = new Color(display, 77, 88, 99);
 		UnifiedDiffFooterCodeMining paintingFooter = new UnifiedDiffFooterCodeMining(document, provider,
-				footer.getUnifiedDiff(), 4, deletionColor, detailedDiffColor, viewer);
+				footer.getUnifiedDiff(), 4, deletionColor, detailedDiffColor, borderColor, viewer);
 		Image image = new Image(display, 1200, 100);
 		GC gc = new GC(image);
 		Font boldFont = null;
@@ -472,6 +473,7 @@ public class UnifiedDiffCodeMiningProviderTest {
 			}
 			deletionColor.dispose();
 			detailedDiffColor.dispose();
+			borderColor.dispose();
 		}
 	}
 
@@ -500,8 +502,9 @@ public class UnifiedDiffCodeMiningProviderTest {
 
 		Color deletionColor = new Color(display, 11, 22, 33);
 		Color detailedDiffColor = new Color(display, 44, 55, 66);
+		Color borderColor = new Color(display, 77, 88, 99);
 		UnifiedDiffFooterCodeMining paintingFooter = new UnifiedDiffFooterCodeMining(document, provider,
-				footer.getUnifiedDiff(), 4, deletionColor, detailedDiffColor, viewer);
+				footer.getUnifiedDiff(), 4, deletionColor, detailedDiffColor, borderColor, viewer);
 		Image image = new Image(display, 400, 200);
 		GC gc = new GC(image);
 		try {
@@ -534,6 +537,7 @@ public class UnifiedDiffCodeMiningProviderTest {
 			paintingFooter.dispose();
 			deletionColor.dispose();
 			detailedDiffColor.dispose();
+			borderColor.dispose();
 		}
 	}
 

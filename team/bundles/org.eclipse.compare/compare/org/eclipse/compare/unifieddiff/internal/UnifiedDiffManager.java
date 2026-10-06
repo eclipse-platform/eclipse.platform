@@ -94,6 +94,7 @@ import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
@@ -1758,6 +1759,7 @@ public class UnifiedDiffManager {
 		private final IAnnotationModel model;
 		private final ITextViewer viewer;
 		private final Color additionBackgroundColor;
+		private final Color borderColor;
 		private final StyledText w;
 
 		public UnifiedDiffPaintListener(ITextViewer viewer, IAnnotationModel model, UnifiedDiffMode mode) {
@@ -1773,11 +1775,15 @@ public class UnifiedDiffManager {
 			RGB background = UnifiedDiffCodeMiningProvider.getBackground();
 			RGB interpolated = UnifiedDiffCodeMiningProvider.interpolate(color, background, 0.9);
 			this.additionBackgroundColor = new Color(interpolated);
+			this.borderColor = new Color(UnifiedDiffText.borderColor(color, background));
 		}
 
 		void dispose() {
 			if (additionBackgroundColor != null && !additionBackgroundColor.isDisposed()) {
 				additionBackgroundColor.dispose();
+			}
+			if (borderColor != null && !borderColor.isDisposed()) {
+				borderColor.dispose();
 			}
 		}
 
@@ -1810,11 +1816,19 @@ public class UnifiedDiffManager {
 					}
 					posLength = pos.length;
 				}
-				int fromLine = Math.max(this.w.getLineAtOffset(posOffset), firstDamagedLine);
-				int toLine = Math.min(this.w.getLineAtOffset(posOffset + posLength), lastDamagedLine + 1);
+				int hunkFirstLine = this.w.getLineAtOffset(posOffset);
+				// a band ending on a line delimiter belongs to the line it is on, not to
+				// the next one the delimiter starts; a zero-length band paints nothing
+				int lastLine = posLength > 0 ? this.w.getLineAtOffset(posOffset + posLength - 1) : hunkFirstLine - 1;
+				int fromLine = Math.max(hunkFirstLine, firstDamagedLine);
+				int toLine = Math.min(lastLine + 1, lastDamagedLine + 1);
 				if (fromLine >= toLine) {
 					continue;
 				}
+				// A companion mining, when present, abuts this band and paints the same
+				// shared edge in the same color, so drawing our own top/bottom here is at
+				// worst a harmless repaint of one pixel row - and the only way to guarantee
+				// the edge is never missing when no mining is adjacent.
 				e.gc.setBackground(this.additionBackgroundColor);
 				for (int lineNr = fromLine; lineNr < toLine; lineNr++) {
 					String line = this.w.getLine(lineNr);
@@ -1837,7 +1851,25 @@ public class UnifiedDiffManager {
 					// need to draw it by our own
 					e.gc.fillRectangle(2, endLineBounds.y + endLineBounds.height - this.w.getLineSpacing(),
 							endLineBounds.x + endLineBounds.width, this.w.getLineSpacing());
+
+					drawBandBorder(e.gc, bounds.width, endLineBounds.y, endLineBounds.height,
+							lineNr == hunkFirstLine, lineNr == lastLine);
+					e.gc.setBackground(this.additionBackgroundColor);
 				}
+			}
+		}
+
+		/** Draws the thin top/bottom edge of the hunk band on its first/last line. */
+		private void drawBandBorder(GC gc, int width, int y, int height, boolean top, boolean bottom) {
+			if (this.borderColor == null || this.borderColor.isDisposed() || width <= 0 || height <= 0) {
+				return;
+			}
+			gc.setBackground(this.borderColor);
+			if (top) {
+				gc.fillRectangle(0, y, width, 1);
+			}
+			if (bottom) {
+				gc.fillRectangle(0, y + height - 1, width, 1);
 			}
 		}
 	}

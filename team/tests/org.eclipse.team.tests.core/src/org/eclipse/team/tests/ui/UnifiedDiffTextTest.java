@@ -13,13 +13,16 @@
  *******************************************************************************/
 package org.eclipse.team.tests.ui;
 
+import static org.eclipse.compare.unifieddiff.internal.UnifiedDiffText.borderColor;
 import static org.eclipse.compare.unifieddiff.internal.UnifiedDiffText.clampDetailedDiffLength;
 import static org.eclipse.compare.unifieddiff.internal.UnifiedDiffText.countLines;
+import static org.eclipse.compare.unifieddiff.internal.UnifiedDiffText.interpolate;
 import static org.eclipse.compare.unifieddiff.internal.UnifiedDiffText.mapOffsetToTabExpanded;
 import static org.eclipse.compare.unifieddiff.internal.UnifiedDiffText.mergeStyleRanges;
 import static org.eclipse.compare.unifieddiff.internal.UnifiedDiffText.replaceTabWithSpaces;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -33,6 +36,7 @@ import org.eclipse.compare.unifieddiff.internal.UnifiedDiffCodeMiningProvider;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffCodeMiningProvider.UnifiedDiffLineHeaderCodeMining;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffCodeMiningProvider.UnifiedDiffLineHeaderCodeMining.RangeInfo;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager.UnifiedDiff;
+import org.eclipse.compare.unifieddiff.internal.UnifiedDiffText;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.Position;
 import org.eclipse.swt.SWT;
@@ -41,6 +45,7 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.jupiter.api.AfterEach;
@@ -302,6 +307,27 @@ public class UnifiedDiffTextTest {
 		assertEquals(3, ranges.get(0).length, "highlight is trimmed to 'bar', dropping the trailing spaces");
 	}
 
+	// ------------------------------------------- borderColor
+
+	/**
+	 * The hunk border reuses the traditional viewer's {@code normal} weight: it is
+	 * {@code interpolate(diffColor, background, 0.6)}, darker and more saturated
+	 * than the {@code 0.9} fill band, so the two must never collapse to the same
+	 * color on either a light or a dark background.
+	 */
+	@Test
+	public void testBorderColorMatchesInterpolateAndDiffersFromFill() {
+		RGB diff = new RGB(220, 60, 60);
+		for (RGB background : new RGB[] { new RGB(255, 255, 255), new RGB(30, 30, 30) }) {
+			RGB border = borderColor(diff, background);
+			RGB fill = interpolate(diff, background, UnifiedDiffText.FILL_SCALE);
+			assertAll( //
+					() -> assertEquals(interpolate(diff, background, UnifiedDiffText.BORDER_SCALE), border,
+							"border is the 0.6 interpolation"), //
+					() -> assertNotEquals(fill, border, "border must be distinct from the 0.9 fill band"));
+		}
+	}
+
 	// ------------------------------------------- getPositionForOffset
 
 	@Test
@@ -318,7 +344,7 @@ public class UnifiedDiffTextTest {
 		UnifiedDiff diff = new UnifiedDiff(doc, 0, str.length(), str, doc, 0, str.length(), str,
 				List.of(), UnifiedDiffMode.REPLACE_MODE);
 		UnifiedDiffLineHeaderCodeMining mining = new UnifiedDiffLineHeaderCodeMining(
-				new Position(0, 1), null, diff, 4, null, null, null);
+				new Position(0, 1), null, diff, 4, null, null, null, null);
 
 		gc.setFont(styledText.getFont());
 		Point result = mining.getPositionForOffset(styledText, gc, 7, str, ranges, new RangeInfo(-1, -1, null));
@@ -330,21 +356,6 @@ public class UnifiedDiffTextTest {
 	}
 
 	// ------------------------------------------------------------------ helpers
-
-	private static UnifiedDiff replaceDiff(String diffStr, UnifiedDiff... detailedDiffs) {
-		Document doc = new Document(diffStr);
-		UnifiedDiff diff = new UnifiedDiff(doc, 0, diffStr.length(), diffStr, doc, 0, diffStr.length(), diffStr,
-				new ArrayList<>(), UnifiedDiffMode.REPLACE_MODE);
-		Collections.addAll(diff.detailedDiffs, detailedDiffs);
-		return diff;
-	}
-
-	private static UnifiedDiff detailedDiff(String diffStr, int start, int length) {
-		Document doc = new Document(diffStr);
-		String sub = diffStr.substring(start, start + length);
-		return new UnifiedDiff(doc, start, start + length, sub, doc, start, start + length, sub, List.of(),
-				UnifiedDiffMode.REPLACE_MODE);
-	}
 
 	/**
 	 * The merged ranges are handed to {@code StyledText#setStyleRanges}, which
@@ -414,6 +425,21 @@ public class UnifiedDiffTextTest {
 
 	private static Color systemColor(int id) {
 		return Display.getDefault().getSystemColor(id);
+	}
+
+	private static UnifiedDiff replaceDiff(String diffStr, UnifiedDiff... detailedDiffs) {
+		Document doc = new Document(diffStr);
+		UnifiedDiff diff = new UnifiedDiff(doc, 0, diffStr.length(), diffStr, doc, 0, diffStr.length(), diffStr,
+				new ArrayList<>(), UnifiedDiffMode.REPLACE_MODE);
+		Collections.addAll(diff.detailedDiffs, detailedDiffs);
+		return diff;
+	}
+
+	private static UnifiedDiff detailedDiff(String diffStr, int start, int length) {
+		Document doc = new Document(diffStr);
+		String sub = diffStr.substring(start, start + length);
+		return new UnifiedDiff(doc, start, start + length, sub, doc, start, start + length, sub, List.of(),
+				UnifiedDiffMode.REPLACE_MODE);
 	}
 
 	private static StyleRange styledRange(int start, int length) {
