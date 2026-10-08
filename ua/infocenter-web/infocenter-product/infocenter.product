@@ -56,6 +56,7 @@ org.osgi.framework.bootdelegation=*
       <plugin id="org.eclipse.equinox.security"/>
       <plugin id="org.eclipse.equinox.servletbridge"/>
       <plugin id="org.eclipse.equinox.simpleconfigurator"/>
+      <plugin id="org.eclipse.equinox.spi"/>
       <plugin id="org.eclipse.help"/>
       <plugin id="org.eclipse.help.base"/>
       <plugin id="org.eclipse.help.webapp"/>
