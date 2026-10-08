@@ -111,26 +111,9 @@ public class BreakpointLabelAction implements IViewActionDelegate {
 	}
 
 	private static Rectangle computeInlineEditorBounds(TreeItem treeItem) {
-		Rectangle bounds;
-		try {
-			bounds = treeItem.getBounds();
-		} catch (ArrayIndexOutOfBoundsException e) {
-			// TreeItem having FontData [Breakpoints having custom label]
-			bounds = macBugWorkaround(treeItem);
-		}
+		Rectangle bounds = treeItem.getBounds();
 		int editorWidth = Math.max(computeEditorExtent(treeItem), bounds.width);
 		return new Rectangle(bounds.x, bounds.y, editorWidth, bounds.height);
-	}
-
-	// Workaround for SWT bug on Mac where TreeItem.getBounds() throws exception
-	// when custom fonts are used, see
-	// https://github.com/eclipse-platform/eclipse.platform.swt/issues/2749
-	private static Rectangle macBugWorkaround(TreeItem treeItem) {
-		treeItem.setFont(null);
-		Rectangle bounds = treeItem.getBounds(0);
-		bounds.x = bounds.x + 10;
-		bounds.width = computeEditorExtent(treeItem);
-		return bounds;
 	}
 
 	private static int computeEditorExtent(TreeItem treeItem) {
