@@ -264,28 +264,29 @@ public class LocalLauncherDelegate extends AbstractLauncherDelegate {
 	}
 
 	/**
-	 * Returns the default shell to launch. Looks at the environment
-	 * variable "SHELL" first before assuming some default default values.
+	 * Returns the default shell to launch. Looks at the environment variable "SHELL" (or "ComSpec" on Windows)
+	 * first before assuming some default default values.
 	 *
 	 * @return The default shell to launch.
 	 */
 	private final File defaultShell() {
-		String shell = null;
+		String shell = IPreferenceKeys.getPreferences()
+				.getString(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX);
+		String defaultShellEnvironmentVariable;
+		String defaultShellIfNotSet;
 		if (Platform.OS_WIN32.equals(Platform.getOS())) {
-			if (System.getenv("ComSpec") != null && !"".equals(System.getenv("ComSpec").trim())) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				shell = System.getenv("ComSpec").trim(); //$NON-NLS-1$
-			} else {
-				shell = "cmd.exe"; //$NON-NLS-1$
-			}
+			defaultShellEnvironmentVariable = "ComSpec"; //$NON-NLS-1$
+			defaultShellIfNotSet = "cmd.exe"; //$NON-NLS-1$
+		} else {
+			defaultShellEnvironmentVariable = "SHELL"; //$NON-NLS-1$
+			defaultShellIfNotSet = "/bin/sh"; //$NON-NLS-1$
 		}
-		if (shell == null) {
-			shell = IPreferenceKeys.getPreferences().getString(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX);
-			if (shell == null || "".equals(shell)) { //$NON-NLS-1$
-				if (System.getenv("SHELL") != null && !"".equals(System.getenv("SHELL").trim())) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-					shell = System.getenv("SHELL").trim(); //$NON-NLS-1$
-				} else {
-					shell = "/bin/sh"; //$NON-NLS-1$
-				}
+		if (shell == null || shell.isEmpty()) {
+			if (System.getenv(defaultShellEnvironmentVariable) != null
+					&& !"".equals(System.getenv(defaultShellEnvironmentVariable).trim())) { //$NON-NLS-1$
+				shell = System.getenv(defaultShellEnvironmentVariable).trim();
+			} else {
+				shell = defaultShellIfNotSet;
 			}
 		}
 
@@ -303,17 +304,19 @@ public class LocalLauncherDelegate extends AbstractLauncherDelegate {
 		}
 
 		// Extract the process properties using defaults
+		boolean isDefaultShell = false;
 		String image;
 		if (!properties.containsKey(ITerminalsConnectorConstants.PROP_PROCESS_PATH)
 				|| properties.get(ITerminalsConnectorConstants.PROP_PROCESS_PATH) == null) {
 			File defaultShell = defaultShell();
 			image = defaultShell.isAbsolute() ? defaultShell.getAbsolutePath() : defaultShell.getPath();
+			isDefaultShell = true;
 		} else {
 			image = (String) properties.get(ITerminalsConnectorConstants.PROP_PROCESS_PATH);
 		}
 
 		String arguments = (String) properties.get(ITerminalsConnectorConstants.PROP_PROCESS_ARGS);
-		if (arguments == null && !Platform.OS_WIN32.equals(Platform.getOS())) {
+		if (arguments == null && isDefaultShell) {
 			arguments = IPreferenceKeys.getPreferences()
 					.getString(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX_ARGS);
 		}
