@@ -20,8 +20,10 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
+import org.eclipse.compare.ICompareFilter;
 import org.eclipse.compare.contentmergeviewer.IIgnoreWhitespaceContributor;
 import org.eclipse.compare.contentmergeviewer.ITokenComparator;
+import org.eclipse.compare.internal.MergeViewerContentProvider;
 import org.eclipse.compare.unifieddiff.internal.ToolbarActionPresentations;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager;
 import org.eclipse.core.runtime.IStatus;
@@ -101,6 +103,9 @@ public final class UnifiedDiff {
 		private List<Action> additionalActions;
 		private TokenComparatorFactory tokenComparatorFactory;
 		private IgnoreWhitespaceContributorFactory ignoreWhitespaceContributorFactory;
+		private ICompareFilter[] compareFilters;
+		private char editorContributor = MergeViewerContentProvider.LEFT_CONTRIBUTOR;
+		private char sourceContributor = MergeViewerContentProvider.RIGHT_CONTRIBUTOR;
 		private int foldContextLines = -1;
 		private final Map<ToolbarAction, String> toolbarActionTexts = new EnumMap<>(ToolbarAction.class);
 		private final Map<ToolbarAction, ImageDescriptor> toolbarActionImages = new EnumMap<>(ToolbarAction.class);
@@ -128,6 +133,18 @@ public final class UnifiedDiff {
 
 		public Builder ignoreWhiteSpace(boolean value) {
 			ignoreWhiteSpace = value;
+			return this;
+		}
+
+		public Builder compareFilters(ICompareFilter[] filters) {
+			return compareFilters(filters, MergeViewerContentProvider.LEFT_CONTRIBUTOR,
+					MergeViewerContentProvider.RIGHT_CONTRIBUTOR);
+		}
+
+		public Builder compareFilters(ICompareFilter[] filters, char editorSide, char sourceSide) {
+			this.compareFilters = filters;
+			this.editorContributor = editorSide;
+			this.sourceContributor = sourceSide;
 			return this;
 		}
 
@@ -175,7 +192,8 @@ public final class UnifiedDiff {
 
 		public IStatus open() {
 			return UnifiedDiffManager.open(editor, source, mode, additionalActions, tokenComparatorFactory,
-					ignoreWhitespaceContributorFactory, ignoreWhiteSpace, foldContextLines,
+					ignoreWhitespaceContributorFactory, compareFilters, editorContributor, sourceContributor,
+					ignoreWhiteSpace, foldContextLines,
 					new ToolbarActionPresentations(toolbarActionTexts, toolbarActionImages));
 		}
 	}
