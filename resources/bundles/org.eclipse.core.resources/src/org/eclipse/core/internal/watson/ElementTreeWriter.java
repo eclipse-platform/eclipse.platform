@@ -102,7 +102,7 @@ public class ElementTreeWriter {
 		int numTrees = trees.length;
 		Map<ElementTree, Deque<Integer>> indicesByTree = new HashMap<>();
 		for (int i = 0; i < numTrees; i++) {
-			indicesByTree.computeIfAbsent(trees[i], k -> new ArrayDeque<>()).push(i);
+			indicesByTree.computeIfAbsent(trees[i], _ -> new ArrayDeque<>()).push(i);
 		}
 
 		/* write the order array */

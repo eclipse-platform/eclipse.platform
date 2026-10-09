@@ -129,7 +129,7 @@ public class SWTInputHandler extends DefaultInputHandler {
 		} else {
 			fText = new Text(fDialog, SWT.SINGLE | SWT.BORDER);
 			fText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
-			fText.addModifyListener(event -> validateInput());
+			fText.addModifyListener(_ -> validateInput());
 		}
 
 		String value = null;

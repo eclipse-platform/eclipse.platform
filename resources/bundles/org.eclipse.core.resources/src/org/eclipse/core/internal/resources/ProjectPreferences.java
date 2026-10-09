@@ -712,7 +712,7 @@ public class ProjectPreferences extends EclipsePreferences {
 		final String finalQualifier = qualifier;
 		final BackingStoreException[] bse = new BackingStoreException[1];
 		try {
-			ICoreRunnable operation = monitor -> {
+			ICoreRunnable operation = _ -> {
 				try {
 					Properties table = convertToProperties(new SortedProperties(), ""); //$NON-NLS-1$
 					// nothing to save. delete existing file if one exists.

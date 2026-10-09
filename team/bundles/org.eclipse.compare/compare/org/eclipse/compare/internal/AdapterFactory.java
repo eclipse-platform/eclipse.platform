@@ -26,7 +26,7 @@ public class AdapterFactory implements IAdapterFactory {
 	public <T> T getAdapter(final Object adaptableObject, Class<T> adapterType) {
 		if (IContributorResourceAdapter.class.equals(adapterType)
 				&& adaptableObject instanceof CompareEditorInput) {
-			return (T) (IContributorResourceAdapter) adaptable -> {
+			return (T) (IContributorResourceAdapter) _ -> {
 				Object ei = ((CompareEditorInput) adaptableObject)
 						.getAdapter(IEditorInput.class);
 				if (ei instanceof IFileEditorInput) {

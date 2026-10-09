@@ -104,7 +104,7 @@ public class ImageMergeViewer extends ContentMergeViewer {
 				if (image != null) {
 					Image nonNullImage = image;
 					canvas.setImage(nonNullImage);
-					canvas.addDisposeListener(e -> nonNullImage.dispose());
+					canvas.addDisposeListener(_ -> nonNullImage.dispose());
 					canvas.setBackground(display.getSystemColor(SWT.COLOR_LIST_BACKGROUND));
 				} else {
 					canvas.setBackground(null);

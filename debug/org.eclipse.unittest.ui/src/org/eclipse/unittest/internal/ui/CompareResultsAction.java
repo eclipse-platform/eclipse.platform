@@ -53,7 +53,7 @@ public class CompareResultsAction extends Action {
 		} else {
 			fOpenDialog = new CompareResultDialog(fView.getShell(), failedTest);
 			fOpenDialog.create();
-			fOpenDialog.getShell().addDisposeListener(e -> fOpenDialog = null);
+			fOpenDialog.getShell().addDisposeListener(_ -> fOpenDialog = null);
 			fOpenDialog.setBlockOnOpen(false);
 			fOpenDialog.open();
 		}

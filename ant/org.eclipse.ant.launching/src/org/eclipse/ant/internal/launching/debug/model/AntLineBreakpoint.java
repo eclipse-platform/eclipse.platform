@@ -70,7 +70,7 @@ public class AntLineBreakpoint extends LineBreakpoint {
 	 *             if unable to create the breakpoint
 	 */
 	public AntLineBreakpoint(final IResource resource, final int lineNumber, final Map<String, Object> attributes, final boolean register) throws CoreException {
-		IWorkspaceRunnable wr = monitor -> {
+		IWorkspaceRunnable wr = _ -> {
 			IMarker marker = resource.createMarker(IAntDebugConstants.ID_ANT_LINE_BREAKPOINT_MARKER);
 			setMarker(marker);
 			attributes.put(IBreakpoint.ENABLED, Boolean.TRUE);

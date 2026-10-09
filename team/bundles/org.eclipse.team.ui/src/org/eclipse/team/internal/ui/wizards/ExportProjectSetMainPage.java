@@ -410,7 +410,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 			data.widthHint = Math.max(widthHint, selectAll.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
 			selectAll.setLayoutData(data);
 			selectAll.setText(TeamUIMessages.ExportProjectSetMainPage_SelectAll);
-			selectAll.addListener(SWT.Selection, event -> {
+			selectAll.addListener(SWT.Selection, _ -> {
 				tableViewer.setAllChecked(true);
 				selectedProjects.clear();
 				Object[] checked = tableViewer.getCheckedElements();
@@ -426,7 +426,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 			data.widthHint = Math.max(widthHint, deselectAll.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
 			deselectAll.setLayoutData(data);
 			deselectAll.setText(TeamUIMessages.ExportProjectSetMainPage_DeselectAll);
-			deselectAll.addListener(SWT.Selection, event -> {
+			deselectAll.addListener(SWT.Selection, _ -> {
 				tableViewer.setAllChecked(false);
 				selectedProjects.clear();
 				updateEnablement();
@@ -576,7 +576,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 			data.widthHint = Math.max(widthHint, selectAll.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
 			selectAll.setLayoutData(data);
 			selectAll.setText(TeamUIMessages.ExportProjectSetMainPage_SelectAll);
-			selectAll.addListener(SWT.Selection, event -> {
+			selectAll.addListener(SWT.Selection, _ -> {
 				wsTableViewer.setAllChecked(true);
 
 				selectedProjects.clear();
@@ -601,7 +601,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 			data.widthHint = Math.max(widthHint, deselectAll.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
 			deselectAll.setLayoutData(data);
 			deselectAll.setText(TeamUIMessages.ExportProjectSetMainPage_DeselectAll);
-			deselectAll.addListener(SWT.Selection, event -> {
+			deselectAll.addListener(SWT.Selection, _ -> {
 				wsTableViewer.setAllChecked(false);
 				selectedWorkingSet.clear();
 				selectedProjects.clear();
@@ -618,14 +618,14 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 			data.widthHint = Math.max(widthHint, deselectAll.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
 			newWorkingSet.setLayoutData(data);
 			newWorkingSet.setText(TeamUIMessages.ExportProjectSetMainPage_EditButton);
-			newWorkingSet.addListener(SWT.Selection, event -> {
+			newWorkingSet.addListener(SWT.Selection, _ -> {
 				final IWorkingSetManager workingSetManager = PlatformUI.getWorkbench().getWorkingSetManager();
 				IWorkingSetSelectionDialog wsWizard = workingSetManager.createWorkingSetSelectionDialog(getShell(), false);
 				if (wsWizard != null) {
 					IPropertyChangeListener propListener = null;
 					try {
 						//add event listener
-						propListener = event1 -> {
+						propListener = _ -> {
 
 						};
 

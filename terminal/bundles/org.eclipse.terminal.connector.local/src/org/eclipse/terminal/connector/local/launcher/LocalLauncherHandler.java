@@ -73,7 +73,7 @@ public class LocalLauncherHandler extends AbstractHandler {
 		Map<String, Object> properties = new HashMap<>();
 		properties.put(ITerminalsConnectorConstants.PROP_DELEGATE_ID, delegate.getId());
 		properties.put(ITerminalsConnectorConstants.PROP_SELECTION, selection);
-		delegate.execute(properties).whenComplete((r, e) -> {
+		delegate.execute(properties).whenComplete((_, e) -> {
 			if (e != null) {
 				ILog.get().error("Error occurred while running delegate to open console", e); //$NON-NLS-1$
 			}

@@ -96,7 +96,7 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 		ITypedElement te = getFileElement();
 		if (te instanceof IContentChangeNotifier) {
 			if (contentChangeListener == null) {
-				contentChangeListener = source -> {
+				contentChangeListener = _ -> {
 					try {
 						if(! isSaving) {
 							performSave(new NullProgressMonitor());

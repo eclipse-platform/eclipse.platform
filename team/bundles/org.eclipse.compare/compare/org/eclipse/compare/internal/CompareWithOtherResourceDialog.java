@@ -278,7 +278,7 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 			super.createText(parent);
 			text.setEditable(true);
 
-			text.addModifyListener(e -> {
+			text.addModifyListener(_ -> {
 				section.setResource(text.getText());
 				updateErrorInfo();
 			});

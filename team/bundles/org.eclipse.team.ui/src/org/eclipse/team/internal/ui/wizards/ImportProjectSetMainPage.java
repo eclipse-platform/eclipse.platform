@@ -129,7 +129,7 @@ public class ImportProjectSetMainPage extends TeamWizardPage {
 		file = psfFilenameStore.getSuggestedDefault();
 		fileCombo.setItems(psfFilenameStore.getHistory());
 		fileCombo.setText(file);
-		fileCombo.addListener(SWT.Modify, event -> {
+		fileCombo.addListener(SWT.Modify, _ -> {
 			file = fileCombo.getText();
 			updateFileEnablement();
 		});
@@ -153,7 +153,7 @@ public class ImportProjectSetMainPage extends TeamWizardPage {
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.horizontalSpan = 2;
 		urlCombo.setLayoutData(gd);
-		urlCombo.addListener(SWT.Modify, event -> {
+		urlCombo.addListener(SWT.Modify, _ -> {
 			urlString = urlCombo.getText();
 			updateUrlEnablement();
 		});
@@ -163,7 +163,7 @@ public class ImportProjectSetMainPage extends TeamWizardPage {
 		int widthHint = convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
 		data.widthHint = Math.max(widthHint, browseButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
 		browseButton.setLayoutData(data);
-		browseButton.addListener(SWT.Selection, event -> {
+		browseButton.addListener(SWT.Selection, _ -> {
 			FileDialog d = new FileDialog(getShell());
 			d.setFilterExtensions("*.psf", "*"); //$NON-NLS-1$ //$NON-NLS-2$
 			d.setFilterNames(TeamUIMessages.ImportProjectSetMainPage_Project_Set_Files_2, TeamUIMessages.ImportProjectSetMainPage_allFiles); //

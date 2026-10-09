@@ -174,7 +174,7 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 
 		if (getLeftSaveable() instanceof SaveableComparison) {
 			SaveableComparison lscm = (SaveableComparison) fLeftSaveable;
-			fLeftPropertyListener = (source, propId) -> {
+			fLeftPropertyListener = (_, propId) -> {
 				if (propId == SaveableComparison.PROP_DIRTY) {
 					setLeftDirty(fLeftSaveable.isDirty());
 				}
@@ -184,7 +184,7 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 
 		if (getRightSaveable() instanceof SaveableComparison) {
 			SaveableComparison rscm = (SaveableComparison) fRightSaveable;
-			fRightPropertyListener = (source, propId) -> {
+			fRightPropertyListener = (_, propId) -> {
 				if (propId == SaveableComparison.PROP_DIRTY) {
 					setRightDirty(fRightSaveable.isDirty());
 				}
@@ -351,7 +351,7 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 			dsp.addPropertyChangeListener(lpcl);
 			dsp.addPropertyChangeListener(rpcl);
 			Control c = newViewer.getControl();
-			c.addDisposeListener(e -> {
+			c.addDisposeListener(_ -> {
 				dsp.removePropertyChangeListener(lpcl);
 				dsp.removePropertyChangeListener(rpcl);
 			});

@@ -99,14 +99,14 @@ public class HistoryDialog extends SelectionDialog {
 		buttons.setLayout(rowLayout);
 		fRemoveButton = new Button(buttons, SWT.PUSH);
 		fRemoveButton.setText(Messages.HistoryDialog_remove);
-		fRemoveButton.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> {
+		fRemoveButton.addSelectionListener(SelectionListener.widgetSelectedAdapter(_ -> {
 			for (Object selected : getResult()) {
 				History.INSTANCE.remove((HistoryItem) selected);
 			}
 			fTable.refresh();
 		}));
 		Button importButton = new Button(buttons, SWT.PUSH);
-		importButton.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> {
+		importButton.addSelectionListener(SelectionListener.widgetSelectedAdapter(_ -> {
 			FileDialog fileDialog = new FileDialog(getShell());
 			fileDialog.setFilterExtensions("*.xml"); //$NON-NLS-1$
 			fileDialog.setText(Messages.HistoryDialog_selectImport);
@@ -127,7 +127,7 @@ public class HistoryDialog extends SelectionDialog {
 		}));
 		importButton.setText(Messages.HistoryDialog_import);
 		fExportButton = new Button(buttons, SWT.PUSH);
-		fExportButton.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> {
+		fExportButton.addSelectionListener(SelectionListener.widgetSelectedAdapter(_ -> {
 			DirectoryDialog directoryDialog = new DirectoryDialog(getShell());
 			directoryDialog.setText(Messages.HistoryDialog_selectExport);
 			String path = directoryDialog.open();
@@ -167,7 +167,7 @@ public class HistoryDialog extends SelectionDialog {
 			@Override
 			public String getText(Object element) {
 				return ((HistoryItem) element).getCurrentTestRunSession().filter(fCurrentlyVisible::contains)
-						.map(any -> "👁️").orElse(""); //$NON-NLS-1$ //$NON-NLS-2$
+						.map(_ -> "👁️").orElse(""); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		});
 		visibleColumn.getColumn().setWidth(2 * fontSize);
@@ -197,7 +197,7 @@ public class HistoryDialog extends SelectionDialog {
 			@Override
 			public String getText(Object element) {
 				return ((HistoryItem) element).getCurrentTestRunSession().filter(TestRunSession::isRunning)
-						.map(any -> "🏃").orElse(""); //$NON-NLS-1$ //$NON-NLS-2$
+						.map(_ -> "🏃").orElse(""); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		});
 		progressColumn.getColumn().setWidth(2 * fontSize);

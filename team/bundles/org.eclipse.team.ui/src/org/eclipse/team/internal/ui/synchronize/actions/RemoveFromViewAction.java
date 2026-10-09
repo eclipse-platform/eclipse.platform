@@ -70,7 +70,7 @@ public class RemoveFromViewAction extends SynchronizeModelAction {
 				ISynchronizePage page = getConfiguration().getPage();
 				if (page instanceof SubscriberParticipantPage) {
 					final WorkingSetFilteredSyncInfoCollector collector = ((SubscriberParticipantPage)page).getCollector();
-					collector.run(monitor -> collector.getWorkingSetSyncInfoSet().removeAll(set.getResources()));
+					collector.run(_ -> collector.getWorkingSetSyncInfoSet().removeAll(set.getResources()));
 				}
 			}
 		};

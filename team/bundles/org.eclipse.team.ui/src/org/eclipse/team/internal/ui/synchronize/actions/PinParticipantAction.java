@@ -54,7 +54,7 @@ public class PinParticipantAction extends Action implements IPropertyChangeListe
 	public void run() {
 		if (participant != null) {
 			try {
-				PlatformUI.getWorkbench().getProgressService().busyCursorWhile(monitor -> {
+				PlatformUI.getWorkbench().getProgressService().busyCursorWhile(_ -> {
 					participant.setPinned(!participant.isPinned());
 					updateState();
 				});

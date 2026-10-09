@@ -90,7 +90,7 @@ public class Synchronizer implements ISynchronizer {
 		Assert.isLegal(partner != null);
 		Assert.isLegal(root != null);
 
-		ICoreRunnable body = monitor -> {
+		ICoreRunnable body = _ -> {
 			IResourceVisitor visitor = resource -> {
 				// only need to flush sync info if there is sync info
 				if (getSyncInfo(partner, resource) != null) {

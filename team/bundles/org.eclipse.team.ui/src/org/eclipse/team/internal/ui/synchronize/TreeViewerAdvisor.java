@@ -226,7 +226,7 @@ public class TreeViewerAdvisor extends AbstractTreeViewerAdvisor {
 	public final void setInput(final ISynchronizeModelProvider modelProvider) {
 		final ISynchronizeModelElement modelRoot = modelProvider.getModelRoot();
 		getActionGroup().modelChanged(modelRoot);
-		modelRoot.addCompareInputChangeListener(source -> getActionGroup().modelChanged(modelRoot));
+		modelRoot.addCompareInputChangeListener(_ -> getActionGroup().modelChanged(modelRoot));
 		final StructuredViewer viewer = getViewer();
 		if (viewer != null) {
 			viewer.setComparator(modelProvider.getViewerComparator());

@@ -169,7 +169,7 @@ public class WorkspaceRoot extends Container implements IWorkspaceRoot {
 			Assert.isLegal(segmentCount == ICoreConstants.PROJECT_SEGMENT_LENGTH, message);
 			//try to get the project using a canonical name
 			String canonicalName = projectPath.lastSegment();
-			result = projectTable.computeIfAbsent(canonicalName, n -> new Project(projectPath, workspace));
+			result = projectTable.computeIfAbsent(canonicalName, _ -> new Project(projectPath, workspace));
 		}
 		return result;
 	}

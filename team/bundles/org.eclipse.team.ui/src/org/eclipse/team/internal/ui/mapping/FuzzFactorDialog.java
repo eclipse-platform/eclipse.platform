@@ -75,7 +75,7 @@ public class FuzzFactorDialog extends Dialog {
 				| GridData.HORIZONTAL_ALIGN_FILL);
 		data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
 		valueText.setLayoutData(data);
-		valueText.addModifyListener(e -> validateInput());
+		valueText.addModifyListener(_ -> validateInput());
 		fuzzFactor = patcher.getFuzz();
 		if (fuzzFactor >= 0) {
 			valueText.setText(Integer.toString(fuzzFactor));

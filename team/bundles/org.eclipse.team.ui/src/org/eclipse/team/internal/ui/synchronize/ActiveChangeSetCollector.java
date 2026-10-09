@@ -71,7 +71,7 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
 		@Override
 		public void setAdded(final ChangeSet set) {
 			// Remove any resources that are in the new set
-			provider.performUpdate(monitor -> {
+			provider.performUpdate(_ -> {
 				remove(set.getResources());
 				createSyncInfoSet(set);
 			}, true, true);
@@ -79,7 +79,7 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
 
 		@Override
 		public void defaultSetChanged(final ChangeSet previousDefault, final ChangeSet set) {
-			provider.performUpdate(monitor -> {
+			provider.performUpdate(_ -> {
 				if (listener != null) {
 					listener.defaultSetChanged(previousDefault, set);
 				}
@@ -88,7 +88,7 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
 
 		@Override
 		public void setRemoved(final ChangeSet set) {
-			provider.performUpdate(monitor -> {
+			provider.performUpdate(_ -> {
 				remove(set);
 				if (!set.isEmpty()) {
 					add(getSyncInfos(set).getSyncInfos());
@@ -98,7 +98,7 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
 
 		@Override
 		public void nameChanged(final ChangeSet set) {
-			provider.performUpdate(monitor -> {
+			provider.performUpdate(_ -> {
 				if (listener != null) {
 					listener.nameChanged(set);
 				}
@@ -119,7 +119,7 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
 				}
 			}
 			if (!outOfSync.isEmpty()) {
-				provider.performUpdate(monitor -> add(outOfSync.toArray(new SyncInfo[outOfSync.size()])), true, true);
+				provider.performUpdate(_ -> add(outOfSync.toArray(new SyncInfo[outOfSync.size()])), true, true);
 			}
 		}
 	};
@@ -452,7 +452,7 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
 
 	@Override
 	public void diffsChanged(final IDiffChangeEvent event, IProgressMonitor monitor) {
-		provider.performUpdate(monitor1 -> {
+		provider.performUpdate(_ -> {
 			ChangeSet changeSet = getChangeSet(event.getTree());
 			if (changeSet != null) {
 				SyncInfoSet targetSet = getSyncInfoSet(changeSet);

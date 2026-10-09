@@ -78,7 +78,7 @@ public class IgnorePreferencePage extends PreferencePage implements IWorkbenchPr
 		//gd.widthHint = convertWidthInCharsToPixels(30);
 		gd.heightHint = 300;
 		ignoreTable.setLayoutData(gd);
-		ignoreTable.addListener(SWT.Selection, e -> handleSelection());
+		ignoreTable.addListener(SWT.Selection, _ -> handleSelection());
 
 		Composite buttons = new Composite(parent, SWT.NULL);
 		buttons.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
@@ -89,12 +89,12 @@ public class IgnorePreferencePage extends PreferencePage implements IWorkbenchPr
 
 		addButton = new Button(buttons, SWT.PUSH);
 		addButton.setText(TeamUIMessages.IgnorePreferencePage_add);
-		addButton.addListener(SWT.Selection, e -> addIgnore());
+		addButton.addListener(SWT.Selection, _ -> addIgnore());
 
 		removeButton = new Button(buttons, SWT.PUSH);
 		removeButton.setText(TeamUIMessages.IgnorePreferencePage_remove);
 		removeButton.setEnabled(false);
-		removeButton.addListener(SWT.Selection, e -> removeIgnore());
+		removeButton.addListener(SWT.Selection, _ -> removeIgnore());
 		fillTable(Team.getAllIgnores());
 		Dialog.applyDialogFont(ancestor);
 		setButtonLayoutData(addButton);

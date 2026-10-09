@@ -1908,7 +1908,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 			try {
 				InputStream is= contentsOf(element, isa);
 				if (is != null) {
-					try (InputStream bis = new BufferedInputStream(is)) {
+					try (InputStream _ = new BufferedInputStream(is)) {
 						ct= fgContentTypeManager.findContentTypeFor(is, name);
 					} catch (IOException e) {
 						// silently ignored

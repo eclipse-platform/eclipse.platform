@@ -109,7 +109,7 @@ public class GlobalRefreshResourceSelectionPage extends GlobalRefreshElementSele
 		fViewer.getControl().setLayoutData(data);
 		fViewer.setContentProvider(new MyContentProvider());
 		fViewer.setLabelProvider(new DecoratingLabelProvider(new MyLabelProvider(), PlatformUI.getWorkbench().getDecoratorManager().getLabelDecorator()));
-		fViewer.addCheckStateListener(event -> updateOKStatus());
+		fViewer.addCheckStateListener(_ -> updateOKStatus());
 		fViewer.setComparator(new ResourceComparator(ResourceComparator.NAME));
 		fViewer.setInput(resources);
 		return fViewer;

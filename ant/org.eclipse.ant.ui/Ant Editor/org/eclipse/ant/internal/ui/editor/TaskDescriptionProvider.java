@@ -111,7 +111,7 @@ public class TaskDescriptionProvider {
 	public static TaskDescriptionProvider getDefault() {
 		if (fgDefault == null) {
 			fgDefault = new TaskDescriptionProvider();
-			IRunnableWithProgress runnable = monitor -> fgDefault.initialize();
+			IRunnableWithProgress runnable = _ -> fgDefault.initialize();
 
 			IProgressService service = PlatformUI.getWorkbench().getProgressService();
 			try {

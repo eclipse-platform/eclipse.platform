@@ -572,7 +572,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 					break;
 				}
 			}
-			control.addDisposeListener(ev -> handleDispose());
+			control.addDisposeListener(_ -> handleDispose());
 		});
 		if (fHelpContextId != null && PlatformUI.isWorkbenchRunning()) {
 			PlatformUI.getWorkbench().getHelpSystem().setHelp(fComposite, fHelpContextId);
@@ -952,7 +952,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 
 			Control c= newViewer.getControl();
 			c.addDisposeListener(
-				e -> dsp.removePropertyChangeListener(fDirtyStateListener)
+				_ -> dsp.removePropertyChangeListener(fDirtyStateListener)
 			);
 		}
 

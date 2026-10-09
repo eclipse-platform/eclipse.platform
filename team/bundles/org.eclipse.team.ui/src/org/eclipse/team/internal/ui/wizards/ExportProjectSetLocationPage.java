@@ -95,7 +95,7 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 	private void createExportToFile(Composite composite) {
 		fileRadio = new Button(composite, SWT.RADIO);
 		fileRadio.setText(TeamUIMessages.ExportProjectSetMainPage_FileButton);
-		fileRadio.addListener(SWT.Selection, event -> {
+		fileRadio.addListener(SWT.Selection, _ -> {
 			saveToFileSystem = true;
 			file = fileCombo.getText();
 			updateEnablement();
@@ -113,7 +113,7 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 		file = PsfFilenameStore.getInstance().getSuggestedDefault();
 		fileCombo.setItems(PsfFilenameStore.getInstance().getHistory());
 		fileCombo.setText(file);
-		fileCombo.addListener(SWT.Modify, event -> {
+		fileCombo.addListener(SWT.Modify, _ -> {
 			file = fileCombo.getText();
 			updateEnablement();
 		});
@@ -125,7 +125,7 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 		int widthHint = convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
 		data.widthHint = Math.max(widthHint, browseButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
 		browseButton.setLayoutData(data);
-		browseButton.addListener(SWT.Selection, event -> {
+		browseButton.addListener(SWT.Selection, _ -> {
 			if (!isSaveToFileSystem()) {
 				saveToFileSystem = true;
 			}
@@ -153,7 +153,7 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 	private void createExportToWorkspace(Composite composite) {
 		workspaceRadio = new Button(composite, SWT.RADIO);
 		workspaceRadio.setText(TeamUIMessages.ExportProjectSetMainPage_WorkspaceButton);
-		workspaceRadio.addListener(SWT.Selection, event -> {
+		workspaceRadio.addListener(SWT.Selection, _ -> {
 			saveToFileSystem = false;
 			updateEnablement();
 		});
@@ -168,7 +168,7 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 
 		workspaceText = createTextField(nameGroup);
 		workspaceText.setEditable(false);
-		workspaceText.addListener(SWT.Modify, event -> {
+		workspaceText.addListener(SWT.Modify, _ -> {
 			file = workspaceFile.getLocation().toString();
 			updateEnablement();
 		});
@@ -179,7 +179,7 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 		gd.widthHint = Math.max(widthHint, wsBrowseButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
 		wsBrowseButton.setLayoutData(gd);
 		wsBrowseButton.setText(TeamUIMessages.ExportProjectSetMainPage_Browse);
-		wsBrowseButton.addListener(SWT.Selection, event -> {
+		wsBrowseButton.addListener(SWT.Selection, _ -> {
 			if (isSaveToFileSystem()) {
 				saveToFileSystem = false;
 			}
@@ -389,7 +389,7 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 				}
 			});
 
-			wsFilenameText.addModifyListener(e -> {
+			wsFilenameText.addModifyListener(_ -> {
 				String patchName = wsFilenameText.getText();
 				if (patchName.trim().isEmpty()) {
 					okButton.setEnabled(false);

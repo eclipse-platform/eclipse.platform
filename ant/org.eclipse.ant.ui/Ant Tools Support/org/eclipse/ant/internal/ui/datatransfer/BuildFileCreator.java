@@ -281,7 +281,7 @@ public class BuildFileCreator {
 	public void createImports() {
 		// <import file="javadoc.xml"/>
 		File dir = new File(projectRoot);
-		FilenameFilter filter = (acceptDir, name) -> name.endsWith(".xml"); //$NON-NLS-1$
+		FilenameFilter filter = (_, name) -> name.endsWith(".xml"); //$NON-NLS-1$
 
 		File[] files = dir.listFiles(filter);
 		if (files == null) {

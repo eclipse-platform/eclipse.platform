@@ -49,7 +49,7 @@ public class ShowLocalHistory extends ActionDelegate implements IObjectActionDel
 			return;
 		}
 		try {
-			PlatformUI.getWorkbench().getProgressService().busyCursorWhile(monitor -> {
+			PlatformUI.getWorkbench().getProgressService().busyCursorWhile(_ -> {
 				final IResource resource = (IResource) fSelection.getFirstElement();
 				Runnable r = () -> {
 					IHistoryView view = TeamUI.showHistoryFor(TeamUIPlugin.getActivePage(), resource,  LocalHistoryPageSource.getInstance());

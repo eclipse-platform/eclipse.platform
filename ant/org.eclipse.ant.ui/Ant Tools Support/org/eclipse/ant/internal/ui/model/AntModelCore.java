@@ -75,7 +75,7 @@ public class AntModelCore implements IBreakpointsListener {
 	 * @see org.eclipse.debug.core.IBreakpointsListener#breakpointsAdded(org.eclipse.debug.core.model.IBreakpoint[])
 	 */
 	private void updateBreakpointMessages(final IBreakpoint[] breakpoints) {
-		IWorkspaceRunnable runnable = monitor -> {
+		IWorkspaceRunnable runnable = _ -> {
 			for (IBreakpoint breakpoint : breakpoints) {
 				if (breakpoint instanceof AntLineBreakpoint) {
 					IMarker marker = breakpoint.getMarker();

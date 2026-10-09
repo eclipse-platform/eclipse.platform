@@ -86,7 +86,7 @@ public class ProgressIcons {
 		int pixelsToDraw = initialImageData.width * current / totalAsInt;
 		RGB color = display.getSystemColor(hasFailures ? SWT.COLOR_RED : SWT.COLOR_GREEN).getRGB();
 		ProgressIconKey key = new ProgressIconKey(pixelsToDraw, color);
-		return progressIcons.computeIfAbsent(key, progressKey -> {
+		return progressIcons.computeIfAbsent(key, _ -> {
 			ImageData imageData = (ImageData) initialImageData.clone();
 			int pixelColorCode = imageData.palette.getPixel(color);
 			for (int line = 4 * imageData.height / 5; line < imageData.height; line++) {

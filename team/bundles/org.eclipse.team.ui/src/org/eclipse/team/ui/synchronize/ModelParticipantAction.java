@@ -56,7 +56,7 @@ public abstract class ModelParticipantAction extends BaseSelectionListenerAction
 
 	private void initialize(ISynchronizePageConfiguration configuration) {
 		configuration.getSite().getSelectionProvider().addSelectionChangedListener(this);
-		configuration.getPage().getViewer().getControl().addDisposeListener(e -> getConfiguration().getSite().getSelectionProvider().removeSelectionChangedListener(ModelParticipantAction.this));
+		configuration.getPage().getViewer().getControl().addDisposeListener(_ -> getConfiguration().getSite().getSelectionProvider().removeSelectionChangedListener(ModelParticipantAction.this));
 	}
 
 	/**
