@@ -16,6 +16,7 @@ package org.eclipse.team.tests.ui;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -42,12 +43,15 @@ import org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager.UnifiedDiff;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jface.internal.text.codemining.CodeMiningLineHeaderAnnotation;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.TextAttribute;
+import org.eclipse.jface.text.WhitespaceCharacterPainter;
 import org.eclipse.jface.text.codemining.ICodeMining;
 import org.eclipse.jface.text.codemining.ICodeMiningProvider;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
@@ -76,9 +80,12 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.text.undo.DocumentUndoManagerRegistry;
+import org.eclipse.ui.editors.text.EditorsUI;
+import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -545,6 +552,392 @@ public class UnifiedDiffCodeMiningProviderTest {
 		}
 	}
 
+	@Test
+	public void testFooterMiningRendersWhitespaceWithoutMovingDetailedDiff() throws Exception {
+		switchToDocument(new Document("line 0\npublic public public"));
+		IStatus status = UnifiedDiffManager.open(viewer, document, model, null,
+				"line 0\npublic public public changed\n", MODE, null, null, null, null,
+				MergeViewerContentProvider.LEFT_CONTRIBUTOR, MergeViewerContentProvider.RIGHT_CONTRIBUTOR, true,
+				CONTEXT_LINES);
+		assertTrue(status.isOK(), "open() should succeed: " + status);
+
+		UnifiedDiffFooterCodeMining footer = footerMining();
+		Color deletionColor = new Color(display, 255, 255, 255);
+		Color detailedDiffColor = new Color(display, 44, 55, 66);
+		UnifiedDiffFooterCodeMining paintingFooter = new UnifiedDiffFooterCodeMining(document, provider,
+				footer.getUnifiedDiff(), 4, deletionColor, detailedDiffColor, null, viewer);
+		Image withoutWhitespace = new Image(display, 500, 100);
+		Image withWhitespace = new Image(display, 500, 100);
+		IPreferenceStore store = EditorsUI.getPreferenceStore();
+		boolean oldShowWhitespace = store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_WHITESPACE_CHARACTERS);
+		boolean oldEnclosedSpaces = store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_ENCLOSED_SPACES);
+		try {
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_WHITESPACE_CHARACTERS, false);
+			draw(paintingFooter, withoutWhitespace);
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_WHITESPACE_CHARACTERS, true);
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_ENCLOSED_SPACES, true);
+			draw(paintingFooter, withWhitespace);
+
+			int withoutWhitespaceColumn = firstColumnWith(withoutWhitespace, detailedDiffColor);
+			int withWhitespaceColumn = firstColumnWith(withWhitespace, detailedDiffColor);
+			assertThat(withoutWhitespaceColumn).as("the detailed-diff background must be painted")
+					.isGreaterThanOrEqualTo(0);
+			assertEquals(withoutWhitespaceColumn, withWhitespaceColumn,
+					"visible whitespace must not move the detailed-diff background");
+			assertThat(differentPixels(withoutWhitespace, withWhitespace))
+					.as("visible spaces must add pixels to the rendered mining").isGreaterThan(0);
+		} finally {
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_WHITESPACE_CHARACTERS, oldShowWhitespace);
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_ENCLOSED_SPACES, oldEnclosedSpaces);
+			withoutWhitespace.dispose();
+			withWhitespace.dispose();
+			paintingFooter.dispose();
+			deletionColor.dispose();
+			detailedDiffColor.dispose();
+		}
+	}
+
+	@Test
+	public void testHeaderMiningCachesWhitespaceWithoutMovingDetailedDiff() throws Exception {
+		switchToDocument(new Document("line 0\npublic public public\nline 2\n"));
+		IStatus status = UnifiedDiffManager.open(viewer, document, model, null,
+				"line 0\npublic public public changed\nline 2\n", MODE, null, null, null, null,
+				MergeViewerContentProvider.LEFT_CONTRIBUTOR, MergeViewerContentProvider.RIGHT_CONTRIBUTOR, true,
+				CONTEXT_LINES);
+		assertTrue(status.isOK(), "open() should succeed: " + status);
+
+		UnifiedDiffLineHeaderCodeMining header = headerMining();
+		Color deletionColor = new Color(display, 255, 255, 255);
+		Color detailedDiffColor = new Color(display, 44, 55, 66);
+		UnifiedDiffLineHeaderCodeMining paintingHeader = new UnifiedDiffLineHeaderCodeMining(header.getPosition(),
+				provider, header.getUnifiedDiff(), 4, deletionColor, detailedDiffColor, null, viewer);
+		Image withoutWhitespace = new Image(display, 500, 100);
+		Image firstWhitespacePaint = new Image(display, 500, 100);
+		Image cachedWhitespacePaint = new Image(display, 500, 100);
+		IPreferenceStore store = EditorsUI.getPreferenceStore();
+		boolean oldShowWhitespace = store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_WHITESPACE_CHARACTERS);
+		boolean oldEnclosedSpaces = store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_ENCLOSED_SPACES);
+		try {
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_WHITESPACE_CHARACTERS, false);
+			draw(paintingHeader, withoutWhitespace);
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_WHITESPACE_CHARACTERS, true);
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_ENCLOSED_SPACES, true);
+			draw(paintingHeader, firstWhitespacePaint);
+			draw(paintingHeader, cachedWhitespacePaint);
+
+			int withoutWhitespaceColumn = firstColumnWith(withoutWhitespace, detailedDiffColor);
+			int withWhitespaceColumn = firstColumnWith(firstWhitespacePaint, detailedDiffColor);
+			assertThat(withoutWhitespaceColumn).as("the detailed-diff background must be painted")
+					.isGreaterThanOrEqualTo(0);
+			assertEquals(withoutWhitespaceColumn, withWhitespaceColumn,
+					"visible whitespace must not move the detailed-diff background");
+			assertEquals(withWhitespaceColumn, firstColumnWith(cachedWhitespacePaint, detailedDiffColor),
+					"the cached repaint must preserve the detailed-diff position");
+		} finally {
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_WHITESPACE_CHARACTERS, oldShowWhitespace);
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_ENCLOSED_SPACES, oldEnclosedSpaces);
+			withoutWhitespace.dispose();
+			firstWhitespacePaint.dispose();
+			cachedWhitespacePaint.dispose();
+			paintingHeader.dispose();
+			deletionColor.dispose();
+			detailedDiffColor.dispose();
+		}
+	}
+
+	@Test
+	public void testFooterMiningRendersLineFeedCharacters() throws Exception {
+		switchToDocument(new Document("line 0\nx"));
+		IStatus status = UnifiedDiffManager.open(viewer, document, model, null, "line 0\nfirst\nsecond\n", MODE,
+				null, null, null, null, MergeViewerContentProvider.LEFT_CONTRIBUTOR,
+				MergeViewerContentProvider.RIGHT_CONTRIBUTOR, true, CONTEXT_LINES);
+		assertTrue(status.isOK(), "open() should succeed: " + status);
+
+		UnifiedDiffFooterCodeMining footer = footerMining();
+		Color deletionColor = new Color(display, 255, 255, 255);
+		Color detailedDiffColor = new Color(display, 44, 55, 66);
+		UnifiedDiffFooterCodeMining paintingFooter = new UnifiedDiffFooterCodeMining(document, provider,
+				footer.getUnifiedDiff(), 4, deletionColor, detailedDiffColor, null, viewer);
+		Image withoutLineFeeds = new Image(display, 300, 100);
+		Image withLineFeeds = new Image(display, 300, 100);
+		IPreferenceStore store = EditorsUI.getPreferenceStore();
+		boolean oldShowWhitespace = store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_WHITESPACE_CHARACTERS);
+		boolean oldShowLineFeed = store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_LINE_FEED);
+		try {
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_WHITESPACE_CHARACTERS, true);
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_LINE_FEED, false);
+			draw(paintingFooter, withoutLineFeeds);
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_LINE_FEED, true);
+			draw(paintingFooter, withLineFeeds);
+
+			assertThat(differentPixels(withoutLineFeeds, withLineFeeds))
+					.as("line-feed markers must add pixels to the rendered mining").isGreaterThan(0);
+		} finally {
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_WHITESPACE_CHARACTERS, oldShowWhitespace);
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_LINE_FEED, oldShowLineFeed);
+			withoutLineFeeds.dispose();
+			withLineFeeds.dispose();
+			paintingFooter.dispose();
+			deletionColor.dispose();
+			detailedDiffColor.dispose();
+		}
+	}
+
+	/** A trailing empty added CRLF line remains visible in a footer mining. */
+	@Test
+	public void testFooterMiningRendersTrailingBlankLineDelimiters() throws Exception {
+		switchToDocument(new Document("line 0\r\npublic class MyClass {")); //$NON-NLS-1$
+		String source = "line 0\r\npublic class MyClass { \r\n\r\n"; //$NON-NLS-1$
+		IStatus status = UnifiedDiffManager.open(viewer, document, model, null, source, MODE, null, null, null, null,
+				MergeViewerContentProvider.LEFT_CONTRIBUTOR, MergeViewerContentProvider.RIGHT_CONTRIBUTOR, false,
+				CONTEXT_LINES);
+		assertTrue(status.isOK(), "open() should succeed: " + status); //$NON-NLS-1$
+
+		UnifiedDiffFooterCodeMining footer = footerMining();
+		assertThat(footer.getUnifiedDiff().detailedDiffs)
+				.as("the word diff must retain the trailing-space and delimiter addition") //$NON-NLS-1$
+				.isNotEmpty();
+		Color deletionColor = new Color(display, 255, 255, 255);
+		Color detailedDiffColor = new Color(display, 44, 55, 66);
+		UnifiedDiffFooterCodeMining paintingFooter = new UnifiedDiffFooterCodeMining(document, provider,
+				footer.getUnifiedDiff(), 4, deletionColor, detailedDiffColor, null, viewer);
+		Image withoutLineDelimiters = new Image(display, 500, 100);
+		Image withLineDelimiters = new Image(display, 500, 100);
+		IPreferenceStore store = EditorsUI.getPreferenceStore();
+		boolean oldShowWhitespace = store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_WHITESPACE_CHARACTERS);
+		boolean oldShowCarriageReturn = store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_CARRIAGE_RETURN);
+		boolean oldShowLineFeed = store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_LINE_FEED);
+		try {
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_WHITESPACE_CHARACTERS, true);
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_CARRIAGE_RETURN, false);
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_LINE_FEED, false);
+			draw(paintingFooter, withoutLineDelimiters);
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_CARRIAGE_RETURN, true);
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_LINE_FEED, true);
+			draw(paintingFooter, withLineDelimiters);
+
+			int renderedHeight = paintingFooter.getLastRectangle().height;
+			int lineHeight = viewer.getTextWidget().getLineHeight();
+			int secondLineTop = lineHeight + viewer.getTextWidget().getLineSpacing();
+			int delimiterMarkerWidth;
+			GC markerGc = new GC(withLineDelimiters);
+			try {
+				markerGc.setFont(viewer.getTextWidget().getFont());
+				delimiterMarkerWidth = markerGc.stringExtent("¤¶").x; //$NON-NLS-1$
+			} finally {
+				markerGc.dispose();
+			}
+			assertThat(renderedHeight).as("the footer mining must retain the trailing blank line") //$NON-NLS-1$
+					.isGreaterThan(lineHeight);
+			int lastDetailedColumn = lastColumnWithInBand(withLineDelimiters.getImageData(),
+					detailedDiffColor.getRGB(), secondLineTop, renderedHeight);
+			assertThat(lastDetailedColumn)
+					.as("the added blank line's darker background must cover its CRLF marker") //$NON-NLS-1$
+					.isGreaterThanOrEqualTo(0).isLessThan(delimiterMarkerWidth + 2);
+			assertThat(differentPixels(withoutLineDelimiters, withLineDelimiters, 0, lineHeight))
+					.as("the added content line's CRLF marker must be rendered").isGreaterThan(0); //$NON-NLS-1$
+			assertThat(differentPixels(withoutLineDelimiters, withLineDelimiters, secondLineTop, renderedHeight))
+					.as("the added blank line's CRLF marker must be rendered").isGreaterThan(0); //$NON-NLS-1$
+		} finally {
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_WHITESPACE_CHARACTERS, oldShowWhitespace);
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_CARRIAGE_RETURN, oldShowCarriageReturn);
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_LINE_FEED, oldShowLineFeed);
+			withoutLineDelimiters.dispose();
+			withLineDelimiters.dispose();
+			paintingFooter.dispose();
+			deletionColor.dispose();
+			detailedDiffColor.dispose();
+		}
+	}
+
+	/** A trailing empty removed CRLF line remains visible as its own mining row. */
+	@Test
+	public void testHeaderMiningRendersTrailingBlankLineDelimiters() throws Exception {
+		switchToDocument(new Document("line 0\r\npublic class MyClass {\r\n\t\r\nline 4\r\n")); //$NON-NLS-1$
+		String source = "line 0\r\npublic class MyClass2 { \r\n\r\nline 4\r\n"; //$NON-NLS-1$
+		IStatus status = UnifiedDiffManager.open(viewer, document, model, null, source, UnifiedDiffMode.REVERT_MODE,
+				null, null, null, null, MergeViewerContentProvider.LEFT_CONTRIBUTOR,
+				MergeViewerContentProvider.RIGHT_CONTRIBUTOR, false, CONTEXT_LINES);
+		assertTrue(status.isOK(), "open() should succeed: " + status); //$NON-NLS-1$
+		List<UnifiedDiff> diffs = UnifiedDiffManager.get(viewer);
+		viewer.updateCodeMinings();
+		waitForAttachedMinings(diffs, allRegions().size());
+
+		UnifiedDiffLineHeaderCodeMining header = headerMining();
+		CodeMiningLineHeaderAnnotation annotation = assertInstanceOf(CodeMiningLineHeaderAnnotation.class,
+				attachedMiningAnnotationOf(header.getUnifiedDiff()));
+		assertThat(header.getUnifiedDiff().detailedDiffs)
+				.as("the word diff must retain the whitespace-only tab/space replacement") //$NON-NLS-1$
+				.hasSize(2).anyMatch(diff -> diff.leftStr.contains("\t")); //$NON-NLS-1$
+		int tabOffset = document.get().indexOf('\t');
+		assertTrue(hasAnnotationCovering(".detailedAddition", tabOffset), //$NON-NLS-1$
+				"the current tab must have a detailed-diff annotation"); //$NON-NLS-1$
+		Color deletionColor = new Color(display, 255, 255, 255);
+		Color detailedDiffColor = new Color(display, 44, 55, 66);
+		UnifiedDiffLineHeaderCodeMining paintingHeader = new UnifiedDiffLineHeaderCodeMining(header.getPosition(),
+				provider, header.getUnifiedDiff(), 4, deletionColor, detailedDiffColor, null, viewer);
+		Image withoutLineDelimiters = new Image(display, 500, 100);
+		Image withLineDelimiters = new Image(display, 500, 100);
+		IPreferenceStore store = EditorsUI.getPreferenceStore();
+		boolean oldShowWhitespace = store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_WHITESPACE_CHARACTERS);
+		boolean oldShowCarriageReturn = store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_CARRIAGE_RETURN);
+		boolean oldShowLineFeed = store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_LINE_FEED);
+		try {
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_WHITESPACE_CHARACTERS, true);
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_CARRIAGE_RETURN, false);
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_LINE_FEED, false);
+			draw(paintingHeader, withoutLineDelimiters);
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_CARRIAGE_RETURN, true);
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_LINE_FEED, true);
+			draw(paintingHeader, withLineDelimiters);
+
+			int renderedHeight = paintingHeader.getLastRectangle().height;
+			assertThat(renderedHeight).as("the deletion mining must retain the trailing blank line") //$NON-NLS-1$
+					.isGreaterThan(viewer.getTextWidget().getLineHeight());
+			assertEquals(renderedHeight, annotation.getHeight(),
+					"the editor must reserve the full painted height so the current source line remains visible"); //$NON-NLS-1$
+			assertThat(UnifiedDiffCodeMiningProvider.createDetailedDiffBackgroundRanges(header.getUnifiedDiff(), 4,
+					detailedDiffColor)).as("the mining must retain the trailing-space detailed range").hasSize(2); //$NON-NLS-1$
+			int lineHeight = viewer.getTextWidget().getLineHeight();
+			int secondLineTop = lineHeight + viewer.getTextWidget().getLineSpacing();
+			int delimiterMarkerWidth;
+			GC markerGc = new GC(withLineDelimiters);
+			try {
+				markerGc.setFont(viewer.getTextWidget().getFont());
+				delimiterMarkerWidth = markerGc.stringExtent("¤¶").x; //$NON-NLS-1$
+			} finally {
+				markerGc.dispose();
+			}
+			assertThat(colorRunsInBand(withLineDelimiters, detailedDiffColor, 0, lineHeight))
+					.as("the class-name and trailing-space changes must both have darker backgrounds") //$NON-NLS-1$
+					.isGreaterThanOrEqualTo(2);
+			assertThat(lastColumnWithInBand(withLineDelimiters.getImageData(), detailedDiffColor.getRGB(),
+					secondLineTop, renderedHeight))
+					.as("the removed blank line's darker background must cover only its CRLF marker") //$NON-NLS-1$
+					.isGreaterThanOrEqualTo(0).isLessThan(delimiterMarkerWidth + 2);
+			assertThat(differentPixels(withoutLineDelimiters, withLineDelimiters, 0, lineHeight))
+					.as("the removed content line's CRLF marker must be rendered").isGreaterThan(0); //$NON-NLS-1$
+			assertThat(differentPixels(withoutLineDelimiters, withLineDelimiters, secondLineTop, renderedHeight))
+					.as("the removed blank line's CRLF marker must be rendered").isGreaterThan(0); //$NON-NLS-1$
+		} finally {
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_WHITESPACE_CHARACTERS, oldShowWhitespace);
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_CARRIAGE_RETURN, oldShowCarriageReturn);
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_LINE_FEED, oldShowLineFeed);
+			withoutLineDelimiters.dispose();
+			withLineDelimiters.dispose();
+			paintingHeader.dispose();
+			deletionColor.dispose();
+			detailedDiffColor.dispose();
+		}
+	}
+
+	@Test
+	public void testClickOverlayUsesWhitespaceCharacterPainter() throws Exception {
+		switchToDocument(new Document("line 0\nline 1 changed"));
+		IStatus status = UnifiedDiffManager.open(viewer, document, model, null, "line 0\nline 1\n", MODE, null,
+				null, null, null, MergeViewerContentProvider.LEFT_CONTRIBUTOR,
+				MergeViewerContentProvider.RIGHT_CONTRIBUTOR, true, CONTEXT_LINES);
+		assertTrue(status.isOK(), "open() should succeed: " + status);
+
+		UnifiedDiffFooterCodeMining footer = footerMining();
+		Color deletionColor = new Color(display, 255, 255, 255);
+		Color detailedDiffColor = new Color(display, 44, 55, 66);
+		UnifiedDiffFooterCodeMining paintingFooter = new UnifiedDiffFooterCodeMining(document, provider,
+				footer.getUnifiedDiff(), 4, deletionColor, detailedDiffColor, null, viewer);
+		Image image = new Image(display, 300, 100);
+		IPreferenceStore store = EditorsUI.getPreferenceStore();
+		boolean oldShowWhitespace = store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_WHITESPACE_CHARACTERS);
+		try {
+			draw(paintingFooter, image);
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_WHITESPACE_CHARACTERS, true);
+			paintingFooter.getAction().accept(null);
+
+			Control[] children = viewer.getTextWidget().getChildren();
+			assertThat(children).as("clicking the mining creates an overlay").hasSize(1);
+			assertThat(children[0].getTypedListeners(SWT.Paint, WhitespaceCharacterPainter.class))
+					.as("the overlay uses JFace's whitespace painter").hasSize(1);
+		} finally {
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_WHITESPACE_CHARACTERS, oldShowWhitespace);
+			for (Control child : viewer.getTextWidget().getChildren()) {
+				child.dispose();
+			}
+			image.dispose();
+			paintingFooter.dispose();
+			deletionColor.dispose();
+			detailedDiffColor.dispose();
+		}
+	}
+
+	private void draw(ICodeMining mining, Image image) {
+		GC gc = new GC(image);
+		try {
+			mining.draw(gc, viewer.getTextWidget(), null, 0, 0);
+		} finally {
+			gc.dispose();
+		}
+	}
+
+	private UnifiedDiffFooterCodeMining footerMining() throws Exception {
+		for (ICodeMining mining : provide()) {
+			if (mining instanceof UnifiedDiffFooterCodeMining footer) {
+				return footer;
+			}
+		}
+		return fail("a footer mining must be present");
+	}
+
+	private UnifiedDiffLineHeaderCodeMining headerMining() throws Exception {
+		for (ICodeMining mining : provide()) {
+			if (mining instanceof UnifiedDiffLineHeaderCodeMining header) {
+				return header;
+			}
+		}
+		return fail("a line-header mining must be present");
+	}
+
+	private static int differentPixels(Image first, Image second) {
+		return differentPixels(first, second, 0, first.getBounds().height);
+	}
+
+	private static int differentPixels(Image first, Image second, int yTop, int yBottom) {
+		ImageData firstData = first.getImageData();
+		ImageData secondData = second.getImageData();
+		int differences = 0;
+		for (int x = 0; x < firstData.width; x++) {
+			for (int y = Math.max(0, yTop); y < Math.min(firstData.height, yBottom); y++) {
+				RGB firstRgb = firstData.palette.getRGB(firstData.getPixel(x, y));
+				RGB secondRgb = secondData.palette.getRGB(secondData.getPixel(x, y));
+				if (!firstRgb.equals(secondRgb)) {
+					differences++;
+				}
+			}
+		}
+		return differences;
+	}
+
+	private static int colorRunsInBand(Image image, Color color, int yTop, int yBottom) {
+		ImageData data = image.getImageData();
+		RGB target = color.getRGB();
+		int runs = 0;
+		boolean previousColumnMatches = false;
+		for (int x = 0; x < data.width; x++) {
+			boolean columnMatches = false;
+			for (int y = Math.max(0, yTop); y < Math.min(data.height, yBottom); y++) {
+				RGB rgb = data.palette.getRGB(data.getPixel(x, y));
+				if (Math.abs(rgb.red - target.red) <= 2 && Math.abs(rgb.green - target.green) <= 2
+						&& Math.abs(rgb.blue - target.blue) <= 2) {
+					columnMatches = true;
+					break;
+				}
+			}
+			if (columnMatches && !previousColumnMatches) {
+				runs++;
+			}
+			previousColumnMatches = columnMatches;
+		}
+		return runs;
+	}
+
 	/**
 	 * Returns the rightmost column in {@code [yTop, yBottom)} holding
 	 * {@code target}, or {@code -1}. Matches with a small tolerance against
@@ -766,6 +1159,19 @@ public class UnifiedDiffCodeMiningProviderTest {
 			}
 		}
 		return fail("no mining is attached for the diff on line " + diff.leftStart);
+	}
+
+	private boolean hasAnnotationCovering(String typeSuffix, int offset) {
+		for (Iterator<Annotation> it = model.getAnnotationIterator(); it.hasNext();) {
+			Annotation annotation = it.next();
+			Position position = model.getPosition(annotation);
+			String type = annotation.getType();
+			if (type != null && type.endsWith(typeSuffix) && position != null && position.getOffset() <= offset
+					&& offset < position.getOffset() + position.getLength()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private List<Position> collapsedRegions() {

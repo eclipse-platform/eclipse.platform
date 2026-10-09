@@ -50,6 +50,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
@@ -58,6 +60,7 @@ import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationModel;
+import org.eclipse.jface.text.source.IAnnotationModelExtension;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.inlined.LineHeaderAnnotation;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
@@ -68,6 +71,11 @@ import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -77,7 +85,9 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.handlers.IHandlerService;
+import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -232,6 +242,179 @@ public class UnifiedDiffManagerTest {
 				"expected at least one detailed-addition annotation, got " + detailedAdditionCount);
 
 		forcePaintCycle(viewer.getTextWidget());
+	}
+
+	@Test
+	public void testRevertModePaintsTrailingEmptyCrLfLine() throws BadLocationException {
+		String current = "package jp1;\r\n\r\n// Footer mining manual comparison fixture \r\n\r\n"; //$NON-NLS-1$
+		String source = "package jp1;\r\n\r\n// Footer mining manual comparison fixture"; //$NON-NLS-1$
+		assertEquals(63, current.length());
+		assertEquals(58, source.length());
+		IPreferenceStore store = EditorsUI.getPreferenceStore();
+		boolean oldWhitespace = store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_WHITESPACE_CHARACTERS);
+		boolean oldCr = store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_CARRIAGE_RETURN);
+		boolean oldLf = store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_LINE_FEED);
+		try {
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_WHITESPACE_CHARACTERS, true);
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_CARRIAGE_RETURN, true);
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_LINE_FEED, true);
+			setEditorContent(current);
+
+			IStatus status = UnifiedDiff.create(editor, source, UnifiedDiffMode.REVERT_MODE).ignoreWhiteSpace(false).open();
+			assertTrue(status.isOK(), "open() should return OK status: " + status); //$NON-NLS-1$
+
+			IAnnotationModel model = annotationModel();
+			List<Annotation> additions = annotations(model, ADDITION_ANNO_TYPE);
+			assertThat(additions).as("the added trailing lines must have one main annotation").hasSize(1); //$NON-NLS-1$
+			Position position = model.getPosition(additions.get(0));
+			assertThat(position.offset + position.length)
+					.as("the addition annotation must include the final CRLF") //$NON-NLS-1$
+					.isEqualTo(current.length());
+
+			StyledText tw = viewer().getTextWidget();
+			forcePaintCycle(tw);
+			int offset = document().getLineOffset(3);
+			RGB background = PreferenceConverter.getColor(store, "detailedInlineDiffColor");
+			assertDelimiterBackgrounds(tw, offset, "\r\n", background, background);
+		} finally {
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_WHITESPACE_CHARACTERS, oldWhitespace);
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_CARRIAGE_RETURN, oldCr);
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_LINE_FEED, oldLf);
+		}
+	}
+
+	@Test
+	public void testDelimiterCharactersUseTheirOwnDetailedRange() throws BadLocationException {
+		for (UnifiedDiffMode mode : List.of(UnifiedDiffMode.REVERT_MODE, UnifiedDiffMode.OVERLAY_READ_ONLY_MODE)) {
+			for (int[] range : new int[][] { { 0, 2 }, { 0, 1 }, { 1, 1 }, { 0, 0 } }) {
+				assertDelimiterDetailedRange(mode, "\r\n", range[0], range[1]);
+			}
+			for (String delimiter : List.of("\r", "\n")) {
+				assertDelimiterDetailedRange(mode, delimiter, 0, 1);
+				assertDelimiterDetailedRange(mode, delimiter, 0, 0);
+			}
+		}
+	}
+
+	private void assertDelimiterDetailedRange(UnifiedDiffMode mode, String delimiter, int start, int length)
+			throws BadLocationException {
+		IPreferenceStore store = EditorsUI.getPreferenceStore();
+		boolean oldWhitespace = store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_WHITESPACE_CHARACTERS);
+		boolean oldCr = store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_CARRIAGE_RETURN);
+		boolean oldLf = store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_LINE_FEED);
+		boolean addition = mode == UnifiedDiffMode.REVERT_MODE;
+		String colorKey = addition ? "detailedInlineDiffColor" : "detailedDeletionInlineDiffColor";
+		String oldColor = store.getString(colorKey);
+		boolean defaultColor = store.isDefault(colorKey);
+		RGB background = new RGB(73, 113, 159);
+		try {
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_WHITESPACE_CHARACTERS, true);
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_CARRIAGE_RETURN, true);
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_LINE_FEED, true);
+			PreferenceConverter.setValue(store, colorKey, background);
+			setEditorContent(("package jp1;\r\n\r\n// Footer mining manual comparison fixture \r\n\r\n")
+					.replace("\r\n", delimiter));
+			assertTrue(UnifiedDiff.create(editor,
+					("package jp1;\r\n\r\n// Other mining changed comparison words").replace("\r\n", delimiter), mode)
+					.ignoreWhiteSpace(false).open().isOK());
+			IAnnotationModel model = annotationModel();
+			List<Annotation> details = annotations(model,
+					addition ? DETAILED_ADDITION_ANNO_TYPE : DETAILED_DELETION_ANNO_TYPE);
+			assertThat(details).as("exercise lookup among multiple unordered token annotations").hasSizeGreaterThan(1);
+			int offset = document().getLineOffset(3);
+			Annotation delimiterDetail = details.stream()
+					.filter(annotation -> model.getPosition(annotation).overlapsWith(offset, delimiter.length()))
+					.findFirst().orElseThrow();
+			// Restrict the token annotation to one delimiter character (or neither).
+			((IAnnotationModelExtension) model).modifyAnnotationPosition(delimiterDetail,
+					new Position(offset + start, length));
+			StyledText tw = viewer().getTextWidget();
+			forcePaintCycle(tw);
+			int lfIndex = delimiter.indexOf('\n');
+			assertDelimiterBackgrounds(tw, offset, delimiter, start == 0 && length > 0 ? background : null,
+					start <= lfIndex && lfIndex < start + length ? background : null);
+		} finally {
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_WHITESPACE_CHARACTERS, oldWhitespace);
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_CARRIAGE_RETURN, oldCr);
+			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_LINE_FEED, oldLf);
+			if (defaultColor) {
+				store.setToDefault(colorKey);
+			} else {
+				store.setValue(colorKey, oldColor);
+			}
+		}
+	}
+
+	private static void assertDelimiterBackgrounds(StyledText tw, int offset, String delimiter, RGB crBackground,
+			RGB lfBackground) {
+		Point location = tw.getLocationAtOffset(offset);
+		Rectangle bounds = tw.getClientArea();
+		Image image = new Image(tw.getDisplay(), bounds.width, bounds.height);
+		GC gc = new GC(image);
+		try {
+			gc.setFont(tw.getFont());
+			gc.setForeground(tw.getForeground());
+			gc.setBackground(tw.getBackground());
+			gc.fillRectangle(bounds);
+			// Render the unified-diff paint listener into an image. Native widget capture
+			// depends on visibility and can convert colors through the display profile.
+			List<PaintListener> listeners = tw.getTypedListeners(SWT.Paint, PaintListener.class)
+					.filter(listener -> listener.getClass().getEnclosingClass() == UnifiedDiffManager.class
+							&& !listener.getClass().isAnonymousClass()).toList();
+			assertThat(listeners).as("the unified-diff paint listener must be installed").hasSize(1);
+			firePaint(tw, gc, listeners);
+			int crWidth = delimiter.startsWith("\r") ? gc.stringExtent("¤").x : 0;
+			int width = crWidth + (delimiter.endsWith("\n") ? gc.stringExtent("¶").x : 0);
+			int height = gc.stringExtent("¤¶").y;
+			// Preserve native pixels: downscaling a Retina image blends the narrow
+			// delimiter background with the glyph and neighboring cells.
+			int zoom = tw.getMonitor().getZoom();
+			ImageData data = image.getImageData(zoom);
+			location.x = location.x * zoom / 100;
+			location.y = location.y * zoom / 100;
+			crWidth = crWidth * zoom / 100;
+			width = width * zoom / 100;
+			height = height * zoom / 100;
+			RGB mainBackground = data.palette.getRGB(data.getPixel(location.x + width + 1, location.y + height / 2));
+			if (crWidth > 0) {
+				assertMarkerOnBackground(data, location.x, location.x + crWidth, location.y, height,
+						crBackground != null ? crBackground : mainBackground,
+						crBackground != null ? mainBackground : lfBackground);
+			}
+			if (delimiter.endsWith("\n")) {
+				assertMarkerOnBackground(data, location.x + crWidth, location.x + width, location.y, height,
+						lfBackground != null ? lfBackground : mainBackground,
+						lfBackground != null ? mainBackground : crBackground);
+			}
+		} finally {
+			gc.dispose();
+			image.dispose();
+		}
+	}
+
+	private static void assertMarkerOnBackground(ImageData image, int from, int to, int top, int height, RGB background,
+			RGB otherBackground) {
+		int backgroundPixels = 0;
+		int glyphPixels = 0;
+		int otherBackgroundPixels = 0;
+		for (int x = from; x < to; x++) {
+			// Exclude the band's border, which must not count as a glyph pixel.
+			for (int y = top + 1; y < top + height - 1; y++) {
+				RGB pixel = image.palette.getRGB(image.getPixel(x, y));
+				if (pixel.equals(otherBackground)) {
+					otherBackgroundPixels++;
+				}
+				if (background.equals(pixel)) {
+					backgroundPixels++;
+				} else {
+					glyphPixels++;
+				}
+			}
+		}
+		assertThat(backgroundPixels).as("delimiter cell must have the annotation background")
+				.isGreaterThan(0);
+		assertThat(otherBackgroundPixels).as("delimiter cell must not retain the other annotation background").isZero();
+		assertThat(glyphPixels).as("delimiter glyph must be visible").isGreaterThan(0);
 	}
 
 	// ------------------------------------------------------------ REPLACE_MODE
@@ -1237,18 +1420,22 @@ public class UnifiedDiffManagerTest {
 		}
 		GC gc = new GC(tw);
 		try {
-			Event event = new Event();
-			event.widget = tw;
-			event.gc = gc;
-			event.x = 0;
-			event.y = 0;
-			event.width = Math.max(1, tw.getClientArea().width);
-			event.height = Math.max(1, tw.getClientArea().height);
-			PaintEvent paintEvent = new PaintEvent(event);
-			tw.getTypedListeners(SWT.Paint, PaintListener.class).forEach(listener -> listener.paintControl(paintEvent));
+			firePaint(tw, gc, tw.getTypedListeners(SWT.Paint, PaintListener.class).toList());
 		} finally {
 			gc.dispose();
 		}
+	}
+
+	private static void firePaint(StyledText tw, GC gc, List<PaintListener> listeners) {
+		Event event = new Event();
+		event.widget = tw;
+		event.gc = gc;
+		event.x = 0;
+		event.y = 0;
+		event.width = Math.max(1, tw.getClientArea().width);
+		event.height = Math.max(1, tw.getClientArea().height);
+		PaintEvent paintEvent = new PaintEvent(event);
+		listeners.forEach(listener -> listener.paintControl(paintEvent));
 	}
 
 	private void executeEditorCommand(String commandId) throws Exception {

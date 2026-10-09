@@ -61,6 +61,7 @@ import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.commands.ActionHandler;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.BadLocationException;
@@ -68,8 +69,11 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentExtension4;
 import org.eclipse.jface.text.ITextSelection;
+import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.jface.text.ITextViewerExtension5;
 import org.eclipse.jface.text.Position;
+import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.codemining.ICodeMining;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.AnnotationModel;
@@ -86,6 +90,7 @@ import org.eclipse.jface.text.source.projection.ProjectionAnnotation;
 import org.eclipse.jface.text.source.projection.ProjectionAnnotationModel;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
@@ -119,6 +124,7 @@ import org.eclipse.ui.contexts.IContextActivation;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.handlers.IHandlerActivation;
 import org.eclipse.ui.handlers.IHandlerService;
+import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 
@@ -412,7 +418,7 @@ public class UnifiedDiffManager {
 					Position position = new Position(unifiedDiff.leftStart, unifiedDiff.rightLength);
 					addOrStage.accept(myAnnotation, position);
 					for (var detailedDiff : unifiedDiff.detailedDiffs) {
-						if (detailedDiff.rightStr.trim().length() == 0) {
+						if (detailedDiff.rightLength == 0) {
 							continue;
 						}
 						Annotation detailedAnno = new DetailedDiffAnnotation(mode, unifiedDiff);
@@ -431,7 +437,7 @@ public class UnifiedDiffManager {
 				Position position = new Position(unifiedDiff.leftStart, unifiedDiff.leftLength);
 				addOrStage.accept(myAnnotation, position);
 				for (var detailedDiff : unifiedDiff.detailedDiffs) {
-					if (detailedDiff.leftStr.trim().length() == 0) {
+					if (detailedDiff.leftLength == 0) {
 						continue;
 					}
 					Annotation detailedAnno = new DetailedDiffAnnotation(mode, unifiedDiff);
@@ -1083,10 +1089,6 @@ public class UnifiedDiffManager {
 						int detailedRightEnd = getTokenEnd(r, detailedDiff.rightStart(), detailedDiff.rightLength());
 						String detailedDiffRightDiffSource = rightDiffSource.substring(detailedRightStart,
 								detailedRightEnd);
-						if (detailedLeftDiffSource.trim().length() == 0
-								&& detailedDiffRightDiffSource.trim().length() == 0) {
-							continue;
-						}
 						diff.detailedDiffs.add(new UnifiedDiff(leftDocument, detailedLeftStart, detailedLeftEnd,
 								detailedLeftDiffSource, rightDocument, detailedRightStart, detailedRightEnd,
 								detailedDiffRightDiffSource, unifiedDiffs, mode));
@@ -2019,12 +2021,14 @@ public class UnifiedDiffManager {
 		w.addPaintListener(new UnifiedDiffPaintListener(viewer, model, mode));
 	}
 
-	private static class UnifiedDiffPaintListener implements PaintListener {
+	private static class UnifiedDiffPaintListener implements PaintListener, DisposeListener {
 
 		private final IAnnotationModel model;
 		private final ITextViewer viewer;
 		private final Color additionBackgroundColor;
 		private final Color borderColor;
+		private final Color detailedAdditionBackgroundColor;
+		private final Color detailedDeletionBackgroundColor;
 		private final StyledText w;
 
 		public UnifiedDiffPaintListener(ITextViewer viewer, IAnnotationModel model, UnifiedDiffMode mode) {
@@ -2041,9 +2045,19 @@ public class UnifiedDiffManager {
 			RGB interpolated = UnifiedDiffCodeMiningProvider.interpolate(color, background, 0.9);
 			this.additionBackgroundColor = new Color(interpolated);
 			this.borderColor = new Color(UnifiedDiffText.borderColor(color, background));
+			this.detailedAdditionBackgroundColor = new Color(PreferenceConverter.getColor(EditorsUI.getPreferenceStore(),
+					"detailedInlineDiffColor")); //$NON-NLS-1$
+			this.detailedDeletionBackgroundColor = new Color(PreferenceConverter.getColor(EditorsUI.getPreferenceStore(),
+					"detailedDeletionInlineDiffColor")); //$NON-NLS-1$
+			w.addDisposeListener(this);
 		}
 
 		void dispose() {
+			if (!w.isDisposed()) {
+				w.removeDisposeListener(this);
+			}
+			detailedAdditionBackgroundColor.dispose();
+			detailedDeletionBackgroundColor.dispose();
 			if (additionBackgroundColor != null && !additionBackgroundColor.isDisposed()) {
 				additionBackgroundColor.dispose();
 			}
@@ -2053,34 +2067,65 @@ public class UnifiedDiffManager {
 		}
 
 		@Override
+		public void widgetDisposed(DisposeEvent e) {
+			dispose();
+		}
+
+		private record PaintRange(int offset, int length, Color background) {
+		}
+
+		@Override
 		public void paintControl(PaintEvent e) {
+			// Reuse the provider's cached whitespace config instead of re-reading the
+			// store on every repaint; tabWidth is irrelevant to the line delimiters, so
+			// -1 returns the cached instance directly without allocating a stamped copy.
+			UnifiedDiffCodeMiningProvider.WhitespaceConfig whitespace = UnifiedDiffCodeMiningProvider
+					.readWhitespaceConfig(-1);
+			boolean showCarriageReturn = whitespace != null && whitespace.showCarriageReturn();
+			boolean showLineFeed = whitespace != null && whitespace.showLineFeed();
+			int whitespaceAlpha = whitespace != null ? whitespace.alpha() : 0;
 			Rectangle bounds = this.w.getBounds();
 			// Only the damaged lines: getTextBounds lays out every line it is asked for,
 			// so touching every hunk would make each repaint O(document).
 			int firstDamagedLine = this.w.getLineIndex(e.y);
 			int lastDamagedLine = this.w.getLineIndex(e.y + e.height);
+			List<PaintRange> bands = new ArrayList<>();
+			List<PaintRange> details = new ArrayList<>();
 			Iterator<Annotation> it = this.model.getAnnotationIterator();
 			while (it.hasNext()) {
 				Annotation anno = it.next();
-				if (!(ADDITION_ANNO_TYPE.equals(anno.getType()) || DELETION_ANNO_TYPE.equals(anno.getType()))) {
+				String type = anno.getType();
+				boolean main = ADDITION_ANNO_TYPE.equals(type) || DELETION_ANNO_TYPE.equals(type);
+				Color detailedBackground = DETAILED_ADDITION_ANNO_TYPE.equals(type) ? detailedAdditionBackgroundColor
+						: DETAILED_DELETION_ANNO_TYPE.equals(type) ? detailedDeletionBackgroundColor : null;
+				if (!main && (detailedBackground == null || !showCarriageReturn && !showLineFeed)) {
 					continue;
 				}
-				// Fill the area between the last character of the line and the widget boundary.
-				// This is not done via the Annotations.
-				int posOffset;
-				int posLength;
-				{
-					Position pos = this.model.getPosition(anno);
-					if (viewer instanceof ProjectionViewer pv) {
-						posOffset = pv.modelOffset2WidgetOffset(pos.offset);
-						if (posOffset < 0) {
-							continue; // not visible
-						}
-					} else {
-						posOffset = pos.offset;
-					}
-					posLength = pos.length;
+				Position pos = this.model.getPosition(anno);
+				if (pos == null || pos.isDeleted() || pos.length == 0) {
+					continue;
 				}
+				IRegion region = new Region(pos.offset, pos.length);
+				if (viewer instanceof ITextViewerExtension5 extension) {
+					region = extension.modelRange2WidgetRange(region);
+				}
+				if (region == null || region.getLength() == 0) {
+					continue;
+				}
+				int startLine = w.getLineAtOffset(region.getOffset());
+				int endLine = w.getLineAtOffset(region.getOffset() + region.getLength() - 1);
+				if (endLine < firstDamagedLine || startLine > lastDamagedLine) {
+					continue;
+				}
+				(main ? bands : details).add(new PaintRange(region.getOffset(), region.getLength(), detailedBackground));
+			}
+			// Token ranges do not overlap. Sorting once avoids scanning every detailed
+			// range again for each delimiter character on the damaged lines.
+			details.sort(Comparator.comparingInt(PaintRange::offset));
+			// All annotation lookups are complete before walking the damaged lines.
+			for (PaintRange band : bands) {
+				int posOffset = band.offset();
+				int posLength = band.length();
 				int hunkFirstLine = this.w.getLineAtOffset(posOffset);
 				// a band ending on a line delimiter belongs to the line it is on, not to
 				// the next one the delimiter starts; a zero-length band paints nothing
@@ -2103,10 +2148,9 @@ public class UnifiedDiffManager {
 					if (line.length() == 0) {
 						// this.w.getTextBounds seems not to work for empty lines containing only \n in
 						// a document with \r\n as line delimeter
-						int nextLineOffset = this.w.getOffsetAtLine(lineNr + 1);
-						Rectangle nextLineBounds = this.w.getTextBounds(nextLineOffset, nextLineOffset);
-						if (endLineBounds.y + endLineBounds.height < nextLineBounds.y) {
-							endLineBounds.height = nextLineBounds.y - endLineBounds.y;
+						int nextLineY = this.w.getLinePixel(lineNr + 1);
+						if (endLineBounds.y + endLineBounds.height < nextLineY) {
+							endLineBounds.height = nextLineY - endLineBounds.y;
 						}
 					}
 					e.gc.fillRectangle(endLineBounds.x + endLineBounds.width, endLineBounds.y,
@@ -2117,11 +2161,91 @@ public class UnifiedDiffManager {
 					e.gc.fillRectangle(2, endLineBounds.y + endLineBounds.height - this.w.getLineSpacing(),
 							endLineBounds.x + endLineBounds.width, this.w.getLineSpacing());
 
+					// The addition-area background fill above paints over the ¶/¤ markers the
+					// editor's own whitespace painter drew at the line end, so redraw them here.
+					drawLineDelimiter(e, endLineOffset, showCarriageReturn, showLineFeed, whitespaceAlpha, details);
+					// The marker background must not overwrite the band's shared edge.
 					drawBandBorder(e.gc, bounds.width, endLineBounds.y, endLineBounds.height,
 							lineNr == hunkFirstLine, lineNr == lastLine);
 					e.gc.setBackground(this.additionBackgroundColor);
 				}
 			}
+		}
+
+		private void drawLineDelimiter(PaintEvent e, int endLineOffset, boolean showCarriageReturn,
+				boolean showLineFeed, int alpha, List<PaintRange> details) {
+			if ((!showCarriageReturn && !showLineFeed) || endLineOffset >= w.getCharCount()) {
+				return;
+			}
+			if (isFoldedLine(w.getLineAtOffset(endLineOffset))) {
+				// the editor's own painter suppresses the marker on a collapsed region
+				return;
+			}
+			String delimiter = w.getTextRange(endLineOffset, Math.min(2, w.getCharCount() - endLineOffset));
+			Point location = w.getLocationAtOffset(endLineOffset);
+			if (delimiter.startsWith("\r") && showCarriageReturn) { //$NON-NLS-1$
+				location.x += drawDelimiterCharacter(e.gc, UnifiedDiffCodeMiningProvider.WhitespaceConfig.CARRIAGE_RETURN_SIGN,
+						endLineOffset, location, alpha, details);
+			}
+			if ((delimiter.startsWith("\n") || delimiter.startsWith("\r\n")) && showLineFeed) { //$NON-NLS-1$ //$NON-NLS-2$
+				drawDelimiterCharacter(e.gc, UnifiedDiffCodeMiningProvider.WhitespaceConfig.LINE_FEED_SIGN,
+						endLineOffset + (delimiter.startsWith("\r") ? 1 : 0), location, alpha, details); //$NON-NLS-1$
+			}
+		}
+
+		private int drawDelimiterCharacter(GC gc, char sign, int offset, Point location, int alpha,
+				List<PaintRange> details) {
+			String marker = String.valueOf(sign);
+			Point extent = gc.stringExtent(marker);
+			int savedAlpha = gc.getAlpha();
+			Color savedBackground = gc.getBackground();
+			Color savedForeground = gc.getForeground();
+			Color background = detailedBackgroundAtOffset(offset, details);
+			if (background != null) {
+				gc.setAlpha(255);
+				gc.setBackground(background);
+				gc.fillRectangle(location.x, location.y, extent.x, extent.y);
+			}
+			gc.setAlpha(alpha);
+			gc.setForeground(foregroundAtOffset(offset));
+			gc.drawString(marker, location.x, location.y, true);
+			gc.setForeground(savedForeground);
+			gc.setBackground(savedBackground);
+			gc.setAlpha(savedAlpha);
+			return extent.x;
+		}
+
+		private Color detailedBackgroundAtOffset(int offset, List<PaintRange> details) {
+			int low = 0;
+			int high = details.size() - 1;
+			while (low <= high) {
+				int middle = (low + high) >>> 1;
+				PaintRange detail = details.get(middle);
+				if (offset < detail.offset()) {
+					high = middle - 1;
+				} else if (offset >= detail.offset() + detail.length()) {
+					low = middle + 1;
+				} else {
+					return detail.background();
+				}
+			}
+			return null;
+		}
+
+		private Color foregroundAtOffset(int offset) {
+			StyleRange styleRange = offset < w.getCharCount() ? w.getStyleRangeAtOffset(offset) : null;
+			if (styleRange != null && styleRange.foreground != null) {
+				return styleRange.foreground;
+			}
+			return w.getForeground();
+		}
+
+		private boolean isFoldedLine(int widgetLine) {
+			if (viewer instanceof ITextViewerExtension5 extension) {
+				int modelLine = extension.widgetLine2ModelLine(widgetLine);
+				return extension.modelLine2WidgetLine(modelLine + 1) == -1;
+			}
+			return false;
 		}
 
 		/** Draws the thin top/bottom edge of the hunk band on its first/last line. */
