@@ -57,6 +57,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.commands.ActionHandler;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -65,6 +66,7 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentExtension4;
+import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.codemining.ICodeMining;
@@ -108,15 +110,27 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.text.undo.DocumentUndoManagerRegistry;
 import org.eclipse.text.undo.IDocumentUndoListener;
 import org.eclipse.text.undo.IDocumentUndoManager;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.contexts.IContextActivation;
+import org.eclipse.ui.contexts.IContextService;
+import org.eclipse.ui.handlers.IHandlerActivation;
+import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 
 public class UnifiedDiffManager {
 
 	private static final String CURRENT_SELECTED_UNIFIED_DIFF_ANNO_KEY = "CURRENT_SELECTED_UNIFIED_DIFF_ANNO_KEY"; //$NON-NLS-1$
 	private static final String UNDO_LISTENER_KEY = "UNIFIED_DIFF_UNDO_LISTENER_KEY"; //$NON-NLS-1$
 	private static final String UNIFIED_DIFF_ANNOTATION_MODEL_LISTENER_KEY = "UNIFIED_DIFF_ANNOTATION_MODEL_LISTENER_KEY"; //$NON-NLS-1$
+	private static final String UNIFIED_DIFF_CONTEXT_ID = "org.eclipse.compare.unifiedDiffScope"; //$NON-NLS-1$
+	private static final String UNIFIED_DIFF_COMMAND_HANDLERS_KEY = "UNIFIED_DIFF_COMMAND_HANDLERS_KEY"; //$NON-NLS-1$
+	static final String ACCEPT_ALL_DIFFS_COMMAND_ID = "org.eclipse.compare.acceptAllDiffs"; //$NON-NLS-1$
+	static final String ACCEPT_CURRENT_DIFF_COMMAND_ID = "org.eclipse.compare.acceptCurrentDiff"; //$NON-NLS-1$
+	static final String HIDE_CURRENT_DIFF_COMMAND_ID = "org.eclipse.compare.hideCurrentDiff"; //$NON-NLS-1$
 	private static final String UNIFIED_DIFF_FOLD_LISTENER_KEY = "UNIFIED_DIFF_FOLD_LISTENER_KEY"; //$NON-NLS-1$
 	private static final String UNIFIED_DIFF_SHADOWED_FOLDS_KEY = "UNIFIED_DIFF_SHADOWED_FOLDS_KEY"; //$NON-NLS-1$
 	private static final String ADDITION_ANNO_TYPE = "org.eclipse.compare.unifieddiff.internal.addition"; //$NON-NLS-1$
@@ -204,8 +218,118 @@ public class UnifiedDiffManager {
 			return Status.CANCEL_STATUS;
 		}
 		IFile file = editor.getEditorInput().getAdapter(IFile.class);
-		return open(viewer, leftDocument, model, file, source, mode, additionalActions, tokenComparatorFactory,
+		IStatus status = open(viewer, leftDocument, model, file, source, mode, additionalActions, tokenComparatorFactory,
 				ignoreWhitespaceContributorFactory, ignoreWhiteSpace, foldContextLines, toolbarActionPresentations);
+		if (status.isOK()) {
+			registerCommandHandlers(editor, viewer, model);
+		}
+		return status;
+	}
+
+	private record UnifiedDiffCommandHandlers(IActionBars actionBars, IAction previousNext, IAction previousPrevious,
+			IAction previousNextAnnotation, IAction previousPreviousAnnotation, IHandlerService handlerService,
+			IHandlerActivation hideAllActivation, IHandlerActivation acceptAllActivation,
+			IHandlerActivation acceptCurrentActivation, IHandlerActivation hideCurrentActivation,
+			IContextService contextService, IContextActivation contextActivation) {
+		void dispose() {
+			actionBars.setGlobalActionHandler(ActionFactory.NEXT.getId(), previousNext);
+			actionBars.setGlobalActionHandler(ActionFactory.PREVIOUS.getId(), previousPrevious);
+			actionBars.setGlobalActionHandler(ITextEditorActionDefinitionIds.GOTO_NEXT_ANNOTATION,
+					previousNextAnnotation);
+			actionBars.setGlobalActionHandler(ITextEditorActionDefinitionIds.GOTO_PREVIOUS_ANNOTATION,
+					previousPreviousAnnotation);
+			if (handlerService != null) {
+				if (hideAllActivation != null) {
+					handlerService.deactivateHandler(hideAllActivation);
+				}
+				if (acceptAllActivation != null) {
+					handlerService.deactivateHandler(acceptAllActivation);
+				}
+				if (acceptCurrentActivation != null) {
+					handlerService.deactivateHandler(acceptCurrentActivation);
+				}
+				if (hideCurrentActivation != null) {
+					handlerService.deactivateHandler(hideCurrentActivation);
+				}
+			}
+			if (contextActivation != null && contextService != null) {
+				contextService.deactivateContext(contextActivation);
+			}
+			actionBars.updateActionBars();
+		}
+	}
+
+	private static void registerCommandHandlers(ITextEditor editor, ITextViewer viewer, IAnnotationModel model) {
+		StyledText textWidget = viewer.getTextWidget();
+		if (textWidget == null || textWidget.isDisposed()) {
+			return;
+		}
+		unregisterCommandHandlers(textWidget);
+		IActionBars actionBars = editor.getEditorSite().getActionBars();
+		if (actionBars == null) {
+			return;
+		}
+		IAction previousNext = actionBars.getGlobalActionHandler(ActionFactory.NEXT.getId());
+		IAction previousPrevious = actionBars.getGlobalActionHandler(ActionFactory.PREVIOUS.getId());
+		IAction previousNextAnnotation = actionBars
+				.getGlobalActionHandler(ITextEditorActionDefinitionIds.GOTO_NEXT_ANNOTATION);
+		IAction previousPreviousAnnotation = actionBars
+				.getGlobalActionHandler(ITextEditorActionDefinitionIds.GOTO_PREVIOUS_ANNOTATION);
+		IAction previousAction = createNavigationAction(ActionFactory.PREVIOUS.getCommandId(),
+				new PreviousRunnable(viewer, model, null));
+		IAction nextAction = createNavigationAction(ActionFactory.NEXT.getCommandId(), new NextRunnable(viewer, model, null));
+		IAction hideAllAction = createNavigationAction(HideAllDiffsRunnable.COMMAND_ID,
+				new HideAllDiffsRunnable(viewer, model));
+		IAction acceptAllAction = createNavigationAction(ACCEPT_ALL_DIFFS_COMMAND_ID,
+				new AcceptAllRunnable(viewer, model));
+		IAction acceptCurrentAction = createNavigationAction(ACCEPT_CURRENT_DIFF_COMMAND_ID,
+				() -> applyDiffRightStr(viewer, model));
+		IAction hideCurrentAction = createNavigationAction(HIDE_CURRENT_DIFF_COMMAND_ID,
+				() -> dismissCurrentDiff(viewer, model));
+		IHandlerService handlerService = editor.getSite().getService(IHandlerService.class);
+		IHandlerActivation hideAllActivation = handlerService == null ? null
+				: handlerService.activateHandler(HideAllDiffsRunnable.COMMAND_ID, new ActionHandler(hideAllAction));
+		IHandlerActivation acceptAllActivation = handlerService == null ? null
+				: handlerService.activateHandler(ACCEPT_ALL_DIFFS_COMMAND_ID, new ActionHandler(acceptAllAction));
+		IHandlerActivation acceptCurrentActivation = handlerService == null ? null
+				: handlerService.activateHandler(ACCEPT_CURRENT_DIFF_COMMAND_ID, new ActionHandler(acceptCurrentAction));
+		IHandlerActivation hideCurrentActivation = handlerService == null ? null
+				: handlerService.activateHandler(HIDE_CURRENT_DIFF_COMMAND_ID, new ActionHandler(hideCurrentAction));
+		IContextService contextService = editor.getSite().getService(IContextService.class);
+		IContextActivation contextActivation = contextService == null ? null
+				: contextService.activateContext(UNIFIED_DIFF_CONTEXT_ID);
+		actionBars.setGlobalActionHandler(ActionFactory.PREVIOUS.getId(), previousAction);
+		actionBars.setGlobalActionHandler(ActionFactory.NEXT.getId(), nextAction);
+		actionBars.setGlobalActionHandler(ITextEditorActionDefinitionIds.GOTO_PREVIOUS_ANNOTATION, previousAction);
+		actionBars.setGlobalActionHandler(ITextEditorActionDefinitionIds.GOTO_NEXT_ANNOTATION, nextAction);
+		actionBars.updateActionBars();
+		textWidget.setData(UNIFIED_DIFF_COMMAND_HANDLERS_KEY,
+				new UnifiedDiffCommandHandlers(actionBars, previousNext, previousPrevious, previousNextAnnotation,
+						previousPreviousAnnotation, handlerService, hideAllActivation, acceptAllActivation,
+						acceptCurrentActivation, hideCurrentActivation, contextService, contextActivation));
+	}
+
+	private static Action createNavigationAction(String actionDefinitionId, Runnable runnable) {
+		Action action = new Action() {
+			@Override
+			public void run() {
+				runnable.run();
+			}
+		};
+		action.setActionDefinitionId(actionDefinitionId);
+		return action;
+	}
+
+	private static void unregisterCommandHandlers(StyledText textWidget) {
+		if (textWidget == null) {
+			return;
+		}
+		UnifiedDiffCommandHandlers handlers = (UnifiedDiffCommandHandlers) textWidget
+				.getData(UNIFIED_DIFF_COMMAND_HANDLERS_KEY);
+		if (handlers != null) {
+			textWidget.setData(UNIFIED_DIFF_COMMAND_HANDLERS_KEY, null);
+			handlers.dispose();
+		}
 	}
 
 	/**
@@ -1100,6 +1224,7 @@ public class UnifiedDiffManager {
 			return;
 		}
 		StyledText tw = tv.getTextWidget();
+		unregisterCommandHandlers(tw);
 		removeAnnotationModelListener(model, tw);
 		for (UnifiedDiff diff : diffs1) {
 			for (Annotation annotation : getAllAnnotationsForUnifiedDiff(model, diff)) {
@@ -1120,6 +1245,9 @@ public class UnifiedDiffManager {
 	}
 
 	static void uncheckToolbarActionItems(ToolBarManager tm) {
+		if (tm == null) {
+			return;
+		}
 		IContributionItem[] items = tm.getItems();
 		if (items == null) {
 			return;
@@ -1158,19 +1286,67 @@ public class UnifiedDiffManager {
 	}
 
 	private static void applyDiffRightStr(ITextViewer tv, IAnnotationModel model) {
-		StyledText tw = tv.getTextWidget();
-		Composite toolbarCompositeForOneDiff = getToolbarCompositeForOneDiff(tw);
-		if (toolbarCompositeForOneDiff == null) {
-			return;
-		}
-		var anno = (Annotation) toolbarCompositeForOneDiff.getData(CURRENT_SELECTED_UNIFIED_DIFF_ANNO_KEY);
-		if (anno == null) {
-			return;
-		}
-		UnifiedDiff diff = getUnifiedDiffForAnno(anno);
+		UnifiedDiff diff = resolveCurrentDiff(tv, model);
 		if (diff == null) {
 			return;
 		}
+		applyDiffRightStr(tv, model, diff);
+	}
+
+	/**
+	 * Resolves the diff the per-diff actions ("Accept Current Diff") operate on.
+	 * Prefers the diff whose toolbar is currently open (mouse hover), and falls
+	 * back to the diff at the caret so the keyboard shortcut works without a
+	 * toolbar being shown.
+	 */
+	private static UnifiedDiff resolveCurrentDiff(ITextViewer tv, IAnnotationModel model) {
+		Composite toolbarCompositeForOneDiff = getToolbarCompositeForOneDiff(tv.getTextWidget());
+		if (toolbarCompositeForOneDiff != null) {
+			var anno = (Annotation) toolbarCompositeForOneDiff.getData(CURRENT_SELECTED_UNIFIED_DIFF_ANNO_KEY);
+			UnifiedDiff diff = getUnifiedDiffForAnno(anno);
+			if (diff != null) {
+				return diff;
+			}
+		}
+		return diffAtCaret(tv, model);
+	}
+
+	/**
+	 * The diff enclosing the caret, or the next diff after it, so that keyboard
+	 * acceptance targets the same diff the user navigated to with Next/Previous.
+	 */
+	private static UnifiedDiff diffAtCaret(ITextViewer tv, IAnnotationModel model) {
+		List<UnifiedDiff> diffs = get(tv);
+		if (diffs == null || diffs.isEmpty()) {
+			return null;
+		}
+		if (!(tv.getSelectionProvider().getSelection() instanceof ITextSelection sel)) {
+			return null;
+		}
+		int offset = sel.getOffset();
+		UnifiedDiff following = null;
+		for (UnifiedDiff diff : diffs) {
+			List<Annotation> annos = getAllAnnotationsForUnifiedDiff(model, diff);
+			Annotation min = getMinPositionAnno(model, annos);
+			if (min == null) {
+				continue;
+			}
+			Position pos = model.getPosition(min);
+			if (pos == null) {
+				continue;
+			}
+			if (offset >= pos.offset && offset <= pos.offset + pos.length) {
+				return diff;
+			}
+			if (pos.offset > offset && following == null) {
+				following = diff;
+			}
+		}
+		return following != null ? following : diffs.get(0);
+	}
+
+	private static void applyDiffRightStr(ITextViewer tv, IAnnotationModel model, UnifiedDiff diff) {
+		StyledText tw = tv.getTextWidget();
 		List<Annotation> annos = getAllAnnotationsForUnifiedDiff(model, diff);
 		List<Position> positions = new ArrayList<>();
 		List<String> replaceStrings = new ArrayList<>();
@@ -1207,12 +1383,11 @@ public class UnifiedDiffManager {
 	 */
 	private static void dismissCurrentDiff(ITextViewer tv, IAnnotationModel model) {
 		StyledText tw = tv.getTextWidget();
-		Composite toolbarCompositeForOneDiff = getToolbarCompositeForOneDiff(tw);
-		if (toolbarCompositeForOneDiff == null) {
+		UnifiedDiff diff = resolveCurrentDiff(tv, model);
+		if (diff == null) {
 			return;
 		}
-		var anno = (Annotation) toolbarCompositeForOneDiff.getData(CURRENT_SELECTED_UNIFIED_DIFF_ANNO_KEY);
-		UnifiedDiff diff = getUnifiedDiffForAnno(anno);
+		Composite toolbarCompositeForOneDiff = getToolbarCompositeForOneDiff(tw);
 		int idx = diff.container.indexOf(diff);
 		if (idx < 0) {
 			throw new IllegalStateException("UnifiedDiff not found in container"); //$NON-NLS-1$
@@ -1520,6 +1695,11 @@ public class UnifiedDiffManager {
 	}
 
 	private static void addToolbarAction(ToolBarManager tm, String text, ImageDescriptor image, Runnable runnable) {
+		addToolbarAction(tm, text, image, null, runnable);
+	}
+
+	private static void addToolbarAction(ToolBarManager tm, String text, ImageDescriptor image,
+			String actionDefinitionId, Runnable runnable) {
 		String tooltip = text;
 		Action action = null;
 		if (image != null) {
@@ -1540,6 +1720,7 @@ public class UnifiedDiffManager {
 			};
 		}
 		action.setToolTipText(tooltip);
+		action.setActionDefinitionId(actionDefinitionId);
 		var actionItem = new ActionContributionItem(action);
 		actionItem.setMode(ActionContributionItem.MODE_FORCE_TEXT);
 		tm.add(actionItem);
@@ -1566,6 +1747,7 @@ public class UnifiedDiffManager {
 			};
 		}
 		a.setToolTipText(action.getToolTipText());
+		a.setActionDefinitionId(action.getActionDefinitionId());
 		var actionItem = new ActionContributionItem(a);
 		actionItem.setMode(ActionContributionItem.MODE_FORCE_TEXT);
 		tm.add(actionItem);
@@ -1753,6 +1935,7 @@ public class UnifiedDiffManager {
 	static void disposeUnifiedDiff(ITextViewer tv, IAnnotationModel model, StyledText tw) {
 		disposeToolbarForOneDiff(getToolbarCompositeForOneDiff(tw), tv);
 		disposeToolbarForAllDiffs(getToolbarCompositeForAllDiffs(tw), tv);
+		unregisterCommandHandlers(tw);
 		var undoListener = (IDocumentUndoListener) tw.getData(UNDO_LISTENER_KEY);
 		if (undoListener != null) {
 			tw.setData(UNDO_LISTENER_KEY, null);
