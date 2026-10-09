@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.core.resources; singleton:=true
-Bundle-Version: 3.24.200.qualifier
+Bundle-Version: 3.25.0.qualifier
 Bundle-Activator: org.eclipse.core.resources.ResourcesPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
@@ -43,7 +43,7 @@ Require-Bundle: org.eclipse.ant.core;bundle-version="[3.7.0,4.0.0)";resolution:=
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/org.eclipse.core.internal.resources.CheckMissingNaturesListener.xml,
  OSGI-INF/org.eclipse.core.internal.resources.ResourceChangeListenerRegistrar.xml
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-25
 Automatic-Module-Name: org.eclipse.core.resources
 Import-Package: com.sun.jna;version="[5.17.0,6.0.0)",
  org.eclipse.osgi.service.datalocation;version="[1.4.0,2.0.0)"
