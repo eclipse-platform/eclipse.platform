@@ -19,6 +19,7 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -35,12 +36,16 @@ import org.eclipse.compare.rangedifferencer.IRangeComparator;
 import org.eclipse.compare.unifieddiff.UnifiedDiff;
 import org.eclipse.compare.unifieddiff.UnifiedDiff.ToolbarAction;
 import org.eclipse.compare.unifieddiff.UnifiedDiffMode;
+import org.eclipse.compare.unifieddiff.internal.AcceptAllRunnable;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourceAttributes;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -55,6 +60,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -98,6 +106,13 @@ public class UnifiedDiffManagerTest {
 
 	private IFile file;
 	private ITextEditor editor;
+	// org.eclipse.team.ui preference deciding whether validateEdit silently makes a
+	// read-only file writable when called without a UI context (as UnifiedDiffManager
+	// does). Its default is already false (see TeamUIPlugin), so pinning it to false
+	// is only defensive against a leaked instance-scope value from another test.
+	private static final String TEAM_UI_NODE = "org.eclipse.team.ui";
+	private static final String MAKE_WRITABLE_WITHOUT_CONTEXT_KEY = "org.eclipse.team.ui.validate_edit_with_no_context";
+	private String previousMakeWritable;
 	private final List<IStatus> loggedErrors = synchronizedList(new ArrayList<>());
 	private final ILogListener logListener = (status, _) -> {
 		if (status.getSeverity() == IStatus.ERROR) {
@@ -124,15 +139,29 @@ public class UnifiedDiffManagerTest {
 		editor = (ITextEditor) IDE.openEditor(page, file);
 		processEvents();
 
+		previousMakeWritable = InstanceScope.INSTANCE.getNode(TEAM_UI_NODE)
+				.get(MAKE_WRITABLE_WITHOUT_CONTEXT_KEY, null);
+		InstanceScope.INSTANCE.getNode(TEAM_UI_NODE).putBoolean(MAKE_WRITABLE_WITHOUT_CONTEXT_KEY, false);
+
 		Platform.addLogListener(logListener);
 	}
 
 	@AfterEach
 	public void tearDown() {
 		Platform.removeLogListener(logListener);
+		// Clear the read-only flag a test may have set so the workspace reset can
+		// delete the project afterwards.
+		if (file != null && file.exists() && file.isReadOnly()) {
+			setReadOnly(false);
+		}
 		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		if (editor != null) {
 			page.closeEditor(editor, false);
+		}
+		if (previousMakeWritable == null) {
+			InstanceScope.INSTANCE.getNode(TEAM_UI_NODE).remove(MAKE_WRITABLE_WITHOUT_CONTEXT_KEY);
+		} else {
+			InstanceScope.INSTANCE.getNode(TEAM_UI_NODE).put(MAKE_WRITABLE_WITHOUT_CONTEXT_KEY, previousMakeWritable);
 		}
 		assertThat(loggedErrors).as("errors logged during open + paint").isEmpty();
 	}
@@ -297,6 +326,108 @@ public class UnifiedDiffManagerTest {
 
 		assertEquals("LINE ONE\n", document().get(),
 				"with the default comparator a case change is a real difference and must be applied");
+	}
+
+	// ------------------------------------------- read-only / validateEdit guard
+
+	// Only an actual document modification may run validateEdit and prompt the user
+	// to make a read-only file writable. REPLACE_MODE modifies the document while it
+	// opens, so it validates up front. The overlay/revert modes only add annotations
+	// when they open and modify later, from their accept/revert/undo actions, so
+	// opening them must not run validateEdit, but accepting/reverting must. In the
+	// headless test environment validateEdit on a read-only file returns an error
+	// (no UI prompt), so a modification that wrongly skipped the check would still
+	// change the document, and an open() that wrongly ran it would fail with CANCEL.
+
+	@Test
+	public void testReplaceModeOnReadOnlyFileIsCancelledAndKeepsDocument() {
+		setEditorContent(LEFT);
+		setReadOnly(true);
+
+		IStatus status = UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.REPLACE_MODE).open();
+
+		assertEquals(IStatus.CANCEL, status.getSeverity(),
+				"REPLACE_MODE must fail the validateEdit check on a read-only file");
+		assertEquals(LEFT, document().get(),
+				"a cancelled validateEdit must leave the document untouched");
+	}
+
+	@Test
+	public void testOverlayModeOnReadOnlyFileOpensWithoutValidateEdit() {
+		setEditorContent(LEFT);
+		setReadOnly(true);
+
+		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.OVERLAY_MODE).open().isOK(),
+				"opening OVERLAY_MODE does not modify the document and must not run validateEdit");
+		assertEquals(LEFT, document().get(), "opening an overlay must not touch the document");
+	}
+
+	@Test
+	public void testOverlayReadOnlyModeOnReadOnlyFileOpensWithoutValidateEdit() {
+		setEditorContent(LEFT);
+		setReadOnly(true);
+
+		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.OVERLAY_READ_ONLY_MODE).open().isOK(),
+				"opening OVERLAY_READ_ONLY_MODE does not modify the document and must not run validateEdit");
+		assertEquals(LEFT, document().get(), "opening a read-only overlay must not touch the document");
+	}
+
+	@Test
+	public void testRevertModeOnReadOnlyFileOpensWithoutValidateEdit() {
+		setEditorContent(LEFT);
+		setReadOnly(true);
+
+		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.REVERT_MODE).open().isOK(),
+				"opening REVERT_MODE does not modify the document and must not run validateEdit");
+		assertEquals(LEFT, document().get(), "opening a revert diff must not touch the document");
+	}
+
+	@Test
+	public void testAcceptAllOnReadOnlyOverlayDoesNotModifyTheDocument() {
+		setEditorContent(LEFT);
+		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.OVERLAY_MODE).open().isOK());
+		assertFalse(UnifiedDiffManager.get(viewer()).isEmpty(), "the overlay must have a diff that could be applied");
+		setReadOnly(true);
+
+		new AcceptAllRunnable(viewer(), annotationModel()).run();
+
+		// A leaked modification would be deferred until a repaint, so pump paints
+		// before asserting that the document stayed unchanged.
+		assertFalse(waitForDocument(RIGHT, 2_000), "accepting a diff on a read-only file must be blocked by validateEdit");
+		assertEquals(LEFT, document().get(), "a blocked accept must leave the document untouched");
+	}
+
+	@Test
+	public void testRevertAllOnReadOnlyRevertDiffDoesNotModifyTheDocument() {
+		setEditorContent(LEFT);
+		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.REVERT_MODE).open().isOK());
+		assertFalse(UnifiedDiffManager.get(viewer()).isEmpty(), "the revert diff must have a change that could be reverted");
+		setReadOnly(true);
+
+		// Revert mode reuses AcceptAllRunnable for its "revert all" action.
+		new AcceptAllRunnable(viewer(), annotationModel()).run();
+
+		// A leaked modification would be deferred until a repaint, so pump paints
+		// before asserting that the document stayed unchanged.
+		assertFalse(waitForDocument(RIGHT, 2_000), "reverting a diff on a read-only file must be blocked by validateEdit");
+		assertEquals(LEFT, document().get(), "a blocked revert must leave the document untouched");
+	}
+
+	/**
+	 * The positive control for the two tests above: on a writable file the same
+	 * accept-all must pass validateEdit and actually apply the diff. This both
+	 * guards the normal path against the lazy guard and proves the waitForDocument
+	 * harness the negative tests rely on can observe a real modification.
+	 */
+	@Test
+	public void testAcceptAllOnWritableOverlayModifiesTheDocument() {
+		setEditorContent(LEFT);
+		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.OVERLAY_MODE).open().isOK());
+		assertFalse(UnifiedDiffManager.get(viewer()).isEmpty(), "the overlay must have a diff that could be applied");
+
+		new AcceptAllRunnable(viewer(), annotationModel()).run();
+
+		assertTrue(waitForDocument(RIGHT, 2_000), "accept all must apply the diff on a writable file");
 	}
 
 	// ---------------------------------------------------- non modifying modes
@@ -718,6 +849,47 @@ public class UnifiedDiffManagerTest {
 		processEvents();
 	}
 
+	/**
+	 * Flags or unflags the underlying file as read-only. A document modification
+	 * runs validateEdit on such a file; opening a non modifying diff must not.
+	 */
+	private void setReadOnly(boolean readOnly) {
+		try {
+			ResourceAttributes attributes = file.getResourceAttributes();
+			assertNotNull(attributes, "file must expose resource attributes");
+			attributes.setReadOnly(readOnly);
+			file.setResourceAttributes(attributes);
+		} catch (CoreException e) {
+			throw new AssertionError("could not change the read-only state of " + file, e);
+		}
+	}
+
+	/**
+	 * Pumps the event loop until the document reaches the expected content or
+	 * {@code timeoutMillis} elapses. The accept/revert/undo actions defer the actual
+	 * replace to a {@code timerExec(100, ...)} scheduled from a PaintListener (see
+	 * runAfterRepaintFinished). A single synthetic paint schedules that timer; the
+	 * loop must then only pump and sleep, because firing another paint would reset
+	 * the 100 ms timer before it can mature.
+	 */
+	private boolean waitForDocument(String expected, long timeoutMillis) {
+		long deadline = System.currentTimeMillis() + timeoutMillis;
+		firePaint(viewer().getTextWidget());
+		while (System.currentTimeMillis() < deadline) {
+			processEvents();
+			if (expected.equals(document().get())) {
+				return true;
+			}
+			try {
+				Thread.sleep(20);
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				break;
+			}
+		}
+		return expected.equals(document().get());
+	}
+
 	private static List<Annotation> annotations(IAnnotationModel model, String type) {
 		List<Annotation> result = new ArrayList<>();
 		Iterator<Annotation> it = model.getAnnotationIterator();
@@ -763,6 +935,33 @@ public class UnifiedDiffManagerTest {
 		tw.redraw();
 		tw.update();
 		processEvents();
+	}
+
+	/**
+	 * Dispatches a synthetic {@link SWT#Paint} event to every {@link PaintListener}
+	 * attached to the widget, mirroring {@link #fireMouseMove(StyledText, int)}. An
+	 * off-screen widget on a build machine never reliably receives a real paint, so
+	 * this drives UnifiedDiffManager.runAfterRepaintFinished, which only schedules
+	 * its deferred document replace from a PaintListener.
+	 */
+	private static void firePaint(StyledText tw) {
+		if (tw == null || tw.isDisposed()) {
+			return;
+		}
+		GC gc = new GC(tw);
+		try {
+			Event event = new Event();
+			event.widget = tw;
+			event.gc = gc;
+			event.x = 0;
+			event.y = 0;
+			event.width = Math.max(1, tw.getClientArea().width);
+			event.height = Math.max(1, tw.getClientArea().height);
+			PaintEvent paintEvent = new PaintEvent(event);
+			tw.getTypedListeners(SWT.Paint, PaintListener.class).forEach(listener -> listener.paintControl(paintEvent));
+		} finally {
+			gc.dispose();
+		}
 	}
 
 	private static void processEvents() {

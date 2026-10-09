@@ -127,6 +127,9 @@ public class UnifiedDiffManager {
 	private static final String TOOLBAR_COMPOSITE_FOR_ALL_DIFFS_KEY = "TOOLBAR_COMPOSITE_FOR_ALL_DIFFS_KEY"; //$NON-NLS-1$
 	private static final String TOOLBAR_ACTION_PRESENTATIONS_KEY = "TOOLBAR_ACTION_PRESENTATIONS_KEY"; //$NON-NLS-1$
 	private static final Map<ITextViewer, List<UnifiedDiff>> diffsByViewer = new HashMap<>();
+	// The workspace file behind each viewer's document, so the accept/revert/undo
+	// actions can run validateEdit lazily, right before they modify the document.
+	private static final Map<ITextViewer, IFile> fileByViewer = new HashMap<>();
 
 	/**
 
@@ -244,10 +247,12 @@ public class UnifiedDiffManager {
 		} catch (OperationCanceledException | InterruptedException e) {
 			return CANCELED_BY_USER;
 		}
-		// call validateEdit before modifying the leftDocument; in read-only overlay
-		// mode the document is not modified, so skip the check to avoid prompting
-		// the user to make the file writable for a purely read-only diff
-		if (!UnifiedDiffMode.OVERLAY_READ_ONLY_MODE.equals(mode)) {
+		// REPLACE_MODE modifies the document right here (see below), so it validates
+		// the edit up front. The other modes only add annotations now; they modify the
+		// document later, from their accept/revert/undo actions, and validate the edit
+		// there (see validateEdit(ITextViewer)) so a read-only diff never prompts the
+		// user to make the file writable unless an actual change is applied.
+		if (UnifiedDiffMode.REPLACE_MODE.equals(mode)) {
 			if (file != null && !validateEdit(file)) {
 				return Status.CANCEL_STATUS;
 			}
@@ -312,6 +317,9 @@ public class UnifiedDiffManager {
 		}
 
 		UnifiedDiffManager.put(viewer, unifiedDiffs);
+		// Remember the file only now that the open succeeded, so a canceled open above
+		// does not leave a stale viewer -> file entry behind.
+		fileByViewer.put(viewer, file);
 		setToolbarActionPresentations(viewer, toolbarActionPresentations);
 		addPaintListener(viewer, model, mode);
 		addMouseMoveListener(viewer, model);
@@ -329,7 +337,13 @@ public class UnifiedDiffManager {
 
 		if (unifiedDiffs.size() > 0) {
 			runAfterRepaintFinished(viewer.getTextWidget(), () -> {
+				if (unifiedDiffs.isEmpty()) {
+					return;
+				}
 				Annotation firstAnno = getFirstAnnotationForUnifiedDiff(model, unifiedDiffs.get(0));
+				if (firstAnno == null) {
+					return;
+				}
 				selectAndRevealAnno(viewer, model, firstAnno);
 			});
 		}
@@ -1171,6 +1185,9 @@ public class UnifiedDiffManager {
 		if (diff == null) {
 			return;
 		}
+		if (!validateEdit(tv)) {
+			return;
+		}
 		List<Annotation> annos = getAllAnnotationsForUnifiedDiff(model, diff);
 		List<Position> positions = new ArrayList<>();
 		List<String> replaceStrings = new ArrayList<>();
@@ -1280,6 +1297,9 @@ public class UnifiedDiffManager {
 				UnifiedDiff diff = getUnifiedDiffForAnno(anno);
 				int idx = diff.container.indexOf(diff);
 				if (idx < 0) {
+					return;
+				}
+				if (!validateEdit(tv)) {
 					return;
 				}
 				idx++;
@@ -1765,6 +1785,7 @@ public class UnifiedDiffManager {
 		removeAnnotationModelListener(model, tw);
 
 		diffsByViewer.remove(tv);
+		fileByViewer.remove(tv);
 
 		if (tw == null || tw.isDisposed()) {
 			// SWT removes listeners automatically when the widget is disposed
@@ -1921,6 +1942,17 @@ public class UnifiedDiffManager {
 				gc.fillRectangle(0, y + height - 1, width, 1);
 			}
 		}
+	}
+
+	/**
+	 * Checks that the file behind the viewer's document may be modified, prompting
+	 * the user to make it writable or check it out if a team provider requires it.
+	 * Returns {@code true} when there is no file to guard, so overlays on documents
+	 * without a workspace file keep working.
+	 */
+	static boolean validateEdit(ITextViewer viewer) {
+		IFile file = fileByViewer.get(viewer);
+		return file == null || validateEdit(file);
 	}
 
 	private static boolean validateEdit(IFile file) {
