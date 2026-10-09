@@ -48,6 +48,7 @@ import java.util.stream.Stream;
 
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.CompareEditorInput;
+import org.eclipse.compare.ICompareFilter;
 import org.eclipse.compare.IResourceProvider;
 import org.eclipse.compare.ISharedDocumentAdapter;
 import org.eclipse.compare.IStreamContentAccessor;
@@ -739,8 +740,11 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 				closeIfOpenedHere(wpage, openedHere);
 				return false;
 			}
+
+			ICompareFilter[] compareFilters = createCompareFilters(source, input.getCompareConfiguration());
 			Action openTwoWayCompare = createOpenTwoWayCompareAction(input, page, editor, activate, textEditor);
 			IStatus status = UnifiedDiff.create(textEditor, source.diffSource(), source.mode())
+					.compareFilters(compareFilters, source.elementContributor(), source.diffSourceContributor())
 					.additionalActions(Arrays.asList(openTwoWayCompare))
 					.ignoreWhitespaceContributorFactory(
 							t -> mergerInput != null ? mergerInput.createIgnoreWhitespaceContributor(t)
@@ -762,6 +766,38 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		// diff would only be a second editor on the same file without a comparison.
 		closeIfOpenedHere(wpage, openedHere);
 		return false;
+	}
+
+	private ICompareFilter[] createCompareFilters(UnifiedDiffSource source, CompareConfiguration configuration) {
+		if (configuration != null
+				&& (configuration.getProperty(ChangeCompareFilterPropertyAction.COMPARE_FILTER_ACTIONS) != null
+						|| configuration.getProperty(ChangeCompareFilterPropertyAction.COMPARE_FILTERS) != null)) {
+			ICompareFilter[] compareFilters = Utilities.getCompareFilters(configuration);
+			for (ICompareFilter compareFilter : compareFilters) {
+				setCompareFilterInput(compareFilter, source);
+			}
+			return compareFilters;
+		}
+
+		List<ICompareFilter> compareFilters = new ArrayList<>();
+		CompareFilterDescriptor[] compareFilterDescriptors = CompareUIPlugin.getDefault()
+				.findCompareFilters(source.compareInput);
+		if (compareFilterDescriptors != null) {
+			for (CompareFilterDescriptor compareFilterDescriptor : compareFilterDescriptors) {
+				ICompareFilter compareFilter = compareFilterDescriptor.createCompareFilter();
+				if (compareFilter == null || !compareFilter.isEnabledInitially()) {
+					continue;
+				}
+				setCompareFilterInput(compareFilter, source);
+				compareFilters.add(compareFilter);
+			}
+		}
+		return compareFilters.toArray(new ICompareFilter[0]);
+	}
+
+	private static void setCompareFilterInput(ICompareFilter compareFilter, UnifiedDiffSource source) {
+		compareFilter.setInput(source.compareInput, source.compareInput.getAncestor(), source.compareInput.getLeft(),
+				source.compareInput.getRight());
 	}
 
 	private static boolean hasContent(ITextEditor editor) {
@@ -864,8 +900,8 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	}
 
 	/** The editor to open, plus the side that is overlaid onto it as a diff. */
-	private static record UnifiedDiffSource(ICompareInput compareInput, IEditorInput editorInput,
-			ITypedElement element, UnifiedDiffMode mode, String diffSource) {
+	private static record UnifiedDiffSource(ICompareInput compareInput, IEditorInput editorInput, ITypedElement element,
+			char elementContributor, UnifiedDiffMode mode, String diffSource, char diffSourceContributor) {
 	}
 
 	/**
@@ -898,7 +934,8 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		// The other side supplies the diff source and is read here rather than on the
 		// UI thread.
 		return new UnifiedDiffSource(candidate.compareInput(), candidate.editorInput(), candidate.element(),
-				candidate.mode(), getSourceOf(candidate.diffSource()));
+				candidate.elementContributor(), candidate.mode(), getSourceOf(candidate.diffSource()),
+				candidate.diffSourceContributor());
 	}
 
 	/**
@@ -942,27 +979,33 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		// overlay stays editable. The other side merely supplies the diff source and
 		// may be missing entirely, as for a newly added file.
 		if (leftEditorInput instanceof IFileEditorInput) {
-			return new UnifiedDiffCandidate(compareInput, leftEditorInput, left, UnifiedDiffMode.REVERT_MODE, right);
+			return new UnifiedDiffCandidate(compareInput, leftEditorInput, left,
+					MergeViewerContentProvider.LEFT_CONTRIBUTOR, UnifiedDiffMode.REVERT_MODE, right,
+					MergeViewerContentProvider.RIGHT_CONTRIBUTOR);
 		}
 		if (rightEditorInput instanceof IFileEditorInput) {
 			return new UnifiedDiffCandidate(compareInput, rightEditorInput, right,
-					UnifiedDiffMode.OVERLAY_READ_ONLY_MODE, left);
+					MergeViewerContentProvider.RIGHT_CONTRIBUTOR, UnifiedDiffMode.OVERLAY_READ_ONLY_MODE, left,
+					MergeViewerContentProvider.LEFT_CONTRIBUTOR);
 		}
 		// A deleted file leaves no workspace file to overlay. The version that still
 		// exists is then shown read-only, with its whole content marked as removed.
 		if (rightEditorInput != null && isAbsent(left)) {
 			return new UnifiedDiffCandidate(compareInput, rightEditorInput, right,
-					UnifiedDiffMode.OVERLAY_READ_ONLY_MODE, left);
+					MergeViewerContentProvider.RIGHT_CONTRIBUTOR, UnifiedDiffMode.OVERLAY_READ_ONLY_MODE, left,
+					MergeViewerContentProvider.LEFT_CONTRIBUTOR);
 		}
 		if (leftEditorInput != null && isAbsent(right)) {
 			return new UnifiedDiffCandidate(compareInput, leftEditorInput, left,
-					UnifiedDiffMode.OVERLAY_READ_ONLY_MODE, right);
+					MergeViewerContentProvider.LEFT_CONTRIBUTOR, UnifiedDiffMode.OVERLAY_READ_ONLY_MODE, right,
+					MergeViewerContentProvider.RIGHT_CONTRIBUTOR);
 		}
 		// Revision history entries use storage editor inputs. Show the right-hand
 		// revision in a read-only editor and overlay the left-hand revision onto it.
 		if (leftEditorInput instanceof IStorageEditorInput && rightEditorInput instanceof IStorageEditorInput) {
 			return new UnifiedDiffCandidate(compareInput, rightEditorInput, right,
-					UnifiedDiffMode.OVERLAY_READ_ONLY_MODE, left);
+					MergeViewerContentProvider.RIGHT_CONTRIBUTOR, UnifiedDiffMode.OVERLAY_READ_ONLY_MODE, left,
+					MergeViewerContentProvider.LEFT_CONTRIBUTOR);
 		}
 		return null;
 	}
@@ -1010,7 +1053,8 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 
 	/** The side the unified diff would sit on, before any content is read. */
 	private static record UnifiedDiffCandidate(ICompareInput compareInput, IEditorInput editorInput,
-			ITypedElement element, UnifiedDiffMode mode, ITypedElement diffSource) {
+			ITypedElement element, char elementContributor, UnifiedDiffMode mode, ITypedElement diffSource,
+			char diffSourceContributor) {
 	}
 
 	/**
