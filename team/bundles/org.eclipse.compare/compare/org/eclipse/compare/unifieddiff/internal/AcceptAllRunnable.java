@@ -64,6 +64,9 @@ public class AcceptAllRunnable implements Runnable {
 		if (diffs1 == null) {
 			return;
 		}
+		if (!UnifiedDiffManager.validateEdit(tv)) {
+			return;
+		}
 		List<Position> positions = new ArrayList<>();
 		List<String> replaceStrings = new ArrayList<>();
 		for (UnifiedDiff diff : diffs1) {
