@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.stream.Stream;
 
+import org.eclipse.compare.ICompareFilter;
 import org.eclipse.compare.contentmergeviewer.IIgnoreWhitespaceContributor;
 import org.eclipse.compare.contentmergeviewer.ITokenComparator;
 import org.eclipse.compare.contentmergeviewer.TokenComparator;
@@ -186,15 +187,17 @@ public class UnifiedDiffManager {
 
 	public static IStatus open(ITextEditor editor, String source, UnifiedDiffMode mode, List<Action> additionalActions,
 			TokenComparatorFactory tokenComparatorFactory,
-			IgnoreWhitespaceContributorFactory ignoreWhitespaceContributorFactory, boolean ignoreWhiteSpace,
-			int foldContextLines) {
+			IgnoreWhitespaceContributorFactory ignoreWhitespaceContributorFactory, ICompareFilter[] compareFilters,
+			char leftContributor, char rightContributor, boolean ignoreWhiteSpace, int foldContextLines) {
 		return open(editor, source, mode, additionalActions, tokenComparatorFactory, ignoreWhitespaceContributorFactory,
-				ignoreWhiteSpace, foldContextLines, ToolbarActionPresentations.NONE);
+				compareFilters, leftContributor, rightContributor, ignoreWhiteSpace, foldContextLines,
+				ToolbarActionPresentations.NONE);
 	}
 
 	public static IStatus open(ITextEditor editor, String source, UnifiedDiffMode mode, List<Action> additionalActions,
 			TokenComparatorFactory tokenComparatorFactory,
-			IgnoreWhitespaceContributorFactory ignoreWhitespaceContributorFactory, boolean ignoreWhiteSpace,
+			IgnoreWhitespaceContributorFactory ignoreWhitespaceContributorFactory, ICompareFilter[] compareFilters,
+			char leftContributor, char rightContributor, boolean ignoreWhiteSpace,
 			int foldContextLines, ToolbarActionPresentations toolbarActionPresentations) {
 		ITextViewer viewer = editor.getAdapter(ITextViewer.class);
 		IDocument leftDocument = editor.getDocumentProvider().getDocument(editor.getEditorInput());
@@ -205,7 +208,8 @@ public class UnifiedDiffManager {
 		}
 		IFile file = editor.getEditorInput().getAdapter(IFile.class);
 		return open(viewer, leftDocument, model, file, source, mode, additionalActions, tokenComparatorFactory,
-				ignoreWhitespaceContributorFactory, ignoreWhiteSpace, foldContextLines, toolbarActionPresentations);
+				ignoreWhitespaceContributorFactory, compareFilters, leftContributor, rightContributor, ignoreWhiteSpace,
+				foldContextLines, toolbarActionPresentations);
 	}
 
 	/**
@@ -216,17 +220,18 @@ public class UnifiedDiffManager {
 	public static IStatus open(ITextViewer viewer, IDocument leftDocument, IAnnotationModel model, IFile file,
 			String source, UnifiedDiffMode mode, List<Action> additionalActions,
 			TokenComparatorFactory tokenComparatorFactory,
-			IgnoreWhitespaceContributorFactory ignoreWhitespaceContributorFactory, boolean ignoreWhiteSpace,
-			int foldContextLines) {
+			IgnoreWhitespaceContributorFactory ignoreWhitespaceContributorFactory, ICompareFilter[] compareFilters,
+			char leftContributor, char rightContributor, boolean ignoreWhiteSpace, int foldContextLines) {
 		return open(viewer, leftDocument, model, file, source, mode, additionalActions, tokenComparatorFactory,
-				ignoreWhitespaceContributorFactory, ignoreWhiteSpace, foldContextLines,
-				ToolbarActionPresentations.NONE);
+				ignoreWhitespaceContributorFactory, compareFilters, leftContributor, rightContributor, ignoreWhiteSpace,
+				foldContextLines, ToolbarActionPresentations.NONE);
 	}
 
 	public static IStatus open(ITextViewer viewer, IDocument leftDocument, IAnnotationModel model, IFile file,
 			String source, UnifiedDiffMode mode, List<Action> additionalActions,
 			TokenComparatorFactory tokenComparatorFactory,
-			IgnoreWhitespaceContributorFactory ignoreWhitespaceContributorFactory, boolean ignoreWhiteSpace,
+			IgnoreWhitespaceContributorFactory ignoreWhitespaceContributorFactory, ICompareFilter[] compareFilters,
+			char leftContributor, char rightContributor, boolean ignoreWhiteSpace,
 			int foldContextLines, ToolbarActionPresentations toolbarActionPresentations) {
 
 		if (viewer instanceof ProjectionViewer pv) {
@@ -240,7 +245,8 @@ public class UnifiedDiffManager {
 		List<UnifiedDiff> unifiedDiffs;
 		try {
 			unifiedDiffs = computeDiffsWithProgress(leftDocument, rightDocument, mode, tokenComparatorFactory,
-					ignoreWhitespaceContributorFactory, ignoreWhiteSpace);
+					ignoreWhitespaceContributorFactory, compareFilters, leftContributor, rightContributor,
+					ignoreWhiteSpace);
 		} catch (OperationCanceledException | InterruptedException e) {
 			return CANCELED_BY_USER;
 		}
@@ -830,13 +836,15 @@ public class UnifiedDiffManager {
 	 */
 	private static List<UnifiedDiff> computeDiffsWithProgress(IDocument leftDocument, IDocument rightDocument,
 			UnifiedDiffMode mode, TokenComparatorFactory tokenComparatorFactory,
-			IgnoreWhitespaceContributorFactory ignoreWhitespaceContributorFactory, boolean ignoreWhiteSpace)
+			IgnoreWhitespaceContributorFactory ignoreWhitespaceContributorFactory, ICompareFilter[] compareFilters,
+			char leftContributor, char rightContributor, boolean ignoreWhiteSpace)
 			throws InterruptedException {
 		List<List<UnifiedDiff>> computed = new ArrayList<>(1);
 		try {
 			PlatformUI.getWorkbench().getProgressService()
 					.busyCursorWhile(monitor -> computed.add(computeDiffs(leftDocument, rightDocument, mode,
-							tokenComparatorFactory, ignoreWhitespaceContributorFactory, ignoreWhiteSpace, monitor)));
+							tokenComparatorFactory, ignoreWhitespaceContributorFactory, compareFilters, leftContributor,
+							rightContributor, ignoreWhiteSpace, monitor)));
 		} catch (InvocationTargetException e) {
 			error(e);
 			return List.of();
@@ -846,21 +854,23 @@ public class UnifiedDiffManager {
 
 	private static List<UnifiedDiff> computeDiffs(IDocument leftDocument, IDocument rightDocument, UnifiedDiffMode mode,
 			TokenComparatorFactory tokenComparatorFactory,
-			IgnoreWhitespaceContributorFactory ignoreWhitespaceContributorFactory, boolean ignoreWhiteSpace,
-			IProgressMonitor monitor) {
+			IgnoreWhitespaceContributorFactory ignoreWhitespaceContributorFactory, ICompareFilter[] compareFilters,
+			char leftContributor, char rightContributor, boolean ignoreWhiteSpace, IProgressMonitor monitor) {
 		DocLineComparator left = null, right = null;
 		Optional<IIgnoreWhitespaceContributor> lDocIgnonerWhitespaceContributor = Optional.empty();
 		Optional<IIgnoreWhitespaceContributor> rDocIgnonreWhitespaceContributor = Optional.empty();
 		if (ignoreWhitespaceContributorFactory != null) {
 			lDocIgnonerWhitespaceContributor = ignoreWhitespaceContributorFactory.apply(leftDocument);
-			left = new DocLineComparator(leftDocument, null, ignoreWhiteSpace, null, '?',
+			left = new DocLineComparator(leftDocument, null, ignoreWhiteSpace, compareFilters, leftContributor,
 					lDocIgnonerWhitespaceContributor);
 			rDocIgnonreWhitespaceContributor = ignoreWhitespaceContributorFactory.apply(rightDocument);
-			right = new DocLineComparator(rightDocument, null, ignoreWhiteSpace, null, '?',
+			right = new DocLineComparator(rightDocument, null, ignoreWhiteSpace, compareFilters, rightContributor,
 					rDocIgnonreWhitespaceContributor);
 		} else {
-			left = new DocLineComparator(leftDocument, null, ignoreWhiteSpace);
-			right = new DocLineComparator(rightDocument, null, ignoreWhiteSpace);
+			left = new DocLineComparator(leftDocument, null, ignoreWhiteSpace, compareFilters, leftContributor,
+					Optional.empty());
+			right = new DocLineComparator(rightDocument, null, ignoreWhiteSpace, compareFilters, rightContributor,
+					Optional.empty());
 		}
 		List<UnifiedDiff> unifiedDiffs = new ArrayList<>();
 		SubMonitor progress = SubMonitor.convert(monitor, CompareMessages.UnifiedDiff_computing, 100);
