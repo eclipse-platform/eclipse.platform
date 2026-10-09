@@ -66,7 +66,7 @@ public class LocalHistoryTableProvider {
 		private Image dateImage;
 		private Font currentRevisionFont;
 
-		private final IPropertyChangeListener themeListener = event -> LocalHistoryTableProvider.this.viewer.refresh();
+		private final IPropertyChangeListener themeListener = _ -> LocalHistoryTableProvider.this.viewer.refresh();
 
 		public LocalHistoryLabelProvider() {
 			PlatformUI.getWorkbench().getThemeManager().addPropertyChangeListener(themeListener);

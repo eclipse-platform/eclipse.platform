@@ -79,7 +79,7 @@ public class ProjectSelectionPage extends WizardPage {
 		projectViewer.setComparator(new ResourceComparator(ResourceComparator.NAME));
 		projectViewer.setInput(projectList);
 		projectViewer.getTable().select(0);
-		projectViewer.addSelectionChangedListener(event -> updateEnablements());
+		projectViewer.addSelectionChangedListener(_ -> updateEnablements());
 	}
 
 	private void createShareButton(Composite composite) {

@@ -108,7 +108,7 @@ public class JavacMarkerCreator {
 	}
 
 	private void createMarkers(final IFile file, final List<MarkerInfo> infos) {
-		IWorkspaceRunnable wr = monitor -> {
+		IWorkspaceRunnable wr = _ -> {
 
 			try {
 				for (MarkerInfo info : infos) {

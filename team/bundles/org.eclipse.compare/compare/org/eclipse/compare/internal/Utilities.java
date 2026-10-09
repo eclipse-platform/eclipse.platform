@@ -921,7 +921,7 @@ public class Utilities {
 			/* IWorkbenchGraphicConstants */"IMG_LCL_VIEW_MENU"); //$NON-NLS-1$
 		} else {
 			image = CompareUIPlugin.getImageDescriptor("elcl16/view_menu.svg").createImage(); //$NON-NLS-1$
-			item.addDisposeListener(e -> {
+			item.addDisposeListener(_ -> {
 				Image img = item.getImage();
 				if ((img != null) && (!img.isDisposed())) {
 					img.dispose();

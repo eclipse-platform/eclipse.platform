@@ -35,7 +35,7 @@ public class FailureTableDisplay implements ITraceDisplay {
 	 */
 	public FailureTableDisplay(Table table) {
 		fTable = table;
-		fTable.getParent().addDisposeListener(e -> disposeIcons());
+		fTable.getParent().addDisposeListener(_ -> disposeIcons());
 	}
 
 	@Override

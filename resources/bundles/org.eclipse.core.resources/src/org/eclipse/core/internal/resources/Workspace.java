@@ -1382,7 +1382,7 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 				return 1 + tree.getChildCount(root);
 			case IResource.DEPTH_INFINITE :
 				final int[] count = new int[1];
-				IElementContentVisitor visitor = (aTree, requestor, elementContents) -> {
+				IElementContentVisitor visitor = (_, _, elementContents) -> {
 					if (phantom || !((ResourceInfo) elementContents).isSet(M_PHANTOM)) {
 						count[0]++;
 					}
@@ -2703,7 +2703,7 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 	public String toDebugString() {
 		final StringBuilder buffer = new StringBuilder("\nDump of " + this + ":\n"); //$NON-NLS-1$ //$NON-NLS-2$
 		buffer.append("  parent: " + tree.getParent()); //$NON-NLS-1$
-		IElementContentVisitor visitor = (aTree, requestor, elementContents) -> {
+		IElementContentVisitor visitor = (_, requestor, elementContents) -> {
 			buffer.append("\n  " + requestor.requestPath() + ": " + elementContents); //$NON-NLS-1$ //$NON-NLS-2$
 			return true;
 		};

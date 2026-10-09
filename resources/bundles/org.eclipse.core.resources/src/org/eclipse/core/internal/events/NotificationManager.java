@@ -48,7 +48,7 @@ public class NotificationManager implements IManager, ILifecycleListener {
 	 * elapsed.
 	 */
 	class NotifyJob extends Job {
-		private final ICoreRunnable noop = monitor -> {
+		private final ICoreRunnable noop = _ -> {
 			// do nothing, but keep return below for debugging
 			return;
 		};

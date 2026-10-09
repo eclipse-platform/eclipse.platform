@@ -217,7 +217,7 @@ public class FileTypeTable implements ICellModifier, IStructuredContentProvider,
 		};
 
 		fTableViewer.addFilter(tableFilter);
-		filterText.addModifyListener(e -> fTableViewer.refresh());
+		filterText.addModifyListener(_ -> fTableViewer.refresh());
 	}
 
 

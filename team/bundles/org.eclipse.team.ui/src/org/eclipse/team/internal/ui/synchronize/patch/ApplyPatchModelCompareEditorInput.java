@@ -93,7 +93,7 @@ public class ApplyPatchModelCompareEditorInput extends ModelCompareEditorInput {
 			Object pane = cein.getPanes()[0]; // the structure input pane, top left
 			if (pane instanceof CompareViewerPane cvp) {
 				cvp.setSelection(StructuredSelection.EMPTY);
-				cvp.addSelectionChangedListener(e -> feed1(cein));
+				cvp.addSelectionChangedListener(_ -> feed1(cein));
 				feed1(cein);
 			}
 		}

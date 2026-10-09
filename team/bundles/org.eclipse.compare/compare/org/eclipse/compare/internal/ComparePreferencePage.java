@@ -350,7 +350,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		fFilters.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		fFilters.setText(fOverlayStore.getString(PATH_FILTER));
 		fFilters.addModifyListener(
-			e -> {
+			_ -> {
 				String filters= fFilters.getText();
 				String message= CompareResourceFilter.validateResourceFilters(filters);
 				setValid(message == null);
@@ -457,7 +457,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		);
 
 		Control c = previewViewer.getControl();
-		c.addDisposeListener(e -> {
+		c.addDisposeListener(_ -> {
 			if (compareConfiguration != null) {
 				compareConfiguration.dispose();
 			}
@@ -481,7 +481,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		));
 
 		Control c = previewViewer.getControl();
-		c.addDisposeListener(e -> {
+		c.addDisposeListener(_ -> {
 			if (compareConfiguration != null) {
 				compareConfiguration.dispose();
 			}

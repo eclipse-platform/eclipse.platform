@@ -86,7 +86,7 @@ public class AntNewJavaProjectPage extends WizardPage {
 	private IAntModel fAntModel;
 	private TableViewer fTableViewer;
 
-	private final ModifyListener fLocationModifyListener = e -> {
+	private final ModifyListener fLocationModifyListener = _ -> {
 		// no lexical or position, has task info
 		fAntModel = AntUtil.getAntModel(getProjectLocationFieldValue(), false, false, true);
 		AntProjectNode projectNode = fAntModel == null ? null : fAntModel.getProjectNode();
@@ -106,7 +106,7 @@ public class AntNewJavaProjectPage extends WizardPage {
 		setPageComplete(validatePage());
 	};
 
-	private final ModifyListener fNameModifyListener = e -> setPageComplete(validatePage());
+	private final ModifyListener fNameModifyListener = _ -> setPageComplete(validatePage());
 
 	private static final int SIZING_TEXT_FIELD_WIDTH = 250;
 

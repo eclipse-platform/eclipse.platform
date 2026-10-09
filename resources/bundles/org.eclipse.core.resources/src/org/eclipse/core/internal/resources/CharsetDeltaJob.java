@@ -169,7 +169,7 @@ public class CharsetDeltaJob extends Job implements IContentTypeManager.IContent
 	}
 
 	private void processNextEvent(final ICharsetListenerFilter filter, IProgressMonitor monitor) throws CoreException {
-		IElementContentVisitor visitor = (tree, requestor, elementContents) -> {
+		IElementContentVisitor visitor = (_, requestor, elementContents) -> {
 			ResourceInfo info = (ResourceInfo) elementContents;
 			if (!filter.isAffected(info, requestor)) {
 				return true;

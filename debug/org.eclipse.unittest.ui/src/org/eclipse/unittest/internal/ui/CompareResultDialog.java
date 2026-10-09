@@ -302,7 +302,7 @@ public class CompareResultDialog extends TrayDialog {
 		setCompareViewerInput();
 
 		Control control = fViewer.getControl();
-		control.addDisposeListener(e -> compareConfiguration.dispose());
+		control.addDisposeListener(_ -> compareConfiguration.dispose());
 		return control;
 	}
 

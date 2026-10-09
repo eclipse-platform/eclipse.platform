@@ -185,7 +185,7 @@ public class ContributedClasspathEntriesEntry extends AbstractRuntimeClasspathEn
 					if (!bundleFolder.isDirectory()) {
 						continue;
 					}
-					String[] names = bundleFolder.list((dir, name) -> name.endsWith(".jar")); //$NON-NLS-1$
+					String[] names = bundleFolder.list((_, name) -> name.endsWith(".jar")); //$NON-NLS-1$
 					for (String jarName : names) {
 						fgSWTEntries.add(JavaRuntime.newArchiveRuntimeClasspathEntry(fragmentPath.append(jarName)));
 					}

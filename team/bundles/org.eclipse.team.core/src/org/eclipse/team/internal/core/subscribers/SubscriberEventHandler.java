@@ -99,7 +99,7 @@ public abstract class SubscriberEventHandler extends BackgroundEventHandler {
 				NLS.bind(Messages.SubscriberEventHandler_errors, subscriber.getName()));
 		this.subscriber = subscriber;
 		this.scope = scope;
-		scopeChangeListener = (scope1, newMappings, newTraversals) -> reset(new ResourceTraversal[0], scope1.getTraversals());
+		scopeChangeListener = (scope1, _, _) -> reset(new ResourceTraversal[0], scope1.getTraversals());
 		this.scope.addScopeChangeListener(scopeChangeListener);
 	}
 

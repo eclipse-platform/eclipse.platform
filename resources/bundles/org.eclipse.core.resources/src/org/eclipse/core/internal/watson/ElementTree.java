@@ -768,7 +768,7 @@ public class ElementTree {
 	 */
 	public String toDebugString() {
 		final StringBuilder buffer = new StringBuilder("\n"); //$NON-NLS-1$
-		IElementContentVisitor visitor = (aTree, elementID, elementContents) -> {
+		IElementContentVisitor visitor = (_, elementID, elementContents) -> {
 			buffer.append(elementID.requestPath() + " " + elementContents + "\n"); //$NON-NLS-1$ //$NON-NLS-2$
 			return true;
 		};

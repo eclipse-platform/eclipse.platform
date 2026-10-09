@@ -422,7 +422,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		public FoldedRegionCodeMining(Position position, ICodeMiningProvider provider, ITextViewer viewer,
 				Annotation foldAnnotation, int foldableLines, boolean collapsed, Color separatorColor,
 				Color buttonColor) throws BadLocationException {
-			super(position, provider, e -> {
+			super(position, provider, _ -> {
 				if (collapsed) {
 					UnifiedDiffManager.expandFoldRegion(viewer, foldAnnotation);
 				} else {
@@ -627,7 +627,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		}
 
 		private void clearStyledFonts() {
-			styledFonts.forEach((font, map) -> map.forEach((style, f) -> f.dispose()));
+			styledFonts.forEach((_, map) -> map.forEach((_, f) -> f.dispose()));
 			styledFonts.clear();
 		}
 
@@ -1046,8 +1046,8 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		}
 
 		private void clearStyledFonts() {
-			styledFonts.forEach((font1, styledFonts1) -> {
-				styledFonts1.forEach((style, styledFont) -> {
+			styledFonts.forEach((_, styledFonts1) -> {
+				styledFonts1.forEach((_, styledFont) -> {
 					styledFont.dispose();
 				});
 				styledFonts1.clear();
@@ -1435,8 +1435,8 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		// already set
 		if (styleRange.font == null && styleRange.fontStyle > 0) {
 			StyleRange newRange = (StyleRange) styleRange.clone();
-			newRange.font = styledFonts.computeIfAbsent(baseFont, f -> new HashMap<>())
-					.computeIfAbsent(Integer.valueOf(styleRange.fontStyle), s -> {
+			newRange.font = styledFonts.computeIfAbsent(baseFont, _ -> new HashMap<>())
+					.computeIfAbsent(Integer.valueOf(styleRange.fontStyle), _ -> {
 						FontData[] fontDatas = baseFont.getFontData();
 						for (FontData fontData : fontDatas) {
 							fontData.setStyle(styleRange.fontStyle);

@@ -91,7 +91,7 @@ public class PatchTargetPage extends WizardPage {
 			PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, ICompareContextIds.PATCH_INPUT_WIZARD_PAGE);
 		}
 
-		useWorkspaceAsTarget.addListener(SWT.Selection, event -> {
+		useWorkspaceAsTarget.addListener(SWT.Selection, _ -> {
 			fShowError = true;
 			if (useWorkspaceAsTarget.getSelection()) {
 				fPatchTargets.getTree().setEnabled(false);
@@ -187,7 +187,7 @@ public class PatchTargetPage extends WizardPage {
 			updateWidgetEnablements();
 		});
 
-		fPatchTargets.addDoubleClickListener(event -> ((PatchWizard)getWizard()).showPage(getNextPage()));
+		fPatchTargets.addDoubleClickListener(_ -> ((PatchWizard)getWizard()).showPage(getNextPage()));
 	}
 
 	/**

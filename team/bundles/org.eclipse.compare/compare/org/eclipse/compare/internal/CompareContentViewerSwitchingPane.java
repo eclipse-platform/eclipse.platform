@@ -144,7 +144,7 @@ public class CompareContentViewerSwitchingPane extends CompareViewerSwitchingPan
 		labelOptimized.setToolTipText(CompareMessages.CompareContentViewerSwitchingPane_optimizedTooltip);
 		labelOptimized.setImage(CompareUIPlugin.getImageDescriptor(
 				OPTIMIZED_INFO_IMAGE_NAME).createImage());
-		labelOptimized.addDisposeListener(e -> {
+		labelOptimized.addDisposeListener(_ -> {
 			Image img = labelOptimized.getImage();
 			if ((img != null) && (!img.isDisposed())) {
 				img.dispose();

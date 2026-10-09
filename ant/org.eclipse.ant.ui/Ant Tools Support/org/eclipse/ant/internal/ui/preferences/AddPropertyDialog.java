@@ -65,7 +65,7 @@ public class AddPropertyDialog extends Dialog {
 		gd.widthHint = 300;
 		fNameText.setLayoutData(gd);
 		fNameText.setFont(comp.getFont());
-		fNameText.addModifyListener(e -> updateButtons());
+		fNameText.addModifyListener(_ -> updateButtons());
 
 		fValueLabel = new Label(comp, SWT.NONE);
 		fValueLabel.setText(AntPreferencesMessages.AddPropertyDialog__Value__2);
@@ -77,7 +77,7 @@ public class AddPropertyDialog extends Dialog {
 		gd.widthHint = 300;
 		fValueText.setLayoutData(gd);
 		fValueText.setFont(comp.getFont());
-		fValueText.addModifyListener(e -> updateButtons());
+		fValueText.addModifyListener(_ -> updateButtons());
 
 		Button variablesButton = new Button(comp, SWT.PUSH);
 		variablesButton.setText(AntPreferencesMessages.AddPropertyDialog_2);

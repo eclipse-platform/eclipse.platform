@@ -249,7 +249,7 @@ public class DiffTreeViewer extends TreeViewer {
 		setContentProvider(new DiffViewerContentProvider());
 		setLabelProvider(diffViewerLabelProvider);
 
-		addSelectionChangedListener(event -> updateActions());
+		addSelectionChangedListener(_ -> updateActions());
 		addDoubleClickListener(this::expandCollapseAction);
 
 		setComparator(new DiffViewerComparator());

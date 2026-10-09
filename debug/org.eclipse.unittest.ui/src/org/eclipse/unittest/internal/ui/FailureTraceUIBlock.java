@@ -88,7 +88,7 @@ public class FailureTraceUIBlock implements IMenuListener {
 		fClipboard = clipboard;
 
 		OpenStrategy handler = new OpenStrategy(fTable);
-		handler.addOpenListener(e -> {
+		handler.addOpenListener(_ -> {
 			if (fTable.getSelectionIndex() == 0 && fFailure.getFailureTrace() != null
 					&& fFailure.getFailureTrace().isComparisonFailure()) {
 				fCompareAction.run();

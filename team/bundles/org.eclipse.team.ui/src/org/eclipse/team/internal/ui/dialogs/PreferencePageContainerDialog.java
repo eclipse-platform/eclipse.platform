@@ -152,7 +152,7 @@ public class PreferencePageContainerDialog extends TrayDialog
 		setTitle(TeamUIMessages.PreferencePageContainerDialog_6);
 		applyDialogFont(parent);
 
-		composite.addHelpListener(e -> currentPage.performHelp());
+		composite.addHelpListener(_ -> currentPage.performHelp());
 
 		return composite;
 	}
@@ -272,7 +272,7 @@ public class PreferencePageContainerDialog extends TrayDialog
 			}
 		};
 
-		fMessageLabel.addDisposeListener(event -> JFaceResources.getFontRegistry().removeListener(fontListener));
+		fMessageLabel.addDisposeListener(_ -> JFaceResources.getFontRegistry().removeListener(fontListener));
 
 		JFaceResources.getFontRegistry().addListener(fontListener);
 

@@ -202,7 +202,7 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 	@Override
 	public void initialize() {
 		context.getDiffTree().addDiffChangeListener(this);
-		context.getCache().addCacheListener(cache -> dispose());
+		context.getCache().addCacheListener(_ -> dispose());
 		super.initialize();
 	}
 

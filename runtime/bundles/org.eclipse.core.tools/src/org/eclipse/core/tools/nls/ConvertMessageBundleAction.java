@@ -44,7 +44,7 @@ public class ConvertMessageBundleAction implements IObjectActionDelegate {
 		}
 		try {
 			final GotoResourceAction pAction = new GotoResourceAction(fPart);
-			IRunnableWithProgress runnable = monitor -> pAction.run();
+			IRunnableWithProgress runnable = _ -> pAction.run();
 			PlatformUI.getWorkbench().getProgressService().run(false, false, runnable);
 			IFile propertiesFile = (IFile) pAction.getResource();
 			if (propertiesFile == null) {

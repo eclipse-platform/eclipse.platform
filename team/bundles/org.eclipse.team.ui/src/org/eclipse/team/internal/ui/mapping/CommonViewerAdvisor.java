@@ -274,7 +274,7 @@ public class CommonViewerAdvisor extends AbstractTreeViewerAdvisor implements IN
 		v.setComparator(new TeamViewerComparator((CommonViewerComparator) v.getComparator()));
 		ISynchronizationScope scope = getScope(configuration);
 		bindTeamContentProviders(v);
-		scope.addScopeChangeListener((scope1, newMappings, newTraversals) -> {
+		scope.addScopeChangeListener((_, _, _) -> {
 			enableContentProviders(v, configuration);
 			Utils.asyncExec((Runnable) () -> v.refresh(), v);
 		});

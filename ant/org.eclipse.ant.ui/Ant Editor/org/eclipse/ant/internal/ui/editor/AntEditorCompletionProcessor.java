@@ -1761,7 +1761,7 @@ public class AntEditorCompletionProcessor extends TemplateCompletionProcessor im
 
 	protected ISchema getDtd() {
 		if (fgDtd == null) {
-			IRunnableWithProgress runnable = monitor -> {
+			IRunnableWithProgress runnable = _ -> {
 				try {
 					fgDtd = parseDtd();
 				}

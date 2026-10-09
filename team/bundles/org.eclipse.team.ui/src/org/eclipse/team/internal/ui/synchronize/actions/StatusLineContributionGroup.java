@@ -63,7 +63,7 @@ public abstract class StatusLineContributionGroup extends ActionGroup {
 
 	private StatusLineCLabelContribution createStatusLineContribution(String id, final int mode, String label, Image image) {
 		StatusLineCLabelContribution item = new StatusLineCLabelContribution(id, 15);
-		item.addListener(SWT.MouseDown, event -> configuration.setMode(mode));
+		item.addListener(SWT.MouseDown, _ -> configuration.setMode(mode));
 		item.setText(label);
 		item.setImage(image);
 		return item;

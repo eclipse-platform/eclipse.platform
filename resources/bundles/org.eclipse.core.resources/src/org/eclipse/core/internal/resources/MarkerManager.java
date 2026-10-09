@@ -628,7 +628,7 @@ public class MarkerManager implements IManager {
 	 */
 	private void visitorFindMarkers(IPath path, final ArrayList<IMarker> list, final String type,
 			final boolean includeSubtypes) {
-		IElementContentVisitor visitor = (tree, requestor, elementContents) -> {
+		IElementContentVisitor visitor = (_, requestor, elementContents) -> {
 			ResourceInfo info = (ResourceInfo) elementContents;
 			if (info == null) {
 				return false;
@@ -685,7 +685,7 @@ public class MarkerManager implements IManager {
 	 * Adds the markers for a subtree of resources to the list.
 	 */
 	private void visitorRemoveMarkers(IPath path, final String type, final boolean includeSubtypes) {
-		IElementContentVisitor visitor = (tree, requestor, elementContents) -> {
+		IElementContentVisitor visitor = (_, requestor, elementContents) -> {
 			ResourceInfo info = (ResourceInfo) elementContents;
 			if (info == null) {
 				return false;

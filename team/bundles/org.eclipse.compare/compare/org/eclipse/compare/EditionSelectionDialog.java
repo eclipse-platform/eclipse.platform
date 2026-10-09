@@ -798,7 +798,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 					| GridData.VERTICAL_ALIGN_FILL | GridData.GRAB_VERTICAL));
 
 		vsplitter.addDisposeListener(
-			e -> {
+			_ -> {
 				if (fCompareConfiguration != null) {
 					fCompareConfiguration.dispose();
 					fCompareConfiguration= null;

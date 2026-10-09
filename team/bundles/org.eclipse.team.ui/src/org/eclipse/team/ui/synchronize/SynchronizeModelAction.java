@@ -82,7 +82,7 @@ public abstract class SynchronizeModelAction extends BaseSelectionListenerAction
 	 */
 	protected void initialize(final ISynchronizePageConfiguration configuration, final ISelectionProvider selectionProvider) {
 		selectionProvider.addSelectionChangedListener(this);
-		configuration.getPage().getViewer().getControl().addDisposeListener(e -> selectionProvider.removeSelectionChangedListener(SynchronizeModelAction.this));
+		configuration.getPage().getViewer().getControl().addDisposeListener(_ -> selectionProvider.removeSelectionChangedListener(SynchronizeModelAction.this));
 	}
 
 	@Override

@@ -469,7 +469,7 @@ public class PreviewPatchPage2 extends WizardPage {
 
 
 		fFuzzField.addModifyListener(
-			e -> {
+			_ -> {
 				if (patcher.getFuzz() != getFuzzFactor()) {
 					if (promptToRebuild(PatchMessages.PreviewPatchPage2_5)) {
 						if (patcher.setFuzz(getFuzzFactor())) {

@@ -112,7 +112,7 @@ public class PluginDependencyView extends SpyView implements ISelectionListener 
 		dependencyGraph = new HashMap<>();
 		for (Bundle bundle : plugins) {
 			PluginDependencyGraphNode node = dependencyGraph.computeIfAbsent(bundle.getBundleId(),
-					i -> new PluginDependencyGraphNode(bundle));
+					_ -> new PluginDependencyGraphNode(bundle));
 
 			// Cycle through the prerequisites
 			BundleWiring wiring = bundle.adapt(BundleWiring.class);
@@ -124,7 +124,7 @@ public class PluginDependencyView extends SpyView implements ISelectionListener 
 				Bundle capabilityProvider = requiredWire.getCapability().getRevision().getBundle();
 				// if the child entry is not in the table yet then add it
 				PluginDependencyGraphNode childNode = dependencyGraph.computeIfAbsent(capabilityProvider.getBundleId(),
-						i -> new PluginDependencyGraphNode(capabilityProvider));
+						_ -> new PluginDependencyGraphNode(capabilityProvider));
 
 				// Add the child to this node's children and set this node as an
 				// ancestor of the child node

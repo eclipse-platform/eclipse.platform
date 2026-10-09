@@ -140,7 +140,7 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 	 * @param viewer the viewer being initialize
 	 */
 	protected void initializeListeners(final StructuredViewer viewer) {
-		viewer.getControl().addDisposeListener(e -> StructuredViewerAdvisor.this.dispose());
+		viewer.getControl().addDisposeListener(_ -> StructuredViewerAdvisor.this.dispose());
 
 		new OpenAndLinkWithEditorHelper(viewer) {
 
@@ -169,7 +169,7 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 
 		viewer.addDoubleClickListener(event -> handleDoubleClick(viewer, event));
 
-		viewer.addSelectionChangedListener(event -> updateActionBars(viewer.getStructuredSelection()));
+		viewer.addSelectionChangedListener(_ -> updateActionBars(viewer.getStructuredSelection()));
 		TeamUIPlugin.getPlugin().getPreferenceStore().addPropertyChangeListener(propertyListener);
 	}
 

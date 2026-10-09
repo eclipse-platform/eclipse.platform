@@ -54,7 +54,7 @@ public class CounterPanel extends Composite {
 		fNumberOfErrors = createLabel(Messages.CounterPanel_label_errors, fErrorIcon, " 0 "); //$NON-NLS-1$
 		fNumberOfFailures = createLabel(Messages.CounterPanel_label_failures, fFailureIcon, " 0 "); //$NON-NLS-1$
 
-		addDisposeListener(e -> disposeIcons());
+		addDisposeListener(_ -> disposeIcons());
 	}
 
 	private void disposeIcons() {

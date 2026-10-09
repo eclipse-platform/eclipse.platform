@@ -101,7 +101,7 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 		}
 
 		final ResourceProxy proxy = new ResourceProxy();
-		IElementContentVisitor elementVisitor = (tree, requestor, contents) -> {
+		IElementContentVisitor elementVisitor = (_, requestor, contents) -> {
 			ResourceInfo info = (ResourceInfo) contents;
 			if (!isMember(getFlags(info), memberFlags)) {
 				return false;

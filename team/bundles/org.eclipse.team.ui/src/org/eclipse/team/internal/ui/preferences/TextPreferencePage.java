@@ -173,7 +173,7 @@ public class TextPreferencePage extends PreferencePage implements IWorkbenchPref
 
 		fTable= new FileTypeTable(composite, fItems, false);
 
-		fTable.getViewer().getControl().addListener(SWT.Selection, e -> handleSelection());
+		fTable.getViewer().getControl().addListener(SWT.Selection, _ -> handleSelection());
 
 		fTable.getViewer().addDoubleClickListener(event -> {
 			final ISelection selection = event.getSelection();
@@ -209,14 +209,14 @@ public class TextPreferencePage extends PreferencePage implements IWorkbenchPref
 		fChangeButton.setLayoutData(SWTUtils.createGridData(buttonWidth, SWT.DEFAULT, SWT.FILL, SWT.FILL, false, false));
 		fRemoveButton.setLayoutData(SWTUtils.createGridData(buttonWidth, SWT.DEFAULT, SWT.FILL, SWT.FILL, false, false));
 
-		addExtensionButton.addListener(SWT.Selection, e -> addExtension());
-		addNameButton.addListener(SWT.Selection, e -> addName());
+		addExtensionButton.addListener(SWT.Selection, _ -> addExtension());
+		addNameButton.addListener(SWT.Selection, _ -> addName());
 
 		fChangeButton.setEnabled(false);
-		fChangeButton.addListener(SWT.Selection, e -> changePattern());
+		fChangeButton.addListener(SWT.Selection, _ -> changePattern());
 
 		fRemoveButton.setEnabled(false);
-		fRemoveButton.addListener(SWT.Selection, e -> removePattern());
+		fRemoveButton.addListener(SWT.Selection, _ -> removePattern());
 
 		// set F1 help
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), IHelpContextIds.FILE_TYPE_PREFERENCE_PAGE);

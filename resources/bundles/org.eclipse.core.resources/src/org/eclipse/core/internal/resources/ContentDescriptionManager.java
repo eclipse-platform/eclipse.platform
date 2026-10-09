@@ -311,7 +311,7 @@ public class ContentDescriptionManager implements IManager, IRegistryChangeListe
 			Policy.debug("Flushing content type cache for " + root); //$NON-NLS-1$
 		}
 		// discard content type related flags for all files in the tree
-		IElementContentVisitor visitor = (tree, requestor, elementContents) -> {
+		IElementContentVisitor visitor = (_, requestor, elementContents) -> {
 			if (monitor.isCanceled()) {
 				throw new OperationCanceledException();
 			}

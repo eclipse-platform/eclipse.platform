@@ -315,7 +315,7 @@ public abstract class RevisionAnnotationController {
 		fRulerSelectionProvider.addSelectionChangedListener(rulerListener);
 		fHistoryListSelectionProvider.addSelectionChangedListener(historyListListener);
 
-		((IRevisionRulerColumn)revisionRuler).getControl().addDisposeListener(e -> dispose());
+		((IRevisionRulerColumn)revisionRuler).getControl().addDisposeListener(_ -> dispose());
 	}
 
 	/**

@@ -515,7 +515,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			}
 			final Viewer v = CompareUI.findStructureViewer(oldViewer, input, parent, configuration);
 			if (v != null) {
-				v.getControl().addDisposeListener(event -> v.removeSelectionChangedListener(InternalOutlineViewerCreator.this));
+				v.getControl().addDisposeListener(_ -> v.removeSelectionChangedListener(InternalOutlineViewerCreator.this));
 				v.addSelectionChangedListener(this);
 			}
 
@@ -2819,7 +2819,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 				getResourceBundle(), getCompareConfiguration().getContainer());
 		final StyledText te= viewer.getSourceViewer().getTextWidget();
 		// Clear cached line heights upon zoom changes, as they are no longer valid
-		te.addListener(SWT.ZoomChanged, e -> resetCachedLineHeights(viewer));
+		te.addListener(SWT.ZoomChanged, _ -> resetCachedLineHeights(viewer));
 		if (!fConfirmSave) {
 			viewer.hideSaveAction();
 		}
@@ -2857,7 +2857,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		);
 
 		viewer.getSourceViewer().addViewportListener(
-			verticalPosition -> syncViewport(viewer)
+			_ -> syncViewport(viewer)
 		);
 
 		Font font= JFaceResources.getFont(fSymbolicFontName);
@@ -4549,7 +4549,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			lineHeights = new ArrayList<>();
 			lineHeights.addAll(Collections.nCopies(w.getLineCount(), null));
 			this.lineHeightsByViewer.put(tp, lineHeights);
-			tp.getSourceViewer().addTextListener(event -> resetCachedLineHeights(tp));
+			tp.getSourceViewer().addTextListener(_ -> resetCachedLineHeights(tp));
 		}
 
 		int lineSpacing = w.getLineSpacing();

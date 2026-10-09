@@ -64,7 +64,7 @@ public class RemoveSynchronizeParticipantAction extends Action {
 	@Override
 	public void run() {
 		try {
-			PlatformUI.getWorkbench().getProgressService().busyCursorWhile(monitor -> {
+			PlatformUI.getWorkbench().getProgressService().busyCursorWhile(_ -> {
 				if (removeAll) {
 					removeAll();
 				} else {

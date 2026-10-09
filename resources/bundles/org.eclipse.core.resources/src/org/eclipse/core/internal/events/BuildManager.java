@@ -113,7 +113,7 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 				this.newTree = aNewTree;
 				deltas.clear();
 			}
-			return deltas.computeIfAbsent(project, p -> calculator.get());
+			return deltas.computeIfAbsent(project, _ -> calculator.get());
 		}
 
 		private static boolean areEqual(ElementTree cached, ElementTree requested) {

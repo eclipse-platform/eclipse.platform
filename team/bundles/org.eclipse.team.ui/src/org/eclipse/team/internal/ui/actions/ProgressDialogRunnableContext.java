@@ -71,7 +71,7 @@ public class ProgressDialogRunnableContext implements ITeamRunnableContext {
 
 	private IRunnableContext getRunnableContext() {
 		if (runnableContext == null) {
-			return (fork, cancelable, runnable) -> {
+			return (_, _, runnable) -> {
 				IProgressService manager = PlatformUI.getWorkbench().getProgressService();
 				manager.busyCursorWhile(runnable);
 			};
