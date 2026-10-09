@@ -85,7 +85,7 @@ public class SafeChunkyOutputStream extends FilterOutputStream {
 	 */
 	@Override
 	public void close() throws IOException {
-		try (OutputStream ostream = out) {
+		try (OutputStream _ = out) {
 			flush();
 		}
 	}
