@@ -32,6 +32,8 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 public class HideAllDiffsRunnable implements Runnable {
 
+	static final String COMMAND_ID = "org.eclipse.compare.hideAllDiffs"; //$NON-NLS-1$
+
 	private IAnnotationModel model;
 	private ITextViewer tv;
 
