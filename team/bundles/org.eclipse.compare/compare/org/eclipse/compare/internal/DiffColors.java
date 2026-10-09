@@ -14,6 +14,7 @@
 package org.eclipse.compare.internal;
 
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * The shared color palette for diff rendering. Both the traditional two-way
@@ -35,9 +36,33 @@ public final class DiffColors {
 	/** The hunk fill band; the lightest of the three. */
 	public static final double FILL_SCALE = 0.9;
 
-	/** Border color of an addition/deletion hunk; darker than the fill band. */
+	private static final String INFORMATION_BACKGROUND_COLOR = "org.eclipse.ui.workbench.INFORMATION_BACKGROUND"; //$NON-NLS-1$
+
+	/** Returns {@code true} when the active workbench theme is dark. */
+	public static boolean isDarkTheme() {
+		var reg = PlatformUI.getWorkbench().getThemeManager().getCurrentTheme().getColorRegistry();
+		var color = reg.getRGB(INFORMATION_BACKGROUND_COLOR);
+		return color != null && color.red + color.green + color.blue < 3 * 128;
+	}
+
+	/** Scale for the border/stroke color; adapts to dark vs. light themes. */
+	public static double borderScale(boolean dark) {
+		return dark ? 0.3 : BORDER_SCALE;
+	}
+
+	/** Scale for the line-band fill; adapts to dark vs. light themes. */
+	public static double fillScale(boolean dark) {
+		return dark ? 0.79 : FILL_SCALE;
+	}
+
+	/** Scale for the word-level detail highlight; adapts to dark vs. light themes. */
+	public static double detailScale(boolean dark) {
+		return dark ? 0.5 : TEXT_FILL_SCALE;
+	}
+
+	/** Border color of an addition/deletion hunk; adapts to dark vs. light themes. */
 	public static RGB borderColor(RGB diffColor, RGB background) {
-		return interpolate(diffColor, background, BORDER_SCALE);
+		return interpolate(diffColor, background, borderScale(isDarkTheme()));
 	}
 
 	/**
