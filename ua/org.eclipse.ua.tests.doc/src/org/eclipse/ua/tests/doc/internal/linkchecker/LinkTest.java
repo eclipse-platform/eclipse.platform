@@ -22,9 +22,11 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
@@ -41,9 +43,54 @@ import org.eclipse.help.internal.search.SearchHit;
 import org.eclipse.help.internal.search.SearchQuery;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.help.IWorkbenchHelpSystem;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.log.LogLevel;
+import org.osgi.service.log.admin.LoggerAdmin;
+import org.osgi.service.log.admin.LoggerContext;
 
 public class LinkTest {
+
+	/**
+	 * Name of the OSGi logger used by the Equinox SLF4J binding (see
+	 * PlatformLogWriter.EQUINOX_LOGGER_NAME). If "eclipse.log.level" is not set,
+	 * this logger is enabled for TRACE, so Jetty floods the (console) log with
+	 * debug messages.
+	 */
+	private static final String EQUINOX_LOGGER_NAME = "org.eclipse.equinox.logger";
+
+	/**
+	 * Reduces the log level for the rest of the test session. The levels are
+	 * intentionally not restored after the test: Jetty is stopped only at
+	 * workbench shutdown and would otherwise flood the log again at that time.
+	 */
+	@BeforeAll
+	public static void reduceLogging() {
+		LoggerContext rootContext = getRootLoggerContext();
+		if (rootContext == null) {
+			return;
+		}
+		Map<String, LogLevel> levels = new HashMap<>(rootContext.getLogLevels());
+		levels.put(EQUINOX_LOGGER_NAME, LogLevel.WARN);
+		rootContext.setLogLevels(levels);
+	}
+
+	private static LoggerContext getRootLoggerContext() {
+		BundleContext context = FrameworkUtil.getBundle(LinkTest.class).getBundleContext();
+		ServiceReference<LoggerAdmin> ref = context.getServiceReference(LoggerAdmin.class);
+		if (ref == null) {
+			return null;
+		}
+		LoggerAdmin loggerAdmin = context.getService(ref);
+		try {
+			return loggerAdmin == null ? null : loggerAdmin.getLoggerContext(null);
+		} finally {
+			context.ungetService(ref);
+		}
+	}
 
 	@Test
 	public void testAllLinks() {
