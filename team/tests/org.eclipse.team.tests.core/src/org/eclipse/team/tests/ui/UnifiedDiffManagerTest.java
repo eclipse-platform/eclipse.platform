@@ -63,7 +63,9 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.texteditor.AnnotationPreference;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.eclipse.ui.texteditor.MarkerAnnotationPreferences;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -77,6 +79,8 @@ public class UnifiedDiffManagerTest {
 	// org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager
 	private static final String ADDITION_ANNO_TYPE = "org.eclipse.compare.unifieddiff.internal.addition";
 	private static final String DELETION_ANNO_TYPE = "org.eclipse.compare.unifieddiff.internal.deletion";
+	private static final String ADDITION_RULER_ANNO_TYPE = "org.eclipse.compare.unifieddiff.internal.addition.ruler";
+	private static final String DELETION_RULER_ANNO_TYPE = "org.eclipse.compare.unifieddiff.internal.deletion.ruler";
 	private static final String DETAILED_ADDITION_ANNO_TYPE = "org.eclipse.compare.unifieddiff.internal.detailedAddition";
 	private static final String DETAILED_DELETION_ANNO_TYPE = "org.eclipse.compare.unifieddiff.internal.detailedDeletion";
 	// StyledText#getData(...) keys used by UnifiedDiffManager to remember the
@@ -153,12 +157,24 @@ public class UnifiedDiffManagerTest {
 		// on the changed tokens.
 		int deletionCount = countAnnotations(model, DELETION_ANNO_TYPE);
 		int detailedDeletionCount = countAnnotations(model, DETAILED_DELETION_ANNO_TYPE);
+		int additionRulerCount = countAnnotations(model, ADDITION_RULER_ANNO_TYPE);
 		assertTrue(deletionCount >= 1,
 				"expected at least one deletion annotation, got " + deletionCount);
 		assertTrue(detailedDeletionCount >= 1,
 				"expected at least one detailed-deletion annotation, got " + detailedDeletionCount);
+		assertTrue(additionRulerCount >= 1,
+				"expected at least one addition overview-ruler annotation, got " + additionRulerCount);
+		assertTrue(annotations(model, ADDITION_RULER_ANNO_TYPE).get(0).getText().startsWith("Replacement"));
 
 		forcePaintCycle(viewer.getTextWidget());
+	}
+
+	@Test
+	public void testOverviewRulerAnnotationsHaveCompletePreferences() {
+		assertCompleteRulerAnnotationPreference(ADDITION_RULER_ANNO_TYPE, "inlineDiffRulerIndication",
+				"inlineDiffRulerIndicationInOverviewRuler");
+		assertCompleteRulerAnnotationPreference(DELETION_RULER_ANNO_TYPE, "deletionInlineDiffRulerIndication",
+				"deletionInlineDiffRulerIndicationInOverviewRuler");
 	}
 
 	@Test
@@ -177,10 +193,15 @@ public class UnifiedDiffManagerTest {
 		// UnifiedDiffAnnotation / DetailedDiffAnnotation constructors).
 		int additionCount = countAnnotations(model, ADDITION_ANNO_TYPE);
 		int detailedAdditionCount = countAnnotations(model, DETAILED_ADDITION_ANNO_TYPE);
+		int additionRulerCount = countAnnotations(model, ADDITION_RULER_ANNO_TYPE);
 		assertTrue(additionCount >= 1,
 				"expected at least one addition annotation, got " + additionCount);
 		assertTrue(detailedAdditionCount >= 1,
 				"expected at least one detailed-addition annotation, got " + detailedAdditionCount);
+		assertTrue(additionRulerCount >= 1,
+				"expected at least one addition overview-ruler annotation, got " + additionRulerCount);
+		assertEquals(0, countAnnotations(model, DELETION_RULER_ANNO_TYPE),
+				"revert mode must use only addition overview-ruler annotations");
 
 		forcePaintCycle(viewer.getTextWidget());
 	}
@@ -259,9 +280,41 @@ public class UnifiedDiffManagerTest {
 
 		List<Annotation> additions = annotations(annotationModel(), ADDITION_ANNO_TYPE);
 		assertEquals(1, additions.size(), "one addition annotation for the single diff");
+		assertEquals(1, countAnnotations(annotationModel(), ADDITION_RULER_ANNO_TYPE),
+				"one addition overview-ruler annotation for the single diff");
 		Position position = annotationModel().getPosition(additions.get(0));
 		assertEquals("line TWO modified\n", document().get(position.offset, position.length),
 				"the annotation must cover the text that was inserted into the document");
+	}
+
+	@Test
+	public void testRulerAnnotationTextDescribesReplacement() {
+		setEditorContent(LEFT);
+
+		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.REPLACE_MODE).open().isOK());
+
+		assertEquals("Replacement at line 2",
+				annotations(annotationModel(), ADDITION_RULER_ANNO_TYPE).get(0).getText());
+	}
+
+	@Test
+	public void testReplaceModeRulerAnnotationTextDescribesInsertedTextAsDeletion() {
+		setEditorContent("one\n");
+
+		assertTrue(UnifiedDiff.create(editor, "one\ntwo\n", UnifiedDiffMode.REPLACE_MODE).open().isOK());
+
+		assertEquals("Deletion at line 2",
+				annotations(annotationModel(), DELETION_RULER_ANNO_TYPE).get(0).getText());
+	}
+
+	@Test
+	public void testRevertModeRulerAnnotationTextDescribesRemovedCurrentTextAsAddition() {
+		setEditorContent("one\ntwo\n");
+
+		assertTrue(UnifiedDiff.create(editor, "one\n", UnifiedDiffMode.REVERT_MODE).open().isOK());
+
+		assertEquals("Addition at line 2",
+				annotations(annotationModel(), ADDITION_RULER_ANNO_TYPE).get(0).getText());
 	}
 
 	/**
@@ -420,13 +473,17 @@ public class UnifiedDiffManagerTest {
 		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.OVERLAY_MODE).open().isOK());
 		int diffsAfterFirstOpen = UnifiedDiffManager.get(viewer()).size();
 		int annotationsAfterFirstOpen = countAnnotations(annotationModel(), DELETION_ANNO_TYPE)
-				+ countAnnotations(annotationModel(), DETAILED_DELETION_ANNO_TYPE);
+				+ countAnnotations(annotationModel(), DETAILED_DELETION_ANNO_TYPE)
+				+ countAnnotations(annotationModel(), ADDITION_RULER_ANNO_TYPE)
+				+ countAnnotations(annotationModel(), DELETION_RULER_ANNO_TYPE);
 
 		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.OVERLAY_MODE).open().isOK());
 
 		assertEquals(diffsAfterFirstOpen, UnifiedDiffManager.get(viewer()).size(), "diffs must not accumulate");
 		assertEquals(annotationsAfterFirstOpen, countAnnotations(annotationModel(), DELETION_ANNO_TYPE)
-				+ countAnnotations(annotationModel(), DETAILED_DELETION_ANNO_TYPE),
+				+ countAnnotations(annotationModel(), DETAILED_DELETION_ANNO_TYPE)
+				+ countAnnotations(annotationModel(), ADDITION_RULER_ANNO_TYPE)
+				+ countAnnotations(annotationModel(), DELETION_RULER_ANNO_TYPE),
 				"annotations of the previous diff must be removed");
 	}
 
@@ -732,6 +789,16 @@ public class UnifiedDiffManagerTest {
 
 	private static int countAnnotations(IAnnotationModel model, String type) {
 		return annotations(model, type).size();
+	}
+
+	private static void assertCompleteRulerAnnotationPreference(String annotationType, String textPreferenceKey,
+			String overviewRulerPreferenceKey) {
+		AnnotationPreference preference = new MarkerAnnotationPreferences().getAnnotationPreferences().stream()
+				.filter(candidate -> annotationType.equals(candidate.getAnnotationType())).findFirst().orElse(null);
+		assertNotNull(preference, "ruler annotation must be registered as a complete preference");
+		assertEquals(textPreferenceKey, preference.getTextPreferenceKey());
+		assertEquals(overviewRulerPreferenceKey, preference.getOverviewRulerPreferenceKey());
+		assertTrue(preference.getOverviewRulerPreferenceValue());
 	}
 
 	/**
