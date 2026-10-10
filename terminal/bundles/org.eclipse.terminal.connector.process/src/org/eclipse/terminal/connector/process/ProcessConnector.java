@@ -25,6 +25,7 @@ import java.util.Optional;
 
 import org.eclipse.cdt.utils.pty.PTY;
 import org.eclipse.cdt.utils.spawner.ProcessFactory;
+import org.eclipse.cdt.utils.spawner.Spawner;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -248,9 +249,9 @@ public class ProcessConnector extends AbstractStreamsConnector {
 		boolean isWindows = Platform.OS_WIN32.equals(Platform.getOS());
 
 		if (!isWindows) {
-			// Destroy the process first, except on windows (Bug 465674)
+			// Start destroying the process first, except on windows (Bug 465674)
 			if (process != null) {
-				process.destroy();
+				destroyProcess(process);
 				process = null;
 			}
 		}
@@ -261,13 +262,27 @@ public class ProcessConnector extends AbstractStreamsConnector {
 		if (isWindows) {
 			// On Windows destroy the process after closing streams
 			if (process != null) {
-				process.destroy();
+				destroyProcess(process);
 				process = null;
 			}
 		}
 
 		// Set the terminal control state to CLOSED.
 		fControl.setState(TerminalState.CLOSED);
+	}
+
+	/**
+	 * Destroys the process without blocking the caller, which is often the UI thread.
+	 */
+	private static void destroyProcess(Process process) {
+		if (!(process instanceof Spawner)) {
+			process.destroy();
+			return;
+		}
+		// Spawner.destroy() waits up to a second for a shell that ignores SIGTERM
+		Thread thread = new Thread(process::destroy, "Terminal Process Destroy Thread"); //$NON-NLS-1$
+		thread.setDaemon(true);
+		thread.start();
 	}
 
 	@Override
