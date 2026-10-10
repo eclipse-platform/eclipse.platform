@@ -66,6 +66,7 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentExtension4;
 import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.jface.text.ITextViewerExtension5;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.codemining.ICodeMining;
 import org.eclipse.jface.text.source.Annotation;
@@ -83,6 +84,7 @@ import org.eclipse.jface.text.source.projection.ProjectionAnnotation;
 import org.eclipse.jface.text.source.projection.ProjectionAnnotationModel;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
@@ -1838,6 +1840,14 @@ public class UnifiedDiffManager {
 
 		@Override
 		public void paintControl(PaintEvent e) {
+			// Reuse the provider's cached whitespace config instead of re-reading the
+			// store on every repaint; tabWidth is irrelevant to the line delimiters, so
+			// -1 returns the cached instance directly without allocating a stamped copy.
+			UnifiedDiffCodeMiningProvider.WhitespaceConfig whitespace = UnifiedDiffCodeMiningProvider
+					.readWhitespaceConfig(-1);
+			boolean showCarriageReturn = whitespace != null && whitespace.showCarriageReturn();
+			boolean showLineFeed = whitespace != null && whitespace.showLineFeed();
+			int whitespaceAlpha = whitespace != null ? whitespace.alpha() : 0;
 			Rectangle bounds = this.w.getBounds();
 			// Only the damaged lines: getTextBounds lays out every line it is asked for,
 			// so touching every hunk would make each repaint O(document).
@@ -1904,8 +1914,57 @@ public class UnifiedDiffManager {
 					drawBandBorder(e.gc, bounds.width, endLineBounds.y, endLineBounds.height,
 							lineNr == hunkFirstLine, lineNr == lastLine);
 					e.gc.setBackground(this.additionBackgroundColor);
+					// The addition-area background fill above paints over the ¶/¤ markers the
+					// editor's own whitespace painter drew at the line end, so redraw them here.
+					drawLineDelimiter(e, endLineOffset, showCarriageReturn, showLineFeed, whitespaceAlpha);
 				}
 			}
+		}
+
+		private void drawLineDelimiter(PaintEvent e, int endLineOffset, boolean showCarriageReturn,
+				boolean showLineFeed, int alpha) {
+			if ((!showCarriageReturn && !showLineFeed) || endLineOffset >= w.getCharCount()) {
+				return;
+			}
+			if (isFoldedLine(w.getLineAtOffset(endLineOffset))) {
+				// the editor's own painter suppresses the marker on a collapsed region
+				return;
+			}
+			StringBuilder marker = new StringBuilder(2);
+			String delimiter = w.getTextRange(endLineOffset, Math.min(2, w.getCharCount() - endLineOffset));
+			if (delimiter.startsWith("\r") && showCarriageReturn) { //$NON-NLS-1$
+				marker.append(UnifiedDiffCodeMiningProvider.WhitespaceConfig.CARRIAGE_RETURN_SIGN);
+			}
+			if ((delimiter.startsWith("\n") || delimiter.startsWith("\r\n")) && showLineFeed) { //$NON-NLS-1$ //$NON-NLS-2$
+				marker.append(UnifiedDiffCodeMiningProvider.WhitespaceConfig.LINE_FEED_SIGN);
+			}
+			if (marker.isEmpty()) {
+				return;
+			}
+			Point location = w.getLocationAtOffset(endLineOffset);
+			int savedAlpha = e.gc.getAlpha();
+			Color savedForeground = e.gc.getForeground();
+			e.gc.setAlpha(alpha);
+			e.gc.setForeground(foregroundAtOffset(endLineOffset));
+			e.gc.drawString(marker.toString(), location.x, location.y, true);
+			e.gc.setForeground(savedForeground);
+			e.gc.setAlpha(savedAlpha);
+		}
+
+		private Color foregroundAtOffset(int offset) {
+			StyleRange styleRange = offset < w.getCharCount() ? w.getStyleRangeAtOffset(offset) : null;
+			if (styleRange != null && styleRange.foreground != null) {
+				return styleRange.foreground;
+			}
+			return w.getForeground();
+		}
+
+		private boolean isFoldedLine(int widgetLine) {
+			if (viewer instanceof ITextViewerExtension5 extension) {
+				int modelLine = extension.widgetLine2ModelLine(widgetLine);
+				return extension.modelLine2WidgetLine(modelLine + 1) == -1;
+			}
+			return false;
 		}
 
 		/** Draws the thin top/bottom edge of the hunk band on its first/last line. */
