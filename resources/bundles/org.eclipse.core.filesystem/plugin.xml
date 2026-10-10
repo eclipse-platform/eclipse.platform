@@ -16,4 +16,11 @@
          <run class="org.eclipse.core.internal.filesystem.NullFileSystem"/>
       </filesystem>
    </extension>
+   <extension
+         id="org.eclipse.core.filesystem.zip"
+         point="org.eclipse.core.filesystem.filesystems">
+      <filesystem scheme="zip">
+         <run class="org.eclipse.core.internal.filesystem.zip.ZipFileSystem"/>
+      </filesystem>
+   </extension>
 </plugin>

@@ -41,6 +41,15 @@
 			id="preferences"
 			base-type="org.eclipse.core.runtime.properties"/>		
 	</extension>
+	
+	<extension point="org.eclipse.core.contenttype.contentTypes">
+		<file-association content-type="zipfile" file-extensions="zip, jar, war"/>
+		<content-type
+            id="archive"
+            describer="org.eclipse.core.runtime.content.ZipFileContentDescriber"
+            name="%zipfileContentTypeName"
+            priority="normal"/>
+	</extension>
 
    <extension
          id="marker"
@@ -203,6 +212,12 @@
             class="org.eclipse.core.internal.propertytester.ResourceMappingPropertyTester"
             properties="projectPersistentProperty"
             id="org.eclipse.core.resources.mappingPropertyTester"/>
+   	  <propertyTester
+   	 		id="org.eclipse.core.resources.zipFilePropertyTester"
+   	 		class="org.eclipse.core.internal.propertytester.ZipFilePropertyTester"
+   	 		namespace="org.eclipse.core.resources"
+   	 		properties="zipFile"
+            type="org.eclipse.core.resources.IFile"/>   
    </extension>
 <!-- Filter Matchers-->
    <extension

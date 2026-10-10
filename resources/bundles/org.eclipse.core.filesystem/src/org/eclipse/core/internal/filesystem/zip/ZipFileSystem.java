@@ -21,6 +21,9 @@ import org.eclipse.core.filesystem.provider.FileSystem;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 
+/**
+ * @since 1.11
+ */
 public class ZipFileSystem extends FileSystem {
 	/**
 	 * Scheme constant (value "zip") indicating the zip file system scheme.
@@ -40,5 +43,23 @@ public class ZipFileSystem extends FileSystem {
 			}
 		}
 		return EFS.getNullFileSystem().getStore(uri);
+	}
+
+	/**
+	 * Returns the current OS.  This is equivalent to Platform.getOS(), but
+	 * is tolerant of the platform runtime not being present.
+	 */
+	static String getOS() {
+		return System.getProperty("osgi.os", ""); //$NON-NLS-1$ //$NON-NLS-2$
+	}
+
+	@Override
+	public boolean canDelete() {
+		return true;
+	}
+
+	@Override
+	public boolean canWrite() {
+		return true;
 	}
 }
