@@ -18,6 +18,7 @@ import org.eclipse.ua.tests.doc.internal.linkchecker.LinkTest;
 import org.eclipse.ua.tests.doc.internal.linkchecker.TocLinkChecker;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
+import org.slf4j.simple.SimpleLogger;
 
 /*
  * Tests all user assistance functionality (automated).
@@ -29,4 +30,8 @@ import org.junit.platform.suite.api.Suite;
 		LinkTest.class //
 })
 public class AllTests {
+	// Ensure a suitable logging backend for SLF4J is present in the test runtime.
+	// This variable ensures the dependency is not removed later.
+	@SuppressWarnings("unused")
+	private static SimpleLogger loggerBackEnd;
 }
