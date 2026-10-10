@@ -150,7 +150,6 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.accessibility.AccessibleAdapter;
@@ -5055,57 +5054,11 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 	}
 
 	private void handleEndOfDocumentReached(Shell shell, boolean next) {
-		IPreferenceStore store = CompareUIPlugin.getDefault().getPreferenceStore();
-		String value = store.getString(ICompareUIConstants.PREF_NAVIGATION_END_ACTION);
-		if (!value.equals(ICompareUIConstants.PREF_VALUE_PROMPT)) {
-			performEndOfDocumentAction(shell, store, ICompareUIConstants.PREF_NAVIGATION_END_ACTION, next);
-		} else {
-			shell.getDisplay().beep();
-			String loopMessage;
-			String nextMessage;
-			String message;
-			String title;
-			if (next) {
-				title = CompareMessages.TextMergeViewer_0;
-				message = CompareMessages.TextMergeViewer_1;
-				loopMessage = CompareMessages.TextMergeViewer_2;
-				nextMessage = CompareMessages.TextMergeViewer_3;
-			} else {
-				title = CompareMessages.TextMergeViewer_4;
-				message = CompareMessages.TextMergeViewer_5;
-				loopMessage = CompareMessages.TextMergeViewer_6;
-				nextMessage = CompareMessages.TextMergeViewer_7;
-			}
-			String[] localLoopOption = new String[] { loopMessage, ICompareUIConstants.PREF_VALUE_LOOP };
-			String[] nextElementOption = new String[] { nextMessage, ICompareUIConstants.PREF_VALUE_NEXT};
-			String[] doNothingOption = new String[] { CompareMessages.TextMergeViewer_17, ICompareUIConstants.PREF_VALUE_DO_NOTHING};
-			NavigationEndDialog dialog = new NavigationEndDialog(shell,
-					title,
-					null,
-					message,
-					new String[][] {
-					localLoopOption,
-					nextElementOption,
-					doNothingOption
-			});
-			int result = dialog.open();
-			if (result == Window.OK) {
-				performEndOfDocumentAction(shell, store, ICompareUIConstants.PREF_NAVIGATION_END_ACTION_LOCAL, next);
-				if (dialog.getToggleState()) {
-					String oldValue = store.getString(ICompareUIConstants.PREF_NAVIGATION_END_ACTION);
-					store.putValue(ICompareUIConstants.PREF_NAVIGATION_END_ACTION, store.getString(ICompareUIConstants.PREF_NAVIGATION_END_ACTION_LOCAL));
-					store.firePropertyChangeEvent(ICompareUIConstants.PREF_NAVIGATION_END_ACTION, oldValue, store.getString(ICompareUIConstants.PREF_NAVIGATION_END_ACTION_LOCAL));
-				}
-			}
-		}
-	}
-
-	private void performEndOfDocumentAction(Shell shell, IPreferenceStore store, String key, boolean next) {
-		String value = store.getString(key);
-		if (value.equals(ICompareUIConstants.PREF_VALUE_DO_NOTHING)) {
+		String action = NavigationEndDialog.chooseEndAction(shell, next);
+		if (action == null || action.equals(ICompareUIConstants.PREF_VALUE_DO_NOTHING)) {
 			return;
 		}
-		if (value.equals(ICompareUIConstants.PREF_VALUE_NEXT)) {
+		if (action.equals(ICompareUIConstants.PREF_VALUE_NEXT)) {
 			ICompareNavigator navigator = getCompareConfiguration()
 					.getContainer().getNavigator();
 			if (hasNextElement(next)) {

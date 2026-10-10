@@ -141,6 +141,8 @@ public final class CompareMessages extends NLS {
 	public static String UnifiedDiff_showUnchangedLines;
 	public static String UnifiedDiff_hideUnchangedLine;
 	public static String UnifiedDiff_hideUnchangedLines;
+	public static String UnifiedDiff_fileOf;
+	public static String UnifiedDiff_selectFile_tooltip;
 
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, CompareMessages.class);
