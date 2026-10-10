@@ -25,6 +25,8 @@
   <properties>
     <testSuite>${project.artifactId}</testSuite>
     <testClass>org.eclipse.ua.tests.doc.AllTests</testClass>
+    <!-- Avoid flooding the console log with Jetty debug messages routed via SLF4J -->
+    <surefire.systemProperties>-Declipse.log.level=WARNING</surefire.systemProperties>
   </properties>
 
   <build>

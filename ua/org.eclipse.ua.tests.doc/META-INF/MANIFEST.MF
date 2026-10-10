@@ -17,7 +17,10 @@ Import-Package: javax.servlet;version="3.1.0",
  javax.servlet.http;version="3.1.0",
  org.assertj.core.api,
  org.junit.jupiter.api;version="[5.14.0,6.0.0)",
- org.junit.platform.suite.api;version="[1.14.0,2.0.0)"
+ org.junit.platform.suite.api;version="[1.14.0,2.0.0)",
+ org.osgi.framework;version="[1.10.0,2.0.0)",
+ org.osgi.service.log;version="[1.4.0,2.0.0)",
+ org.osgi.service.log.admin;version="[1.0.0,2.0.0)"
 Export-Package: org.eclipse.ua.tests.doc,
  org.eclipse.ua.tests.doc.internal;x-internal:=true,
  org.eclipse.ua.tests.doc.internal.actions;x-internal:=true,
