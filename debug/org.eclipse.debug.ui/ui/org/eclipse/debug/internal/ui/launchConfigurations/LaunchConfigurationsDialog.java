@@ -252,6 +252,23 @@ public class LaunchConfigurationsDialog extends TitleAreaDialog implements ILaun
 	 * Whether in the process of setting the input to the tab viewer
 	 */
 	private boolean fSettingInput = false;
+	
+	/**
+	 * Set while an unsaved-changes prompt triggered by a tree selection change is
+	 * pending or showing
+	 */
+	private boolean fHandlingSelectionChange = false;
+	
+	/**
+	 * Whether a mouse button is currently pressed in the launch configuration tree.
+	 */
+	private boolean fTreeMouseDown = false;
+	
+	/**
+	 * Work to run as soon as the mouse button is released in the launch
+	 * configuration tree.
+	 */
+	private Runnable fRunAfterTreeMouseUp = null;
 
 	/**
 	 * Constructs a new launch configuration dialog on the given
@@ -608,6 +625,23 @@ public class LaunchConfigurationsDialog extends TitleAreaDialog implements ILaun
 		getLinkPrototypeAction().setConfirmationRequestor(requestor);
 		getUnlinkPrototypeAction().setConfirmationRequestor(requestor);
 		getResetWithPrototypeValuesAction().setConfirmationRequestor(requestor);
+		viewer.getControl().addListener(SWT.MouseDown, e -> {
+			// a new press means a pending prompt must not wait for a release we never saw
+			Runnable pending = fRunAfterTreeMouseUp;
+			fRunAfterTreeMouseUp = null;
+			if (pending != null) {
+				e.display.asyncExec(pending);
+			}
+			fTreeMouseDown = true;
+		});
+		viewer.getControl().addListener(SWT.MouseUp, e -> {
+			fTreeMouseDown = false;
+			Runnable pending = fRunAfterTreeMouseUp;
+			fRunAfterTreeMouseUp = null;
+			if (pending != null) {
+				e.display.asyncExec(pending);
+			}
+		});
 		((StructuredViewer) viewer).addPostSelectionChangedListener(event -> {
 			handleLaunchConfigurationSelectionChanged(event);
 			getNewAction().setEnabled(getNewAction().isEnabled());
@@ -1018,12 +1052,13 @@ public class LaunchConfigurationsDialog extends TitleAreaDialog implements ILaun
 	 * @param event selection changed event
 	 */
 	protected void handleLaunchConfigurationSelectionChanged(SelectionChangedEvent event) {
-		Object input = fTabViewer.getInput();
-		Object newInput = null;
-		IStructuredSelection selection = event.getStructuredSelection();
-		if (selection.size() == 1) {
-			newInput = selection.getFirstElement();
+		if (fHandlingSelectionChange) {
+			// a prompt for the previous change is pending/showing, or we are restoring the old selection
+			return;
 		}
+		final Object input = fTabViewer.getInput();
+		IStructuredSelection selection = event.getStructuredSelection();
+		final Object newInput = selection.size() == 1 ? selection.getFirstElement() : null;
 		if (!isEqual(input, newInput)) {
 			ILaunchConfiguration original = fTabViewer.getOriginal();
 			if (original != null && newInput == null && getLaunchManager().getMovedTo(original) != null) {
@@ -1037,37 +1072,29 @@ public class LaunchConfigurationsDialog extends TitleAreaDialog implements ILaun
 			if (newInput instanceof ILaunchConfiguration) {
 				renamed = getLaunchManager().getMovedFrom((ILaunchConfiguration)newInput) != null;
 			}
+			if (fTabViewer.canSave() && fTabViewer.isDirty() && !deleted && !renamed) {
+				fHandlingSelectionChange = true;
+				Runnable prompt = () -> {
+					try {
+						if (getShell() != null && !getShell().isDisposed()) {
+							promptAndSwitchInput(input, newInput);
+						}
+					} finally {
+						fHandlingSelectionChange = false;
+					}
+				};
+				if (fTreeMouseDown) {
+					fRunAfterTreeMouseUp = prompt;
+				} else {
+					prompt.run();
+				}
+				return;
+			}
 			try {
 				fSettingInput = true;
-				if (fTabViewer.canSave() && fTabViewer.isDirty() && !deleted && !renamed) {
-					if(fLaunchConfigurationView != null) {
-						fLaunchConfigurationView.setAutoSelect(false);
-					}
-					int ret = showUnsavedChangesDialog();
-					if(ret == IDialogConstants.YES_ID) {
-						fTabViewer.handleApplyPressed();
-						ILaunchConfigurationTab[] tabs = getTabs();
-						if (tabs != null) {
-							for (ILaunchConfigurationTab tab : tabs) {
-								tab.postApply();
-							}
-						}
-						fTabViewer.setInput(newInput);
-					}
-					else if(ret == IDialogConstants.NO_ID) {
-						fTabViewer.handleRevertPressed();
-						fTabViewer.setInput(newInput);
-					}
-					else {
-						fLaunchConfigurationView.getViewer().setSelection(new StructuredSelection(input));
-					}
-					fLaunchConfigurationView.setAutoSelect(true);
-				}
-				else {
-					fTabViewer.setInput(newInput);
-					if(fTabViewer.isDirty()) {
-						fTabViewer.handleApplyPressed();
-					}
+				fTabViewer.setInput(newInput);
+				if(fTabViewer.isDirty()) {
+					fTabViewer.handleApplyPressed();
 				}
 			} finally {
 				fSettingInput = false;
@@ -1079,6 +1106,49 @@ public class LaunchConfigurationsDialog extends TitleAreaDialog implements ILaun
 			}
 		}
 		}
+
+	/**
+	 * Asks the user what to do with the unsaved changes of the currently shown
+	 * configuration and then switches the tab viewer to the newly selected input,
+	 * or restores the previous selection if the user cancelled.
+	 *
+	 * @param oldInput the input currently shown in the tab viewer
+	 * @param newInput the newly selected input, may be <code>null</code>
+	 */
+	private void promptAndSwitchInput(Object oldInput, Object newInput) {
+		if (fLaunchConfigurationView != null) {
+			fLaunchConfigurationView.setAutoSelect(false);
+		}
+		try {
+			fSettingInput = true;
+			int ret = showUnsavedChangesDialog();
+			if (ret == IDialogConstants.YES_ID) {
+				fTabViewer.handleApplyPressed();
+				ILaunchConfigurationTab[] tabs = getTabs();
+				if (tabs != null) {
+					for (ILaunchConfigurationTab tab : tabs) {
+						tab.postApply();
+					}
+				}
+				fTabViewer.setInput(newInput);
+			} else if (ret == IDialogConstants.NO_ID) {
+				fTabViewer.handleRevertPressed();
+				fTabViewer.setInput(newInput);
+			} else if (fLaunchConfigurationView != null && oldInput != null) {
+				fLaunchConfigurationView.getViewer().setSelection(new StructuredSelection(oldInput), true);
+			}
+		} finally {
+			fSettingInput = false;
+			if (fLaunchConfigurationView != null) {
+				fLaunchConfigurationView.setAutoSelect(true);
+			}
+			updateButtons();
+			updateMessage();
+		}
+		if (getShell() != null && !getShell().isDisposed() && getShell().isVisible()) {
+			resize();
+		}
+	}
 
 	/**
 	 * Notification the 'launch' button has been pressed. Save and launch.
