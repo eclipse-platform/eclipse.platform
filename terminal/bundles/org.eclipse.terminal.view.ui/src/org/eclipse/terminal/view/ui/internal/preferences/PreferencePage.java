@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2025 Wind River Systems, Inc. and others. All rights reserved.
+ * Copyright (c) 2014, 2026 Wind River Systems, Inc. and others. All rights reserved.
  * This program and the accompanying materials are made available under the terms
  * of the Eclipse Public License 2.0 which accompanies this distribution, and is
  * available at https://www.eclipse.org/legal/epl-2.0/
@@ -71,6 +71,7 @@ import org.eclipse.terminal.view.ui.internal.local.showin.ExternalExecutablesMan
 import org.eclipse.terminal.view.ui.internal.local.showin.ExternalExecutablesUtils;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.osgi.framework.Bundle;
 
 /**
@@ -117,7 +118,8 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage 
 		Label label = new Label(panel, SWT.HORIZONTAL);
 		label.setText(Messages.PreferencePage_label);
 		label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-
+		ScopedPreferenceStore prefs = UIPlugin.getScopedPreferences();
+		
 		if (!Platform.OS_WIN32.equals(Platform.getOS())) {
 			Group group = new Group(panel, SWT.NONE);
 			group.setText(Messages.PreferencePage_command_label);
@@ -172,9 +174,7 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage 
 					}
 				}
 			});
-
-			String cmd = UIPlugin.getScopedPreferences()
-					.getString(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX);
+			String cmd = prefs.getString(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX);
 			if (cmd != null && !"".equals(cmd)) { //$NON-NLS-1$
 				command.setText(new Path(cmd).toOSString());
 			}
@@ -193,9 +193,7 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage 
 
 			arguments = new Text(argsPanel, SWT.SINGLE | SWT.BORDER);
 			arguments.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-
-			String args = UIPlugin.getScopedPreferences()
-					.getString(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX_ARGS);
+			String args = prefs.getString(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX_ARGS);
 			if (args != null && !"".equals(args)) { //$NON-NLS-1$
 				arguments.setText(args);
 			}
@@ -362,7 +360,7 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage 
 			});
 		}
 
-		String initialCwd = UIPlugin.getScopedPreferences().getString(IPreferenceKeys.PREF_LOCAL_TERMINAL_INITIAL_CWD);
+		String initialCwd = prefs.getString(IPreferenceKeys.PREF_LOCAL_TERMINAL_INITIAL_CWD);
 		if (initialCwd == null || IPreferenceKeys.PREF_INITIAL_CWD_USER_HOME.equals(initialCwd)
 				|| "".equals(initialCwd.trim())) { //$NON-NLS-1$
 			workingDir.select(0);
@@ -618,9 +616,8 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage 
 			command.setText(""); //$NON-NLS-1$
 			arguments.setText(""); //$NON-NLS-1$
 		}
-
-		String initialCwd = UIPlugin.getScopedPreferences()
-				.getDefaultString(IPreferenceKeys.PREF_LOCAL_TERMINAL_INITIAL_CWD);
+		ScopedPreferenceStore prefs = UIPlugin.getScopedPreferences();
+		String initialCwd = prefs.getDefaultString(IPreferenceKeys.PREF_LOCAL_TERMINAL_INITIAL_CWD);
 		if (initialCwd == null || IPreferenceKeys.PREF_INITIAL_CWD_USER_HOME.equals(initialCwd)
 				|| "".equals(initialCwd.trim())) { //$NON-NLS-1$
 			workingDir.select(0);
@@ -646,25 +643,27 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage 
 
 	@Override
 	public boolean performOk() {
+		ScopedPreferenceStore prefs = UIPlugin.getScopedPreferences();
+
 		if (!Platform.OS_WIN32.equals(Platform.getOS())) {
 			String text = command.getText();
 			IPath p = new Path(text.trim());
-			UIPlugin.getScopedPreferences().setValue(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX,
+			prefs.setValue(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX,
 					p.toFile().isFile() && p.toFile().canRead() && p.toFile().canExecute() ? p.toOSString() : ""); //$NON-NLS-1$
 
 			text = arguments.getText();
-			UIPlugin.getScopedPreferences().setValue(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX_ARGS,
+			prefs.setValue(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX_ARGS,
 					!"".equals(text.trim()) ? text.trim() : ""); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
 		String text = workingDir.getText();
 		if (text == null || Messages.PreferencePage_workingDir_userhome_label.equals(text) || "".equals(text.trim())) { //$NON-NLS-1$
-			UIPlugin.getScopedPreferences().setValue(IPreferenceKeys.PREF_LOCAL_TERMINAL_INITIAL_CWD, ""); //$NON-NLS-1$
+			prefs.setValue(IPreferenceKeys.PREF_LOCAL_TERMINAL_INITIAL_CWD, ""); //$NON-NLS-1$
 		} else if (Messages.PreferencePage_workingDir_eclipsehome_label.equals(text)) {
-			UIPlugin.getScopedPreferences().setValue(IPreferenceKeys.PREF_LOCAL_TERMINAL_INITIAL_CWD,
+			prefs.setValue(IPreferenceKeys.PREF_LOCAL_TERMINAL_INITIAL_CWD,
 					IPreferenceKeys.PREF_INITIAL_CWD_ECLIPSE_HOME);
 		} else if (Messages.PreferencePage_workingDir_eclipsews_label.equals(text)) {
-			UIPlugin.getScopedPreferences().setValue(IPreferenceKeys.PREF_LOCAL_TERMINAL_INITIAL_CWD,
+			prefs.setValue(IPreferenceKeys.PREF_LOCAL_TERMINAL_INITIAL_CWD,
 					IPreferenceKeys.PREF_INITIAL_CWD_ECLIPSE_WS);
 		} else {
 			try {
@@ -673,7 +672,7 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage 
 				String resolved = vm.performStringSubstitution(text.trim());
 
 				IPath p = new Path(resolved);
-				UIPlugin.getScopedPreferences().setValue(IPreferenceKeys.PREF_LOCAL_TERMINAL_INITIAL_CWD,
+				prefs.setValue(IPreferenceKeys.PREF_LOCAL_TERMINAL_INITIAL_CWD,
 						p.toFile().canRead() && p.toFile().isDirectory() ? text.trim() : ""); //$NON-NLS-1$
 			} catch (CoreException e) {
 				if (Platform.inDebugMode()) {
