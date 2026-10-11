@@ -15,6 +15,7 @@ package org.eclipse.terminal.internal.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -441,5 +442,18 @@ public class TerminalTextDataWindowTest extends AbstractITerminalTextDataTest {
 		assertTrue(term.isWrappedLine(3));
 		term.cleanLine(3);
 		assertFalse(term.isWrappedLine(3));
+	}
+
+	@Override
+	@Test
+	public void testClusters() {
+		ITerminalTextData term = makeITerminalTextData();
+		term.setDimensions(4, 6);
+		term.setCluster(0, 2, "ab\u200d"); // outside window
+		term.setCluster(3, 2, "ij\u200d");
+		assertNull(term.getCluster(0, 2));
+		assertEquals("ij\u200d", term.getCluster(3, 2));
+		term.setChar(3, 3, 'X', null);
+		assertNull(term.getCluster(3, 2));
 	}
 }
