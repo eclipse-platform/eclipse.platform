@@ -21,6 +21,7 @@ import org.junit.platform.suite.api.Suite;
  */
 @Suite
 @SelectClasses({ //
+		CharWidthTest.class, //
 		SnapshotChangesTest.class, //
 		SynchronizedTerminalTextDataTest.class, //
 		TerminalTextDataFastScrollTest.class, //
