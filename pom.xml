@@ -57,6 +57,7 @@
     <module>update/org.eclipse.update.configurator.tests</module>
     <module>ant/org.eclipse.ant.core</module>
     <module>ant/org.eclipse.ant.launching</module>
+    <module>ant/org.eclipse.ant.remote</module>
     <module>ant/org.eclipse.ant.ui</module>
     <module>ant/org.eclipse.ant.tests.core</module>
     <module>ant/org.eclipse.ant.tests.ui</module>

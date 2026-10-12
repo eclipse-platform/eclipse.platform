@@ -35,7 +35,6 @@
 		<copy file=".classpath" todir="${dest}"/>
 		<copy file=".options" todir="${dest}"/>
 		<copy file="lib/antrunner.jar" todir="${dest}/lib"/>
-		<copy file="lib/remoteAnt.jar" todir="${dest}/lib"/>
 		<copy todir="${dest}/icons">
 			<fileset dir="icons" />
 		</copy>		

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2022 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -17,11 +17,8 @@
 package org.eclipse.ant.internal.launching.launchConfigurations;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.MessageFormat;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -48,14 +45,11 @@ import org.eclipse.core.externaltools.internal.launchConfigurations.BackgroundRe
 import org.eclipse.core.externaltools.internal.launchConfigurations.ExternalToolsCoreUtil;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
-import org.eclipse.core.runtime.URIUtil;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IBreakpointManager;
@@ -74,10 +68,6 @@ import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.SocketUtil;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.namespace.HostNamespace;
-import org.osgi.framework.wiring.BundleWire;
-import org.osgi.framework.wiring.BundleWiring;
 
 /**
  * Launch delegate for Ant builds
@@ -109,8 +99,6 @@ public class AntLaunchDelegate extends LaunchConfigurationDelegate {
 	 * uses a different attribute key, so use the external tools attribute when present: IExternalToolConstants.ATTR_INCLUDE_REFERENCED_PROJECTS
 	 */
 	private static final String ATTR_INCLUDE_REFERENCED_PROJECTS = AntLaunching.getUniqueIdentifier() + ".ATTR_INCLUDE_REFERENCED_PROJECTS"; //$NON-NLS-1$
-
-	private static String fgSWTLibraryLocation;
 
 	private String fMode;
 	ILaunchManager launchManager;
@@ -251,7 +239,7 @@ public class AntLaunchDelegate extends LaunchConfigurationDelegate {
 
 		if (isSeparateJRE) {
 			monitor.beginTask(MessageFormat.format(AntLaunchConfigurationMessages.AntLaunchDelegate_Launching__0__1, configuration.getName()), 10);
-			runInSeparateVM(configuration, launch, monitor, idStamp, antHome, port, requestPort, commandLine, captureOutput, setInputHandler);
+			runInSeparateVM(configuration, launch, monitor, idStamp, antHome, port, requestPort, commandLine, captureOutput);
 		} else {
 			runInSameVM(configuration, launch, monitor, location, idStamp, runner, commandLine);
 		}
@@ -539,7 +527,7 @@ public class AntLaunchDelegate extends LaunchConfigurationDelegate {
 		commandLine.append("\""); //$NON-NLS-1$
 	}
 
-	private void runInSeparateVM(ILaunchConfiguration configuration, ILaunch launch, IProgressMonitor monitor, String idStamp, String antHome, int port, int requestPort, StringBuffer commandLine, boolean captureOutput, boolean setInputHandler) throws CoreException {
+	private void runInSeparateVM(ILaunchConfiguration configuration, ILaunch launch, IProgressMonitor monitor, String idStamp, String antHome, int port, int requestPort, StringBuffer commandLine, boolean captureOutput) throws CoreException {
 		boolean debug = fMode.equals(ILaunchManager.DEBUG_MODE);
 		if (captureOutput) {
 			String encoding = DebugPlugin.getDefault().getLaunchManager().getEncoding(configuration);
@@ -560,7 +548,7 @@ public class AntLaunchDelegate extends LaunchConfigurationDelegate {
 		setDefaultWorkingDirectory(copy);
 		copy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, commandLine.toString());
 		copy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, IAntLaunchConstants.MAIN_TYPE_NAME);
-		StringBuffer vmArgs = generateVMArguments(copy, setInputHandler, antHome);
+		StringBuffer vmArgs = generateVMArguments(copy, antHome);
 		copy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, vmArgs.toString());
 		copy.setAttribute(ILaunchManager.ATTR_PRIVATE, true);
 		if (copy.getAttribute(IAntLaunchConstants.ATTR_DEFAULT_VM_INSTALL, false)) {
@@ -649,7 +637,7 @@ public class AntLaunchDelegate extends LaunchConfigurationDelegate {
 		}
 	}
 
-	private StringBuffer generateVMArguments(ILaunchConfiguration config, boolean setInputHandler, String antHome) {
+	private StringBuffer generateVMArguments(ILaunchConfiguration config, String antHome) {
 		StringBuffer vmArgs = new StringBuffer();
 		try {
 			String configArgs = config.getAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, (String) null);
@@ -672,41 +660,7 @@ public class AntLaunchDelegate extends LaunchConfigurationDelegate {
 			vmArgs.append(antLibDir.getAbsolutePath());
 			vmArgs.append('\"');
 		}
-		if (setInputHandler) {
-			String swtLocation = getSWTLibraryLocation();
-			if (swtLocation != null) {
-				vmArgs.append(" -Djava.library.path=\""); //$NON-NLS-1$
-				String javaLibPath = System.getProperty("java.library.path"); //$NON-NLS-1$
-				javaLibPath = stripUnescapedQuotes(javaLibPath);
-				if (javaLibPath != null) {
-					vmArgs.append(javaLibPath);
-					if (vmArgs.charAt(vmArgs.length() - 1) != File.pathSeparatorChar) {
-						vmArgs.append(File.pathSeparatorChar);
-					}
-				}
-				vmArgs.append(swtLocation);
-				vmArgs.append('"');
-			}
-		}
 		return vmArgs;
-	}
-
-	private String stripUnescapedQuotes(String javaLibPath) {
-		StringBuilder buf = new StringBuilder(javaLibPath.length());
-		for (int i = 0; i < javaLibPath.length(); i++) {
-			char c = javaLibPath.charAt(i);
-			switch (c) {
-				case '"':
-					if (i != 0 && javaLibPath.charAt(i - 1) == '\\') {
-						buf.append(c);
-					}
-					break;
-				default:
-					buf.append(c);
-					break;
-			}
-		}
-		return buf.toString();
 	}
 
 	@Override
@@ -728,34 +682,6 @@ public class AntLaunchDelegate extends LaunchConfigurationDelegate {
 			return computeReferencedBuildOrder(projects);
 		}
 		return computeBuildOrder(projects);
-	}
-
-	private String getSWTLibraryLocation() {
-		if (fgSWTLibraryLocation == null) {
-			Bundle bundle = Platform.getBundle("org.eclipse.swt"); //$NON-NLS-1$
-			BundleWiring wiring = bundle.adapt(BundleWiring.class);
-			List<BundleWire> fragmentWires = wiring == null ? Collections.<BundleWire> emptyList()
-					: wiring.getProvidedWires(HostNamespace.HOST_NAMESPACE);
-			if (fragmentWires.isEmpty()) {
-				return null;
-			}
-			Bundle fragBundle = fragmentWires.get(0).getRequirer().getBundle();
-			try {
-				URL url = FileLocator.toFileURL(fragBundle.getEntry("/")); //$NON-NLS-1$
-				try {
-					IPath path = IPath.fromOSString(URIUtil.toURL(URIUtil.toURI(url)).getPath());
-					path = path.removeTrailingSeparator();
-					fgSWTLibraryLocation = path.toOSString();
-				}
-				catch (URISyntaxException e) {
-					AntLaunching.log(e);
-				}
-			}
-			catch (IOException e) {
-				// do nothing
-			}
-		}
-		return fgSWTLibraryLocation;
 	}
 
 	@Override
