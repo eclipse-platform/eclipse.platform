@@ -5,6 +5,8 @@ Bundle-SymbolicName: org.eclipse.ant.remote;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
+Bundle-ClassPath: .
 Require-Bundle: org.apache.ant;bundle-version="1.9.4"
+Export-Package: org.eclipse.ant.internal.launching.debug;x-friends:="org.eclipse.ant.launching"
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: org.eclipse.ant.remote

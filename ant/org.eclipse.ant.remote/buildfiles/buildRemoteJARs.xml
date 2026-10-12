@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2026 Andrey Loskutov and others.
+
+    This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        Andrey Loskutov - initial API and implementation
+ -->
+<!--
+    Packages the classes compiled by JDT (Java 17 compliance) into the libraries of this bundle
+    for use inside the IDE (self-hosting). The Maven/Tycho build creates the JARs itself, see build.properties.
+ -->
+<project name="Build Ant remote support JARs" default="build" basedir="..">
+
+	<target name="build" description="Builds the JARs if needed" depends="init">
+		<buildJar name="antdebug" classes="${basedir}/common_bin"/>
+		<buildJar name="remote" classes="${basedir}/remote_bin"/>
+		<buildJar name="remoteAnt" classes="${basedir}/bin"/>
+	</target>
+
+	<target name="init">
+		<property name="build.result.folder" value="${basedir}"/>
+		<macrodef name="buildJar">
+			<attribute name="name"/>
+			<attribute name="classes"/>
+			<sequential>
+				<!--
+					Only rewrite a JAR if its classes changed: rewriting antdebug.jar triggers a full rebuild of
+					org.eclipse.ant.launching (loggers.jar is compiled against it).
+					Timestamps don't reveal deleted files, so also compare the number of files (the JAR additionally
+					contains the generated manifest).
+				-->
+				<local name="jarFile"/>
+				<local name="classCount"/>
+				<local name="jarCount"/>
+				<local name="jarUpToDate"/>
+				<property name="jarFile" location="${build.result.folder}/lib/@{name}.jar"/>
+				<resourcecount property="classCount">
+					<fileset dir="@{classes}"/>
+				</resourcecount>
+				<resourcecount property="jarCount">
+					<zipfileset src="${jarFile}" excludes="META-INF/MANIFEST.MF" erroronmissingarchive="false"/>
+				</resourcecount>
+				<condition property="jarUpToDate">
+					<and>
+						<equals arg1="${classCount}" arg2="${jarCount}"/>
+						<uptodate targetfile="${jarFile}">
+							<srcfiles dir="@{classes}"/>
+						</uptodate>
+					</and>
+				</condition>
+				<mkdir dir="${build.result.folder}/lib"/>
+				<!-- the jar task itself would also miss deletions, so recreate the archive from scratch -->
+				<delete file="${jarFile}" unless:set="jarUpToDate" xmlns:unless="ant:unless"/>
+				<jar destfile="${jarFile}" basedir="@{classes}" unless:set="jarUpToDate" xmlns:unless="ant:unless"/>
+			</sequential>
+		</macrodef>
+	</target>
+
+	<target name="clean" description="Deletes previous build remnants" depends="init">
+		<delete file="${build.result.folder}/lib/antdebug.jar"/>
+		<delete file="${build.result.folder}/lib/remote.jar"/>
+		<delete file="${build.result.folder}/lib/remoteAnt.jar"/>
+	</target>
+</project>

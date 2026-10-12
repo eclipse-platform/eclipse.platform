@@ -76,16 +76,6 @@
             headless="true"
             library="lib/loggers.jar">
       </extraClasspathEntry>
-      <extraClasspathEntry
-            eclipseRuntime="false"
-            headless="true"
-            library="lib/antdebug.jar">
-      </extraClasspathEntry>
-      <extraClasspathEntry
-            eclipseRuntime="false"
-            headless="true"
-            library="lib/remote.jar">
-      </extraClasspathEntry>
    </extension>
     <extension
          point="org.eclipse.debug.core.breakpoints">

@@ -1,5 +1,3 @@
-lib/loggers.jar
+lib/
 temp.folder
 loggers_bin
-common_bin
-remote_bin
