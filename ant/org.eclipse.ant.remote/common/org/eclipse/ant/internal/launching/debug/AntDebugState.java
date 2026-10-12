@@ -66,7 +66,8 @@ public class AntDebugState {
 	}
 
 	/**
-	 * Call-back from {@link org.eclipse.ant.internal.launching.runtime.logger.AntProcessDebugBuildLogger} when the build has finished
+	 * Call-back from the debug build logger ({@code AntProcessDebugBuildLogger} or {@code RemoteAntDebugBuildLogger}) when the build has
+	 * finished
 	 *
 	 * @since 1.0.1
 	 */

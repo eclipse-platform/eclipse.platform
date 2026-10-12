@@ -15,15 +15,26 @@
  -->
 <plugin>
    <!--
-      Classes for Ant builds running in a separate JVM (not on the Eclipse runtime).
-      The library is compiled for the minimal Java version (see Bundle-RequiredExecutionEnvironment)
+      Libraries for Ant builds running in a separate JVM (not on the Eclipse runtime).
+      The libraries are compiled for the minimal Java version (see Bundle-RequiredExecutionEnvironment)
       supported for running Ant in a separate JRE, independently of the Eclipse runtime requirements.
    -->
    <extension
          point="org.eclipse.ant.core.extraClasspathEntries">
       <extraClasspathEntry
-            library="lib/remoteAnt.jar"
-            eclipseRuntime="false">
+            eclipseRuntime="false"
+            headless="true"
+            library="lib/antdebug.jar">
+      </extraClasspathEntry>
+      <extraClasspathEntry
+            eclipseRuntime="false"
+            headless="true"
+            library="lib/remote.jar">
+      </extraClasspathEntry>
+      <extraClasspathEntry
+            eclipseRuntime="false"
+            headless="false"
+            library="lib/remoteAnt.jar">
       </extraClasspathEntry>
    </extension>
 </plugin>

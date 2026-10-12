@@ -23,9 +23,6 @@ Export-Package: org.eclipse.ant.internal.launching;x-friends:="org.eclipse.ant.u
  org.eclipse.ant.internal.launching.debug;x-friends:="org.eclipse.ant.ui,org.eclipse.ant.tests.ui",
  org.eclipse.ant.internal.launching.debug.model;x-friends:="org.eclipse.ant.ui,org.eclipse.ant.tests.ui",
  org.eclipse.ant.internal.launching.launchConfigurations;x-friends:="org.eclipse.ant.ui,org.eclipse.ant.tests.ui",
- org.eclipse.ant.internal.launching.remote;x-internal:=true,
- org.eclipse.ant.internal.launching.remote.inputhandler;x-internal:=true,
- org.eclipse.ant.internal.launching.remote.logger;x-internal:=true,
  org.eclipse.ant.internal.launching.runtime.logger;x-friends:="org.eclipse.ant.ui",
  org.eclipse.ant.launching
 Automatic-Module-Name: org.eclipse.ant.launching

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2009 IBM Corporation and others.
+ * Copyright (c) 2004, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -13,6 +13,13 @@
  *******************************************************************************/
 package org.eclipse.ant.internal.launching.debug.model;
 
+/**
+ * Messages of the Ant debug protocol between Eclipse and the Ant build running in a separate JVM.
+ * <p>
+ * <b>Note:</b> a copy of this class exists in the org.eclipse.ant.remote bundle (common/ source folder) for the Ant code running in the
+ * separate JVM. Both copies must be kept in sync.
+ * </p>
+ */
 public class DebugMessageIds {
 
 	public final static String MESSAGE_DELIMITER = ","; //$NON-NLS-1$
