@@ -369,10 +369,6 @@ M4 = Platform-specific fourth key -->
       <extraClasspathEntry
             library="lib/antrunner.jar">
       </extraClasspathEntry>
-      <extraClasspathEntry
-            library="lib/remoteAnt.jar"
-            eclipseRuntime="false">
-      </extraClasspathEntry>
    </extension>
    <extension
          point="org.eclipse.debug.ui.consoleColorProviders">
