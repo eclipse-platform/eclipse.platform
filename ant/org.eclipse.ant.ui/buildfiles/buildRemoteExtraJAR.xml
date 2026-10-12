@@ -48,7 +48,7 @@
 					<include name="eclipse.platform.swt/binaries/org.eclipse.swt*/bin"/>
 				</dirset>
 				
-				<fileset dir="${eclipse.home}">
+				<fileset dir="${eclipse.home}" erroronmissingdir="false">
 					<include name="plugins/org.eclipse.swt*.jar"/>
 					<include name="plugins/org.eclipse.ant.launching*.jar"/>
 				</fileset>

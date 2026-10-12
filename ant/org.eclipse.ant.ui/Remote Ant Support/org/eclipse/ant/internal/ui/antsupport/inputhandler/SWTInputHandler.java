@@ -20,6 +20,8 @@ import org.apache.tools.ant.input.DefaultInputHandler;
 import org.apache.tools.ant.input.InputRequest;
 import org.apache.tools.ant.input.MultipleChoiceInputRequest;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.FontMetrics;
@@ -47,6 +49,13 @@ public class SWTInputHandler extends DefaultInputHandler {
 	private FontMetrics fFontMetrics;
 	protected InputRequest fRequest;
 	private boolean fFirstValidation = true;
+
+	private final class ModifyListenerImplementation implements ModifyListener {
+		@Override
+		public void modifyText(ModifyEvent e) {
+			validateInput();
+		}
+	}
 
 	@Override
 	public void handleInput(InputRequest request) throws BuildException {
@@ -129,7 +138,7 @@ public class SWTInputHandler extends DefaultInputHandler {
 		} else {
 			fText = new Text(fDialog, SWT.SINGLE | SWT.BORDER);
 			fText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
-			fText.addModifyListener(_ -> validateInput());
+			fText.addModifyListener(new ModifyListenerImplementation());
 		}
 
 		String value = null;
