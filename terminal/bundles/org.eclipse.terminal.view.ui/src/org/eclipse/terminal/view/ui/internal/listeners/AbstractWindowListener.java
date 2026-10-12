@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2018 Wind River Systems, Inc. and others. All rights reserved.
+ * Copyright (c) 2013, 2026 Wind River Systems, Inc. and others. All rights reserved.
  * This program and the accompanying materials are made available under the terms
  * of the Eclipse Public License 2.0 which accompanies this distribution, and is
  * available at https://www.eclipse.org/legal/epl-2.0/
@@ -8,10 +8,12 @@
  *
  * Contributors:
  * Wind River Systems - initial API and implementation
+ * IBM Corporation - NPE Fix on ConsoleManager
  *******************************************************************************/
 package org.eclipse.terminal.view.ui.internal.listeners;
 
 import org.eclipse.terminal.view.ui.internal.ConsoleManager;
+import org.eclipse.terminal.view.ui.internal.UIPlugin;
 import org.eclipse.terminal.view.ui.launcher.ITerminalConsoleViewManager;
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IPartService;
@@ -87,8 +89,10 @@ public abstract class AbstractWindowListener implements IWindowListener {
 			if (perspectiveListener != null) {
 				window.removePerspectiveListener(perspectiveListener);
 			}
-			ConsoleManager consoleViewManager = (ConsoleManager) window.getService(ITerminalConsoleViewManager.class);
-			consoleViewManager.removeWindowAndPerspectiveListeners(window);
+			ConsoleManager consoleViewManager = getConsoleManager(window);
+			if (consoleViewManager != null) {
+				consoleViewManager.removeWindowAndPerspectiveListeners(window);
+			}
 		}
 	}
 
@@ -123,9 +127,19 @@ public abstract class AbstractWindowListener implements IWindowListener {
 				}
 			}
 
-			ConsoleManager consoleViewManager = (ConsoleManager) window.getService(ITerminalConsoleViewManager.class);
-			consoleViewManager.addWindowAndPerspectiveListeners(window);
+			ConsoleManager consoleViewManager = getConsoleManager(window);
+			if (consoleViewManager != null) {
+				consoleViewManager.addWindowAndPerspectiveListeners(window);
+			}
 			initialized = true;
 		}
+	}
+
+	private ConsoleManager getConsoleManager(IWorkbenchWindow window) {
+		Object service = window.getService(ITerminalConsoleViewManager.class);
+		if (service == null) {
+			service = UIPlugin.getConsoleManager();
+		}
+		return service instanceof ConsoleManager cm ? cm : null;
 	}
 }
