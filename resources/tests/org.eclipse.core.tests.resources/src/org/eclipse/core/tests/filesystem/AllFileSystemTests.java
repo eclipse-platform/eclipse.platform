@@ -26,6 +26,7 @@ import org.junit.platform.suite.api.Suite;
 		EFSTest.class, //
 		FileCacheTest.class, //
 		FileStoreTest.class, //
+		NativeHandlerTest.class, //
 		OpenOutputStreamTest.class, //
 		PutInfoTest.class, //
 		SymlinkTest.class, //

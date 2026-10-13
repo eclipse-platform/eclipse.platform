@@ -77,10 +77,10 @@ public class Win32Handler extends NativeHandler {
 	 */
 	@Override
 	public FileInfo fetchFileInfo(String fileName, int options) {
-		FileInfo fileInfo = new FileInfo();
-
 		String target = toLongWindowsPath(fileName);
 		Path file = Path.of(target);
+		// If the file exists, the name will be replaced by its real casing.
+		FileInfo fileInfo = createFileInfo(file);
 
 		if (target.length() == 7 && target.startsWith(WIN32_RAW_PATH_PREFIX) && target.endsWith(":\\")) { //$NON-NLS-1$
 			// FindFirstFile does not work at the root level. However, we don't need it because the root will never change time-stamp.
@@ -159,8 +159,8 @@ public class Win32Handler extends NativeHandler {
 		List<IFileInfo> children = new ArrayList<>();
 		try (DirectoryStream<Path> directoryContent = Files.newDirectoryStream(file);) {
 			for (Path child : directoryContent) {
-				FileInfo fileInfo = new FileInfo();
-				// The directory stream delivers real names and therefore the faster method can be used
+				// The directory stream delivers names with real casing and therefore the faster method can be used
+				FileInfo fileInfo = createFileInfo(child);
 				readDosFileAttributesIntoFileInfo(fileInfo, child);
 				children.add(fileInfo);
 			}
@@ -254,7 +254,6 @@ public class Win32Handler extends NativeHandler {
 		try {
 			DosFileAttributes attributes = Files.readAttributes(path, DosFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
 
-			fileInfo.setName(path.getFileName().toString()); // path is not a root, so filename is available
 			fileInfo.setExists(true);
 			fileInfo.setLastModified(attributes.lastModifiedTime().toMillis());
 			fileInfo.setLength(attributes.size());
@@ -344,6 +343,17 @@ public class Win32Handler extends NativeHandler {
 
 	private int set(int field, int bit, boolean isSet) {
 		return isSet ? (field | bit) : (field & ~bit);
+	}
+
+	private static FileInfo createFileInfo(Path file) {
+		FileInfo fileInfo = new FileInfo();
+		if (file.getFileName() instanceof Path name) {
+			// Behind null check because roots don't have names, e.g.,
+			// - network shares '\\?\UNC\server\share'
+			// - drives '\\?\c:\'
+			fileInfo.setName(name.toString());
+		}
+		return fileInfo;
 	}
 
 }
