@@ -1061,11 +1061,13 @@ public class CommonTab extends AbstractLaunchConfigurationTab {
 			} else {
 				captureOutput = true;
 				configuration.setAttribute(IDebugUIConstants.ATTR_CAPTURE_IN_CONSOLE, (String) null);
-				if (terminalOutput.getSelection()) {
-					configuration.setAttribute(DebugPlugin.ATTR_PROCESS_FACTORY_ID, TERMINAL_PROCESS_FACTORY_ID);
-				} else {
-					configuration.setAttribute(DebugPlugin.ATTR_PROCESS_FACTORY_ID, (String) null);
-				}
+			}
+			if (terminalOutput.getSelection()) {
+				configuration.setAttribute(DebugPlugin.ATTR_PROCESS_FACTORY_ID, TERMINAL_PROCESS_FACTORY_ID);
+			} else if (TERMINAL_PROCESS_FACTORY_ID
+					.equals(getAttribute(configuration, DebugPlugin.ATTR_PROCESS_FACTORY_ID, ""))) { //$NON-NLS-1$
+				// only reset the factory set by this tab, keep factories contributed by other tabs (e.g. Ant JRE tab)
+				configuration.setAttribute(DebugPlugin.ATTR_PROCESS_FACTORY_ID, (String) null);
 			}
 		} else {
 			if (fConsoleOutput.getSelection()) {
