@@ -970,6 +970,13 @@ public interface IDebugUIConstants {
 	/**
 	 * Launch configuration attribute to specifying a file whose content is supplied
 	 * to the launched process input stream. Default value is <code>null</code>.
+	 * <p>
+	 * The attribute may also be set on the {@link org.eclipse.debug.core.ILaunch}
+	 * before its processes are created, for example by an
+	 * {@link org.eclipse.debug.core.ILaunchListener} when the launch is added. A
+	 * file set on the launch is supplied instead of the one of its launch
+	 * configuration.
+	 * </p>
 	 *
 	 * @since 3.11
 	 */
