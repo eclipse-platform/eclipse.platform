@@ -386,16 +386,6 @@
          d="m 21.933131,1036.0155 c -0.903533,0 -1.625,0.7528 -1.625,1.6563 l 0,11.7187 c 0,0.9035 0.721467,1.625 1.625,1.625 l 4.71875,0 c 0.903533,0 1.65625,-0.7215 1.65625,-1.625 l 0,-11.7187 c 0,-0.9035 -0.752717,-1.6563 -1.65625,-1.6563 l -4.71875,0 z"
          style="font-size:medium;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:normal;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;baseline-shift:baseline;color:#000000;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Sans;-inkscape-font-specification:Sans" />
     </mask>
-    <filter
-       id="filter17954"
-       x="-0.39294914"
-       width="1.7858983"
-       y="-0.39120867"
-       height="1.7824173">
-      <feGaussianBlur
-         stdDeviation="0.99658089"
-         id="feGaussianBlur17956" />
-    </filter>
   </defs>
   <metadata
      id="metadata7">
@@ -518,7 +508,7 @@
          mask="url(#mask17182)">
         <g
            id="layer1-75-4"
-           style="display:inline;fill:#ffffff;stroke:#ffffff;stroke-width:3.03114003999999990;stroke-miterlimit:4;stroke-dasharray:none;filter:url(#filter17954)"
+           style="display:inline;fill:#ffffff;stroke:#ffffff;stroke-width:3.03114003999999990;stroke-miterlimit:4;stroke-dasharray:none"
            transform="matrix(0.65981775,0,0,0.65981775,13.616348,358.34748)">
           <g
              transform="matrix(0.27903303,0,0,0.27903303,-100.53208,912.07901)"

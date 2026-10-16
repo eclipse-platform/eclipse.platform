@@ -114,16 +114,6 @@
        x2="7.6789141"
        y2="1047.72"
        gradientUnits="userSpaceOnUse" />
-    <filter
-       id="filter5428"
-       x="-0.098946937"
-       y="-0.10066635"
-       width="1.1978939"
-       height="1.2013327">
-      <feGaussianBlur
-         id="feGaussianBlur5430"
-         stdDeviation="0.22207033" />
-    </filter>
     <linearGradient
        gradientUnits="userSpaceOnUse"
        y2="1050.5304"
@@ -334,7 +324,7 @@
       <path
          id="path5426"
          d="m 4.984376,1047.2528 8.937501,-8.8281"
-         style="opacity:0.5;fill:none;stroke:#ffffff;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter5428)" />
+         style="opacity:0.5;fill:none;stroke:#ffffff;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
       <path
          transform="translate(0,1036.3622)"
          id="path5006"

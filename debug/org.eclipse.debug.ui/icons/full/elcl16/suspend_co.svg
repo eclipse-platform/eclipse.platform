@@ -97,17 +97,6 @@
          offset="1"
          id="stop8307-2" />
     </linearGradient>
-    <filter
-       color-interpolation-filters="sRGB"
-       id="filter8319-52"
-       x="-0.36955386"
-       width="1.7391077"
-       y="-0.11362706"
-       height="1.2272541">
-      <feGaussianBlur
-         stdDeviation="0.32163811"
-         id="feGaussianBlur8321-15" />
-    </filter>
     <linearGradient
        y2="1066.9878"
        x2="5.9772525"
@@ -165,17 +154,6 @@
          offset="1"
          id="stop8307-2-3" />
     </linearGradient>
-    <filter
-       color-interpolation-filters="sRGB"
-       id="filter8319-52-8"
-       x="-0.36955386"
-       width="1.7391077"
-       y="-0.11362706"
-       height="1.2272541">
-      <feGaussianBlur
-         stdDeviation="0.32163811"
-         id="feGaussianBlur8321-15-4" />
-    </filter>
     <linearGradient
        id="linearGradient8198-0">
       <stop
@@ -253,7 +231,7 @@
            x="13.762284"
            y="1054.7385" />
         <rect
-           style="fill:none;stroke:url(#linearGradient3820);stroke-width:0.93548667;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;display:inline;filter:url(#filter8319-52)"
+           style="fill:none;stroke:url(#linearGradient3820);stroke-width:0.93548667;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;display:inline"
            id="rect8188-7-4"
            width="3.3545172"
            height="10.910031"
@@ -274,7 +252,7 @@
            x="21.556849"
            y="1054.7385" />
         <rect
-           style="fill:none;stroke:url(#linearGradient3820-9);stroke-width:0.93548667;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;display:inline;filter:url(#filter8319-52-8)"
+           style="fill:none;stroke:url(#linearGradient3820-9);stroke-width:0.93548667;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;display:inline"
            id="rect8188-7-4-2"
            width="3.3545172"
            height="10.910031"

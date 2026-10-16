@@ -136,16 +136,6 @@
          d="m 462.77563,373.22885 29.11636,0 c 1.45425,0 2.625,1.17075 2.625,2.625 l 0,18.76896 c 0,1.45425 -1.17412,2.52598 -2.625,2.625 l -29.11636,1.98708 c -1.45088,0.099 -2.625,-1.17075 -2.625,-2.625 l 0,-20.75604 c 0,-1.45425 1.17075,-2.625 2.625,-2.625 z"
          id="path4919" />
     </mask>
-    <filter
-       id="filter4929"
-       x="-0.39147933"
-       width="1.7829587"
-       y="-0.42999801"
-       height="1.859996">
-      <feGaussianBlur
-         stdDeviation="3.5620748"
-         id="feGaussianBlur4931" />
-    </filter>
     <linearGradient
        xlink:href="#linearGradient3973"
        id="linearGradient4933"
@@ -217,7 +207,7 @@
              height="22.649353"
              width="24.877882"
              id="rect13693-2-2"
-             style="opacity:0.5;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:2.38039374;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;display:inline;filter:url(#filter4929)" />
+             style="opacity:0.5;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:2.38039374;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;display:inline" />
         </g>
         <rect
            style="fill:url(#linearGradient4776);fill-opacity:1;stroke:url(#linearGradient4778);stroke-width:3.60383272;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;display:inline"

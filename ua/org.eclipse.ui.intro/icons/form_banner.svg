@@ -54,28 +54,6 @@
        y2="1049.4882"
        gradientUnits="userSpaceOnUse"
        gradientTransform="translate(0,-6.0714286)" />
-    <filter
-       style="color-interpolation-filters:sRGB"
-       id="filter4889"
-       x="-0.013250343"
-       width="1.0265007"
-       y="-0.061960933"
-       height="1.1239219">
-      <feGaussianBlur
-         stdDeviation="0.495357"
-         id="feGaussianBlur4891" />
-    </filter>
-    <filter
-       style="color-interpolation-filters:sRGB"
-       id="filter4893"
-       x="-0.01486071"
-       width="1.0297214"
-       y="-0.091450524"
-       height="1.182901">
-      <feGaussianBlur
-         stdDeviation="0.495357"
-         id="feGaussianBlur4895" />
-    </filter>
   </defs>
   <metadata
      id="metadata7">
@@ -105,11 +83,11 @@
       <path
          id="path4149-0"
          d="m 140,1033.2908 0,19.1872 -89.722718,0 c 0,0 25.308504,-12.6569 32.722718,-14.1872 7.414214,-1.5303 17.64286,-2.7321 21,-3 3.35714,-0.2679 20.01237,-1.6528 22.01237,-1.6528 z"
-         style="fill:url(#linearGradient4157-8);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;filter:url(#filter4889)" />
+         style="fill:url(#linearGradient4157-8);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
       <path
          id="path4149"
          d="m 140,1039.3622 0,13 -80,0 c 0,0 17,-7 23,-8 6,-1 17.64286,-2.7321 21,-3 3.35714,-0.2679 20.01237,-1.6528 22.01237,-1.6528 z"
-         style="fill:url(#linearGradient4157);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;filter:url(#filter4893)" />
+         style="fill:url(#linearGradient4157);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
     </g>
   </g>
 </svg>

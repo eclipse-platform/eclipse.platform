@@ -69,16 +69,6 @@
        x2="21.469872"
        y2="1066.1039"
        gradientUnits="userSpaceOnUse" />
-    <filter
-       id="filter22604"
-       x="-0.44384191"
-       width="1.8876616"
-       y="-0.42792509"
-       height="1.8558503">
-      <feGaussianBlur
-         stdDeviation="0.64367558"
-         id="feGaussianBlur22606" />
-    </filter>
     <linearGradient
        xlink:href="#linearGradient4472-8"
        id="linearGradient3993-4"
@@ -510,7 +500,7 @@
       <g
          transform="translate(0.02820604,-0.0251691)"
          id="layer1-9-7"
-         style="fill:#ffffff;stroke:#ffffff;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;display:inline;filter:url(#filter22604)">
+         style="fill:#ffffff;stroke:#ffffff;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;display:inline">
         <g
            style="fill:#ffffff;stroke:#ffffff;stroke-width:2.69184995;stroke-miterlimit:4;stroke-dasharray:none;display:inline"
            id="layer1-7-5"

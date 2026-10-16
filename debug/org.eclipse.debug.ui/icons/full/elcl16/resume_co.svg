@@ -161,16 +161,6 @@
        y2="1065.5316"
        gradientUnits="userSpaceOnUse"
        gradientTransform="translate(7.7525652,0)" />
-    <filter
-       id="filter8319"
-       x="-0.36955386"
-       width="1.7391077"
-       y="-0.13034106"
-       height="1.2606821">
-      <feGaussianBlur
-         stdDeviation="0.32163811"
-         id="feGaussianBlur8321" />
-    </filter>
   </defs>
   <metadata
      id="metadata7">
@@ -208,7 +198,7 @@
            x="11.178096"
            y="1054.7385" />
         <rect
-           style="fill:none;stroke:url(#linearGradient8309);stroke-width:0.93548667;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;display:inline;filter:url(#filter8319)"
+           style="fill:none;stroke:url(#linearGradient8309);stroke-width:0.93548667;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;display:inline"
            id="rect8188-7-4"
            width="3.3545172"
            height="9.5110073"

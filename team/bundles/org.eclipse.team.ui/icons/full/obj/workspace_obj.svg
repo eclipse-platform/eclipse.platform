@@ -245,17 +245,6 @@
        y2="1516.0907"
        gradientUnits="userSpaceOnUse"
        gradientTransform="matrix(1.2778996,0,0.03747938,1.2778996,307.11646,-889.54953)" />
-    <filter
-       style="color-interpolation-filters:sRGB"
-       id="filter4389"
-       x="-0.032734916"
-       width="1.0654698"
-       y="-0.039990493"
-       height="1.079981">
-      <feGaussianBlur
-         stdDeviation="0.11740759"
-         id="feGaussianBlur4391" />
-    </filter>
   </defs>
   <metadata
      id="metadata25495">
@@ -304,7 +293,7 @@
        height="7.0461302"
        width="8.6078796"
        id="rect4329-9-0"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11.05178356px;line-height:125%;font-family:AustralianFlyingCorpsStencil;-inkscape-font-specification:AustralianFlyingCorpsStencil;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;opacity:0.8;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.78270239;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;filter:url(#filter4389)" />
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11.05178356px;line-height:125%;font-family:AustralianFlyingCorpsStencil;-inkscape-font-specification:AustralianFlyingCorpsStencil;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;opacity:0.8;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.78270239;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
     <rect
        y="1044.8618"
        x="6.5001888"

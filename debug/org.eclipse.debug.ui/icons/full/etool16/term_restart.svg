@@ -127,16 +127,6 @@
            style="font-size:13.58917427px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;color:#000000;fill:#ffffff;stroke:#ffffff;stroke-width:0.89999998;stroke-miterlimit:4;stroke-opacity:0.69158876;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Sans" />
       </g>
     </mask>
-    <filter
-       id="filter6832"
-       x="-0.37464059"
-       width="1.7492786"
-       y="-0.41099009"
-       height="1.8219802">
-      <feGaussianBlur
-         stdDeviation="1.0510192"
-         id="feGaussianBlur6834" />
-    </filter>
   </defs>
   <metadata
      id="metadata7">
@@ -190,7 +180,7 @@
       <g
          transform="matrix(0.61981187,0,0,0.63114696,7.7969515,387.39989)"
          id="layer1-2-6"
-         style="display:inline;fill:#ffffff;stroke:#ffffff;filter:url(#filter6832);stroke-width:3.19767855;stroke-miterlimit:4;stroke-dasharray:none">
+         style="display:inline;fill:#ffffff;stroke:#ffffff;stroke-width:3.19767855;stroke-miterlimit:4;stroke-dasharray:none">
         <path
            style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:3.19767855;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
            d="m 2.497507,1039.8618 0,2.0277 0,5 0,3 1,0 9.546687,-4.5273 c 0.59227,-0.3746 0.618127,-0.6299 0,-1 l -9.126842,-4.5004 z"

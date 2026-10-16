@@ -211,16 +211,6 @@
        id="linearGradient5306"
        xlink:href="#linearGradient5300"
        gradientTransform="matrix(0.48466379,0,0,0.48447951,10.168127,537.36059)" />
-    <filter
-       id="filter5428"
-       x="-0.12730174"
-       y="-0.12972828"
-       width="1.2546035"
-       height="1.2594566">
-      <feGaussianBlur
-         id="feGaussianBlur5430"
-         stdDeviation="0.22207033" />
-    </filter>
   </defs>
   <metadata
      id="metadata7">
@@ -331,7 +321,7 @@
          transform="matrix(0.48466379,0,0,0.48447951,10.168127,537.36059)"
          id="path5426"
          d="m 4.984376,1047.2528 8.937501,-8.8281"
-         style="opacity:0.5;fill:none;stroke:#ffffff;stroke-width:1.72123814;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter5428)" />
+         style="opacity:0.5;fill:none;stroke:#ffffff;stroke-width:1.72123814;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       <path
          id="path5006"
          d="m 12.788341,1043.6657 -0.636122,0.6359 -0.681558,1.4232 0.666413,0.6207 -0.01515,0.03 1.4237,-0.6813 0.363498,-0.3634 0.09087,-0.9689 -1.31768,-0.076 c 0,0 0.06165,-0.3599 0.106021,-0.6208 z"
