@@ -22,6 +22,7 @@ import org.eclipse.debug.tests.console.ConsoleDocumentAdapterTests;
 import org.eclipse.debug.tests.console.ConsoleManagerTests;
 import org.eclipse.debug.tests.console.ConsoleOutputLineTruncateTest;
 import org.eclipse.debug.tests.console.ConsoleOutputLineWrapTest;
+import org.eclipse.debug.tests.console.ConsolePatternMatcherTests;
 import org.eclipse.debug.tests.console.ConsoleShowHideTests;
 import org.eclipse.debug.tests.console.ConsoleTests;
 import org.eclipse.debug.tests.console.FileLinkTests;
@@ -33,7 +34,7 @@ import org.eclipse.debug.tests.console.ProcessConsoleManagerTests;
 import org.eclipse.debug.tests.console.ProcessConsoleTests;
 import org.eclipse.debug.tests.console.RuntimeProcessTests;
 import org.eclipse.debug.tests.console.StreamsProxyTests;
-import org.eclipse.debug.tests.console.TextConsoleViewerTest;
+import org.eclipse.debug.tests.console.StyleRangeUtilTest;
 import org.eclipse.debug.tests.launching.AcceleratorSubstitutionTests;
 import org.eclipse.debug.tests.launching.ArgumentParsingTests;
 import org.eclipse.debug.tests.launching.LaunchConfigurationTests;
@@ -127,11 +128,12 @@ import org.junit.platform.suite.api.Suite;
 		IOConsoleTests.class, //
 		ConsoleOutputLineWrapTest.class, //
 		ConsoleOutputLineTruncateTest.class, //
+		ConsolePatternMatcherTests.class, //
 		IOConsoleFixedWidthTests.class, //
 		ProcessConsoleManagerTests.class, //
 		ProcessConsoleTests.class, //
 		StreamsProxyTests.class, //
-		TextConsoleViewerTest.class, //
+		StyleRangeUtilTest.class, //
 		RuntimeProcessTests.class, //
 		OutputStreamMonitorTests.class, //
 		InputStreamMonitorTests.class, //
