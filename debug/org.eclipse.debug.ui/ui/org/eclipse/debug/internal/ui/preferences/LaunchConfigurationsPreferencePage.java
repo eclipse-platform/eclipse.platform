@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2017 IBM Corporation and others.
+ * Copyright (c) 2004, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -14,7 +14,10 @@
 package org.eclipse.debug.internal.ui.preferences;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
@@ -25,11 +28,13 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.internal.core.IInternalDebugCoreConstants;
 import org.eclipse.debug.internal.core.Preferences;
 import org.eclipse.debug.internal.ui.AbstractDebugCheckboxSelectionDialog;
+import org.eclipse.debug.internal.ui.DebugUIMessages;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.IDebugHelpContextIds;
 import org.eclipse.debug.internal.ui.IInternalDebugUIConstants;
 import org.eclipse.debug.internal.ui.SWTFactory;
 import org.eclipse.debug.internal.ui.launchConfigurations.LaunchCategoryFilter;
+import org.eclipse.debug.internal.ui.launchConfigurations.LaunchConfigurationsMessages;
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -41,9 +46,12 @@ import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.wizard.ProgressMonitorPart;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -56,6 +64,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
@@ -79,6 +88,8 @@ public class LaunchConfigurationsPreferencePage extends PreferencePage implement
 	class LaunchConfigurationMigrationSelectionDialog extends AbstractDebugCheckboxSelectionDialog {
 
 		private final Object fInput;
+
+		private final Set<Object> fCheckedElements = new HashSet<>();
 
 		public LaunchConfigurationMigrationSelectionDialog(Shell parentShell, Object input) {
 			super(parentShell);
@@ -104,6 +115,98 @@ public class LaunchConfigurationsPreferencePage extends PreferencePage implement
 		@Override
 		protected String getViewerLabel() {
 			return DebugPreferencesMessages.LaunchingPreferencePage_0;
+		}
+
+		@Override
+		protected StructuredViewer createViewer(Composite parent) {
+			Composite container = new Composite(parent, SWT.NONE);
+			container.setLayout(new GridLayout(1, false));
+			container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+			Text filterText = new Text(container, SWT.SEARCH | SWT.CANCEL);
+			filterText.setMessage(LaunchConfigurationsMessages.SelectFavTypeToFilter);
+			filterText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+
+			Table table = new Table(container, SWT.BORDER | SWT.SINGLE | SWT.CHECK);
+			GridData gd = new GridData(GridData.FILL_BOTH);
+			gd.heightHint = 150;
+			gd.widthHint = 250;
+			table.setLayoutData(gd);
+			CheckboxTableViewer viewer = new CheckboxTableViewer(table);
+
+			viewer.addCheckStateListener(event -> {
+				if (event.getChecked()) {
+					fCheckedElements.add(event.getElement());
+				} else {
+					fCheckedElements.remove(event.getElement());
+				}
+			});
+
+			ViewerFilter filter = new ViewerFilter() {
+				@Override
+				public boolean select(Viewer viewer2, Object parentElement, Object element) {
+					String search = filterText.getText().toLowerCase();
+					if (search.isEmpty()) {
+						return true;
+					}
+					if (element instanceof ILaunchConfiguration launchConfig) {
+						return launchConfig.getName().toLowerCase().contains(search);
+					}
+					return element.toString().toLowerCase().contains(search);
+				}
+			};
+			viewer.addFilter(filter);
+
+			filterText.addModifyListener(e -> {
+				viewer.refresh();
+				viewer.setCheckedElements(fCheckedElements.toArray());
+			});
+			return viewer;
+		}
+
+		@Override
+		protected void initializeControls() {
+			// Let the parent apply the initial check state to the viewer first.
+			super.initializeControls();
+			fCheckedElements.addAll(Arrays.asList(getCheckBoxTableViewer().getCheckedElements()));
+		}
+
+		@Override
+		protected void okPressed() {
+			super.okPressed();
+			setResult(Arrays.asList(fCheckedElements.toArray()));
+		}
+
+		@Override
+		protected void addCustomFooterControls(Composite parent) {
+			Composite comp = SWTFactory.createComposite(parent, 2, 1, GridData.FILL_HORIZONTAL);
+			GridData gd = (GridData) comp.getLayoutData();
+			gd.horizontalAlignment = SWT.END;
+			Button button = SWTFactory.createPushButton(comp, DebugUIMessages.AbstractDebugCheckboxSelectionDialog_0, null);
+			button.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					getCheckBoxTableViewer().setAllChecked(true);
+					fCheckedElements.addAll(Arrays.asList(getCheckBoxTableViewer().getCheckedElements()));
+					getButton(IDialogConstants.OK_ID).setEnabled(isValid());
+				}
+			});
+			button = SWTFactory.createPushButton(comp, DebugUIMessages.AbstractDebugCheckboxSelectionDialog_1, null);
+			button.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					for (Object element : getCheckBoxTableViewer().getCheckedElements()) {
+						fCheckedElements.remove(element);
+					}
+					getCheckBoxTableViewer().setAllChecked(false);
+					getButton(IDialogConstants.OK_ID).setEnabled(isValid());
+				}
+			});
+		}
+
+		@Override
+		protected boolean isValid() {
+			return !fCheckedElements.isEmpty();
 		}
 
 		@Override
