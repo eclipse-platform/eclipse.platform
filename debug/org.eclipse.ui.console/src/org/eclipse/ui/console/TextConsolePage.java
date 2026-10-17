@@ -33,6 +33,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IFindReplaceTarget;
 import org.eclipse.jface.text.ITextListener;
 import org.eclipse.jface.text.ITextOperationTarget;
+import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -308,6 +309,9 @@ public class TextConsolePage implements IPageBookViewPage, IPropertyChangeListen
 	public <T> T getAdapter(Class<T> required) {
 		if (IFindReplaceTarget.class.equals(required)) {
 			return (T) fViewer.getFindReplaceTarget();
+		}
+		if (ITextViewer.class.equals(required)) {
+			return (T) fViewer;
 		}
 		if (Widget.class.equals(required)) {
 			return (T) fViewer.getTextWidget();
