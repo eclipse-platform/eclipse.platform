@@ -31,6 +31,7 @@ import org.eclipse.compare.contentmergeviewer.IIgnoreWhitespaceContributor;
 import org.eclipse.compare.contentmergeviewer.ITokenComparator;
 import org.eclipse.compare.contentmergeviewer.TokenComparator;
 import org.eclipse.compare.internal.CompareMessages;
+import org.eclipse.compare.internal.DiffColors;
 import org.eclipse.compare.internal.DocLineComparator;
 import org.eclipse.compare.rangedifferencer.IRangeComparator;
 import org.eclipse.compare.rangedifferencer.RangeDifference;
@@ -1822,7 +1823,8 @@ public class UnifiedDiffManager {
 				color = JFaceResources.getColorRegistry().getRGB("ADDITION_COLOR"); //$NON-NLS-1$
 			}
 			RGB background = UnifiedDiffCodeMiningProvider.getBackground();
-			RGB interpolated = UnifiedDiffCodeMiningProvider.interpolate(color, background, 0.9);
+			boolean dark = DiffColors.isDarkTheme();
+			RGB interpolated = DiffColors.interpolate(color, background, DiffColors.fillScale(dark));
 			this.additionBackgroundColor = new Color(interpolated);
 			this.borderColor = new Color(UnifiedDiffText.borderColor(color, background));
 		}
