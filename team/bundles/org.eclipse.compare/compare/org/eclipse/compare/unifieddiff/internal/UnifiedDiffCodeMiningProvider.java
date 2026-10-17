@@ -30,6 +30,7 @@ import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
@@ -48,6 +49,8 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.Region;
+import org.eclipse.jface.text.TextViewer;
+import org.eclipse.jface.text.WhitespaceCharacterPainter;
 import org.eclipse.jface.text.codemining.AbstractCodeMiningProvider;
 import org.eclipse.jface.text.codemining.DocumentFooterCodeMining;
 import org.eclipse.jface.text.codemining.ICodeMining;
@@ -60,6 +63,7 @@ import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.source.inlined.LineFooterAnnotation;
 import org.eclipse.jface.text.source.inlined.LineHeaderAnnotation;
 import org.eclipse.jface.text.source.projection.ProjectionAnnotation;
+import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
@@ -506,6 +510,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		int getTabWidth();
 		UnifiedDiff getUnifiedDiff();
 		String getLabel();
+		String getRawLabel();
 	}
 
 	/** Draws the thin top and bottom border of a code-mining band. */
@@ -539,25 +544,54 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 				return;
 			}
 			StyledText st = viewer.getTextWidget();
-			StyledText overlay = new StyledText(st, SWT.NONE);
+			TextViewer overlayViewer = new TextViewer(st, SWT.NONE);
+			StyledText overlay = overlayViewer.getTextWidget();
 			overlay.setBounds(mining.getLastRectangle());
 			overlay.setFont(st.getFont());
 			overlay.setBackground(mining.getDeletionBackgroundColor());
 			overlay.setLineSpacing(st.getLineSpacing());
-			String txt = mining.getLabel().stripTrailing();
-			overlay.setText(txt);
-			overlay.setFocus();
-			List<StyleRange> backgrounds = createDetailedDiffBackgroundRanges(mining.getUnifiedDiff(),
+			overlay.setTabs(mining.getTabWidth());
+			String txt = mining.getRawLabel().stripTrailing();
+			overlayViewer.setDocument(new Document(txt));
+			List<StyleRange> backgrounds = createDetailedDiffBackgroundRangesRaw(mining.getUnifiedDiff(),
 					mining.getTabWidth(), mining.getDetailedDiffColor());
 			List<StyleRange> foregrounds = computeStyleRanges(viewer, mining.getUnifiedDiff().leftStart, txt);
 			List<StyleRange> ranges = mergeStyleRanges(backgrounds, foregrounds);
 			overlay.setStyleRanges(ranges.toArray(new StyleRange[] {}));
+			installWhitespacePainter(overlayViewer);
+			overlay.setFocus();
 			openOverlay(overlay, viewer);
+		}
+
+		private static void installWhitespacePainter(TextViewer overlayViewer) {
+			IPreferenceStore store = EditorsUI.getPreferenceStore();
+			if (!store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_WHITESPACE_CHARACTERS)) {
+				return;
+			}
+			WhitespaceCharacterPainter painter = new WhitespaceCharacterPainter(overlayViewer,
+					store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_LEADING_SPACES),
+					store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_ENCLOSED_SPACES),
+					store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_TRAILING_SPACES),
+					store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_LEADING_IDEOGRAPHIC_SPACES),
+					store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_ENCLOSED_IDEOGRAPHIC_SPACES),
+					store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_TRAILING_IDEOGRAPHIC_SPACES),
+					store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_LEADING_TABS),
+					store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_ENCLOSED_TABS),
+					store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_TRAILING_TABS),
+					store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_CARRIAGE_RETURN),
+					store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_LINE_FEED),
+					store.getInt(AbstractTextEditor.PREFERENCE_WHITESPACE_CHARACTER_ALPHA_VALUE));
+			overlayViewer.addPainter(painter);
+			overlayViewer.getTextWidget().addDisposeListener(e -> {
+				painter.deactivate(false);
+				painter.dispose();
+			});
 		}
 	}
 
 	public static class UnifiedDiffFooterCodeMining extends DocumentFooterCodeMining implements IUnifiedDiffCodeMining {
 		private final String unifiedDiffLabel;
+		private final String rawLabel;
 		private final Color deletionBackgroundColor;
 		private final Color detailedDiffColor;
 		private final Color borderColor;
@@ -578,11 +612,9 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			this.borderColor = borderColor;
 			this.tabWidth = tabWidth;
 			this.viewer = viewer;
-			if (diff.mode.equals(UnifiedDiffMode.REPLACE_MODE)) {
-				this.unifiedDiffLabel = removeTrailingNewLines(replaceTabWithSpaces(diff.leftStr, tabWidth));
-			} else {
-				this.unifiedDiffLabel = removeTrailingNewLines(replaceTabWithSpaces(diff.rightStr, tabWidth));
-			}
+			String diffStr = diff.mode.equals(UnifiedDiffMode.REPLACE_MODE) ? diff.leftStr : diff.rightStr;
+			this.rawLabel = removeTrailingNewLines(diffStr);
+			this.unifiedDiffLabel = removeTrailingNewLines(replaceTabWithSpaces(diffStr, tabWidth));
 			this.diff = diff;
 			((MouseClickConsumer) getAction()).setCodeMining(this);
 		}
@@ -615,6 +647,11 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		@Override
 		public String getLabel() {
 			return this.unifiedDiffLabel;
+		}
+
+		@Override
+		public String getRawLabel() {
+			return this.rawLabel;
 		}
 
 		@Override
@@ -674,7 +711,8 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			// syntax-colored text transparently on top - same order as the header band
 			fillDetailedDiffBackgrounds(gc, textWidget, label, ranges, x, y);
 			gc.setFont(font);
-			drawStyleRanges(gc, textWidget, ranges, label, styledFonts, x, y, null);
+			drawStyleRanges(gc, textWidget, ranges, label, rawLabel, styledFonts, x, y, null,
+					readWhitespaceConfig(tabWidth));
 			drawBandBorder(gc, this.borderColor, y, textWidget.getBounds().width, lastRectangle.height);
 			return result;
 		}
@@ -766,10 +804,25 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 	}
 
 	public static List<StyleRange> createDetailedDiffBackgroundRanges(UnifiedDiff diff, int tabWidth, Color detailedDiffColor) {
+		return createDetailedDiffBackgroundRanges(diff, tabWidth, detailedDiffColor, true);
+	}
+
+	/**
+	 * Detailed-diff background ranges in raw (unexpanded) coordinates, for the
+	 * click-through overlay whose document keeps the original tabs.
+	 */
+	public static List<StyleRange> createDetailedDiffBackgroundRangesRaw(UnifiedDiff diff, int tabWidth,
+			Color detailedDiffColor) {
+		return createDetailedDiffBackgroundRanges(diff, tabWidth, detailedDiffColor, false);
+	}
+
+	private static List<StyleRange> createDetailedDiffBackgroundRanges(UnifiedDiff diff, int tabWidth,
+			Color detailedDiffColor, boolean expandTabs) {
 		List<StyleRange> ranges = new ArrayList<>();
 		String diffStr = diff.mode.equals(UnifiedDiffMode.REPLACE_MODE) ? diff.leftStr : diff.rightStr;
 		String trimmedDiffStr = removeTrailingNewLines(diffStr);
 		int labelLength = replaceTabWithSpaces(trimmedDiffStr, tabWidth).stripTrailing().length();
+		int rawLabelLength = trimmedDiffStr.stripTrailing().length();
 		for (var detailedDiff : diff.detailedDiffs) {
 			int detailedDiffStart;
 			int detailedDiffLength;
@@ -790,14 +843,21 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			if (detailedDiffLength <= 0) {
 				continue;
 			}
-			int expandedStart = mapOffsetToTabExpanded(diffStr, detailedDiffStart, tabWidth);
-			int expandedEnd = mapOffsetToTabExpanded(diffStr, detailedDiffStart + detailedDiffLength, tabWidth);
-			int expandedLength = expandedEnd - expandedStart;
-			expandedLength = clampDetailedDiffLength(expandedStart, expandedLength, labelLength);
-			if (expandedStart >= 0 && expandedLength > 0) {
+			int start;
+			int length;
+			if (expandTabs) {
+				int expandedStart = mapOffsetToTabExpanded(diffStr, detailedDiffStart, tabWidth);
+				int expandedEnd = mapOffsetToTabExpanded(diffStr, detailedDiffStart + detailedDiffLength, tabWidth);
+				start = expandedStart;
+				length = clampDetailedDiffLength(expandedStart, expandedEnd - expandedStart, labelLength);
+			} else {
+				start = detailedDiffStart;
+				length = clampDetailedDiffLength(detailedDiffStart, detailedDiffLength, rawLabelLength);
+			}
+			if (start >= 0 && length > 0) {
 				StyleRange bgRange = new StyleRange();
-				bgRange.start = expandedStart;
-				bgRange.length = expandedLength;
+				bgRange.start = start;
+				bgRange.length = length;
 				bgRange.background = detailedDiffColor;
 				ranges.add(bgRange);
 			}
@@ -805,7 +865,208 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		return ranges;
 	}
 
-	record ForegroundInfo(int x, int y, String str, Font font, Color background, Color foreground) {
+	record ForegroundInfo(int x, int y, String str, Font font, Color background, Color foreground, int alpha, int clipWidth) {
+		ForegroundInfo(int x, int y, String str, Font font, Color background, Color foreground) {
+			this(x, y, str, font, background, foreground, 255, -1);
+		}
+
+		ForegroundInfo(int x, int y, String str, Font font, Color background, Color foreground, int alpha) {
+			this(x, y, str, font, background, foreground, alpha, -1);
+		}
+	}
+
+	/**
+	 * Captures which whitespace characters are shown as visible glyphs, mirroring
+	 * the settings read by {@link org.eclipse.jface.text.WhitespaceCharacterPainter}.
+	 * <p>
+	 * This duplicates the painter's glyph logic on purpose: the painter needs an
+	 * {@link org.eclipse.jface.text.ITextViewer} with its own {@link org.eclipse.swt.custom.StyledText},
+	 * but a code mining only receives the editor's shared {@code GC} and draws into
+	 * it directly, so the painter cannot be reused here. The click-through overlay,
+	 * which does own a widget, uses the real painter instead. Keep the two in sync
+	 * when the editor's whitespace rendering changes.
+	 */
+	public record WhitespaceConfig(boolean showLeadingSpaces, boolean showEnclosedSpaces, boolean showTrailingSpaces,
+			boolean showLeadingIdeographicSpaces, boolean showEnclosedIdeographicSpaces,
+			boolean showTrailingIdeographicSpaces, boolean showLeadingTabs, boolean showEnclosedTabs,
+			boolean showTrailingTabs, boolean showCarriageReturn, boolean showLineFeed, int alpha, int tabWidth) {
+
+		static final char SPACE_SIGN = '·';
+		static final char IDEOGRAPHIC_SPACE_SIGN = '°';
+		static final char TAB_SIGN = '»';
+		static final char CARRIAGE_RETURN_SIGN = '¤';
+		static final char LINE_FEED_SIGN = '¶';
+
+		static final char IDEOGRAPHIC_SPACE = '　';
+
+		private static final int OTHER = 0;
+		private static final int TAB_FIRST = 1;
+		private static final int TAB_FILLER = 2;
+
+		/**
+		 * Replaces whitespace characters in the segment {@code [from, to)} of
+		 * {@code fullLine} with visible glyphs. {@code fullLine} is the complete,
+		 * tab-expanded label line (no newline characters) and is used to determine
+		 * whether a whitespace character is leading, enclosed, or trailing.
+		 * {@code rawFullLine} is the same line before tabs were expanded; it tells
+		 * which expanded columns originate from a tab. A tab is drawn as a single tab
+		 * sign on the first column of its expanded run with the remaining
+		 * {@code tabWidth - 1} columns left blank, matching
+		 * {@link org.eclipse.jface.text.WhitespaceCharacterPainter}. Returns the segment
+		 * characters with substitutions applied; its length is always {@code to - from}.
+		 */
+		public String applySegment(String fullLine, String rawFullLine, int from, int to) {
+			if (from >= to) {
+				return ""; //$NON-NLS-1$
+			}
+			int textBegin = -1;
+			for (int i = 0; i < fullLine.length(); i++) {
+				if (!isWhitespace(fullLine.charAt(i))) {
+					textBegin = i;
+					break;
+				}
+			}
+			boolean emptyLine = textBegin == -1;
+			int textEnd = fullLine.length() - 1;
+			if (!emptyLine) {
+				for (int i = fullLine.length() - 1; i >= 0; i--) {
+					if (!isWhitespace(fullLine.charAt(i))) {
+						textEnd = i;
+						break;
+					}
+				}
+			}
+			int[] kind = classifyColumns(rawFullLine, to);
+			StringBuilder sb = new StringBuilder(to - from);
+			for (int i = from; i < to; i++) {
+				char c = fullLine.charAt(i);
+				boolean leading = !emptyLine && i < textBegin;
+				boolean trailing = !emptyLine && i > textEnd;
+				boolean enclosed = !emptyLine && !leading && !trailing;
+				int columnKind = kind == null ? OTHER : kind[i];
+				if (columnKind == TAB_FIRST) {
+					// on an all-whitespace line the painter shows a tab when any of the
+					// three tab positions is enabled, matching WhitespaceCharacterPainter
+					boolean show = emptyLine ? (showLeadingTabs || showEnclosedTabs || showTrailingTabs)
+							: (leading && showLeadingTabs) || (enclosed && showEnclosedTabs)
+									|| (trailing && showTrailingTabs);
+					sb.append(show ? TAB_SIGN : ' ');
+				} else if (columnKind == TAB_FILLER) {
+					sb.append(' ');
+				} else if (c == ' ') {
+					boolean show = emptyLine ? (showLeadingSpaces || showEnclosedSpaces || showTrailingSpaces)
+							: (leading && showLeadingSpaces) || (enclosed && showEnclosedSpaces)
+									|| (trailing && showTrailingSpaces);
+					sb.append(show ? SPACE_SIGN : c);
+				} else if (c == IDEOGRAPHIC_SPACE) {
+					boolean show = emptyLine
+							? (showLeadingIdeographicSpaces || showEnclosedIdeographicSpaces
+									|| showTrailingIdeographicSpaces)
+							: (leading && showLeadingIdeographicSpaces) || (enclosed && showEnclosedIdeographicSpaces)
+									|| (trailing && showTrailingIdeographicSpaces);
+					sb.append(show ? IDEOGRAPHIC_SPACE_SIGN : c);
+				} else {
+					sb.append(c);
+				}
+			}
+			return sb.toString();
+		}
+
+		/**
+		 * Classifies the first {@code limit} expanded columns of the line as a genuine
+		 * character ({@code OTHER}), the first column of an expanded tab run
+		 * ({@code TAB_FIRST}), or a filler column of such a run ({@code TAB_FILLER}),
+		 * by walking the raw (unexpanded) line. {@code replaceTabWithSpaces} emits a
+		 * fixed {@code tabWidth} spaces per tab, so each raw tab maps to exactly that
+		 * many expanded columns. Returns {@code null} when the line has no tab, so the
+		 * common tab-free case allocates nothing and the caller treats every column as
+		 * {@code OTHER}.
+		 */
+		private int[] classifyColumns(String rawFullLine, int limit) {
+			if (rawFullLine == null || rawFullLine.indexOf('\t') < 0) {
+				return null;
+			}
+			int[] kind = new int[limit];
+			int col = 0;
+			for (int r = 0; r < rawFullLine.length() && col < limit; r++) {
+				if (rawFullLine.charAt(r) == '\t') {
+					kind[col++] = TAB_FIRST;
+					for (int k = 1; k < tabWidth && col < limit; k++) {
+						kind[col++] = TAB_FILLER;
+					}
+				} else {
+					kind[col++] = OTHER;
+				}
+			}
+			return kind;
+		}
+
+		private static boolean isWhitespace(char c) {
+			return c == ' ' || c == IDEOGRAPHIC_SPACE || c == '\t' || c == '\r' || c == '\n';
+		}
+	}
+
+	/**
+	 * Cached snapshot of the global whitespace settings (every field except the
+	 * per-mining {@code tabWidth}). Reading all the preferences on every paint of
+	 * every mining showed up as a measurable cost, so the values are cached and
+	 * invalidated by {@link #whitespaceConfigListener} whenever the store changes.
+	 * {@code HAS_NO_CACHE} distinguishes "not yet read" from a cached {@code null}
+	 * (whitespace rendering off).
+	 */
+	private static final WhitespaceConfig HAS_NO_CACHE = new WhitespaceConfig(false, false, false, false, false, false,
+			false, false, false, false, false, -1, -1);
+	private static volatile WhitespaceConfig cachedWhitespaceConfig = HAS_NO_CACHE;
+	// The listener is a process-wide singleton registered once and never removed:
+	// it invalidates a static cache shared by every provider instance, so there is
+	// no per-instance lifetime to tie its removal to. volatile so the lazy
+	// registration below is seen consistently across threads.
+	private static volatile IPropertyChangeListener whitespaceConfigListener;
+
+	/**
+	 * Reads the whitespace rendering settings from the preference store, returning
+	 * {@code null} when whitespace rendering is off. The global settings are cached;
+	 * only {@code tabWidth} is stamped per call.
+	 */
+	static WhitespaceConfig readWhitespaceConfig(int tabWidth) {
+		WhitespaceConfig cached = cachedWhitespaceConfig;
+		if (cached == HAS_NO_CACHE) {
+			cached = readWhitespaceConfigUncached();
+			cachedWhitespaceConfig = cached;
+		}
+		if (cached == null) {
+			return null;
+		}
+		return cached.tabWidth() == tabWidth ? cached : new WhitespaceConfig(cached.showLeadingSpaces(),
+				cached.showEnclosedSpaces(), cached.showTrailingSpaces(), cached.showLeadingIdeographicSpaces(),
+				cached.showEnclosedIdeographicSpaces(), cached.showTrailingIdeographicSpaces(), cached.showLeadingTabs(),
+				cached.showEnclosedTabs(), cached.showTrailingTabs(), cached.showCarriageReturn(), cached.showLineFeed(),
+				cached.alpha(), tabWidth);
+	}
+
+	private static WhitespaceConfig readWhitespaceConfigUncached() {
+		IPreferenceStore store = EditorsUI.getPreferenceStore();
+		if (whitespaceConfigListener == null) {
+			whitespaceConfigListener = event -> cachedWhitespaceConfig = HAS_NO_CACHE;
+			store.addPropertyChangeListener(whitespaceConfigListener);
+		}
+		if (!store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_WHITESPACE_CHARACTERS)) {
+			return null;
+		}
+		return new WhitespaceConfig(
+				store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_LEADING_SPACES),
+				store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_ENCLOSED_SPACES),
+				store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_TRAILING_SPACES),
+				store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_LEADING_IDEOGRAPHIC_SPACES),
+				store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_ENCLOSED_IDEOGRAPHIC_SPACES),
+				store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_TRAILING_IDEOGRAPHIC_SPACES),
+				store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_LEADING_TABS),
+				store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_ENCLOSED_TABS),
+				store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_TRAILING_TABS),
+				store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_CARRIAGE_RETURN),
+				store.getBoolean(AbstractTextEditor.PREFERENCE_SHOW_LINE_FEED),
+				store.getInt(AbstractTextEditor.PREFERENCE_WHITESPACE_CHARACTER_ALPHA_VALUE),
+				-1 /* tabWidth stamped in per call by readWhitespaceConfig */);
 	}
 
 	/**
@@ -813,10 +1074,18 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 	 * cursor position range by range. The {@code onForeground} consumer is called
 	 * for each drawn segment and may be {@code null}; the header mining uses it to
 	 * populate its foreground cache so subsequent repaints skip this path.
+	 * When {@code whitespace} is non-null, whitespace in the drawn text is shown
+	 * with visible indicator glyphs, consistent with the editor's rendering.
 	 */
 	static void drawStyleRanges(GC gc, StyledText textWidget, List<StyleRange> ranges, String label,
 			HashMap<Font, Map<Integer, Font>> styledFonts, int x, int y,
 			Consumer<ForegroundInfo> onForeground) {
+		drawStyleRanges(gc, textWidget, ranges, label, null, styledFonts, x, y, onForeground, null);
+	}
+
+	static void drawStyleRanges(GC gc, StyledText textWidget, List<StyleRange> ranges, String label, String rawLabel,
+			HashMap<Font, Map<Integer, Font>> styledFonts, int x, int y,
+			Consumer<ForegroundInfo> onForeground, WhitespaceConfig whitespace) {
 		Font font = gc.getFont();
 		int textWidgetLineHeight = textWidget.getLineHeight();
 		int cx = x;
@@ -837,19 +1106,26 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 				}
 				String[] lines = sub.split("\n"); //$NON-NLS-1$
 				if (lines.length > 1) {
+					// segStart tracks where each line-piece starts within label
+					int segStart = range.start;
 					for (int i = 0; i < lines.length; i++) {
 						String line = lines[i].replace("\r", ""); //$NON-NLS-1$ //$NON-NLS-2$
-						gc.drawString(line, cx, cy, true);
-						if (onForeground != null) {
-							onForeground.accept(new ForegroundInfo(cx - x, cy - y, line, gc.getFont(),
-									gc.getBackground(), gc.getForeground()));
-						}
+						String fullLine = whitespace != null ? getLabelLine(label, segStart) : null;
+						String rawFullLine = whitespace != null ? getRawLabelLine(rawLabel, label, segStart) : null;
+						int fromInLine = whitespace != null ? getFromInLine(label, segStart) : 0;
+						drawSegment(gc, fullLine, rawFullLine, fromInLine, line, whitespace, cx, cy, onForeground, x, y);
 						Point p = gc.stringExtent(line);
+						// advance past lines[i] (raw, may include \r) plus the \n separator
+						segStart += lines[i].length() + 1;
 						if (i < lines.length - 1) {
+							drawLineDelimiter(gc, whitespace, cx + p.x, cy, onForeground, x, y,
+									lines[i].endsWith("\r")); //$NON-NLS-1$
 							cy += textWidgetLineHeight + textWidget.getLineSpacing();
 							cx = x;
 						} else {
 							if (sub.endsWith("\n")) { //$NON-NLS-1$
+								drawLineDelimiter(gc, whitespace, cx + p.x, cy, onForeground, x, y,
+										lines[i].endsWith("\r")); //$NON-NLS-1$
 								cy += textWidgetLineHeight + textWidget.getLineSpacing();
 								cx = x;
 							} else {
@@ -858,13 +1134,15 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 						}
 					}
 				} else {
-					gc.drawString(sub, cx, cy, true);
-					if (onForeground != null) {
-						onForeground.accept(new ForegroundInfo(cx - x, cy - y, sub, gc.getFont(),
-								gc.getBackground(), gc.getForeground()));
-					}
-					Point p = gc.stringExtent(sub);
+					String fullLine = whitespace != null ? getLabelLine(label, range.start) : null;
+					String rawFullLine = whitespace != null ? getRawLabelLine(rawLabel, label, range.start) : null;
+					int fromInLine = whitespace != null ? getFromInLine(label, range.start) : 0;
+					String subDisplay = sub.replace("\r", "").replace("\n", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+					drawSegment(gc, fullLine, rawFullLine, fromInLine, subDisplay, whitespace, cx, cy, onForeground, x, y);
+					Point p = gc.stringExtent(subDisplay);
 					if (sub.endsWith("\n")) { //$NON-NLS-1$
+						drawLineDelimiter(gc, whitespace, cx + p.x, cy, onForeground, x, y,
+								sub.endsWith("\r\n")); //$NON-NLS-1$
 						cy += textWidgetLineHeight + textWidget.getLineSpacing();
 						cx = x;
 					} else {
@@ -873,20 +1151,207 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 				}
 				gc.setFont(currentFont);
 			} else {
-				int lfCount = 0;
-				if (sub.contains("\n")) { //$NON-NLS-1$
-					lfCount = sub.split("\n", -1).length - 1; //$NON-NLS-1$
-					sub = sub.substring(sub.lastIndexOf("\n") + 1); //$NON-NLS-1$
-				}
-				Point p = gc.stringExtent(sub);
-				if (lfCount > 0) {
-					cy += lfCount * (textWidgetLineHeight + textWidget.getLineSpacing());
+				int segmentStart = 0;
+				while (segmentStart < sub.length()) {
+					int lf = sub.indexOf('\n', segmentStart);
+					int segmentEnd = lf < 0 ? sub.length() : lf;
+					String rawSegment = sub.substring(segmentStart, segmentEnd);
+					boolean hasCarriageReturn = rawSegment.endsWith("\r"); //$NON-NLS-1$
+					String subDisplay = hasCarriageReturn ? rawSegment.substring(0, rawSegment.length() - 1) : rawSegment;
+					int labelOffset = range.start + segmentStart;
+					String fullLine = whitespace != null ? getLabelLine(label, labelOffset) : null;
+					String rawFullLine = whitespace != null ? getRawLabelLine(rawLabel, label, labelOffset) : null;
+					int fromInLine = whitespace != null ? getFromInLine(label, labelOffset) : 0;
+					String drawn;
+					if (whitespace != null) {
+						// clamp like drawSegment: a segment may extend past the known
+						// fullLine, in which case the extra characters are drawn unchanged
+						drawn = whitespace.applySegment(fullLine, rawFullLine, fromInLine,
+								Math.min(fromInLine + subDisplay.length(), fullLine.length()));
+						if (drawn.length() < subDisplay.length()) {
+							drawn = drawn + subDisplay.substring(drawn.length());
+						}
+					} else {
+						drawn = subDisplay;
+					}
+					if (!subDisplay.isEmpty()) {
+						drawTextWithWhitespace(gc, subDisplay, drawn, whitespace, cx, cy, onForeground, x, y);
+						cx += gc.stringExtent(subDisplay).x;
+					}
+					if (lf < 0) {
+						break;
+					}
+					drawLineDelimiter(gc, whitespace, cx, cy, onForeground, x, y, hasCarriageReturn);
+					cy += textWidgetLineHeight + textWidget.getLineSpacing();
 					cx = x;
+					segmentStart = lf + 1;
 				}
-				cx += p.x;
 			}
 		}
 		gc.setFont(font);
+	}
+
+	private static void drawLineDelimiter(GC gc, WhitespaceConfig whitespace, int x, int y,
+			Consumer<ForegroundInfo> onForeground, int originX, int originY, boolean hasCarriageReturn) {
+		if (whitespace == null) {
+			return;
+		}
+		StringBuilder marker = new StringBuilder(2);
+		if (hasCarriageReturn && whitespace.showCarriageReturn()) {
+			marker.append(WhitespaceConfig.CARRIAGE_RETURN_SIGN);
+		}
+		if (whitespace.showLineFeed()) {
+			marker.append(WhitespaceConfig.LINE_FEED_SIGN);
+		}
+		if (marker.isEmpty()) {
+			return;
+		}
+		int savedAlpha = gc.getAlpha();
+		gc.setAlpha(whitespace.alpha());
+		String str = marker.toString();
+		gc.drawString(str, x, y, true);
+		if (onForeground != null) {
+			onForeground.accept(new ForegroundInfo(x - originX, y - originY, str, gc.getFont(), gc.getBackground(),
+					gc.getForeground(), whitespace.alpha()));
+		}
+		gc.setAlpha(savedAlpha);
+	}
+
+	/**
+	 * Returns the start offset of the label line containing {@code offset}
+	 * (i.e., the offset of the character right after the preceding {@code '\n'},
+	 * or 0 if {@code offset} is on the first line).
+	 */
+	private static int getLabelLineStart(String label, int offset) {
+		int prev = label.lastIndexOf('\n', offset - 1);
+		return prev < 0 ? 0 : prev + 1;
+	}
+
+	/**
+	 * Returns the full label line that contains {@code offset}, with any trailing
+	 * {@code '\r'} stripped, and without the terminating {@code '\n'}.
+	 */
+	private static String getLabelLine(String label, int offset) {
+		int start = getLabelLineStart(label, offset);
+		int end = label.indexOf('\n', offset);
+		String raw = end < 0 ? label.substring(start) : label.substring(start, end);
+		return raw.endsWith("\r") ? raw.substring(0, raw.length() - 1) : raw; //$NON-NLS-1$
+	}
+
+	/**
+	 * Returns the raw (tab-preserving) line that corresponds to the expanded label
+	 * line containing {@code offset}, with any trailing {@code '\r'} stripped. The
+	 * expanded and raw labels share the same line structure because
+	 * {@link UnifiedDiffText#replaceTabWithSpaces} never changes line delimiters, so
+	 * the line is located by index. Returns {@code null} when no raw label is
+	 * available, in which case {@link WhitespaceConfig#applySegment} treats every
+	 * column as a genuine space.
+	 */
+	private static String getRawLabelLine(String rawLabel, String label, int offset) {
+		if (rawLabel == null) {
+			return null;
+		}
+		int lineIndex = countLines(label, offset) - 1;
+		int start = 0;
+		for (int i = 0; i < lineIndex; i++) {
+			int nl = rawLabel.indexOf('\n', start);
+			if (nl < 0) {
+				return null;
+			}
+			start = nl + 1;
+		}
+		int end = rawLabel.indexOf('\n', start);
+		String raw = end < 0 ? rawLabel.substring(start) : rawLabel.substring(start, end);
+		return raw.endsWith("\r") ? raw.substring(0, raw.length() - 1) : raw; //$NON-NLS-1$
+	}
+
+	/**
+	 * Returns the offset of {@code segStart} within the display line (with
+	 * {@code '\r'} characters not counted, matching the CR-stripped strings drawn
+	 * by {@link #drawStyleRanges}).
+	 */
+	private static int getFromInLine(String label, int segStart) {
+		int lineStart = getLabelLineStart(label, segStart);
+		String rawPrefix = label.substring(lineStart, segStart);
+		long crCount = rawPrefix.chars().filter(c -> c == '\r').count();
+		return (int) (segStart - lineStart - crCount);
+	}
+
+	/**
+	 * Draws a single line segment at (cx, cy), applying whitespace glyph
+	 * substitution if {@code whitespace} is non-null. {@code fullLine} is the
+	 * complete display line (no newlines, no CR) to use for leading/enclosed/trailing
+	 * classification; {@code fromInLine} is where {@code text} starts within it. The
+	 * caller measures {@code text} itself; this method only draws.
+	 */
+	private static void drawSegment(GC gc, String fullLine, String rawFullLine, int fromInLine, String text,
+			WhitespaceConfig whitespace, int cx, int cy, Consumer<ForegroundInfo> onForeground, int originX,
+			int originY) {
+		if (whitespace == null) {
+			gc.drawString(text, cx, cy, true);
+			if (onForeground != null) {
+				onForeground.accept(new ForegroundInfo(cx - originX, cy - originY, text, gc.getFont(),
+						gc.getBackground(), gc.getForeground()));
+			}
+			return;
+		}
+		String applied = whitespace.applySegment(fullLine, rawFullLine, fromInLine,
+				Math.min(fromInLine + text.length(), fullLine.length()));
+		// if text extends beyond the known fullLine, append remaining chars unchanged
+		if (applied.length() < text.length()) {
+			applied = applied + text.substring(applied.length());
+		}
+		// drawTextWithWhitespace short-circuits to a plain draw when nothing was
+		// substituted, so there is no separate fast path to keep here
+		drawTextWithWhitespace(gc, text, applied, whitespace, cx, cy, onForeground, originX, originY);
+	}
+
+	private static void drawTextWithWhitespace(GC gc, String text, String displayed, WhitespaceConfig whitespace,
+			int x, int y, Consumer<ForegroundInfo> onForeground, int originX, int originY) {
+		if (displayed.equals(text)) {
+			// no glyph substitution happened (e.g. whitespace rendering is off for this
+			// kind of run), so skip the per-character prefix measuring entirely
+			gc.drawString(text, x, y, true);
+			if (onForeground != null) {
+				onForeground.accept(new ForegroundInfo(x - originX, y - originY, text, gc.getFont(), gc.getBackground(),
+						gc.getForeground()));
+			}
+			return;
+		}
+		int savedAlpha = gc.getAlpha();
+		// Keep the same glyph positioning and rounding as rendering without visible
+		// whitespace. Splitting this into runs causes their widths to accumulate
+		// differently from the width used for the detailed-diff rectangles.
+		gc.drawString(text, x, y, true);
+		if (onForeground != null) {
+			onForeground.accept(new ForegroundInfo(x - originX, y - originY, text, gc.getFont(), gc.getBackground(),
+					gc.getForeground(), savedAlpha));
+		}
+		// Walk left to right measuring each growing prefix once; the previous
+		// prefix width gives the cell width as a delta. Measuring substring(0, i)
+		// *and* substring(0, i + 1) per character would be twice as many native
+		// calls, and keeping the full-prefix measurement preserves the exact glyph
+		// positioning used for the detailed-diff rectangles.
+		int prevPrefixWidth = 0;
+		for (int i = 0; i < text.length(); i++) {
+			int prefixWidth = gc.stringExtent(text.substring(0, i + 1)).x;
+			if (displayed.charAt(i) != text.charAt(i)) {
+				int cellWidth = prefixWidth - prevPrefixWidth;
+				int indicatorX = x + prevPrefixWidth;
+				String indicator = displayed.substring(i, i + 1);
+				Rectangle clipping = gc.getClipping();
+				gc.setClipping(indicatorX, clipping.y, cellWidth, clipping.height);
+				gc.setAlpha(whitespace.alpha());
+				gc.drawString(indicator, indicatorX, y, true);
+				gc.setClipping(clipping);
+				if (onForeground != null) {
+					onForeground.accept(new ForegroundInfo(indicatorX - originX, y - originY, indicator, gc.getFont(),
+							gc.getBackground(), gc.getForeground(), whitespace.alpha(), cellWidth));
+				}
+			}
+			prevPrefixWidth = prefixWidth;
+		}
+		gc.setAlpha(savedAlpha);
 	}
 
 	private static List<StyleRange> computeStyleRanges(ITextViewer v, int offset, String source) {
@@ -919,6 +1384,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 
 	public static class UnifiedDiffLineHeaderCodeMining extends LineHeaderCodeMining implements IUnifiedDiffCodeMining {
 		private final String unifiedDiffLabel;
+		private final String rawLabel;
 		private final Color deletionBackgroundColor;
 		private final Color detailedDiffColor;
 		private final Color borderColor;
@@ -933,17 +1399,16 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		private List<ForegroundInfo> foregrounds;
 		private List<StyleRange> styleRanges;
 		private Font cachedFont;
+		private WhitespaceConfig cachedWhitespace;
 		private final HashMap<Font, Map<Integer /* style */, Font>> styledFonts = new HashMap<>();
 
 		public UnifiedDiffLineHeaderCodeMining(Position position, ICodeMiningProvider provider, UnifiedDiff diff,
 				int tabWidth, Color deletionBackgroundColor, Color detailedDiffColor, Color borderColor,
 				ITextViewer viewer) throws BadLocationException {
 			super(position, provider, new MouseClickConsumer(viewer));
-			if (diff.mode.equals(UnifiedDiffMode.REPLACE_MODE)) {
-				this.unifiedDiffLabel = removeTrailingNewLines(replaceTabWithSpaces(diff.leftStr, tabWidth));
-			} else {
-				this.unifiedDiffLabel = removeTrailingNewLines(replaceTabWithSpaces(diff.rightStr, tabWidth));
-			}
+			String diffStr = diff.mode.equals(UnifiedDiffMode.REPLACE_MODE) ? diff.leftStr : diff.rightStr;
+			this.rawLabel = removeTrailingNewLines(diffStr);
+			this.unifiedDiffLabel = removeTrailingNewLines(replaceTabWithSpaces(diffStr, tabWidth));
 			this.deletionBackgroundColor = deletionBackgroundColor;
 			this.detailedDiffColor = detailedDiffColor;
 			this.borderColor = borderColor;
@@ -991,6 +1456,11 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		@Override
 		public String getLabel() {
 			return this.unifiedDiffLabel;
+		}
+
+		@Override
+		public String getRawLabel() {
+			return this.rawLabel;
 		}
 
 		@Override
@@ -1042,6 +1512,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			backgrounds = null;
 			lastRectangle = null;
 			cachedFont = null;
+			cachedWhitespace = null;
 			clearStyledFonts();
 		}
 
@@ -1064,6 +1535,10 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			gc.setFont(font);
 			if (cachedFont != null && (cachedFont.isDisposed() || !cachedFont.equals(font))) {
 				// font might have been changed in the meantime - remove cache
+				cleanCachedData();
+			}
+			WhitespaceConfig whitespace = readWhitespaceConfig(tabWidth);
+			if (foregrounds != null && !Objects.equals(cachedWhitespace, whitespace)) {
 				cleanCachedData();
 			}
 			cachedFont = font;
@@ -1100,7 +1575,25 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 					}
 					gc.setBackground(f.background());
 					gc.setForeground(f.foreground());
-					gc.drawString(f.str(), x + f.x(), y + f.y(), true);
+					int drawFx = x + f.x();
+					int drawFy = y + f.y();
+					boolean needsAlpha = f.alpha() != 255;
+					boolean needsClip = f.clipWidth() > 0;
+					int savedAlpha = needsAlpha ? gc.getAlpha() : 0;
+					Rectangle savedClipping = needsClip ? gc.getClipping() : null;
+					if (needsAlpha) {
+						gc.setAlpha(f.alpha());
+					}
+					if (needsClip) {
+						gc.setClipping(drawFx, savedClipping.y, f.clipWidth(), savedClipping.height);
+					}
+					gc.drawString(f.str(), drawFx, drawFy, true);
+					if (needsClip) {
+						gc.setClipping(savedClipping);
+					}
+					if (needsAlpha) {
+						gc.setAlpha(savedAlpha);
+					}
 				}
 				if (!fontIsDisposed) {
 					drawBandBorder(gc, this.borderColor, y, textWidget.getBounds().width, lastRectangle.height);
@@ -1241,8 +1734,9 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 				return result;
 			}
 			foregrounds = new ArrayList<>();
+			cachedWhitespace = whitespace;
 			gc.setFont(cachedFont);
-			drawStyleRanges(gc, textWidget, ranges, label, styledFonts, x, y, foregrounds::add);
+			drawStyleRanges(gc, textWidget, ranges, label, rawLabel, styledFonts, x, y, foregrounds::add, whitespace);
 			drawBandBorder(gc, this.borderColor, y, textWidget.getBounds().width, lastRectangle.height);
 			return result;
 		}
@@ -1310,8 +1804,9 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 							gc.setFont(before);
 						}
 						// gc.stringExtent does not consider tabs - we need to replace them with spaces
-						// to get correct width
-						Point extent = gc.stringExtent(removeLeadingNewLines(replaceTabWithSpaces(sub, tabWidth)));
+						// to get correct width; \r must be stripped to match what drawStyleRanges draws
+						Point extent = gc.stringExtent(
+								removeLeadingNewLines(replaceTabWithSpaces(sub.replace("\r", ""), tabWidth))); //$NON-NLS-1$ //$NON-NLS-2$
 						if (result == null) {
 							result = extent;
 							result.y = twLineHeight;

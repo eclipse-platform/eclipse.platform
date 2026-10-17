@@ -35,6 +35,7 @@ import org.eclipse.compare.unifieddiff.UnifiedDiffMode;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffCodeMiningProvider;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffCodeMiningProvider.UnifiedDiffLineHeaderCodeMining;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffCodeMiningProvider.UnifiedDiffLineHeaderCodeMining.RangeInfo;
+import org.eclipse.compare.unifieddiff.internal.UnifiedDiffCodeMiningProvider.WhitespaceConfig;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager.UnifiedDiff;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffText;
 import org.eclipse.jface.text.Document;
@@ -307,6 +308,56 @@ public class UnifiedDiffTextTest {
 		assertEquals(3, ranges.get(0).length, "highlight is trimmed to 'bar', dropping the trailing spaces");
 	}
 
+	/**
+	 * The click-through overlay keeps the original tabs, so its background ranges
+	 * must stay in raw coordinates — a highlight behind a tab-indented word is not
+	 * shifted by the expanded tab width, unlike the band's expanded ranges.
+	 */
+	@Test
+	public void testDetailedDiffRawRangesUseUnexpandedOffsets() {
+		String diffStr = "\t\tbar";
+		UnifiedDiff diff = replaceDiff(diffStr, detailedDiff(diffStr, 2, 3));
+
+		List<StyleRange> expanded = UnifiedDiffCodeMiningProvider.createDetailedDiffBackgroundRanges(diff, 4,
+				BACKGROUND_1);
+		List<StyleRange> raw = UnifiedDiffCodeMiningProvider.createDetailedDiffBackgroundRangesRaw(diff, 4,
+				BACKGROUND_1);
+
+		assertEquals(1, expanded.size());
+		assertEquals(8, expanded.get(0).start, "the band shifts 'bar' past the two four-wide tabs");
+		assertEquals(1, raw.size());
+		assertEquals(2, raw.get(0).start, "the overlay keeps the raw offset of 'bar'");
+		assertEquals(3, raw.get(0).length, "'bar'");
+	}
+
+	@Test
+	public void testDetailedDiffRawRangesTrimTrailingSpaces() {
+		String diffStr = "\tbar   ";
+		UnifiedDiff diff = replaceDiff(diffStr, detailedDiff(diffStr, 1, 6));
+
+		List<StyleRange> raw = UnifiedDiffCodeMiningProvider.createDetailedDiffBackgroundRangesRaw(diff, 4,
+				BACKGROUND_1);
+
+		assertEquals(1, raw.size());
+		assertEquals(1, raw.get(0).start, "highlight starts at 'bar' in raw coordinates");
+		assertEquals(3, raw.get(0).length, "trailing spaces are trimmed in raw coordinates too");
+	}
+
+	@Test
+	public void testDetailedDiffRawAndExpandedAgreeWithoutTabs() {
+		String diffStr = "foo bar   ";
+		UnifiedDiff diff = replaceDiff(diffStr, detailedDiff(diffStr, 4, 6));
+
+		List<StyleRange> expanded = UnifiedDiffCodeMiningProvider.createDetailedDiffBackgroundRanges(diff, 4,
+				BACKGROUND_1);
+		List<StyleRange> raw = UnifiedDiffCodeMiningProvider.createDetailedDiffBackgroundRangesRaw(diff, 4,
+				BACKGROUND_1);
+
+		assertEquals(expanded.size(), raw.size());
+		assertEquals(expanded.get(0).start, raw.get(0).start, "no tabs means no coordinate shift");
+		assertEquals(expanded.get(0).length, raw.get(0).length);
+	}
+
 	// ------------------------------------------- borderColor
 
 	/**
@@ -448,5 +499,140 @@ public class UnifiedDiffTextTest {
 		range.length = length;
 		range.foreground = systemColor(SWT.COLOR_BLUE);
 		return range;
+	}
+
+	// -------------------------------------------------- whitespace tab glyphs
+
+	/**
+	 * The label is tab-expanded to spaces before it is drawn, so the whitespace
+	 * glyph substitution must learn from the raw line which expanded columns came
+	 * from a tab and render those as a single {@code »} on the first column, like
+	 * the editor's own painter, rather than one {@code ·} per expanded space.
+	 */
+	@Test
+	public void testApplySegmentLeadingTabBecomesTabSign() {
+		String raw = "\tx";
+		String expanded = replaceTabWithSpaces(raw, 4);
+		WhitespaceConfig config = tabConfig(4, true, true, true);
+		assertEquals("»   x", config.applySegment(expanded, raw, 0, expanded.length()));
+	}
+
+	@Test
+	public void testApplySegmentMixedTabAndSpaceIndent() {
+		String raw = "\t x";
+		String expanded = replaceTabWithSpaces(raw, 4);
+		WhitespaceConfig config = tabConfig(4, true, true, true);
+		// the tab fills four columns (» then three blanks); the genuine space is a dot
+		assertEquals("»   ·x", config.applySegment(expanded, raw, 0, expanded.length()));
+	}
+
+	@Test
+	public void testApplySegmentEnclosedTabShownTrailingTabHidden() {
+		String raw = "a\tb\t";
+		String expanded = replaceTabWithSpaces(raw, 2);
+		WhitespaceConfig config = new WhitespaceConfig(false, false, false, false, false, false, false, true, false,
+				false, false, 255, 2);
+		// the enclosed tab shows its sign; the trailing tab stays blank
+		assertEquals("a» b  ", config.applySegment(expanded, raw, 0, expanded.length()));
+	}
+
+	@Test
+	public void testApplySegmentLeadingTabsOffDrawsNoSign() {
+		String raw = "\tx";
+		String expanded = replaceTabWithSpaces(raw, 4);
+		WhitespaceConfig config = tabConfig(4, false, true, true);
+		assertEquals(expanded, config.applySegment(expanded, raw, 0, expanded.length()));
+	}
+
+	/**
+	 * A sub-range starting inside an expanded tab run keeps the first-vs-filler
+	 * classification, so {@code »} is only drawn when the sub-range includes the
+	 * tab's first column.
+	 */
+	@Test
+	public void testApplySegmentSubRangeInsideTab() {
+		String raw = "\t\tx";
+		String expanded = replaceTabWithSpaces(raw, 4);
+		WhitespaceConfig config = tabConfig(4, true, true, true);
+		assertAll( //
+				() -> assertEquals("  »   x", config.applySegment(expanded, raw, 2, expanded.length()),
+						"range starts on the second tab's first column"), //
+				() -> assertEquals("   ", config.applySegment(expanded, raw, 1, 4),
+						"range covers only filler columns, so no sign"), //
+				() -> assertEquals(3, config.applySegment(expanded, raw, 1, 4).length(),
+						"output length matches the requested span"));
+	}
+
+	/** Without a raw line every column is treated as a genuine space. */
+	@Test
+	public void testApplySegmentWithoutRawLineFallsBackToSpaces() {
+		String raw = "\tx";
+		String expanded = replaceTabWithSpaces(raw, 4);
+		WhitespaceConfig config = tabConfig(4, true, true, true);
+		assertEquals("····x", config.applySegment(expanded, null, 0, expanded.length()));
+	}
+
+	/**
+	 * A line that is only whitespace has no text to be before or after, so the
+	 * editor's painter shows a space whenever any of the leading/enclosed/trailing
+	 * space flags is on. Each flag alone must therefore render the whole run.
+	 */
+	@Test
+	public void testApplySegmentAllWhitespaceLineHonoursEachFlag() {
+		String line = "   ";
+		assertAll( //
+				() -> assertEquals("···", spaceConfig(true, false, false).applySegment(line, line, 0, line.length()),
+						"leading-only shows the whole blank line"), //
+				() -> assertEquals("···", spaceConfig(false, true, false).applySegment(line, line, 0, line.length()),
+						"enclosed-only shows the whole blank line"), //
+				() -> assertEquals("···", spaceConfig(false, false, true).applySegment(line, line, 0, line.length()),
+						"trailing-only shows the whole blank line"), //
+				() -> assertEquals("   ", spaceConfig(false, false, false).applySegment(line, line, 0, line.length()),
+						"with every flag off nothing is shown"));
+	}
+
+	/** An all-whitespace line of tabs shows the tab sign if any tab flag is on. */
+	@Test
+	public void testApplySegmentAllWhitespaceLineHonoursEachTabFlag() {
+		String raw = "\t";
+		String expanded = replaceTabWithSpaces(raw, 4);
+		assertAll( //
+				() -> assertEquals("»   ", tabConfig(4, true, false, false).applySegment(expanded, raw, 0,
+						expanded.length()), "leading-only shows the blank line's tab"), //
+				() -> assertEquals("»   ", tabConfig(4, false, true, false).applySegment(expanded, raw, 0,
+						expanded.length()), "enclosed-only shows the blank line's tab"), //
+				() -> assertEquals("»   ", tabConfig(4, false, false, true).applySegment(expanded, raw, 0,
+						expanded.length()), "trailing-only shows the blank line's tab"));
+	}
+
+	/** The ideographic space U+3000 renders as its own sign, like the editor. */
+	@Test
+	public void testApplySegmentIdeographicSpaceBecomesSign() {
+		String line = "a　b";
+		WhitespaceConfig config = new WhitespaceConfig(false, false, false, false, true, false, false, false, false,
+				false, false, 255, 4);
+		assertEquals("a°b", config.applySegment(line, line, 0, line.length()),
+				"the enclosed ideographic space shows the ° sign");
+	}
+
+	/** With the ideographic-space flags off, U+3000 is left as-is. */
+	@Test
+	public void testApplySegmentIdeographicSpaceHiddenWhenFlagsOff() {
+		String line = "a　b";
+		// every space/tab flag on but all ideographic flags off
+		WhitespaceConfig config = new WhitespaceConfig(true, true, true, false, false, false, true, true, true, false,
+				false, 255, 4);
+		assertEquals("a　b", config.applySegment(line, line, 0, line.length()),
+				"an ideographic space is not shown unless an ideographic flag is on");
+	}
+
+	private static WhitespaceConfig spaceConfig(boolean leading, boolean enclosed, boolean trailing) {
+		return new WhitespaceConfig(leading, enclosed, trailing, false, false, false, false, false, false, false, false,
+				255, 4);
+	}
+
+	private static WhitespaceConfig tabConfig(int tabWidth, boolean leading, boolean enclosed, boolean trailing) {
+		return new WhitespaceConfig(true, true, true, false, false, false, leading, enclosed, trailing, false, false,
+				255, tabWidth);
 	}
 }
