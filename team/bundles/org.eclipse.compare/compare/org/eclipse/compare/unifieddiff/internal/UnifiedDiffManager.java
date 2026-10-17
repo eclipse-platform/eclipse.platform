@@ -82,6 +82,7 @@ import org.eclipse.jface.text.source.inlined.AbstractInlinedAnnotation;
 import org.eclipse.jface.text.source.projection.ProjectionAnnotation;
 import org.eclipse.jface.text.source.projection.ProjectionAnnotationModel;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ControlEvent;
@@ -121,6 +122,8 @@ public class UnifiedDiffManager {
 	private static final String UNIFIED_DIFF_SHADOWED_FOLDS_KEY = "UNIFIED_DIFF_SHADOWED_FOLDS_KEY"; //$NON-NLS-1$
 	private static final String ADDITION_ANNO_TYPE = "org.eclipse.compare.unifieddiff.internal.addition"; //$NON-NLS-1$
 	private static final String DELETION_ANNO_TYPE = "org.eclipse.compare.unifieddiff.internal.deletion"; //$NON-NLS-1$
+	private static final String ADDITION_RULER_ANNO_TYPE = "org.eclipse.compare.unifieddiff.internal.addition.ruler"; //$NON-NLS-1$
+	private static final String DELETION_RULER_ANNO_TYPE = "org.eclipse.compare.unifieddiff.internal.deletion.ruler"; //$NON-NLS-1$
 	private static final String DETAILED_ADDITION_ANNO_TYPE = "org.eclipse.compare.unifieddiff.internal.detailedAddition"; //$NON-NLS-1$
 	private static final String DETAILED_DELETION_ANNO_TYPE = "org.eclipse.compare.unifieddiff.internal.detailedDeletion"; //$NON-NLS-1$
 	private static final String TOOLBAR_COMPOSITE_FOR_ONE_DIFF_KEY = "TOOLBAR_COMPOSITE_FOR_ONE_DIFF_KEY"; //$NON-NLS-1$
@@ -276,6 +279,13 @@ public class UnifiedDiffManager {
 					Annotation myAnnotation = new UnifiedDiffAnnotation(mode, unifiedDiff);
 					Position position = new Position(unifiedDiff.leftStart, unifiedDiff.rightLength);
 					addOrStage.accept(myAnnotation, position);
+					AnnotationTypeAndText annoTypeAndText = createRulerAnnotationTypeAndText(mode, unifiedDiff);
+					Annotation rulerAnnotation = new UnifiedDiffRulerAnnotation(unifiedDiff, annoTypeAndText);
+					// A fresh Position is required: the annotation model registers each
+					// Position in the document's position category and shifts it on every
+					// document change. Sharing one instance would shift it twice and corrupt
+					// the offsets.
+					addOrStage.accept(rulerAnnotation, new Position(unifiedDiff.leftStart, unifiedDiff.rightLength));
 					for (var detailedDiff : unifiedDiff.detailedDiffs) {
 						if (detailedDiff.rightStr.trim().length() == 0) {
 							continue;
@@ -286,6 +296,7 @@ public class UnifiedDiffManager {
 						addOrStage.accept(detailedAnno, detailedPos);
 					}
 					diffByAnno.put(myAnnotation, unifiedDiff);
+					diffByAnno.put(rulerAnnotation, unifiedDiff);
 				} catch (BadLocationException e) {
 					error(e);
 				}
@@ -295,6 +306,11 @@ public class UnifiedDiffManager {
 				Annotation myAnnotation = new UnifiedDiffAnnotation(mode, unifiedDiff);
 				Position position = new Position(unifiedDiff.leftStart, unifiedDiff.leftLength);
 				addOrStage.accept(myAnnotation, position);
+				AnnotationTypeAndText annoTypeAndText = createRulerAnnotationTypeAndText(mode, unifiedDiff);
+				Annotation rulerAnnotation = new UnifiedDiffRulerAnnotation(unifiedDiff, annoTypeAndText);
+				// A fresh Position is required: see the comment in the REPLACE_MODE branch
+				// above.
+				addOrStage.accept(rulerAnnotation, new Position(unifiedDiff.leftStart, unifiedDiff.leftLength));
 				for (var detailedDiff : unifiedDiff.detailedDiffs) {
 					if (detailedDiff.leftStr.trim().length() == 0) {
 						continue;
@@ -305,6 +321,7 @@ public class UnifiedDiffManager {
 					addOrStage.accept(detailedAnno, detailedPos);
 				}
 				diffByAnno.put(myAnnotation, unifiedDiff);
+				diffByAnno.put(rulerAnnotation, unifiedDiff);
 			}
 		}
 		if (annotationsToAdd != null) {
@@ -334,6 +351,14 @@ public class UnifiedDiffManager {
 			});
 		}
 		return Status.OK_STATUS;
+	}
+
+	private static AnnotationTypeAndText createRulerAnnotationTypeAndText(UnifiedDiffMode mode,
+			UnifiedDiff unifiedDiff) {
+		DiffKind kind = diffKind(mode, unifiedDiff);
+		String annoType = kind == DiffKind.DELETION ? DELETION_RULER_ANNO_TYPE : ADDITION_RULER_ANNO_TYPE;
+		String text = createAnnotationText(mode, unifiedDiff, kind);
+		return new AnnotationTypeAndText(annoType, text);
 	}
 
 	/**
@@ -988,6 +1013,22 @@ public class UnifiedDiffManager {
 		}
 	}
 
+	private record AnnotationTypeAndText(String type, String text) {
+	}
+
+	private static final class UnifiedDiffRulerAnnotation extends Annotation {
+		private final UnifiedDiff unifiedDiff;
+
+		public UnifiedDiffRulerAnnotation(UnifiedDiff unifiedDiff, AnnotationTypeAndText annotationTypeAndText) {
+			super(annotationTypeAndText.type, false, annotationTypeAndText.text);
+			this.unifiedDiff = unifiedDiff;
+		}
+
+		public UnifiedDiff getUnifiedDiff() {
+			return unifiedDiff;
+		}
+	}
+
 	private static final class DetailedDiffAnnotation extends Annotation {
 		private final UnifiedDiff unifiedDiff;
 
@@ -1000,6 +1041,88 @@ public class UnifiedDiffManager {
 
 		public UnifiedDiff getUnifiedDiff() {
 			return this.unifiedDiff;
+		}
+	}
+
+	private static String createAnnotationText(UnifiedDiffMode mode, UnifiedDiff unifiedDiff, DiffKind kind) {
+		IDocument doc = unifiedDiff.left;
+		if (doc == null) {
+			return kind.text();
+		}
+		int offset = unifiedDiff.leftStart;
+		int length = UnifiedDiffMode.REPLACE_MODE.equals(mode) ? unifiedDiff.rightLength : unifiedDiff.leftLength;
+		try {
+			int docLength = doc.getLength();
+			int startOffset = Math.max(0, Math.min(offset, docLength));
+			int startLine = doc.getLineOfOffset(startOffset) + 1;
+			int endLine;
+			if (length > 0) {
+				int endOffset = Math.max(0, Math.min(offset + length - 1, docLength));
+				endLine = doc.getLineOfOffset(endOffset) + 1;
+			} else {
+				endLine = startLine;
+			}
+			endLine = Math.max(startLine, endLine);
+			if (startLine == endLine) {
+				return NLS.bind(kind.atLineText(), Integer.valueOf(startLine));
+			}
+			return NLS.bind(kind.fromLineToLineText(), Integer.valueOf(startLine), Integer.valueOf(endLine));
+		} catch (BadLocationException e) {
+			error(e);
+			return kind.text();
+		}
+	}
+
+	/**
+	 * Classifies a diff as an addition, deletion, or replacement so the ruler tick
+	 * gets the matching type, color, and tooltip wording (see
+	 * {@link #createRulerAnnotationTypeAndText}). The classification is relative to
+	 * the current document and the direction of the mode, not to the color the tick
+	 * ends up with: in REPLACE_MODE and REVERT_MODE the current document is on the
+	 * left, so an empty right side means the left has extra content and the diff is
+	 * an addition; in OVERLAY_MODE the perspective is reversed and the non-empty
+	 * right side is the addition.
+	 */
+	private static DiffKind diffKind(UnifiedDiffMode mode, UnifiedDiff unifiedDiff) {
+		boolean leftStringIsEmpty = unifiedDiff.leftStr == null || unifiedDiff.leftStr.trim().isEmpty();
+		boolean rightStringIsEmpty = unifiedDiff.rightStr == null || unifiedDiff.rightStr.trim().isEmpty();
+		if (!leftStringIsEmpty && !rightStringIsEmpty) {
+			return DiffKind.REPLACEMENT;
+		}
+		boolean addition = UnifiedDiffMode.REPLACE_MODE.equals(mode) || UnifiedDiffMode.REVERT_MODE.equals(mode)
+				? rightStringIsEmpty
+				: !rightStringIsEmpty;
+		return addition ? DiffKind.ADDITION : DiffKind.DELETION;
+	}
+
+	private enum DiffKind {
+		ADDITION(CompareMessages.UnifiedDiff_addition, CompareMessages.UnifiedDiff_additionAtLine,
+				CompareMessages.UnifiedDiff_additionFromLineToLine),
+		DELETION(CompareMessages.UnifiedDiff_deletion, CompareMessages.UnifiedDiff_deletionAtLine,
+				CompareMessages.UnifiedDiff_deletionFromLineToLine),
+		REPLACEMENT(CompareMessages.UnifiedDiff_replacement, CompareMessages.UnifiedDiff_replacementAtLine,
+				CompareMessages.UnifiedDiff_replacementFromLineToLine);
+
+		private final String text;
+		private final String atLineText;
+		private final String fromLineToLineText;
+
+		DiffKind(String text, String atLineText, String fromLineToLineText) {
+			this.text = text;
+			this.atLineText = atLineText;
+			this.fromLineToLineText = fromLineToLineText;
+		}
+
+		String text() {
+			return text;
+		}
+
+		String atLineText() {
+			return atLineText;
+		}
+
+		String fromLineToLineText() {
+			return fromLineToLineText;
 		}
 	}
 
@@ -1405,6 +1528,8 @@ public class UnifiedDiffManager {
 			return da.getUnifiedDiff();
 		} else if (anno instanceof UnifiedDiffAnnotation a) {
 			return a.getUnifiedDiff();
+		} else if (anno instanceof UnifiedDiffRulerAnnotation ra) {
+			return ra.getUnifiedDiff();
 		} else if (anno instanceof AbstractInlinedAnnotation inlineAnno) {
 			List<ICodeMining> minings = inlineAnno.getMinings();
 			if (minings.size() == 1 && minings.get(0) instanceof UnifiedDiffLineHeaderCodeMining idlhcm) {
@@ -1701,6 +1826,8 @@ public class UnifiedDiffManager {
 				doit = true;
 			}
 		} else if (ADDITION_ANNO_TYPE.equals(anno.getType()) || DELETION_ANNO_TYPE.equals(anno.getType())
+				|| ADDITION_RULER_ANNO_TYPE.equals(anno.getType())
+				|| DELETION_RULER_ANNO_TYPE.equals(anno.getType())
 				|| DETAILED_ADDITION_ANNO_TYPE.equals(anno.getType())
 				|| DETAILED_DELETION_ANNO_TYPE.equals(anno.getType())) {
 			doit = true;

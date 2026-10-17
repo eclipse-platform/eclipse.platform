@@ -470,6 +470,12 @@
   markerSeverity="0">
 </type>
 <type
+  name="org.eclipse.compare.unifieddiff.internal.addition.ruler">
+</type>
+<type
+  name="org.eclipse.compare.unifieddiff.internal.deletion.ruler">
+</type>
+<type
   name="org.eclipse.compare.unifieddiff.internal.detailedAddition"
   markerType="org.eclipse.core.resources.problemmarker"
   markerSeverity="0">
@@ -498,7 +504,6 @@
       presentationLayer="1"
       showInNextPrevDropdownToolbarAction="false"
       showInNextPrevDropdownToolbarActionKey="showInlineDiffInNextPrevDropdownToolbarAction"
-      symbolicIcon="info"
       textPreferenceKey="inlineDiffIndication"
       textPreferenceValue="true"
       textStylePreferenceKey="inlineDiffTextStyle"
@@ -523,12 +528,59 @@
       presentationLayer="1"
       showInNextPrevDropdownToolbarAction="false"
       showInNextPrevDropdownToolbarActionKey="showDeletionInlineDiffInNextPrevDropdownToolbarAction"
-      symbolicIcon="info"
       textPreferenceKey="deletionInlineDiffIndication"
       textPreferenceValue="true"
       textStylePreferenceKey="deletionInlineDiffTextStyle"
       textStylePreferenceValue="NONE"
       verticalRulerPreferenceKey="deletionInlineDiffIndicationInVerticalRuler"
+      verticalRulerPreferenceValue="false">
+</specification>
+<specification
+      annotationType="org.eclipse.compare.unifieddiff.internal.addition.ruler"
+      colorPreferenceKey="inlineDiffRulerColor"
+      colorPreferenceValue="40,140,40"
+      contributesToHeader="false"
+      highlightPreferenceKey="inlineDiffRulerIndicationHighlighting"
+      highlightPreferenceValue="false"
+      isGoToNextNavigationTarget="false"
+      isGoToNextNavigationTargetKey="inlineDiffRulerGoToNextNavigationTarget"
+      isGoToPreviousNavigationTarget="false"
+      isGoToPreviousNavigationTargetKey="inlineDiffRulerGoToPreviousNavigationTarget"
+      label="Inline Diff Addition (Overview Ruler)"
+      overviewRulerPreferenceKey="inlineDiffRulerIndicationInOverviewRuler"
+      overviewRulerPreferenceValue="true"
+      presentationLayer="1"
+      showInNextPrevDropdownToolbarAction="false"
+      showInNextPrevDropdownToolbarActionKey="showInlineDiffRulerInNextPrevDropdownToolbarAction"
+      textPreferenceKey="inlineDiffRulerIndication"
+      textPreferenceValue="false"
+      textStylePreferenceKey="inlineDiffRulerTextStyle"
+      textStylePreferenceValue="NONE"
+      verticalRulerPreferenceKey="inlineDiffRulerIndicationInVerticalRuler"
+      verticalRulerPreferenceValue="false">
+</specification>
+<specification
+      annotationType="org.eclipse.compare.unifieddiff.internal.deletion.ruler"
+      colorPreferenceKey="deletionInlineDiffRulerColor"
+      colorPreferenceValue="220,50,50"
+      contributesToHeader="false"
+      highlightPreferenceKey="deletionInlineDiffRulerIndicationHighlighting"
+      highlightPreferenceValue="false"
+      isGoToNextNavigationTarget="false"
+      isGoToNextNavigationTargetKey="deletionInlineDiffRulerGoToNextNavigationTarget"
+      isGoToPreviousNavigationTarget="false"
+      isGoToPreviousNavigationTargetKey="deletionInlineDiffRulerGoToPreviousNavigationTarget"
+      label="Inline Diff Deletion (Overview Ruler)"
+      overviewRulerPreferenceKey="deletionInlineDiffRulerIndicationInOverviewRuler"
+      overviewRulerPreferenceValue="true"
+      presentationLayer="1"
+      showInNextPrevDropdownToolbarAction="false"
+      showInNextPrevDropdownToolbarActionKey="showDeletionInlineDiffRulerInNextPrevDropdownToolbarAction"
+      textPreferenceKey="deletionInlineDiffRulerIndication"
+      textPreferenceValue="false"
+      textStylePreferenceKey="deletionInlineDiffRulerTextStyle"
+      textStylePreferenceValue="NONE"
+      verticalRulerPreferenceKey="deletionInlineDiffRulerIndicationInVerticalRuler"
       verticalRulerPreferenceValue="false">
 </specification>
 <specification
@@ -548,7 +600,6 @@
       presentationLayer="2"
       showInNextPrevDropdownToolbarAction="false"
       showInNextPrevDropdownToolbarActionKey="showDetailedInlineDiffInNextPrevDropdownToolbarAction"
-      symbolicIcon="info"
       textPreferenceKey="detailedInlineDiffIndication"
       textPreferenceValue="true"
       textStylePreferenceKey="detailedInlineDiffTextStyle"
@@ -573,7 +624,6 @@
       presentationLayer="2"
       showInNextPrevDropdownToolbarAction="false"
       showInNextPrevDropdownToolbarActionKey="showDetailedDeletionInlineDiffInNextPrevDropdownToolbarAction"
-      symbolicIcon="info"
       textPreferenceKey="detailedDeletionInlineDiffIndication"
       textPreferenceValue="true"
       textStylePreferenceKey="detailedDeletionInlineDiffTextStyle"
