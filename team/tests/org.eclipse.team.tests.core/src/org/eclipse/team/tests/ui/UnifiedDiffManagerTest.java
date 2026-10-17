@@ -62,6 +62,8 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.junit.jupiter.api.AfterEach;
@@ -480,6 +482,151 @@ public class UnifiedDiffManagerTest {
 	}
 
 	@Test
+	public void testNavigationCommandsUseTheUnifiedDiffHandlers() throws Exception {
+		setEditorContent("""
+				line one
+				line two
+				line three
+				line four
+				""");
+		assertTrue(UnifiedDiff.create(editor, """
+				line ONE changed
+				line two
+				line THREE changed
+				line four
+				""", UnifiedDiffMode.OVERLAY_READ_ONLY_MODE).open().isOK());
+
+		IAnnotationModel model = annotationModel();
+		List<Annotation> deletions = annotations(model, DELETION_ANNO_TYPE);
+		deletions.sort((left, right) -> Integer.compare(model.getPosition(left).offset, model.getPosition(right).offset));
+		assertEquals(2, deletions.size(), "the sample must produce two unified diffs");
+
+		Position first = model.getPosition(deletions.get(0));
+		Position second = model.getPosition(deletions.get(1));
+		waitForSelectedOffset(first.offset);
+
+		executeEditorCommand(ActionFactory.NEXT.getCommandId());
+		assertEquals(second.offset, viewer().getSelectedRange().x,
+				"The compare Next command must navigate to the next unified diff");
+
+		executeEditorCommand(ActionFactory.PREVIOUS.getCommandId());
+		assertEquals(first.offset, viewer().getSelectedRange().x,
+				"The compare Previous command must navigate to the previous unified diff");
+	}
+
+	@Test
+	public void testHideAllDiffsCommandDisposesTheUnifiedDiff() throws Exception {
+		setEditorContent(LEFT);
+
+		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.OVERLAY_READ_ONLY_MODE).open().isOK());
+		assertNotNull(UnifiedDiffManager.get(viewer()), "the unified diff must be registered before hiding it");
+
+		executeEditorCommand("org.eclipse.compare.hideAllDiffs"); //$NON-NLS-1$
+
+		assertNull(UnifiedDiffManager.get(viewer()), "Hide All Diffs must dispose the unified diff state");
+		assertEquals(0, countAnnotations(annotationModel(), DELETION_ANNO_TYPE));
+		assertEquals(0, countAnnotations(annotationModel(), DETAILED_DELETION_ANNO_TYPE));
+	}
+
+	@Test
+	public void testAcceptAllDiffsCommandAppliesAllChanges() throws Exception {
+		setEditorContent(LEFT);
+
+		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.OVERLAY_MODE).open().isOK());
+		assertNotNull(UnifiedDiffManager.get(viewer()), "the unified diff must be registered before accepting");
+
+		executeEditorCommand("org.eclipse.compare.acceptAllDiffs"); //$NON-NLS-1$
+
+		assertNull(UnifiedDiffManager.get(viewer()), "Accept All Diffs must dispose the unified diff state");
+		waitForDocumentContent(RIGHT);
+	}
+
+	@Test
+	public void testAcceptCurrentDiffCommandAppliesCurrentChange() throws Exception {
+		setEditorContent(LEFT);
+
+		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.OVERLAY_MODE).open().isOK());
+		IAnnotationModel model = annotationModel();
+		List<Annotation> deletions = annotations(model, DELETION_ANNO_TYPE);
+		assertEquals(1, deletions.size(), "the sample must produce exactly one unified diff");
+		Position pos = model.getPosition(deletions.get(0));
+
+		StyledText tw = viewer().getTextWidget();
+		fireMouseMove(tw, tw.getLinePixel(widgetLineOfModelOffset(viewer(), pos.offset)) + 2);
+		processEvents();
+
+		executeEditorCommand("org.eclipse.compare.acceptCurrentDiff"); //$NON-NLS-1$
+
+		waitForDocumentContent(RIGHT);
+	}
+
+	/**
+	 * The keyboard shortcut must work without the per-diff toolbar being open: a
+	 * user navigating with Next/Previous has no hover toolbar, so the current diff
+	 * is resolved from the caret instead.
+	 */
+	@Test
+	public void testAcceptCurrentDiffCommandAppliesDiffAtCaretWithoutToolbar() throws Exception {
+		setEditorContent(LEFT);
+
+		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.OVERLAY_MODE).open().isOK());
+		IAnnotationModel model = annotationModel();
+		List<Annotation> deletions = annotations(model, DELETION_ANNO_TYPE);
+		assertEquals(1, deletions.size(), "the sample must produce exactly one unified diff");
+		Position pos = model.getPosition(deletions.get(0));
+
+		// Place the caret inside the diff without ever hovering it, so no per-diff
+		// toolbar exists.
+		viewer().setSelectedRange(pos.offset, 0);
+		processEvents();
+		assertNull(viewer().getTextWidget().getData(TOOLBAR_COMPOSITE_FOR_ONE_DIFF_KEY),
+				"no per-diff toolbar must be open for this test to prove the caret fallback");
+
+		executeEditorCommand("org.eclipse.compare.acceptCurrentDiff"); //$NON-NLS-1$
+
+		waitForDocumentContent(RIGHT);
+	}
+
+	/**
+	 * Hide Current Diff removes a single diff. Like Accept Current Diff it must
+	 * resolve the diff from the caret when no hover toolbar is open, so the
+	 * keyboard shortcut works for keyboard-only navigation.
+	 */
+	@Test
+	public void testHideCurrentDiffCommandHidesDiffAtCaretWithoutToolbar() throws Exception {
+		setEditorContent("""
+				line one
+				line two
+				line three
+				line four
+				""");
+		assertTrue(UnifiedDiff.create(editor, """
+				line ONE changed
+				line two
+				line THREE changed
+				line four
+				""", UnifiedDiffMode.OVERLAY_READ_ONLY_MODE).open().isOK());
+
+		IAnnotationModel model = annotationModel();
+		List<Annotation> deletions = annotations(model, DELETION_ANNO_TYPE);
+		assertEquals(2, deletions.size(), "the sample must produce two unified diffs");
+		deletions.sort((left, right) -> Integer.compare(model.getPosition(left).offset, model.getPosition(right).offset));
+		Position first = model.getPosition(deletions.get(0));
+
+		// Caret on the first diff, no hover toolbar.
+		viewer().setSelectedRange(first.offset, 0);
+		processEvents();
+		assertNull(viewer().getTextWidget().getData(TOOLBAR_COMPOSITE_FOR_ONE_DIFF_KEY),
+				"no per-diff toolbar must be open for this test to prove the caret fallback");
+
+		executeEditorCommand("org.eclipse.compare.hideCurrentDiff"); //$NON-NLS-1$
+
+		assertEquals(1, UnifiedDiffManager.get(viewer()).size(),
+				"Hide Current Diff must remove only the diff at the caret, leaving the other one");
+		assertNotNull(UnifiedDiffManager.get(viewer()), "hiding one of two diffs must not dispose the unified diff");
+	}
+
+	@Test
 	public void testToolbarActionPresentationCanOverrideTextAndRemoveImage() throws BadLocationException {
 		setEditorContent(LEFT);
 
@@ -763,6 +910,50 @@ public class UnifiedDiffManagerTest {
 		tw.redraw();
 		tw.update();
 		processEvents();
+	}
+
+	private void executeEditorCommand(String commandId) throws Exception {
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().activate(editor);
+		IHandlerService handlerService = editor.getSite().getService(IHandlerService.class);
+		assertNotNull(handlerService, "editor site must provide the handler service");
+		handlerService.executeCommand(commandId, null);
+		processEvents();
+	}
+
+	private void waitForSelectedOffset(int expectedOffset) throws InterruptedException {
+		long deadline = System.currentTimeMillis() + 10_000;
+		while (System.currentTimeMillis() < deadline) {
+			forcePaintCycle(viewer().getTextWidget());
+			if (viewer().getSelectedRange().x == expectedOffset) {
+				return;
+			}
+			Thread.sleep(20);
+		}
+		assertEquals(expectedOffset, viewer().getSelectedRange().x,
+				"the unified diff must eventually select the first diff");
+	}
+
+	/**
+	 * Accepting a diff replaces the text only after the next paint (the manager
+	 * defers the document change via a paint listener so the line header minings
+	 * can be removed first). A build machine gives no guarantee the editor is ever
+	 * painted on its own, so the paint is forced and the document polled.
+	 */
+	private void waitForDocumentContent(String expected) throws InterruptedException {
+		// Arm the paint listener exactly once. Repeatedly forcing a paint would
+		// reschedule the manager's timerExec(100, r) with the same runnable on
+		// every pass, resetting the timer so it never elapses. After the single
+		// paint, only drain events and sleep so the deferred change can fire.
+		forcePaintCycle(viewer().getTextWidget());
+		long deadline = System.currentTimeMillis() + 10_000;
+		while (System.currentTimeMillis() < deadline) {
+			processEvents();
+			if (expected.equals(document().get())) {
+				return;
+			}
+			Thread.sleep(20);
+		}
+		assertEquals(expected, document().get(), "the accepted change must eventually reach the document");
 	}
 
 	private static void processEvents() {

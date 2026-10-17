@@ -168,6 +168,12 @@
             parentId="org.eclipse.ui.contexts.window"
             id="org.eclipse.compare.compareEditorScope">
       </context>
+      <context
+            name="%unifiedDiffContext.name"
+            description="%unifiedDiffContext.description"
+            parentId="org.eclipse.ui.textEditorScope"
+            id="org.eclipse.compare.unifiedDiffScope">
+      </context>
    </extension>
 
    <extension
@@ -220,6 +226,30 @@
             id="org.eclipse.compare.selectPreviousChange">
       </command>
       <command
+            name="%Command.hideAllDiffs.name"
+            description="%Command.hideAllDiffs.description"
+            categoryId="org.eclipse.compare.ui.category.compare"
+            id="org.eclipse.compare.hideAllDiffs">
+      </command>
+      <command
+            name="%Command.acceptAllDiffs.name"
+            description="%Command.acceptAllDiffs.description"
+            categoryId="org.eclipse.compare.ui.category.compare"
+            id="org.eclipse.compare.acceptAllDiffs">
+      </command>
+      <command
+            name="%Command.acceptCurrentDiff.name"
+            description="%Command.acceptCurrentDiff.description"
+            categoryId="org.eclipse.compare.ui.category.compare"
+            id="org.eclipse.compare.acceptCurrentDiff">
+      </command>
+      <command
+            name="%Command.hideCurrentDiff.name"
+            description="%Command.hideCurrentDiff.description"
+            categoryId="org.eclipse.compare.ui.category.compare"
+            id="org.eclipse.compare.hideCurrentDiff">
+      </command>
+      <command
             categoryId="org.eclipse.compare.ui.category.compare"
             description="%Command.ignoreWhiteSpace.description"
             id="org.eclipse.compare.ignoreWhiteSpace"
@@ -232,6 +262,34 @@
             id="org.eclipse.compare.compareWithOther"
             name="%Command.compareWithOther.name">
       </command>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="org.eclipse.compare.hideAllDiffs"
+            contextId="org.eclipse.compare.unifiedDiffScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="ESC">
+      </key>
+      <key
+            commandId="org.eclipse.compare.acceptCurrentDiff"
+            contextId="org.eclipse.compare.unifiedDiffScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M3+ENTER">
+      </key>
+      <key
+            commandId="org.eclipse.compare.hideCurrentDiff"
+            contextId="org.eclipse.compare.unifiedDiffScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M2+ESC">
+      </key>
+      <key
+            commandId="org.eclipse.compare.acceptAllDiffs"
+            contextId="org.eclipse.compare.unifiedDiffScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M2+M3+ENTER">
+      </key>
    </extension>
 
    <extension
