@@ -43,6 +43,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.terminal.control.ITerminalMouseListener;
+import org.eclipse.terminal.internal.model.CharWidth;
 import org.eclipse.terminal.model.ITerminalTextDataReadOnly;
 import org.eclipse.terminal.model.TerminalColor;
 
@@ -535,7 +536,38 @@ public class TextCanvas extends GridCanvas {
 
 	@Override
 	protected void drawLine(GC gc, int line, int x, int y, int colFirst, int colLast) {
+		// A wide character spans two cells and has to be drawn from the first of
+		// them. When the damaged area starts on the second one, widen the range so
+		// the glyph is drawn from its own origin. Clipping then keeps only the half
+		// that was actually damaged, which is the half that needed repainting.
+		if (isFillerCell(line, colFirst)) {
+			colFirst--;
+			x -= getCellWidth();
+		}
+		// Same at the other end: a wide character starting in the last cell of the
+		// range would be cut in half by the edge of the range.
+		if (isFillerCell(line, colLast)) {
+			colLast++;
+		}
 		fCellRenderer.drawLine(fCellCanvasModel, gc, line, x, y, colFirst, colLast);
+	}
+
+	/**
+	 * @return whether the cell holds the second half of a wide character
+	 */
+	private boolean isFillerCell(int line, int col) {
+		ITerminalTextDataReadOnly text = fCellCanvasModel.getTerminalText();
+		if (col <= 0 || col >= text.getWidth() || line < 0 || line >= text.getHeight()) {
+			return false;
+		}
+		char c = text.getChar(line, col);
+		char before = text.getChar(line, col - 1);
+		// the filler of a wide character of the BMP, or the low half of a surrogate
+		// pair, whose high half sits in the cell before
+		if (Character.isLowSurrogate(c)) {
+			return Character.isHighSurrogate(before);
+		}
+		return c == '\000' && !Character.isSurrogate(before) && CharWidth.of(before) == 2;
 	}
 
 	@Override
