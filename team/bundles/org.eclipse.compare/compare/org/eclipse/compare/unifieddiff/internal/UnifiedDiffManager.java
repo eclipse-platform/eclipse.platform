@@ -127,6 +127,7 @@ public class UnifiedDiffManager {
 	private static final String TOOLBAR_COMPOSITE_FOR_ALL_DIFFS_KEY = "TOOLBAR_COMPOSITE_FOR_ALL_DIFFS_KEY"; //$NON-NLS-1$
 	private static final String TOOLBAR_ACTION_PRESENTATIONS_KEY = "TOOLBAR_ACTION_PRESENTATIONS_KEY"; //$NON-NLS-1$
 	private static final Map<ITextViewer, List<UnifiedDiff>> diffsByViewer = new HashMap<>();
+	private static final Map<ITextViewer, IUnifiedDiffFileNavigator> fileNavigators = new HashMap<>();
 
 	/**
 
@@ -155,6 +156,33 @@ public class UnifiedDiffManager {
 		return presentations instanceof ToolbarActionPresentations result ? result : ToolbarActionPresentations.NONE;
 	}
 
+
+	/**
+	 * Attaches the navigator that takes the unified diff of the viewer on to other
+	 * files, or detaches it when <code>null</code>. It is detached when the diff is
+	 * disposed.
+	 */
+	public static void setFileNavigator(ITextViewer viewer, IUnifiedDiffFileNavigator navigator) {
+		if (navigator == null) {
+			fileNavigators.remove(viewer);
+		} else {
+			fileNavigators.put(viewer, navigator);
+		}
+	}
+
+	public static IUnifiedDiffFileNavigator getFileNavigator(ITextViewer viewer) {
+		return fileNavigators.get(viewer);
+	}
+
+	/**
+	 * Lets the file navigator of the viewer handle running past the first or last
+	 * diff. Returns <code>false</code> when navigation should wrap around within
+	 * the file.
+	 */
+	static boolean endReached(ITextViewer viewer, boolean next) {
+		IUnifiedDiffFileNavigator navigator = fileNavigators.get(viewer);
+		return navigator != null && navigator.endReached(next);
+	}
 
 	/**
 	 * Returns the annotation model the diffs of the given editor live in, or
@@ -329,8 +357,16 @@ public class UnifiedDiffManager {
 
 		if (unifiedDiffs.size() > 0) {
 			runAfterRepaintFinished(viewer.getTextWidget(), () -> {
-				Annotation firstAnno = getFirstAnnotationForUnifiedDiff(model, unifiedDiffs.get(0));
-				selectAndRevealAnno(viewer, model, firstAnno);
+				if (unifiedDiffs.isEmpty()) {
+					return;
+				}
+				IUnifiedDiffFileNavigator navigator = fileNavigators.get(viewer);
+				UnifiedDiff diff = navigator != null && navigator.startsAtLastDiff() ? unifiedDiffs.getLast()
+						: unifiedDiffs.get(0);
+				Annotation anno = getFirstAnnotationForUnifiedDiff(model, diff);
+				if (anno != null) {
+					selectAndRevealAnno(viewer, model, anno);
+				}
 			});
 		}
 		return Status.OK_STATUS;
@@ -1396,6 +1432,8 @@ public class UnifiedDiffManager {
 
 		@Override
 		public void widgetDisposed(DisposeEvent e) {
+			// the editor is closing, which does not finish its diffs
+			fileNavigators.remove(this.tv);
 			disposeUnifiedDiff(this.tv, this.model, (StyledText) e.getSource());
 		}
 	}
@@ -1547,6 +1585,14 @@ public class UnifiedDiffManager {
 	}
 
 	private static void addToolbarAction(ToolBarManager tm, Action action) {
+		if (action.getStyle() == IAction.AS_DROP_DOWN_MENU) {
+			// a wrapper would lose the menu
+			var actionItem = new ActionContributionItem(action);
+			actionItem.setMode(ActionContributionItem.MODE_FORCE_TEXT);
+			tm.add(actionItem);
+			tm.add(new Separator());
+			return;
+		}
 		Action a = null;
 		if (action.getImageDescriptor() != null) {
 			a = new Action(null, action.getImageDescriptor()) {
@@ -1751,6 +1797,11 @@ public class UnifiedDiffManager {
 	}
 
 	static void disposeUnifiedDiff(ITextViewer tv, IAnnotationModel model, StyledText tw) {
+		IUnifiedDiffFileNavigator navigator = fileNavigators.remove(tv);
+		if (navigator != null) {
+			// the caller may still be working on this viewer
+			Display.getDefault().asyncExec(navigator::diffsFinished);
+		}
 		disposeToolbarForOneDiff(getToolbarCompositeForOneDiff(tw), tv);
 		disposeToolbarForAllDiffs(getToolbarCompositeForAllDiffs(tw), tv);
 		var undoListener = (IDocumentUndoListener) tw.getData(UNDO_LISTENER_KEY);
