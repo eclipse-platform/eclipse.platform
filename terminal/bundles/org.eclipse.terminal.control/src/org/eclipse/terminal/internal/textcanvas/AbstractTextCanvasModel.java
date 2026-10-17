@@ -21,6 +21,7 @@ import java.util.List;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.terminal.connector.Logger;
+import org.eclipse.terminal.internal.model.CharWidth;
 import org.eclipse.terminal.model.ITerminalTextDataReadOnly;
 import org.eclipse.terminal.model.ITerminalTextDataSnapshot;
 import org.eclipse.terminal.model.TextRange;
@@ -427,8 +428,17 @@ abstract public class AbstractTextCanvasModel implements ITextCanvasModel {
 		}
 		text = text.substring(0, i + 1);
 		// </J2ME-CDC-1.1 version>
-		// null means space
-		return text.replace('\000', ' ');
+		// null means space, unless it is the filler of a wide character
+		StringBuilder scrubbed = new StringBuilder(text.length());
+		for (int j = 0; j < text.length(); j++) {
+			char c = text.charAt(j);
+			if (c != '\000') {
+				scrubbed.append(c);
+			} else if (!CharWidth.isFiller(text, j)) {
+				scrubbed.append(' ');
+			}
+		}
+		return scrubbed.toString();
 	}
 
 	/**
@@ -455,7 +465,11 @@ abstract public class AbstractTextCanvasModel implements ITextCanvasModel {
 			} else {
 				text = ""; //$NON-NLS-1$
 			}
-			buffer.append(text);
+			// Cells past the last character were never written to. They read as spaces
+			// because that is how an empty cell is drawn, but there is no text there to
+			// copy: on a line that ran on to the next one they are the room the fold
+			// left, and on one that ended they are the rest of the screen.
+			buffer.append(text.stripTrailing());
 			if (line < fSeletionEndLine && !fSelectionSnapshot.isWrappedLine(line)) {
 				buffer.append('\n');
 			}

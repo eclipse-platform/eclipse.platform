@@ -156,4 +156,15 @@ public interface ITerminalTextData extends ITerminalTextDataReadOnly {
 	 */
 	void setWrappedLine(int line);
 
+	/**
+	 * Says the line ends where it is drawn, undoing {@link #setWrappedLine(int)}.
+	 * A program that draws its own screen writes a line over and over, and what ran
+	 * on in one frame may end in the next.
+	 *
+	 * @param line line to mark, must be &gt;=0 and &lt; {@link #getHeight()}
+	 * @since 1.2
+	 */
+	default void clearWrappedLine(int line) {
+	}
+
 }
