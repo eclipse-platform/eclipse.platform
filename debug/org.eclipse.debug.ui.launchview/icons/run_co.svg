@@ -58,16 +58,6 @@
        gradientUnits="userSpaceOnUse"
        id="linearGradient6034"
        xlink:href="#linearGradient4741" />
-    <filter
-       id="filter3854"
-       x="-0.27279218"
-       width="1.5455826"
-       y="-0.29925984"
-       height="1.5985197">
-      <feGaussianBlur
-         stdDeviation="0.79164101"
-         id="feGaussianBlur3856" />
-    </filter>
   </defs>
   <metadata
      id="metadata7">
@@ -89,7 +79,7 @@
        d="m 9.000617,1046.9325 -6.9803119,-2.5603 -2.05187237,0 0,7.99 2.02030507,0 7.0118792,-2.5078"
        id="path3360" />
     <g
-       style="display:inline;fill:#ffffff;stroke:#ffffff;filter:url(#filter3854)"
+       style="display:inline;fill:#ffffff;stroke:#ffffff"
        id="layer1-6-4"
        transform="matrix(0.479092,0,0,0.43051303,2.2977699,599.01177)">
       <path

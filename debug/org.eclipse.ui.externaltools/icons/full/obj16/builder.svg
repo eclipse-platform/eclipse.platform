@@ -79,16 +79,6 @@
            style="fill:#ffffff;stroke:#ffffff;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dashoffset:0;display:inline" />
       </g>
     </mask>
-    <filter
-       id="filter21712"
-       x="-0.24914674"
-       width="1.4982935"
-       y="-0.63630788"
-       height="2.1892395">
-      <feGaussianBlur
-         stdDeviation="0.67237819"
-         id="feGaussianBlur21714" />
-    </filter>
     <linearGradient
        xlink:href="#linearGradient4994-6"
        id="linearGradient3867"
@@ -173,7 +163,7 @@
          mask="url(#mask20934)"
          id="g20926">
         <g
-           style="opacity:0.75;stroke:#ffffff;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;filter:url(#filter21712)"
+           style="opacity:0.75;stroke:#ffffff;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none"
            id="g20919">
           <g
              style="fill:#ffffff;stroke:#ffffff;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none"

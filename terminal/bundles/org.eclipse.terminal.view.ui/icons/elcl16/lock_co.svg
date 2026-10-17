@@ -108,17 +108,6 @@
          offset="1"
          id="stop5160" />
     </linearGradient>
-    <filter
-       color-interpolation-filters="sRGB"
-       id="filter5152"
-       x="-0.11338032"
-       y="-0.17825345"
-       width="1.2267606"
-       height="1.3565069">
-      <feGaussianBlur
-         stdDeviation="0.32374297"
-         id="feGaussianBlur5154" />
-    </filter>
     <linearGradient
        id="linearGradient4878">
       <stop
@@ -374,16 +363,6 @@
          rx="0.67081022"
          ry="0.67081022" />
     </mask>
-    <filter
-       id="filter9392"
-       x="-0.19209544"
-       width="1.3841909"
-       y="-0.16933755"
-       height="1.3386751">
-      <feGaussianBlur
-         stdDeviation="0.63281438"
-         id="feGaussianBlur9394" />
-    </filter>
   </defs>
   <metadata
      id="metadata7">
@@ -504,7 +483,7 @@
       <path
          id="path8589"
          d="m 3.96875,1043.3622 c -1.839313,0 -3.34375,1.4732 -3.34375,3.3125 l 0,0.3125 c -0.347633,0.1472 -0.59375,0.4741 -0.59375,0.875 l 0,3.5 c 0,0.5346 0.434192,0.9688 0.96875,0.9688 l 5.9375,0 c 0.534558,0 1,-0.4342 1,-0.9688 l 0,-3.5 c 0,-0.3852 -0.258682,-0.6877 -0.59375,-0.8437 l 0,-0.3438 c 0,-1.8416 -1.535687,-3.3125 -3.375,-3.3125 z m 0,1.8125 c 0.865247,0 1.53125,0.6385 1.53125,1.5 l 0,0.2188 -3.03125,0 0,-0.2188 c 0,-0.8653 0.634753,-1.5 1.5,-1.5 z"
-         style="font-size:medium;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:normal;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;baseline-shift:baseline;color:#000000;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.60714811;marker:none;visibility:visible;display:inline;overflow:visible;filter:url(#filter9392);enable-background:accumulate;font-family:Sans;-inkscape-font-specification:Sans" />
+         style="font-size:medium;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:normal;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;baseline-shift:baseline;color:#000000;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.60714811;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Sans;-inkscape-font-specification:Sans" />
     </g>
     <g
        id="g8451"
@@ -530,7 +509,7 @@
          height="6.8243604"
          width="10.729074"
          id="rect4838-4"
-         style="fill:none;stroke:url(#linearGradient8471);stroke-width:0.87896538;stroke-opacity:1;display:inline;filter:url(#filter5152)" />
+         style="fill:none;stroke:url(#linearGradient8471);stroke-width:0.87896538;stroke-opacity:1;display:inline" />
       <rect
          y="1045.48"
          x="-19.392597"
