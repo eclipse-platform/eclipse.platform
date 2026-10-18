@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2025 Wind River Systems, Inc. and others. All rights reserved.
+ * Copyright (c) 2012, 2026 Wind River Systems, Inc. and others. All rights reserved.
  * This program and the accompanying materials are made available under the terms
  * of the Eclipse Public License 2.0 which accompanies this distribution, and is
  * available at https://www.eclipse.org/legal/epl-2.0/
@@ -26,6 +26,7 @@ import org.eclipse.terminal.control.ITerminalViewControl;
 import org.eclipse.terminal.view.core.ITerminalsConnectorConstants;
 import org.eclipse.terminal.view.ui.IMementoHandler;
 import org.eclipse.terminal.view.ui.internal.UIPlugin;
+import org.eclipse.terminal.view.ui.internal.tabs.TabTerminalListener;
 import org.eclipse.terminal.view.ui.launcher.ILauncherDelegate;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.PlatformUI;
@@ -105,6 +106,10 @@ public class TerminalsViewMementoHandler {
 							((Boolean) properties.get(ITerminalsConnectorConstants.PROP_FORCE_NEW)).booleanValue());
 				}
 
+				if (properties.get(TabTerminalListener.PROP_CUSTOM_TITLE) instanceof String customTitle) {
+					connectionMemento.putString(TabTerminalListener.PROP_CUSTOM_TITLE, customTitle);
+				}
+
 				// Store the current encoding
 				ITerminalViewControl terminal = (ITerminalViewControl) item.getData();
 				String encoding = terminal != null ? terminal.getCharset().name() : null;
@@ -176,6 +181,13 @@ public class TerminalsViewMementoHandler {
 		if (connection.getBoolean(ITerminalsConnectorConstants.PROP_FORCE_NEW) != null) {
 			properties.put(ITerminalsConnectorConstants.PROP_FORCE_NEW,
 					connection.getBoolean(ITerminalsConnectorConstants.PROP_FORCE_NEW));
+		}
+
+		// Restore the user chosen title
+		String customTitle = connection.getString(TabTerminalListener.PROP_CUSTOM_TITLE);
+		if (customTitle != null) {
+			properties.put(ITerminalsConnectorConstants.PROP_TITLE, customTitle);
+			properties.put(TabTerminalListener.PROP_CUSTOM_TITLE, customTitle);
 		}
 
 		// Restore the encoding

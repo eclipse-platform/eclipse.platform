@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2025 Wind River Systems, Inc. and others. All rights reserved.
+ * Copyright (c) 2011, 2026 Wind River Systems, Inc. and others. All rights reserved.
  * This program and the accompanying materials are made available under the terms
  * of the Eclipse Public License 2.0 which accompanies this distribution, and is
  * available at https://www.eclipse.org/legal/epl-2.0/
@@ -29,6 +29,7 @@ import org.eclipse.terminal.view.ui.internal.Messages;
  */
 public class TabTerminalListener implements ITerminalListener {
 	private static final String TAB_TERMINAL_LISTENER = "TabTerminalListener"; //$NON-NLS-1$
+	public static final String PROP_CUSTOM_TITLE = "customTitle"; //$NON-NLS-1$
 	/* default */ final TabFolderManager tabFolderManager;
 	private CTabItem tabItem;
 	private String tabItemTitle;
@@ -140,7 +141,17 @@ public class TabTerminalListener implements ITerminalListener {
 
 			// New title must have value.
 			if (title != null) {
-				tabItemTitle = title;
+				if (requestor == TerminalTitleRequestor.MENU) {
+					tabItemTitle = title;
+					if (properties != null) {
+						// Remember the user chosen title
+						properties.put(PROP_CUSTOM_TITLE, title);
+					}
+				} else if (properties != null && properties.get(PROP_CUSTOM_TITLE) != null) {
+					return;
+				} else {
+					tabItemTitle = title;
+				}
 			}
 
 			// Update the tab item title
