@@ -13,8 +13,10 @@
 package org.eclipse.terminal.view.ui.internal.preferences;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.LinkOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -134,8 +136,7 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage 
 
 			String text = command.getText();
 			if (text != null && !"".equals(text.trim())) { //$NON-NLS-1$
-				IPath p = new Path(text.trim());
-				valid = p.toFile().isFile() && p.toFile().canRead() && p.toFile().canExecute();
+				valid = !resolveCommand(text).isEmpty();
 				if (!valid) {
 					message = Messages.PreferencePage_command_invalid;
 				}
@@ -655,11 +656,11 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage 
 		ScopedPreferenceStore prefs = UIPlugin.getScopedPreferences();
 
 		String commandText = command.getText();
-		IPath commandPath = new Path(commandText.trim());
-		prefs.setValue(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX,
-				commandPath.toFile().isFile() && commandPath.toFile().canRead() && commandPath.toFile().canExecute()
-						? commandPath.toOSString()
-						: ""); //$NON-NLS-1$
+		String commandPath = resolveCommand(commandText);
+		if (!commandPath.equals(commandText)) {
+			command.setText(commandPath);
+		}
+		prefs.setValue(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX, commandPath);
 
 		commandText = arguments.getText();
 		prefs.setValue(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX_ARGS,
@@ -693,6 +694,54 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage 
 		ExternalExecutablesManager.save(executables);
 
 		return super.performOk();
+	}
+
+	private String resolveCommand(String commandText) {
+		String text = commandText.trim();
+		if (text.isEmpty()) {
+			return ""; //$NON-NLS-1$
+		}
+		IPath commandPath = new Path(text);
+		if (isValidExecutable(commandPath.toFile())) {
+			return commandPath.toOSString();
+		}
+
+		if (commandText.contains("/") || (Platform.OS_WIN32.equals(Platform.getOS()) && commandText.contains("\\"))) { //$NON-NLS-1$//$NON-NLS-2$
+			return ""; //$NON-NLS-1$
+		}
+
+		String path = System.getenv("PATH"); //$NON-NLS-1$
+		if (path == null) {
+			return ""; //$NON-NLS-1$
+		}
+
+		String[] splitted = path.split(File.pathSeparator);
+		for (String element : splitted) {
+			try {
+				File file = new File(element);
+				if (text.equals(file.getName()) && isValidExecutable(file)) {
+					return toNormalizedOSPath(file);
+				}
+				File executable = new File(file, text);
+				if (isValidExecutable(executable)) {
+					return toNormalizedOSPath(executable);
+				}
+			} catch (IOException e) {
+				ILog.of(PreferencePage.class)
+						.warn("An error occured trying to find the path for " + text + " in " + element, e); //$NON-NLS-1$ //$NON-NLS-2$
+				// continue searching
+			}
+		}
+
+		return ""; //$NON-NLS-1$
+	}
+
+	private String toNormalizedOSPath(File file) throws IOException {
+		return file.toPath().normalize().toRealPath(LinkOption.NOFOLLOW_LINKS).toString();
+	}
+
+	private boolean isValidExecutable(File file) {
+		return file.isFile() && file.canRead() && file.canExecute();
 	}
 
 	@Override
