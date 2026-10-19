@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2025 Kichwa Coders Canada Inc. and others.
+ * Copyright (c) 2021, 2026 Kichwa Coders Canada Inc. and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -19,6 +19,9 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;
+import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.terminal.control.ITerminalViewControl;
 import org.eclipse.terminal.control.TerminalTitleRequestor;
 import org.eclipse.terminal.view.ui.internal.Messages;
@@ -29,6 +32,8 @@ import org.eclipse.terminal.view.ui.internal.tabs.TabFolderManager;
  */
 public class RenameTerminalAction extends AbstractTerminalAction {
 
+	private final TabFolderManager tabFolderManager;
+
 	/**
 	 * Constructor.
 	 *
@@ -38,6 +43,7 @@ public class RenameTerminalAction extends AbstractTerminalAction {
 		super(RenameTerminalAction.class.getName());
 
 		Assert.isNotNull(tabFolderManager);
+		this.tabFolderManager = tabFolderManager;
 		setupAction(Messages.RenameTerminalAction_menu, Messages.RenameTerminalAction_tooltip, (ImageDescriptor) null,
 				(ImageDescriptor) null, (ImageDescriptor) null, true);
 	}
@@ -48,11 +54,23 @@ public class RenameTerminalAction extends AbstractTerminalAction {
 		if (target == null) {
 			return;
 		}
+		String currentTitle = Messages.RenameTerminalAction_inputdialog_defaulttext;
+		CTabItem activeTabItem = tabFolderManager.getActiveTabItem();
+		if (activeTabItem != null && !activeTabItem.isDisposed()) {
+			currentTitle = activeTabItem.getText();
+		}
 		InputDialog inputDialog = new InputDialog(target.getControl().getShell(), //
 				Messages.RenameTerminalAction_inputdialog_title, //
 				Messages.RenameTerminalAction_inputdialog_prompt, //
-				Messages.RenameTerminalAction_inputdialog_defaulttext, //
-				null);
+				currentTitle, //
+				null) {
+				@Override
+				protected Control createDialogArea(Composite parent) {
+					Control area = super.createDialogArea(parent);
+					getText().selectAll();
+					return area;
+				}
+			};
 		if (inputDialog.open() == Window.OK) {
 			String value = inputDialog.getValue();
 			if (value != null) {
