@@ -27,7 +27,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -56,12 +55,15 @@ import org.eclipse.compare.ITypedElement;
 import org.eclipse.compare.internal.core.CompareSettings;
 import org.eclipse.compare.internal.merge.DocumentMerger.IDocumentMergerInput;
 import org.eclipse.compare.structuremergeviewer.ICompareInput;
+import org.eclipse.compare.structuremergeviewer.IDiffContainer;
+import org.eclipse.compare.structuremergeviewer.IDiffElement;
 import org.eclipse.compare.structuremergeviewer.IStructureCreator;
 import org.eclipse.compare.structuremergeviewer.SharedDocumentAdapterWrapper;
 import org.eclipse.compare.structuremergeviewer.StructureDiffViewer;
 import org.eclipse.compare.unifieddiff.UnifiedDiff;
 import org.eclipse.compare.unifieddiff.UnifiedDiffMode;
 import org.eclipse.compare.unifieddiff.internal.HideAllDiffsRunnable;
+import org.eclipse.compare.unifieddiff.internal.IUnifiedDiffFileNavigator;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -89,6 +91,7 @@ import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osgi.service.debug.DebugOptions;
@@ -681,16 +684,16 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		Job job = new Job(NLS.bind(CompareMessages.UnifiedDiff_preparing, input.getTitle())) {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				UnifiedDiffSource source;
+				UnifiedDiffStart start;
 				try {
-					source = prepareUnifiedDiff(input, monitor);
+					start = prepareUnifiedDiff(input, monitor);
 				} catch (OperationCanceledException e) {
 					return Status.CANCEL_STATUS;
 				}
 				if (monitor.isCanceled()) {
 					return Status.CANCEL_STATUS;
 				}
-				Display.getDefault().asyncExec(() -> openUnifiedDiffOrFallback(source, input, page, editor, activate));
+				Display.getDefault().asyncExec(() -> openUnifiedDiffOrFallback(start, input, page, editor, activate));
 				return Status.OK_STATUS;
 			}
 
@@ -703,19 +706,40 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		job.schedule();
 	}
 
-	private void openUnifiedDiffOrFallback(UnifiedDiffSource source, CompareEditorInput input, IWorkbenchPage page,
+	private void openUnifiedDiffOrFallback(UnifiedDiffStart start, CompareEditorInput input, IWorkbenchPage page,
 			IReusableEditor editor, boolean activate) {
-		if (source == null || !openUnifiedDiff(source, input, page, editor, activate)) {
+		if (start == null || !openUnifiedDiff(start, input, page, editor, activate)) {
 			openClassicCompareEditor(input, page, editor, activate);
 		}
 	}
 
-	private boolean openUnifiedDiff(UnifiedDiffSource source, CompareEditorInput input, IWorkbenchPage page,
+	private boolean openUnifiedDiff(UnifiedDiffStart start, CompareEditorInput input, IWorkbenchPage page,
 			IReusableEditor editor, boolean activate) {
 		IWorkbenchPage wpage = page != null ? page : getActivePage();
 		if (wpage == null) {
-			// no active workbench page; fall back to the classic compare editor path
 			return false;
+		}
+		if (start.files() == null) {
+			return openUnifiedDiff(start.source(), input, wpage, editor, activate, null, null) != null;
+		}
+		return new UnifiedDiffFiles(this, input, wpage, editor, start.files()).start(start.source());
+	}
+
+	/** The editor a unified diff was opened in, and whether it was opened for it. */
+	record OpenedUnifiedDiff(IEditorPart editorPart, ITextEditor textEditor, boolean openedHere) {
+	}
+
+	/**
+	 * Opens the unified diff of one file, attaching the given navigator and adding
+	 * the file selector to its toolbar when they are not <code>null</code>.
+	 * Returns <code>null</code> when the file cannot be shown as a unified diff.
+	 */
+	OpenedUnifiedDiff openUnifiedDiff(UnifiedDiffSource source, CompareEditorInput input, IWorkbenchPage page,
+			IReusableEditor editor, boolean activate, IUnifiedDiffFileNavigator navigator, Action fileSelector) {
+		IWorkbenchPage wpage = page != null ? page : getActivePage();
+		if (wpage == null) {
+			// no active workbench page; fall back to the classic compare editor path
+			return null;
 		}
 		// Only an editor opened here may be closed again when the diff cannot be
 		// applied after all; one the user already had open stays untouched.
@@ -723,25 +747,35 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		IEditorPart openedHere = null;
 		try {
 			IDocumentMergerInput mergerInput = findDocumentMergerInput(input, source.compareInput());
-			IEditorPart editorPart = wpage.openEditor(source.editorInput(),
+			IEditorPart openedPart = wpage.openEditor(source.editorInput(),
 					getEditorId(source.editorInput(), source.element()));
-			openedHere = editorPart == editorBefore ? null : editorPart;
+			openedHere = openedPart == editorBefore ? null : openedPart;
+			IEditorPart editorPart = openedPart;
 			if (editorPart instanceof MultiPageEditorPart mpe && mpe.getSelectedPage() instanceof IEditorPart selected) {
 				editorPart = selected;
 			}
 			if (!(editorPart instanceof ITextEditor textEditor)) {
 				closeIfOpenedHere(wpage, openedHere);
-				return false;
+				return null;
 			}
 			// A side that is not a workspace file, the version shown for a deleted file
 			// for example, is only worth overlaying when its content really loaded.
 			if (!(source.editorInput() instanceof IFileEditorInput) && !hasContent(textEditor)) {
 				closeIfOpenedHere(wpage, openedHere);
-				return false;
+				return null;
 			}
-			Action openTwoWayCompare = createOpenTwoWayCompareAction(input, page, editor, activate, textEditor);
+			ITextViewer viewer = textEditor.getAdapter(ITextViewer.class);
+			if (navigator != null && viewer != null) {
+				// attached first, so that opening already knows which diff to reveal
+				UnifiedDiffManager.setFileNavigator(viewer, navigator);
+			}
+			List<Action> actions = new ArrayList<>();
+			actions.add(createOpenTwoWayCompareAction(input, page, editor, activate, textEditor));
+			if (fileSelector != null) {
+				actions.add(fileSelector);
+			}
 			IStatus status = UnifiedDiff.create(textEditor, source.diffSource(), source.mode())
-					.additionalActions(Arrays.asList(openTwoWayCompare))
+					.additionalActions(actions)
 					.ignoreWhitespaceContributorFactory(
 							t -> mergerInput != null ? mergerInput.createIgnoreWhitespaceContributor(t)
 									: Optional.empty())
@@ -753,7 +787,10 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 			// The user canceled the diff, not the open: leave the text editor alone
 			// instead of falling back to the classic compare editor.
 			if (status.isOK() || status == UnifiedDiffManager.CANCELED_BY_USER) {
-				return true;
+				return new OpenedUnifiedDiff(openedPart, textEditor, openedHere != null);
+			}
+			if (viewer != null) {
+				UnifiedDiffManager.setFileNavigator(viewer, null);
 			}
 		} catch (PartInitException e) {
 			CompareUIPlugin.log(e);
@@ -761,7 +798,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		// The classic compare editor takes over, so the editor opened for the unified
 		// diff would only be a second editor on the same file without a comparison.
 		closeIfOpenedHere(wpage, openedHere);
-		return false;
+		return null;
 	}
 
 	private static boolean hasContent(ITextEditor editor) {
@@ -808,6 +845,11 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		Action openTwoWayCompare = new Action(null, image) {
 			@Override
 			public void run() {
+				ITextViewer viewer = textEditor.getAdapter(ITextViewer.class);
+				if (viewer != null) {
+					// leaving for the compare editor does not move on to another file
+					UnifiedDiffManager.setFileNavigator(viewer, null);
+				}
 				new HideAllDiffsRunnable(textEditor).run();
 				if (input.canRunAsJob()) {
 					openEditorInBackground(input, page, editor, activate);
@@ -863,8 +905,15 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		return id;
 	}
 
+	/**
+	 * What the unified diff opens on: a single file, or the first of the changed
+	 * files of a comparison of folders when <code>files</code> is set.
+	 */
+	private static record UnifiedDiffStart(UnifiedDiffSource source, List<UnifiedDiffFiles.ChangedFile> files) {
+	}
+
 	/** The editor to open, plus the side that is overlaid onto it as a diff. */
-	private static record UnifiedDiffSource(ICompareInput compareInput, IEditorInput editorInput,
+	static record UnifiedDiffSource(ICompareInput compareInput, IEditorInput editorInput,
 			ITypedElement element, UnifiedDiffMode mode, String diffSource) {
 	}
 
@@ -872,7 +921,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	 * Runs the input and collects what the unified diff needs, off the UI thread.
 	 * Returns <code>null</code> if the input cannot be shown as a unified diff.
 	 */
-	private UnifiedDiffSource prepareUnifiedDiff(CompareEditorInput input, IProgressMonitor monitor) {
+	private UnifiedDiffStart prepareUnifiedDiff(CompareEditorInput input, IProgressMonitor monitor) {
 		try {
 			input.run(monitor);
 		} catch (InterruptedException e) {
@@ -881,7 +930,91 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 			CompareUIPlugin.log(e);
 			return null;
 		}
-		return unifiedDiffSourceOf(input);
+		return unifiedDiffStartOf(input);
+	}
+
+	/**
+	 * Collects what the unified diff opens on from an input that has already been
+	 * run. Reads contents, so it must not be called on the UI thread. Returns
+	 * <code>null</code> if the input cannot be shown as a unified diff.
+	 */
+	private UnifiedDiffStart unifiedDiffStartOf(CompareEditorInput input) {
+		List<UnifiedDiffFiles.ChangedFile> files = changedFilesOf(input, true);
+		if (files == null) {
+			UnifiedDiffSource source = unifiedDiffSourceOf(input);
+			return source == null ? null : new UnifiedDiffStart(source, null);
+		}
+		if (files.isEmpty()) {
+			return null;
+		}
+		return new UnifiedDiffStart(sourceOf(files.get(0).compareInput()), files);
+	}
+
+	/**
+	 * Returns the changed files of a comparison of folders that qualify for the
+	 * unified diff, sorted by path, or <code>null</code> for a single file.
+	 * <code>readContents</code> reads every file, which leaves out binary files.
+	 */
+	static List<UnifiedDiffFiles.ChangedFile> changedFilesOf(CompareEditorInput input, boolean readContents) {
+		if (input == null || !(input.getCompareResult() instanceof IDiffContainer root) || !root.hasChildren()) {
+			return null;
+		}
+		List<UnifiedDiffFiles.ChangedFile> files = new ArrayList<>();
+		collectChangedFiles(root, "", readContents, files); //$NON-NLS-1$
+		files.sort(Comparator.comparing(UnifiedDiffFiles.ChangedFile::path));
+		return files;
+	}
+
+	private static void collectChangedFiles(IDiffContainer container, String prefix, boolean readContents,
+			List<UnifiedDiffFiles.ChangedFile> files) {
+		for (IDiffElement child : container.getChildren()) {
+			String path = prefix + child.getName();
+			if (child instanceof IDiffContainer folder && folder.hasChildren()) {
+				collectChangedFiles(folder, path + '/', readContents, files);
+			} else if (child instanceof ICompareInput file
+					// reading comes first: a revision has a document key only once its contents are fetched
+					&& !(readContents && isBinary(file)) && unifiedDiffCandidateOf(file) != null) {
+				files.add(new UnifiedDiffFiles.ChangedFile(file, path));
+			}
+		}
+	}
+
+	/** Whether either side has a NUL byte in its first 8000 bytes, which is how Git tells binary files apart. */
+	private static boolean isBinary(ICompareInput file) {
+		return isBinary(file.getLeft()) || isBinary(file.getRight());
+	}
+
+	private static boolean isBinary(ITypedElement element) {
+		if (!(element instanceof IStreamContentAccessor accessor)) {
+			return false;
+		}
+		try (InputStream contents = accessor.getContents()) {
+			if (contents == null) {
+				return false;
+			}
+			for (byte b : contents.readNBytes(8000)) {
+				if (b == 0) {
+					return true;
+				}
+			}
+		} catch (CoreException | IOException e) {
+			// unreadable content is left to the diff, which shows it as empty
+		}
+		return false;
+	}
+
+	/**
+	 * Collects what the unified diff needs for one file of a comparison. Reads the
+	 * side that supplies the diff, so it must not be called on the UI thread.
+	 * Returns <code>null</code> if the file cannot be shown as a unified diff.
+	 */
+	UnifiedDiffSource sourceOf(ICompareInput file) {
+		UnifiedDiffCandidate candidate = unifiedDiffCandidateOf(file);
+		if (candidate == null) {
+			return null;
+		}
+		return new UnifiedDiffSource(candidate.compareInput(), candidate.editorInput(), candidate.element(),
+				candidate.mode(), getSourceOf(candidate.diffSource()));
 	}
 
 	/**
@@ -891,14 +1024,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	 * diff.
 	 */
 	private UnifiedDiffSource unifiedDiffSourceOf(CompareEditorInput input) {
-		UnifiedDiffCandidate candidate = unifiedDiffCandidateOf(input);
-		if (candidate == null) {
-			return null;
-		}
-		// The other side supplies the diff source and is read here rather than on the
-		// UI thread.
-		return new UnifiedDiffSource(candidate.compareInput(), candidate.editorInput(), candidate.element(),
-				candidate.mode(), getSourceOf(candidate.diffSource()));
+		return input.getCompareResult() instanceof ICompareInput compareInput ? sourceOf(compareInput) : null;
 	}
 
 	/**
@@ -907,7 +1033,8 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	 * any content, so it is cheap enough for deciding whether to offer the switch.
 	 */
 	public static boolean canShowAsUnifiedDiff(CompareEditorInput input) {
-		return unifiedDiffCandidateOf(input) != null;
+		List<UnifiedDiffFiles.ChangedFile> files = changedFilesOf(input, false);
+		return files != null ? !files.isEmpty() : unifiedDiffCandidateOf(input) != null;
 	}
 
 	/**
@@ -932,6 +1059,10 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		if (input == null || !(input.getCompareResult() instanceof ICompareInput compareInput)) {
 			return null;
 		}
+		return unifiedDiffCandidateOf(compareInput);
+	}
+
+	private static UnifiedDiffCandidate unifiedDiffCandidateOf(ICompareInput compareInput) {
 		// A common ancestor (3-way input) is ignored; the unified diff renders a
 		// plain left-vs-right overlay.
 		ITypedElement left = compareInput.getLeft();
@@ -981,8 +1112,8 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				// The input already ran, so only the diff source has to be read here.
-				UnifiedDiffSource source = unifiedDiffSourceOf(input);
-				if (source == null || monitor.isCanceled()) {
+				UnifiedDiffStart start = unifiedDiffStartOf(input);
+				if (start == null || monitor.isCanceled()) {
 					return Status.CANCEL_STATUS;
 				}
 				Display.getDefault().asyncExec(() -> {
@@ -991,7 +1122,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 						// The comparison was closed while it was being prepared.
 						return;
 					}
-					if (openUnifiedDiff(source, input, wpage, null, true)) {
+					if (openUnifiedDiff(start, input, wpage, null, true)) {
 						// Prompts when the merge has unsaved changes.
 						wpage.closeEditor(compareEditor, true);
 					}
