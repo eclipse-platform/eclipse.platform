@@ -60,13 +60,15 @@ public interface IPreferenceKeys {
 	public final String PREF_INITIAL_CWD_ECLIPSE_WS = "eclipsews"; //$NON-NLS-1$
 
 	/**
-	 * Preference key: Local terminal default shell command on Unix hosts.
+	 * Preference key: Local terminal default shell command.
+	 * Despite the name, this preference key is used regardless of the operating system.
 	 * @since 4.1
 	 */
 	public final String PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX = PREF_TERMINAL + ".localTerminalDefaultShellUnix"; //$NON-NLS-1$
 
 	/**
-	 * Preference key: Local terminal default shell command arguments on Unix hosts.
+	 * Preference key: Local terminal default shell command arguments.
+	 * Despite the name, this preference key is used regardless of the operating system.
 	 * @since 4.1
 	 */
 	public final String PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX_ARGS = PREF_TERMINAL
