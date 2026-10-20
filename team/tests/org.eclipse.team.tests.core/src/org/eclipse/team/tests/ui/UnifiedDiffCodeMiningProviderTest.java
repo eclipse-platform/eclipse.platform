@@ -101,6 +101,8 @@ public class UnifiedDiffCodeMiningProviderTest {
 	private static final UnifiedDiffMode MODE = UnifiedDiffMode.OVERLAY_READ_ONLY_MODE;
 	private static final int CONTEXT_LINES = 3;
 	private static final int TIMEOUT_SECONDS = 10;
+	private static final String SYNTAX_LEFT = "old replacement\ncommon a\ncommon b\nold deletion\ncommon c\ncommon d\nold final\n";
+	private static final String SYNTAX_RIGHT = "new replacement extended\ncommon a\nnew addition\ncommon b\ncommon c\ncommon d\nnew final\n";
 
 	private Display display;
 	private Shell shell;
@@ -414,6 +416,152 @@ public class UnifiedDiffCodeMiningProviderTest {
 		}
 		assertThat(footers).as("a footer mining is used for the diff at the end of a document without trailing newline")
 				.isNotEmpty();
+	}
+
+	/**
+	 * The temporary document handed to the editor's presentation reconciler must
+	 * contain the replacements of earlier hunks. Parsers can otherwise reach a
+	 * later mining in the wrong grammar state and mark valid identifiers as errors.
+	 */
+	@Test
+	public void testSyntaxColoringAppliesPreviousDiffsInReplaceMode() throws Exception {
+		assertSyntaxColoringAppliesPreviousDiffs(UnifiedDiffMode.REPLACE_MODE);
+	}
+
+	@Test
+	public void testSyntaxColoringAppliesPreviousDiffsInOverlayMode() throws Exception {
+		assertSyntaxColoringAppliesPreviousDiffs(UnifiedDiffMode.OVERLAY_MODE);
+	}
+
+	@Test
+	public void testSyntaxColoringAppliesPreviousDiffsInReadOnlyOverlayMode() throws Exception {
+		assertSyntaxColoringAppliesPreviousDiffs(UnifiedDiffMode.OVERLAY_READ_ONLY_MODE);
+	}
+
+	@Test
+	public void testSyntaxColoringAppliesPreviousDiffsInRevertMode() throws Exception {
+		assertSyntaxColoringAppliesPreviousDiffs(UnifiedDiffMode.REVERT_MODE);
+	}
+
+	private void assertSyntaxColoringAppliesPreviousDiffs(UnifiedDiffMode mode) throws Exception {
+		List<String> scannedDocuments = new ArrayList<>();
+		viewer.unconfigure();
+		viewer.configure(syntaxColoringConfiguration(scannedDocuments));
+		switchToDocument(new Document(SYNTAX_LEFT));
+
+		assertTrue(open(SYNTAX_RIGHT, mode).isOK());
+		List<UnifiedDiff> diffs = UnifiedDiffManager.get(viewer);
+		assertThat(diffs).as("replacement, addition, deletion, and final replacement in " + mode).hasSize(4);
+		List<String> leftSides = diffs.stream().map(diff -> diff.leftStr).toList();
+		assertThat(leftSides)
+				.containsExactly("old replacement\n", "", "old deletion\n", "old final\n");
+		List<Boolean> miningSides = diffs.stream().map(UnifiedDiffCodeMiningProvider::needsCodeMining).toList();
+		if (UnifiedDiffMode.REPLACE_MODE.equals(mode)) {
+			assertThat(miningSides).as("left-side content displayed in replace mode")
+					.containsExactly(true, false, true, true);
+		} else {
+			assertThat(miningSides).as("right-side content displayed in " + mode)
+					.containsExactly(true, true, false, true);
+		}
+
+		UnifiedDiff finalDiff = diffs.get(3);
+		UnifiedDiffLineHeaderCodeMining finalMining = lineHeaderMiningFor(finalDiff);
+		draw(finalMining, scannedDocuments);
+
+		String expectedDocument = UnifiedDiffMode.REPLACE_MODE.equals(mode) ? SYNTAX_LEFT : SYNTAX_RIGHT;
+		assertThat(scannedDocuments).as("documents passed to syntax coloring in " + mode)
+				.contains(expectedDocument.substring(0, expectedDocument.length() - 1));
+	}
+
+	@Test
+	public void testSyntaxColoringUsesLiveOffsetsAfterApplyingEarlierOverlayDiff() throws Exception {
+		List<String> scannedDocuments = new ArrayList<>();
+		viewer.unconfigure();
+		viewer.configure(syntaxColoringConfiguration(scannedDocuments));
+		switchToDocument(new Document(SYNTAX_LEFT));
+		assertTrue(open(SYNTAX_RIGHT, UnifiedDiffMode.OVERLAY_MODE).isOK());
+
+		List<UnifiedDiff> diffs = UnifiedDiffManager.get(viewer);
+		UnifiedDiffLineHeaderCodeMining finalMining = lineHeaderMiningFor(diffs.get(3));
+		UnifiedDiff applied = diffs.remove(0);
+		document.replace(0, applied.leftStr.length(), "new replacement extended\n");
+
+		draw(finalMining, scannedDocuments);
+		assertThat(scannedDocuments).contains(SYNTAX_RIGHT.substring(0, SYNTAX_RIGHT.length() - 1));
+	}
+
+	@Test
+	public void testSyntaxColoringUsesLiveOffsetsAfterUndoingEarlierReplaceDiff() throws Exception {
+		List<String> scannedDocuments = new ArrayList<>();
+		viewer.unconfigure();
+		viewer.configure(syntaxColoringConfiguration(scannedDocuments));
+		switchToDocument(new Document(SYNTAX_LEFT));
+		assertTrue(open(SYNTAX_RIGHT, UnifiedDiffMode.REPLACE_MODE).isOK());
+
+		List<UnifiedDiff> diffs = UnifiedDiffManager.get(viewer);
+		UnifiedDiffLineHeaderCodeMining finalMining = lineHeaderMiningFor(diffs.get(3));
+		UnifiedDiff undone = diffs.remove(0);
+		document.replace(0, "new replacement extended\n".length(), undone.leftStr);
+
+		draw(finalMining, scannedDocuments);
+		assertThat(scannedDocuments).contains(SYNTAX_LEFT.substring(0, SYNTAX_LEFT.length() - 1));
+	}
+
+	@Test
+	public void testSyntaxColoringFallsBackWhenMiningOutlivesItsDiff() throws Exception {
+		List<String> scannedDocuments = new ArrayList<>();
+		viewer.unconfigure();
+		viewer.configure(syntaxColoringConfiguration(scannedDocuments));
+		switchToDocument(new Document(SYNTAX_LEFT));
+		assertTrue(open(SYNTAX_RIGHT, UnifiedDiffMode.OVERLAY_MODE).isOK());
+
+		List<UnifiedDiff> diffs = UnifiedDiffManager.get(viewer);
+		UnifiedDiff addition = diffs.get(1);
+		UnifiedDiffLineHeaderCodeMining staleMining = lineHeaderMiningFor(addition);
+		diffs.remove(addition);
+
+		draw(staleMining, scannedDocuments);
+		assertThat(scannedDocuments).contains("old replacement\ncommon a\nnew addition");
+	}
+
+	@Test
+	public void testSyntaxColoringScansAnnotationModelOnce() throws Exception {
+		List<String> scannedDocuments = new ArrayList<>();
+		viewer.unconfigure();
+		viewer.configure(syntaxColoringConfiguration(scannedDocuments));
+		CountingAnnotationModel countingModel = new CountingAnnotationModel();
+		switchToDocument(new Document(SYNTAX_LEFT), countingModel);
+		assertTrue(open(SYNTAX_RIGHT, UnifiedDiffMode.OVERLAY_MODE).isOK());
+
+		List<UnifiedDiff> diffs = UnifiedDiffManager.get(viewer);
+		UnifiedDiffLineHeaderCodeMining finalMining = lineHeaderMiningFor(diffs.get(3));
+		countingModel.resetIteratorCalls();
+
+		draw(finalMining, scannedDocuments);
+		assertEquals(1, countingModel.getIteratorCalls(),
+				"syntax coloring must collect all live diff positions in one annotation-model pass");
+	}
+
+	private UnifiedDiffLineHeaderCodeMining lineHeaderMiningFor(UnifiedDiff diff) throws Exception {
+		for (ICodeMining mining : provide()) {
+			if (mining instanceof UnifiedDiffLineHeaderCodeMining lineHeader
+					&& lineHeader.getUnifiedDiff() == diff) {
+				return lineHeader;
+			}
+		}
+		return fail("no line-header mining for diff at " + diff.leftStart);
+	}
+
+	private void draw(UnifiedDiffLineHeaderCodeMining mining, List<String> scannedDocuments) {
+		scannedDocuments.clear();
+		Image image = new Image(display, 400, 100);
+		GC gc = new GC(image);
+		try {
+			mining.draw(gc, viewer.getTextWidget(), null, 0, 0);
+		} finally {
+			gc.dispose();
+			image.dispose();
+		}
 	}
 
 	/**
@@ -984,11 +1132,23 @@ public class UnifiedDiffCodeMiningProviderTest {
 	 * A test configuration that colors all text and renders {@code public} in bold.
 	 */
 	private static SourceViewerConfiguration syntaxColoringConfiguration() {
+		return syntaxColoringConfiguration(null);
+	}
+
+	private static SourceViewerConfiguration syntaxColoringConfiguration(List<String> scannedDocuments) {
 		return new SourceViewerConfiguration() {
 			@Override
 			public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
 				PresentationReconciler reconciler = new PresentationReconciler();
-				RuleBasedScanner scanner = new RuleBasedScanner();
+				RuleBasedScanner scanner = new RuleBasedScanner() {
+					@Override
+					public void setRange(IDocument scannedDocument, int offset, int length) {
+						if (scannedDocuments != null) {
+							scannedDocuments.add(scannedDocument.get());
+						}
+						super.setRange(scannedDocument, offset, length);
+					}
+				};
 				Color fg = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_BLUE);
 				scanner.setDefaultReturnToken(new Token(new TextAttribute(fg)));
 				WordRule publicKeyword = new WordRule(new IWordDetector() {
@@ -1029,6 +1189,24 @@ public class UnifiedDiffCodeMiningProviderTest {
 		}
 	}
 
+	private static final class CountingAnnotationModel extends AnnotationModel {
+		private int iteratorCalls;
+
+		@Override
+		public Iterator<Annotation> getAnnotationIterator() {
+			iteratorCalls++;
+			return super.getAnnotationIterator();
+		}
+
+		int getIteratorCalls() {
+			return iteratorCalls;
+		}
+
+		void resetIteratorCalls() {
+			iteratorCalls = 0;
+		}
+	}
+
 	private void installCodeMinings(ICodeMiningProvider... providers) {
 		viewer.setCodeMiningProviders(providers);
 		AnnotationPainter painter = new AnnotationPainter(viewer, null);
@@ -1037,7 +1215,11 @@ public class UnifiedDiffCodeMiningProviderTest {
 	}
 
 	private IStatus open(String source) {
-		return UnifiedDiffManager.open(viewer, document, model, null, source, MODE, null, null, null, null,
+		return open(source, MODE);
+	}
+
+	private IStatus open(String source, UnifiedDiffMode mode) {
+		return UnifiedDiffManager.open(viewer, document, model, null, source, mode, null, null, null, null,
 				MergeViewerContentProvider.LEFT_CONTRIBUTOR, MergeViewerContentProvider.RIGHT_CONTRIBUTOR, true,
 				CONTEXT_LINES);
 	}
@@ -1243,9 +1425,13 @@ public class UnifiedDiffCodeMiningProviderTest {
 	 * the old document, connects it to the new one, and re-wires the viewer.
 	 */
 	private void switchToDocument(IDocument newDocument) {
+		switchToDocument(newDocument, new AnnotationModel());
+	}
+
+	private void switchToDocument(IDocument newDocument, IAnnotationModel newModel) {
 		DocumentUndoManagerRegistry.disconnect(document);
 		document = newDocument;
-		model = new AnnotationModel();
+		model = newModel;
 		viewer.setDocument(document, model);
 		DocumentUndoManagerRegistry.connect(document);
 		installCodeMinings(provider);
