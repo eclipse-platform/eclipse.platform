@@ -586,7 +586,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			overlayViewer.setDocument(new Document(txt));
 			List<StyleRange> backgrounds = createDetailedDiffBackgroundRangesRaw(mining.getUnifiedDiff(),
 					mining.getTabWidth(), mining.getDetailedDiffColor());
-			List<StyleRange> foregrounds = computeStyleRanges(viewer, mining.getUnifiedDiff().leftStart, txt);
+			List<StyleRange> foregrounds = computeStyleRanges(viewer, mining.getUnifiedDiff(), txt);
 			List<StyleRange> ranges = mergeStyleRanges(backgrounds, foregrounds);
 			overlay.setStyleRanges(ranges.toArray(new StyleRange[] {}));
 			installWhitespacePainter(overlayViewer);
@@ -741,7 +741,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 
 		private List<StyleRange> styleRanges(String label) {
 			if (styleRanges == null) {
-				styleRanges = computeStyleRanges(viewer, diff.leftStart, label);
+				styleRanges = computeStyleRanges(viewer, diff, label);
 			}
 			return styleRanges;
 		}
@@ -1454,7 +1454,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		gc.setAlpha(savedAlpha);
 	}
 
-	private static List<StyleRange> computeStyleRanges(ITextViewer v, int offset, String source) {
+	private static List<StyleRange> computeStyleRanges(ITextViewer v, UnifiedDiff diff, String source) {
 		List<StyleRange> result = new ArrayList<>();
 		if (!(v instanceof SourceViewer sv)) {
 			return result;
@@ -1464,7 +1464,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			return result;
 		}
 		try {
-			String prefix = originalDocument.get(0, offset /* diff.leftStart */);
+			String prefix = prefixWithPreviousDiffs(originalDocument, sv.getAnnotationModel(), diff);
 			IDocument document = new Document(prefix + source);
 			IRegion damage = new Region(prefix.length(), source.length());
 			result = sv.computeStyleRanges(document, damage);
@@ -1480,6 +1480,72 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		} catch (BadLocationException e) {
 			return result;
 		}
+	}
+
+	/**
+	 * Reconstructs the source preceding {@code diff} on the side displayed by its
+	 * code mining. Syntax coloring is stateful for languages whose grammar depends
+	 * on earlier declarations, so leaving preceding diffs unapplied can color the
+	 * current mining as invalid source.
+	 */
+	private static String prefixWithPreviousDiffs(IDocument document, IAnnotationModel model, UnifiedDiff diff)
+			throws BadLocationException {
+		// Replace mode has already changed the document to the right side while its
+		// minings show the left side. Every other mode leaves the document on the
+		// left side and shows the right side in its minings.
+		boolean replaceMode = UnifiedDiffMode.REPLACE_MODE.equals(diff.mode);
+		Map<UnifiedDiff, Position> positions = unifiedDiffPositions(model);
+		Position currentPosition = positions.get(diff);
+		int end = currentPosition == null ? diff.leftStart : currentPosition.offset;
+		end = Math.clamp(end, 0, document.getLength());
+		int currentIndex = diff.container.indexOf(diff);
+		if (currentIndex < 0) {
+			// A mining can briefly outlive its diff while asynchronous annotation and
+			// code-mining updates converge. In that case, use the current document prefix
+			// instead of applying unrelated later diffs from the container.
+			return document.get(0, end);
+		}
+		int documentOffset = 0;
+		StringBuilder prefix = new StringBuilder(end);
+		for (int i = 0; i < currentIndex; i++) {
+			UnifiedDiff previous = diff.container.get(i);
+			Position previousPosition = positions.get(previous);
+			if (model != null && previousPosition == null) {
+				// This diff is already being removed. Its document edit, if any, is applied
+				// independently, so do not apply its replacement a second time here.
+				continue;
+			}
+			int previousStart = previousPosition == null ? previous.leftStart : previousPosition.offset;
+			int previousLength = previousPosition == null
+					? (replaceMode ? previous.rightLength : previous.leftLength)
+					: previousPosition.length;
+			if (previousStart < documentOffset || previousStart + previousLength > end) {
+				return document.get(0, end);
+			}
+			prefix.append(document.get(documentOffset, previousStart - documentOffset));
+			prefix.append(replaceMode ? previous.leftStr : previous.rightStr);
+			documentOffset = previousStart + previousLength;
+		}
+		prefix.append(document.get(documentOffset, end - documentOffset));
+		return prefix.toString();
+	}
+
+	private static Map<UnifiedDiff, Position> unifiedDiffPositions(IAnnotationModel model) {
+		Map<UnifiedDiff, Position> positions = new IdentityHashMap<>();
+		if (model == null) {
+			return positions;
+		}
+		Iterator<Annotation> annotations = model.getAnnotationIterator();
+		while (annotations.hasNext()) {
+			Annotation annotation = annotations.next();
+			if (annotation instanceof UnifiedDiffManager.UnifiedDiffAnnotation unifiedDiffAnnotation) {
+				Position position = model.getPosition(annotation);
+				if (position != null && !position.isDeleted()) {
+					positions.put(unifiedDiffAnnotation.getUnifiedDiff(), position);
+				}
+			}
+		}
+		return positions;
 	}
 
 	public static class UnifiedDiffLineHeaderCodeMining extends LineHeaderCodeMining implements IUnifiedDiffCodeMining {
@@ -1568,7 +1634,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		 */
 		private List<StyleRange> styleRanges(String label) {
 			if (styleRanges == null) {
-				styleRanges = computeStyleRanges(viewer, diff.leftStart, label);
+				styleRanges = computeStyleRanges(viewer, diff, label);
 			}
 			return styleRanges;
 		}
