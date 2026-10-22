@@ -654,5 +654,8 @@ abstract public class AbstractITerminalTextDataTest {
 		assertTrue(term.isWrappedLine(3));
 		term.cleanLine(0);
 		assertFalse(term.isWrappedLine(0));
+		term.setWrappedLine(2);
+		term.clearWrappedLine(2);
+		assertFalse(term.isWrappedLine(2));
 	}
 }
