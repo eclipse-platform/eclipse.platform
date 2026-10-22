@@ -569,6 +569,70 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 		return getCtlText().getShell();
 	}
 
+	/**
+	 * The sequences above are sent only when no modifier is held, so a program was
+	 * never told about Ctrl+End and the rest of them. xterm spells a modified
+	 * special key as the plain one carrying the modifier as a parameter, which is
+	 * what this builds. Keys the switch already answered never reach here, so what
+	 * works today keeps working.
+	 *
+	 * @return the sequence, or null when the key is not one that is spelled this way
+	 */
+	public static String modifiedSpecialKey(int keyCode, int modifierKeys) {
+		int modifier = 1 + ((modifierKeys & SWT.SHIFT) != 0 ? 1 : 0) + ((modifierKeys & SWT.ALT) != 0 ? 2 : 0)
+				+ ((modifierKeys & SWT.CTRL) != 0 ? 4 : 0);
+		if (modifier == 1) {
+			// Something held that xterm has no spelling for, the Mac's Cmd among them.
+			return null;
+		}
+		switch (keyCode) {
+		case 0x1000001: // Up arrow.
+			return "\u001b[1;" + modifier + 'A'; //$NON-NLS-1$
+		case 0x1000002: // Down arrow.
+			return "\u001b[1;" + modifier + 'B'; //$NON-NLS-1$
+		case 0x1000003: // Left arrow.
+			return "\u001b[1;" + modifier + 'D'; //$NON-NLS-1$
+		case 0x1000004: // Right arrow.
+			return "\u001b[1;" + modifier + 'C'; //$NON-NLS-1$
+		case 0x1000005: // PgUp key.
+			return "\u001b[5;" + modifier + '~'; //$NON-NLS-1$
+		case 0x1000006: // PgDn key.
+			return "\u001b[6;" + modifier + '~'; //$NON-NLS-1$
+		case 0x1000007: // Home key.
+			return "\u001b[1;" + modifier + 'H'; //$NON-NLS-1$
+		case 0x1000008: // End key.
+			return "\u001b[1;" + modifier + 'F'; //$NON-NLS-1$
+		case 0x1000009: // Insert.
+			return "\u001b[2;" + modifier + '~'; //$NON-NLS-1$
+		case 0x100000a: // F1, which xterm spells with a letter like the arrows.
+			return "\u001b[1;" + modifier + 'P'; //$NON-NLS-1$
+		case 0x100000b: // F2.
+			return "\u001b[1;" + modifier + 'Q'; //$NON-NLS-1$
+		case 0x100000c: // F3.
+			return "\u001b[1;" + modifier + 'R'; //$NON-NLS-1$
+		case 0x100000d: // F4.
+			return "\u001b[1;" + modifier + 'S'; //$NON-NLS-1$
+		case 0x100000e: // F5, and from here on a number, with 16 and 22 left out.
+			return "\u001b[15;" + modifier + '~'; //$NON-NLS-1$
+		case 0x100000f: // F6.
+			return "\u001b[17;" + modifier + '~'; //$NON-NLS-1$
+		case 0x1000010: // F7.
+			return "\u001b[18;" + modifier + '~'; //$NON-NLS-1$
+		case 0x1000011: // F8.
+			return "\u001b[19;" + modifier + '~'; //$NON-NLS-1$
+		case 0x1000012: // F9.
+			return "\u001b[20;" + modifier + '~'; //$NON-NLS-1$
+		case 0x1000013: // F10.
+			return "\u001b[21;" + modifier + '~'; //$NON-NLS-1$
+		case 0x1000014: // F11.
+			return "\u001b[23;" + modifier + '~'; //$NON-NLS-1$
+		case 0x1000015: // F12.
+			return "\u001b[24;" + modifier + '~'; //$NON-NLS-1$
+		default:
+			return null;
+		}
+	}
+
 	protected void sendChar(char chKey, boolean altKeyPressed) {
 		try {
 			int byteToSend = chKey;
@@ -1148,6 +1212,10 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 					// the user presses SHIFT, CONTROL, ALT, and any other key not
 					// handled by the above cases.
 					break;
+				}
+
+				if (escSeq == null) {
+					escSeq = modifiedSpecialKey(event.keyCode, modifierKeys);
 				}
 
 				if (escSeq == null) {
