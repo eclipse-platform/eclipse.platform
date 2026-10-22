@@ -90,4 +90,18 @@ public interface ITerminalTextDataReadOnly {
 	 */
 	boolean isWrappedLine(int line);
 
+	/**
+	 * A grapheme cluster is drawn in two cells however many characters make it up:
+	 * an emoji joined to others, or given a skin tone or a presentation selector.
+	 * The cells hold its first character; this is the whole of it.
+	 *
+	 * @param line
+	 * @param column the first of the two cells
+	 * @return the cluster, or null where the cells hold nothing more than they show
+	 * @since 1.2
+	 */
+	default String getCluster(int line, int column) {
+		return null;
+	}
+
 }
