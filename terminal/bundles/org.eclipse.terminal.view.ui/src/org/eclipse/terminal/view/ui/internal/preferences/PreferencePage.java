@@ -134,8 +134,7 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage 
 
 			String text = command.getText();
 			if (text != null && !"".equals(text.trim())) { //$NON-NLS-1$
-				IPath p = new Path(text.trim());
-				valid = p.toFile().isFile() && p.toFile().canRead() && p.toFile().canExecute();
+				valid = !resolveCommand(text).isEmpty();
 				if (!valid) {
 					message = Messages.PreferencePage_command_invalid;
 				}
@@ -655,11 +654,11 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage 
 		ScopedPreferenceStore prefs = UIPlugin.getScopedPreferences();
 
 		String commandText = command.getText();
-		IPath commandPath = new Path(commandText.trim());
-		prefs.setValue(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX,
-				commandPath.toFile().isFile() && commandPath.toFile().canRead() && commandPath.toFile().canExecute()
-						? commandPath.toOSString()
-						: ""); //$NON-NLS-1$
+		String commandPath = resolveCommand(commandText);
+		if (!commandPath.equals(commandText)) {
+			command.setText(commandPath);
+		}
+		prefs.setValue(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX, commandPath);
 
 		commandText = arguments.getText();
 		prefs.setValue(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX_ARGS,
@@ -693,6 +692,44 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage 
 		ExternalExecutablesManager.save(executables);
 
 		return super.performOk();
+	}
+
+	private String resolveCommand(String commandText) {
+		String text = commandText.trim();
+		if (text.isEmpty()) {
+			return ""; //$NON-NLS-1$
+		}
+		IPath commandPath = new Path(text);
+		if (isValidExecutable(commandPath.toFile())) {
+			return commandPath.toOSString();
+		}
+
+		if (commandText.contains("/") || (Platform.OS_WIN32.equals(Platform.getOS()) && commandText.contains("\\"))) { //$NON-NLS-1$//$NON-NLS-2$
+			return ""; //$NON-NLS-1$
+		}
+
+		String path = System.getenv("PATH"); //$NON-NLS-1$
+		if (path == null) {
+			return ""; //$NON-NLS-1$
+		}
+
+		String[] splitted = path.split(Platform.OS_WIN32.equals(Platform.getOS()) ? ";" : ":"); //$NON-NLS-1$//$NON-NLS-2$
+		for (String element : splitted) {
+			File file = new File(element);
+			if (text.equals(file.getName()) && isValidExecutable(file)) {
+				return file.getAbsolutePath();
+			}
+			File executable = new File(file, text);
+			if (isValidExecutable(executable)) {
+				return executable.getAbsolutePath();
+			}
+		}
+
+		return ""; //$NON-NLS-1$
+	}
+
+	private boolean isValidExecutable(File file) {
+		return file.isFile() && file.canRead() && file.canExecute();
 	}
 
 	@Override
