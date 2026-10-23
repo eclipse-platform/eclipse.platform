@@ -1276,23 +1276,11 @@ public class UnifiedDiffManagerTest {
 	 * Accepting a diff replaces the text only after the next paint (the manager
 	 * defers the document change via a paint listener so the line header minings
 	 * can be removed first). A build machine gives no guarantee the editor is ever
-	 * painted on its own, so the paint is forced and the document polled.
+	 * painted on its own, so a synthetic paint is dispatched and the document polled.
 	 */
-	private void waitForDocumentContent(String expected) throws InterruptedException {
-		// Arm the paint listener exactly once. Repeatedly forcing a paint would
-		// reschedule the manager's timerExec(100, r) with the same runnable on
-		// every pass, resetting the timer so it never elapses. After the single
-		// paint, only drain events and sleep so the deferred change can fire.
-		forcePaintCycle(viewer().getTextWidget());
-		long deadline = System.currentTimeMillis() + 10_000;
-		while (System.currentTimeMillis() < deadline) {
-			processEvents();
-			if (expected.equals(document().get())) {
-				return;
-			}
-			Thread.sleep(20);
-		}
-		assertEquals(expected, document().get(), "the accepted change must eventually reach the document");
+	private void waitForDocumentContent(String expected) {
+		assertTrue(waitForDocument(expected, 10_000),
+				"the accepted change must eventually reach the document");
 	}
 
 	private static void processEvents() {
