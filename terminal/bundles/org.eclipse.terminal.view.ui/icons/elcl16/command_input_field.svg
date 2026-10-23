@@ -211,16 +211,6 @@
        x2="12"
        y2="1052.3622"
        gradientUnits="userSpaceOnUse" />
-    <filter
-       id="filter6175"
-       x="-0.25333333"
-       width="1.5066667"
-       y="-0.228"
-       height="1.456">
-      <feGaussianBlur
-         stdDeviation="0.95"
-         id="feGaussianBlur6177" />
-    </filter>
     <mask
        maskUnits="userSpaceOnUse"
        id="mask6199">
@@ -311,7 +301,7 @@
          height="10"
          width="9"
          id="rect6070-1"
-         style="fill:#000000;fill-opacity:1;stroke:none;display:inline;filter:url(#filter6175);opacity:0.5" />
+         style="fill:#000000;fill-opacity:1;stroke:none;display:inline;opacity:0.5" />
     </g>
     <rect
        style="fill:url(#linearGradient6094);fill-opacity:1;stroke:none"

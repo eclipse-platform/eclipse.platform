@@ -48,17 +48,6 @@
          offset="1"
          id="stop7588-5" />
     </linearGradient>
-    <filter
-       style="color-interpolation-filters:sRGB"
-       id="filter5779"
-       x="-0.13222047"
-       width="1.2644409"
-       y="-0.10664799"
-       height="1.213296">
-      <feGaussianBlur
-         stdDeviation="0.075880519"
-         id="feGaussianBlur5781" />
-    </filter>
     <linearGradient
        id="linearGradient983">
       <stop
@@ -429,7 +418,7 @@
     <path
        id="path7602-2-3"
        d="m 27.55363,1041.8824 -0.722164,-0.081 c 0,0 -0.291655,0.1949 -0.188749,0.4208 0.103439,0.2263 0.514635,0.3938 0.600479,0.4391 0.08531,0.045 0.520692,0.9447 0.692273,0.8391 0.171581,-0.1056 -0.06394,-1.2385 -0.06394,-1.2385 z"
-       style="display:inline;opacity:0.85714285;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.98257542;filter:url(#filter5779)"
+       style="display:inline;opacity:0.85714285;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.98257542"
        transform="matrix(0,1.3170263,1.4547054,0,-1511.5359,1010.5183)" />
   </g>
 </svg>
