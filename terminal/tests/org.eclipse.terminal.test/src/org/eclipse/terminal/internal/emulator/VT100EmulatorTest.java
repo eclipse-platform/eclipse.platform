@@ -274,6 +274,21 @@ public class VT100EmulatorTest {
 		assertAll(() -> assertCursorLocation(0, 0), () -> assertTextEquals(""));
 	}
 
+	@Test
+	public void testClearScreenKeepsItInHistory() {
+		data.setMaxHeight(1000);
+		for (int i = 0; i < 30; i++) {
+			run("Hello " + i + "\r\n");
+		}
+		// what ConPTY sends at the start of every connection on Windows
+		run(CLEAR_ENTIRE_SCREEN + "\u001b[m" + CURSOR_POSITION_TOP_LEFT + "prompt$ ");
+		int top = data.getHeight() - WINDOW_LINES; // first line of the screen
+		assertAll(() -> assertEquals("Hello 29", new String(data.getChars(top - 1)).trim()),
+				() -> assertEquals("Hello 0", new String(data.getChars(0)).trim()),
+				() -> assertEquals("prompt$", new String(data.getChars(top)).replace('\000', ' ').trim()),
+				() -> assertCursorLocation(top, 8)); // the top of the screen, counted in the buffer
+	}
+
 	/**
 	 * Runs what "up arrow" would send back to terminal in less/man/etc.
 	 */
