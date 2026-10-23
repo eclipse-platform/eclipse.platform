@@ -18,6 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.debug.core.model.Breakpoint;
 import org.eclipse.debug.internal.ui.DelegatingModelPresentation;
+import org.eclipse.debug.internal.ui.IInternalDebugUIConstants;
 import org.eclipse.debug.ui.IDebugModelPresentation;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -145,7 +146,8 @@ public class DebugElementHelper {
 
 		if (element instanceof Breakpoint breakpoint) {
 			if (breakpoint.getBreakpointLabel() != null) {
-				return new RGB(255, 0, 0);
+				RGB rgb = JFaceResources.getColorRegistry().getRGB(IInternalDebugUIConstants.THEME_BREAKPOINT_LABEL_COLOR);
+				return rgb != null ? rgb : new RGB(255, 0, 0);
 			}
 			return null;
 		}

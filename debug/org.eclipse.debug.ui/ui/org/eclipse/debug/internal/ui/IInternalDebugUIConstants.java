@@ -380,6 +380,10 @@ public interface IInternalDebugUIConstants {
 	 */
 	String THEME_CONSOLE_COLOR_STD_ERR = "org.eclipse.debug.ui.console.stream.err"; //$NON-NLS-1$
 
+	/**
+	 * Theme color definition for the label of breakpoints with a custom label.
+	 */
+	String THEME_BREAKPOINT_LABEL_COLOR = "org.eclipse.debug.ui.BreakpointLabelColor"; //$NON-NLS-1$
 
 	/**
 	 * Boolean preference indicating if launch action should launch or terminate

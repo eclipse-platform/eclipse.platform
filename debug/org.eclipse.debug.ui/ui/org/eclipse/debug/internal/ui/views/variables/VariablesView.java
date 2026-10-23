@@ -40,6 +40,7 @@ import org.eclipse.debug.internal.ui.DebugPluginImages;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.DelegatingModelPresentation;
 import org.eclipse.debug.internal.ui.IDebugHelpContextIds;
+import org.eclipse.debug.internal.ui.IInternalDebugUIConstants;
 import org.eclipse.debug.internal.ui.LazyModelPresentation;
 import org.eclipse.debug.internal.ui.SWTFactory;
 import org.eclipse.debug.internal.ui.VariablesViewModelPresentation;
@@ -422,6 +423,7 @@ public class VariablesView extends AbstractDebugView implements IDebugContextLis
 		getSite().getWorkbenchWindow().removePerspectiveListener(this);
 		DebugUIPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(this);
 		JFaceResources.getFontRegistry().removeListener(this);
+		JFaceResources.getColorRegistry().removeListener(this);
 		TreeModelViewer viewer = getVariablesViewer();
 		if (viewer != null) {
 			viewer.removeModelChangedListener(this);
@@ -489,7 +491,8 @@ public class VariablesView extends AbstractDebugView implements IDebugContextLis
 		String propertyName= event.getProperty();
 		if (propertyName.equals(IDebugUIConstants.PREF_CHANGED_DEBUG_ELEMENT_COLOR) ||
 				propertyName.equals(IDebugUIConstants.PREF_CHANGED_VALUE_BACKGROUND) ||
-				propertyName.equals(IDebugUIConstants.PREF_VARIABLE_TEXT_FONT)) {
+				propertyName.equals(IDebugUIConstants.PREF_VARIABLE_TEXT_FONT) ||
+				propertyName.equals(IInternalDebugUIConstants.THEME_BREAKPOINT_LABEL_COLOR)) {
 			Viewer viewer = getViewer();
 			if (viewer == variablesViewer) {
 				setVariablesViewerTreeFont(variablesViewer);
@@ -510,6 +513,7 @@ public class VariablesView extends AbstractDebugView implements IDebugContextLis
 		getModelPresentation();
 		DebugUIPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(this);
 		JFaceResources.getFontRegistry().addListener(this);
+		JFaceResources.getColorRegistry().addListener(this);
 
 		variablesViewer = createTreeViewer(fSashForm);
 		fInputService = new ViewerInputService(variablesViewer, fRequester);

@@ -3071,6 +3071,15 @@ M4 = Platform-specific fourth key
             %VariableTextFontDefinition.description
          </description>
       </fontDefinition>
+      <colorDefinition
+            categoryId="org.eclipse.debug.ui.presentation"
+            id="org.eclipse.debug.ui.BreakpointLabelColor"
+            label="%BreakpointLabelColor.label"
+            value="255,0,0">
+         <description>
+            %BreakpointLabelColor.description
+         </description>
+      </colorDefinition>
    </extension>
    <extension
          point="org.eclipse.ui.console.consolePageParticipants">
