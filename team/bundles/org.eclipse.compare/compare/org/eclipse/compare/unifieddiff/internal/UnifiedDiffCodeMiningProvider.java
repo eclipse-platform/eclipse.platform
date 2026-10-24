@@ -157,8 +157,9 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 				this.foldButtonColor.dispose();
 			}
 			// the word-level diff is tinted stronger so it stands out against the band
-			this.detailedDiffColor = new Color(interpolate(deletionColor, background, DiffColors.TEXT_FILL_SCALE));
-			this.deletionBackgroundColor = new Color(interpolate(deletionColor, background, DiffColors.FILL_SCALE));
+			boolean dark = DiffColors.isDarkTheme();
+			this.detailedDiffColor = new Color(interpolate(deletionColor, background, DiffColors.detailScale(dark)));
+			this.deletionBackgroundColor = new Color(interpolate(deletionColor, background, DiffColors.fillScale(dark)));
 			this.borderColor = new Color(UnifiedDiffText.borderColor(deletionColor, background));
 			this.foldSeparatorColor = new Color(separatorBackground(background));
 			this.foldButtonColor = new Color(buttonBackground(background));
