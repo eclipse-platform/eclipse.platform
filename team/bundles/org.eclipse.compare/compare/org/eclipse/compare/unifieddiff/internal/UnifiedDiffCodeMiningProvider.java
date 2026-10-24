@@ -508,15 +508,32 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		String getLabel();
 	}
 
-	/** Draws the thin top and bottom border of a code-mining band. */
-	private static void drawBandBorder(GC gc, Color borderColor, int y, int width, int height) {
+	private record BandBorder(boolean drawTop, boolean drawBottom) {
+	}
+
+	private static BandBorder bandBorder(UnifiedDiff diff) {
+		boolean overlay = diff.mode.equals(UnifiedDiffMode.OVERLAY_MODE)
+				|| diff.mode.equals(UnifiedDiffMode.OVERLAY_READ_ONLY_MODE);
+		int annotationLength = diff.mode.equals(UnifiedDiffMode.REPLACE_MODE) ? diff.rightLength : diff.leftLength;
+		boolean sharesEdgeWithAnnotation = annotationLength > 0;
+		// A non-overlay footer is only possible for a zero-length annotation at the
+		// document end, so both of its outer edges remain enabled here.
+		return new BandBorder(!overlay || !sharesEdgeWithAnnotation, overlay || !sharesEdgeWithAnnotation);
+	}
+
+	/** Draws the selected outer edges of the code-mining part of a diff band. */
+	private static void drawBandBorder(GC gc, Color borderColor, int y, int width, int height, BandBorder border) {
 		if (borderColor == null || borderColor.isDisposed() || width <= 0 || height <= 0) {
 			return;
 		}
 		Color previousBackground = gc.getBackground();
 		gc.setBackground(borderColor);
-		gc.fillRectangle(0, y, width, 1); // top
-		gc.fillRectangle(0, y + height - 1, width, 1); // bottom
+		if (border.drawTop()) {
+			gc.fillRectangle(0, y, width, 1); // top
+		}
+		if (border.drawBottom()) {
+			gc.fillRectangle(0, y + height - 1, width, 1); // bottom
+		}
 		gc.setBackground(previousBackground);
 	}
 
@@ -561,6 +578,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		private final Color deletionBackgroundColor;
 		private final Color detailedDiffColor;
 		private final Color borderColor;
+		private final BandBorder bandBorder;
 		private final int tabWidth;
 		private final ITextViewer viewer;
 		private UnifiedDiff diff;
@@ -576,6 +594,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			this.deletionBackgroundColor = deletionBackgroundColor;
 			this.detailedDiffColor = detailedDiffColor;
 			this.borderColor = borderColor;
+			this.bandBorder = bandBorder(diff);
 			this.tabWidth = tabWidth;
 			this.viewer = viewer;
 			if (diff.mode.equals(UnifiedDiffMode.REPLACE_MODE)) {
@@ -666,7 +685,8 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			if (ranges.isEmpty()) {
 				// no syntax coloring available; fall back to plain rendering
 				result = super.draw(gc, textWidget, color, x, y);
-				drawBandBorder(gc, this.borderColor, y, textWidget.getBounds().width, lastRectangle.height);
+				drawBandBorder(gc, this.borderColor, y, textWidget.getBounds().width, lastRectangle.height,
+						this.bandBorder);
 				return result;
 			}
 
@@ -675,7 +695,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			fillDetailedDiffBackgrounds(gc, textWidget, label, ranges, x, y);
 			gc.setFont(font);
 			drawStyleRanges(gc, textWidget, ranges, label, styledFonts, x, y, null);
-			drawBandBorder(gc, this.borderColor, y, textWidget.getBounds().width, lastRectangle.height);
+			drawBandBorder(gc, this.borderColor, y, textWidget.getBounds().width, lastRectangle.height, this.bandBorder);
 			return result;
 		}
 
@@ -922,6 +942,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		private final Color deletionBackgroundColor;
 		private final Color detailedDiffColor;
 		private final Color borderColor;
+		private final BandBorder bandBorder;
 		private final UnifiedDiff diff;
 		private final int tabWidth;
 		private ITextViewer viewer;
@@ -947,6 +968,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			this.deletionBackgroundColor = deletionBackgroundColor;
 			this.detailedDiffColor = detailedDiffColor;
 			this.borderColor = borderColor;
+			this.bandBorder = bandBorder(diff);
 			this.diff = diff;
 			this.tabWidth = tabWidth;
 			this.viewer = viewer;
@@ -1103,7 +1125,8 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 					gc.drawString(f.str(), x + f.x(), y + f.y(), true);
 				}
 				if (!fontIsDisposed) {
-					drawBandBorder(gc, this.borderColor, y, textWidget.getBounds().width, lastRectangle.height);
+					drawBandBorder(gc, this.borderColor, y, textWidget.getBounds().width, lastRectangle.height,
+							this.bandBorder);
 					lastRectangle = new Rectangle(x, y, lastRectangle.width, lastRectangle.height);
 					return new Point(lastRectangle.width, lastRectangle.height);
 				}
@@ -1237,13 +1260,13 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 				// still rendered. backgrounds/foregrounds are intentionally left unset
 				// so the next paint takes the full slow path again.
 				result = super.draw(gc, textWidget, color, x, y);
-				drawBandBorder(gc, this.borderColor, y, textWidget.getBounds().width, result.y);
+				drawBandBorder(gc, this.borderColor, y, textWidget.getBounds().width, result.y, this.bandBorder);
 				return result;
 			}
 			foregrounds = new ArrayList<>();
 			gc.setFont(cachedFont);
 			drawStyleRanges(gc, textWidget, ranges, label, styledFonts, x, y, foregrounds::add);
-			drawBandBorder(gc, this.borderColor, y, textWidget.getBounds().width, lastRectangle.height);
+			drawBandBorder(gc, this.borderColor, y, textWidget.getBounds().width, lastRectangle.height, this.bandBorder);
 			return result;
 		}
 

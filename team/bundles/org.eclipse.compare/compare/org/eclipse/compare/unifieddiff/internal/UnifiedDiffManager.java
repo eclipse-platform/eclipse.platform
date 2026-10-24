@@ -2090,10 +2090,8 @@ public class UnifiedDiffManager {
 				if (fromLine >= toLine) {
 					continue;
 				}
-				// A companion mining, when present, abuts this band and paints the same
-				// shared edge in the same color, so drawing our own top/bottom here is at
-				// worst a harmless repaint of one pixel row - and the only way to guarantee
-				// the edge is never missing when no mining is adjacent.
+				// The annotation owns both of its edges. A companion mining omits the edge
+				// next to the annotation, so their shared boundary remains one pixel wide.
 				e.gc.setBackground(this.additionBackgroundColor);
 				for (int lineNr = fromLine; lineNr < toLine; lineNr++) {
 					String line = this.w.getLine(lineNr);

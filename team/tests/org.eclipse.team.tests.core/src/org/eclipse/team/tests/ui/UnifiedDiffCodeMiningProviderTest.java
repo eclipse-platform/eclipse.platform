@@ -75,6 +75,7 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -407,6 +408,71 @@ public class UnifiedDiffCodeMiningProviderTest {
 		}
 		assertThat(footers).as("a footer mining is used for the diff at the end of a document without trailing newline")
 				.isNotEmpty();
+	}
+
+	/** A mining omits only the edge directly adjoining its painted annotation. */
+	@Test
+	public void testMiningAndAnnotationShareSingleBorder() throws Exception {
+		String label = "mining";
+		IDocument rightDocument = new Document(label);
+		List<UnifiedDiff> container = new ArrayList<>();
+		UnifiedDiff overlayReplacement = new UnifiedDiff(document, 0, 1, "x", rightDocument, 0, label.length(), label,
+				container, MODE);
+		UnifiedDiff replaceReplacement = new UnifiedDiff(document, 0, 1, label, rightDocument, 0, 1, "x", container,
+				UnifiedDiffMode.REPLACE_MODE);
+		UnifiedDiff overlayInsertion = new UnifiedDiff(document, 0, 0, "", rightDocument, 0, label.length(), label,
+				container, MODE);
+		container.addAll(List.of(overlayReplacement, replaceReplacement, overlayInsertion));
+
+		Color deletionColor = new Color(display, 11, 22, 33);
+		Color detailedDiffColor = new Color(display, 44, 55, 66);
+		Color borderColor = new Color(display, 77, 88, 99);
+		UnifiedDiffLineHeaderCodeMining overlayHeader = new UnifiedDiffLineHeaderCodeMining(new Position(0, 1),
+				provider, overlayReplacement, 4, deletionColor, detailedDiffColor, borderColor, viewer);
+		UnifiedDiffLineHeaderCodeMining replaceHeader = new UnifiedDiffLineHeaderCodeMining(new Position(0, 1),
+				provider, replaceReplacement, 4, deletionColor, detailedDiffColor, borderColor, viewer);
+		UnifiedDiffLineHeaderCodeMining insertionHeader = new UnifiedDiffLineHeaderCodeMining(new Position(0, 1),
+				provider, overlayInsertion, 4, deletionColor, detailedDiffColor, borderColor, viewer);
+		viewer.getTextWidget().setSize(400, 300);
+		Image image = new Image(display, 400, 300);
+		GC gc = new GC(image);
+		try {
+			Point overlayExtent = overlayHeader.draw(gc, viewer.getTextWidget(), null, 0, 0);
+			int replaceY = overlayExtent.y + 10;
+			Point replaceExtent = replaceHeader.draw(gc, viewer.getTextWidget(), null, 0, replaceY);
+			int insertionY = replaceY + replaceExtent.y + 10;
+			Point insertionExtent = insertionHeader.draw(gc, viewer.getTextWidget(), null, 0, insertionY);
+			int zoom = display.getPrimaryMonitor().getZoom();
+			ImageData data = image.getImageData(zoom);
+			int pixelX = 300 * zoom / 100;
+
+			assertPixelColor(data, pixelX, 0, deletionColor.getRGB(), "overlay mining omits its top border");
+			assertPixelColor(data, pixelX, (overlayExtent.y - 1) * zoom / 100, borderColor.getRGB(),
+					"overlay outer bottom edge");
+			assertPixelColor(data, pixelX, replaceY * zoom / 100, borderColor.getRGB(), "replace outer top edge");
+			assertPixelColor(data, pixelX, (replaceY + replaceExtent.y - 1) * zoom / 100, deletionColor.getRGB(),
+					"replace mining omits its bottom border");
+			assertPixelColor(data, pixelX, insertionY * zoom / 100, borderColor.getRGB(),
+					"standalone insertion top edge");
+			assertPixelColor(data, pixelX, (insertionY + insertionExtent.y - 1) * zoom / 100, borderColor.getRGB(),
+					"standalone insertion bottom edge");
+		} finally {
+			gc.dispose();
+			image.dispose();
+			overlayHeader.dispose();
+			replaceHeader.dispose();
+			insertionHeader.dispose();
+			deletionColor.dispose();
+			detailedDiffColor.dispose();
+			borderColor.dispose();
+		}
+	}
+
+	private static void assertPixelColor(ImageData data, int x, int y, RGB expected, String description) {
+		RGB actual = data.palette.getRGB(data.getPixel(x, y));
+		assertTrue(Math.abs(actual.red - expected.red) <= 2 && Math.abs(actual.green - expected.green) <= 2
+				&& Math.abs(actual.blue - expected.blue) <= 2,
+				description + ": expected " + expected + " but was " + actual);
 	}
 
 	/**
