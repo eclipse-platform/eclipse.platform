@@ -282,8 +282,7 @@ public class Bug_185247_recursiveLinks {
 
 	void createSymlink(File directory, String linkName, String linkTarget) throws IOException {
 		assertTrue(canCreateSymLinks(), "symlinks not supported by platform");
-		boolean isDir = true;
-		createSymLink(directory, linkName, linkTarget, isDir);
+		createSymLink(directory, linkName, linkTarget);
 	}
 
 	private IProject importProjectAndRefresh(String projectName, URI projectRootLocation) throws Exception {

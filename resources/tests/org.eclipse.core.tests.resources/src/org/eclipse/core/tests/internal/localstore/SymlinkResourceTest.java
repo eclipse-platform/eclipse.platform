@@ -48,8 +48,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 @ExtendWith(WorkspaceResetExtension.class)
 public class SymlinkResourceTest {
 
-	private void mkLink(IFileStore dir, String src, String tgt, boolean isDir) throws CoreException, IOException {
-		createSymLink(dir.toLocalFile(EFS.NONE, createTestMonitor()), src, tgt, isDir);
+	private void mkLink(IFileStore dir, String src, String tgt) throws CoreException, IOException {
+		createSymLink(dir.toLocalFile(EFS.NONE, createTestMonitor()), src, tgt);
 	}
 
 	protected void createBug232426Structure(IFileStore rootDir) throws CoreException, IOException {
@@ -61,10 +61,10 @@ public class SymlinkResourceTest {
 		folderC.mkdir(EFS.NONE, createTestMonitor());
 
 		/* create symbolic links */
-		mkLink(folderA, "link", IPath.fromOSString("../b").toOSString(), true);
-		mkLink(folderB, "linkA", IPath.fromOSString("../a").toOSString(), true);
-		mkLink(folderB, "linkC", IPath.fromOSString("../c").toOSString(), true);
-		mkLink(folderC, "link", IPath.fromOSString("../b").toOSString(), true);
+		mkLink(folderA, "link", IPath.fromOSString("../b").toOSString());
+		mkLink(folderB, "linkA", IPath.fromOSString("../a").toOSString());
+		mkLink(folderB, "linkC", IPath.fromOSString("../c").toOSString());
+		mkLink(folderC, "link", IPath.fromOSString("../b").toOSString());
 	}
 
 	protected void createBug358830Structure(IFileStore rootDir) throws CoreException, IOException {
@@ -72,7 +72,7 @@ public class SymlinkResourceTest {
 		folderA.mkdir(EFS.NONE, createTestMonitor());
 
 		/* create trivial recursive symbolic link */
-		mkLink(folderA, "link", IPath.fromOSString("../").toOSString(), true);
+		mkLink(folderA, "link", IPath.fromOSString("../").toOSString());
 	}
 
 	/**

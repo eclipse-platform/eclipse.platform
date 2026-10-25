@@ -114,7 +114,6 @@ public class FileSystemHelper {
 	 * @param basedir    folder in which the symbolic link should be created
 	 * @param linkName   name of the symbolic link
 	 * @param linkTarget target to which the symbolic link should point
-	 * @param isDir      unused, retained for compatibility
 	 * @throws FileSystemException           if the link could not be created, e.g.
 	 *                                       due to missing privileges on Windows
 	 * @throws UnsupportedOperationException if symbolic links are generally not
@@ -122,7 +121,7 @@ public class FileSystemHelper {
 	 * @throws IOException                   in case the creation of the symlink
 	 *                                       failed for other reasons
 	 */
-	public static void createSymLink(File basedir, String linkName, String linkTarget, boolean isDir)
+	public static void createSymLink(File basedir, String linkName, String linkTarget)
 			throws IOException {
 		Files.createSymbolicLink(basedir.toPath().resolve(linkName), Path.of(linkTarget));
 	}
@@ -143,7 +142,7 @@ public class FileSystemHelper {
 				String linkName = FileSystemHelper.getRandomLocation(tempDir).lastSegment();
 				try {
 					// Try to create a symlink.
-					createSymLink(tempDir.toFile(), linkName, "testTarget", false);
+					createSymLink(tempDir.toFile(), linkName, "testTarget");
 					// Clean up if the link was created.
 					new File(tempDir.toFile(), linkName).delete();
 					canCreateSymLinks = Boolean.TRUE;

@@ -1773,7 +1773,7 @@ public class LinkedResourceTest {
 		fileStoreExtension.deleteOnTearDown(resolvedBaseLocation);
 		IPath symlinkTarget = resolvedBaseLocation.append("dir1/target");
 		symlinkTarget.toFile().mkdirs();
-		createSymLink(resolvedBaseLocation.toFile(), "symlink", symlinkTarget.toOSString(), true);
+		createSymLink(resolvedBaseLocation.toFile(), "symlink", symlinkTarget.toOSString());
 		IPath linkChildLocation = baseLocation.append("symlink/dir2");
 		IPath resolvedLinkChildLocation = resolve(linkChildLocation);
 		File linkChild = resolvedLinkChildLocation.toFile();
@@ -1800,7 +1800,7 @@ public class LinkedResourceTest {
 		symlinkTarget.append("B/C").toFile().mkdirs();
 		IPath linkParentDir = resolvedBaseLocation.append("dir2");
 		linkParentDir.toFile().mkdirs();
-		createSymLink(linkParentDir.toFile(), "symlink", symlinkTarget.toOSString(), true);
+		createSymLink(linkParentDir.toFile(), "symlink", symlinkTarget.toOSString());
 
 		IFolder folder = nonExistingFolderInExistingProject;
 		IPath symLink = linkParentDir.append("symlink");
