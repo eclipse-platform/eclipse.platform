@@ -268,7 +268,7 @@ public class ResourceAttributeTest {
 
 		// create a link to the target file and add it to the workspace,
 		// the resource in the workspace should have symbolic link attribute set
-		createSymLink(project.getLocation().toFile(), "link", "target", false);
+		createSymLink(project.getLocation().toFile(), "link", "target");
 		createInWorkspace(link);
 		assertTrue(link.getResourceAttributes().isSymbolicLink());
 

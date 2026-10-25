@@ -96,15 +96,15 @@ public class SymlinkTest {
 		llFile = baseStore.getChild("llFile");
 		ensureExists(aDir, true);
 		ensureExists(aFile, false);
-		mkLink(baseStore, "lDir", "aDir", true);
-		mkLink(baseStore, "llDir", "lDir", true);
-		mkLink(baseStore, "lFile", "aFile", false);
-		mkLink(baseStore, "llFile", "lFile", false);
+		mkLink(baseStore, "lDir", "aDir");
+		mkLink(baseStore, "llDir", "lDir");
+		mkLink(baseStore, "lFile", "aFile");
+		mkLink(baseStore, "llFile", "lFile");
 		fetchFileInfos();
 	}
 
-	protected void mkLink(IFileStore dir, String src, String tgt, boolean isDir) throws IOException, CoreException {
-		FileSystemHelper.createSymLink(dir.toLocalFile(EFS.NONE, getMonitor()), src, tgt, isDir);
+	protected void mkLink(IFileStore dir, String src, String tgt) throws IOException, CoreException {
+		FileSystemHelper.createSymLink(dir.toLocalFile(EFS.NONE, getMonitor()), src, tgt);
 	}
 
 	@Test
@@ -209,8 +209,8 @@ public class SymlinkTest {
 	@Test
 	public void testRecursiveSymlink() throws Exception {
 		IFileStore baseStore = fileStoreExtension.getFileStore();
-		mkLink(baseStore, "l1", "l2", false);
-		mkLink(baseStore, "l2", "l1", false);
+		mkLink(baseStore, "l1", "l2");
+		mkLink(baseStore, "l2", "l1");
 		IFileStore l1 = baseStore.getChild("l1");
 		IFileInfo i1 = l1.fetchInfo();
 		assertEquals(SYMLINKS_ARE_FIRST_CLASS_FILES_OR_DIRECTORIES, i1.exists());
@@ -343,8 +343,8 @@ public class SymlinkTest {
 		ensureExists(childDir, true);
 		IFileStore childFile = baseStore.getChild("ff" + specialCharName);
 		ensureExists(childFile, false);
-		mkLink(baseStore, "l" + specialCharName, specialCharName, true);
-		mkLink(baseStore, "lf" + specialCharName, "ff" + specialCharName, false);
+		mkLink(baseStore, "l" + specialCharName, specialCharName);
+		mkLink(baseStore, "lf" + specialCharName, "ff" + specialCharName);
 		IFileInfo[] infos = baseStore.childInfos(EFS.NONE, getMonitor());
 		assertThat(infos).hasSize(4);
 		assertThat(infos).allSatisfy(info -> {

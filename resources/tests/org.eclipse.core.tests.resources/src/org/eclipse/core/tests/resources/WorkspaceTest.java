@@ -355,7 +355,7 @@ public class WorkspaceTest {
 		assertTrue(file.exists());
 		// Create a symlink in the working location of the project pointing to
 		// linkTarget.
-		createSymLink(workingLocation.toFile(), "link", linkTarget.toOSString(), true);
+		createSymLink(workingLocation.toFile(), "link", linkTarget.toOSString());
 		monitor.prepare();
 		project.delete(true, monitor);
 		monitor.assertUsedUp();

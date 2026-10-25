@@ -59,7 +59,7 @@ public class Bug_233939 {
 	 */
 	protected void symLinkAndRefresh(IContainer container, String linkName, IPath linkTarget)
 			throws CoreException, IOException {
-		createSymLink(container.getLocation().toFile(), linkName, linkTarget.toOSString(), false);
+		createSymLink(container.getLocation().toFile(), linkName, linkTarget.toOSString());
 		container.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		IResource theLink = container.findMember(linkName);
 		assertExistsInWorkspace(theLink);
