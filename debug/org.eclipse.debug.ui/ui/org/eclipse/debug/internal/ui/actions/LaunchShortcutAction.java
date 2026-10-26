@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2016 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -25,10 +25,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
+import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.TerminateToggleValue;
 import org.eclipse.debug.internal.ui.contextlaunching.LaunchingResourceManager;
 import org.eclipse.debug.internal.ui.launchConfigurations.LaunchConfigurationManager;
+import org.eclipse.debug.internal.ui.launchConfigurations.LaunchConfigurationsMessages;
 import org.eclipse.debug.internal.ui.launchConfigurations.LaunchShortcutExtension;
 import org.eclipse.debug.internal.ui.stringsubstitution.SelectedResourceManager;
 import org.eclipse.debug.ui.DebugUITools;
@@ -49,7 +51,6 @@ public class LaunchShortcutAction extends Action {
 	private final String fMode;
 	private final LaunchShortcutExtension fShortcut;
 	private ILaunchConfiguration configuration;
-
 
 	/**
 	 * @param mode the mode to launch in
@@ -104,46 +105,95 @@ public class LaunchShortcutAction extends Action {
 	@Override
 	public void runWithEvent(Event event) {
 		if ((event.stateMask & SWT.MOD1) > 0) {
-			Set<String> types = fShortcut.getAssociatedConfigurationTypes();
-			if(!types.isEmpty()) {
-				LaunchingResourceManager lrm = DebugUIPlugin.getDefault().getLaunchingResourceManager();
-				IStructuredSelection selection = SelectedResourceManager.getDefault().getCurrentSelection();
-				ArrayList<LaunchShortcutExtension> shortcuts = new ArrayList<>();
-				shortcuts.add(fShortcut);
-				IResource resource = SelectedResourceManager.getDefault().getSelectedResource();
-				if(resource == null) {
-					resource = lrm.getLaunchableResource(shortcuts, selection);
-				}
-				List<ILaunchConfiguration> configs = lrm.getParticipatingLaunchConfigurations(selection, resource, shortcuts, fMode);
-				LaunchConfigurationManager lcm = DebugUIPlugin.getDefault().getLaunchConfigurationManager();
-				ILaunchConfigurationType type = DebugPlugin.getDefault().getLaunchManager().getLaunchConfigurationType((String) types.toArray()[0]);
-				String groupid = null;
-				ILaunchGroup group = lcm.getLaunchGroup(type, fMode);
-				if(group != null) {
-					groupid = group.getIdentifier();
-				}
-				ILaunchConfiguration config = lcm.getMRUConfiguration(configs, group, resource);
-				if(config == null) {
-					if(configs.size() > 0) {
-						config = configs.get(0);
-					}
-				}
-				if(config != null) {
-					selection = new StructuredSelection(config);
-				}
-				else {
-					if(type != null) {
-						selection = new StructuredSelection(type);
-					}
-				}
-				DebugUITools.openLaunchConfigurationDialogOnGroup(DebugUIPlugin.getShell(), selection, groupid);
-			}
-			else {
-				run();
-			}
+			openConfigurationDialog();
 		}
 		else {
 			runInternal(((event.stateMask & SWT.SHIFT) > 0) ? true : false);
+		}
+	}
+
+	private void openConfigurationDialog() {
+		Set<String> types = fShortcut.getAssociatedConfigurationTypes();
+		if (!types.isEmpty()) {
+			LaunchingResourceManager lrm = DebugUIPlugin.getDefault().getLaunchingResourceManager();
+			IStructuredSelection selection = SelectedResourceManager.getDefault().getCurrentSelection();
+			ArrayList<LaunchShortcutExtension> shortcuts = new ArrayList<>();
+			shortcuts.add(fShortcut);
+			IResource resource = SelectedResourceManager.getDefault().getSelectedResource();
+			if (resource == null) {
+				resource = lrm.getLaunchableResource(shortcuts, selection);
+			}
+			List<ILaunchConfiguration> configs = lrm.getParticipatingLaunchConfigurations(selection, resource,
+					shortcuts, fMode);
+			LaunchConfigurationManager lcm = DebugUIPlugin.getDefault().getLaunchConfigurationManager();
+			// Keep only configs whose type belongs to this shortcut
+			List<ILaunchConfiguration> ownedConfigs = new ArrayList<>();
+			try {
+				for (ILaunchConfiguration c : configs) {
+					if (types.contains(c.getType().getIdentifier())) {
+						ownedConfigs.add(c);
+					}
+				}
+			} catch (CoreException e) {
+				DebugUIPlugin.log(e);
+				return;
+			}
+			ILaunchConfiguration config = null;
+			ILaunchConfigurationType type = null;
+			try {
+				if (!ownedConfigs.isEmpty()) {
+					ILaunchGroup mruGroup = lcm.getLaunchGroup(ownedConfigs.get(0).getType(), fMode);
+					config = lcm.getMRUConfiguration(ownedConfigs, mruGroup, resource);
+					if (config == null) {
+						config = ownedConfigs.get(0);
+					}
+					type = config.getType();
+				} else {
+					// No existing config: pick the first type this shortcut declares
+					// that supports the current mode. Shortcuts virtually always declare
+					// exactly one type, so no disambiguation dialog is needed.
+					for (String id : types) {
+						ILaunchConfigurationType candidate = DebugPlugin.getDefault().getLaunchManager()
+								.getLaunchConfigurationType(id);
+						if (candidate != null && candidate.supportsMode(fMode)) {
+							type = candidate;
+							break;
+						}
+					}
+					if (type == null) {
+						return;
+					}
+				}
+			} catch (CoreException e) {
+				DebugUIPlugin.log(e);
+				return;
+			}
+			String groupid = null;
+			ILaunchGroup group = lcm.getLaunchGroup(type, fMode);
+			if (group != null) {
+				groupid = group.getIdentifier();
+			}
+			if (config == null) {
+				try {
+					String baseName = resource != null
+							? resource.getFullPath().removeFileExtension().lastSegment() : null;
+					if (baseName == null || baseName.isEmpty()) {
+						baseName = LaunchConfigurationsMessages.CreateLaunchConfigurationAction_New_configuration_2;
+					}
+					String name = DebugPlugin.getDefault().getLaunchManager()
+							.generateLaunchConfigurationName(baseName);
+					ILaunchConfigurationWorkingCopy wc = type.newInstance(null, name);
+					DebugUIPlugin.openLaunchConfigurationsDialog(DebugUIPlugin.getShell(),
+							new StructuredSelection(wc), groupid, true);
+				} catch (CoreException e) {
+					DebugUIPlugin.log(e);
+				}
+				return;
+			}
+			selection = new StructuredSelection(config);
+			DebugUITools.openLaunchConfigurationDialogOnGroup(DebugUIPlugin.getShell(), selection, groupid);
+		} else {
+			run();
 		}
 	}
 
