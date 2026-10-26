@@ -576,6 +576,8 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			}
 			StyledText st = viewer.getTextWidget();
 			TextViewer overlayViewer = new TextViewer(st, SWT.NONE);
+			// Allow selecting and copying the mining text without modifying it.
+			overlayViewer.setEditable(false);
 			StyledText overlay = overlayViewer.getTextWidget();
 			overlay.setBounds(mining.getLastRectangle());
 			overlay.setFont(st.getFont());

@@ -245,6 +245,31 @@ public class UnifiedDiffManagerTest {
 	}
 
 	@Test
+	public void testRevertModePaintsFinalLineWithoutDelimiter() {
+		assertFinalLineWithoutDelimiterPaints(UnifiedDiffMode.REVERT_MODE, ADDITION_ANNO_TYPE);
+	}
+
+	@Test
+	public void testOverlayReadOnlyModePaintsFinalLineWithoutDelimiter() {
+		assertFinalLineWithoutDelimiterPaints(UnifiedDiffMode.OVERLAY_READ_ONLY_MODE, DELETION_ANNO_TYPE);
+	}
+
+	private void assertFinalLineWithoutDelimiterPaints(UnifiedDiffMode mode, String annotationType) {
+		for (String prefix : List.of("", "unchanged\n", "unchanged\r\n")) {
+			String current = prefix + "changed final line";
+			setEditorContent(current);
+			assertTrue(UnifiedDiff.create(editor, prefix + "original final line", mode).open().isOK());
+			IAnnotationModel model = annotationModel();
+			assertTrue(annotations(model, annotationType).stream()
+					.map(model::getPosition)
+					.anyMatch(position -> position.includes(current.length() - 1)),
+					"the final character must belong to a painted diff band");
+			// Dispatch directly so an invalid offset fails even when the widget is off-screen.
+			firePaint(viewer().getTextWidget());
+		}
+	}
+
+	@Test
 	public void testRevertModePaintsTrailingEmptyCrLfLine() throws BadLocationException {
 		String current = "package jp1;\r\n\r\n// Footer mining manual comparison fixture \r\n\r\n"; //$NON-NLS-1$
 		String source = "package jp1;\r\n\r\n// Footer mining manual comparison fixture"; //$NON-NLS-1$

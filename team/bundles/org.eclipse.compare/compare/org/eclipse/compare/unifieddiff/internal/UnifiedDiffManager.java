@@ -2143,7 +2143,15 @@ public class UnifiedDiffManager {
 				for (int lineNr = fromLine; lineNr < toLine; lineNr++) {
 					String line = this.w.getLine(lineNr);
 					int endLineOffset = this.w.getOffsetAtLine(lineNr) + line.length();
-					Rectangle endLineBounds = this.w.getTextBounds(endLineOffset, endLineOffset);
+					Rectangle endLineBounds;
+					if (endLineOffset == this.w.getCharCount()) {
+						// A final line without a delimiter ends at the caret offset after the
+						// last character, which getTextBounds does not accept.
+						Point location = this.w.getLocationAtOffset(endLineOffset);
+						endLineBounds = new Rectangle(location.x, location.y, 0, this.w.getLineHeight(endLineOffset));
+					} else {
+						endLineBounds = this.w.getTextBounds(endLineOffset, endLineOffset);
+					}
 					endLineBounds.height += this.w.getLineSpacing();
 					if (line.length() == 0) {
 						// this.w.getTextBounds seems not to work for empty lines containing only \n in
