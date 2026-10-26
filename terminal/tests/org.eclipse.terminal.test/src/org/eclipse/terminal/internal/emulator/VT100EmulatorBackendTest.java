@@ -979,12 +979,7 @@ public class VT100EmulatorBackendTest {
 	}
 
 	// ---------------------------------------------------------------------------------------------
-	// Characterization tests for the scrolling behavior.
-	//
-	// These lock the current behavior before any change to how scrolling interacts with the
-	// scroll-back history. The regression guards below MUST keep passing through such a change; the
-	// "currentlyDiscards" test documents the behavior that a future fix for top-anchored scroll
-	// regions (eclipse.platform issue 2680) is expected to change.
+	// Tests for how scrolling interacts with the scroll-back history.
 	// ---------------------------------------------------------------------------------------------
 
 	/**
@@ -1061,14 +1056,11 @@ public class VT100EmulatorBackendTest {
 	}
 
 	/**
-	 * Characterization of the <em>current</em> behavior for a scroll region anchored at the top of
-	 * the screen: a newline at the region bottom scrolls in place and discards the top line, creating
-	 * no history. This is the behavior the planned fix for eclipse.platform issue 2680 will change so
-	 * that the discarded line is added to the scroll-back instead. Until then this documents the
-	 * status quo.
+	 * A newline at the bottom of a top-anchored scroll region moves the displaced top line into
+	 * the scroll-back history instead of discarding it.
 	 */
 	@Test
-	public void testNewlineInTopAnchoredScrollRegionCurrentlyDiscardsTopLine() {
+	public void testNewlineInTopAnchoredScrollRegionMovesTopLineToHistory() {
 		ITerminalTextData term = makeITerminalTextData();
 		IVT100EmulatorBackend vt100 = makeBakend(term);
 		term.setMaxHeight(10);
@@ -1079,11 +1071,67 @@ public class VT100EmulatorBackendTest {
 		vt100.setCursorLine(3);
 		vt100.processNewline();
 
-		assertEquals(5, term.getHeight()); // currently no history is created
-		assertEquals("1111", new String(term.getChars(0))); // "0000" was discarded (lost)
-		assertEquals("2222", new String(term.getChars(1)));
-		assertEquals("3333", new String(term.getChars(2)));
-		assertNull(term.getChars(3));
-		assertEquals("4444", new String(term.getChars(4))); // footer below the region is untouched
+		assertEquals(6, term.getHeight()); // one line of history was created
+		assertEquals("0000", new String(term.getChars(0))); // ... holding the displaced top line
+		// the screen is now lines 1..5 of the model
+		assertEquals("1111", new String(term.getChars(1)));
+		assertEquals("2222", new String(term.getChars(2)));
+		assertEquals("3333", new String(term.getChars(3)));
+		assertNull(term.getChars(4)); // vacated line at the bottom of the region
+		assertEquals("4444", new String(term.getChars(5))); // footer below the region is untouched
+		assertEquals(3, vt100.getCursorLine()); // cursor stays at the bottom of the region
+	}
+
+	/**
+	 * The same, once the scroll-back is full: the model no longer grows, so the oldest history line
+	 * is dropped instead. This is the steady state of a long running full screen application.
+	 */
+	@Test
+	public void testNewlineInTopAnchoredScrollRegionWithFullHistoryDropsOldestLine() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(6);
+		vt100.setDimensions(5, 4);
+		fill(term, "hhhh\n" + "0000\n" + "1111\n" + "2222\n" + "3333\n" + "4444");
+		assertEquals(6, term.getHeight()); // one line of history, five lines of screen
+
+		vt100.setScrollRegion(0, 3);
+		vt100.setCursorLine(3);
+		vt100.processNewline();
+
+		assertEquals(6, term.getHeight()); // capped, so "hhhh" fell out of the history
+		assertEquals("0000", new String(term.getChars(0))); // the displaced top line took its place
+		assertEquals("1111", new String(term.getChars(1)));
+		assertEquals("2222", new String(term.getChars(2)));
+		assertEquals("3333", new String(term.getChars(3)));
+		assertNull(term.getChars(4)); // vacated line at the bottom of the region
+		assertEquals("4444", new String(term.getChars(5))); // footer below the region is untouched
+		assertEquals(3, vt100.getCursorLine());
+	}
+
+	/**
+	 * A top-anchored scroll region that covers the whole screen has no fixed lines below it, so the
+	 * screen just moves up by one line.
+	 */
+	@Test
+	public void testNewlineInTopAnchoredScrollRegionCoveringWholeScreen() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(10);
+		vt100.setDimensions(5, 4);
+		fill(term, "0000\n" + "1111\n" + "2222\n" + "3333\n" + "4444");
+
+		vt100.setScrollRegion(0, 4); // the region is the whole screen
+		vt100.setCursorLine(4);
+		vt100.processNewline();
+
+		assertEquals(6, term.getHeight());
+		assertEquals("0000", new String(term.getChars(0))); // displaced top line
+		assertEquals("1111", new String(term.getChars(1)));
+		assertEquals("2222", new String(term.getChars(2)));
+		assertEquals("3333", new String(term.getChars(3)));
+		assertEquals("4444", new String(term.getChars(4)));
+		assertNull(term.getChars(5)); // new blank line at the bottom of the screen
+		assertEquals(4, vt100.getCursorLine());
 	}
 }
