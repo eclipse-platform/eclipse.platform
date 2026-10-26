@@ -430,6 +430,7 @@ public class BasicAliasTest {
 			return null;
 		});
 
+		waitForRefresh();
 		// now p2 and link2TempFolder should be aliases
 		IResource[] resources = aliasManager.computeAliases(link2TempFolder, ((Folder) link2TempFolder).getStore());
 		assertThat(resources).containsExactly(p2);
