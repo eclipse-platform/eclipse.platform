@@ -347,6 +347,10 @@ public class UnifiedDiffManagerTest {
 
 	private static void assertDelimiterBackgrounds(StyledText tw, int offset, String delimiter, RGB crBackground,
 			RGB lfBackground) {
+		Point originalSize = tw.getSize();
+		// The test workbench may leave the editor without a layout. Give the widget
+		// and the image enough room for the fixture and its delimiter markers.
+		tw.setSize(800, 600);
 		Point location = tw.getLocationAtOffset(offset);
 		Rectangle bounds = tw.getClientArea();
 		Image image = new Image(tw.getDisplay(), bounds.width, bounds.height);
@@ -389,6 +393,7 @@ public class UnifiedDiffManagerTest {
 		} finally {
 			gc.dispose();
 			image.dispose();
+			tw.setSize(originalSize);
 		}
 	}
 
