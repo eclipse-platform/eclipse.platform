@@ -85,16 +85,6 @@
        x2="4.0822439"
        y2="1050.5304"
        gradientUnits="userSpaceOnUse" />
-    <filter
-       id="filter5428"
-       x="-0.098946937"
-       y="-0.10066635"
-       width="1.1978939"
-       height="1.2013327">
-      <feGaussianBlur
-         stdDeviation="0.22207033"
-         id="feGaussianBlur5430" />
-    </filter>
   </defs>
   <metadata
      id="metadata7">
@@ -133,7 +123,7 @@
        d="m 6.536718,1048.8567 -1.548139,-1.5456 8.939717,-8.8821 c 0.52506,0.4288 0.980135,0.9451 1.380966,1.5292 z"
        id="path5226-6-14-1-5-2-7" />
     <path
-       style="opacity:0.5;fill:none;stroke:#ffffff;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter5428)"
+       style="opacity:0.5;fill:none;stroke:#ffffff;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
        d="m 4.984376,1047.2528 8.937501,-8.8281"
        id="path5426" />
     <path

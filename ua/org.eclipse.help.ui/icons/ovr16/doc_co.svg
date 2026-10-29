@@ -65,17 +65,6 @@
        gradientUnits="userSpaceOnUse"
        id="linearGradient4185"
        xlink:href="#linearGradient4248" />
-    <filter
-       style="color-interpolation-filters:sRGB"
-       id="filter5428-5"
-       x="-0.098946937"
-       y="-0.10066635"
-       width="1.1978939"
-       height="1.2013327">
-      <feGaussianBlur
-         id="feGaussianBlur5430-1"
-         stdDeviation="0.22207033" />
-    </filter>
   </defs>
   <metadata
      id="metadata7">
@@ -132,7 +121,7 @@
       <path
          id="path5426-5"
          d="m 4.984376,1047.2528 8.937501,-8.8281"
-         style="display:inline;opacity:0;fill:none;stroke:#ffffff;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter5428-5)" />
+         style="display:inline;opacity:0;fill:none;stroke:#ffffff;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     </g>
   </g>
 </svg>

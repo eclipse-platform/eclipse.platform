@@ -243,16 +243,6 @@
        x2="393.95432"
        y2="479.63058"
        gradientUnits="userSpaceOnUse" />
-    <filter
-       id="filter8156"
-       x="-0.23096973"
-       width="1.4619395"
-       y="-0.23096973"
-       height="1.4619395">
-      <feGaussianBlur
-         stdDeviation="0.47348116"
-         id="feGaussianBlur8158" />
-    </filter>
   </defs>
   <metadata
      id="metadata7">
@@ -299,7 +289,7 @@
       </g>
     </g>
     <g
-       style="stroke:#ffffff;stroke-opacity:1;display:inline;filter:url(#filter8156)"
+       style="stroke:#ffffff;stroke-opacity:1;display:inline"
        id="layer1-71-3"
        transform="matrix(1.1613269,0,0,1.1613269,-8.537543,-166.58459)">
       <g

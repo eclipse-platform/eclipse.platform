@@ -83,17 +83,6 @@
        y1="9.6309509"
        x2="14.526019"
        y2="15.130951" />
-    <filter
-       style="color-interpolation-filters:sRGB"
-       id="filter4397"
-       x="-0.15310691"
-       width="1.3062132"
-       y="-0.11458981"
-       height="1.2291795">
-      <feGaussianBlur
-         stdDeviation="0.17419389"
-         id="feGaussianBlur4399" />
-    </filter>
   </defs>
   <metadata
      id="metadata7">
@@ -136,7 +125,7 @@
        id="rect4009"
        style="display:inline;fill:#095799;fill-opacity:1;stroke:none" />
     <path
-       style="display:inline;opacity:0.9;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:0.99049962;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;filter:url(#filter4397)"
+       style="display:inline;opacity:0.9;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:0.99049962;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        d="m 8.518,1041.8622 0,4.0121 -0.984955,0 0.011702,3.9579 2.736122,-0.066 3.123477,-2.6388 0.09391,-1.2534 -0.983459,0 0,-4.0121 z"
        id="rect3968-5"
        transform="matrix(1.019275,0,0,1,-0.26017935,0)" />

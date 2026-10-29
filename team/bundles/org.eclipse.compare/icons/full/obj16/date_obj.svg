@@ -117,16 +117,6 @@
        x2="13.376367"
        y2="1057.1886"
        gradientUnits="userSpaceOnUse" />
-    <filter
-       id="filter3952"
-       x="-0.27973214"
-       width="1.5594643"
-       y="-0.21832752"
-       height="1.436655">
-      <feGaussianBlur
-         stdDeviation="0.39921875"
-         id="feGaussianBlur3954" />
-    </filter>
     <mask
        maskUnits="userSpaceOnUse"
        id="mask3959">
@@ -195,7 +185,7 @@
            id="rect3009-7-6"
            transform="translate(8.2201163,1049.2669)"
            d="M 1.5 5.5 L 1.5 7.5 L 1.5 14.46875 L 8.5 14.46875 L 8.5 7.5 L 8.5 5.5 L 1.5 5.5 z "
-           style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:2;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline;filter:url(#filter3952)" />
+           style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:2;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline" />
       </g>
       <rect
          style="fill:#ebf9ff;fill-opacity:1;stroke:url(#linearGradient3827);stroke-width:1;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"

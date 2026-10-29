@@ -185,17 +185,6 @@
        y2="1035.9906"
        gradientUnits="userSpaceOnUse"
        gradientTransform="matrix(0.85714286,0,0,0.7426114,8.1879706,270.25912)" />
-    <filter
-       style="color-interpolation-filters:sRGB"
-       id="filter4389"
-       x="-0.05073366"
-       width="1.1014673"
-       y="-0.045545871"
-       height="1.0910917">
-      <feGaussianBlur
-         stdDeviation="0.13569823"
-         id="feGaussianBlur4391" />
-    </filter>
   </defs>
   <metadata
      id="metadata7">
@@ -247,7 +236,7 @@
            style="display:inline;fill:none;stroke:url(#linearGradient4755-8);stroke-width:0.75741524;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       </g>
       <path
-         style="display:inline;opacity:0.73999999;fill:url(#linearGradient4482-7);fill-opacity:1;stroke:none;stroke-width:1.06988704;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.5999999;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;filter:url(#filter4389)"
+         style="display:inline;opacity:0.73999999;fill:url(#linearGradient4482-7);fill-opacity:1;stroke:none;stroke-width:1.06988704;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.5999999;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
          d="m 22.009514,1039.2002 6.419323,0 0,7.1505 -6.419323,0 z"
          id="rect4466-0"
          transform="matrix(0.99050735,0,0,1,0.20892857,0)" />

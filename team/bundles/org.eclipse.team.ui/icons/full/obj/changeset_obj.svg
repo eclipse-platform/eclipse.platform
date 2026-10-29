@@ -141,17 +141,6 @@
        y2="1056.1521"
        gradientUnits="userSpaceOnUse"
        gradientTransform="matrix(0.66666665,0,0,0.66666665,-1.5314062,359.25039)" />
-    <filter
-       style="color-interpolation-filters:sRGB"
-       id="filter4292"
-       x="-0.066507446"
-       width="1.1330149"
-       y="-0.037550566"
-       height="1.0751011">
-      <feGaussianBlur
-         stdDeviation="0.1127534"
-         id="feGaussianBlur4294" />
-    </filter>
   </defs>
   <metadata
      id="metadata7">
@@ -218,7 +207,7 @@
          d="m 18.968618,1063.3518 -2.618093,0"
          id="path4222-67" />
       <path
-         style="opacity:0.8;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.65452331px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;filter:url(#filter4292)"
+         style="opacity:0.8;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.65452331px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
          d="m 15.507066,1057.7816 3.576262,6.552 -0.769234,0.6545 -3.272616,0 -0.02699,-7.1526 z"
          id="path4278"
          transform="matrix(0.96686617,0,0,1,0.63272278,0)" />

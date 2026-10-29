@@ -33,17 +33,6 @@
        x2="485.64713"
        y2="402.87634"
        gradientUnits="userSpaceOnUse" />
-    <filter
-       style="color-interpolation-filters:sRGB"
-       id="filter4362"
-       x="-0.11759987"
-       width="1.2351997"
-       y="-0.11760013"
-       height="1.2352003">
-      <feGaussianBlur
-         stdDeviation="1.5804566"
-         id="feGaussianBlur4364" />
-    </filter>
   </defs>
   <metadata
      id="metadata7">
@@ -72,7 +61,7 @@
          cy="374.2059"
          r="26.878538" />
       <ellipse
-         style="opacity:0.747;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:3.58380508;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;filter:url(#filter4362)"
+         style="opacity:0.747;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:3.58380508;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
          id="path4273"
          cx="431.7467"
          cy="367.18161"

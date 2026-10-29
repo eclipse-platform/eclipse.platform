@@ -13,16 +13,6 @@
    xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs4">
-    <filter
-       id="filter3776"
-       x="-0.16684761"
-       width="1.3336952"
-       y="-0.16684772"
-       height="1.3336954">
-      <feGaussianBlur
-         stdDeviation="0.8074302"
-         id="feGaussianBlur3778" />
-    </filter>
   </defs>
   <metadata
      id="metadata7">
@@ -49,7 +39,7 @@
          d="m 16.526343,1035.0879 16.148608,16.1486"
          id="path4175-84" />
       <path
-         style="fill:none;stroke:#ffffff;stroke-width:2.13977408000000002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline;filter:url(#filter3776);opacity:0.5"
+         style="fill:none;stroke:#ffffff;stroke-width:2.13977408000000002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline;opacity:0.5"
          d="M 15.590192,1036.0241 31.7388,1052.1727"
          id="path4175-8" />
       <path
