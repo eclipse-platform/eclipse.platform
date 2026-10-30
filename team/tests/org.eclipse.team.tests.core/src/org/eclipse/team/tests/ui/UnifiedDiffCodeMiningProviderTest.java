@@ -73,6 +73,7 @@ import org.eclipse.jface.text.source.projection.ProjectionAnnotation;
 import org.eclipse.jface.text.source.projection.ProjectionAnnotationModel;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -82,6 +83,7 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.text.undo.DocumentUndoManagerRegistry;
 import org.eclipse.ui.editors.text.EditorsUI;
@@ -832,7 +834,7 @@ public class UnifiedDiffCodeMiningProviderTest {
 	}
 
 	@Test
-	public void testClickOverlayUsesWhitespaceCharacterPainter() throws Exception {
+	public void testClickOverlayIsReadOnlyAndUsesWhitespaceCharacterPainter() throws Exception {
 		switchToDocument(new Document("line 0\nline 1 changed"));
 		IStatus status = UnifiedDiffManager.open(viewer, document, model, null, "line 0\nline 1\n", MODE, null,
 				null, null, null, MergeViewerContentProvider.LEFT_CONTRIBUTOR,
@@ -856,6 +858,21 @@ public class UnifiedDiffCodeMiningProviderTest {
 			assertThat(children).as("clicking the mining creates an overlay").hasSize(1);
 			assertThat(children[0].getTypedListeners(SWT.Paint, WhitespaceCharacterPainter.class))
 					.as("the overlay uses JFace's whitespace painter").hasSize(1);
+			StyledText overlay = (StyledText) children[0];
+			String text = overlay.getText();
+			assertThat(text).isNotEmpty();
+			overlay.setSelection(0, text.length());
+			assertEquals(text, overlay.getSelectionText(), "the mining text remains selectable for copying");
+			Event typing = new Event();
+			typing.character = 'x';
+			typing.keyCode = 'x';
+			overlay.notifyListeners(SWT.KeyDown, typing);
+			assertEquals(text, overlay.getText(), "typing must not replace the selected mining text");
+			Event deletion = new Event();
+			deletion.character = SWT.BS;
+			deletion.keyCode = SWT.BS;
+			overlay.notifyListeners(SWT.KeyDown, deletion);
+			assertEquals(text, overlay.getText(), "deleting must not remove the selected mining text");
 		} finally {
 			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_WHITESPACE_CHARACTERS, oldShowWhitespace);
 			for (Control child : viewer.getTextWidget().getChildren()) {
