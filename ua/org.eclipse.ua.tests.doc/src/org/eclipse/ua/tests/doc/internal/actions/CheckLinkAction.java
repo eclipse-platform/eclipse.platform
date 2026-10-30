@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2025 IBM Corporation and others.
+ * Copyright (c) 2009, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -15,6 +15,7 @@
 package org.eclipse.ua.tests.doc.internal.actions;
 
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -66,7 +67,7 @@ public class CheckLinkAction implements ILiveHelpAction {
 			//System.out.println("Process " + next);
 			boolean opened;
 			try {
-				URL url = new URL(next);
+				URL url = URI.create(next).toURL();
 				//URLConnection connection = url.openConnection();
 				//connection.
 				try (InputStream input = url.openStream()) {
