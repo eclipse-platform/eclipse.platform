@@ -23,6 +23,7 @@ import org.junit.platform.suite.api.Suite;
 		org.eclipse.terminal.internal.emulator.AllTestSuite.class, //
 		org.eclipse.terminal.internal.model.AllTestSuite.class, //
 		org.eclipse.terminal.model.AllTestSuite.class, //
+		org.eclipse.terminal.internal.textcanvas.TextCanvasModelTest.class, //
 		org.eclipse.terminal.internal.connector.TerminalConnectorTest.class, //
 		org.eclipse.terminal.internal.connector.TerminalToRemoteInjectionOutputStreamTest.class, //
 		org.eclipse.terminal.view.ui.tests.TerminalsViewReorderTest.class, //

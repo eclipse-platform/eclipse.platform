@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.terminal.internal.emulator;
 
+import org.eclipse.terminal.internal.model.CharWidth;
 import org.eclipse.terminal.model.ITerminalTextData;
 import org.eclipse.terminal.model.TerminalStyle;
 
@@ -157,9 +158,21 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 
 	@Override
 	public void insertCharacters(int charactersToInsert) {
+		if (charactersToInsert <= 0) {
+			return; // nothing moves, so no wide character may be broken either
+		}
 		synchronized (fTerminal) {
 			int line = toAbsoluteLine(fCursorLine);
 			int n = charactersToInsert;
+			// A wide character is not left half on the line: one the insertion splits
+			// is blanked whole, and so is one whose second cell it pushes off the end.
+			if (isSecondCell(line, fCursorColumn)) {
+				blank(line, fCursorColumn - 1);
+				blank(line, fCursorColumn);
+			}
+			if (fCursorColumn + n < fColumns && isSecondCell(line, fColumns - n)) {
+				blank(line, fColumns - n - 1);
+			}
 			for (int col = fColumns - 1; col >= fCursorColumn + n; col--) {
 				char c = fTerminal.getChar(line, col - n);
 				TerminalStyle style = fTerminal.getStyle(line, col - n);
@@ -213,6 +226,7 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 	public void eraseLineToEnd() {
 		synchronized (fTerminal) {
 			int line = toAbsoluteLine(fCursorLine);
+			breakWideChar(line, fCursorColumn);
 			for (int col = fCursorColumn; col < fColumns; col++) {
 				fTerminal.setChar(line, col, '\000', null);
 			}
@@ -223,6 +237,7 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 	public void eraseLineToCursor() {
 		synchronized (fTerminal) {
 			int line = toAbsoluteLine(fCursorLine);
+			breakWideChar(line, fCursorColumn);
 			for (int col = 0; col <= fCursorColumn; col++) {
 				fTerminal.setChar(line, col, '\000', null);
 			}
@@ -244,8 +259,14 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 
 	@Override
 	public void deleteCharacters(int n) {
+		if (n <= 0) {
+			return; // nothing moves, so no wide character may be broken either
+		}
 		synchronized (fTerminal) {
 			int line = toAbsoluteLine(fCursorLine);
+			// deleting either half of a wide character leaves none of it
+			breakWideChar(line, fCursorColumn);
+			breakWideChar(line, Math.min(fCursorColumn + n, fColumns) - 1);
 			for (int col = fCursorColumn + n; col < fColumns; col++) {
 				char c = fTerminal.getChar(line, col);
 				TerminalStyle style = fTerminal.getStyle(line, col);
@@ -310,19 +331,64 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 	public void appendString(String buffer) {
 		synchronized (fTerminal) {
 			char[] chars = buffer.toCharArray();
-			if (fInsertMode) {
-				insertCharacters(chars.length);
-			}
 			int line = toAbsoluteLine(fCursorLine);
 			int i = 0;
 			while (i < chars.length) {
 				if (fWrapPending) {
 					line = doLineWrap();
 				}
-				int n = Math.min(fColumns - fCursorColumn, chars.length - i);
-				fTerminal.setChars(line, fCursorColumn, chars, i, n, fStyle);
-				int col = fCursorColumn + n;
-				i += n;
+				int room = fColumns - fCursorColumn;
+				int col;
+				int n = narrowRun(chars, i, room);
+				if (n > 0) {
+					if (fInsertMode) {
+						// room on the line the run goes to, which a wrap may have changed
+						insertCharacters(n);
+					}
+					breakWideChar(line, fCursorColumn);
+					breakWideChar(line, fCursorColumn + n - 1);
+					fTerminal.setChars(line, fCursorColumn, chars, i, n, fStyle);
+					col = fCursorColumn + n;
+					i += n;
+				} else {
+					int codePoint = Character.codePointAt(chars, i);
+					int charsUsed = Character.charCount(codePoint);
+					int width = cellWidth(codePoint);
+					if (width == 0) {
+						// combining marks and other non-printing code points occupy no cell
+						i += charsUsed;
+						continue;
+					}
+					if (width > room) {
+						if (fCursorColumn > 0) {
+							// a wide character is never split across the right margin,
+							// and the cell it leaves unused there is erased
+							eraseCharacters(room);
+							line = doLineWrap();
+							continue;
+						}
+						// terminal narrower than the character itself
+						width = room;
+					}
+					if (fInsertMode) {
+						insertCharacters(width); // room in cells, not characters
+					}
+					breakWideChar(line, fCursorColumn);
+					breakWideChar(line, fCursorColumn + width - 1);
+					if (charsUsed > width) {
+						// a one column terminal: the two chars of a surrogate pair cannot share its cell
+						fTerminal.setChar(line, fCursorColumn, '\uFFFD', fStyle);
+					} else if (charsUsed == 2) {
+						fTerminal.setChars(line, fCursorColumn, chars, i, 2, fStyle);
+					} else {
+						fTerminal.setChar(line, fCursorColumn, chars[i], fStyle);
+						if (width == 2) {
+							fTerminal.setChar(line, fCursorColumn + 1, '\000', fStyle);
+						}
+					}
+					col = fCursorColumn + width;
+					i += charsUsed;
+				}
 				// wrap needed?
 				if (col == fColumns) {
 					if (fVT100LineWrapping) {
@@ -337,6 +403,72 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 				}
 			}
 		}
+	}
+
+	/**
+	 * A wide character owns two cells. Overwriting either one leaves the other
+	 * stranded: a filler with nothing in front of it, or a glyph that now spills
+	 * over whatever was written next to it. Blanking the partner before the write
+	 * goes in keeps the line honest, which is what a terminal is expected to do.
+	 */
+	private void breakWideChar(int line, int col) {
+		if (col < 0 || col >= fColumns) {
+			return;
+		}
+		char c = fTerminal.getChar(line, col);
+		if (Character.isLowSurrogate(c)) {
+			// second cell of a character beyond the BMP
+			if (col > 0 && Character.isHighSurrogate(fTerminal.getChar(line, col - 1))) {
+				blank(line, col - 1);
+			}
+		} else if (Character.isHighSurrogate(c)) {
+			if (col + 1 < fColumns && Character.isLowSurrogate(fTerminal.getChar(line, col + 1))) {
+				blank(line, col + 1);
+			}
+		} else if (c == '\000') {
+			if (col > 0 && CharWidth.of(fTerminal.getChar(line, col - 1)) == 2) {
+				blank(line, col - 1);
+			}
+		} else if (CharWidth.of(c) == 2 && col + 1 < fColumns && fTerminal.getChar(line, col + 1) == '\000') {
+			blank(line, col + 1);
+		}
+	}
+
+	/**
+	 * Cells a code point takes on the screen: its display width, except that a
+	 * printable character beyond the BMP always takes two, since its two chars
+	 * cannot share a cell.
+	 */
+	private static int cellWidth(int codePoint) {
+		int width = CharWidth.of(codePoint);
+		return width != 0 && Character.charCount(codePoint) == 2 ? 2 : width;
+	}
+
+	/**
+	 * @return whether the cell is the second of a wide character's two cells
+	 */
+	private boolean isSecondCell(int line, int col) {
+		return col > 0 && col < fColumns && CharWidth.isSecondCell(
+				String.valueOf(new char[] { fTerminal.getChar(line, col - 1), fTerminal.getChar(line, col) }), 1);
+	}
+
+	private void blank(int line, int col) {
+		fTerminal.setChar(line, col, ' ', fTerminal.getStyle(line, col));
+	}
+
+	/**
+	 * Length of the run of characters starting at <code>offset</code> that each
+	 * occupy exactly one cell, so that they can be copied in one block. Capped at
+	 * <code>max</code> cells. Zero when the run does not start with such a
+	 * character, which sends the caller down the code point by code point path.
+	 */
+	private static int narrowRun(char[] chars, int offset, int max) {
+		int n = 0;
+		while (n < max && offset + n < chars.length && !Character.isSurrogate(chars[offset + n])
+				&& CharWidth.of(chars[offset + n]) == 1) {
+			n++;
+		}
+		return n;
 	}
 
 	private int doLineWrap() {
@@ -503,9 +635,15 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 
 	@Override
 	public void eraseCharacters(int n) {
+		if (n <= 0) {
+			return; // nothing is erased, so no wide character may be broken either
+		}
 		synchronized (fTerminal) {
 			int line = toAbsoluteLine(fCursorLine);
 			int end = Math.min(fCursorColumn + n, fColumns);
+			// erasing either half of a wide character erases all of it
+			breakWideChar(line, fCursorColumn);
+			breakWideChar(line, end - 1);
 			for (int col = fCursorColumn; col < end; col++) {
 				fTerminal.setChar(line, col, '\000', null);
 			}
