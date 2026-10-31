@@ -325,9 +325,6 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 	public void appendString(String buffer) {
 		synchronized (fTerminal) {
 			char[] chars = buffer.toCharArray();
-			if (fInsertMode) {
-				insertCharacters(cellWidth(buffer)); // room in cells, not characters
-			}
 			int line = toAbsoluteLine(fCursorLine);
 			int i = 0;
 			while (i < chars.length) {
@@ -338,6 +335,10 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 				int col;
 				int n = narrowRun(chars, i, room);
 				if (n > 0) {
+					if (fInsertMode) {
+						// room on the line the run goes to, which a wrap may have changed
+						insertCharacters(n);
+					}
 					breakWideChar(line, fCursorColumn);
 					breakWideChar(line, fCursorColumn + n - 1);
 					fTerminal.setChars(line, fCursorColumn, chars, i, n, fStyle);
@@ -354,16 +355,24 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 					}
 					if (width > room) {
 						if (fCursorColumn > 0) {
-							// a wide character is never split across the right margin
+							// a wide character is never split across the right margin,
+							// and the cell it leaves unused there is erased
+							eraseCharacters(room);
 							line = doLineWrap();
 							continue;
 						}
 						// terminal narrower than the character itself
 						width = room;
 					}
+					if (fInsertMode) {
+						insertCharacters(width); // room in cells, not characters
+					}
 					breakWideChar(line, fCursorColumn);
 					breakWideChar(line, fCursorColumn + width - 1);
-					if (charsUsed == 2) {
+					if (charsUsed > width) {
+						// a one column terminal: the two chars of a surrogate pair cannot share its cell
+						fTerminal.setChar(line, fCursorColumn, '\uFFFD', fStyle);
+					} else if (charsUsed == 2) {
 						fTerminal.setChars(line, fCursorColumn, chars, i, 2, fStyle);
 					} else {
 						fTerminal.setChar(line, fCursorColumn, chars[i], fStyle);
@@ -427,10 +436,6 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 	private static int cellWidth(int codePoint) {
 		int width = CharWidth.of(codePoint);
 		return width != 0 && Character.charCount(codePoint) == 2 ? 2 : width;
-	}
-
-	private static int cellWidth(String text) {
-		return text.codePoints().map(VT100EmulatorBackend::cellWidth).sum();
 	}
 
 	/**
