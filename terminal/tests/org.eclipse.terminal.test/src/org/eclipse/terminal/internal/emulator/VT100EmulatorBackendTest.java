@@ -1210,4 +1210,96 @@ public class VT100EmulatorBackendTest {
 		vt100.appendString("x");
 		assertEquals("ax b", new String(term.getChars(1), 0, 4));
 	}
+
+	@Test
+	public void testEraseCharactersWide() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(3);
+		vt100.setDimensions(3, 5);
+		// erasing either half of a wide character erases all of it
+		vt100.setCursor(0, 0);
+		vt100.appendString("한x");
+		vt100.setCursor(0, 1);
+		vt100.eraseCharacters(1);
+		assertEquals(" \000x", new String(term.getChars(0), 0, 3));
+		vt100.setCursor(1, 0);
+		vt100.appendString("한x");
+		vt100.setCursor(1, 0);
+		vt100.eraseCharacters(1);
+		assertEquals("\000 x", new String(term.getChars(1), 0, 3));
+		vt100.setCursor(2, 0);
+		vt100.appendString("a😀b");
+		vt100.setCursor(2, 2);
+		vt100.eraseCharacters(1);
+		assertEquals("a \000b", new String(term.getChars(2), 0, 4));
+	}
+
+	@Test
+	public void testEraseLineWide() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(3);
+		vt100.setDimensions(3, 6);
+		vt100.setCursor(0, 0);
+		vt100.appendString("ab한cd");
+		vt100.setCursor(0, 3);
+		vt100.eraseLineToEnd();
+		assertEquals("ab \000\000\000", new String(term.getChars(0)));
+		vt100.setCursor(1, 0);
+		vt100.appendString("ab한cd");
+		vt100.setCursor(1, 2);
+		vt100.eraseLineToCursor();
+		assertEquals("\000\000\000 cd", new String(term.getChars(1)));
+	}
+
+	@Test
+	public void testInsertCharactersWide() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(4);
+		vt100.setDimensions(4, 5);
+		// a wide character pushed half past the margin is blanked
+		vt100.setCursor(0, 0);
+		vt100.appendString("abc한");
+		vt100.setCursor(0, 0);
+		vt100.insertCharacters(1);
+		assertEquals("\000abc ", new String(term.getChars(0)));
+		// one split by the insertion is blanked whole
+		vt100.setCursor(1, 0);
+		vt100.appendString("a한bc");
+		vt100.setCursor(1, 2);
+		vt100.insertCharacters(1);
+		assertEquals("a \000 b", new String(term.getChars(1)));
+		// one at the cursor moves along whole
+		vt100.setCursor(2, 0);
+		vt100.appendString("a한bc");
+		vt100.setCursor(2, 1);
+		vt100.insertCharacters(1);
+		assertEquals("a\000한\000b", new String(term.getChars(2)));
+	}
+
+	@Test
+	public void testDeleteCharactersWide() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(4);
+		vt100.setDimensions(4, 5);
+		// deleting either half of a wide character leaves none of it
+		vt100.setCursor(0, 0);
+		vt100.appendString("a한bc");
+		vt100.setCursor(0, 1);
+		vt100.deleteCharacters(1);
+		assertEquals("a bc\000", new String(term.getChars(0)));
+		vt100.setCursor(1, 0);
+		vt100.appendString("a한bc");
+		vt100.setCursor(1, 2);
+		vt100.deleteCharacters(1);
+		assertEquals("a bc\000", new String(term.getChars(1)));
+		vt100.setCursor(2, 0);
+		vt100.appendString("ab😀c");
+		vt100.setCursor(2, 0);
+		vt100.deleteCharacters(3);
+		assertEquals(" c\000\000\000", new String(term.getChars(2)));
+	}
 }

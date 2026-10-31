@@ -94,6 +94,15 @@ public final class CharWidth {
 		return !Character.isSurrogate(before) && of(before) == 2;
 	}
 
+	/**
+	 * @return whether the cell at {@code index} is the second of the two cells of
+	 *         a wide character: its filler, or the low half of a surrogate pair
+	 */
+	public static boolean isSecondCell(CharSequence text, int index) {
+		return isFiller(text, index) || index > 0 && Character.isLowSurrogate(text.charAt(index))
+				&& Character.isHighSurrogate(text.charAt(index - 1));
+	}
+
 	private static boolean isZeroWidth(int codePoint) {
 		// Hangul conjoining jamo vowels and trailing consonants: EAW lists them as
 		// neutral, but they combine into the leading consonant before them.

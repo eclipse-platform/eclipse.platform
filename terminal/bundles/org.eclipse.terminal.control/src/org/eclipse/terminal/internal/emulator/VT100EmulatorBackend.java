@@ -161,6 +161,15 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 		synchronized (fTerminal) {
 			int line = toAbsoluteLine(fCursorLine);
 			int n = charactersToInsert;
+			// A wide character is not left half on the line: one the insertion splits
+			// is blanked whole, and so is one whose second cell it pushes off the end.
+			if (isSecondCell(line, fCursorColumn)) {
+				blank(line, fCursorColumn - 1);
+				blank(line, fCursorColumn);
+			}
+			if (fCursorColumn + n < fColumns && isSecondCell(line, fColumns - n)) {
+				blank(line, fColumns - n - 1);
+			}
 			for (int col = fColumns - 1; col >= fCursorColumn + n; col--) {
 				char c = fTerminal.getChar(line, col - n);
 				TerminalStyle style = fTerminal.getStyle(line, col - n);
@@ -214,6 +223,7 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 	public void eraseLineToEnd() {
 		synchronized (fTerminal) {
 			int line = toAbsoluteLine(fCursorLine);
+			breakWideChar(line, fCursorColumn);
 			for (int col = fCursorColumn; col < fColumns; col++) {
 				fTerminal.setChar(line, col, '\000', null);
 			}
@@ -224,6 +234,7 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 	public void eraseLineToCursor() {
 		synchronized (fTerminal) {
 			int line = toAbsoluteLine(fCursorLine);
+			breakWideChar(line, fCursorColumn);
 			for (int col = 0; col <= fCursorColumn; col++) {
 				fTerminal.setChar(line, col, '\000', null);
 			}
@@ -247,6 +258,9 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 	public void deleteCharacters(int n) {
 		synchronized (fTerminal) {
 			int line = toAbsoluteLine(fCursorLine);
+			// deleting either half of a wide character leaves none of it
+			breakWideChar(line, fCursorColumn);
+			breakWideChar(line, Math.min(fCursorColumn + n, fColumns) - 1);
 			for (int col = fCursorColumn + n; col < fColumns; col++) {
 				char c = fTerminal.getChar(line, col);
 				TerminalStyle style = fTerminal.getStyle(line, col);
@@ -417,6 +431,14 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 
 	private static int cellWidth(String text) {
 		return text.codePoints().map(VT100EmulatorBackend::cellWidth).sum();
+	}
+
+	/**
+	 * @return whether the cell is the second of a wide character's two cells
+	 */
+	private boolean isSecondCell(int line, int col) {
+		return col > 0 && col < fColumns && CharWidth.isSecondCell(
+				String.valueOf(new char[] { fTerminal.getChar(line, col - 1), fTerminal.getChar(line, col) }), 1);
 	}
 
 	private void blank(int line, int col) {
@@ -605,6 +627,9 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 		synchronized (fTerminal) {
 			int line = toAbsoluteLine(fCursorLine);
 			int end = Math.min(fCursorColumn + n, fColumns);
+			// erasing either half of a wide character erases all of it
+			breakWideChar(line, fCursorColumn);
+			breakWideChar(line, end - 1);
 			for (int col = fCursorColumn; col < end; col++) {
 				fTerminal.setChar(line, col, '\000', null);
 			}
