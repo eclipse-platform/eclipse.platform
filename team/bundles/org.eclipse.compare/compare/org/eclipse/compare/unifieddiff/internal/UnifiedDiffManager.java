@@ -716,15 +716,21 @@ public class UnifiedDiffManager {
 		for (Iterator<Map.Entry<Annotation, ShadowedFold>> it = shadowed.entrySet().iterator(); it.hasNext();) {
 			Map.Entry<Annotation, ShadowedFold> entry = it.next();
 			ShadowedFold fold = entry.getValue();
+			// out of the model the position no longer follows the document, so it only
+			// still describes the fold as long as nothing was edited; such a fold can
+			// never be put back and is dropped right away, otherwise every reconcile of
+			// an editor that recreates its folds would pile up another copy of each
+			if (fold.modificationStamp() != stamp || fold.position().isDeleted()) {
+				it.remove();
+				continue;
+			}
 			if (isShadowedByCollapsedRegion(fold.position(), collapsed)) {
 				continue;
 			}
 			it.remove();
-			// out of the model the position no longer follows the document, so it only
-			// still describes the fold as long as nothing was edited; a fold the editor
-			// recreated in the meantime already occupies the indicator line
-			if (fold.modificationStamp() != stamp || fold.position().isDeleted()
-					|| presentStarts.contains(Integer.valueOf(fold.position().getOffset()))) {
+			// a fold the editor recreated in the meantime already occupies the indicator
+			// line
+			if (presentStarts.contains(Integer.valueOf(fold.position().getOffset()))) {
 				continue;
 			}
 			toRestore.put(entry.getKey(), fold.position());

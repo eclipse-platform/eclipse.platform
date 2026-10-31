@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.team.tests.ui;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -175,6 +176,30 @@ public class UnifiedDiffShadowedFoldsTest {
 				"a stale fold would put its indicator on the wrong line");
 	}
 
+	/**
+	 * An editor such as the generic editor adds a fold missing from the model again
+	 * on every reconcile, so each edit makes it contribute a new copy of a fold
+	 * that was taken out. A copy taken out before the edit can never be put back
+	 * and must not be kept around, otherwise every keystroke adds another one.
+	 */
+	@Test
+	public void testAFoldTheEditorRecreatesAfterEveryEditIsKeptOnlyOnce() throws Exception {
+		IDocument document = numberedLines(100);
+		ProjectionAnnotationModel projectionModel = openViewer(document);
+		addFoldOfTheEditor(projectionModel, document, 10, 20);
+		UnifiedDiffManager.foldUnchangedRegions(viewer, document, List.of(changeOnLine(document, 60)), MODE, 3);
+		waitForPendingWork();
+
+		for (int i = 0; i < 5; i++) {
+			document.replace(document.getLineOffset(30), 0, "x");
+			ProjectionAnnotation recreated = addFoldOfTheEditor(projectionModel, document, 10, 20);
+			waitForPendingWork();
+			assertFalse(isInModel(projectionModel, recreated), "the recreated fold has to be taken out as well");
+		}
+
+		assertEquals(1, shadowedFoldCount(), "only the fold taken out since the last edit can still be put back");
+	}
+
 	/** The collapsed region really has to hide its lines, not just be recorded. */
 	@Test
 	public void testTheCollapsedRegionHidesItsLines() throws Exception {
@@ -266,6 +291,13 @@ public class UnifiedDiffShadowedFoldsTest {
 			}
 		}
 		return false;
+	}
+
+	/** The folds of the editor the manager took out and still remembers. */
+	private int shadowedFoldCount() {
+		Object folds = viewer.getTextWidget().getData("UNIFIED_DIFF_SHADOWED_FOLDS_KEY"); //$NON-NLS-1$
+		assertNotNull(folds, "the manager keeps the folds it took out on the text widget");
+		return ((Map<?, ?>) folds).size();
 	}
 
 	/** Folds are put back from a runnable posted to the display. */
