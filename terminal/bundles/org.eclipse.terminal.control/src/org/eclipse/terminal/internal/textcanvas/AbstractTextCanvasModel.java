@@ -381,26 +381,27 @@ abstract public class AbstractTextCanvasModel implements ITextCanvasModel {
 		}
 		int width = fSnapshot.getWidth();
 		int col1 = col + (line - row1) * width;
-		if (lineText.length() <= col1 || isBoundaryChar(lineText.charAt(col1))) {
+		if (lineText.length() <= col1 || isBoundary(lineText, col1)) {
 			return;
 		}
 		int wordStart = 0;
 		int wordEnd = lineText.length();
 		for (int c = col1; c >= 1; c--) {
-			if (isBoundaryChar(lineText.charAt(c - 1))) {
+			if (isBoundary(lineText, c - 1)) {
 				wordStart = c;
 				break;
 			}
 		}
 		for (int c = col1; c < lineText.length(); c++) {
-			if (isBoundaryChar(lineText.charAt(c))) {
+			if (isBoundary(lineText, c)) {
 				wordEnd = c;
 				break;
 			}
 		}
 		if (wordStart < wordEnd) {
 			fHoverRange = new TextRange(row1 + wordStart / width, row1 + (wordEnd - 1) / width + 1, (wordStart % width),
-					(wordEnd - 1) % width + 1, lineText.substring(wordStart, wordEnd));
+					(wordEnd - 1) % width + 1,
+					lineText.substring(wordStart, wordEnd).replace("\000", "")); //$NON-NLS-1$ //$NON-NLS-2$
 			if (DEBUG_HOVER) {
 				System.out.format("hover: %s   <- [%s,%s][%s,%s]\n", //$NON-NLS-1$
 						fHoverRange, col, line, wordStart, wordEnd);
@@ -413,8 +414,14 @@ abstract public class AbstractTextCanvasModel implements ITextCanvasModel {
 		return fHoverRange.text;
 	}
 
-	private boolean isBoundaryChar(char c) {
-		return Character.isWhitespace(c) || (c < '\u0020') || c == '"' || c == '\'';
+	/**
+	 * The filler in the second cell of a wide character is part of the word, as the
+	 * character is; a path with Hangul in it would otherwise end at every syllable.
+	 */
+	private boolean isBoundary(String text, int index) {
+		char c = text.charAt(index);
+		return !CharWidth.isFiller(text, index)
+				&& (Character.isWhitespace(c) || (c < '\u0020') || c == '"' || c == '\'');
 	}
 
 	// helper to sanitize text copied out of a snapshot
