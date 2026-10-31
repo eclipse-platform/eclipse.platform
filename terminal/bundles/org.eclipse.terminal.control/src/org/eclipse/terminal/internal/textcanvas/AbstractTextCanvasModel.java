@@ -187,8 +187,9 @@ abstract public class AbstractTextCanvasModel implements ITextCanvasModel {
 			fCursorTime = System.currentTimeMillis();
 			fCursorLine = cursorLine;
 			fCursorColumn = cursorColumn;
-			// and draw the new cursor
-			fireCellRangeChanged(fCursorColumn, fCursorLine, 1, 1);
+			// and draw the new cursor, the cell before it included: on a wide
+			// character it covers both of its cells
+			fireCellRangeChanged(Math.max(fCursorColumn - 1, 0), fCursorLine, 3, 1);
 		} else {
 			long t = System.currentTimeMillis();
 			// TODO make the cursor blink time customisable
@@ -224,7 +225,7 @@ abstract public class AbstractTextCanvasModel implements ITextCanvasModel {
 		fCursorTime = System.currentTimeMillis();
 		fShowCursor = visible;
 		fCursorIsEnabled = visible;
-		fireCellRangeChanged(fCursorColumn, fCursorLine, 1, 1);
+		fireCellRangeChanged(Math.max(fCursorColumn - 1, 0), fCursorLine, 3, 1);
 	}
 
 	@Override
