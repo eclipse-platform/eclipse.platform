@@ -416,13 +416,13 @@ abstract public class AbstractTextCanvasModel implements ITextCanvasModel {
 	}
 
 	/**
-	 * The filler in the second cell of a wide character is part of the word, as the
-	 * character is; a path with Hangul in it would otherwise end at every syllable.
+	 * The filler in the second cell of a wide character is what its character is:
+	 * part of the word for a path with Hangul in it, which would otherwise end at
+	 * every syllable, and a boundary for an ideographic space (U+3000).
 	 */
 	private boolean isBoundary(String text, int index) {
-		char c = text.charAt(index);
-		return !CharWidth.isFiller(text, index)
-				&& (Character.isWhitespace(c) || (c < '\u0020') || c == '"' || c == '\'');
+		char c = text.charAt(CharWidth.isFiller(text, index) ? index - 1 : index);
+		return Character.isWhitespace(c) || (c < '\u0020') || c == '"' || c == '\'';
 	}
 
 	// helper to sanitize text copied out of a snapshot

@@ -1212,6 +1212,24 @@ public class VT100EmulatorBackendTest {
 	}
 
 	@Test
+	public void testZeroCountEditsKeepWide() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(1);
+		vt100.setDimensions(1, 5);
+		vt100.setCursor(0, 0);
+		vt100.appendString("a한b");
+		// a count of zero changes nothing, also next to or inside a wide character
+		for (int col : new int[] { 1, 2, 3 }) {
+			vt100.setCursor(0, col);
+			vt100.insertCharacters(0);
+			vt100.deleteCharacters(0);
+			vt100.eraseCharacters(0);
+			assertEquals("a한\000b", new String(term.getChars(0), 0, 4));
+		}
+	}
+
+	@Test
 	public void testEraseCharactersWide() {
 		ITerminalTextData term = makeITerminalTextData();
 		IVT100EmulatorBackend vt100 = makeBakend(term);

@@ -158,6 +158,9 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 
 	@Override
 	public void insertCharacters(int charactersToInsert) {
+		if (charactersToInsert <= 0) {
+			return; // nothing moves, so no wide character may be broken either
+		}
 		synchronized (fTerminal) {
 			int line = toAbsoluteLine(fCursorLine);
 			int n = charactersToInsert;
@@ -256,6 +259,9 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 
 	@Override
 	public void deleteCharacters(int n) {
+		if (n <= 0) {
+			return; // nothing moves, so no wide character may be broken either
+		}
 		synchronized (fTerminal) {
 			int line = toAbsoluteLine(fCursorLine);
 			// deleting either half of a wide character leaves none of it
@@ -629,6 +635,9 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 
 	@Override
 	public void eraseCharacters(int n) {
+		if (n <= 0) {
+			return; // nothing is erased, so no wide character may be broken either
+		}
 		synchronized (fTerminal) {
 			int line = toAbsoluteLine(fCursorLine);
 			int end = Math.min(fCursorColumn + n, fColumns);

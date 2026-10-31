@@ -37,4 +37,21 @@ public class TextCanvasModelTest {
 			assertEquals(new Point(15, 0), model.getHoverSelectionEnd());
 		}
 	}
+
+	@Test
+	public void testHoverWideSpaceIsBoundary() {
+		TerminalTextData data = new TerminalTextData();
+		data.setDimensions(1, 10);
+		// an ideographic space is wide whitespace: both of its cells end a word
+		data.setChars(0, 0, "a\u3000\000b c".toCharArray(), null);
+		ITerminalTextDataSnapshot snapshot = data.makeSnapshot();
+		snapshot.updateSnapshot(true);
+		AbstractTextCanvasModel model = new AbstractTextCanvasModel(snapshot) {
+		};
+		model.expandHoverSelectionAt(0, 2); // the space's filler
+		assertEquals("", model.getHoverSelectionText());
+		model.expandHoverSelectionAt(0, 3);
+		assertEquals("b", model.getHoverSelectionText());
+		assertEquals(new Point(3, 0), model.getHoverSelectionStart());
+	}
 }
