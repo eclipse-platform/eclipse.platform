@@ -21,6 +21,7 @@ import java.util.List;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.terminal.connector.Logger;
+import org.eclipse.terminal.internal.model.CharWidth;
 import org.eclipse.terminal.model.ITerminalTextDataReadOnly;
 import org.eclipse.terminal.model.ITerminalTextDataSnapshot;
 import org.eclipse.terminal.model.TextRange;
@@ -186,8 +187,9 @@ abstract public class AbstractTextCanvasModel implements ITextCanvasModel {
 			fCursorTime = System.currentTimeMillis();
 			fCursorLine = cursorLine;
 			fCursorColumn = cursorColumn;
-			// and draw the new cursor
-			fireCellRangeChanged(fCursorColumn, fCursorLine, 1, 1);
+			// and draw the new cursor, the cell before it included: on a wide
+			// character it covers both of its cells
+			fireCellRangeChanged(Math.max(fCursorColumn - 1, 0), fCursorLine, 3, 1);
 		} else {
 			long t = System.currentTimeMillis();
 			// TODO make the cursor blink time customisable
@@ -223,7 +225,7 @@ abstract public class AbstractTextCanvasModel implements ITextCanvasModel {
 		fCursorTime = System.currentTimeMillis();
 		fShowCursor = visible;
 		fCursorIsEnabled = visible;
-		fireCellRangeChanged(fCursorColumn, fCursorLine, 1, 1);
+		fireCellRangeChanged(Math.max(fCursorColumn - 1, 0), fCursorLine, 3, 1);
 	}
 
 	@Override
@@ -280,6 +282,17 @@ abstract public class AbstractTextCanvasModel implements ITextCanvasModel {
 		} else if (fSelectionSnapshot != null) {
 			fSelectionSnapshot.detach();
 			fSelectionSnapshot = null;
+		}
+		if (fSelectionSnapshot != null) {
+			// A wide character is selected whole: a selection that starts on its
+			// second cell starts on its first, one that ends on its first ends on
+			// its second.
+			if (isSecondCell(startLine, startColumn)) {
+				startColumn--;
+			}
+			if (isSecondCell(endLine, endColumn + 1)) {
+				endColumn++;
+			}
 		}
 		int oldStart = fSelectionStartLine;
 		int oldEnd = fSeletionEndLine;
@@ -380,26 +393,27 @@ abstract public class AbstractTextCanvasModel implements ITextCanvasModel {
 		}
 		int width = fSnapshot.getWidth();
 		int col1 = col + (line - row1) * width;
-		if (lineText.length() <= col1 || isBoundaryChar(lineText.charAt(col1))) {
+		if (lineText.length() <= col1 || isBoundary(lineText, col1)) {
 			return;
 		}
 		int wordStart = 0;
 		int wordEnd = lineText.length();
 		for (int c = col1; c >= 1; c--) {
-			if (isBoundaryChar(lineText.charAt(c - 1))) {
+			if (isBoundary(lineText, c - 1)) {
 				wordStart = c;
 				break;
 			}
 		}
 		for (int c = col1; c < lineText.length(); c++) {
-			if (isBoundaryChar(lineText.charAt(c))) {
+			if (isBoundary(lineText, c)) {
 				wordEnd = c;
 				break;
 			}
 		}
 		if (wordStart < wordEnd) {
 			fHoverRange = new TextRange(row1 + wordStart / width, row1 + (wordEnd - 1) / width + 1, (wordStart % width),
-					(wordEnd - 1) % width + 1, lineText.substring(wordStart, wordEnd));
+					(wordEnd - 1) % width + 1,
+					lineText.substring(wordStart, wordEnd).replace("\000", "")); //$NON-NLS-1$ //$NON-NLS-2$
 			if (DEBUG_HOVER) {
 				System.out.format("hover: %s   <- [%s,%s][%s,%s]\n", //$NON-NLS-1$
 						fHoverRange, col, line, wordStart, wordEnd);
@@ -412,7 +426,13 @@ abstract public class AbstractTextCanvasModel implements ITextCanvasModel {
 		return fHoverRange.text;
 	}
 
-	private boolean isBoundaryChar(char c) {
+	/**
+	 * The filler in the second cell of a wide character is what its character is:
+	 * part of the word for a path with Hangul in it, which would otherwise end at
+	 * every syllable, and a boundary for an ideographic space (U+3000).
+	 */
+	private boolean isBoundary(String text, int index) {
+		char c = text.charAt(CharWidth.isFiller(text, index) ? index - 1 : index);
 		return Character.isWhitespace(c) || (c < '\u0020') || c == '"' || c == '\'';
 	}
 
@@ -427,8 +447,25 @@ abstract public class AbstractTextCanvasModel implements ITextCanvasModel {
 		}
 		text = text.substring(0, i + 1);
 		// </J2ME-CDC-1.1 version>
-		// null means space
-		return text.replace('\000', ' ');
+		// null means space, unless it is the filler of a wide character
+		StringBuilder scrubbed = new StringBuilder(text.length());
+		for (int j = 0; j < text.length(); j++) {
+			char c = text.charAt(j);
+			if (c != '\000') {
+				scrubbed.append(c);
+			} else if (!CharWidth.isFiller(text, j)) {
+				scrubbed.append(' ');
+			}
+		}
+		return scrubbed.toString();
+	}
+
+	private boolean isSecondCell(int line, int col) {
+		if (line < 0 || line >= fSelectionSnapshot.getHeight() || col <= 0) {
+			return false;
+		}
+		char[] chars = fSelectionSnapshot.getChars(line);
+		return chars != null && col < chars.length && CharWidth.isSecondCell(new String(chars), col);
 	}
 
 	/**

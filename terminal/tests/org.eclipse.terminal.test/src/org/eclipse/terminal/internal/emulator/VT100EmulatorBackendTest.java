@@ -1086,4 +1086,293 @@ public class VT100EmulatorBackendTest {
 		assertNull(term.getChars(3));
 		assertEquals("4444", new String(term.getChars(4))); // footer below the region is untouched
 	}
+
+	@Test
+	public void testAppendStringWide() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(4);
+		vt100.setDimensions(4, 10);
+		vt100.setCursor(0, 0);
+		// a wide character takes two cells, the second holding a null filler
+		vt100.appendString("한글");
+		assertEqualsTerm("한 글       \n" + "          \n" + "          \n" + "          ", toMultiLineText(term));
+		assertEquals(4, vt100.getCursorColumn());
+		vt100.setCursor(1, 0);
+		vt100.appendString("a한b");
+		assertEqualsTerm("한 글       \n" + "a한 b      \n" + "          \n" + "          ", toMultiLineText(term));
+		assertEquals(4, vt100.getCursorColumn());
+		// a character beyond the BMP is two chars in two cells
+		vt100.setCursor(2, 0);
+		vt100.appendString("a😀b");
+		assertEquals(4, vt100.getCursorColumn());
+		assertEquals("a😀b", new String(term.getChars(2), 0, 4));
+		// a combining mark takes no cell
+		vt100.setCursor(3, 0);
+		vt100.appendString("e\u0301x");
+		assertEquals(2, vt100.getCursorColumn());
+	}
+
+	@Test
+	public void testAppendStringWideAtMargin() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(4);
+		vt100.setDimensions(4, 5);
+		vt100.setCursor(0, 0);
+		vt100.appendString("abc한");
+		assertEqualsTerm("abc한 \n" + "     \n" + "     \n" + "     ", toMultiLineText(term));
+		// a wide character is never split across the margin: it goes to the next line whole
+		vt100.setCursor(1, 0);
+		vt100.appendString("abcd한");
+		assertEqualsTerm("abc한 \n" + "abcd \n" + "한    \n" + "     ", toMultiLineText(term));
+		assertTrue(term.isWrappedLine(1));
+		assertEquals(2, vt100.getCursorLine());
+		assertEquals(2, vt100.getCursorColumn());
+	}
+
+	@Test
+	public void testOverwriteHalfOfWide() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(4);
+		vt100.setDimensions(4, 10);
+		// writing over the glyph leaves its filler blank, and over the filler leaves the glyph blank
+		vt100.setCursor(0, 0);
+		vt100.appendString("한글");
+		vt100.setCursor(0, 0);
+		vt100.appendString("x");
+		assertEquals("x 글\000", new String(term.getChars(0), 0, 4));
+		vt100.setCursor(1, 0);
+		vt100.appendString("한글");
+		vt100.setCursor(1, 1);
+		vt100.appendString("x");
+		assertEquals(" x글\000", new String(term.getChars(1), 0, 4));
+		vt100.setCursor(2, 0);
+		vt100.appendString("한글");
+		vt100.setCursor(2, 3);
+		vt100.appendString("나");
+		assertEquals("한\000 나\000", new String(term.getChars(2), 0, 5));
+		// narrow over narrow is untouched by any of this
+		vt100.setCursor(3, 0);
+		vt100.appendString("abcd");
+		vt100.setCursor(3, 1);
+		vt100.appendString("XY");
+		assertEquals("aXYd", new String(term.getChars(3), 0, 4));
+	}
+
+	@Test
+	public void testInsertModeWide() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(1);
+		vt100.setDimensions(1, 10);
+		vt100.setCursor(0, 0);
+		vt100.appendString("abcdef");
+		vt100.setCursorColumn(1);
+		vt100.setInsertMode(true);
+		vt100.appendString("한");
+		// pushes the rest along by two cells, not one
+		assertEquals("a한\000bcdef", new String(term.getChars(0), 0, 8));
+	}
+
+	@Test
+	public void testInsertModeBeyondBmp() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(4);
+		vt100.setDimensions(4, 10);
+		vt100.setCursor(0, 0);
+		vt100.appendString("abc");
+		vt100.setCursorColumn(0);
+		vt100.setInsertMode(true);
+		// U+1D400 is one column wide, but its two chars still take two cells: insert room for both
+		vt100.appendString("\uD835\uDC00");
+		vt100.setInsertMode(false);
+		assertEquals("\uD835\uDC00abc", new String(term.getChars(0), 0, 5));
+	}
+
+	@Test
+	public void testOverwriteHalfOfBeyondBmp() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(4);
+		vt100.setDimensions(4, 10);
+		// writing over either cell of a surrogate pair blanks the other one
+		vt100.setCursor(0, 0);
+		vt100.appendString("a😀b");
+		vt100.setCursor(0, 2);
+		vt100.appendString("x");
+		assertEquals("a xb", new String(term.getChars(0), 0, 4));
+		vt100.setCursor(1, 0);
+		vt100.appendString("a😀b");
+		vt100.setCursor(1, 1);
+		vt100.appendString("x");
+		assertEquals("ax b", new String(term.getChars(1), 0, 4));
+	}
+
+	@Test
+	public void testZeroCountEditsKeepWide() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(1);
+		vt100.setDimensions(1, 5);
+		vt100.setCursor(0, 0);
+		vt100.appendString("a한b");
+		// a count of zero changes nothing, also next to or inside a wide character
+		for (int col : new int[] { 1, 2, 3 }) {
+			vt100.setCursor(0, col);
+			vt100.insertCharacters(0);
+			vt100.deleteCharacters(0);
+			vt100.eraseCharacters(0);
+			assertEquals("a한\000b", new String(term.getChars(0), 0, 4));
+		}
+	}
+
+	@Test
+	public void testEraseCharactersWide() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(3);
+		vt100.setDimensions(3, 5);
+		// erasing either half of a wide character erases all of it
+		vt100.setCursor(0, 0);
+		vt100.appendString("한x");
+		vt100.setCursor(0, 1);
+		vt100.eraseCharacters(1);
+		assertEquals(" \000x", new String(term.getChars(0), 0, 3));
+		vt100.setCursor(1, 0);
+		vt100.appendString("한x");
+		vt100.setCursor(1, 0);
+		vt100.eraseCharacters(1);
+		assertEquals("\000 x", new String(term.getChars(1), 0, 3));
+		vt100.setCursor(2, 0);
+		vt100.appendString("a😀b");
+		vt100.setCursor(2, 2);
+		vt100.eraseCharacters(1);
+		assertEquals("a \000b", new String(term.getChars(2), 0, 4));
+	}
+
+	@Test
+	public void testEraseLineWide() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(3);
+		vt100.setDimensions(3, 6);
+		vt100.setCursor(0, 0);
+		vt100.appendString("ab한cd");
+		vt100.setCursor(0, 3);
+		vt100.eraseLineToEnd();
+		assertEquals("ab \000\000\000", new String(term.getChars(0)));
+		vt100.setCursor(1, 0);
+		vt100.appendString("ab한cd");
+		vt100.setCursor(1, 2);
+		vt100.eraseLineToCursor();
+		assertEquals("\000\000\000 cd", new String(term.getChars(1)));
+	}
+
+	@Test
+	public void testInsertCharactersWide() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(4);
+		vt100.setDimensions(4, 5);
+		// a wide character pushed half past the margin is blanked
+		vt100.setCursor(0, 0);
+		vt100.appendString("abc한");
+		vt100.setCursor(0, 0);
+		vt100.insertCharacters(1);
+		assertEquals("\000abc ", new String(term.getChars(0)));
+		// one split by the insertion is blanked whole
+		vt100.setCursor(1, 0);
+		vt100.appendString("a한bc");
+		vt100.setCursor(1, 2);
+		vt100.insertCharacters(1);
+		assertEquals("a \000 b", new String(term.getChars(1)));
+		// one at the cursor moves along whole
+		vt100.setCursor(2, 0);
+		vt100.appendString("a한bc");
+		vt100.setCursor(2, 1);
+		vt100.insertCharacters(1);
+		assertEquals("a\000한\000b", new String(term.getChars(2)));
+	}
+
+	@Test
+	public void testDeleteCharactersWide() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(4);
+		vt100.setDimensions(4, 5);
+		// deleting either half of a wide character leaves none of it
+		vt100.setCursor(0, 0);
+		vt100.appendString("a한bc");
+		vt100.setCursor(0, 1);
+		vt100.deleteCharacters(1);
+		assertEquals("a bc\000", new String(term.getChars(0)));
+		vt100.setCursor(1, 0);
+		vt100.appendString("a한bc");
+		vt100.setCursor(1, 2);
+		vt100.deleteCharacters(1);
+		assertEquals("a bc\000", new String(term.getChars(1)));
+		vt100.setCursor(2, 0);
+		vt100.appendString("ab😀c");
+		vt100.setCursor(2, 0);
+		vt100.deleteCharacters(3);
+		assertEquals(" c\000\000\000", new String(term.getChars(2)));
+	}
+
+	@Test
+	public void testInsertModeWideWraps() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(2);
+		vt100.setDimensions(2, 5);
+		vt100.setCursor(0, 0);
+		vt100.appendString("abcd");
+		vt100.setCursor(1, 0);
+		vt100.appendString("XYZ");
+		vt100.setCursor(0, 4);
+		vt100.setInsertMode(true);
+		// the character does not fit and wraps: the room is made on the line it goes to
+		vt100.appendString("한");
+		assertEquals("abcd\000", new String(term.getChars(0)));
+		assertEquals("한\000XYZ", new String(term.getChars(1)));
+	}
+
+	@Test
+	public void testAppendStringWideBlanksMargin() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(4);
+		vt100.setDimensions(4, 5);
+		vt100.setCursor(0, 0);
+		vt100.appendString("12345");
+		// the cell a wrapping wide character leaves unused is erased, not left as it was
+		vt100.setCursor(0, 0);
+		vt100.appendString("abcd한");
+		assertEquals("abcd\000", new String(term.getChars(0)));
+		assertEquals("한\000", new String(term.getChars(1), 0, 2));
+		// and a wide character half in that cell is blanked whole
+		vt100.setCursor(2, 0);
+		vt100.appendString("abc한");
+		vt100.setCursor(2, 4);
+		vt100.appendString("가");
+		assertEquals("abc \000", new String(term.getChars(2)));
+		assertEquals("가\000", new String(term.getChars(3), 0, 2));
+	}
+
+	@Test
+	public void testAppendStringWideOneColumn() {
+		ITerminalTextData term = makeITerminalTextData();
+		IVT100EmulatorBackend vt100 = makeBakend(term);
+		term.setMaxHeight(4);
+		vt100.setDimensions(4, 1);
+		vt100.setCursor(0, 0);
+		// two chars do not fit in one cell: the pair is replaced, not stored half
+		vt100.appendString("😀");
+		assertEquals("\uFFFD", new String(term.getChars(0)));
+		vt100.setCursor(1, 0);
+		vt100.appendString("한");
+		assertEquals("한", new String(term.getChars(1)));
+	}
 }
