@@ -150,6 +150,7 @@ public class UnifiedDiffManager {
 	private static final String TOOLBAR_COMPOSITE_FOR_ONE_DIFF_KEY = "TOOLBAR_COMPOSITE_FOR_ONE_DIFF_KEY"; //$NON-NLS-1$
 	private static final String TOOLBAR_COMPOSITE_FOR_ALL_DIFFS_KEY = "TOOLBAR_COMPOSITE_FOR_ALL_DIFFS_KEY"; //$NON-NLS-1$
 	private static final String TOOLBAR_ACTION_PRESENTATIONS_KEY = "TOOLBAR_ACTION_PRESENTATIONS_KEY"; //$NON-NLS-1$
+	private static final String OPEN_REQUEST_KEY = "OPEN_REQUEST_KEY"; //$NON-NLS-1$
 	private static final Map<ITextViewer, List<UnifiedDiff>> diffsByViewer = new HashMap<>();
 	// The workspace file behind each viewer's document, so the accept/revert/undo
 	// actions can run validateEdit lazily, right before they modify the document.
@@ -171,6 +172,16 @@ public class UnifiedDiffManager {
 
 	public static List<UnifiedDiff> get(ITextViewer viewer) {
 		return diffsByViewer.get(viewer);
+	}
+
+	private static Object beginOpenRequest(ITextViewer viewer) {
+		Object request = new Object();
+		viewer.getTextWidget().setData(OPEN_REQUEST_KEY, request);
+		return request;
+	}
+
+	private static boolean isCurrentOpenRequest(ITextViewer viewer, Object request) {
+		return viewer.getTextWidget().getData(OPEN_REQUEST_KEY) == request;
 	}
 
 	private static void setToolbarActionPresentations(ITextViewer viewer, ToolbarActionPresentations presentations) {
@@ -370,12 +381,12 @@ public class UnifiedDiffManager {
 			char leftContributor, char rightContributor, boolean ignoreWhiteSpace,
 			int foldContextLines, ToolbarActionPresentations toolbarActionPresentations) {
 
+		Object request = beginOpenRequest(viewer);
 		if (viewer instanceof ProjectionViewer pv) {
 			pv.doOperation(ProjectionViewer.EXPAND_ALL);
 			removeFoldAnnotations(pv);
 		}
 		clearAll(viewer, model);
-
 		IDocument rightDocument = new Document(source);
 
 		List<UnifiedDiff> unifiedDiffs;
@@ -385,6 +396,12 @@ public class UnifiedDiffManager {
 					ignoreWhiteSpace);
 		} catch (OperationCanceledException | InterruptedException e) {
 			return CANCELED_BY_USER;
+		}
+		// busyCursorWhile yields to the UI event loop while it computes. A later
+		// open may therefore have already replaced this request; never let this
+		// stale computation clear or overwrite that newer diff.
+		if (!isCurrentOpenRequest(viewer, request)) {
+			return Status.OK_STATUS;
 		}
 		// REPLACE_MODE modifies the document right here (see below), so it validates
 		// the edit up front. The other modes only add annotations now; they modify the
@@ -958,9 +975,12 @@ public class UnifiedDiffManager {
 			}
 			List<UnifiedDiff> unifiedDiffsToDelete = new ArrayList<>();
 			for (var anno : annos) {
-				UnifiedDiff unifiedDiff = getUnifiedDiffForAnno(anno);
-				if (unifiedDiff != null) {
-					unifiedDiffsToDelete.add(unifiedDiff);
+				// Line-header annotations belong to the code-mining framework and are
+				// routinely removed and recreated when it reconciles. Only removal of
+				// the primary diff annotation means that the user deleted the diff's
+				// document range.
+				if (anno instanceof UnifiedDiffAnnotation unifiedDiffAnnotation) {
+					unifiedDiffsToDelete.add(unifiedDiffAnnotation.getUnifiedDiff());
 				}
 			}
 			if (unifiedDiffsToDelete.size() > 0) {
