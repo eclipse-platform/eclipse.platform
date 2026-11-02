@@ -30,6 +30,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 import org.eclipse.compare.ICompareFilter;
@@ -882,6 +886,73 @@ public class UnifiedDiffManagerTest {
 		int reserved = header.getHeight();
 		assertTrue(reserved >= 200 * viewer().getTextWidget().getLineHeight(),
 				"the 200 removed lines must reserve scrollable space, but only " + reserved + " pixels were reserved");
+	}
+
+	@Test
+	public void testRemovingCodeMiningHeaderDoesNotRemoveDiff() {
+		setEditorContent("one\ntwo\n"); //$NON-NLS-1$
+		assertTrue(UnifiedDiff.create(editor, "one\nTWO\n", UnifiedDiffMode.REVERT_MODE).open().isOK()); //$NON-NLS-1$
+
+		LineHeaderAnnotation header = waitForLineHeaderAnnotation();
+		assertNotNull(header, "the unified diff must have a code-mining header"); //$NON-NLS-1$
+		annotationModel().removeAnnotation(header);
+		processEvents();
+
+		assertEquals(1, UnifiedDiffManager.get(viewer()).size(),
+				"removing a framework-owned code-mining annotation must not remove its diff"); //$NON-NLS-1$
+	}
+
+	@Test
+	public void testRemovingDetailedAnnotationDoesNotRemoveDiff() {
+		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.REVERT_MODE).open().isOK());
+
+		Annotation detailed = annotations(annotationModel(), DETAILED_ADDITION_ANNO_TYPE).get(0);
+		annotationModel().removeAnnotation(detailed);
+		processEvents();
+
+		assertEquals(1, UnifiedDiffManager.get(viewer()).size(),
+				"removing a detailed annotation must not remove its parent diff"); //$NON-NLS-1$
+	}
+
+	@Test
+	public void testNewerOpenSupersedesOlderComputation() {
+		setEditorContent("one\ntwo\nthree\n"); //$NON-NLS-1$
+		CountDownLatch newerOpenFinished = new CountDownLatch(1);
+		AtomicBoolean firstComparison = new AtomicBoolean(true);
+		AtomicReference<IStatus> newerStatus = new AtomicReference<>();
+
+		IStatus olderStatus = UnifiedDiff.create(editor, "one A\ntwo\nthree\n", UnifiedDiffMode.REVERT_MODE) //$NON-NLS-1$
+				.tokenComparatorFactory(text -> {
+					if (firstComparison.compareAndSet(true, false)) {
+						if (Display.getCurrent() != null) {
+							throw new IllegalStateException("diff computation must run outside the UI thread"); //$NON-NLS-1$
+						}
+						Display.getDefault().asyncExec(() -> {
+							newerStatus.set(UnifiedDiff.create(editor, "one B\ntwo\nthree B\n", //$NON-NLS-1$
+									UnifiedDiffMode.REVERT_MODE).open());
+							newerOpenFinished.countDown();
+						});
+						await(newerOpenFinished, "newer unified-diff open did not complete"); //$NON-NLS-1$
+					}
+					return new CaseInsensitiveTokenComparator(text);
+				}).open();
+
+		assertTrue(olderStatus.isOK(), "superseded open must return normally"); //$NON-NLS-1$
+		assertNotNull(newerStatus.get(), "newer open must run while the older computation is blocked"); //$NON-NLS-1$
+		assertTrue(newerStatus.get().isOK(), "newer open must return OK"); //$NON-NLS-1$
+		assertEquals(2, UnifiedDiffManager.get(viewer()).size(),
+				"the later open's two diffs must not be overwritten by the older one-diff result"); //$NON-NLS-1$
+	}
+
+	private static void await(CountDownLatch latch, String message) {
+		try {
+			if (!latch.await(10, TimeUnit.SECONDS)) {
+				throw new AssertionError(message);
+			}
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw new AssertionError(message, e);
+		}
 	}
 
 	/**
