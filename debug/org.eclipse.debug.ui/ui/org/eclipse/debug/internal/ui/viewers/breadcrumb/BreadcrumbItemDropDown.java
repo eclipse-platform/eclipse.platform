@@ -91,7 +91,7 @@ class BreadcrumbItemDropDown implements IBreadcrumbDropDownSite {
 				GC gc = new GC(image, fLTR ? SWT.LEFT_TO_RIGHT : SWT.RIGHT_TO_LEFT);
 				gc.setAntialias(SWT.ON);
 
-				Color triangleColor = createColor(SWT.COLOR_LIST_FOREGROUND, SWT.COLOR_LIST_BACKGROUND, 20, display);
+				Color triangleColor = createColor(SWT.COLOR_LIST_FOREGROUND, SWT.COLOR_LIST_BACKGROUND, 0.2, display);
 				gc.setBackground(triangleColor);
 				gc.fillPolygon(new int[] {
 						0, 0, ARROW_SIZE, ARROW_SIZE, 0, ARROW_SIZE * 2 });
@@ -134,13 +134,11 @@ class BreadcrumbItemDropDown implements IBreadcrumbDropDownSite {
 			return new Point(10, 16);
 		}
 
-		private Color createColor(int color1, int color2, int ratio, Display display) {
+		private Color createColor(int color1, int color2, double weight, Display display) {
 			RGB rgb1= display.getSystemColor(color1).getRGB();
 			RGB rgb2= display.getSystemColor(color2).getRGB();
 
-			RGB blend= BreadcrumbViewer.blend(rgb2, rgb1, ratio);
-
-			return new Color(blend);
+			return new Color(rgb1.blend(rgb2, weight));
 		}
 	}
 

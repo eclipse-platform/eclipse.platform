@@ -46,9 +46,7 @@ public final class DiffColors {
 	 */
 	public static RGB interpolate(RGB fg, RGB bg, double scale) {
 		if (fg != null && bg != null) {
-			return new RGB((int) ((1.0 - scale) * fg.red + scale * bg.red),
-					(int) ((1.0 - scale) * fg.green + scale * bg.green),
-					(int) ((1.0 - scale) * fg.blue + scale * bg.blue));
+			return fg.blend(bg, scale);
 		}
 		if (fg != null) {
 			return fg;
