@@ -61,6 +61,7 @@ public class HideAllDiffsRunnable implements Runnable {
 
 	@Override
 	public void run() {
+		UnifiedDiffCodeMiningProvider.closeOverlay(tv);
 		if (tv != null) {
 			removeAnnotationModelListener(model, tv.getTextWidget());
 		}
@@ -71,6 +72,8 @@ public class HideAllDiffsRunnable implements Runnable {
 		for (UnifiedDiff diff : diffs1) {
 			List<Annotation> annos = getAllAnnotationsForUnifiedDiff(model, diff);
 			for (var lanno : annos) {
+				// markDeleted must be called before removing it from the model so that the vertical indent of line header mining is properly reset
+				lanno.markDeleted(true);
 				model.removeAnnotation(lanno);
 			}
 		}

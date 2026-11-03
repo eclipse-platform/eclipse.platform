@@ -34,6 +34,7 @@ import java.util.function.Supplier;
 
 import org.eclipse.compare.internal.MergeViewerContentProvider;
 import org.eclipse.compare.unifieddiff.UnifiedDiffMode;
+import org.eclipse.compare.unifieddiff.internal.HideAllDiffsRunnable;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffCodeMiningProvider;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffCodeMiningProvider.FoldedRegionCodeMining;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffCodeMiningProvider.UnifiedDiffFooterCodeMining;
@@ -1087,6 +1088,9 @@ public class UnifiedDiffCodeMiningProviderTest {
 			deletion.keyCode = SWT.BS;
 			overlay.notifyListeners(SWT.KeyDown, deletion);
 			assertEquals(text, overlay.getText(), "deleting must not remove the selected mining text");
+
+			new HideAllDiffsRunnable(viewer, model).run();
+			assertTrue(overlay.isDisposed(), "Hide All Diffs must close the click-through overlay");
 		} finally {
 			store.setValue(AbstractTextEditor.PREFERENCE_SHOW_WHITESPACE_CHARACTERS, oldShowWhitespace);
 			for (Control child : viewer.getTextWidget().getChildren()) {

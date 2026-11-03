@@ -90,6 +90,8 @@ import org.eclipse.ui.texteditor.AbstractTextEditor;
 public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 	// Zero-width space keeps a final blank row in the framework's label layout.
 	private static final String EMPTY_LINE_LAYOUT_MARKER = "\u200B"; //$NON-NLS-1$
+	private static final String CLICK_OVERLAY_MARKER_KEY = UnifiedDiffCodeMiningProvider.class.getName()
+			+ ".clickOverlay"; //$NON-NLS-1$
 
 	private Color deletionBackgroundColor;
 	private Color detailedDiffColor;
@@ -1665,7 +1667,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		}
 
 		@Override
-		public void dispose() {
+		public synchronized void dispose() {
 			cleanCachedData();
 			styleRanges = null;
 			super.dispose();
@@ -1691,7 +1693,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		}
 
 		@Override
-		public Point draw(GC gc, StyledText textWidget, Color color, int x, int y) {
+		public synchronized Point draw(GC gc, StyledText textWidget, Color color, int x, int y) {
 			gc.setBackground(this.deletionBackgroundColor);
 			Color c = textWidget.getForeground();
 			gc.setForeground(c);
@@ -2053,11 +2055,12 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 	}
 
 	static void openOverlay(StyledText overlay, ITextViewer viewer) {
+		overlay.setData(CLICK_OVERLAY_MARKER_KEY, Boolean.TRUE);
+		overlay.addDisposeListener(_ -> setTextEditorActionsActivated(viewer, true));
 		overlay.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent e) {
 				overlay.dispose();
-				setTextEditorActionsActivated(viewer, true);
 			}
 		});
 		overlay.addKeyListener(new KeyAdapter() {
@@ -2065,12 +2068,27 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			public void keyPressed(KeyEvent e) {
 				if (e.keyCode == SWT.ESC) {
 					overlay.dispose();
-					setTextEditorActionsActivated(viewer, true);
 				}
 				e.doit = false;
 			}
 		});
 		setTextEditorActionsActivated(viewer, false);
+	}
+
+	/** Closes all click-through overlays open for the viewer. */
+	static void closeOverlay(ITextViewer viewer) {
+		if (viewer == null) {
+			return;
+		}
+		StyledText textWidget = viewer.getTextWidget();
+		if (textWidget == null || textWidget.isDisposed()) {
+			return;
+		}
+		for (var child : textWidget.getChildren()) {
+			if (!child.isDisposed() && child.getData(CLICK_OVERLAY_MARKER_KEY) == Boolean.TRUE) {
+				child.dispose();
+			}
+		}
 	}
 
 	static void setTextEditorActionsActivated(ITextViewer viewer, boolean state) {
