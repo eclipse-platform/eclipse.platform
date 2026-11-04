@@ -75,6 +75,27 @@ public class MockTerminalControlForText implements ITerminalControlForText {
 		return bracketedPaste;
 	}
 
+	private int mouseMode;
+	private boolean sgrMouse;
+
+	@Override
+	public void enableMouseReporting(int mode) {
+		mouseMode = mode;
+	}
+
+	public int getMouseMode() {
+		return mouseMode;
+	}
+
+	@Override
+	public void enableSgrMouseEncoding(boolean enable) {
+		sgrMouse = enable;
+	}
+
+	public boolean isSgrMouseEncoding() {
+		return sgrMouse;
+	}
+
 	private boolean applicationCursorKeys;
 
 	@Override
