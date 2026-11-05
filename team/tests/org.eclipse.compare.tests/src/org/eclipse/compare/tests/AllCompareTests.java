@@ -41,7 +41,8 @@ import org.junit.platform.suite.api.Suite;
 	CompareOpenEfficiencyTest.class,
 	UnifiedDiffOpenTest.class,
 	StructureCreatorTest.class,
-	CompareFileRevisionEditorInputTest.class})
+	CompareFileRevisionEditorInputTest.class,
+	CompareEditorOpenRaceTest.class})
 public class AllCompareTests {
 	// test suite
 }
