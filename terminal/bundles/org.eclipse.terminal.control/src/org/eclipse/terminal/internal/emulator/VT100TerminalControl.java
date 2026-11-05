@@ -650,16 +650,30 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 			fClipboard.dispose();
 			fPollingTextCanvasModel.stopPolling();
 		}
+		// set on this terminal alone (Inverted colors in its menu): kept across a move
+		boolean inverted = fCtlText != null && fCtlText.isInvertedColors();
 		if (fWndParent != null && !fWndParent.isDisposed()) {
 			// terminal widget gets a new parent (DnD)
 			fWndParent.dispose();
 		}
+		// the old canvas, if any, went with its parent: the new one measures on the display
+		// until it exists
+		fCtlText = null;
 		setupControls(parent);
 		setCommandInputField(fCommandInputField);
 		setupListeners();
-		if (fPreferenceStore != null && wasDisposed) {
-			updatePreferences(null);
-			fPreferenceStore.addPropertyChangeListener(fPreferenceListener);
+		if (wasDisposed) {
+			if (fPreferenceStore != null) {
+				updatePreferences(null);
+				fPreferenceStore.addPropertyChangeListener(fPreferenceListener);
+			}
+		} else {
+			// moved: the new canvas needs the colors and the font (the defaults without a
+			// preference store), but what was set on this terminal stays, the buffer line
+			// limit included
+			onTerminalColorsChanged();
+			onTerminalFontChanged();
+			setInvertedColors(inverted);
 		}
 		JFaceResources.getFontRegistry().addListener(fFontListener);
 		setupHelp(fWndParent, TerminalPlugin.HELP_VIEW);
