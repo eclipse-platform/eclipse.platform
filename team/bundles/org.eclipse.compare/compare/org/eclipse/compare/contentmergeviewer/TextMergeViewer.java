@@ -364,9 +364,10 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			} else {
 				selected = defaultRGB;
 			}
-			normal = DiffColors.interpolate(selected, background, DiffColors.BORDER_SCALE);
-			fill = DiffColors.interpolate(selected, background, DiffColors.FILL_SCALE);
-			textFill = DiffColors.interpolate(selected, background, DiffColors.TEXT_FILL_SCALE);
+			boolean dark = DiffColors.isDarkTheme();
+			normal = DiffColors.interpolate(selected, background, DiffColors.borderScale(dark));
+			fill = DiffColors.interpolate(selected, background, DiffColors.fillScale(dark));
+			textFill = DiffColors.interpolate(selected, background, DiffColors.detailScale(dark));
 		}
 	}
 
