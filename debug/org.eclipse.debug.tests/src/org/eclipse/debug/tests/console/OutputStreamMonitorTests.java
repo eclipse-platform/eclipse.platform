@@ -170,6 +170,30 @@ public class OutputStreamMonitorTests {
 	}
 
 	/**
+	 * A multibyte character split across two reads must not be corrupted when
+	 * getContents() is called after each read without flushing in between.
+	 */
+	@Test
+	public void testBufferedContentsWithSplitCharacterAndNoFlush() throws Exception {
+		String input = "o\u00F6O";
+		byte[] byteInput = input.getBytes(StandardCharsets.UTF_8);
+		BinaryListener binaryListener = new BinaryListener();
+		monitor.addBinaryListener(binaryListener);
+
+		sysout.write(byteInput, 0, 2);
+		sysout.flush();
+		monitor.startMonitoring();
+		binaryListener.waitForBytes(2);
+		assertThat(monitor.getContents()).isEqualTo(input.substring(0, 1));
+
+		sysout.write(byteInput, 2, byteInput.length - 2);
+		sysout.flush();
+		binaryListener.waitForBytes(byteInput.length);
+		assertThat(monitor.getContents()).isEqualTo(input);
+		binaryListener.assertNoExceptions();
+	}
+
+	/**
 	 * Simple test for output stream monitor. Test listeners without buffering.
 	 */
 	@Test
