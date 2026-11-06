@@ -1593,9 +1593,10 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 		boolean depthOne = false;
 		try {
 			workManager.setBuild(build);
-			// if we are not exiting a top level operation then just decrement the count and return
-			depthOne = workManager.getPreparedOperationDepth() == 1;
-			if (!(notificationManager.shouldNotify() || depthOne)) {
+			// if we are not exiting a top level operation then schedule notify and return
+			final int preparedOperationDepth = workManager.getPreparedOperationDepth();
+			depthOne = preparedOperationDepth == 1;
+			if (!depthOne && !notificationManager.shouldNotify()) {
 				notificationManager.requestNotify();
 				return;
 			}
@@ -1604,7 +1605,7 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 			try {
 				notificationManager.beginNotify();
 				// check for a programming error on using beginOperation/endOperation
-				Assert.isTrue(workManager.getPreparedOperationDepth() > 0, "Mismatched begin/endOperation"); //$NON-NLS-1$
+				Assert.isTrue(preparedOperationDepth > 0, "Mismatched begin/endOperation"); //$NON-NLS-1$
 
 				// At this time we need to re-balance the nested operations. It is necessary because
 				// build() and snapshot() should not fail if they are called.
