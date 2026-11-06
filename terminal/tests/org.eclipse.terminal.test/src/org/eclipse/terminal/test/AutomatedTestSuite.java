@@ -28,6 +28,7 @@ import org.junit.platform.suite.api.Suite;
 		org.eclipse.terminal.internal.connector.TerminalToRemoteInjectionOutputStreamTest.class, //
 		org.eclipse.terminal.internal.textcanvas.TerminalControlRecreateUITest.class, //
 		org.eclipse.terminal.internal.emulator.TerminalPasteUITest.class, //
+		org.eclipse.terminal.internal.textcanvas.TextCanvasMouseUITest.class, //
 		org.eclipse.terminal.view.ui.tests.InputChunksTest.class, //
 		org.eclipse.terminal.view.ui.tests.TerminalsViewReorderTest.class, //
 })
