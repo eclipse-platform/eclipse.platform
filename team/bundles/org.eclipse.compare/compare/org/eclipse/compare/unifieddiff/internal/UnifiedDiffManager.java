@@ -1556,6 +1556,7 @@ public class UnifiedDiffManager {
 	 * (replace) toolbar actions.
 	 */
 	private static void dismissCurrentDiff(ITextViewer tv, IAnnotationModel model) {
+		UnifiedDiffCodeMiningProvider.closeOverlay(tv);
 		StyledText tw = tv.getTextWidget();
 		UnifiedDiff diff = resolveCurrentDiff(tv, model);
 		if (diff == null) {
@@ -1586,12 +1587,20 @@ public class UnifiedDiffManager {
 			}
 		}
 		diff.container.remove(diff);
-		List<Annotation> annos = getAllAnnotationsForUnifiedDiff(model, diff);
-		for (var lanno : annos) {
-			model.removeAnnotation(lanno);
-		}
+		removeAnnotations(model, getAllAnnotationsForUnifiedDiff(model, diff));
 		if (tv instanceof ISourceViewerExtension5 ext) {
 			ext.updateCodeMinings();
+		}
+	}
+
+	/**
+	 * Removes temporary unified-diff annotations after marking them deleted so that
+	 * line-header code minings reset their vertical indent.
+	 */
+	public static void removeAnnotations(IAnnotationModel model, List<? extends Annotation> annotations) {
+		for (Annotation annotation : annotations) {
+			annotation.markDeleted(true);
+			model.removeAnnotation(annotation);
 		}
 	}
 
