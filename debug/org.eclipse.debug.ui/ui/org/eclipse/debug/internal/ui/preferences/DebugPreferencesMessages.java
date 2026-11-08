@@ -157,6 +157,17 @@ public class DebugPreferencesMessages extends NLS {
 	public static String SimpleVariablePreferencePage_7;
 	public static String SimpleVariablePreferencePage_8;
 	public static String SimpleVariablePreferencePage_9;
+	public static String SimpleVariablePreferencePage_Details;
+	public static String StringVariableDetailsDialog_Title;
+	public static String StringVariableDetailsDialog_Name;
+	public static String StringVariableDetailsDialog_Value;
+	public static String StringVariableDetailsDialog_Description;
+	public static String StringVariableDetailsDialog_ReadOnly;
+	public static String StringVariableDetailsDialog_Contributed;
+	public static String StringVariableDetailsDialog_ContributedBy;
+	public static String StringVariableDetailsDialog_Yes;
+	public static String StringVariableDetailsDialog_No;
+	public static String StringVariableDetailsDialog_Close;
 	public static String SimpleVariablePreferencePage_10;
 	public static String SimpleVariablePreferencePage_11;
 	public static String SimpleVariablePreferencePage_12;
