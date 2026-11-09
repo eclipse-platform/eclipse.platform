@@ -17,9 +17,12 @@ import static org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager.dispos
 import static org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager.get;
 import static org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager.getAllAnnotationsForUnifiedDiff;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.compare.internal.CompareMessages;
+import org.eclipse.compare.unifieddiff.UnifiedDiff.ToolbarAction;
+import org.eclipse.compare.unifieddiff.UnifiedDiffHunk.Resolution;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager.UnifiedDiff;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.source.Annotation;
@@ -45,9 +48,14 @@ public class KeepAllRunnable implements Runnable {
 		if (diffs1 == null) {
 			return;
 		}
+		List<UnifiedDiffManager.ResolvedDiff> resolvedDiffs = new ArrayList<>();
 		for (UnifiedDiff diff : diffs1) {
 			List<Annotation> annos = getAllAnnotationsForUnifiedDiff(model, diff);
 			for (var lanno : annos) {
+				if (lanno instanceof UnifiedDiffManager.UnifiedDiffAnnotation) {
+					resolvedDiffs.add(UnifiedDiffManager.prepareEvent(diff, Resolution.ACCEPTED,
+							model.getPosition(lanno)));
+				}
 				model.removeAnnotation(lanno);
 			}
 		}
@@ -56,5 +64,6 @@ public class KeepAllRunnable implements Runnable {
 			ext.updateCodeMinings();
 		}
 		disposeUnifiedDiff(tv, model, tv.getTextWidget());
+		UnifiedDiffManager.fireAllEvents(resolvedDiffs, ToolbarAction.KEEP_ALL);
 	}
 }

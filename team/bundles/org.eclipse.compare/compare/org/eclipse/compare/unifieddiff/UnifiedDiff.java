@@ -107,6 +107,7 @@ public final class UnifiedDiff {
 		private char editorContributor = MergeViewerContentProvider.LEFT_CONTRIBUTOR;
 		private char sourceContributor = MergeViewerContentProvider.RIGHT_CONTRIBUTOR;
 		private int foldContextLines = -1;
+		private UnifiedDiffEventListener eventListener;
 		private final Map<ToolbarAction, String> toolbarActionTexts = new EnumMap<>(ToolbarAction.class);
 		private final Map<ToolbarAction, ImageDescriptor> toolbarActionImages = new EnumMap<>(ToolbarAction.class);
 
@@ -177,6 +178,19 @@ public final class UnifiedDiff {
 		}
 
 		/**
+		 * Sets the listener notified when a diff hunk is resolved or an all-diffs
+		 * toolbar action completes. The listener is invoked on the UI thread once
+		 * per resolved hunk, or once for an all-diffs action.
+		 *
+		 * @param listener the listener, or <code>null</code> to receive no events
+		 * @return this builder
+		 */
+		public Builder eventListener(UnifiedDiffEventListener listener) {
+			this.eventListener = listener;
+			return this;
+		}
+
+		/**
 		 * Collapses unchanged regions between diffs, keeping the given number of
 		 * context lines (at least one) around each change. A negative value disables
 		 * folding.
@@ -194,7 +208,7 @@ public final class UnifiedDiff {
 			return UnifiedDiffManager.open(editor, source, mode, additionalActions, tokenComparatorFactory,
 					ignoreWhitespaceContributorFactory, compareFilters, editorContributor, sourceContributor,
 					ignoreWhiteSpace, foldContextLines,
-					new ToolbarActionPresentations(toolbarActionTexts, toolbarActionImages));
+					new ToolbarActionPresentations(toolbarActionTexts, toolbarActionImages), eventListener);
 		}
 	}
 }

@@ -42,8 +42,15 @@ import org.eclipse.compare.internal.MergeViewerContentProvider;
 import org.eclipse.compare.rangedifferencer.IRangeComparator;
 import org.eclipse.compare.unifieddiff.UnifiedDiff;
 import org.eclipse.compare.unifieddiff.UnifiedDiff.ToolbarAction;
+import org.eclipse.compare.unifieddiff.UnifiedDiffEvent;
+import org.eclipse.compare.unifieddiff.UnifiedDiffHunk;
+import org.eclipse.compare.unifieddiff.UnifiedDiffHunk.Resolution;
 import org.eclipse.compare.unifieddiff.UnifiedDiffMode;
 import org.eclipse.compare.unifieddiff.internal.AcceptAllRunnable;
+import org.eclipse.compare.unifieddiff.internal.HideAllDiffsRunnable;
+import org.eclipse.compare.unifieddiff.internal.KeepAllRunnable;
+import org.eclipse.compare.unifieddiff.internal.UndoAllRunnable;
+import org.eclipse.compare.unifieddiff.internal.UnifiedDiffCodeMiningProvider.UnifiedDiffLineHeaderCodeMining;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -62,6 +69,7 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.Region;
+import org.eclipse.jface.text.codemining.ICodeMining;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.IAnnotationModelExtension;
@@ -85,6 +93,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.text.undo.DocumentUndoManagerRegistry;
+import org.eclipse.text.undo.IDocumentUndoManager;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
@@ -1090,6 +1100,46 @@ public class UnifiedDiffManagerTest {
 	}
 
 	@Test
+	public void testRevertingEarlierDiffRefreshesRemainingCodeMiningPosition() throws Exception {
+		String current = """
+				before
+				new early replacement with substantially more text
+				between
+				new later replacement
+				after
+				""";
+		String compared = """
+				before
+				old early
+				between
+				old later
+				after
+				""";
+		String afterRevert = """
+				before
+				old early
+				between
+				new later replacement
+				after
+				""";
+		setEditorContent(current);
+		assertTrue(UnifiedDiff.create(editor, compared, UnifiedDiffMode.REVERT_MODE).open().isOK());
+
+		List<UnifiedDiffManager.UnifiedDiff> diffs = UnifiedDiffManager.get(viewer());
+		assertEquals(2, diffs.size(), "the input must produce two revert diffs");
+		viewer().setSelectedRange(diffs.get(0).leftStart, 0);
+
+		executeEditorCommand("org.eclipse.compare.acceptCurrentDiff"); //$NON-NLS-1$
+		waitForDocumentContent(afterRevert);
+
+		diffs = UnifiedDiffManager.get(viewer());
+		assertEquals(1, diffs.size(), "reverting the first diff must leave the later diff active");
+		UnifiedDiffLineHeaderCodeMining mining = lineHeaderMiningFor(diffs.get(0));
+		assertEquals(afterRevert.indexOf("new later replacement"), mining.getPosition().offset,
+				"the remaining code mining must be positioned after the reverted text");
+	}
+
+	@Test
 	public void testAcceptCurrentDiffCommandAppliesCurrentChange() throws Exception {
 		setEditorContent(LEFT);
 
@@ -1172,6 +1222,285 @@ public class UnifiedDiffManagerTest {
 		assertEquals(1, UnifiedDiffManager.get(viewer()).size(),
 				"Hide Current Diff must remove only the diff at the caret, leaving the other one");
 		assertNotNull(UnifiedDiffManager.get(viewer()), "hiding one of two diffs must not dispose the unified diff");
+	}
+
+	@Test
+	public void testUnifiedDiffEventListenerReportsToolbarResolutions() throws Exception {
+		String multipleLeft = """
+				line one
+				line two
+				line three
+				line four
+				""";
+		String multipleRight = """
+				line ONE changed
+				line two
+				line THREE changed
+				line four
+				""";
+		List<UnifiedDiffEvent> events = new ArrayList<>();
+
+		setEditorContent(LEFT);
+		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.OVERLAY_MODE).eventListener(events::add).open().isOK());
+		executeEditorCommand("org.eclipse.compare.acceptCurrentDiff"); //$NON-NLS-1$
+		waitForDocumentContent(RIGHT);
+		assertResolvedEvent(events, Resolution.ACCEPTED);
+
+		events.clear();
+		setEditorContent(multipleLeft);
+		assertTrue(UnifiedDiff.create(editor, multipleRight, UnifiedDiffMode.OVERLAY_MODE).eventListener(events::add).open().isOK());
+		executeEditorCommand("org.eclipse.compare.acceptAllDiffs"); //$NON-NLS-1$
+		waitForDocumentContent(multipleRight);
+		waitForEvents(events, 1);
+		assertAllAction(events, Resolution.ACCEPTED, ToolbarAction.ACCEPT_ALL);
+		assertEquals(2, events.get(0).getHunks().size(), "accept all must report every accepted hunk");
+		assertHunkLocations(events.get(0), List.of(1, 3), List.of(0, multipleLeft.indexOf("line three"))); //$NON-NLS-1$
+
+		events.clear();
+		setEditorContent(LEFT);
+		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.REVERT_MODE).eventListener(events::add).open().isOK());
+		executeEditorCommand("org.eclipse.compare.acceptAllDiffs"); //$NON-NLS-1$
+		waitForDocumentContent(RIGHT);
+		waitForEvents(events, 1);
+		assertAllAction(events, Resolution.ACCEPTED, ToolbarAction.REVERT_ALL);
+
+		events.clear();
+		setEditorContent(LEFT);
+		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.REPLACE_MODE).eventListener(events::add).open().isOK());
+		executeEditorCommand("org.eclipse.compare.hideCurrentDiff"); //$NON-NLS-1$
+		assertEquals(1, events.size(), "keeping one diff must report one resolution event");
+		assertEquals(Resolution.ACCEPTED, events.get(0).getHunks().getFirst().getResolution());
+
+		events.clear();
+		setEditorContent(LEFT);
+		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.OVERLAY_READ_ONLY_MODE).eventListener(events::add)
+				.open().isOK());
+		executeEditorCommand("org.eclipse.compare.hideCurrentDiff"); //$NON-NLS-1$
+		assertResolvedEvent(events, Resolution.REJECTED);
+
+		events.clear();
+		setEditorContent(multipleLeft);
+		assertTrue(UnifiedDiff.create(editor, multipleRight, UnifiedDiffMode.OVERLAY_READ_ONLY_MODE).eventListener(events::add)
+				.open().isOK());
+		executeEditorCommand("org.eclipse.compare.hideAllDiffs"); //$NON-NLS-1$
+		waitForEvents(events, 1);
+		assertAllAction(events, Resolution.REJECTED, ToolbarAction.HIDE_ALL);
+		assertEquals(2, events.get(0).getHunks().size(), "hide all must report every hidden hunk");
+		assertHunkLocations(events.get(0), List.of(1, 3), List.of(0, multipleLeft.indexOf("line three"))); //$NON-NLS-1$
+
+		events.clear();
+		setEditorContent(LEFT);
+		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.REPLACE_MODE).eventListener(events::add).open().isOK());
+		waitForDocumentContent(RIGHT);
+		new KeepAllRunnable(viewer(), annotationModel()).run();
+		waitForEvents(events, 1);
+		assertAllAction(events, Resolution.ACCEPTED, ToolbarAction.KEEP_ALL);
+
+		events.clear();
+		setEditorContent(LEFT);
+		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.REPLACE_MODE).eventListener(events::add).open().isOK());
+		waitForDocumentContent(RIGHT);
+		new UndoAllRunnable(viewer(), annotationModel()).run();
+		waitForDocumentContent(LEFT);
+		waitForEvents(events, 1);
+		assertAllAction(events, Resolution.REJECTED, ToolbarAction.UNDO_ALL);
+
+		events.clear();
+		setEditorContent(LEFT);
+		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.REPLACE_MODE).eventListener(events::add).open().isOK());
+		waitForDocumentContent(RIGHT);
+		new HideAllDiffsRunnable(viewer(), annotationModel()).run();
+		waitForEvents(events, 1);
+		assertAllAction(events, Resolution.ACCEPTED, ToolbarAction.HIDE_ALL);
+		assertEquals(RIGHT, document().get());
+	}
+
+	@Test
+	public void testUnifiedDiffEventListenerReportsManualRangeDeletion() throws Exception {
+		List<UnifiedDiffEvent> events = new ArrayList<>();
+		setEditorContent(LEFT);
+		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.OVERLAY_READ_ONLY_MODE).eventListener(events::add)
+				.open().isOK());
+
+		Position position = annotationModel().getPosition(annotations(annotationModel(), DELETION_ANNO_TYPE).get(0));
+		document().replace(position.offset, position.length, ""); //$NON-NLS-1$
+		waitForEvents(events, 1);
+
+		assertResolvedEvent(events, Resolution.MANUALLY_DELETED);
+		assertNull(UnifiedDiffManager.get(viewer()), "manually deleting a hunk must dispose the unified diff");
+	}
+
+	@Test
+	public void testAcceptingEachOfTwoHunksRemovesItFromTheUnifiedDiff() throws Exception {
+		String left = """
+				line one
+				line two
+				line three
+				line four
+				""";
+		String right = """
+				line ONE changed
+				line two
+				line THREE changed
+				line four
+				""";
+		String afterFirstAccept = """
+				line ONE changed
+				line two
+				line three
+				line four
+				""";
+		setEditorContent(left);
+		assertTrue(UnifiedDiff.create(editor, right, UnifiedDiffMode.OVERLAY_MODE).open().isOK());
+
+		List<Annotation> deletions = annotations(annotationModel(), DELETION_ANNO_TYPE);
+		assertEquals(2, deletions.size(), "the sample must produce two unified diffs");
+		deletions.sort((first, second) -> Integer.compare(annotationModel().getPosition(first).offset,
+				annotationModel().getPosition(second).offset));
+		viewer().setSelectedRange(annotationModel().getPosition(deletions.get(0)).offset, 0);
+		executeEditorCommand("org.eclipse.compare.acceptCurrentDiff"); //$NON-NLS-1$
+		waitForDocumentContent(afterFirstAccept);
+		waitForUnifiedDiffCount(1);
+
+		Annotation remaining = annotations(annotationModel(), DELETION_ANNO_TYPE).get(0);
+		viewer().setSelectedRange(annotationModel().getPosition(remaining).offset, 0);
+		executeEditorCommand("org.eclipse.compare.acceptCurrentDiff"); //$NON-NLS-1$
+		waitForDocumentContent(right);
+		waitForUnifiedDiffCount(0);
+		assertNull(UnifiedDiffManager.get(viewer()), "accepting the final hunk must dispose the unified diff");
+	}
+
+	@Test
+	public void testDeletingCharacterAtPureInsertionHunkDoesNotDismissIt() throws Exception {
+		String left = """
+				a
+				b
+				c
+				""";
+		String right = """
+				a
+				b
+				NEW
+				c
+				""";
+		setEditorContent(left);
+		assertTrue(UnifiedDiff.create(editor, right, UnifiedDiffMode.OVERLAY_MODE).open().isOK());
+
+		List<Annotation> deletions = annotations(annotationModel(), DELETION_ANNO_TYPE);
+		assertEquals(1, deletions.size(), "the insertion must produce one unified diff");
+		Position position = annotationModel().getPosition(deletions.get(0));
+		assertEquals(0, position.length, "an insertion hunk has a zero-length annotation");
+		document().replace(position.offset, 1, ""); //$NON-NLS-1$
+		processEvents();
+
+		assertNotNull(UnifiedDiffManager.get(viewer()), "deleting the following character must not dismiss an insertion hunk");
+		assertEquals(1, UnifiedDiffManager.get(viewer()).size(), "the insertion hunk must remain active");
+	}
+
+	@Test
+	public void testUnifiedDiffEventListenerReportsManualRangeReplacement() throws Exception {
+		List<UnifiedDiffEvent> events = new ArrayList<>();
+		setEditorContent(LEFT);
+		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.OVERLAY_READ_ONLY_MODE).eventListener(events::add)
+				.open().isOK());
+
+		Position position = annotationModel().getPosition(annotations(annotationModel(), DELETION_ANNO_TYPE).get(0));
+		document().replace(position.offset, position.length, "manually changed\n"); //$NON-NLS-1$
+		waitForEvents(events, 1);
+
+		assertResolvedEvent(events, Resolution.MANUALLY_DELETED);
+		assertNull(UnifiedDiffManager.get(viewer()), "manually replacing a hunk must dispose the unified diff");
+	}
+
+	@Test
+	public void testUnifiedDiffEventListenerReportsDeletionCoveringAHunk() throws Exception {
+		List<UnifiedDiffEvent> events = new ArrayList<>();
+		setEditorContent(LEFT);
+		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.OVERLAY_READ_ONLY_MODE).eventListener(events::add)
+				.open().isOK());
+
+		Position position = annotationModel().getPosition(annotations(annotationModel(), DELETION_ANNO_TYPE).get(0));
+		int prefixLength = 2;
+		document().replace(position.offset - prefixLength, position.length + prefixLength, ""); //$NON-NLS-1$
+		waitForEvents(events, 1);
+
+		assertResolvedEvent(events, Resolution.MANUALLY_DELETED);
+		assertNull(UnifiedDiffManager.get(viewer()), "deleting a range that covers a hunk must dispose it");
+	}
+
+	@Test
+	public void testUnifiedDiffEventListenerReportsDocumentUndoAfterTheDocumentChanges() throws Exception {
+		List<UnifiedDiffEvent> events = new ArrayList<>();
+		List<String> documentContentsAtNotification = new ArrayList<>();
+		setEditorContent(LEFT);
+		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.REPLACE_MODE).eventListener(event -> {
+			events.add(event);
+			documentContentsAtNotification.add(document().get());
+		}).open().isOK());
+		waitForDocumentContent(RIGHT);
+
+		IDocumentUndoManager undoManager = DocumentUndoManagerRegistry.getDocumentUndoManager(document());
+		assertTrue(undoManager.undoable(), "opening a replace-mode diff must create an undoable document change");
+		undoManager.undo();
+		waitForDocumentContent(LEFT);
+		waitForEvents(events, 1);
+
+		assertResolution(events, Resolution.REJECTED);
+		assertEquals(List.of(LEFT), documentContentsAtNotification,
+				"the undo event must be sent after the document has been restored");
+		assertNull(UnifiedDiffManager.get(viewer()), "undoing the only replace-mode hunk must dispose the unified diff");
+	}
+
+	@Test
+	public void testUnifiedDiffEventListenerCanOpenAnotherUnifiedDiff() throws Exception {
+		List<UnifiedDiffEvent> events = new ArrayList<>();
+		AtomicReference<IStatus> reentrantOpenStatus = new AtomicReference<>();
+		setEditorContent(LEFT);
+		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.OVERLAY_MODE).eventListener(event -> {
+			events.add(event);
+			reentrantOpenStatus.set(UnifiedDiff.create(editor, LEFT, UnifiedDiffMode.OVERLAY_READ_ONLY_MODE).open());
+		}).open().isOK());
+
+		executeEditorCommand("org.eclipse.compare.acceptCurrentDiff"); //$NON-NLS-1$
+		waitForDocumentContent(RIGHT);
+		waitForEvents(events, 1);
+
+		assertResolvedEvent(events, Resolution.ACCEPTED);
+		assertNotNull(reentrantOpenStatus.get(), "the listener must have opened a replacement unified diff");
+		assertTrue(reentrantOpenStatus.get().isOK(), "opening a unified diff from the listener must succeed");
+		assertNotNull(UnifiedDiffManager.get(viewer()), "the listener's unified diff must remain active");
+	}
+
+	private void assertResolution(List<UnifiedDiffEvent> events, Resolution resolution) {
+		assertEquals(1, events.size(), "exactly one resolution event must be sent for the hunk");
+		for (UnifiedDiffHunk hunk : events.get(0).getHunks()) {
+			assertEquals(resolution, hunk.getResolution());
+		}
+	}
+
+	private void assertAllAction(List<UnifiedDiffEvent> events, Resolution resolution, ToolbarAction action) {
+		assertResolution(events, resolution);
+		UnifiedDiffEvent event = events.get(0);
+		assertEquals(action, event.getAction());
+		assertFalse(event.getHunks().isEmpty());
+	}
+
+	private void assertHunkLocations(UnifiedDiffEvent event, List<Integer> lines, List<Integer> offsets) {
+		assertEquals(lines, event.getHunks().stream().map(UnifiedDiffHunk::getLine).toList());
+		assertEquals(offsets, event.getHunks().stream().map(UnifiedDiffHunk::getOffset).toList());
+	}
+
+	private void assertResolvedEvent(List<UnifiedDiffEvent> events, Resolution resolution) {
+		assertEquals(1, events.size(), "exactly one resolution event must be sent for the hunk");
+		UnifiedDiffEvent event = events.get(0);
+		assertNull(event.getAction());
+		UnifiedDiffHunk hunk = event.getHunks().getFirst();
+		assertEquals(resolution, hunk.getResolution());
+		assertEquals(2, hunk.getLine());
+		assertEquals(LEFT.indexOf("line two"), hunk.getOffset()); //$NON-NLS-1$
+		assertEquals("line two\n".length(), hunk.getLength()); //$NON-NLS-1$
+		assertEquals("line two\n", hunk.getEditorCode()); //$NON-NLS-1$
+		assertEquals("line TWO modified\n", hunk.getComparedSourceCode()); //$NON-NLS-1$
 	}
 
 	@Test
@@ -1407,6 +1736,22 @@ public class UnifiedDiffManagerTest {
 		}
 	}
 
+	private UnifiedDiffLineHeaderCodeMining lineHeaderMiningFor(UnifiedDiffManager.UnifiedDiff diff) {
+		Iterator<Annotation> it = annotationModel().getAnnotationIterator();
+		while (it.hasNext()) {
+			Annotation annotation = it.next();
+			if (annotation instanceof LineHeaderAnnotation header) {
+				for (ICodeMining mining : header.getMinings()) {
+					if (mining instanceof UnifiedDiffLineHeaderCodeMining lineHeader
+							&& lineHeader.getUnifiedDiff() == diff) {
+						return lineHeader;
+					}
+				}
+			}
+		}
+		throw new AssertionError("line-header mining not found for remaining diff");
+	}
+
 	private ITextViewer viewer() {
 		ITextViewer viewer = editor.getAdapter(ITextViewer.class);
 		assertNotNull(viewer, "editor must adapt to ITextViewer");
@@ -1516,6 +1861,15 @@ public class UnifiedDiffManagerTest {
 			}
 		}
 		return expected.equals(document().get());
+	}
+
+	private void waitForEvents(List<UnifiedDiffEvent> events, int expectedCount) throws InterruptedException {
+		long deadline = System.currentTimeMillis() + 10_000;
+		while (System.currentTimeMillis() < deadline && events.size() < expectedCount) {
+			processEvents();
+			Thread.sleep(20);
+		}
+		assertEquals(expectedCount, events.size(), "the expected unified-diff events must be sent");
 	}
 
 	private static List<Annotation> annotations(IAnnotationModel model, String type) {
@@ -1633,6 +1987,21 @@ public class UnifiedDiffManagerTest {
 	 * can be removed first). A build machine gives no guarantee the editor is ever
 	 * painted on its own, so a synthetic paint is dispatched and the document polled.
 	 */
+	private void waitForUnifiedDiffCount(int expectedCount) throws InterruptedException {
+		long deadline = System.currentTimeMillis() + 10_000;
+		while (System.currentTimeMillis() < deadline) {
+			processEvents();
+			List<UnifiedDiffManager.UnifiedDiff> diffs = UnifiedDiffManager.get(viewer());
+			int count = diffs == null ? 0 : diffs.size();
+			if (count == expectedCount) {
+				return;
+			}
+			Thread.sleep(20);
+		}
+		List<UnifiedDiffManager.UnifiedDiff> diffs = UnifiedDiffManager.get(viewer());
+		assertEquals(expectedCount, diffs == null ? 0 : diffs.size(), "unexpected number of unified diffs");
+	}
+
 	private void waitForDocumentContent(String expected) {
 		assertTrue(waitForDocument(expected, 10_000),
 				"the accepted change must eventually reach the document");

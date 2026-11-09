@@ -844,7 +844,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		Action openTwoWayCompare = new Action(null, image) {
 			@Override
 			public void run() {
-				new HideAllDiffsRunnable(textEditor).run();
+				new HideAllDiffsRunnable(textEditor, false).run();
 				if (input.canRunAsJob()) {
 					openEditorInBackground(input, page, editor, activate);
 				} else {
