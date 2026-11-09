@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.compare.internal.CompareMessages;
+import org.eclipse.compare.unifieddiff.UnifiedDiff.ToolbarAction;
+import org.eclipse.compare.unifieddiff.UnifiedDiffHunk.Resolution;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager.UnifiedDiff;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager.UnifiedDiffAnnotation;
 import org.eclipse.jface.text.BadLocationException;
@@ -57,6 +59,7 @@ public class UndoAllRunnable implements Runnable {
 		}
 		List<Position> positions = new ArrayList<>();
 		List<String> replaceStrings = new ArrayList<>();
+		List<UnifiedDiffManager.ResolvedDiff> pendingEvents = new ArrayList<>();
 		for (UnifiedDiff diff : diffs1) {
 			List<Annotation> annos = getAllAnnotationsForUnifiedDiff(model, diff);
 			int unifiedDiffAdditionCount = 0;
@@ -67,6 +70,9 @@ public class UndoAllRunnable implements Runnable {
 						throw new IllegalStateException("Multiple UnifiedDiffAnnotation for one UnifiedDiff found"); //$NON-NLS-1$
 					}
 					Position pos = model.getPosition(lanno);
+					UnifiedDiffManager.ResolvedDiff pendingEvent = UnifiedDiffManager.prepareEvent(diff,
+							Resolution.REJECTED, pos);
+					pendingEvents.add(pendingEvent);
 					positions.add(pos);
 					replaceStrings.add(diff.leftStr);
 				}
@@ -81,17 +87,23 @@ public class UndoAllRunnable implements Runnable {
 		if (positions.isEmpty()) {
 			return;
 		}
-		// we have to insert with delay because otherwise the line header code minings
-		// cannot be deleted
+		List<UnifiedDiffManager.ResolvedDiff> completed = new ArrayList<>();
 		runAfterRepaintFinished(tw, () -> {
 			for (int i = positions.size() - 1; i >= 0; i--) {
 				Position pos = positions.get(i);
 				String replaceStr = replaceStrings.get(i);
 				try {
 					tv.getDocument().replace(pos.offset, pos.length, replaceStr);
+					completed.add(0, pendingEvents.get(i));
 				} catch (BadLocationException e) {
 					error(e);
 				}
+			}
+			if (!completed.isEmpty()) {
+				UnifiedDiffManager.fireAllEvents(completed, ToolbarAction.UNDO_ALL);
+			}
+			for (UnifiedDiffManager.ResolvedDiff pendingEvent : pendingEvents) {
+				UnifiedDiffManager.cancelEvent(pendingEvent);
 			}
 		});
 	}

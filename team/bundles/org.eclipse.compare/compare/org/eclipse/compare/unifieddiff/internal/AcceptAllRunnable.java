@@ -23,6 +23,9 @@ import java.util.List;
 
 import org.eclipse.compare.internal.CompareMessages;
 import org.eclipse.compare.internal.CompareUIPlugin;
+import org.eclipse.compare.unifieddiff.UnifiedDiff.ToolbarAction;
+import org.eclipse.compare.unifieddiff.UnifiedDiffHunk.Resolution;
+import org.eclipse.compare.unifieddiff.UnifiedDiffMode;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager.UnifiedDiff;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager.UnifiedDiffAnnotation;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -39,10 +42,16 @@ import org.eclipse.ui.PlatformUI;
 public class AcceptAllRunnable implements Runnable {
 	private IAnnotationModel model;
 	private ITextViewer tv;
+	private final ToolbarAction action;
 
 	public AcceptAllRunnable(ITextViewer tv, IAnnotationModel model) {
+		this(tv, model, ToolbarAction.ACCEPT_ALL);
+	}
+
+	public AcceptAllRunnable(ITextViewer tv, IAnnotationModel model, ToolbarAction action) {
 		this.tv = tv;
 		this.model = model;
+		this.action = action;
 	}
 
 	public String getLabel() {
@@ -67,8 +76,12 @@ public class AcceptAllRunnable implements Runnable {
 		if (!UnifiedDiffManager.validateEdit(tv)) {
 			return;
 		}
+		ToolbarAction executedAction = !diffs1.isEmpty() && UnifiedDiffMode.REVERT_MODE.equals(diffs1.get(0).mode)
+				? ToolbarAction.REVERT_ALL
+				: action;
 		List<Position> positions = new ArrayList<>();
 		List<String> replaceStrings = new ArrayList<>();
+		List<UnifiedDiffManager.ResolvedDiff> pendingEvents = new ArrayList<>();
 		for (UnifiedDiff diff : diffs1) {
 			List<Annotation> annos = getAllAnnotationsForUnifiedDiff(model, diff);
 			int unifiedDiffAdditionCount = 0;
@@ -79,6 +92,9 @@ public class AcceptAllRunnable implements Runnable {
 						throw new IllegalStateException("Multiple UnifiedDiffAnnotation for one UnifiedDiff found"); //$NON-NLS-1$
 					}
 					Position pos = model.getPosition(lanno);
+					UnifiedDiffManager.ResolvedDiff pendingEvent = UnifiedDiffManager.prepareEvent(diff,
+							Resolution.ACCEPTED, pos);
+					pendingEvents.add(pendingEvent);
 					positions.add(pos);
 					replaceStrings.add(diff.rightStr);
 				}
@@ -93,17 +109,23 @@ public class AcceptAllRunnable implements Runnable {
 		if (positions.isEmpty()) {
 			return;
 		}
-		// we have to insert with delay because otherwise the line header code minings
-		// cannot be deleted
+		List<UnifiedDiffManager.ResolvedDiff> completed = new ArrayList<>();
 		runAfterRepaintFinished(tw, () -> {
 			for (int i = positions.size() - 1; i >= 0; i--) {
 				Position pos = positions.get(i);
 				String replaceStr = replaceStrings.get(i);
 				try {
 					tv.getDocument().replace(pos.offset, pos.length, replaceStr);
+					completed.add(0, pendingEvents.get(i));
 				} catch (BadLocationException e) {
 					UnifiedDiffManager.error(e);
 				}
+			}
+			if (!completed.isEmpty()) {
+				UnifiedDiffManager.fireAllEvents(completed, executedAction);
+			}
+			for (UnifiedDiffManager.ResolvedDiff pendingEvent : pendingEvents) {
+				UnifiedDiffManager.cancelEvent(pendingEvent);
 			}
 		});
 	}

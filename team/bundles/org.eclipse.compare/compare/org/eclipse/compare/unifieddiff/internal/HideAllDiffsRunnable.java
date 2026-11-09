@@ -18,10 +18,14 @@ import static org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager.get;
 import static org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager.getAllAnnotationsForUnifiedDiff;
 import static org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager.removeAnnotationModelListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.compare.internal.CompareMessages;
 import org.eclipse.compare.internal.CompareUIPlugin;
+import org.eclipse.compare.unifieddiff.UnifiedDiff.ToolbarAction;
+import org.eclipse.compare.unifieddiff.UnifiedDiffHunk.Resolution;
+import org.eclipse.compare.unifieddiff.UnifiedDiffMode;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager.UnifiedDiff;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.ITextViewer;
@@ -36,15 +40,26 @@ public class HideAllDiffsRunnable implements Runnable {
 
 	private IAnnotationModel model;
 	private ITextViewer tv;
+	private final boolean notifyEvents;
 
 	public HideAllDiffsRunnable(ITextViewer tv, IAnnotationModel model) {
+		this(tv, model, true);
+	}
+
+	public HideAllDiffsRunnable(ITextViewer tv, IAnnotationModel model, boolean notifyEvents) {
 		this.tv = tv;
 		this.model = model;
+		this.notifyEvents = notifyEvents;
 	}
 
 	public HideAllDiffsRunnable(ITextEditor textEditor) {
+		this(textEditor, true);
+	}
+
+	public HideAllDiffsRunnable(ITextEditor textEditor, boolean notifyEvents) {
 		this.tv = textEditor.getAdapter(ITextViewer.class);
 		this.model = UnifiedDiffManager.annotationModelOf(textEditor);
+		this.notifyEvents = notifyEvents;
 	}
 
 	public String getLabel() {
@@ -69,9 +84,15 @@ public class HideAllDiffsRunnable implements Runnable {
 		if (diffs1 == null) {
 			return;
 		}
+		List<UnifiedDiffManager.ResolvedDiff> resolvedDiffs = new ArrayList<>();
 		for (UnifiedDiff diff : diffs1) {
 			List<Annotation> annos = getAllAnnotationsForUnifiedDiff(model, diff);
 			for (var lanno : annos) {
+				if (notifyEvents && lanno instanceof UnifiedDiffManager.UnifiedDiffAnnotation) {
+					Resolution resolution = diff.mode.equals(UnifiedDiffMode.REPLACE_MODE)
+							? Resolution.ACCEPTED : Resolution.REJECTED;
+					resolvedDiffs.add(UnifiedDiffManager.prepareEvent(diff, resolution, model.getPosition(lanno)));
+				}
 				// markDeleted must be called before removing it from the model so that the vertical indent of line header mining is properly reset
 				lanno.markDeleted(true);
 				model.removeAnnotation(lanno);
@@ -82,5 +103,6 @@ public class HideAllDiffsRunnable implements Runnable {
 			ext.updateCodeMinings();
 		}
 		disposeUnifiedDiff(tv, model, tv.getTextWidget());
+		UnifiedDiffManager.fireAllEvents(resolvedDiffs, ToolbarAction.HIDE_ALL);
 	}
 }
