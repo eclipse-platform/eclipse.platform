@@ -189,6 +189,7 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 			try {
 				if (configuration != null) {
 					file = configuration.getAttribute(IDebugUIConstants.ATTR_CAPTURE_IN_FILE, (String) null);
+					append = configuration.getAttribute(IDebugUIConstants.ATTR_APPEND_TO_FILE, false);
 					if (fStdInFile == null) {
 						fStdInFile = configuration.getAttribute(IDebugUIConstants.ATTR_CAPTURE_STDIN_FILE, (String) null);
 					}
@@ -197,7 +198,6 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 					IStringVariableManager stringVariableManager = VariablesPlugin.getDefault().getStringVariableManager();
 					if (file != null) {
 						file = stringVariableManager.performStringSubstitution(file);
-						append = configuration.getAttribute(IDebugUIConstants.ATTR_APPEND_TO_FILE, false);
 					}
 
 					if (fStdInFile != null) {
