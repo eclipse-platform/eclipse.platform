@@ -599,8 +599,9 @@ public class VT100EmulatorTest {
 		// xterm's spelling: CSI number ; modifier final, with 2 shift, 3 alt, 5 control and their sums
 		Map<Integer, String> keys = Map.ofEntries(Map.entry(SWT.ARROW_UP, "1;%dA"), Map.entry(SWT.ARROW_DOWN, "1;%dB"),
 				Map.entry(SWT.ARROW_RIGHT, "1;%dC"), Map.entry(SWT.ARROW_LEFT, "1;%dD"), Map.entry(SWT.HOME, "1;%dH"),
-				Map.entry(SWT.END, "1;%dF"), Map.entry(SWT.INSERT, "2;%d~"), Map.entry(SWT.PAGE_UP, "5;%d~"),
-				Map.entry(SWT.PAGE_DOWN, "6;%d~"), Map.entry(SWT.F1, "1;%dP"), Map.entry(SWT.F2, "1;%dQ"),
+				Map.entry(SWT.END, "1;%dF"), Map.entry(SWT.INSERT, "2;%d~"), Map.entry((int) SWT.DEL, "3;%d~"),
+				Map.entry(SWT.PAGE_UP, "5;%d~"), Map.entry(SWT.PAGE_DOWN, "6;%d~"), Map.entry(SWT.F1, "1;%dP"),
+				Map.entry(SWT.F2, "1;%dQ"),
 				Map.entry(SWT.F3, "1;%dR"), Map.entry(SWT.F4, "1;%dS"), Map.entry(SWT.F5, "15;%d~"),
 				Map.entry(SWT.F6, "17;%d~"), Map.entry(SWT.F7, "18;%d~"), Map.entry(SWT.F8, "19;%d~"),
 				Map.entry(SWT.F9, "20;%d~"), Map.entry(SWT.F10, "21;%d~"), Map.entry(SWT.F11, "23;%d~"),
@@ -615,6 +616,39 @@ public class VT100EmulatorTest {
 		// the Mac's Cmd, alone or with others, stays in Eclipse: Cmd+Shift+Left is not Shift+Left
 		assertEquals(null, VT100TerminalControl.modifiedSpecialKey(SWT.ARROW_LEFT, SWT.COMMAND));
 		assertEquals(null, VT100TerminalControl.modifiedSpecialKey(SWT.ARROW_LEFT, SWT.COMMAND | SWT.SHIFT));
+	}
+
+	@Test
+	public void testCtrlCharacter() {
+		// xterm: Ctrl+2 to Ctrl+8 are NUL, ESC, FS, GS, RS, US and DEL
+		assertEquals("\u0000\u001b\u001c\u001d\u001e\u001f\u007f",
+				"2345678".chars().map(c -> VT100TerminalControl.ctrlCharacter((char) c))
+						.collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString());
+		assertEquals('\u0000', VT100TerminalControl.ctrlCharacter(' '));
+		assertEquals('\u001f', VT100TerminalControl.ctrlCharacter('/'));
+		assertEquals('1', VT100TerminalControl.ctrlCharacter('1'));
+		assertEquals('\u0016', VT100TerminalControl.ctrlCharacter('\u0016'));
+	}
+
+	@Test
+	public void testAltSendsEscape() {
+		assertTrue(VT100TerminalControl.altSendsEscape(SWT.ALT, 'f'));
+		assertTrue(VT100TerminalControl.altSendsEscape(SWT.ALT | SWT.SHIFT, 'F'));
+		// a real Ctrl+Alt+V gives a control character and keeps its Alt
+		assertTrue(VT100TerminalControl.altSendsEscape(SWT.CTRL | SWT.ALT, '\u0016'));
+		// AltGr+Q on a German keyboard: Ctrl+Alt with the '@' it types, no ESC
+		assertFalse(VT100TerminalControl.altSendsEscape(SWT.CTRL | SWT.ALT, '@'));
+		assertFalse(VT100TerminalControl.altSendsEscape(SWT.CTRL, '\u0016'));
+		assertFalse(VT100TerminalControl.altSendsEscape(0, 'f'));
+	}
+
+	@Test
+	public void testAlternateScreenIsReported() {
+		assertFalse(emulator.isAlternateScreen());
+		run("\u001b[?1049h");
+		assertTrue(emulator.isAlternateScreen());
+		run("\u001b[?1049l");
+		assertFalse(emulator.isAlternateScreen());
 	}
 
 	@Test
