@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -1127,6 +1128,14 @@ public class UnifiedDiffManagerTest {
 
 		List<UnifiedDiffManager.UnifiedDiff> diffs = UnifiedDiffManager.get(viewer());
 		assertEquals(2, diffs.size(), "the input must produce two revert diffs");
+		StyledText tw = viewer().getTextWidget();
+		tw.setSize(800, 600);
+		assertNotNull(waitForLineHeaderAnnotation());
+		UnifiedDiffManager.UnifiedDiff laterDiff = diffs.get(1);
+		lineHeaderMiningFor(laterDiff);
+		firePaint(tw);
+		int firstLine = tw.getLineAtOffset(diffs.get(0).leftStart);
+		assertTrue(tw.getLineVerticalIndent(firstLine) > 0, "the first mining must reserve height before reverting");
 		viewer().setSelectedRange(diffs.get(0).leftStart, 0);
 
 		executeEditorCommand("org.eclipse.compare.acceptCurrentDiff"); //$NON-NLS-1$
@@ -1134,9 +1143,16 @@ public class UnifiedDiffManagerTest {
 
 		diffs = UnifiedDiffManager.get(viewer());
 		assertEquals(1, diffs.size(), "reverting the first diff must leave the later diff active");
+		assertSame(laterDiff, diffs.get(0), "the surviving band must belong to the later diff");
+		assertEquals(0, tw.getLineVerticalIndent(firstLine), "removing the first header must clear its reserved height");
 		UnifiedDiffLineHeaderCodeMining mining = lineHeaderMiningFor(diffs.get(0));
 		assertEquals(afterRevert.indexOf("new later replacement"), mining.getPosition().offset,
 				"the remaining code mining must be positioned after the reverted text");
+		assertTrue(mining.getLabel().contains("old later"), "the surviving mining must retain the later deletion text");
+		firePaint(tw);
+		assertNotNull(mining.getLastRectangle(), "the surviving mining must be painted");
+		assertEquals(tw.getLocationAtOffset(tw.getOffsetAtLine(tw.getLineAtOffset(mining.getPosition().offset))).x,
+				mining.getLastRectangle().x, "the surviving mining must paint at the line origin");
 	}
 
 	@Test

@@ -749,7 +749,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		}
 
 		@Override
-		public void dispose() {
+		public synchronized void dispose() {
 			styleRanges = null;
 			lastRectangle = null;
 			cachedFont = null;
@@ -770,7 +770,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		}
 
 		@Override
-		public Point draw(GC gc, StyledText textWidget, Color color, int x, int y) {
+		public synchronized Point draw(GC gc, StyledText textWidget, Color color, int x, int y) {
 			gc.setBackground(this.deletionBackgroundColor);
 			Color c = textWidget.getForeground();
 			gc.setForeground(c);
@@ -797,7 +797,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			if (ranges.isEmpty()) {
 				// no syntax coloring available; fall back to plain rendering
 				result = super.draw(gc, textWidget, color, x, y);
-				drawBandBorder(gc, this.borderColor, y, textWidget.getBounds().width, lastRectangle.height,
+				drawBandBorder(gc, this.borderColor, y, textWidget.getBounds().width, result.y,
 						this.bandBorder);
 				return result;
 			}
@@ -809,7 +809,9 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			gc.setFont(font);
 			drawStyleRanges(gc, textWidget, ranges, label, rawLabel, styledFonts, x, y, null,
 					whitespace, trailingCarriageReturn, trailingLineFeed);
-			drawBandBorder(gc, this.borderColor, y, textWidget.getBounds().width, lastRectangle.height,
+			// Syntax-coloring callbacks can dispose the mining and clear lastRectangle.
+			// Use the size measured by this draw call rather than the invalidated cache.
+			drawBandBorder(gc, this.borderColor, y, textWidget.getBounds().width, result.y,
 					this.bandBorder);
 			return result;
 		}
