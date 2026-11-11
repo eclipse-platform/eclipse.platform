@@ -1672,8 +1672,9 @@ public class UnifiedDiffManager {
 				positions.add(pos);
 				replaceStrings.add(diff.rightStr);
 			}
-			model.removeAnnotation(lanno);
 		}
+		// The painter must see deleted headers when it clears their reserved height.
+		removeAnnotations(model, annos);
 		if (tv instanceof ISourceViewerExtension5 ext) {
 			ext.updateCodeMinings();
 		}

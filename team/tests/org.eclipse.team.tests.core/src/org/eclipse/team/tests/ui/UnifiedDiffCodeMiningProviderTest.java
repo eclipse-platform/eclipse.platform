@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
@@ -49,6 +50,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.TextAttribute;
@@ -74,6 +76,7 @@ import org.eclipse.jface.text.source.projection.ProjectionAnnotation;
 import org.eclipse.jface.text.source.projection.ProjectionAnnotationModel;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -630,6 +633,55 @@ public class UnifiedDiffCodeMiningProviderTest {
 		} finally {
 			gc.dispose();
 			image.dispose();
+		}
+	}
+
+	@Test
+	public void testFooterMiningDisposalDuringPlainDrawingDoesNotLoseHeight() throws Exception {
+		assertFooterDisposalDuringDrawing(false);
+	}
+
+	@Test
+	public void testFooterMiningDisposalDuringStyledDrawingDoesNotLoseHeight() throws Exception {
+		assertFooterDisposalDuringDrawing(true);
+	}
+
+	private void assertFooterDisposalDuringDrawing(boolean styled) throws Exception {
+		switchToDocument(new Document("line 0\nx"));
+		assertTrue(open("line 0\nchanged\n", MODE).isOK());
+		UnifiedDiffFooterCodeMining footer = footerMining();
+		UnifiedDiffFooterCodeMining[] painting = new UnifiedDiffFooterCodeMining[1];
+		ProjectionViewer paintingViewer = new ProjectionViewer(shell, null, null, false, SWT.V_SCROLL) {
+			@Override
+			public List<StyleRange> computeStyleRanges(IDocument syntaxDocument, IRegion region) {
+				// Invalidate the cache after draw measured its size, before it draws the border.
+				painting[0].dispose();
+				return styled ? new ArrayList<>(List.of(new StyleRange(region.getOffset(), region.getLength(),
+						display.getSystemColor(SWT.COLOR_DARK_BLUE), null))) : new ArrayList<>();
+			}
+		};
+		paintingViewer.setDocument(document);
+		paintingViewer.getTextWidget().setSize(400, 100);
+		Color deletionColor = new Color(display, 11, 22, 33);
+		Color detailedDiffColor = new Color(display, 44, 55, 66);
+		Color borderColor = new Color(display, 77, 88, 99);
+		painting[0] = new UnifiedDiffFooterCodeMining(document, provider, footer.getUnifiedDiff(), 4,
+				deletionColor, detailedDiffColor, borderColor, paintingViewer);
+		Image image = new Image(display, 400, 100);
+		GC gc = new GC(image);
+		try {
+			Point size = painting[0].draw(gc, paintingViewer.getTextWidget(), null, 0, 0);
+			assertTrue(size.y > 0, "drawing must retain its measured height after cache invalidation");
+			assertNull(painting[0].getLastRectangle(), "disposal must have cleared the cached rectangle");
+			assertTrue(firstColumnWith(image, borderColor) >= 0, "drawing must still paint the band border");
+		} finally {
+			gc.dispose();
+			image.dispose();
+			painting[0].dispose();
+			paintingViewer.getTextWidget().dispose();
+			deletionColor.dispose();
+			detailedDiffColor.dispose();
+			borderColor.dispose();
 		}
 	}
 
