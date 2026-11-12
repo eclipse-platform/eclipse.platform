@@ -166,4 +166,12 @@ public interface ITerminalTextData extends ITerminalTextDataReadOnly {
 	default void clearWrappedLine(int line) {
 	}
 
+	/**
+	 * Records the whole of a grapheme cluster drawn in the cells from column, see
+	 * {@link #getCluster(int, int)}. Writing any of its cells forgets it.
+	 * @since 1.2
+	 */
+	default void setCluster(int line, int column, String cluster) {
+	}
+
 }

@@ -311,6 +311,30 @@ public class TerminalTextDataFastScroll implements ITerminalTextData {
 	}
 
 	@Override
+	public String getCluster(int line, int column) {
+		validateLineParameter(line);
+		return fData.getCluster(getPositionOfLine(line), column);
+	}
+
+	@Override
+	public int getCellWidth(int line, int column) {
+		validateLineParameter(line);
+		return fData.getCellWidth(getPositionOfLine(line), column);
+	}
+
+	@Override
+	public boolean isSimpleLine(int line) {
+		validateLineParameter(line);
+		return fData.isSimpleLine(getPositionOfLine(line));
+	}
+
+	@Override
+	public void setCluster(int line, int column, String cluster) {
+		validateLineParameter(line);
+		fData.setCluster(getPositionOfLine(line), column, cluster);
+	}
+
+	@Override
 	public void setWrappedLine(int line) {
 		validateLineParameter(line);
 		fData.setWrappedLine(getPositionOfLine(line));

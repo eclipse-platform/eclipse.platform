@@ -13,8 +13,11 @@ package org.eclipse.terminal.internal.model;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.BitSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.terminal.model.ITerminalTextData;
 import org.eclipse.terminal.model.ITerminalTextDataSnapshot;
@@ -34,10 +37,24 @@ public class TerminalTextDataStore implements ITerminalTextData {
 	private int fCursorColumn;
 	private int fCursorLine;
 	final private BitSet fWrappedLines = new BitSet();
+	/** per line, how its characters lie in its cells; null for a line of one-cell characters only */
+	private Layout[] fLayout;
+
+	/**
+	 * Where a character takes two cells, and the grapheme clusters, of one line:
+	 * set when the characters are written, so that reading it is a lookup.
+	 */
+	private static final class Layout {
+		/** the cells that are the second of a character starting in the cell before */
+		final BitSet second = new BitSet();
+		/** the clusters, by first cell */
+		final Map<Integer, String> clusters = new HashMap<>();
+	}
 
 	public TerminalTextDataStore() {
 		fChars = new char[0][];
 		fStyle = new TerminalStyle[0][];
+		fLayout = new Layout[0];
 		fWidth = 0;
 	}
 
@@ -67,6 +84,7 @@ public class TerminalTextDataStore implements ITerminalTextData {
 			}
 			fStyle = (TerminalStyle[][]) resizeArray(fStyle, height);
 			fChars = (char[][]) resizeArray(fChars, height);
+			fLayout = (Layout[]) resizeArray(fLayout, height);
 		}
 		// clean the new lines
 		if (height > fHeight) {
@@ -192,6 +210,7 @@ public class TerminalTextDataStore implements ITerminalTextData {
 		ensureLineLength(line, column + 1);
 		fChars[line][column] = c;
 		fStyle[line][column] = style;
+		layOut(line, column, 1);
 	}
 
 	@Override
@@ -206,9 +225,87 @@ public class TerminalTextDataStore implements ITerminalTextData {
 					"Parameter 'column' must be >= 0 and less than 'width' (current value '" + fWidth + "')"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		ensureLineLength(line, column + len);
-		for (int i = 0; i < len; i++) {
-			fChars[line][column + i] = chars[i + start];
-			fStyle[line][column + i] = style;
+		System.arraycopy(chars, start, fChars[line], column, len);
+		Arrays.fill(fStyle[line], column, column + len, style);
+		layOut(line, column, len);
+	}
+
+	/**
+	 * The cells from <code>column</code> on were just written: what took them before
+	 * is gone, a character cut in half by the write is one cell, and a character
+	 * written together with what fills its second cell (a wide character and a
+	 * null, the two halves of a surrogate pair) takes two.
+	 */
+	private void layOut(int line, int column, int len) {
+		if (len == 0) {
+			return; // nothing written, so nothing laid out anew either
+		}
+		Layout layout = fLayout[line];
+		char[] chars = fChars[line];
+		int end = column + len;
+		if (layout == null) {
+			for (int col = column; col + 1 < end; col++) {
+				if (takesTwo(chars[col], chars[col + 1])) {
+					layout = fLayout[line] = new Layout();
+					break;
+				}
+			}
+			if (layout == null) {
+				return; // the usual case: one cell each, as before
+			}
+		}
+		if (column > 0 && layout.second.get(column)) {
+			layout.clusters.remove(column - 1); // its second cell is gone
+		}
+		layout.second.clear(column, end + 1);
+		for (int col = column; col < end && !layout.clusters.isEmpty(); col++) {
+			layout.clusters.remove(col);
+		}
+		for (int col = column; col + 1 < end; col++) {
+			if (takesTwo(chars[col], chars[col + 1])) {
+				layout.second.set(++col);
+			}
+		}
+	}
+
+	private static boolean takesTwo(char c, char next) {
+		return Character.isHighSurrogate(c) ? Character.isLowSurrogate(next) : next == '\000' && CharWidth.of(c) == 2;
+	}
+
+	@Override
+	public int getCellWidth(int line, int column) {
+		Layout layout = fLayout[line];
+		if (layout == null) {
+			return 1;
+		}
+		if (layout.second.get(column)) {
+			return 0;
+		}
+		return column + 1 < fWidth && layout.second.get(column + 1) ? 2 : 1;
+	}
+
+	@Override
+	public String getCluster(int line, int column) {
+		Layout layout = fLayout[line];
+		return layout == null || layout.clusters.isEmpty() ? null : layout.clusters.get(column);
+	}
+
+	@Override
+	public boolean isSimpleLine(int line) {
+		Layout layout = fLayout[line];
+		return layout == null || layout.second.isEmpty() && layout.clusters.isEmpty();
+	}
+
+	@Override
+	public void setCluster(int line, int column, String cluster) {
+		if (fLayout[line] == null) {
+			fLayout[line] = new Layout();
+		}
+		Layout layout = fLayout[line];
+		layout.clusters.put(column, cluster);
+		// a cluster written over two cells, its second one filled, takes both
+		if (column + 1 < fWidth && CharWidth.clusterCells(cluster) == 2 && !layout.second.get(column)) {
+			layout.second.set(column + 1);
 		}
 	}
 
@@ -224,6 +321,7 @@ public class TerminalTextDataStore implements ITerminalTextData {
 			for (int i = startLine; i < startLine + size + shift; i++) {
 				fChars[i] = fChars[i - shift];
 				fStyle[i] = fStyle[i - shift];
+				fLayout[i] = fLayout[i - shift];
 				fWrappedLines.set(i, fWrappedLines.get(i - shift));
 			}
 			// then clean the opened lines
@@ -233,6 +331,7 @@ public class TerminalTextDataStore implements ITerminalTextData {
 			for (int i = startLine + size - 1; i >= startLine && i - shift >= 0; i--) {
 				fChars[i] = fChars[i - shift];
 				fStyle[i] = fStyle[i - shift];
+				fLayout[i] = fLayout[i - shift];
 				fWrappedLines.set(i, fWrappedLines.get(i - shift));
 			}
 			cleanLines(startLine, Math.min(shift, getHeight() - startLine));
@@ -289,6 +388,7 @@ public class TerminalTextDataStore implements ITerminalTextData {
 		if (getHeight() != n) {
 			fChars = new char[n][];
 			fStyle = new TerminalStyle[n][];
+			fLayout = new Layout[n];
 		}
 		for (int i = 0; i < n; i++) {
 			copyLine(source, i, i);
@@ -321,9 +421,27 @@ public class TerminalTextDataStore implements ITerminalTextData {
 
 	@Override
 	public void copyLine(ITerminalTextData source, int sourceLine, int destLine) {
-		fChars[destLine] = source.getChars(sourceLine);
+		char[] chars = source.getChars(sourceLine);
+		// read before writing: the source may be this very line
+		Layout layout = null;
+		boolean simple = source.isSimpleLine(sourceLine);
+		for (int col = 0; !simple && chars != null && col < chars.length; col++) {
+			String cluster = source.getCluster(sourceLine, col);
+			int width = source.getCellWidth(sourceLine, col);
+			if (cluster != null || width == 0) {
+				if (layout == null) {
+					layout = new Layout();
+				}
+				if (cluster != null) {
+					layout.clusters.put(col, cluster);
+				}
+				layout.second.set(col, width == 0);
+			}
+		}
+		fChars[destLine] = chars;
 		fStyle[destLine] = source.getStyles(sourceLine);
 		fWrappedLines.set(destLine, source.isWrappedLine(sourceLine));
+		fLayout[destLine] = layout;
 	}
 
 	@Override
@@ -346,6 +464,8 @@ public class TerminalTextDataStore implements ITerminalTextData {
 		fChars[line] = chars.clone();
 		fStyle[line] = styles.clone();
 		fWrappedLines.clear(line);
+		fLayout[line] = null;
+		layOut(line, 0, chars.length);
 	}
 
 	@Override
@@ -363,6 +483,7 @@ public class TerminalTextDataStore implements ITerminalTextData {
 		fChars[line] = null;
 		fStyle[line] = null;
 		fWrappedLines.clear(line);
+		fLayout[line] = null;
 	}
 
 	@Override

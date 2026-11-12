@@ -13,6 +13,7 @@ package org.eclipse.terminal.internal.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -662,5 +663,46 @@ abstract public class AbstractITerminalTextDataTest {
 		term.setWrappedLine(2);
 		term.clearWrappedLine(2);
 		assertFalse(term.isWrappedLine(2));
+	}
+
+	@Test
+	public void testClusters() {
+		ITerminalTextData term = makeITerminalTextData();
+		term.setDimensions(4, 6);
+		term.setMaxHeight(4);
+		fill(term, "abcdef\nghijkl\nmnopqr\nstuvwx");
+		String heart = "\u2764\ufe0f"; // made wide by VS16: two cells
+		assertNull(term.getCluster(1, 2));
+		term.setCluster(1, 2, heart);
+		assertEquals(heart, term.getCluster(1, 2));
+		// writing nothing, even at its second cell, leaves it as it is
+		term.setChars(1, 3, new char[0], null);
+		assertEquals(heart, term.getCluster(1, 2));
+		// writing either of its cells forgets a cluster
+		term.setChar(1, 3, 'X', null);
+		assertNull(term.getCluster(1, 2));
+		term.setCluster(1, 2, heart);
+		term.setChars(1, 0, new char[] { 'y', 'z' }, null);
+		assertEquals(heart, term.getCluster(1, 2)); // untouched cells keep theirs
+		term.setChars(1, 1, new char[] { 'y', 'z' }, null);
+		assertNull(term.getCluster(1, 2));
+		// a narrow character with a mark has one cell: writing the next one keeps it
+		term.setCluster(1, 2, "q\u0301");
+		term.setChar(1, 3, 'X', null);
+		assertEquals("q\u0301", term.getCluster(1, 2));
+		// a cluster goes with its line when lines scroll, and is gone with a cleaned line
+		term.setCluster(2, 0, heart);
+		term.scroll(0, 4, -1);
+		assertEquals(heart, term.getCluster(1, 0));
+		assertNull(term.getCluster(2, 0));
+		term.cleanLine(1);
+		assertNull(term.getCluster(1, 0));
+		// and is copied with its line, also onto itself
+		term.setCluster(0, 4, heart);
+		term.copyLine(term, 0, 0);
+		assertEquals(heart, term.getCluster(0, 4));
+		ITerminalTextData copy = makeITerminalTextData();
+		copy.copy(term);
+		assertEquals(heart, copy.getCluster(0, 4));
 	}
 }

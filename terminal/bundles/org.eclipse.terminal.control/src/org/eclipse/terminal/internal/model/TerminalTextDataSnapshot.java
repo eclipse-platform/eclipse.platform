@@ -318,4 +318,19 @@ class TerminalTextDataSnapshot implements ITerminalTextDataSnapshot {
 	public boolean isWrappedLine(int line) {
 		return fSnapshot.isWrappedLine(line);
 	}
+
+	@Override
+	public String getCluster(int line, int column) {
+		return fSnapshot.getCluster(line, column);
+	}
+
+	@Override
+	public int getCellWidth(int line, int column) {
+		return fSnapshot.getCellWidth(line, column);
+	}
+
+	@Override
+	public boolean isSimpleLine(int line) {
+		return fSnapshot.isSimpleLine(line);
+	}
 }

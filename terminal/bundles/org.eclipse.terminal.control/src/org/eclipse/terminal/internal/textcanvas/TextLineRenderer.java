@@ -27,7 +27,7 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.terminal.connector.Logger;
-import org.eclipse.terminal.internal.model.CharWidth;
+import org.eclipse.terminal.internal.model.Cells;
 import org.eclipse.terminal.model.ITerminalTextDataReadOnly;
 import org.eclipse.terminal.model.LineSegment;
 import org.eclipse.terminal.model.TerminalColor;
@@ -73,8 +73,7 @@ public class TextLineRenderer implements ILinelRenderer {
 				LineSegment segment = segments[i];
 				TerminalStyle style = segment.getStyle();
 				setupGC(gc, style);
-				String text = segment.getText();
-				drawText(gc, x, y, colFirst, segment.getColumn(), text);
+				drawText(gc, line, x, y, colFirst, segment.getColumn(), segment.getText());
 				drawCursor(model, gc, line, x, y, colFirst);
 			}
 			if (fModel.hasHoverSelection(line)) {
@@ -122,8 +121,7 @@ public class TextLineRenderer implements ILinelRenderer {
 					}
 					len = Math.min(len, chars.length - offset);
 					if (len > 0) {
-						String text = new String(chars, offset, len);
-						drawText(gc, x, y, colFirst, offset, text);
+						drawText(gc, line, x, y, colFirst, offset, new String(chars, offset, len));
 					}
 				}
 			}
@@ -154,12 +152,8 @@ public class TextLineRenderer implements ILinelRenderer {
 			if (cursorColumn < getTerminalText().getWidth()) {
 				// On a wide character the cursor covers both of its cells, whichever
 				// one it is on, as in xterm: half a glyph cannot be drawn reversed.
-				char[] chars = getTerminalText().getChars(row);
-				String line = chars == null ? "" : new String(chars); //$NON-NLS-1$
-				if (cursorColumn < line.length() && CharWidth.isSecondCell(line, cursorColumn)) {
-					cursorColumn--;
-				}
-				int cells = cursorColumn + 1 < line.length() && CharWidth.isSecondCell(line, cursorColumn + 1) ? 2 : 1;
+				cursorColumn = Cells.start(getTerminalText(), row, cursorColumn);
+				int cells = getTerminalText().getCellWidth(row, cursorColumn);
 				TerminalStyle style = getTerminalText().getStyle(row, cursorColumn);
 				if (style == null) {
 					// TODO make the cursor color customizable
@@ -167,103 +161,72 @@ public class TextLineRenderer implements ILinelRenderer {
 				}
 				style = style.setReverse(!style.isReverse());
 				setupGC(gc, style);
-				String text = cells == 2 ? line.substring(cursorColumn, cursorColumn + 2)
-						: String.valueOf(getTerminalText().getChar(row, cursorColumn));
 				Rectangle clipping = gc.getClipping();
 				gc.setClipping(clipping.intersection(new Rectangle(x + (cursorColumn - colFirst) * getCellWidth(), y,
 						cells * getCellWidth(), getCellHeight())));
-				drawText(gc, x, y, colFirst, cursorColumn, text);
+				char[] text = new char[cells];
+				for (int i = 0; i < cells; i++) {
+					text[i] = getTerminalText().getChar(row, cursorColumn + i); // a null past what was written
+				}
+				drawText(gc, row, x, y, colFirst, cursorColumn, new String(text));
 				gc.setClipping(clipping);
 			}
 		}
 	}
 
-	private void drawText(GC gc, int x, int y, int colFirst, int col, String text) {
+	/**
+	 * Draws the characters that start in the cells from <code>col</code> whose
+	 * chars are <code>cells</code>, each as {@link Cells} has it: a cluster whole,
+	 * over the cells it takes.
+	 */
+	private void drawText(GC gc, int line, int x, int y, int colFirst, int col, String cells) {
+		ITerminalTextDataReadOnly data = getTerminalText();
+		cells = cells.substring(0, Math.max(0, Math.min(cells.length(), data.getWidth() - col)));
+		int end = col + cells.length();
 		int offset = (col - colFirst) * getCellWidth();
 		if (fStyleMap.isFontProportional()) {
-			// draw the background
-			// TODO why does this not work???????
-			//			gc.fillRectangle(x,y,fStyleMap.getFontWidth()*text.length(),fStyleMap.getFontHeight());
 			int xx = x + offset;
-			for (int i = 0; i < text.length(); i++) {
-				char c = text.charAt(i);
-				int cells = cellsAt(text, i);
-				// a character beyond the BMP is drawn whole, both surrogates at once
-				int n = Character.charCount(text.codePointAt(i));
+			for (int c = col; c < end;) {
+				int width = Math.max(data.getCellWidth(line, c), 1);
 				// TODO why do I have to draw the background character by character??????
-				gc.fillRectangle(xx, y, cells * fStyleMap.getFontWidth(), fStyleMap.getFontHeight());
-				if (c != ' ' && c != '\000') {
-					gc.drawString(text.substring(i, i + n), fStyleMap.getCharOffset(c) + xx, y, false);
+				gc.fillRectangle(xx, y, width * fStyleMap.getFontWidth(), fStyleMap.getFontHeight());
+				String drawn = Cells.drawn(data, line, c);
+				if (!drawn.isBlank()) {
+					// placed by the character the cell shows, not a prefix written before it
+					gc.drawString(drawn, fStyleMap.getCharOffset(data.getChar(line, c)) + xx, y, false);
 				}
-				xx += cells * fStyleMap.getFontWidth();
-				i += n - 1;
+				xx += width * fStyleMap.getFontWidth();
+				c += width;
 			}
+			return;
+		}
+		// One call keeps whatever the font does with the run, ligatures included,
+		// but only while it advances exactly one cell per column. A character the
+		// font does not have is drawn from somewhere else and rarely does, and
+		// then everything after it on the line sits in the wrong column.
+		String drawn = Cells.drawn(data, line, col, cells);
+		if (drawn != null && gc.textExtent(drawn).x == (end - col) * getCellWidth()) {
+			gc.drawString(drawn, x + offset, y, false);
 		} else {
-			// One call keeps whatever the font does with the run, ligatures included,
-			// but only while it advances exactly one cell per column. A character the
-			// font does not have is drawn from somewhere else and rarely does, and
-			// then everything after it on the line sits in the wrong column.
-			String drawn = withoutFillers(text);
-			if (gc.textExtent(drawn).x == text.length() * getCellWidth()) {
-				gc.drawString(drawn, x + offset, y, false);
-			} else {
-				drawCellByCell(gc, x + offset, y, text);
-			}
+			drawCellByCell(gc, data, line, col, end, x + offset, y);
 		}
 	}
 
 	/**
 	 * Puts every character at the start of its own cell, so the columns hold no
-	 * matter what the font makes of it. A wide character is left to cover the cell
-	 * of the filler that follows it.
+	 * matter what the font makes of it. A character that takes two cells is left to
+	 * cover the second one.
 	 */
-	private void drawCellByCell(GC gc, int x, int y, String text) {
+	private void drawCellByCell(GC gc, ITerminalTextDataReadOnly data, int line, int col, int end, int x, int y) {
 		// The whole run at once, because the characters are drawn over it one at a
 		// time and the cells between them would otherwise keep what was there before.
-		gc.fillRectangle(x, y, text.length() * getCellWidth(), getCellHeight());
-		for (int i = 0; i < text.length();) {
-			// A character beyond the BMP is two chars in two cells, and has to be
-			// drawn whole: half of a surrogate pair is no character at all.
-			int n = Character.charCount(text.codePointAt(i));
-			char c = text.charAt(i);
-			if (c != ' ' && c != '\000') {
-				gc.drawString(text.substring(i, i + n), x + i * getCellWidth(), y, true);
-			}
-			i += n;
-		}
-	}
-
-	/**
-	 * Cells taken up by the character at <code>index</code>: none for the filler of
-	 * a wide character, since the character it belongs to already covers it, two
-	 * for a wide character, one for anything else.
-	 */
-	private static int cellsAt(String text, int index) {
-		if (CharWidth.isFiller(text, index)) {
-			return 0;
-		}
-		int codePoint = text.codePointAt(index);
-		// a surrogate pair takes two cells whatever its width, as it is stored
-		return Character.charCount(codePoint) == 2 || CharWidth.of(codePoint) == 2 ? 2 : 1;
-	}
-
-	/**
-	 * The text as it should be handed to a fixed width font: fillers dropped, since
-	 * the wide character before them already spans their cell, and every other null
-	 * turned into the space it stands for. What is left lines up column for column,
-	 * as long as the font draws a wide character in exactly two cells.
-	 */
-	private static String withoutFillers(String text) {
-		StringBuilder drawn = new StringBuilder(text.length());
-		for (int i = 0; i < text.length(); i++) {
-			char c = text.charAt(i);
-			if (c != '\000') {
-				drawn.append(c);
-			} else if (!CharWidth.isFiller(text, i)) {
-				drawn.append(' ');
+		gc.fillRectangle(x, y, (end - col) * getCellWidth(), getCellHeight());
+		for (int c = col; c < end; c++) {
+			String drawn = Cells.drawn(data, line, c);
+			if (!drawn.isBlank()) {
+				gc.drawString(drawn, x + (c - col) * getCellWidth(), y, true);
 			}
 		}
-		return drawn.toString();
 	}
 
 	/**
