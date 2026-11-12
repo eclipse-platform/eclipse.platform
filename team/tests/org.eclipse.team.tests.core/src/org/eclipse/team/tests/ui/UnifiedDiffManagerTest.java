@@ -168,12 +168,23 @@ public class UnifiedDiffManagerTest {
 		createInWorkspace(file);
 		file.setContents(createInputStream(LEFT), true, true, null);
 
+		var introManager = PlatformUI.getWorkbench().getIntroManager();
+		var intro = introManager.getIntro();
+		if (intro != null) {
+			assertTrue(introManager.closeIntro(intro), "Welcome must close before opening the editor");
+		}
+
 		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		// Opens the default text editor (.txt has no presentation reconciler), which
 		// exercises the empty-StyleRange fallback path in
 		// UnifiedDiffCodeMiningProvider.UnifiedDiffLineHeaderCodeMining.draw.
 		editor = (ITextEditor) IDE.openEditor(page, file);
 		processEvents();
+		StyledText textWidget = viewer().getTextWidget();
+		Rectangle clientArea = textWidget.getClientArea();
+		assertTrue(clientArea.width > 0 && clientArea.height > 0,
+				"editor must have a non-empty client area for paint-dependent tests: " + clientArea);
+		assertTrue(textWidget.isVisible(), "editor must be visible for paint-dependent tests");
 
 		previousMakeWritable = InstanceScope.INSTANCE.getNode(TEAM_UI_NODE)
 				.get(MAKE_WRITABLE_WITHOUT_CONTEXT_KEY, null);

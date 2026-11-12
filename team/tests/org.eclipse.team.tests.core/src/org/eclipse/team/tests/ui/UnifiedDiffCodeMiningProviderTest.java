@@ -86,6 +86,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -484,10 +485,13 @@ public class UnifiedDiffCodeMiningProviderTest {
 	}
 
 	private static void assertPixelColor(ImageData data, int x, int y, RGB expected, String description) {
+		String context = description + ": pixel=(" + x + ", " + y + "), image=" + data.width + "x" + data.height;
+		assertTrue(x >= 0 && x < data.width && y >= 0 && y < data.height,
+				context + ": sample must be inside the image");
 		RGB actual = data.palette.getRGB(data.getPixel(x, y));
 		assertTrue(Math.abs(actual.red - expected.red) <= 2 && Math.abs(actual.green - expected.green) <= 2
 				&& Math.abs(actual.blue - expected.blue) <= 2,
-				description + ": expected " + expected + " but was " + actual);
+				context + ": expected " + expected + " with RGB tolerance ±2 but was " + actual);
 	}
 
 	/**
@@ -651,10 +655,12 @@ public class UnifiedDiffCodeMiningProviderTest {
 		assertTrue(open("line 0\nchanged\n", MODE).isOK());
 		UnifiedDiffFooterCodeMining footer = footerMining();
 		UnifiedDiffFooterCodeMining[] painting = new UnifiedDiffFooterCodeMining[1];
+		Rectangle[] measuredRectangle = new Rectangle[1];
 		ProjectionViewer paintingViewer = new ProjectionViewer(shell, null, null, false, SWT.V_SCROLL) {
 			@Override
 			public List<StyleRange> computeStyleRanges(IDocument syntaxDocument, IRegion region) {
 				// Invalidate the cache after draw measured its size, before it draws the border.
+				measuredRectangle[0] = painting[0].getLastRectangle();
 				painting[0].dispose();
 				return styled ? new ArrayList<>(List.of(new StyleRange(region.getOffset(), region.getLength(),
 						display.getSystemColor(SWT.COLOR_DARK_BLUE), null))) : new ArrayList<>();
@@ -667,13 +673,37 @@ public class UnifiedDiffCodeMiningProviderTest {
 		Color borderColor = new Color(display, 77, 88, 99);
 		painting[0] = new UnifiedDiffFooterCodeMining(document, provider, footer.getUnifiedDiff(), 4,
 				deletionColor, detailedDiffColor, borderColor, paintingViewer);
-		Image image = new Image(display, 400, 100);
+		Rectangle bounds = paintingViewer.getTextWidget().getBounds();
+		Image image = new Image(display, bounds.width, bounds.height);
 		GC gc = new GC(image);
 		try {
+			Color canvasColor = display.getSystemColor(SWT.COLOR_WHITE);
+			gc.setBackground(canvasColor);
+			gc.fillRectangle(image.getBounds());
 			Point size = painting[0].draw(gc, paintingViewer.getTextWidget(), null, 0, 0);
-			assertTrue(size.y > 0, "drawing must retain its measured height after cache invalidation");
-			assertNull(painting[0].getLastRectangle(), "disposal must have cleared the cached rectangle");
-			assertTrue(firstColumnWith(image, borderColor) >= 0, "drawing must still paint the band border");
+			int zoom = display.getPrimaryMonitor().getZoom();
+			ImageData data = image.getImageData(zoom);
+			String context = "footer disposal during " + (styled ? "styled" : "plain") + " drawing: widget="
+					+ bounds + ", client=" + paintingViewer.getTextWidget().getClientArea() + ", measured="
+					+ measuredRectangle[0] + ", returned=" + size + ", zoom=" + zoom + "%, native image="
+					+ data.width + "x" + data.height + ", display DPI=" + display.getDPI();
+			assertNotNull(measuredRectangle[0], context + ": must measure before the syntax-coloring callback");
+			assertTrue(size.y > 1 && size.y < bounds.height,
+					context + ": image must contain the band interior, border and following row");
+			assertEquals(new Point(measuredRectangle[0].width, measuredRectangle[0].height), size,
+					context + ": must retain measured extent after cache invalidation");
+			assertNull(painting[0].getLastRectangle(), context + ": disposal must clear the cached rectangle");
+			assertTrue(size.x >= 0 && size.x < bounds.width - 2,
+					context + ": samples must be beyond the label and before the right edge");
+			int sampleX = size.x + (bounds.width - size.x) / 2;
+			assertColorInLogicalPixel(data, zoom, sampleX, 0, deletionColor.getRGB(),
+					context + ": overlay must omit the shared top border");
+			assertColorInLogicalPixel(data, zoom, sampleX, size.y - 2, deletionColor.getRGB(),
+					context + ": band interior immediately above the bottom border");
+			assertColorInLogicalPixel(data, zoom, sampleX, size.y - 1, borderColor.getRGB(),
+					context + ": bottom border must still be painted after disposal at the measured height");
+			assertColorInLogicalPixel(data, zoom, sampleX, size.y, canvasColor.getRGB(),
+					context + ": drawing must not extend below the measured band");
 		} finally {
 			gc.dispose();
 			image.dispose();
@@ -683,6 +713,39 @@ public class UnifiedDiffCodeMiningProviderTest {
 			detailedDiffColor.dispose();
 			borderColor.dispose();
 		}
+	}
+
+	private static void assertColorInLogicalPixel(ImageData data, int zoom, int logicalX, int logicalY, RGB expected,
+			String description) {
+		int left = (int) Math.floor(logicalX * zoom / 100.0);
+		int top = (int) Math.floor(logicalY * zoom / 100.0);
+		int right = (int) Math.ceil((logicalX + 1) * zoom / 100.0);
+		int bottom = (int) Math.ceil((logicalY + 1) * zoom / 100.0);
+		String context = description + ": logical pixel=(" + logicalX + ", " + logicalY + "), zoom=" + zoom
+				+ "%, image=" + data.width + "x" + data.height + ", native sample=[" + left + ", "
+				+ top + " .. " + right + ", " + bottom + "), expected=" + expected + ", RGB tolerance=±2";
+		assertTrue(left >= 0 && top >= 0 && right <= data.width && bottom <= data.height
+				&& left < right && top < bottom, context + ": sample must be inside the image");
+		boolean matched = false;
+		StringBuilder samples = new StringBuilder();
+		for (int pixelY = top; pixelY < bottom; pixelY++) {
+			for (int pixelX = left; pixelX < right; pixelX++) {
+				RGB actual = data.palette.getRGB(data.getPixel(pixelX, pixelY));
+				samples.append(" (").append(pixelX).append(", ").append(pixelY).append(")=").append(actual);
+				matched |= Math.abs(actual.red - expected.red) <= 2 && Math.abs(actual.green - expected.green) <= 2
+						&& Math.abs(actual.blue - expected.blue) <= 2;
+			}
+		}
+		if (!matched) {
+			int margin = Math.max(1, (int) Math.ceil(zoom / 100.0));
+			for (int pixelY = Math.max(0, top - margin); pixelY < Math.min(data.height, bottom + margin); pixelY++) {
+				if (pixelY < top || pixelY >= bottom) {
+					RGB actual = data.palette.getRGB(data.getPixel(left, pixelY));
+					samples.append(" adjacent (").append(left).append(", ").append(pixelY).append(")=").append(actual);
+				}
+			}
+		}
+		assertTrue(matched, context + ": no matching native pixel; actual samples and adjacent rows:" + samples);
 	}
 
 	/**
