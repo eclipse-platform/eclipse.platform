@@ -603,7 +603,7 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 			Map.entry(SWT.ARROW_UP, new XtermKey(1, 'A')), Map.entry(SWT.ARROW_DOWN, new XtermKey(1, 'B')),
 			Map.entry(SWT.ARROW_RIGHT, new XtermKey(1, 'C')), Map.entry(SWT.ARROW_LEFT, new XtermKey(1, 'D')),
 			Map.entry(SWT.HOME, new XtermKey(1, 'H')), Map.entry(SWT.END, new XtermKey(1, 'F')),
-			Map.entry(SWT.INSERT, new XtermKey(2, '~')),
+			Map.entry(SWT.INSERT, new XtermKey(2, '~')), Map.entry((int) SWT.DEL, new XtermKey(3, '~')),
 			Map.entry(SWT.PAGE_UP, new XtermKey(5, '~')), Map.entry(SWT.PAGE_DOWN, new XtermKey(6, '~')),
 			Map.entry(SWT.F1, new XtermKey(1, 'P')), Map.entry(SWT.F2, new XtermKey(1, 'Q')),
 			Map.entry(SWT.F3, new XtermKey(1, 'R')), Map.entry(SWT.F4, new XtermKey(1, 'S')),
@@ -654,6 +654,44 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 	 */
 	private static String bracketed(String text) {
 		return PASTE_START + text.replace("\u001b", "").replace("\u009b", "") + PASTE_END; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+	}
+
+	/**
+	 * What Ctrl alone with a key sends where SWT gives the key's own character: Space
+	 * (NUL, the mark in Emacs), / (undo in Emacs) and the digits as xterm spells them,
+	 * Ctrl+6 being vim's alternate file. Windows hands Ctrl+2 over as '2', so its NUL
+	 * comes from here too.
+	 *
+	 * @param character the character SWT reports
+	 * @return the control character, or the character itself
+	 */
+	public static char ctrlCharacter(char character) {
+		return switch (character) {
+		case ' ', '2' -> '\u0000';
+		case '3' -> '\u001b';
+		case '4' -> '\u001c';
+		case '5' -> '\u001d';
+		case '6' -> '\u001e';
+		case '/', '7' -> '\u001f';
+		case '8' -> '\u007f';
+		default -> character;
+		};
+	}
+
+	/**
+	 * SWT reports AltGr as Ctrl+Alt, with the character AltGr types. A real Ctrl+Alt
+	 * gives a control character instead, which keeps its Alt as in xterm: ESC before
+	 * it, so Ctrl+Alt+V reaches Codex as itself.
+	 *
+	 * @param stateMask the modifiers of the key event
+	 * @param character the character SWT reports
+	 * @return whether the character goes out with ESC before it
+	 */
+	public static boolean altSendsEscape(int stateMask, char character) {
+		if ((stateMask & SWT.ALT) == 0) {
+			return false;
+		}
+		return (stateMask & SWT.CTRL) == 0 || character < '\u0020' || character == '\u007f';
 	}
 
 	protected void sendChar(char chKey, boolean altKeyPressed) {
@@ -895,6 +933,12 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 		fFocusListener = new TerminalFocusListener();
 
 		getCtlText().addKeyListener(fKeyHandler);
+		// Shift+Tab is a key for the program (back tab, see keyPressed), not a move of the focus out of the terminal
+		getCtlText().addTraverseListener(e -> {
+			if (e.detail == SWT.TRAVERSE_TAB_PREVIOUS && (e.stateMask & SWT.MODIFIER_MASK) == SWT.SHIFT) {
+				e.doit = false;
+			}
+		});
 		getCtlText().addFocusListener(fFocusListener);
 
 	}
@@ -1063,7 +1107,7 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 			// Control key is _not_ also pressed.  This works around a bug in SWT where,
 			// on European keyboards, the AltGr key being pressed appears to us as Control
 			// + Alt being pressed simultaneously.
-			boolean altKeyPressed = (event.stateMask & SWT.ALT) != 0 && !ctrlKeyPressed;
+			boolean altKeyPressed = altSendsEscape(event.stateMask, character);
 
 			//if (!isConnected()) {
 			if (fState == TerminalState.CLOSED) {
@@ -1079,9 +1123,10 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 				return;
 			}
 
-			// Manage the Del key
-			if (event.keyCode == 0x000007f) {
-				sendString("\u001b[3~"); //$NON-NLS-1$
+			// Manage the Del key: with a modifier as xterm spells it, Ctrl+Delete deleting a word in Codex
+			if (event.keyCode == SWT.DEL) {
+				String modified = modifiedSpecialKey(SWT.DEL, modifierKeys);
+				sendString(modified != null ? modified : "\u001b[3~"); //$NON-NLS-1$
 				return;
 			}
 
@@ -1260,8 +1305,10 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 				}
 
 				// a key Eclipse has a binding for stays with it, as Alt+Right (Quick Access)
-				// and Alt+Up (Maximize) do in this terminal
-				if (escSeq == null && !hasKeyBinding(accelerator)) {
+				// and Alt+Up (Maximize) do in this terminal; on the alternate screen the
+				// arrows go to the full screen program, Codex and Claude Code using Alt+Up
+				boolean arrow = event.keyCode >= SWT.ARROW_UP && event.keyCode <= SWT.ARROW_RIGHT;
+				if (escSeq == null && (arrow && fTerminalText.isAlternateScreen() || !hasKeyBinding(accelerator))) {
 					escSeq = modifiedSpecialKey(event.keyCode, modifierKeys);
 				}
 
@@ -1281,22 +1328,18 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 			Logger.log("stateMask = " + event.stateMask); //$NON-NLS-1$
 
 			if (onlyCtrlKeyPressed) {
-				switch (character) {
-				case ' ':
-					// Send a NUL character -- many terminal emulators send NUL when
-					// Control-Space is pressed.  This is used to set the mark in Emacs.
-					character = '\u0000';
-					break;
-				case '/':
-					// Ctrl+/ is undo in emacs
-					character = '\u001f';
-					break;
-				}
+				character = ctrlCharacter(character);
 			}
 
 			// see javadoc on convertBackspace for details
 			if (convertBackspace && !ctrlKeyPressed && character == '\b') {
 				character = 0x7f;
+			}
+
+			// Shift+Tab sends back tab (CSI Z), as xterm and Windows Terminal do: Claude Code switches modes with it
+			if (character == '\t' && modifierKeys == SWT.SHIFT) {
+				sendString("\u001b[Z"); //$NON-NLS-1$
+				return;
 			}
 
 			//TODO: At this point, Ctrl+M sends the same as Ctrl+Shift+M .
