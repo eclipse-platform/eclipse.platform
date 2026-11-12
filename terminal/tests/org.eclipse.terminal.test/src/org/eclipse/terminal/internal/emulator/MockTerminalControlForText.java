@@ -9,7 +9,9 @@
  *******************************************************************************/
 package org.eclipse.terminal.internal.emulator;
 
+import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -50,8 +52,16 @@ public class MockTerminalControlForText implements ITerminalControlForText {
 
 	@Override
 	public OutputStream getOutputStream() {
-		throw new UnsupportedOperationException();
+		return output;
+	}
 
+	private final ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+	/** @return what the emulator sent back (reports), and forgets it */
+	public String takeOutput() {
+		String sent = output.toString(StandardCharsets.UTF_8);
+		output.reset();
+		return sent;
 	}
 
 	private boolean cursorShown = true;
