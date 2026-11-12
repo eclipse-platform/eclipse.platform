@@ -28,6 +28,7 @@ import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.ITreeViewerListener;
 import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.TreePath;
+import org.eclipse.jface.viewers.TreePathBreadcrumbDropDownSite;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
@@ -64,7 +65,7 @@ public abstract class TreeViewerDropDown {
 	/**
 	 * The breadcrumb site in which the viewer is created.
 	 */
-	private IBreadcrumbDropDownSite fDropDownSite;
+	private TreePathBreadcrumbDropDownSite fDropDownSite;
 
 	/**
 	 * The tree viewer.
@@ -79,7 +80,7 @@ public abstract class TreeViewerDropDown {
 	 * @param path Path to the element for which the drop-down is being opened.
 	 * @return The control created for the viewer.
 	 */
-	public Control createDropDown(Composite composite, IBreadcrumbDropDownSite site, TreePath path) {
+	public Control createDropDown(Composite composite, TreePathBreadcrumbDropDownSite site, TreePath path) {
 
 		fDropDownSite = site;
 		fDropDownViewer= createTreeViewer(composite, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL, path);
