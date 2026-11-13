@@ -111,6 +111,7 @@ import org.eclipse.terminal.internal.preferences.ITerminalConstants;
 import org.eclipse.terminal.internal.preferences.TerminalColorPresets;
 import org.eclipse.terminal.internal.textcanvas.PipedInputStream;
 import org.eclipse.terminal.internal.textcanvas.PollingTextCanvasModel;
+import org.eclipse.terminal.internal.textcanvas.RedrawHold;
 import org.eclipse.terminal.internal.textcanvas.TextCanvas;
 import org.eclipse.terminal.internal.textcanvas.TextLineRenderer;
 import org.eclipse.terminal.model.ITerminalTextData;
@@ -178,6 +179,8 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 	// Written with the model it is copied to under fCursorLock, so a model made during a move
 	// cannot miss a hide or show that the reader job makes meanwhile
 	private boolean fCursorHidden;
+	// synchronized output (mode 2026), shared by every model made for the canvas
+	private final RedrawHold fRedrawHold = new RedrawHold();
 	private final Object fCursorLock = new Object();
 	private static final String PASTE_START = "\u001b[200~"; //$NON-NLS-1$
 	private static final String PASTE_END = "\u001b[201~"; //$NON-NLS-1$
@@ -468,6 +471,8 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 			} catch (InterruptedException e) {
 			}
 		}
+		// the screen a program was drawing when cut off is shown by the last poll
+		enableSynchronizedOutput(false);
 		fPollingTextCanvasModel.stopPolling();
 	}
 
@@ -869,6 +874,7 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 		synchronized (fCursorLock) {
 			PollingTextCanvasModel model = new PollingTextCanvasModel(snapshot);
 			model.setCursorHidden(fCursorHidden);
+			model.setRedrawHold(fRedrawHold);
 			fPollingTextCanvasModel = model;
 		}
 		fCtlText = new TextCanvas(fWndParent, fPollingTextCanvasModel, SWT.NONE,
@@ -1552,6 +1558,11 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 				fPollingTextCanvasModel.setCursorHidden(!show);
 			}
 		}
+	}
+
+	@Override
+	public void enableSynchronizedOutput(boolean redrawing) {
+		fRedrawHold.setRedrawing(redrawing);
 	}
 
 	@Override
