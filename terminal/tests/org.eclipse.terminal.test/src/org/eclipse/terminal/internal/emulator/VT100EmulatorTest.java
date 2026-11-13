@@ -667,6 +667,21 @@ public class VT100EmulatorTest {
 	}
 
 	@Test
+	public void testSynchronizedOutput() {
+		// a program begins and ends a screen with mode 2026
+		run("\u001b[?2026h");
+		assertTrue(control.isSynchronizedOutput());
+		run("\u001b[?2026l");
+		assertFalse(control.isSynchronizedOutput());
+		// a program that began one and was cut off or reset does not leave the view frozen
+		run("\u001b[?2026h");
+		emulator.resetState();
+		assertFalse(control.isSynchronizedOutput());
+		run("\u001b[?2026h\u001bc");
+		assertFalse(control.isSynchronizedOutput());
+	}
+
+	@Test
 	public void testPasteText() {
 		// each line break goes as a CR, as the Enter key sends it: a Windows CR LF is one break
 		assertEquals("a\rb\rc\rd", VT100TerminalControl.pasteText("a\r\nb\nc\rd", false));

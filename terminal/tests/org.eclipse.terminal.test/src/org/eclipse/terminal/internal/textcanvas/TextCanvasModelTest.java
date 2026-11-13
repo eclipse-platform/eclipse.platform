@@ -12,6 +12,7 @@ package org.eclipse.terminal.internal.textcanvas;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.terminal.internal.model.TerminalTextData;
 import org.eclipse.terminal.model.ITerminalTextDataSnapshot;
 import org.junit.jupiter.api.Test;
@@ -85,5 +86,46 @@ public class TextCanvasModelTest {
 		};
 		model.setSelection(0, 1, 0, 3);
 		assertEquals("foo bar", model.getSelectedText());
+	}
+
+	@Test
+	public void testSynchronizedOutputHoldsTheViewBackForAWhile() throws InterruptedException {
+		Display display = Display.getCurrent() != null ? null : new Display();
+		try {
+			TerminalTextData data = new TerminalTextData();
+			data.setDimensions(3, 4);
+			data.setChars(0, 0, "a".toCharArray(), null);
+			data.setChars(1, 0, "b".toCharArray(), null);
+			data.setChars(2, 0, "c".toCharArray(), null);
+			ITerminalTextDataSnapshot snapshot = data.makeSnapshot();
+			snapshot.updateSnapshot(true);
+			PollingTextCanvasModel model = new PollingTextCanvasModel(snapshot);
+			model.stopPolling();
+			model.setVisibleRectangle(0, 0, 3, 4);
+			model.setSynchronizedOutput(true);
+			data.setChars(1, 0, "x".toCharArray(), null);
+			model.update();
+			assertEquals('b', model.getTerminalText().getChar(1, 0));
+			// a scroll waits like a poll, and the lines already shown stay where they are
+			model.setVisibleRectangle(1, 0, 2, 4);
+			assertEquals(0, snapshot.getInterestWindowStartLine());
+			assertEquals('b', model.getTerminalText().getChar(1, 0));
+			assertEquals('c', model.getTerminalText().getChar(2, 0));
+			// a new screen begun meanwhile does not hold the view back longer
+			Thread.sleep(150);
+			model.setSynchronizedOutput(false);
+			model.setSynchronizedOutput(true);
+			Thread.sleep(100);
+			model.update();
+			assertEquals(1, snapshot.getInterestWindowStartLine());
+			data.setChars(2, 0, "y".toCharArray(), null);
+			model.setSynchronizedOutput(false);
+			model.update();
+			assertEquals('y', model.getTerminalText().getChar(2, 0));
+		} finally {
+			if (display != null) {
+				display.dispose();
+			}
+		}
 	}
 }
