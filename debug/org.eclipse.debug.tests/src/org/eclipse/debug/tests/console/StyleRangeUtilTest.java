@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Paul Pazderski and others.
+ * Copyright (c) 2019, 2026 Paul Pazderski and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -25,16 +25,15 @@ import java.util.List;
 import org.eclipse.debug.tests.DebugTestExtension;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.ui.console.TextConsoleViewer;
+import org.eclipse.ui.internal.console.StyleRangeUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Not really a test for {@link TextConsoleViewer} yet since it only test one
- * private method of it.
+ * Test for the style range override helper in {@link StyleRangeUtil}.
  */
 @ExtendWith(DebugTestExtension.class)
-public class TextConsoleViewerTest {
+public class StyleRangeUtilTest {
 
 	/**
 	 * Test override of existing styles with a new style. Typically used to
@@ -48,7 +47,7 @@ public class TextConsoleViewerTest {
 		Color colorK = null;
 		Color colorW = null;
 		try {
-			final Method method = TextConsoleViewer.class.getDeclaredMethod("overrideStyleRange", List.class, StyleRange.class);
+			final Method method = StyleRangeUtil.class.getDeclaredMethod("overrideStyleRange", List.class, StyleRange.class);
 			method.setAccessible(true);
 			assertTrue(Modifier.isStatic(method.getModifiers()), "Required method <\" + method + \"> is not static.\"");
 
