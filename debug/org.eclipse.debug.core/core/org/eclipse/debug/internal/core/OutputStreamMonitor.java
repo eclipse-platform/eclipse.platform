@@ -70,7 +70,9 @@ public class OutputStreamMonitor implements IBinaryStreamMonitor {
 	 * of an incomplete character.
 	 */
 	private StreamDecoder fBufferedDecoder;
+	/** Decoded form of the first {@link #fDecodedLength} bytes of {@link #fContents}. */
 	private String fCachedDecodedContents;
+	private int fDecodedLength;
 
 	/**
 	 * The thread which reads from the stream
@@ -193,11 +195,12 @@ public class OutputStreamMonitor implements IBinaryStreamMonitor {
 		if (!isBuffered()) {
 			return ""; //$NON-NLS-1$
 		}
-		if (fCachedDecodedContents != null) {
-			return fCachedDecodedContents;
+		if (fDecodedLength < fContents.size()) {
+			// decode only the bytes not yet fed to the stateful decoder
+			byte[] data = getData();
+			fCachedDecodedContents += fBufferedDecoder.decode(data, fDecodedLength, data.length - fDecodedLength);
+			fDecodedLength = data.length;
 		}
-		byte[] data = getData();
-		fCachedDecodedContents = fBufferedDecoder.decode(data, 0, data.length);
 		return fCachedDecodedContents;
 	}
 
@@ -236,7 +239,6 @@ public class OutputStreamMonitor implements IBinaryStreamMonitor {
 					if (read > 0) {
 						synchronized (this) {
 							if (isBuffered()) {
-								fCachedDecodedContents = null;
 								fContents.write(buffer, 0, read);
 							}
 							fireStreamAppended(buffer, 0, read);
@@ -306,7 +308,8 @@ public class OutputStreamMonitor implements IBinaryStreamMonitor {
 	@Override
 	public synchronized void setBuffered(boolean buffer) {
 		if (isBuffered() != buffer) {
-			fCachedDecodedContents = null;
+			fCachedDecodedContents = ""; //$NON-NLS-1$
+			fDecodedLength = 0;
 			if (buffer) {
 				fContents = new ByteArrayOutputStream();
 				fBufferedDecoder = new StreamDecoder(fCharset == null ? Charset.defaultCharset() : fCharset);
@@ -320,7 +323,8 @@ public class OutputStreamMonitor implements IBinaryStreamMonitor {
 	@Override
 	public synchronized void flushContents() {
 		if (isBuffered()) {
-			fCachedDecodedContents = null;
+			fCachedDecodedContents = ""; //$NON-NLS-1$
+			fDecodedLength = 0;
 			fContents.reset();
 		}
 	}
