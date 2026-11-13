@@ -36,6 +36,7 @@ import org.eclipse.debug.tests.console.StreamsProxyTests;
 import org.eclipse.debug.tests.console.TextConsoleViewerTest;
 import org.eclipse.debug.tests.launching.AcceleratorSubstitutionTests;
 import org.eclipse.debug.tests.launching.ArgumentParsingTests;
+import org.eclipse.debug.tests.launching.LaunchAsTests;
 import org.eclipse.debug.tests.launching.LaunchConfigurationTests;
 import org.eclipse.debug.tests.launching.LaunchFavoriteTests;
 import org.eclipse.debug.tests.launching.LaunchGroupTests;
@@ -107,6 +108,7 @@ import org.junit.platform.suite.api.Suite;
 		LaunchConfigurationTests.class, //
 		AcceleratorSubstitutionTests.class, //
 		LaunchHistoryTests.class, //
+		LaunchAsTests.class, //
 		LaunchFavoriteTests.class, //
 		LaunchManagerTests.class, //
 		RefreshTabTests.class, //
