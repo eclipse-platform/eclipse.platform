@@ -364,7 +364,8 @@ public class CompareEditor extends EditorPart
 						newState[0] = CANCELED;
 					}
 					Display.getDefault().syncExec(() -> {
-						if (fPageBook.isDisposed()) {
+						// The job of a replaced input must not change the state of the current one
+						if (fPageBook.isDisposed() || getEditorInput() != cei) {
 							return;
 						}
 						// we need to register the saveable if we had a previous input or if
