@@ -79,6 +79,7 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.TextLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
@@ -174,10 +175,26 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		if (viewer instanceof ISourceViewer sv) {
 			List<ICodeMining> attached = attachedMiningsOf(sv, diffs);
 			if (attached != null) {
+				List<ICodeMining> replacements = new ArrayList<>();
+				for (ICodeMining mining : attached) {
+					if (mining instanceof UnifiedDiffLineHeaderCodeMining header) {
+						Position position = header.getPosition();
+						try {
+							replacements.add(new UnifiedDiffLineHeaderCodeMining(new Position(position.offset, position.length),
+									this, header.getUnifiedDiff(), header.getTabWidth(), deletionBackgroundColor,
+									detailedDiffColor, borderColor, viewer));
+						} catch (BadLocationException e) {
+							error(e);
+						}
+					} else if (mining instanceof UnifiedDiffFooterCodeMining footer) {
+						replacements.add(new UnifiedDiffFooterCodeMining(sv.getDocument(), this, footer.getUnifiedDiff(),
+								footer.getTabWidth(), deletionBackgroundColor, detailedDiffColor, borderColor, viewer));
+					}
+				}
 				// the expander minings are recreated instead of reused so that they
 				// reflect the current expansion state of the folds
-				createFoldRegionCodeMinings(viewer, attached);
-				return CompletableFuture.completedFuture(attached);
+				createFoldRegionCodeMinings(viewer, replacements);
+				return CompletableFuture.completedFuture(replacements);
 			}
 		}
 
@@ -514,6 +531,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		UnifiedDiff getUnifiedDiff();
 		String getLabel();
 		String getRawLabel();
+		int getRowHeight(StyledText textWidget);
 	}
 
 	private record CodeMiningLabel(String raw, String expanded, String layout, boolean trailingCarriageReturn,
@@ -590,18 +608,21 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 
 		@Override
 		public void accept(MouseEvent t) {
-			if (mining == null || viewer == null || mining.getLastRectangle() == null) {
+			if (mining == null || viewer == null) {
 				return;
 			}
+			Rectangle bounds = mining.getLastRectangle();
 			StyledText st = viewer.getTextWidget();
+			if (bounds == null || st == null || st.isDisposed()) {
+				return;
+			}
 			TextViewer overlayViewer = new TextViewer(st, SWT.NONE);
 			// Allow selecting and copying the mining text without modifying it.
 			overlayViewer.setEditable(false);
 			StyledText overlay = overlayViewer.getTextWidget();
-			overlay.setBounds(mining.getLastRectangle());
+			overlay.setBounds(bounds);
 			overlay.setFont(st.getFont());
 			overlay.setBackground(mining.getDeletionBackgroundColor());
-			overlay.setLineSpacing(st.getLineSpacing());
 			overlay.setTabs(mining.getTabWidth());
 			String txt = mining.getRawLabel();
 			overlayViewer.setDocument(new Document(txt));
@@ -610,6 +631,18 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			List<StyleRange> foregrounds = computeStyleRanges(viewer, mining.getUnifiedDiff(), txt);
 			List<StyleRange> ranges = mergeStyleRanges(backgrounds, foregrounds);
 			overlay.setStyleRanges(ranges.toArray(new StyleRange[] {}));
+			int rowHeight = mining.getRowHeight(st);
+			if (rowHeight <= 0) {
+				overlay.dispose();
+				return;
+			}
+			overlay.setLineSpacing(0);
+			overlay.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+			int[] lineSpacing = new int[overlay.getLineCount()];
+			for (int line = 0; line < lineSpacing.length; line++) {
+				lineSpacing[line] = Math.max(0, rowHeight - overlay.getLineHeight(overlay.getOffsetAtLine(line)));
+			}
+			overlay.setLineSpacingProvider(line -> line >= 0 && line < lineSpacing.length ? lineSpacing[line] : 0);
 			installWhitespacePainter(overlayViewer);
 			overlay.setFocus();
 			openOverlay(overlay, viewer);
@@ -690,6 +723,21 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		private final HashMap<Font, Map<Integer, Font>> styledFonts = new HashMap<>();
 		private Rectangle lastRectangle;
 		private Font cachedFont;
+		private final MiningLayout miningLayout = new MiningLayout();
+		private boolean disposed;
+
+		@Override
+		public synchronized int getRowHeight(StyledText textWidget) {
+			if (disposed) {
+				return 0;
+			}
+			List<StyleRange> ranges = styleRanges(unifiedDiffLabel);
+			if (disposed) {
+				return 0;
+			}
+			return miningLayout.lineHeight(textWidget, layoutLabel, ranges, styledFonts)
+					+ textWidget.getLineSpacing();
+		}
 
 		public UnifiedDiffFooterCodeMining(IDocument document, ICodeMiningProvider provider,
 				UnifiedDiff diff, int tabWidth, Color deletionBackgroundColor, Color detailedDiffColor,
@@ -739,8 +787,15 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		}
 
 		@Override
-		public String getLabel() {
-			return this.layoutLabel;
+		public synchronized String getLabel() {
+			StyledText textWidget = viewer != null ? viewer.getTextWidget() : null;
+			if (!disposed && Display.getCurrent() != null && textWidget != null && !textWidget.isDisposed()) {
+				List<StyleRange> ranges = styleRanges(unifiedDiffLabel);
+				if (!disposed) {
+					return miningLayout.label(textWidget, layoutLabel, ranges, styledFonts);
+				}
+			}
+			return miningLayout.reservedLabel == null ? layoutLabel : miningLayout.reservedLabel;
 		}
 
 		@Override
@@ -750,6 +805,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 
 		@Override
 		public synchronized void dispose() {
+			disposed = true;
 			styleRanges = null;
 			lastRectangle = null;
 			cachedFont = null;
@@ -771,6 +827,9 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 
 		@Override
 		public synchronized Point draw(GC gc, StyledText textWidget, Color color, int x, int y) {
+			if (disposed) {
+				return new Point(0, 0);
+			}
 			gc.setBackground(this.deletionBackgroundColor);
 			Color c = textWidget.getForeground();
 			gc.setForeground(c);
@@ -782,21 +841,28 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 				clearStyledFonts();
 			}
 			cachedFont = font;
-			// first run to get width and height for label
-			// change from https://github.com/eclipse-platform/eclipse.platform.ui/pull/3651
-			// is required so that background correctly drawn with line spacing > 0
-			Point result = super.draw(gc, textWidget, color, x, y);
+			List<StyleRange> ranges = styleRanges;
+			Point result = miningLayout.extent(gc, textWidget, layoutLabel, ranges == null ? List.of() : ranges, styledFonts);
 			lastRectangle = new Rectangle(x, y, result.x, result.y);
+			ranges = styleRanges(this.unifiedDiffLabel);
+			if (disposed) {
+				ranges = List.of();
+			}
+			if (lastRectangle != null) {
+				result = miningLayout.extent(gc, textWidget, layoutLabel, ranges, styledFonts);
+				lastRectangle = new Rectangle(x, y, result.x, result.y);
+			}
+			int lineHeight = miningLayout.lineHeight;
 			// draw background
 			// vs code is drawing the background to the top right of the editor - we do here
 			// the same!
 			gc.fillRectangle(0, y, textWidget.getBounds().width /* result.x */, result.y);
 
 			String label = this.unifiedDiffLabel;
-			List<StyleRange> ranges = styleRanges(label);
 			if (ranges.isEmpty()) {
 				// no syntax coloring available; fall back to plain rendering
-				result = super.draw(gc, textWidget, color, x, y);
+				drawStyleRanges(gc, textWidget, ranges, label, rawLabel, styledFonts, x, y, null,
+						readWhitespaceConfig(tabWidth), trailingCarriageReturn, trailingLineFeed, lineHeight);
 				drawBandBorder(gc, this.borderColor, y, textWidget.getBounds().width, result.y,
 						this.bandBorder);
 				return result;
@@ -805,10 +871,10 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			// paint the word-level detailed-diff backgrounds first, then draw the
 			// syntax-colored text transparently on top - same order as the header band
 			WhitespaceConfig whitespace = readWhitespaceConfig(tabWidth);
-			fillDetailedDiffBackgrounds(gc, textWidget, label, ranges, whitespace, x, y);
+			fillDetailedDiffBackgrounds(gc, textWidget, label, ranges, whitespace, x, y, lineHeight);
 			gc.setFont(font);
 			drawStyleRanges(gc, textWidget, ranges, label, rawLabel, styledFonts, x, y, null,
-					whitespace, trailingCarriageReturn, trailingLineFeed);
+					whitespace, trailingCarriageReturn, trailingLineFeed, lineHeight);
 			// Syntax-coloring callbacks can dispose the mining and clear lastRectangle.
 			// Use the size measured by this draw call rather than the invalidated cache.
 			drawBandBorder(gc, this.borderColor, y, textWidget.getBounds().width, result.y,
@@ -822,11 +888,10 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		 * paint a range background itself.
 		 */
 		private void fillDetailedDiffBackgrounds(GC gc, StyledText textWidget, String label, List<StyleRange> ranges,
-				WhitespaceConfig whitespace, int x, int y) {
+				WhitespaceConfig whitespace, int x, int y, int lineHeight) {
 			if (detailedDiffRanges.isEmpty()) {
 				return;
 			}
-			int lineHeight = textWidget.getLineHeight();
 			int lineSpacing = textWidget.getLineSpacing();
 			gc.setBackground(this.detailedDiffColor);
 			for (DetailedDiffRange detailedDiff : detailedDiffRanges) {
@@ -1174,6 +1239,104 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 				-1 /* tabWidth stamped in per call by readWhitespaceConfig */);
 	}
 
+	/** Measures fallback glyphs as well as the editor's base font. */
+	private static int miningLineHeight(GC gc, StyledText textWidget, String label, List<StyleRange> ranges,
+			HashMap<Font, Map<Integer, Font>> styledFonts) {
+		TextLayout layout = new TextLayout(gc.getDevice());
+		try {
+			Font font = textWidget.getFont();
+			layout.setFont(font);
+			var metrics = layout.getLineMetrics(0);
+			layout.setAscent(metrics.getAscent() + metrics.getLeading());
+			layout.setDescent(metrics.getDescent());
+			layout.setText(label);
+			for (StyleRange range : ranges) {
+				if (range.length > 0) {
+					layout.setStyle(transformFontStyleToFont(styledFonts, font, range), range.start,
+							range.start + range.length - 1);
+				}
+			}
+			int height = textWidget.getLineHeight();
+			for (int line = 0; line < layout.getLineCount(); line++) {
+				height = Math.max(height, layout.getLineBounds(line).height);
+			}
+			return height;
+		} finally {
+			layout.dispose();
+		}
+	}
+
+	private static int reservedHeight(StyledText textWidget, int height) {
+		int baseRowHeight = textWidget.getLineHeight() + textWidget.getLineSpacing();
+		return Math.ceilDiv(height, baseRowHeight) * baseRowHeight;
+	}
+
+	/**
+	 * JFace reserves base-height rows from the label, independently of draw(). Extra
+	 * invisible layout rows reserve the glyph-aware band height without changing
+	 * the raw text painted or copied by the overlay.
+	 */
+	private static final class MiningLayout {
+		private Font font;
+		private int baseHeight;
+		private int lineHeight;
+		private int lineSpacing = -1;
+		private List<StyleRange> styleRanges;
+		private String reservedLabel;
+		private boolean labelInvalid = true;
+
+		private boolean matches(StyledText textWidget, List<StyleRange> ranges) {
+			return font != null && !font.isDisposed() && font.equals(textWidget.getFont())
+					&& baseHeight == textWidget.getLineHeight() && styleRanges == ranges;
+		}
+
+		private int lineHeight(GC gc, StyledText textWidget, String label, List<StyleRange> ranges,
+				HashMap<Font, Map<Integer, Font>> styledFonts) {
+			if (!matches(textWidget, ranges)) {
+				lineHeight = miningLineHeight(gc, textWidget, label, ranges, styledFonts);
+				font = textWidget.getFont();
+				baseHeight = textWidget.getLineHeight();
+				styleRanges = ranges;
+				labelInvalid = true;
+			}
+			return lineHeight;
+		}
+
+		private int lineHeight(StyledText textWidget, String label, List<StyleRange> ranges,
+				HashMap<Font, Map<Integer, Font>> styledFonts) {
+			if (matches(textWidget, ranges)) {
+				return lineHeight;
+			}
+			GC gc = new GC(textWidget);
+			try {
+				return lineHeight(gc, textWidget, label, ranges, styledFonts);
+			} finally {
+				gc.dispose();
+			}
+		}
+
+		private Point extent(GC gc, StyledText textWidget, String label, List<StyleRange> ranges,
+				HashMap<Font, Map<Integer, Font>> styledFonts) {
+			int height = lineHeight(gc, textWidget, label, ranges, styledFonts);
+			return new Point(gc.stringExtent(label).x,
+					reservedHeight(textWidget, countLines(label) * (height + textWidget.getLineSpacing())));
+		}
+
+		private String label(StyledText textWidget, String label, List<StyleRange> ranges,
+				HashMap<Font, Map<Integer, Font>> styledFonts) {
+			int height = lineHeight(textWidget, label, ranges, styledFonts);
+			int spacing = textWidget.getLineSpacing();
+			if (labelInvalid || spacing != lineSpacing) {
+				int rows = countLines(label);
+				int reservedRows = reservedHeight(textWidget, rows * (height + spacing)) / (baseHeight + spacing);
+				reservedLabel = label + ("\n" + EMPTY_LINE_LAYOUT_MARKER).repeat(reservedRows - rows); //$NON-NLS-1$
+				lineSpacing = spacing;
+				labelInvalid = false;
+			}
+			return reservedLabel;
+		}
+	}
+
 	/**
 	 * Draws the syntax-colored label using the given style ranges, advancing the
 	 * cursor position range by range. The {@code onForeground} consumer is called
@@ -1199,8 +1362,18 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			String rawLabel, HashMap<Font, Map<Integer, Font>> styledFonts, int x, int y,
 			Consumer<ForegroundInfo> onForeground, WhitespaceConfig whitespace, boolean trailingCarriageReturn,
 			boolean trailingLineFeed) {
+		drawStyleRanges(gc, textWidget, ranges, label, rawLabel, styledFonts, x, y, onForeground, whitespace,
+				trailingCarriageReturn, trailingLineFeed, miningLineHeight(gc, textWidget, label, ranges, styledFonts));
+	}
+
+	private static void drawStyleRanges(GC gc, StyledText textWidget, List<StyleRange> ranges, String label,
+			String rawLabel, HashMap<Font, Map<Integer, Font>> styledFonts, int x, int y,
+			Consumer<ForegroundInfo> onForeground, WhitespaceConfig whitespace, boolean trailingCarriageReturn,
+			boolean trailingLineFeed, int textWidgetLineHeight) {
 		Font font = gc.getFont();
-		int textWidgetLineHeight = textWidget.getLineHeight();
+		if (ranges.isEmpty()) {
+			ranges = List.of(new StyleRange(0, label.length(), null, null));
+		}
 		int cx = x;
 		int cy = y;
 		for (StyleRange range : ranges) {
@@ -1505,7 +1678,10 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			}
 			return result;
 		} catch (BadLocationException e) {
-			return result;
+			return List.of();
+		} catch (RuntimeException e) {
+			error(e);
+			return List.of();
 		}
 	}
 
@@ -1597,6 +1773,22 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		private List<StyleRange> styleRanges;
 		private Font cachedFont;
 		private WhitespaceConfig cachedWhitespace;
+		private int cachedRowHeight;
+		private final MiningLayout miningLayout = new MiningLayout();
+		private boolean disposed;
+
+		@Override
+		public synchronized int getRowHeight(StyledText textWidget) {
+			if (disposed) {
+				return 0;
+			}
+			List<StyleRange> ranges = styleRanges(unifiedDiffLabel);
+			if (disposed) {
+				return 0;
+			}
+			return miningLayout.lineHeight(textWidget, layoutLabel, ranges, styledFonts)
+					+ textWidget.getLineSpacing();
+		}
 		private final HashMap<Font, Map<Integer /* style */, Font>> styledFonts = new HashMap<>();
 
 		public UnifiedDiffLineHeaderCodeMining(Position position, ICodeMiningProvider provider, UnifiedDiff diff,
@@ -1622,8 +1814,15 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 		}
 
 		@Override
-		public String getLabel() {
-			return this.layoutLabel;
+		public synchronized String getLabel() {
+			StyledText textWidget = viewer != null ? viewer.getTextWidget() : null;
+			if (!disposed && Display.getCurrent() != null && textWidget != null && !textWidget.isDisposed()) {
+				List<StyleRange> ranges = styleRanges(unifiedDiffLabel);
+				if (!disposed) {
+					return miningLayout.label(textWidget, layoutLabel, ranges, styledFonts);
+				}
+			}
+			return miningLayout.reservedLabel == null ? layoutLabel : miningLayout.reservedLabel;
 		}
 
 		@Override
@@ -1670,6 +1869,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 
 		@Override
 		public synchronized void dispose() {
+			disposed = true;
 			cleanCachedData();
 			styleRanges = null;
 			super.dispose();
@@ -1696,6 +1896,9 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 
 		@Override
 		public synchronized Point draw(GC gc, StyledText textWidget, Color color, int x, int y) {
+			if (disposed) {
+				return new Point(0, 0);
+			}
 			gc.setBackground(this.deletionBackgroundColor);
 			Color c = textWidget.getForeground();
 			gc.setForeground(c);
@@ -1710,6 +1913,16 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 				cleanCachedData();
 			}
 			cachedFont = font;
+			List<StyleRange> ranges = styleRanges(this.unifiedDiffLabel);
+			if (disposed) {
+				return new Point(0, 0);
+			}
+			int lineHeight = miningLayout.lineHeight(gc, textWidget, layoutLabel, ranges, styledFonts);
+			if (cachedRowHeight != lineHeight + textWidget.getLineSpacing()) {
+				cleanCachedData();
+				cachedFont = font;
+				cachedRowHeight = lineHeight + textWidget.getLineSpacing();
+			}
 			if (lastRectangle != null && backgrounds != null && foregrounds != null) {
 				boolean fontIsDisposed = false;
 				// draw background
@@ -1771,7 +1984,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 				}
 			}
 			// first run to get width and height for label
-			Point result = super.draw(gc, textWidget, color, x, y);
+			Point result = miningLayout.extent(gc, textWidget, layoutLabel, ranges, styledFonts);
 			lastRectangle = new Rectangle(x, y, result.x, result.y);
 
 			// draw background
@@ -1780,7 +1993,6 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			gc.fillRectangle(0, y, textWidget.getBounds().width /* result.x */, result.y);
 
 			String label = this.unifiedDiffLabel;
-			List<StyleRange> ranges = styleRanges(label);
 
 			// draw darker background for detailed diff
 			gc.setBackground(this.detailedDiffColor);
@@ -1796,7 +2008,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 				try {
 					var rangeInfo = new RangeInfo(-1, -1, null);
 					if (fromLine == toLine) {
-						int starty = getYForLine(fromLine - 1, y, gc, textWidget);
+						int starty = getYForLine(fromLine - 1, y);
 						Point start = getPositionForOffset(textWidget, gc, detailedDiffStart, diffStr, ranges,
 								rangeInfo);
 						Point curr = getPositionForOffset(textWidget, gc, detailedDiffStart + detailedDiffLength,
@@ -1818,7 +2030,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 							diffStrDoc = new Document(diffStr);
 						}
 						String firstLine = diffLines[fromLine - 1];
-						int starty = getYForLine(fromLine - 1, y, gc, textWidget);
+						int starty = getYForLine(fromLine - 1, y);
 						int idx = getOffsetAtLine(diffStr, detailedDiffStart);
 						int fromLineOffset;
 						try {
@@ -1852,7 +2064,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 						}
 						// all the lines between first and last line
 						for (int middleLine = fromLine + 1; middleLine < toLine; middleLine++) {
-							starty = getYForLine(middleLine - 1, y, gc, textWidget);
+							starty = getYForLine(middleLine - 1, y);
 							try {
 								int currentLineEndOffset = diffStrDoc.getLineOffset(middleLine - 1)
 										+ diffStrDoc.getLineLength(middleLine - 1)
@@ -1874,9 +2086,9 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 							}
 						}
 						// last line
-						starty = getYForLine(toLine - 1, y, gc, textWidget);
+						starty = getYForLine(toLine - 1, y);
 						int rectWidth = 0;
-						int rectHeight = textWidget.getLineHeight();
+						int rectHeight = lineHeight;
 						if (range.coversTrailingDelimiter()
 								&& detailedDiffStart + detailedDiffLength == diffStr.length()) {
 							String marker = lineDelimiterMarker(whitespace, trailingCarriageReturn, trailingLineFeed);
@@ -1904,11 +2116,8 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			}
 			// draw foreground again
 			if (ranges.size() == 0) {
-				// no syntax coloring available (e.g. plain-text editor without a
-				// presentation reconciler); fall back to super.draw() so the label is
-				// still rendered. backgrounds/foregrounds are intentionally left unset
-				// so the next paint takes the full slow path again.
-				result = super.draw(gc, textWidget, color, x, y);
+				drawStyleRanges(gc, textWidget, ranges, label, rawLabel, styledFonts, x, y, null, whitespace,
+						trailingCarriageReturn, trailingLineFeed, lineHeight);
 				drawBandBorder(gc, this.borderColor, y, textWidget.getBounds().width, result.y, this.bandBorder);
 				return result;
 			}
@@ -1916,7 +2125,7 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			cachedWhitespace = whitespace;
 			gc.setFont(cachedFont);
 			drawStyleRanges(gc, textWidget, ranges, label, rawLabel, styledFonts, x, y, foregrounds::add, whitespace,
-					trailingCarriageReturn, trailingLineFeed);
+					trailingCarriageReturn, trailingLineFeed, lineHeight);
 			drawBandBorder(gc, this.borderColor, y, textWidget.getBounds().width, lastRectangle.height,
 					this.bandBorder);
 			return result;
@@ -1947,7 +2156,10 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			String sub = str.substring(0, offset);
 			Point result = null;
 			var before = gc.getFont();
-			int twLineHeight = tw.getLineHeight();
+			int twLineHeight = cachedRowHeight - tw.getLineSpacing();
+			if (twLineHeight <= 0) {
+				twLineHeight = miningLineHeight(gc, tw, str, ranges, styledFonts);
+			}
 			try {
 				int i = 0;
 				if (rangeInfo.rangeIndex != -1 && offset >= rangeInfo.offset) {
@@ -2049,10 +2261,8 @@ public class UnifiedDiffCodeMiningProvider extends AbstractCodeMiningProvider {
 			return -1;
 		}
 
-		private int getYForLine(int line, int y, GC gc, StyledText textWidget) {
-			int textWidgetLineHeight = textWidget.getLineHeight();
-			y += line * (textWidgetLineHeight + textWidget.getLineSpacing());
-			return y;
+		private int getYForLine(int line, int y) {
+			return y + line * cachedRowHeight;
 		}
 	}
 

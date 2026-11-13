@@ -368,6 +368,63 @@ public class UnifiedDiffManagerTest {
 		}
 	}
 
+	@Test
+	public void testDiffBackgroundFillsFullSourceRowsWithoutPaintingMiningIndent() throws BadLocationException {
+		for (UnifiedDiffMode mode : List.of(UnifiedDiffMode.REVERT_MODE, UnifiedDiffMode.OVERLAY_READ_ONLY_MODE)) {
+			setEditorContent("common\nold first\n\nold final\nunchanged");
+			assertTrue(UnifiedDiff.create(editor, "common\nnew first\nnew middle\nnew final\nunchanged", mode)
+					.ignoreWhiteSpace(false).open().isOK());
+			StyledText textWidget = viewer().getTextWidget();
+			Point originalSize = textWidget.getSize();
+			int originalSpacing = textWidget.getLineSpacing();
+			textWidget.setSize(800, 600);
+			textWidget.setLineSpacingProvider(line -> 9 + line % 3);
+			textWidget.setLineVerticalIndent(2, 30);
+			Image image = new Image(textWidget.getDisplay(), 800, 600);
+			GC gc = new GC(image);
+			try {
+				gc.setFont(textWidget.getFont());
+				gc.setBackground(textWidget.getBackground());
+				gc.fillRectangle(image.getBounds());
+				List<PaintListener> listeners = textWidget.getTypedListeners(SWT.Paint, PaintListener.class)
+						.filter(listener -> listener.getClass().getEnclosingClass() == UnifiedDiffManager.class
+								&& !listener.getClass().isAnonymousClass()).toList();
+				assertThat(listeners).hasSize(1);
+				firePaint(textWidget, gc, listeners);
+				int zoom = textWidget.getMonitor().getZoom();
+				ImageData pixels = image.getImageData(zoom);
+				int sampleX = 700 * zoom / 100;
+				int firstTop = textWidget.getLinePixel(1) + textWidget.getLineVerticalIndent(1);
+				RGB background = pixels.palette.getRGB(pixels.getPixel(sampleX, (firstTop + 2) * zoom / 100));
+				assertFalse(background.equals(textWidget.getBackground().getRGB()), "the diff background is painted");
+				for (int line = 1; line <= 3; line++) {
+					int top = textWidget.getLinePixel(line) + textWidget.getLineVerticalIndent(line);
+					int bottom = textWidget.getLinePixel(line + 1);
+					for (int pixelY = (top + 1) * zoom / 100; pixelY < (bottom - 1) * zoom / 100; pixelY++) {
+						assertEquals(background, pixels.palette.getRGB(pixels.getPixel(sampleX, pixelY)),
+								"the right-side background covers the entire row, including per-line spacing");
+					}
+					int gapY = (bottom - 2) * zoom / 100;
+					assertEquals(background, pixels.palette.getRGB(pixels.getPixel(3 * zoom / 100, gapY)),
+							"extra height beneath the text is filled across the row");
+				}
+				int miningY = (textWidget.getLinePixel(2) + 15) * zoom / 100;
+				assertEquals(textWidget.getBackground().getRGB(), pixels.palette.getRGB(pixels.getPixel(sampleX, miningY)),
+						"a separate mining row is excluded from the source background");
+				assertEquals(textWidget.getBackground().getRGB(),
+						pixels.palette.getRGB(pixels.getPixel(3 * zoom / 100, miningY)),
+						"an empty source line does not fill the mining indent at the left edge");
+			} finally {
+				gc.dispose();
+				image.dispose();
+				textWidget.setLineSpacingProvider(null);
+				textWidget.setLineSpacing(originalSpacing);
+				textWidget.setLineVerticalIndent(2, 0);
+				textWidget.setSize(originalSize);
+			}
+		}
+	}
+
 	private void assertDelimiterDetailedRange(UnifiedDiffMode mode, String delimiter, int start, int length)
 			throws BadLocationException {
 		IPreferenceStore store = EditorsUI.getPreferenceStore();

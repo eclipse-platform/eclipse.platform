@@ -1,0 +1,192 @@
+@Scope:[#VIEW, #ENTITY, #ELEMENT] 
+@CompatibilityContract: { 
+    c0: {
+        usageAllowed: true, 
+        allowedChanges.  annotation: [#ANY]
+    },
+    c1: {
+        usageAllowed: false,
+        allowedChanges: {
+            annotation: [#NONE],
+            value: [#REMOVE]
+        }
+    }
+}
+@MetadataExtension.usageAllowed : true
+@API.           state: [ #RELEASED_FOR_KEY_USER_APPS ]
+define          annotation              ExampleAnnotation {
+    
+    @Scope:[#VIEW, #EXTEND_VIEW, #ELEMENT]
+    @CompatibilityContract.c0.allowedChanges.value: [#ANY]
+    @CompatibilityContract.c0.usageAllowed: false
+    @CompatibilityContract.c1.usageAllowed: false
+    @CompatibilityContract.c2.usageAllowed: false
+    test_no_operation :           Integer;
+    
+    @Scope:[#OPERATION]
+    @CompatibilityContract.c0.allowedChanges.value: [#ANY]
+    @CompatibilityContract.c0.usageAllowed: false
+    @CompatibilityContract.c1.usageAllowed: false
+    @CompatibilityContract.c2.usageAllowed: false
+    test_with_operation : Integer;
+    
+    @Scope:[#OPERATION]
+    @CompatibilityContract.c0.allowedChanges.value: [#ANY]
+    @CompatibilityContract.c0.usageAllowed: true
+    @CompatibilityContract.c1.usageAllowed: true
+    @CompatibilityContract.c2.usageAllowed: true
+    test_bool : Boolean;
+    
+    @CompatibilityContract.c0: {
+        usageAllowed: false
+    }
+    @CompatibilityContract.c0.allowedChanges.value: [#ANY]
+    @CompatibilityContract.c1.usageAllowed: false
+    @CompatibilityContract.c2.usageAllowed: false
+    test_var01 : Integer; 
+  
+    @CompatibilityContract.c0.allowedChanges.value: [#ANY]
+    @CompatibilityContract.c0.usageAllowed: false
+    @CompatibilityContract.c1.usageAllowed: false
+    @CompatibilityContract.c2.usageAllowed: false
+    test_var02 : Integer;
+  
+    @Metadata.lifecycle.status: #DEPRECATED
+    @Metadata.lifecycle.successor: 'test_var02'
+    @CompatibilityContract.c0.allowedChanges.value: [#ANY]
+    @CompatibilityContract.c0.usageAllowed: true
+    @CompatibilityContract.c1.usageAllowed: false
+    @CompatibilityContract.c2.usageAllowed: false
+    test_deprecated : Integer;
+  
+    @Metadata.lifecycle.status: #DEPRECATED
+    @CompatibilityContract.c0.allowedChanges.value: [#ANY]
+    @CompatibilityContract.c0.usageAllowed: true
+    @CompatibilityContract.c1.usageAllowed: false
+    @CompatibilityContract.c2.usageAllowed: false
+    test_deprecated2 : Integer;
+        
+    @Scope:[#VIEW, #ENTITY, #ELEMENT, #PARAMETER, #ANNOTATE, #ANNOTATION, #ENUM_VALUE, #SIMPLE_TYPE]
+    string_default : String(40) default '❌😀💻❌😀💻';
+    
+    @Scope:[#VIEW, #ENTITY, #ELEMENT, #PARAMETER, #ANNOTATE, #ANNOTATION, #ENUM_VALUE, #SIMPLE_TYPE]
+    string_default2 : String(40) default '¶¶¶¶¶¶'; //
+    
+    @Scope:[#VIEW, #ENTITY, #ELEMENT, #PARAMETER, #ANNOTATE, #ANNOTATION, #ENUM_VALUE, #SIMPLE_TYPE] 
+    test_anno : Boolean default true;
+    
+    @ExampleAnnotation.test_anno: true
+    @Scope:[#VIEW, #ENTITY, #ELEMENT, #PARAMETER, #ANNOTATE, #ANNOTATION, #ENUM_VALUE, #SIMPLE_TYPE] 
+    test_anno2 : Boolean default true;
+    
+    @ExampleAnnotation.test_anno: true
+    @Scope:[#VIEW, #ENTITY, #ELEMENT, #PARAMETER, #ANNOTATE, #ANNOTATION, #ENUM_VALUE, #SIMPLE_TYPE] 
+    test_enum01 : array of String(20) 
+      enum { 
+        ENUM01;
+        ENUM02;
+        ENUM03;
+    };
+    
+    @Scope:[ #SIMPLE_TYPE] 
+    test_enum02 : String(20) enum {
+      ENUM01;
+      ENUM02; 
+    };
+    
+    lonG_Path { 
+        lonG_Path { 
+          lonG_Path { 
+            lonG_Path { 
+              lonG_Path { 
+                lonG_Path { 
+                  lonG_Path {                   
+                    @ExampleAnnotation.test_anno: true
+                    @Scope:[#VIEW, #ENTITY, #ELEMENT, #PARAMETER, #ANNOTATE, #ANNOTATION, #ENUM_VALUE, #SIMPLE_TYPE] 
+                    tEst_EnuM01 : array of String(20) 
+                      enum { 
+                        ENUM01;
+                        ENUM02;
+                        ENUM03;
+                    };                    
+                    @Scope:[#VIEW, #ENTITY, #ELEMENT, #PARAMETER, #ANNOTATE, #ANNOTATION, #ENUM_VALUE, #SIMPLE_TYPE] 
+                    bool_With_Default : Boolean default true;
+                    @Scope:[#VIEW, #ENTITY, #ELEMENT, #PARAMETER, #ANNOTATE, #ANNOTATION, #ENUM_VALUE, #SIMPLE_TYPE] 
+                    int_witH_defauLt  : Integer default 1;
+                    @Scope:[#VIEW, #ENTITY, #ELEMENT, #PARAMETER, #ANNOTATE, #ANNOTATION, #ENUM_VALUE, #SIMPLE_TYPE] 
+                    string_With_DefauLt  : String(10) default '¶¶¶¶¶¶';
+                  };
+                };
+              };
+            };
+            @ExampleAnnotation.test_anno: true
+            @Scope:[#VIEW, #ENTITY, #ELEMENT, #PARAMETER, #ANNOTATE, #ANNOTATION, #ENUM_VALUE, #SIMPLE_TYPE] 
+            tEst_EnuM01 : array of String(20) 
+              enum { 
+                ENUM01;
+                ENUM02;
+                ENUM03;
+            };                    
+            @Scope:[#VIEW, #ENTITY, #ELEMENT, #PARAMETER, #ANNOTATE, #ANNOTATION, #ENUM_VALUE, #SIMPLE_TYPE] 
+            bool_With_Default : Boolean default true;
+            @Scope:[#VIEW, #ENTITY, #ELEMENT, #PARAMETER, #ANNOTATE, #ANNOTATION, #ENUM_VALUE, #SIMPLE_TYPE] 
+            int_witH_defauLt  : Integer default 1;
+            @Scope:[#VIEW, #ENTITY, #ELEMENT, #PARAMETER, #ANNOTATE, #ANNOTATION, #ENUM_VALUE, #SIMPLE_TYPE] 
+            string_With_DefauLt  : String(10) default 'default 😀';
+          };
+        };   
+    };
+
+    scope {
+        @Scope:[#ENTITY]
+        entity : Boolean;
+        @Scope:[#VIEW]
+        view : Boolean;
+        @Scope:[#TABLE_FUNCTION]
+        tableFunction : Boolean;
+        @Scope:[#EXTEND_VIEW]
+        extendView : Boolean;
+        @Scope:[#ROLE]
+        role : Boolean;
+        @Scope:[#ACCESSPOLICY]
+        accessPolicy : Boolean;
+        @Scope:[#ANNOTATION]
+        annotation : Boolean;
+        @Scope:[#ANNOTATE]
+        annotate : Boolean;
+        @Scope:[#SERVICE]
+        service : Boolean;
+        @Scope:[#CUSTOM_ENTITY]
+        customEntity : Boolean;
+        @Scope:[#PARAMETER]
+        parameter : Boolean;
+        @Scope:[#ELEMENT]
+        element : Boolean;
+        @Scope:[#ASPECT]
+        aspect : Boolean;
+        @Scope:[#PFCG_MAPPING]
+        pfcgMapping : Boolean;
+        @Scope:[#SIMPLE_TYPE]
+        simpleType : Boolean;
+        @Scope:[#HIERARCHY]
+        hierarchy : Boolean;
+        @Scope:[#ENUM_VALUE]
+        enumValue : Boolean;
+        @Scope:[#OPERATION]
+        operation : Boolean default true;
+    };
+    
+    
+    languageDependentType {
+        withoutDefault {
+            @LanguageDependency.maxLength: 40 
+            string : String(60);
+        };
+        withDefault {
+            string : String(250) default 'defaultText' ;
+        };
+        withDefault2 {
+            value: Boolean default true;
+        };
+    };
+}

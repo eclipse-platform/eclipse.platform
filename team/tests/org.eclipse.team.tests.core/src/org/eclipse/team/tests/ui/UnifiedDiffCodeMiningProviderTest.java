@@ -18,11 +18,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -42,9 +45,11 @@ import org.eclipse.compare.unifieddiff.internal.UnifiedDiffCodeMiningProvider.Un
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffCodeMiningProvider.UnifiedDiffLineHeaderCodeMining;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager.UnifiedDiff;
+import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.internal.text.codemining.CodeMiningLineHeaderAnnotation;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
@@ -86,6 +91,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.TextLayout;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -1160,6 +1166,501 @@ public class UnifiedDiffCodeMiningProviderTest {
 			paintingHeader.dispose();
 			deletionColor.dispose();
 			detailedDiffColor.dispose();
+		}
+	}
+
+	@Test
+	public void testTallerEmojiMiningReservesSpaceAboveNumberedSourceLines() throws Exception {
+		String editorSource = numberedLines(50).get();
+		String comparedSource = editorSource.replace("line 9\n", "new replacement\n")
+				.replace("line 41\nline 42\nline 43\n", "new section\n" + "\t😀 new entry\n".repeat(25));
+		switchToDocument(new Document(editorSource));
+		Font font = emojiTestFont(9);
+		viewer.getTextWidget().setFont(font);
+		viewer.getTextWidget().setLineSpacing(3);
+		viewer.getTextWidget().setSize(800, 1200);
+		installCodeMinings(provider);
+		Image image = new Image(display, 800, 1200);
+		GC gc = new GC(image);
+		try {
+			assumeTrue(emojiLineHeight(font) > viewer.getTextWidget().getLineHeight(),
+					"the available font must render emoji taller than the editor's base line height");
+			assertTrue(open(comparedSource).isOK());
+			List<UnifiedDiff> diffs = UnifiedDiffManager.get(viewer);
+			assertThat(diffs).hasSize(2);
+			waitForAttachedMinings(diffs, allRegions().size());
+			UnifiedDiff lastDiff = diffs.get(1);
+			CodeMiningLineHeaderAnnotation annotation = assertInstanceOf(CodeMiningLineHeaderAnnotation.class,
+					attachedMiningAnnotationOf(lastDiff));
+			List<ICodeMining> minings = provide();
+			ICodeMining mining = minings.stream().filter(candidate -> candidate instanceof UnifiedDiffLineHeaderCodeMining header
+					&& header.getUnifiedDiff() == lastDiff).findFirst().orElseThrow();
+			int widgetOffset = viewer.modelOffset2WidgetOffset(mining.getPosition().offset);
+			int reservedHeight = annotation.getHeight(gc);
+			int sourceY = viewer.getTextWidget().getLocationAtOffset(widgetOffset).y;
+			Point painted = mining.draw(gc, viewer.getTextWidget(), null, 0, sourceY - reservedHeight);
+			assertThat(reservedHeight).as("the framework reserves taller rows for emoji")
+					.isGreaterThan(26 * (viewer.getTextWidget().getLineHeight() + viewer.getTextWidget().getLineSpacing()));
+			assertEquals(reservedHeight, painted.y, "the painted band stops above the numbered source line");
+			assertEquals(reservedHeight, annotation.getHeight(), "layout without a GC reserves the same height");
+			assertEquals(editorSource, document.get(), "rendering leaves the numbered source unchanged");
+			minings.forEach(ICodeMining::dispose);
+		} finally {
+			gc.dispose();
+			image.dispose();
+			viewer.getTextWidget().setFont(null);
+			font.dispose();
+		}
+	}
+
+	@Test
+	public void testEmojiHeaderHeightMatchesClickOverlay() throws Exception {
+		assertEmojiMiningHeight(false, false, 3);
+	}
+
+	@Test
+	public void testEmojiLayoutCacheRefreshesWhenFontOrLineSpacingChanges() throws Exception {
+		switchToDocument(new Document("old replacement"));
+		String label = "new replacement\n😀\nnew final";
+		List<UnifiedDiff> container = new ArrayList<>();
+		UnifiedDiff diff = new UnifiedDiff(document, 0, document.getLength(), document.get(), new Document(label),
+				0, label.length(), label, container, MODE);
+		container.add(diff);
+		Color color = display.getSystemColor(SWT.COLOR_GREEN);
+		Font small = emojiTestFont(9);
+		Font large = emojiTestFont(14);
+		List<ICodeMining> minings = List.of(
+				new UnifiedDiffLineHeaderCodeMining(new Position(0, document.getLength()), provider, diff, 4,
+						color, color, null, viewer),
+				new UnifiedDiffFooterCodeMining(document, provider, diff, 4, color, color, null, viewer));
+		Image image = new Image(display, 500, 300);
+		GC gc = new GC(image);
+		try {
+			for (ICodeMining mining : minings) {
+				viewer.getTextWidget().setFont(small);
+				viewer.getTextWidget().setLineSpacing(0);
+				String initial = mining.getLabel();
+				Point initialExtent = mining.draw(gc, viewer.getTextWidget(), null, 0, 0);
+				assertSame(initial, mining.getLabel(), "painting reuses the measured reservation label");
+				assertSame(initial, CompletableFuture.supplyAsync(mining::getLabel).get(10, TimeUnit.SECONDS),
+						"background callers use cached metrics without touching SWT");
+				viewer.getTextWidget().setLineSpacing(3);
+				String spaced = mining.getLabel();
+				assertNotSame(initial, spaced, "line spacing invalidates reservation rounding");
+				Point spacedExtent = mining.draw(gc, viewer.getTextWidget(), null, 0, 0);
+				assertThat(spacedExtent.y).isGreaterThanOrEqualTo(initialExtent.y);
+				assertSame(spaced, mining.getLabel());
+				viewer.getTextWidget().setFont(large);
+				String resized = mining.getLabel();
+				assertNotSame(spaced, resized, "font changes invalidate glyph metrics");
+				Point resizedExtent = mining.draw(gc, viewer.getTextWidget(), null, 0, 0);
+				assertThat(resizedExtent.y).isGreaterThanOrEqualTo(spacedExtent.y);
+				assertSame(resized, mining.getLabel());
+				mining.dispose();
+				assertSame(resized, mining.getLabel(), "disposed minings do not allocate new layout resources");
+			}
+		} finally {
+			minings.forEach(ICodeMining::dispose);
+			gc.dispose();
+			image.dispose();
+			viewer.getTextWidget().setFont(null);
+			small.dispose();
+			large.dispose();
+		}
+	}
+
+	@Test
+	public void testEmojiMiningLabelAndClickIgnoreUnavailableWidget() throws Exception {
+		class ClosingViewer extends ProjectionViewer {
+			boolean unavailable;
+
+			ClosingViewer() {
+				super(shell, null, null, false, SWT.V_SCROLL);
+			}
+
+			@Override
+			public StyledText getTextWidget() {
+				return unavailable ? null : super.getTextWidget();
+			}
+		}
+		ClosingViewer closingViewer = new ClosingViewer();
+		closingViewer.setDocument(document);
+		String label = "😀 new replacement";
+		List<UnifiedDiff> container = new ArrayList<>();
+		UnifiedDiff diff = new UnifiedDiff(document, 0, document.getLength(), document.get(), new Document(label),
+				0, label.length(), label, container, MODE);
+		container.add(diff);
+		Color color = display.getSystemColor(SWT.COLOR_GREEN);
+		List<ICodeMining> minings = List.of(
+				new UnifiedDiffLineHeaderCodeMining(new Position(0, document.getLength()), provider, diff, 4,
+						color, color, null, closingViewer),
+				new UnifiedDiffFooterCodeMining(document, provider, diff, 4, color, color, null, closingViewer));
+		StyledText textWidget = closingViewer.getTextWidget();
+		GC gc = new GC(textWidget);
+		try {
+			for (ICodeMining mining : minings) {
+				String cached = mining.getLabel();
+				mining.draw(gc, textWidget, null, 0, 0);
+				closingViewer.unavailable = true;
+				assertSame(cached, mining.getLabel());
+				mining.getAction().accept(null);
+				assertEquals(0, textWidget.getChildren().length, "a stale click does not create an overlay");
+				closingViewer.unavailable = false;
+			}
+			gc.dispose();
+			textWidget.dispose();
+			for (ICodeMining mining : minings) {
+				assertNotNull(mining.getLabel());
+				mining.getAction().accept(null);
+			}
+		} finally {
+			closingViewer.unavailable = false;
+			minings.forEach(ICodeMining::dispose);
+			if (!gc.isDisposed()) {
+				gc.dispose();
+			}
+		}
+	}
+
+	@Test
+	public void testEmojiMiningUsesPlainLayoutWhenSyntaxHighlightingHasBadLocations() throws Exception {
+		ProjectionViewer failingViewer = new ProjectionViewer(shell, null, null, false, SWT.V_SCROLL) {
+			@Override
+			public List<StyleRange> computeStyleRanges(IDocument syntaxDocument, IRegion region) throws BadLocationException {
+				throw new BadLocationException();
+			}
+		};
+		failingViewer.setDocument(document);
+		String label = "😀 new replacement\nnew final";
+		List<UnifiedDiff> container = new ArrayList<>();
+		UnifiedDiff diff = new UnifiedDiff(document, 7, document.getLength() - 7, document.get(7, document.getLength() - 7),
+				new Document(label), 0, label.length(), label, container, MODE);
+		container.add(diff);
+		Color color = display.getSystemColor(SWT.COLOR_GREEN);
+		List<ICodeMining> minings = List.of(
+				new UnifiedDiffLineHeaderCodeMining(new Position(7, document.getLength() - 7), provider, diff, 4,
+						color, color, null, failingViewer),
+				new UnifiedDiffFooterCodeMining(document, provider, diff, 4, color, color, null, failingViewer));
+		document.set("");
+		GC gc = new GC(failingViewer.getTextWidget());
+		try {
+			for (ICodeMining mining : minings) {
+				assertNotNull(mining.getLabel(), "stale offsets and failed highlighting leave a usable plain label");
+				Point extent = mining.draw(gc, failingViewer.getTextWidget(), null, 0, 0);
+				assertThat(extent.y).isGreaterThanOrEqualTo(2 * failingViewer.getTextWidget().getLineHeight());
+			}
+		} finally {
+			minings.forEach(ICodeMining::dispose);
+			gc.dispose();
+		}
+	}
+
+	@Test
+	public void testHighlightingRuntimeFailuresAreLoggedOnceAndUseCachedPlainLayout() throws Exception {
+		for (boolean invalidPresentation : new boolean[] { false, true }) {
+			List<IStatus> failures = new ArrayList<>();
+			int[] calls = { 0 };
+			RuntimeException failure = new IllegalArgumentException("synthetic highlighting failure");
+			ILogListener listener = (status, _) -> {
+				if (status.getException() == failure || status.getException() instanceof IllegalStateException
+						&& "Invalid presentation with style range starting before source offset".equals(status.getMessage())) {
+					failures.add(status);
+				}
+			};
+			ProjectionViewer failingViewer = new ProjectionViewer(shell, null, null, false, SWT.V_SCROLL) {
+				@Override
+				public List<StyleRange> computeStyleRanges(IDocument syntaxDocument, IRegion region) {
+					calls[0]++;
+					if (invalidPresentation) {
+						return List.of(new StyleRange(region.getOffset() - 1, 1, null, null));
+					}
+					throw failure;
+				}
+			};
+			failingViewer.setDocument(document);
+			String label = "😀 new replacement";
+			List<UnifiedDiff> container = new ArrayList<>();
+			UnifiedDiff diff = new UnifiedDiff(document, 7, document.getLength() - 7, document.get(7, document.getLength() - 7),
+					new Document(label), 0, label.length(), label, container, MODE);
+			container.add(diff);
+			Color color = display.getSystemColor(SWT.COLOR_GREEN);
+			List<ICodeMining> minings = List.of(
+					new UnifiedDiffLineHeaderCodeMining(new Position(7, document.getLength() - 7), provider, diff, 4,
+							color, color, null, failingViewer),
+					new UnifiedDiffFooterCodeMining(document, provider, diff, 4, color, color, null, failingViewer));
+			GC gc = new GC(failingViewer.getTextWidget());
+			Platform.addLogListener(listener);
+			try {
+				for (ICodeMining mining : minings) {
+					String cached = mining.getLabel();
+					assertNotNull(cached);
+					assertSame(cached, mining.getLabel());
+					mining.draw(gc, failingViewer.getTextWidget(), null, 0, 0);
+					assertSame(cached, mining.getLabel(), "failed highlighting is cached rather than retried during painting");
+				}
+				assertEquals(2, calls[0], "highlighting is attempted only once per mining");
+				assertEquals(2, failures.size(), "each mining logs its failure once");
+			} finally {
+				Platform.removeLogListener(listener);
+				minings.forEach(ICodeMining::dispose);
+				gc.dispose();
+			}
+		}
+	}
+
+	@Test
+	public void testDisposalDuringHighlightingCannotAllocateNewMiningFonts() throws Exception {
+		for (boolean footer : new boolean[] { false, true }) {
+			for (String operation : List.of("label", "rowHeight", "draw")) {
+				ICodeMining[] mining = new ICodeMining[1];
+				int[] calls = { 0 };
+				ProjectionViewer disposingViewer = new ProjectionViewer(shell, null, null, false, SWT.V_SCROLL) {
+					@Override
+					public List<StyleRange> computeStyleRanges(IDocument syntaxDocument, IRegion region) {
+						calls[0]++;
+						mining[0].dispose();
+						return List.of(new StyleRange(region.getOffset(), region.getLength(), null, null, SWT.BOLD));
+					}
+				};
+				disposingViewer.setDocument(document);
+				String label = "😀 new replacement";
+				List<UnifiedDiff> container = new ArrayList<>();
+				UnifiedDiff diff = new UnifiedDiff(document, 0, document.getLength(), document.get(), new Document(label),
+						0, label.length(), label, container, MODE);
+				container.add(diff);
+				Color color = display.getSystemColor(SWT.COLOR_GREEN);
+				mining[0] = footer
+						? new UnifiedDiffFooterCodeMining(document, provider, diff, 4, color, color, null, disposingViewer)
+						: new UnifiedDiffLineHeaderCodeMining(new Position(0, document.getLength()), provider, diff, 4,
+								color, color, null, disposingViewer);
+				StyledText textWidget = disposingViewer.getTextWidget();
+				GC gc = new GC(textWidget);
+				try {
+					switch (operation) {
+					case "label" -> assertNotNull(mining[0].getLabel());
+					case "rowHeight" -> assertEquals(0, miningRowHeight(mining[0], textWidget));
+					case "draw" -> mining[0].draw(gc, textWidget, null, 0, 0);
+					default -> fail("unknown operation");
+					}
+					assertEquals(1, calls[0]);
+					assertNotNull(mining[0].getLabel());
+					assertEquals(0, miningRowHeight(mining[0], textWidget));
+					assertEquals(new Point(0, 0), mining[0].draw(gc, textWidget, null, 0, 0));
+					assertEquals(1, calls[0], "disposed minings do not invoke highlighting again");
+					var fonts = mining[0].getClass().getDeclaredField("styledFonts");
+					fonts.setAccessible(true);
+					assertThat((Map<?, ?>) fonts.get(mining[0])).as("no fonts are allocated after disposal").isEmpty();
+					assertNull(footer ? ((UnifiedDiffFooterCodeMining) mining[0]).getLastRectangle()
+							: ((UnifiedDiffLineHeaderCodeMining) mining[0]).getLastRectangle());
+				} finally {
+					mining[0].dispose();
+					gc.dispose();
+				}
+			}
+		}
+	}
+
+	private int miningRowHeight(ICodeMining mining, StyledText textWidget) {
+		return mining instanceof UnifiedDiffFooterCodeMining footer ? footer.getRowHeight(textWidget)
+				: ((UnifiedDiffLineHeaderCodeMining) mining).getRowHeight(textWidget);
+	}
+
+	@Test
+	public void testRefreshingMiningsReplacesInstancesDisposedByTheFramework() throws Exception {
+		switchToDocument(new Document("old replacement\ncommon\n"));
+		installCodeMinings(provider);
+		assertTrue(open("😀 new replacement\ncommon\n").isOK());
+		List<UnifiedDiff> diffs = UnifiedDiffManager.get(viewer);
+		waitForAttachedMinings(diffs, allRegions().size());
+		ICodeMining original = attachedMinings().get(0);
+		GC gc = new GC(viewer.getTextWidget());
+		try {
+			assertThat(original.draw(gc, viewer.getTextWidget(), null, 0, 0).y).isGreaterThan(0);
+			viewer.updateCodeMinings();
+			waitUntil(() -> !attachedMinings().isEmpty() && attachedMinings().get(0) != original,
+					() -> "a refresh replaces the framework-owned mining");
+			ICodeMining replacement = attachedMinings().get(0);
+			assertEquals(new Point(0, 0), original.draw(gc, viewer.getTextWidget(), null, 0, 0),
+					"the framework disposed the original mining");
+			assertThat(replacement.draw(gc, viewer.getTextWidget(), null, 0, 0).y).isGreaterThan(0);
+			viewer.updateCodeMinings();
+			waitUntil(() -> !attachedMinings().isEmpty() && attachedMinings().get(0) != replacement,
+					() -> "a second refresh also leaves a live mining");
+			assertThat(attachedMinings().get(0).draw(gc, viewer.getTextWidget(), null, 0, 0).y).isGreaterThan(0);
+		} finally {
+			gc.dispose();
+		}
+	}
+
+	@Test
+	public void testEmojiFooterHeightMatchesClickOverlay() throws Exception {
+		assertEmojiMiningHeight(true, false, 3);
+	}
+
+	@Test
+	public void testPlainTextEmojiMiningHeightMatchesClickOverlay() throws Exception {
+		assertEmojiMiningHeight(false, true, 3);
+	}
+
+	@Test
+	public void testEmojiMiningHeightMatchesClickOverlayWithoutLineSpacing() throws Exception {
+		assertEmojiMiningHeight(false, false, 0);
+		assertEmojiMiningHeight(true, false, 0);
+	}
+
+	private void assertEmojiMiningHeight(boolean footer, boolean plainText, int lineSpacing) throws Exception {
+		if (plainText) {
+			viewer.unconfigure();
+			viewer.configure(new SourceViewerConfiguration());
+		}
+		switchToDocument(new Document("old replacement"));
+		String label = "new replacement\n😀😎❌\nnew final\n\n";
+		List<UnifiedDiff> container = new ArrayList<>();
+		UnifiedDiff diff = new UnifiedDiff(document, 0, document.getLength(), document.get(), new Document(label),
+				0, label.length(), label, container, MODE);
+		container.add(diff);
+		int finalStart = label.indexOf("final");
+		diff.detailedDiffs.add(new UnifiedDiff(document, 0, 0, "", new Document(label), finalStart, finalStart + 5,
+				"final", container, MODE));
+		Font font = emojiTestFont(9);
+		Color deletionColor = new Color(display, 11, 22, 33);
+		Color detailedDiffColor = new Color(display, 44, 55, 66);
+		ICodeMining mining = footer
+				? new UnifiedDiffFooterCodeMining(document, provider, diff, 4, deletionColor, detailedDiffColor, null, viewer)
+				: new UnifiedDiffLineHeaderCodeMining(new Position(0, document.getLength()), provider, diff, 4,
+						deletionColor, detailedDiffColor, null, viewer);
+		Image image = new Image(display, 500, 300);
+		GC gc = new GC(image);
+		try {
+			viewer.getTextWidget().setFont(font);
+			viewer.getTextWidget().setLineSpacing(lineSpacing);
+			int baseHeight = viewer.getTextWidget().getLineHeight();
+			Point extent = mining.draw(gc, viewer.getTextWidget(), null, 0, 0);
+			assertEquals(extent, mining.draw(gc, viewer.getTextWidget(), null, 0, 0), "cached paint keeps its height");
+			mining.getAction().accept(null);
+			StyledText overlay = (StyledText) viewer.getTextWidget().getChildren()[0];
+			int rowHeight = extent.y / overlay.getLineCount();
+			if (!plainText) {
+				int zoom = display.getPrimaryMonitor().getZoom();
+				assertThat(lastColumnWithInBand(image.getImageData(zoom), detailedDiffColor.getRGB(),
+						2 * rowHeight * zoom / 100, 3 * rowHeight * zoom / 100))
+						.as("the detailed background follows the taller emoji row").isGreaterThanOrEqualTo(0);
+			}
+			assertEquals(4, overlay.getLineCount(), "the final blank row remains visible");
+			rowHeight = overlay.getLocationAtOffset(overlay.getOffsetAtLine(1)).y;
+			assertThat(extent.y - overlay.getLinePixel(overlay.getLineCount()))
+					.as("only sub-row rounding space remains below the overlay")
+					.isGreaterThanOrEqualTo(0).isLessThan(baseHeight + lineSpacing);
+			for (int line = 0; line < overlay.getLineCount(); line++) {
+				assertEquals(line * rowHeight, overlay.getLocationAtOffset(overlay.getOffsetAtLine(line)).y,
+						"clicking does not change the row positions");
+			}
+			assertThat(overlay.getLineHeight()).as("the uniform row accommodates the overlay's fallback glyphs")
+					.isLessThanOrEqualTo(rowHeight);
+		} finally {
+			for (Control child : viewer.getTextWidget().getChildren()) {
+				child.dispose();
+			}
+			gc.dispose();
+			image.dispose();
+			mining.dispose();
+			viewer.getTextWidget().setFont(null);
+			font.dispose();
+			deletionColor.dispose();
+			detailedDiffColor.dispose();
+		}
+	}
+
+	@Test
+	public void testSanitizedManualSourcesReserveEmojiMiningsAtSmallFontSizes() throws Exception {
+		String editorSource = manualFixture("editor");
+		String comparedSource = manualFixture("compared");
+		for (int fontSize : new int[] { 9, 14 }) {
+			assertManualSourcesReserveMinings(editorSource, comparedSource, fontSize);
+		}
+	}
+
+	private Font emojiTestFont(int size) {
+		String family = display.getFontList("Monaco", true).length > 0
+				? "Monaco" : viewer.getTextWidget().getFont().getFontData()[0].getName();
+		return new Font(display, family, size, SWT.NORMAL);
+	}
+
+	private int emojiLineHeight(Font font) {
+		TextLayout layout = new TextLayout(display);
+		try {
+			layout.setFont(font);
+			var metrics = layout.getLineMetrics(0);
+			layout.setAscent(metrics.getAscent() + metrics.getLeading());
+			layout.setDescent(metrics.getDescent());
+			layout.setText("😀");
+			return layout.getLineBounds(0).height;
+		} finally {
+			layout.dispose();
+		}
+	}
+
+	private String manualFixture(String side) throws Exception {
+		try (var stream = getClass().getResourceAsStream("/testdata/unifieddiff-" + side + ".txt")) {
+			assertNotNull(stream, "the sanitized comparison fixture is packaged with the tests");
+			String source = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
+			if (source.endsWith("\n")) {
+				source = source.substring(0, source.length() - 1);
+			}
+			return source.replace("\r\n", "\n").replace("\n", "\r\n");
+		}
+	}
+
+	private void assertManualSourcesReserveMinings(String editorSource, String comparedSource, int fontSize) throws Exception {
+		switchToDocument(new Document(editorSource));
+		Font font = emojiTestFont(fontSize);
+		viewer.getTextWidget().setFont(font);
+		viewer.getTextWidget().setSize(800, 1200);
+		installCodeMinings(provider);
+		Image image = new Image(display, 800, 1200);
+		GC gc = new GC(image);
+		List<ICodeMining> minings = List.of();
+		try {
+			IStatus status = UnifiedDiffManager.open(viewer, document, model, null, comparedSource,
+					UnifiedDiffMode.OVERLAY_MODE, null, null, null, null, MergeViewerContentProvider.LEFT_CONTRIBUTOR,
+					MergeViewerContentProvider.RIGHT_CONTRIBUTOR, true, -1);
+			assertTrue(status.isOK());
+			List<UnifiedDiff> diffs = UnifiedDiffManager.get(viewer);
+			assertThat(diffs).hasSize(5);
+			assertEquals(editorSource, document.get(), "overlay mode must not change the editor source");
+			waitForAttachedMinings(List.of(diffs.get(0), diffs.get(1), diffs.get(2), diffs.get(4)), 0);
+			minings = provide();
+			for (ICodeMining mining : minings) {
+				if (!(mining instanceof UnifiedDiffLineHeaderCodeMining header)) {
+					continue;
+				}
+				CodeMiningLineHeaderAnnotation annotation = assertInstanceOf(CodeMiningLineHeaderAnnotation.class,
+						attachedMiningAnnotationOf(header.getUnifiedDiff()));
+				int widgetOffset = viewer.modelOffset2WidgetOffset(mining.getPosition().offset);
+				int widgetLine = viewer.getTextWidget().getLineAtOffset(widgetOffset);
+				int height = annotation.getHeight(gc);
+				viewer.getTextWidget().setLineVerticalIndent(widgetLine, height);
+				for (int topLine : new int[] { 0, widgetLine }) {
+					viewer.getTextWidget().setTopIndex(topLine);
+					int sourceY = viewer.getTextWidget().getLocationAtOffset(widgetOffset).y;
+					Point painted = mining.draw(gc, viewer.getTextWidget(), null, 0, sourceY - height);
+					assertEquals(height, painted.y, "the mining must end before its numbered source line");
+					assertEquals(height, annotation.getHeight(), "reservation must also work without a GC");
+				}
+				header.getAction().accept(null);
+				StyledText overlay = (StyledText) viewer.getTextWidget().getChildren()[0];
+				assertEquals(header.getRawLabel(), overlay.getText(), "invisible layout rows must not enter copied text");
+				assertThat(overlay.getLinePixel(overlay.getLineCount())).isLessThanOrEqualTo(height);
+				overlay.dispose();
+			}
+			assertEquals(43, document.getLineOfOffset(diffs.get(3).leftStart) + 1, "the removed line stays at 43");
+			assertEquals("", diffs.get(4).leftStr, "the final block is an insertion above the unchanged closing brace");
+		} finally {
+			minings.forEach(ICodeMining::dispose);
+			gc.dispose();
+			image.dispose();
+			viewer.getTextWidget().setFont(null);
+			font.dispose();
 		}
 	}
 
