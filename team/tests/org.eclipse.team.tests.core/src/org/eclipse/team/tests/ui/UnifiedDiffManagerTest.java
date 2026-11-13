@@ -977,6 +977,112 @@ public class UnifiedDiffManagerTest {
 		}
 	}
 
+	@Test
+	public void testDisposeClearsDisplayAndAllowsReopening() throws Exception {
+		IAnnotationModel model = annotationModel();
+		Annotation unrelated = new Annotation("test.annotation", false, "Keep this annotation"); //$NON-NLS-1$ //$NON-NLS-2$
+		model.addAnnotation(unrelated, new Position(0, 4));
+		var actionBars = editor.getEditorSite().getActionBars();
+		var previousNext = actionBars.getGlobalActionHandler(ActionFactory.NEXT.getId());
+		var previousPrevious = actionBars.getGlobalActionHandler(ActionFactory.PREVIOUS.getId());
+		StyledText tw = viewer().getTextWidget();
+		for (UnifiedDiffMode mode : List.of(UnifiedDiffMode.OVERLAY_MODE, UnifiedDiffMode.OVERLAY_READ_ONLY_MODE,
+				UnifiedDiffMode.REVERT_MODE, UnifiedDiffMode.REPLACE_MODE)) {
+			setEditorContent(LEFT);
+			assertTrue(UnifiedDiff.create(editor, RIGHT, mode).open().isOK());
+			assertNotSame(previousNext, actionBars.getGlobalActionHandler(ActionFactory.NEXT.getId()));
+			assertNotNull(waitForLineHeaderAnnotation());
+			firePaint(tw);
+			var diff = UnifiedDiffManager.get(viewer()).get(0);
+			int miningLine = tw.getLineAtOffset(lineHeaderMiningFor(diff).getPosition().offset);
+			assertTrue(tw.getLineVerticalIndent(miningLine) > 0, "the diff mining must reserve height before disposal");
+			int diffLine = tw.getLineAtOffset(diff.leftStart);
+			fireMouseMove(tw, tw.getLinePixel(diffLine) + 2);
+			processEvents();
+			Composite allToolbar = (Composite) tw.getData(TOOLBAR_COMPOSITE_FOR_ALL_DIFFS_KEY);
+			Composite oneToolbar = (Composite) tw.getData(TOOLBAR_COMPOSITE_FOR_ONE_DIFF_KEY);
+			assertNotNull(allToolbar);
+			assertNotNull(oneToolbar);
+			String contentBeforeDispose = document().get();
+			boolean dirtyBeforeDispose = editor.isDirty();
+
+			UnifiedDiff.dispose(editor);
+			processEvents();
+			firePaint(tw);
+
+			assertNull(UnifiedDiffManager.get(viewer()), "disposal must release the manager state");
+			assertTrue(allToolbar.isDisposed());
+			assertTrue(oneToolbar.isDisposed());
+			assertEquals(0, tw.getLineVerticalIndent(miningLine), "disposal must clear the mining's reserved height");
+			assertEquals(contentBeforeDispose, document().get(), "disposal must preserve the current document");
+			assertEquals(dirtyBeforeDispose, editor.isDirty(), "disposal must preserve the editor's dirty state");
+			assertNotNull(model.getPosition(unrelated));
+			assertEquals(List.of(unrelated), annotations(model, "test.annotation")); //$NON-NLS-1$
+			assertEquals(0, countUnifiedDiffAnnotations(model));
+			assertSame(previousNext, actionBars.getGlobalActionHandler(ActionFactory.NEXT.getId()));
+			assertSame(previousPrevious, actionBars.getGlobalActionHandler(ActionFactory.PREVIOUS.getId()));
+			assertEquals(0, tw.getTypedListeners(SWT.Paint, PaintListener.class)
+					.filter(listener -> listener.getClass().getName()
+							.equals(UnifiedDiffManager.class.getName() + "$UnifiedDiffPaintListener")).count()); //$NON-NLS-1$
+			assertEquals(0, tw.getTypedListeners(SWT.MouseMove, MouseMoveListener.class)
+					.filter(listener -> listener.getClass().getName()
+							.equals(UnifiedDiffManager.class.getName() + "$UnifiedDiffMouseMoveListener")).count()); //$NON-NLS-1$
+			UnifiedDiff.dispose(editor);
+		}
+	}
+
+	private static int countUnifiedDiffAnnotations(IAnnotationModel model) {
+		int count = 0;
+		for (Iterator<Annotation> it = model.getAnnotationIterator(); it.hasNext();) {
+			String type = it.next().getType();
+			if (type != null && type.startsWith("org.eclipse.compare.unifieddiff.")) { //$NON-NLS-1$
+				count++;
+			}
+		}
+		return count;
+	}
+
+	@Test
+	public void testDisposePreventsPendingComputationFromRestoringDisplay() {
+		CountDownLatch disposed = new CountDownLatch(1);
+		AtomicBoolean firstComparison = new AtomicBoolean(true);
+		var actionBars = editor.getEditorSite().getActionBars();
+		var previousNext = actionBars.getGlobalActionHandler(ActionFactory.NEXT.getId());
+		IStatus status = UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.REPLACE_MODE)
+				.tokenComparatorFactory(text -> {
+					if (firstComparison.compareAndSet(true, false)) {
+						Display.getDefault().asyncExec(() -> {
+							UnifiedDiff.dispose(editor);
+							disposed.countDown();
+						});
+						await(disposed, "disposal must run while the diff computation is blocked");
+					}
+					return new CaseInsensitiveTokenComparator(text);
+				}).open();
+
+		assertTrue(status.isOK(), "the superseded open must return normally");
+		assertEquals(0, disposed.getCount());
+		processEvents();
+		assertNull(UnifiedDiffManager.get(viewer()));
+		assertEquals(0, countUnifiedDiffAnnotations(annotationModel()));
+		assertNull(viewer().getTextWidget().getData(TOOLBAR_COMPOSITE_FOR_ALL_DIFFS_KEY));
+		assertSame(previousNext, actionBars.getGlobalActionHandler(ActionFactory.NEXT.getId()),
+				"the superseded open must not reinstall navigation handlers");
+		assertEquals(LEFT, document().get(), "the superseded replace-mode open must not change the document");
+	}
+
+	@Test
+	public void testDisposeWithoutDiffAndAfterClosingEditor() {
+		assertThrows(NullPointerException.class, () -> UnifiedDiff.dispose(null));
+		UnifiedDiff.dispose(editor);
+		UnifiedDiff.dispose(editor);
+		assertEquals(LEFT, document().get());
+		assertNull(UnifiedDiffManager.get(viewer()));
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeEditor(editor, false);
+		UnifiedDiff.dispose(editor);
+		editor = null;
+	}
+
 	/**
 	 * Opening a second diff on the same editor must replace the first one instead
 	 * of stacking annotations and diffs on top of each other.
