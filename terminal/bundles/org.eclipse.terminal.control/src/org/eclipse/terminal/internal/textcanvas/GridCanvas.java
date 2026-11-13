@@ -31,13 +31,24 @@ abstract public class GridCanvas extends VirtualCanvas {
 	public GridCanvas(Composite parent, int style) {
 		super(parent, style);
 		addListener(SWT.MouseWheel, event -> {
-			if (getVerticalBar().isVisible()) {
+			if (!handleMouseWheel(event.x, event.y, event.count, event.stateMask) && getVerticalBar().isVisible()) {
 				int delta = -fCellHeight * event.count;
 				scrollYDelta(delta);
 			}
 			event.doit = false;
 		});
 
+	}
+
+	/**
+	 * Offered the wheel before the canvas scrolls itself.
+	 *
+	 * @param count lines the wheel asked for, positive when scrolling up
+	 * @param stateMask the keys held at the time
+	 * @return whether it was taken, in which case the canvas leaves it alone
+	 */
+	protected boolean handleMouseWheel(int x, int y, int count, int stateMask) {
+		return false;
 	}
 
 	/** template method paint.
