@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2013 IBM Corporation and others.
+ *  Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -16,11 +16,15 @@ package org.eclipse.debug.internal.ui.actions.expressions;
 
 
 import java.text.MessageFormat;
+import java.util.Optional;
 
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.debug.core.model.IWatchExpression;
 import org.eclipse.debug.internal.ui.IDebugHelpContextIds;
 import org.eclipse.debug.internal.ui.actions.ActionMessages;
 import org.eclipse.debug.internal.ui.actions.StatusInfo;
+import org.eclipse.debug.ui.DebugUITools;
+import org.eclipse.debug.ui.IWatchExpressionCellEditorFactory;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.bindings.keys.IKeyLookup;
 import org.eclipse.jface.bindings.keys.KeyLookupFactory;
@@ -103,10 +107,18 @@ public class WatchExpressionDialog extends StatusDialog {
 		label.setFont(font);
 
 		fSnippetViewer = new SourceViewer(container, null, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.LEFT_TO_RIGHT);
-		fSnippetViewer.setInput(this);
 
 		IDocument document = new Document();
-		fSnippetViewer.configure(new SourceViewerConfiguration());
+		Optional<IWatchExpressionCellEditorFactory> factory = getFactory();
+		if (factory.isPresent()) {
+			IWatchExpressionCellEditorFactory f = factory.get();
+			f.prepareDocument(document);
+			fSnippetViewer.setInput(document);
+			f.configureSourceViewer(fSnippetViewer);
+		} else {
+			fSnippetViewer.setInput(this);
+			fSnippetViewer.configure(new SourceViewerConfiguration());
+		}
 		fSnippetViewer.setEditable(true);
 		fSnippetViewer.setDocument(document);
 		document.addDocumentListener(new IDocumentListener() {
@@ -205,6 +217,14 @@ public class WatchExpressionDialog extends StatusDialog {
 			status.setError(ActionMessages.WatchExpressionDialog_4);
 		}
 		updateStatus(status);
+	}
+
+	/**
+	 * Returns an {@link Optional} containing the {@link IWatchExpressionCellEditorFactory}
+	 * from the active debug context, or an empty {@link Optional} if none is available.
+	 */
+	private Optional<IWatchExpressionCellEditorFactory> getFactory() {
+		return Optional.ofNullable(Adapters.adapt(DebugUITools.getDebugContext(), IWatchExpressionCellEditorFactory.class));
 	}
 
 }
