@@ -209,13 +209,36 @@ public class UnifiedDiffManager {
 	 * model, so the one installed on the viewer is used.
 	 */
 	public static IAnnotationModel annotationModelOf(ITextEditor editor) {
-		IAnnotationModel model = editor.getDocumentProvider().getAnnotationModel(editor.getEditorInput());
+		var provider = editor.getDocumentProvider();
+		IAnnotationModel model = provider != null ? provider.getAnnotationModel(editor.getEditorInput()) : null;
 		if (model != null) {
 			return model;
 		}
 		return editor.getAdapter(ITextViewer.class) instanceof ISourceViewer sourceViewer
 				? sourceViewer.getAnnotationModel()
 				: null;
+	}
+
+	public static void dispose(ITextEditor editor) {
+		ITextViewer viewer = editor.getAdapter(ITextViewer.class);
+		if (viewer == null) {
+			return;
+		}
+		StyledText textWidget = viewer.getTextWidget();
+		if (textWidget == null || textWidget.isDisposed()) {
+			return;
+		}
+		// Invalidate computations that yield to the UI event loop before installing
+		// their result, even when no diff has been displayed yet.
+		textWidget.setData(OPEN_REQUEST_KEY, null);
+		IAnnotationModel model = annotationModelOf(editor);
+		if (model != null) {
+			clearAll(viewer, model);
+		}
+		disposeUnifiedDiff(viewer, model, textWidget);
+		textWidget.setData(TOOLBAR_ACTION_PRESENTATIONS_KEY, null);
+		viewer.invalidateTextPresentation();
+		textWidget.redraw();
 	}
 
 	/**
@@ -266,7 +289,7 @@ public class UnifiedDiffManager {
 		IStatus status = open(viewer, leftDocument, model, file, source, mode, additionalActions, tokenComparatorFactory,
 				ignoreWhitespaceContributorFactory, compareFilters, leftContributor, rightContributor, ignoreWhiteSpace,
 				foldContextLines, toolbarActionPresentations, eventListener);
-		if (status.isOK()) {
+		if (status.isOK() && get(viewer) != null) {
 			registerCommandHandlers(editor, viewer, model);
 		}
 		return status;
