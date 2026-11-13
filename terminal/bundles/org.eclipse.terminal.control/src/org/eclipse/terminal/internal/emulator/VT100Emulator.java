@@ -531,6 +531,7 @@ public class VT100Emulator implements ControlListener {
 	 * without one.
 	 */
 	private void resetProgramModes() {
+		terminal.enableSynchronizedOutput(false); // or the screen would stay frozen
 		terminal.showCursor(true);
 		terminal.enableBracketedPaste(false);
 	}
@@ -1356,6 +1357,10 @@ public class VT100Emulator implements ControlListener {
 			// Save cursor, as ESC 7 does.
 			saveCursor();
 			break;
+		case 2026:
+			// Synchronized output: the program begins a screen; show it once it is drawn.
+			terminal.enableSynchronizedOutput(true);
+			break;
 		case 2004:
 			// Bracketed paste: pasted text is wrapped so a program can tell it from typing.
 			terminal.enableBracketedPaste(true);
@@ -1396,6 +1401,9 @@ public class VT100Emulator implements ControlListener {
 		case 1048:
 			// Restore cursor, as ESC 8 does.
 			restoreCursor();
+			break;
+		case 2026:
+			terminal.enableSynchronizedOutput(false);
 			break;
 		case 2004:
 			terminal.enableBracketedPaste(false);
