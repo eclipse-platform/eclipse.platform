@@ -108,8 +108,11 @@ public final class LaunchAsDialog extends Dialog {
 		viewer.setInput(choices);
 		viewer.addDoubleClickListener(event -> okPressed());
 		Table table = viewer.getTable();
-		GridDataFactory.fillDefaults().grab(true, true).hint(convertWidthInCharsToPixels(60),
-				table.getItemHeight() * Math.min(Math.max(choices.size(), 3), 15)).applyTo(table);
+		// Show all choices, up to 60% of the monitor height
+		int itemHeight = table.getItemHeight();
+		int rows = Math.min(Math.max(choices.size(), 3), maxRows(parent, itemHeight));
+		GridDataFactory.fillDefaults().grab(true, true)
+				.hint(convertWidthInCharsToPixels(60), itemHeight * rows + 2 * table.getBorderWidth()).applyTo(table);
 
 		filterText.addModifyListener(event -> {
 			viewer.refresh();
@@ -136,6 +139,14 @@ public final class LaunchAsDialog extends Dialog {
 			viewer.setSelection(new StructuredSelection(first), true);
 		}
 		return area;
+	}
+
+	/**
+	 * The number of rows that fit into 60% of the height of the monitor of the
+	 * dialog, at least 5
+	 */
+	public static int maxRows(Composite parent, int itemHeight) {
+		return Math.max(5, parent.getShell().getMonitor().getClientArea().height * 6 / 10 / itemHeight);
 	}
 
 	@Override

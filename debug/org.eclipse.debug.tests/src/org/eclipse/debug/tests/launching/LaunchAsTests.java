@@ -17,7 +17,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -28,6 +30,7 @@ import org.eclipse.debug.internal.ui.actions.LaunchAsDialog;
 import org.eclipse.debug.tests.TestUtil;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.ui.PlatformUI;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -124,6 +127,28 @@ public class LaunchAsTests {
 			dialog.close();
 		}
 		assertNull(dialog.getResult());
+	}
+
+	@Test
+	public void testLongListMakesTheDialogHigher() {
+		List<Choice> many = new ArrayList<>();
+		for (int i = 0; i < 18; i++) {
+			many.add(new Choice("Choice " + i, null, "k" + i, () -> { //$NON-NLS-1$ //$NON-NLS-2$
+			}));
+		}
+		LaunchAsDialog dialog = new LaunchAsDialog(PlatformUI.getWorkbench().getWorkbenchWindows()[0].getShell(),
+				"Run As", "Run", many, null); //$NON-NLS-1$ //$NON-NLS-2$
+		dialog.setBlockOnOpen(false);
+		dialog.open();
+		try {
+			var table = dialog.getViewer().getTable();
+			int heightHint = ((GridData) table.getLayoutData()).heightHint;
+			// All 18 rows, or as many as fit on the monitor
+			int rows = Math.min(18, LaunchAsDialog.maxRows(table, table.getItemHeight()));
+			assertTrue(heightHint >= rows * table.getItemHeight(), () -> "height hint " + heightHint); //$NON-NLS-1$
+		} finally {
+			dialog.close();
+		}
 	}
 
 	private static List<Choice> choicesForTarget(String mode) {
