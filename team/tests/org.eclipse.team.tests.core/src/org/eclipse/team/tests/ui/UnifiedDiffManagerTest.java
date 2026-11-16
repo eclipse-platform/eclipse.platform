@@ -31,11 +31,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.eclipse.compare.ICompareFilter;
 import org.eclipse.compare.contentmergeviewer.ITokenComparator;
@@ -51,6 +53,7 @@ import org.eclipse.compare.unifieddiff.internal.AcceptAllRunnable;
 import org.eclipse.compare.unifieddiff.internal.HideAllDiffsRunnable;
 import org.eclipse.compare.unifieddiff.internal.KeepAllRunnable;
 import org.eclipse.compare.unifieddiff.internal.UndoAllRunnable;
+import org.eclipse.compare.unifieddiff.internal.UnifiedDiffCodeMiningProvider;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffCodeMiningProvider.UnifiedDiffLineHeaderCodeMining;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager;
 import org.eclipse.core.resources.IFile;
@@ -58,6 +61,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILogListener;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -70,11 +74,16 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.Region;
+import org.eclipse.jface.text.codemining.AbstractCodeMiningProvider;
 import org.eclipse.jface.text.codemining.ICodeMining;
+import org.eclipse.jface.text.codemining.ICodeMiningProvider;
+import org.eclipse.jface.text.codemining.LineHeaderCodeMining;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.IAnnotationModelExtension;
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.text.source.ISourceViewerExtension5;
+import org.eclipse.jface.text.source.ISourceViewerExtension6;
 import org.eclipse.jface.text.source.inlined.LineHeaderAnnotation;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.swt.SWT;
@@ -110,6 +119,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 @SuppressWarnings("restriction")
 @ExtendWith(WorkspaceResetExtension.class)
@@ -1098,6 +1109,65 @@ public class UnifiedDiffManagerTest {
 		assertEquals(0, countAnnotations(annotationModel(), DETAILED_DELETION_ANNO_TYPE));
 	}
 
+	@ParameterizedTest
+	@ValueSource(strings = { "org.eclipse.compare.hideAllDiffs", "org.eclipse.compare.acceptAllDiffs",
+			"org.eclipse.compare.hideCurrentDiff", "org.eclipse.compare.acceptCurrentDiff" })
+	public void testOtherMiningsAreRestoredAfterResolvingDiffs(String command) throws Exception {
+		ProblemMiningProvider provider = installProblemMining();
+		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.OVERLAY_MODE).open().isOK());
+		waitForProblemMining(provider, false);
+		assertNotNull(waitForLineHeaderAnnotation(), "unified diff minings must remain visible");
+		executeEditorCommand(command);
+		if (command.contains("accept")) {
+			waitForDocumentContent(RIGHT);
+		}
+		waitForUnifiedDiffCount(0);
+		waitForProblemMining(provider, true);
+		assertEquals(0, provider.disposals, "filtering must not dispose installed providers");
+	}
+
+	@Test
+	public void testOtherMiningsAreRestoredAfterEmptyReopenAndModeChanges() throws Exception {
+		ProblemMiningProvider provider = installProblemMining();
+		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.OVERLAY_MODE).open().isOK());
+		waitForProblemMining(provider, false);
+		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.OVERLAY_READ_ONLY_MODE).open().isOK());
+		waitForProblemMining(provider, false);
+		assertTrue(UnifiedDiff.create(editor, LEFT, UnifiedDiffMode.OVERLAY_READ_ONLY_MODE).open().isOK());
+		waitForProblemMining(provider, true);
+		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.OVERLAY_MODE).open().isOK());
+		waitForProblemMining(provider, false);
+		executeEditorCommand("org.eclipse.compare.hideAllDiffs");
+		waitForProblemMining(provider, true);
+	}
+
+	@Test
+	public void testFilterLifecycleDoesNotRequestDuplicateProviderRefreshes() throws Exception {
+		ProblemMiningProvider provider = installProblemMining();
+		int initialRequests = provider.requests;
+		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.OVERLAY_MODE).open().isOK());
+		assertEquals(initialRequests + 1, provider.requests, "open must refresh providers only once");
+		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.OVERLAY_MODE).open().isOK());
+		assertEquals(initialRequests + 3, provider.requests,
+				"reopen must refresh once for clearing the old session and once for the new session");
+		executeEditorCommand("org.eclipse.compare.hideAllDiffs");
+		waitForProblemMining(provider, true);
+	}
+
+	@Test
+	public void testClosingDiffDoesNotRemoveAnotherClientsMiningFilter() throws Exception {
+		ProblemMiningProvider provider = installProblemMining();
+		var extension = (ISourceViewerExtension6) viewer();
+		Predicate<ICodeMining> otherFilter = mining -> mining.getProvider() != provider;
+		extension.addCodeMiningFilter(otherFilter);
+		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.OVERLAY_MODE).open().isOK());
+		waitForProblemMining(provider, false);
+		executeEditorCommand("org.eclipse.compare.hideAllDiffs");
+		waitForProblemMining(provider, false);
+		extension.removeCodeMiningFilter(otherFilter);
+		waitForProblemMining(provider, true);
+	}
+
 	@Test
 	public void testAcceptAllDiffsCommandAppliesAllChanges() throws Exception {
 		setEditorContent(LEFT);
@@ -1460,11 +1530,13 @@ public class UnifiedDiffManagerTest {
 		List<UnifiedDiffEvent> events = new ArrayList<>();
 		List<String> documentContentsAtNotification = new ArrayList<>();
 		setEditorContent(LEFT);
+		ProblemMiningProvider provider = installProblemMining();
 		assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.REPLACE_MODE).eventListener(event -> {
 			events.add(event);
 			documentContentsAtNotification.add(document().get());
 		}).open().isOK());
 		waitForDocumentContent(RIGHT);
+		waitForProblemMining(provider, false);
 
 		IDocumentUndoManager undoManager = DocumentUndoManagerRegistry.getDocumentUndoManager(document());
 		assertTrue(undoManager.undoable(), "opening a replace-mode diff must create an undoable document change");
@@ -1476,6 +1548,7 @@ public class UnifiedDiffManagerTest {
 		assertEquals(List.of(LEFT), documentContentsAtNotification,
 				"the undo event must be sent after the document has been restored");
 		assertNull(UnifiedDiffManager.get(viewer()), "undoing the only replace-mode hunk must dispose the unified diff");
+		waitForProblemMining(provider, true);
 	}
 
 	@Test
@@ -1783,6 +1856,55 @@ public class UnifiedDiffManagerTest {
 		ITextViewer viewer = editor.getAdapter(ITextViewer.class);
 		assertNotNull(viewer, "editor must adapt to ITextViewer");
 		return viewer;
+	}
+
+	private ProblemMiningProvider installProblemMining() throws Exception {
+		ProblemMiningProvider provider = new ProblemMiningProvider();
+		((ISourceViewerExtension5) viewer()).setCodeMiningProviders(
+				new ICodeMiningProvider[] { new UnifiedDiffCodeMiningProvider(), provider });
+		waitForProblemMining(provider, true);
+		return provider;
+	}
+
+	private void waitForProblemMining(ProblemMiningProvider provider, boolean visible) throws Exception {
+		long deadline = System.currentTimeMillis() + 5000;
+		while (System.currentTimeMillis() < deadline) {
+			processEvents();
+			boolean found = false;
+			for (Iterator<Annotation> annotations = annotationModel().getAnnotationIterator(); annotations.hasNext();) {
+				if (annotations.next() instanceof LineHeaderAnnotation header) {
+					found |= header.getMinings().stream().anyMatch(mining -> mining.getProvider() == provider);
+				}
+			}
+			if (found == visible) {
+				return;
+			}
+			Thread.sleep(20);
+		}
+		throw new AssertionError("Problem mining visibility did not become " + visible);
+	}
+
+	private static final class ProblemMiningProvider extends AbstractCodeMiningProvider {
+		private int disposals;
+		private int requests;
+
+		@Override
+		public CompletableFuture<List<? extends ICodeMining>> provideCodeMinings(ITextViewer viewer,
+				IProgressMonitor monitor) {
+			requests++;
+			try {
+				LineHeaderCodeMining mining = new LineHeaderCodeMining(1, viewer.getDocument(), this) {};
+				mining.setLabel("Synthetic problem annotation");
+				return CompletableFuture.completedFuture(List.of(mining));
+			} catch (BadLocationException e) {
+				throw new AssertionError(e);
+			}
+		}
+
+		@Override
+		public void dispose() {
+			disposals++;
+		}
 	}
 
 	/**
