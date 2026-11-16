@@ -15,6 +15,8 @@ package org.eclipse.debug.tests.launching;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -30,7 +32,9 @@ import org.eclipse.debug.internal.ui.actions.LaunchAsDialog;
 import org.eclipse.debug.tests.TestUtil;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.PlatformUI;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -98,6 +102,50 @@ public class LaunchAsTests {
 		String label = "LaunchAsTests configuration (" + configuration.getType().getName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
 		assertThat(labels(choices)).containsSubsequence(SHORTCUT_LABEL, label);
 		assertEquals("configuration:LaunchAsTests configuration", choice(choices, label).key()); //$NON-NLS-1$
+		assertNotNull(choice(choices, label).configure());
+	}
+
+	@Test
+	public void testShortcutWithoutConfigurationTypesCannotBeConfigured() {
+		// Ctrl+click in the menu launches such a shortcut: "Configure..." must not
+		assertNull(choice(choicesForTarget(ILaunchManager.RUN_MODE), SHORTCUT_LABEL).configure());
+	}
+
+	@Test
+	public void testCtrlEnterConfiguresTheSelectedChoice() {
+		Choice plain = new Choice("Alpha Application", null, "a", () -> { //$NON-NLS-1$ //$NON-NLS-2$
+		});
+		Choice configurable = new Choice("Beta Test", null, "b", () -> { //$NON-NLS-1$ //$NON-NLS-2$
+		}, () -> {
+		});
+		LaunchAsDialog dialog = new LaunchAsDialog(PlatformUI.getWorkbench().getWorkbenchWindows()[0].getShell(),
+				"Run As", "Run", List.of(plain, configurable), plain); //$NON-NLS-1$ //$NON-NLS-2$
+		dialog.setBlockOnOpen(false);
+		dialog.open();
+		try {
+			assertFalse(dialog.getConfigureButton().isEnabled());
+			// Ctrl+Enter on a choice that cannot be configured: no launch, no close
+			Event ignored = ctrlEnter(dialog);
+			assertFalse(ignored.doit);
+			assertNull(dialog.getResult());
+
+			dialog.getViewer().setSelection(new StructuredSelection(configurable), true);
+			assertTrue(dialog.getConfigureButton().isEnabled());
+			ctrlEnter(dialog);
+		} finally {
+			dialog.close();
+		}
+		assertSame(configurable, dialog.getResult());
+		assertEquals(LaunchAsDialog.CONFIGURE_ID, dialog.getReturnCode());
+	}
+
+	private static Event ctrlEnter(LaunchAsDialog dialog) {
+		Event event = new Event();
+		event.detail = SWT.TRAVERSE_RETURN;
+		event.stateMask = SWT.MOD1;
+		event.doit = true;
+		dialog.getFilterText().notifyListeners(SWT.Traverse, event);
+		return event;
 	}
 
 	@Test

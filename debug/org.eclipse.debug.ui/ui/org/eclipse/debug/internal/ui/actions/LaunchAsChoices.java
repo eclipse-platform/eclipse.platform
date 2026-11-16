@@ -28,10 +28,14 @@ import org.eclipse.debug.internal.ui.TerminateToggleValue;
 import org.eclipse.debug.internal.ui.launchConfigurations.LaunchConfigurationManager;
 import org.eclipse.debug.internal.ui.launchConfigurations.LaunchShortcutExtension;
 import org.eclipse.debug.ui.DebugUITools;
+import org.eclipse.debug.ui.ILaunchGroup;
 import org.eclipse.jface.action.LegacyActionTools;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.activities.WorkbenchActivityHelper;
 
@@ -50,9 +54,17 @@ public final class LaunchAsChoices {
 	 * @param image  the icon, or <code>null</code>
 	 * @param key    a key that stays the same for the same choice, to find the
 	 *               last choice again
-	 * @param launch launches the choice
+	 * @param launch    launches the choice
+	 * @param configure opens the launch configuration dialog for the choice, or
+	 *                  <code>null</code> if the choice cannot be configured
 	 */
-	public record Choice(String label, ImageDescriptor image, String key, Runnable launch) {
+	public record Choice(String label, ImageDescriptor image, String key, Runnable launch, Runnable configure) {
+
+		/** A choice that cannot be configured */
+		public Choice(String label, ImageDescriptor image, String key, Runnable launch) {
+			this(label, image, key, launch, null);
+		}
+
 		@Override
 		public String toString() {
 			return label;
@@ -171,7 +183,24 @@ public final class LaunchAsChoices {
 							DebugUITools.removeLaunchToggleTerminate(selection);
 						}
 					}
-				});
+				}, shortcutConfigure(shortcut, mode));
+	}
+
+	/**
+	 * @return opens the launch configuration dialog as Ctrl+click on the shortcut
+	 *         in the "Run As" menu, or <code>null</code> if the shortcut has no
+	 *         configuration types. Then Ctrl+click launches, which "Configure..."
+	 *         must not do.
+	 */
+	private static Runnable shortcutConfigure(LaunchShortcutExtension shortcut, String mode) {
+		if (shortcut.getAssociatedConfigurationTypes().isEmpty()) {
+			return null;
+		}
+		return () -> {
+			Event ctrlClick = new Event();
+			ctrlClick.stateMask = SWT.MOD1;
+			new LaunchShortcutAction(mode, shortcut).runWithEvent(ctrlClick);
+		};
 	}
 
 	private static Choice configurationChoice(ILaunchConfiguration configuration, LaunchShortcutExtension shortcut,
@@ -185,7 +214,11 @@ public final class LaunchAsChoices {
 		}
 		ImageDescriptor image = shortcut != null ? shortcut.getImageDescriptor()
 				: DebugUITools.getDefaultImageDescriptor(configuration);
+		ILaunchGroup group = DebugUITools.getLaunchGroup(configuration, mode);
+		Runnable configure = group == null ? null
+				: () -> DebugUITools.openLaunchConfigurationDialogOnGroup(DebugUIPlugin.getShell(),
+						new StructuredSelection(configuration), group.getIdentifier());
 		return new Choice(label, image, "configuration:" + configuration.getName(), //$NON-NLS-1$
-				() -> DebugUITools.launch(configuration, mode));
+				() -> DebugUITools.launch(configuration, mode), configure);
 	}
 }

@@ -69,9 +69,14 @@ public class LaunchAsHandler extends AbstractHandler implements IExecutableExten
 				SETTINGS_SECTION);
 		LaunchAsDialog dialog = new LaunchAsDialog(shell, title, button, choices,
 				lastChoice(choices, settings.get(mode)));
-		if (dialog.open() == Window.OK && dialog.getResult() != null) {
-			settings.put(mode, dialog.getResult().key());
-			dialog.getResult().launch().run();
+		int code = dialog.open();
+		Choice chosen = dialog.getResult();
+		if (chosen != null && code == Window.OK) {
+			settings.put(mode, chosen.key());
+			chosen.launch().run();
+		} else if (chosen != null && code == LaunchAsDialog.CONFIGURE_ID) {
+			settings.put(mode, chosen.key());
+			chosen.configure().run();
 		}
 		return null;
 	}

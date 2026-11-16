@@ -31,18 +31,24 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 
 /**
  * Shows the launch choices with a filter field. Enter launches the selected
- * choice. Up and Down select another choice, also while the filter field has
- * the focus.
+ * choice. Ctrl+Enter or "Configure..." opens the launch configuration dialog
+ * for it, as Ctrl+click in the "Run As" menu. Up and Down select another
+ * choice, also while the filter field has the focus.
  */
 public final class LaunchAsDialog extends Dialog {
+
+	/** The return code of {@link #open()} after "Configure..." */
+	public static final int CONFIGURE_ID = IDialogConstants.CLIENT_ID + 1;
 
 	private final String title;
 	private final String buttonLabel;
@@ -134,6 +140,24 @@ public final class LaunchAsDialog extends Dialog {
 		});
 		viewer.addSelectionChangedListener(event -> updateOkButton());
 
+		// Ctrl+Enter: configure. Cancel the traversal, so that Enter does not also
+		// press the default button.
+		Listener ctrlEnter = event -> {
+			boolean enter = event.type == SWT.Traverse ? event.detail == SWT.TRAVERSE_RETURN
+					: event.keyCode == SWT.CR || event.keyCode == SWT.KEYPAD_CR;
+			if (enter && (event.stateMask & SWT.MOD1) != 0) {
+				event.doit = false;
+				if (event.type == SWT.Traverse) {
+					event.detail = SWT.TRAVERSE_NONE;
+				}
+				configurePressed();
+			}
+		};
+		for (Control control : new Control[] { filterText, table }) {
+			control.addListener(SWT.Traverse, ctrlEnter);
+			control.addListener(SWT.KeyDown, ctrlEnter);
+		}
+
 		Choice first = initial != null && choices.contains(initial) ? initial : choices.isEmpty() ? null : choices.get(0);
 		if (first != null) {
 			viewer.setSelection(new StructuredSelection(first), true);
@@ -151,6 +175,7 @@ public final class LaunchAsDialog extends Dialog {
 
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
+		createButton(parent, CONFIGURE_ID, ActionMessages.LaunchAsDialog_configure, false);
 		super.createButtonsForButtonBar(parent);
 		getButton(IDialogConstants.OK_ID).setText(buttonLabel);
 		updateOkButton();
@@ -163,8 +188,31 @@ public final class LaunchAsDialog extends Dialog {
 	}
 
 	private void updateOkButton() {
+		Choice choice = selected();
 		if (getButton(IDialogConstants.OK_ID) != null) {
-			getButton(IDialogConstants.OK_ID).setEnabled(selected() != null);
+			getButton(IDialogConstants.OK_ID).setEnabled(choice != null);
+		}
+		if (getButton(CONFIGURE_ID) != null) {
+			getButton(CONFIGURE_ID).setEnabled(choice != null && choice.configure() != null);
+		}
+	}
+
+	@Override
+	protected void buttonPressed(int buttonId) {
+		if (buttonId == CONFIGURE_ID) {
+			configurePressed();
+		} else {
+			super.buttonPressed(buttonId);
+		}
+	}
+
+	/** Closes the dialog with {@link #CONFIGURE_ID}, if the choice can be configured */
+	private void configurePressed() {
+		Choice choice = selected();
+		if (choice != null && choice.configure() != null) {
+			result = choice;
+			setReturnCode(CONFIGURE_ID);
+			close();
 		}
 	}
 
@@ -181,7 +229,7 @@ public final class LaunchAsDialog extends Dialog {
 		}
 	}
 
-	/** @return the selected choice after OK, or null */
+	/** @return the selected choice after OK or "Configure...", or null */
 	public Choice getResult() {
 		return result;
 	}
@@ -189,6 +237,11 @@ public final class LaunchAsDialog extends Dialog {
 	/** For the tests: the filter field */
 	public Text getFilterText() {
 		return filterText;
+	}
+
+	/** For the tests: the "Configure..." button */
+	public Button getConfigureButton() {
+		return getButton(CONFIGURE_ID);
 	}
 
 	/** For the tests: the list */
