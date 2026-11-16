@@ -30,7 +30,6 @@ import org.eclipse.jface.dialogs.DialogSettings;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
 
@@ -61,7 +60,7 @@ public class LaunchAsHandler extends AbstractHandler implements IExecutableExten
 		ILaunchMode launchMode = DebugPlugin.getDefault().getLaunchManager().getLaunchMode(mode);
 		String title = launchMode != null ? LegacyActionTools.removeMnemonics(launchMode.getLaunchAsLabel()) : mode;
 		if (choices.isEmpty()) {
-			MessageDialog.openInformation(shell, title, NLS.bind(ActionMessages.LaunchAsHandler_nothing, title));
+			MessageDialog.openInformation(shell, title, ActionMessages.LaunchAsHandler_nothing);
 			return null;
 		}
 		String button = launchMode != null ? LegacyActionTools.removeMnemonics(launchMode.getLabel()) : mode;
