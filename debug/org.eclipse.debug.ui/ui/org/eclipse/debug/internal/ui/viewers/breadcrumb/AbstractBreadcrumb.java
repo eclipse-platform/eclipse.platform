@@ -19,6 +19,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TreePathBreadcrumbViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -29,7 +30,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
-
 
 /**
  * Breadcrumb base class.  It creates the breadcrumb viewer and manages
@@ -42,7 +42,7 @@ import org.eclipse.swt.widgets.Widget;
  */
 public abstract class AbstractBreadcrumb {
 
-	private BreadcrumbViewer fBreadcrumbViewer;
+	private TreePathBreadcrumbViewer fBreadcrumbViewer;
 
 	private boolean fHasFocus;
 
@@ -67,7 +67,7 @@ public abstract class AbstractBreadcrumb {
 	 * @param parent the parent composite
 	 * @return the viewer
 	 */
-	protected abstract BreadcrumbViewer createViewer(Composite parent);
+	protected abstract TreePathBreadcrumbViewer createViewer(Composite parent);
 
 	/**
 	 * Open the element in a new editor if possible.
@@ -196,11 +196,7 @@ public abstract class AbstractBreadcrumb {
 				return;
 			}
 
-			BreadcrumbItem item= (BreadcrumbItem) fBreadcrumbViewer.doFindItem(element);
-			if (item == null) {
-				return;
-			}
-			item.openDropDownMenu();
+			fBreadcrumbViewer.openDropDownMenu(element);
 		});
 
 		fBreadcrumbViewer.addOpenListener(event -> doOpen(event.getSelection()));
