@@ -58,6 +58,24 @@ public final class UnifiedDiff {
 	}
 
 	/**
+	 * Removes the unified diff display from the given editor without changing its
+	 * document or computing another diff. Clears diff annotations and code minings,
+	 * disposes diff toolbars and listeners, removes diff folds, restores the editor's
+	 * navigation actions, and prevents a pending diff computation from restoring the display.
+	 * Annotations unrelated to the diff are preserved.
+	 * <p>
+	 * Must be called on the editor's UI thread. Has no effect when the editor has no
+	 * unified diff or no live text viewer. A new diff can be opened afterwards.
+	 *
+	 * @param editor the text editor whose unified diff display is removed
+	 * @throws NullPointerException if the editor is <code>null</code>
+	 * @since 3.13
+	 */
+	public static void dispose(ITextEditor editor) {
+		UnifiedDiffManager.dispose(Objects.requireNonNull(editor, "Editor cannot be null")); //$NON-NLS-1$
+	}
+
+	/**
 	 * Identifies a built-in action of a unified diff toolbar, so that its text or
 	 * image can be replaced. Which actions are shown depends on the
 	 * {@link UnifiedDiffMode}; unused constants are simply ignored.
