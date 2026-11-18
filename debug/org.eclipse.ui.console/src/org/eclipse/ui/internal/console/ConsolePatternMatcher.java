@@ -15,6 +15,7 @@
 package org.eclipse.ui.internal.console;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,6 +32,7 @@ import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IPatternMatchListener;
 import org.eclipse.ui.console.PatternMatchEvent;
 import org.eclipse.ui.console.TextConsole;
+import org.eclipse.ui.internal.console.ansi.AnsiConsoleUtils;
 
 public class ConsolePatternMatcher implements IDocumentListener {
 
@@ -62,7 +64,7 @@ public class ConsolePatternMatcher implements IDocumentListener {
 		@Override
 		protected IStatus run(IProgressMonitor monitor) {
 			IDocument doc = fConsole.getDocument();
-			String text = null;
+			StrippedText stripped = null;
 			int prevBaseOffset = -1;
 			if (doc != null && !monitor.isCanceled()) {
 				int endOfSearch = doc.getLength();
@@ -93,12 +95,16 @@ public class ConsolePatternMatcher implements IDocumentListener {
 					if (lengthToSearch > 0) {
 						try {
 							if (prevBaseOffset != baseOffset) {
-								// reuse the text string if possible
-								text = doc.get(baseOffset, lengthToSearch);
+								// reuse the stripped text if possible
+								String rawText = doc.get(baseOffset, lengthToSearch);
+								stripped = StrippedText.of(rawText);
 							}
-							if(text == null) {
+							if (stripped == null) {
 								continue;
 							}
+							String text = stripped.text;
+							int[] cleanToRaw = stripped.cleanToRaw;
+							int cleanLength = text.length();
 							Matcher reg = notifier.pattern.matcher(text);
 							Matcher quick = null;
 							if (notifier.qualifier != null) {
@@ -107,38 +113,44 @@ public class ConsolePatternMatcher implements IDocumentListener {
 							int startOfNextSearch = 0;
 							int endOfLastMatch = -1;
 							int lineOfLastMatch = -1;
-							while ((startOfNextSearch < lengthToSearch) && !monitor.isCanceled()) {
+							while ((startOfNextSearch < cleanLength) && !monitor.isCanceled()) {
 								if (quick != null) {
 									if (quick.find(startOfNextSearch)) {
 										// start searching on the beginning
 										// of the line where the potential
 										// match was found, or after the
 										// last match on the same line
-										int matchLine = doc.getLineOfOffset(baseOffset + quick.start());
+										int matchLine = doc.getLineOfOffset(baseOffset + cleanToRaw(cleanToRaw, quick.start()));
 										if (lineOfLastMatch == matchLine) {
 											startOfNextSearch = endOfLastMatch;
 										} else {
-											startOfNextSearch = doc.getLineOffset(matchLine) - baseOffset;
+											startOfNextSearch = rawToClean(cleanToRaw, cleanLength, doc.getLineOffset(matchLine) - baseOffset);
 										}
 									} else {
-										startOfNextSearch = lengthToSearch;
+										startOfNextSearch = cleanLength;
 									}
 								}
 								if (startOfNextSearch < 0) {
 									startOfNextSearch = 0;
 								}
-								if (startOfNextSearch < lengthToSearch) {
+								if (startOfNextSearch < cleanLength) {
 									if (reg.find(startOfNextSearch)) {
 										endOfLastMatch = reg.end();
-										lineOfLastMatch = doc.getLineOfOffset(baseOffset + endOfLastMatch - 1);
-										int regStart = reg.start();
+										lineOfLastMatch = doc.getLineOfOffset(baseOffset + cleanToRaw(cleanToRaw, endOfLastMatch) - 1);
+
+										int rawStart = baseOffset + cleanToRaw(cleanToRaw, reg.start());
+										// map the raw end to just after the last matched character so
+										// that escapes inside the match are included while escapes
+										// following the match are not
+										int rawEnd = baseOffset + cleanToRaw(cleanToRaw, endOfLastMatch - 1) + 1;
+
 										IPatternMatchListener listener = notifier.listener;
 										if (listener != null && !monitor.isCanceled()) {
-											listener.matchFound(new PatternMatchEvent(fConsole, baseOffset + regStart, endOfLastMatch - regStart));
+											listener.matchFound(new PatternMatchEvent(fConsole, rawStart, rawEnd - rawStart));
 										}
 										startOfNextSearch = endOfLastMatch;
 									} else {
-										startOfNextSearch = lengthToSearch;
+										startOfNextSearch = cleanLength;
 									}
 								}
 							}
@@ -148,7 +160,7 @@ public class ConsolePatternMatcher implements IDocumentListener {
 							// line that
 							// was last searched
 							if (lastLineToSearch == lineOfLastMatch) {
-								notifier.end = baseOffset + endOfLastMatch;
+								notifier.end = baseOffset + cleanToRaw(cleanToRaw, endOfLastMatch);
 							} else {
 								notifier.end = offsetOfLastLineToSearch;
 							}
@@ -177,6 +189,59 @@ public class ConsolePatternMatcher implements IDocumentListener {
 		}
 
 
+	}
+
+	private static int cleanToRaw(int[] cleanToRaw, int cleanIndex) {
+		return cleanToRaw == null ? cleanIndex : cleanToRaw[cleanIndex];
+	}
+
+	private static int rawToClean(int[] cleanToRaw, int cleanLength, int rawOffset) {
+		if (cleanToRaw == null) {
+			return rawOffset;
+		}
+		if (rawOffset <= 0) {
+			return 0;
+		}
+		int index = Arrays.binarySearch(cleanToRaw, 0, cleanLength + 1, rawOffset);
+		return index >= 0 ? index : Math.max(0, -index - 2);
+	}
+
+	private static final class StrippedText {
+		final String text;
+		final int[] cleanToRaw;
+
+		private StrippedText(String text, int[] cleanToRaw) {
+			this.text = text;
+			this.cleanToRaw = cleanToRaw;
+		}
+
+		private static StrippedText of(String raw) {
+			Matcher matcher = AnsiConsoleUtils.ESCAPE_SEQUENCE_REGEX_TXT.matcher(raw);
+			if (!matcher.find()) {
+				return new StrippedText(raw, null);
+			}
+			StringBuilder text = new StringBuilder(raw.length());
+			int[] cleanToRaw = new int[raw.length() + 1];
+			int rawIndex = 0;
+			int cleanIndex = 0;
+			do {
+				cleanIndex = append(text, raw, rawIndex, matcher.start(), cleanToRaw, cleanIndex);
+				rawIndex = matcher.end();
+			} while (matcher.find());
+			cleanIndex = append(text, raw, rawIndex, raw.length(), cleanToRaw, cleanIndex);
+			cleanToRaw[cleanIndex] = raw.length();
+			return new StrippedText(text.toString(), cleanToRaw);
+		}
+
+		private static int append(StringBuilder text, String raw, int from, int to, int[] cleanToRaw, int cleanIndex) {
+			int cleanPos = cleanIndex;
+			for (int rawPos = from; rawPos < to; rawPos++) {
+				text.append(raw.charAt(rawPos));
+				cleanToRaw[cleanPos] = rawPos;
+				cleanPos++;
+			}
+			return cleanPos;
+		}
 	}
 
 	private static class CompiledPatternMatchListener {
