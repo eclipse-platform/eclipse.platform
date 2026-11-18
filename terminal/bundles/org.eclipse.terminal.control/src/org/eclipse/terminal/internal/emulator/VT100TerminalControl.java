@@ -50,6 +50,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.SocketException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -86,6 +87,7 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -114,6 +116,7 @@ import org.eclipse.terminal.internal.textcanvas.PollingTextCanvasModel;
 import org.eclipse.terminal.internal.textcanvas.TextCanvas;
 import org.eclipse.terminal.internal.textcanvas.TextLineRenderer;
 import org.eclipse.terminal.model.ITerminalTextData;
+import org.eclipse.terminal.model.ITerminalTextDataReadOnly;
 import org.eclipse.terminal.model.ITerminalTextDataSnapshot;
 import org.eclipse.terminal.model.TerminalColor;
 import org.eclipse.terminal.model.TerminalTextDataFactory;
@@ -165,7 +168,10 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 
 	private final EditActionAccelerators editActionAccelerators = new EditActionAccelerators();
 
-	private boolean fApplicationCursorKeys;
+	// set by the reader job, read by the display thread on a key press
+	private volatile boolean fApplicationCursorKeys;
+	// what a program that asked for the mouse is told of it
+	private final MouseReporter fMouse = new MouseReporter();
 
 	/**
 	 * Listens to changes in the preferences
@@ -559,14 +565,16 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 
 	protected void sendString(String string) {
 		Logger.log(string);
-		try {
-			// Send the string after converting it to an array of bytes using the
-			// platform's default character encoding.
-			//
-			// TODO: Find a way to force this to use the ISO Latin-1 encoding.
-			// TODO: handle Encoding Errors in a better way
+		// Send the string after converting it to an array of bytes using the
+		// platform's default character encoding.
+		//
+		// TODO: handle Encoding Errors in a better way
+		sendBytes(string.getBytes(fCharset));
+	}
 
-			getOutputStream().write(string.getBytes(fCharset));
+	private void sendBytes(byte[] bytes) {
+		try {
+			getOutputStream().write(bytes);
 			getOutputStream().flush();
 		} catch (SocketException socketException) {
 			displayTextInTerminal(socketException.getMessage());
@@ -875,6 +883,7 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 				new TextLineRenderer(() -> fCtlText, fPollingTextCanvasModel));
 
 		fCtlText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		fCtlText.setMouseHandler(fMouse);
 		fCtlText.addResizeHandler((lines, columns) -> fTerminalText.setDimensions(lines, columns));
 		fCtlText.addMouseListener(new MouseAdapter() {
 			@Override
@@ -1522,6 +1531,193 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 	@Override
 	public void enableApplicationCursorKeys(boolean enable) {
 		fApplicationCursorKeys = enable;
+	}
+
+	@Override
+	public void enableMouseReporting(int mode) {
+		fMouse.setMode(mode);
+	}
+
+	@Override
+	public void enableSgrMouseEncoding(boolean enable) {
+		fMouse.fSgr = enable;
+	}
+
+	/**
+	 * One mode a program asked for, and what it has been told in it. A new mode is a
+	 * new session: nothing told to the program that asked before carries over.
+	 */
+	private static final class MouseSession {
+		/** 1000 (buttons), 1002 (and drags), 1003 (and every move), 0 for none */
+		final int mode;
+		/** the cell the pointer was last reported in */
+		int line = -1, column = -1;
+		/** lines the wheel moved that make no whole notch yet, up positive */
+		int wheelLines;
+
+		MouseSession(int mode) {
+			this.mode = mode;
+		}
+	}
+
+	/**
+	 * Presses, releases, moves and the wheel, told to a program that asked for them
+	 * the way a terminal has always told it, so that a program drawing its own screen
+	 * can be clicked on and scrolled. Whether a gesture is the program's at all is the
+	 * canvas's to decide; this only tells it.
+	 */
+	private class MouseReporter implements TextCanvas.IMouseHandler {
+		// set by the reader job, read by the display thread, which alone changes the session
+		private volatile MouseSession fSession = new MouseSession(0);
+		volatile boolean fSgr;
+
+		void setMode(int mode) {
+			fSession = new MouseSession(mode);
+			// the last click told belongs to the program that asked then
+			if (fCtlText != null) {
+				fDisplay.asyncExec(() -> {
+					if (!fCtlText.isDisposed()) {
+						fCtlText.forgetProgramClick();
+					}
+				});
+			}
+		}
+
+		@Override
+		public boolean button(int button, int modifiers, Point cell, boolean pressed) {
+			MouseSession session = fSession;
+			if (session.mode == 0 || button < 1 || button > 3 || !isConnected()) {
+				return false;
+			}
+			Point at = onScreen(cell);
+			if (at == null) {
+				if (pressed) {
+					return false; // over the history, which the program knows nothing of
+				}
+				// a release is reported wherever it happens: its press was
+				at = new Point(Math.max(1, Math.min(cell.x + 1, fPollingTextCanvasModel.getTerminalText().getWidth())), 1);
+			}
+			send(button - 1 + modifiers, at, pressed);
+			// the program now knows the pointer is here: a drag after this press, or
+			// after one that ended elsewhere, is reported from here on
+			session.line = at.y;
+			session.column = at.x;
+			if (pressed) {
+				// the press takes the terminal's selection away (the canvas clears it once
+				// this returns): the view's copy must know, after that
+				fDisplay.asyncExec(fTerminalListener::setTerminalSelectionChanged);
+			}
+			return true;
+		}
+
+		@Override
+		public boolean moved(int button, int modifiers, Point cell) {
+			MouseSession session = fSession;
+			// 1002 is only interested while a button is held, 1003 in every move.
+			if (session.mode < 1002 || (session.mode == 1002 && button == 0) || !isConnected()) {
+				return false;
+			}
+			Point at = onScreen(cell);
+			if (at == null) {
+				return false;
+			}
+			if (at.y == session.line && at.x == session.column) {
+				return true; // still the same cell, and a cell is all the program is told
+			}
+			session.line = at.y;
+			session.column = at.x;
+			send((button == 0 ? 3 : button - 1) + 32 + modifiers, at, true);
+			return true;
+		}
+
+		/**
+		 * A wheel notch is reported as a press of button 64 or 65, never released.
+		 * SWT counts lines; a notch is three of them, however the events split them,
+		 * and what is left over counts toward the next one in the same direction.
+		 */
+		@Override
+		public boolean wheel(int lines, int modifiers, Point cell) {
+			MouseSession session = fSession;
+			if (session.mode == 0 || lines == 0 || !isConnected()) {
+				return false;
+			}
+			Point at = onScreen(cell);
+			if (at == null) {
+				return false; // over the history: the view scrolls
+			}
+			if (Integer.signum(lines) != Integer.signum(session.wheelLines)) {
+				session.wheelLines = 0;
+			}
+			session.wheelLines += lines;
+			int notches = Math.abs(session.wheelLines) / 3;
+			session.wheelLines %= 3;
+			for (int i = 0; i < notches; i++) {
+				send((lines > 0 ? 64 : 65) + modifiers, at, true);
+			}
+			return true; // the program's, told once the lines make a notch
+		}
+
+		private void send(int button, Point at, boolean pressed) {
+			sendBytes(mouseReportBytes(mouseReport(fSgr, button, at.y, at.x, pressed)));
+		}
+	}
+
+	/**
+	 * @return where a cell of the text is on the screen a program sees, as column and
+	 *         line counted from one; null for a line of the history above it, which the
+	 *         user scrolled back to and the program knows nothing of. Below the last line
+	 *         (the strip under it) is the last line.
+	 */
+	private Point onScreen(Point cell) {
+		// the height of what the canvas shows, which the cell is from, not of the text the
+		// reader is writing ahead of it
+		ITerminalTextDataReadOnly shown = fPollingTextCanvasModel.getTerminalText();
+		return onScreen(cell, shown.getHeight(), fTerminalText.getLines(), shown.getWidth());
+	}
+
+	/**
+	 * Where a cell of the text is on the screen a program sees, as in {@link #onScreen(Point)}.
+	 *
+	 * @param height      the lines of the text, history included
+	 * @param screenLines the lines of the screen, the last of the text
+	 * @param width       the columns of the screen
+	 */
+	public static Point onScreen(Point cell, int height, int screenLines, int width) {
+		int line = cell.y - (height - screenLines) + 1;
+		if (line < 1) {
+			return null;
+		}
+		return new Point(Math.max(1, Math.min(cell.x + 1, width)), Math.min(line, screenLines));
+	}
+
+	public static String mouseReport(boolean sgr, int button, int line, int column, boolean pressed) {
+		if (sgr) {
+			return "\u001b[<" + button + ';' + column + ';' + line + (pressed ? 'M' : 'm'); //$NON-NLS-1$
+		}
+		// The older spelling has no way to say which button came up, so a release is
+		// reported as button 3, meaning "some button", with the keys held as in a press.
+		return "\u001b[M" + (char) (32 + (pressed ? button : button | 3)) + legacyPosition(column) //$NON-NLS-1$
+				+ legacyPosition(line);
+	}
+
+	/**
+	 * A column or line in one byte, which has no room past 223: as xterm, anything
+	 * further is sent as a zero byte, so that a drag past it still ends in a release.
+	 */
+	private static char legacyPosition(int value) {
+		return value > 223 ? 0 : (char) (32 + value);
+	}
+
+	/**
+	 * A report is bytes, not text: the older spelling puts a column or line past 95
+	 * in one byte of 128 or more, which the terminal's encoding (UTF-8, say) would
+	 * turn into two. The SGR spelling is ASCII, the same either way.
+	 *
+	 * @param report a report as {@link #mouseReport(boolean, int, int, int, boolean)} spells it
+	 * @return the bytes the program is sent
+	 */
+	public static byte[] mouseReportBytes(String report) {
+		return report.getBytes(StandardCharsets.ISO_8859_1);
 	}
 
 	@Override

@@ -62,4 +62,22 @@ public interface ITerminalControlForText {
 	default void showCursor(boolean show) {
 	}
 
+	/**
+	 * A program that asks for mouse events wants them instead of the terminal's own
+	 * handling of the mouse, scrolling included.
+	 *
+	 * @param mode 1000 (buttons), 1002 (buttons and drags), 1003 (every move), or 0 for none
+	 */
+	default void enableMouseReporting(int mode) {
+	}
+
+	/**
+	 * SGR encoding (CSI ?1006) reports coordinates as decimal numbers instead of
+	 * single bytes, which is what lets them go past column 223.
+	 *
+	 * @param enable whether to use it
+	 */
+	default void enableSgrMouseEncoding(boolean enable) {
+	}
+
 }
