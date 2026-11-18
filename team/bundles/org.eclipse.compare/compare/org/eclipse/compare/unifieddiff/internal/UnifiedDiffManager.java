@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.eclipse.compare.ICompareFilter;
@@ -91,6 +92,7 @@ import org.eclipse.jface.text.source.IAnnotationModelListener;
 import org.eclipse.jface.text.source.IAnnotationModelListenerExtension;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.ISourceViewerExtension5;
+import org.eclipse.jface.text.source.ISourceViewerExtension6;
 import org.eclipse.jface.text.source.inlined.AbstractInlinedAnnotation;
 import org.eclipse.jface.text.source.projection.ProjectionAnnotation;
 import org.eclipse.jface.text.source.projection.ProjectionAnnotationModel;
@@ -137,6 +139,9 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 
 public class UnifiedDiffManager {
+
+	private static final Predicate<ICodeMining> UNIFIED_DIFF_MINING_FILTER = mining -> mining
+			.getProvider() instanceof UnifiedDiffCodeMiningProvider;
 
 	private static final String CURRENT_SELECTED_UNIFIED_DIFF_ANNO_KEY = "CURRENT_SELECTED_UNIFIED_DIFF_ANNO_KEY"; //$NON-NLS-1$
 	private static final String UNDO_LISTENER_KEY = "UNIFIED_DIFF_UNDO_LISTENER_KEY"; //$NON-NLS-1$
@@ -527,7 +532,10 @@ public class UnifiedDiffManager {
 		setToolbarActionPresentations(viewer, toolbarActionPresentations);
 		addPaintListener(viewer, model, mode);
 		addMouseMoveListener(viewer, model);
-		if (viewer instanceof ISourceViewerExtension5 ext) {
+		if (!unifiedDiffs.isEmpty() && viewer instanceof ISourceViewerExtension6 ext) {
+			// Adding the filter indirectly updates code minings; no separate updateCodeMinings() call is needed.
+			ext.addCodeMiningFilter(UNIFIED_DIFF_MINING_FILTER);
+		} else if (viewer instanceof ISourceViewerExtension5 ext) {
 			ext.updateCodeMinings();
 		}
 		drawToolBarForAllDiffs(viewer, model, additionalActions, mode, toolbarActionPresentations);
@@ -1548,9 +1556,10 @@ public class UnifiedDiffManager {
 			}
 		}
 		diffs1.clear();
-		// open unified diff a second time for the same viewer; the old code minings
-		// need to be removed before adding new ones
-		if (tv instanceof ISourceViewerExtension5 ext) {
+		if (tv instanceof ISourceViewerExtension6 ext) {
+			// Removing the filter indirectly updates code minings; no separate updateCodeMinings() call is needed.
+			ext.removeCodeMiningFilter(UNIFIED_DIFF_MINING_FILTER);
+		} else if (tv instanceof ISourceViewerExtension5 ext) {
 			ext.updateCodeMinings();
 		}
 	}
@@ -2398,6 +2407,11 @@ public class UnifiedDiffManager {
 
 		diffsByViewer.remove(tv);
 		fileByViewer.remove(tv);
+		if (tw != null && !tw.isDisposed() && tv.getTextWidget() == tw
+				&& tv instanceof ISourceViewerExtension6 ext) {
+			// Removing the filter indirectly updates code minings; no separate updateCodeMinings() call is needed.
+			ext.removeCodeMiningFilter(UNIFIED_DIFF_MINING_FILTER);
+		}
 
 		if (tw == null || tw.isDisposed()) {
 			// SWT removes listeners automatically when the widget is disposed

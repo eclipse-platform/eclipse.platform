@@ -70,7 +70,7 @@ Export-Package: org.eclipse.compare;
 Require-Bundle: org.eclipse.ui;bundle-version="[3.206.0,4.0.0)",
  org.eclipse.swt;bundle-version="[3.136.0,4.0.0)",
  org.eclipse.core.resources;bundle-version="[3.4.0,4.0.0)",
- org.eclipse.jface.text;bundle-version="[3.8.0,4.0.0)",
+ org.eclipse.jface.text;bundle-version="[3.32.0,4.0.0)",
  org.eclipse.ui.ide;bundle-version="[3.3.0,4.0.0)",
  org.eclipse.ui.views;bundle-version="[3.2.0,4.0.0)",
  org.eclipse.ui.workbench.texteditor;bundle-version="[3.5.0,4.0.0)",
