@@ -17,6 +17,7 @@ import java.net.URI;
 import java.text.DateFormat;
 import java.util.Date;
 
+import org.eclipse.compare.IModificationDate;
 import org.eclipse.compare.ITypedElement;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.Assert;
@@ -30,7 +31,7 @@ import org.eclipse.ui.IEditorInput;
  * An {@link ITypedElement} wrapper for {@link IFileRevision} for use with the
  * Compare framework.
  */
-public class FileRevisionTypedElement extends StorageTypedElement {
+public class FileRevisionTypedElement extends StorageTypedElement implements IModificationDate {
 
 	private final IFileRevision fileRevision;
 	private String author;
@@ -81,6 +82,11 @@ public class FileRevisionTypedElement extends StorageTypedElement {
 		long date = fileRevision.getTimestamp();
 		Date dateFromLong = new Date(date);
 		return DateFormat.getDateTimeInstance().format(dateFromLong);
+	}
+
+	@Override
+	public long getModificationDate() {
+		return fileRevision.getTimestamp();
 	}
 
 	/**
