@@ -183,15 +183,21 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 		ILaunchConfiguration configuration = process.getLaunch().getLaunchConfiguration();
 		String file = null;
 		boolean append = false;
-		if (configuration != null) {
+		// an input file set on the launch overrides the one of its configuration
+		fStdInFile = process.getLaunch().getAttribute(IDebugUIConstants.ATTR_CAPTURE_STDIN_FILE);
+		if (configuration != null || fStdInFile != null) {
 			try {
-				file = configuration.getAttribute(IDebugUIConstants.ATTR_CAPTURE_IN_FILE, (String) null);
-				fStdInFile = configuration.getAttribute(IDebugUIConstants.ATTR_CAPTURE_STDIN_FILE, (String) null);
+				if (configuration != null) {
+					file = configuration.getAttribute(IDebugUIConstants.ATTR_CAPTURE_IN_FILE, (String) null);
+					append = configuration.getAttribute(IDebugUIConstants.ATTR_APPEND_TO_FILE, false);
+					if (fStdInFile == null) {
+						fStdInFile = configuration.getAttribute(IDebugUIConstants.ATTR_CAPTURE_STDIN_FILE, (String) null);
+					}
+				}
 				if (file != null || fStdInFile != null) {
 					IStringVariableManager stringVariableManager = VariablesPlugin.getDefault().getStringVariableManager();
 					if (file != null) {
 						file = stringVariableManager.performStringSubstitution(file);
-						append = configuration.getAttribute(IDebugUIConstants.ATTR_APPEND_TO_FILE, false);
 					}
 
 					if (fStdInFile != null) {
@@ -248,7 +254,7 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 		}
 		fFileOutputStream = outputStream;
 		InputStream inputStream = null;
-		if (fStdInFile != null && configuration != null) {
+		if (fStdInFile != null) {
 			String message = null;
 			try {
 				inputStream = new FileInputStream(new File(fStdInFile));
