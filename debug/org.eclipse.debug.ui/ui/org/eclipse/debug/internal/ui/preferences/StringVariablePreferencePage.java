@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2018 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -15,7 +15,6 @@ package org.eclipse.debug.internal.ui.preferences;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -75,6 +74,7 @@ public class StringVariablePreferencePage extends PreferencePage implements IWor
 	protected Button envAddButton;
 	protected Button envEditButton;
 	protected Button envRemoveButton;
+	private Button envPreviewButton;
 
 	protected SimpleVariableContentProvider variableContentProvider= new SimpleVariableContentProvider();
 
@@ -247,6 +247,22 @@ public class StringVariablePreferencePage extends PreferencePage implements IWor
 			}
 		});
 		envRemoveButton.setEnabled(false);
+		envPreviewButton = SWTFactory.createPushButton(buttonComposite, DebugPreferencesMessages.SimpleVariablePreferencePage_Preview, null);
+		envPreviewButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent event) {
+				handlePreviewButtonPressed();
+			}
+		});
+		envPreviewButton.setEnabled(false);
+	}
+
+	private void handlePreviewButtonPressed() {
+		IStructuredSelection selection = variableTable.getStructuredSelection();
+		if (selection.size() != 1) {
+			return;
+		}
+		new StringVariablePreviewDialog(getShell(), (VariableWrapper) selection.getFirstElement()).open();
 	}
 
 	private void handleAddButtonPressed() {
@@ -290,9 +306,7 @@ public class StringVariablePreferencePage extends PreferencePage implements IWor
 			return false;
 		}
 		List<VariableWrapper> editedVariables = variableContentProvider.getWorkingSetVariables();
-		Iterator<VariableWrapper> iter = editedVariables.iterator();
-		while (iter.hasNext()) {
-			VariableWrapper currentVariable = iter.next();
+		for (VariableWrapper currentVariable : editedVariables) {
 			if (!currentVariable.isRemoved()) {
 				String currentName = currentVariable.getName();
 				if (currentName.equals(name)) {
@@ -360,9 +374,7 @@ public class StringVariablePreferencePage extends PreferencePage implements IWor
 		IStructuredSelection selection = variableTable.getStructuredSelection();
 		List<VariableWrapper> variablesToRemove = selection.toList();
 		StringBuilder contributedVariablesToRemove= new StringBuilder();
-		Iterator<VariableWrapper> iter = variablesToRemove.iterator();
-		while (iter.hasNext()) {
-			VariableWrapper variable = iter.next();
+		for (VariableWrapper variable : variablesToRemove) {
 			if (variable.isContributed()) {
 				contributedVariablesToRemove.append('\t').append(variable.getName()).append('\n');
 			}
@@ -387,6 +399,7 @@ public class StringVariablePreferencePage extends PreferencePage implements IWor
 	protected void handleTableSelectionChanged(SelectionChangedEvent event) {
 		IStructuredSelection selection = (event.getStructuredSelection());
 		VariableWrapper variable= (VariableWrapper) selection.getFirstElement();
+		envPreviewButton.setEnabled(selection.size() == 1);
 		if (variable == null || variable.isReadOnly()) {
 			envEditButton.setEnabled(false);
 			envRemoveButton.setEnabled(false);
@@ -503,11 +516,9 @@ public class StringVariablePreferencePage extends PreferencePage implements IWor
 		 */
 		public void saveChanges() {
 			IStringVariableManager manager = getVariableManager();
-			Iterator<VariableWrapper> iterator = fWorkingSet.iterator();
 			List<IValueVariable> remove = new ArrayList<>();
 			List<IValueVariable> add = new ArrayList<>();
-			while (iterator.hasNext()) {
-				VariableWrapper variable = iterator.next();
+			for (VariableWrapper variable : fWorkingSet) {
 				if (!variable.isReadOnly()) {
 					IValueVariable underlyingVariable = variable.getUnderlyingVariable();
 					if (variable.isRemoved()) {
