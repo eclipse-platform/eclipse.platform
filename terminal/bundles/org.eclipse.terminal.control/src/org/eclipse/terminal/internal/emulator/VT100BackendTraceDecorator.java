@@ -199,6 +199,39 @@ public class VT100BackendTraceDecorator implements IVT100EmulatorBackend {
 	}
 
 	@Override
+	public void setAutoWrap(boolean enable) {
+		fWriter.println("setAutoWrap(" + enable + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+		fBackend.setAutoWrap(enable);
+	}
+
+	@Override
+	public int getScrollRegionTop() {
+		return fBackend.getScrollRegionTop();
+	}
+
+	@Override
+	public int getScrollRegionBottom() {
+		return fBackend.getScrollRegionBottom();
+	}
+
+	@Override
+	public boolean isWrapPending() {
+		return fBackend.isWrapPending();
+	}
+
+	@Override
+	public void setWrapPending(boolean pending) {
+		fWriter.println("setWrapPending(" + pending + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+		fBackend.setWrapPending(pending);
+	}
+
+	@Override
+	public void fillScreen(char c) {
+		fWriter.println("fillScreen(" + c + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+		fBackend.fillScreen(c);
+	}
+
+	@Override
 	public void setInsertMode(boolean enable) {
 		fWriter.println("setInsertMode(" + enable + ")"); //$NON-NLS-1$ //$NON-NLS-2$
 		fBackend.setInsertMode(enable);
