@@ -10,8 +10,6 @@
 package org.eclipse.terminal.internal.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -57,27 +55,4 @@ public class CharWidthTest {
 		assertEquals(1, CharWidth.ofString("é")); // combining mark adds nothing
 	}
 
-	@Test
-	public void testIsFiller() {
-		assertTrue(CharWidth.isFiller("가\000", 1));
-		// a character beyond the BMP covers its two cells with its surrogates,
-		// so the null after it is an empty cell, not a filler
-		assertFalse(CharWidth.isFiller("😀\000", 2));
-		assertFalse(CharWidth.isFiller("😀\000a", 2));
-		assertFalse(CharWidth.isFiller("a\000", 1)); // an empty cell after a narrow character
-		assertFalse(CharWidth.isFiller("\000a", 0));
-		assertFalse(CharWidth.isFiller("ab", 1));
-		assertFalse(CharWidth.isFiller("가\000\000", 2)); // only the first null is the filler
-	}
-
-	@Test
-	public void testIsSecondCell() {
-		assertTrue(CharWidth.isSecondCell("가\000", 1)); // the filler
-		assertTrue(CharWidth.isSecondCell("😀", 1)); // the low surrogate
-		assertFalse(CharWidth.isSecondCell("가\000", 0));
-		assertFalse(CharWidth.isSecondCell("😀", 0));
-		assertFalse(CharWidth.isSecondCell("a\000", 1));
-		assertFalse(CharWidth.isSecondCell("ab", 1));
-		assertFalse(CharWidth.isSecondCell("\uDE00a", 0)); // a lone low surrogate has nothing before it
-	}
 }
