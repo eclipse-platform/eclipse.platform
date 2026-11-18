@@ -102,10 +102,12 @@ abstract public class AbstractTextCanvasModel implements ITextCanvasModel {
 	}
 
 	protected void updateSnapshot() {
-		if (!fInUpdate && fSnapshot.isOutOfDate()) {
+		if (!fInUpdate && isOutOfDate()) {
 			fInUpdate = true;
 			try {
-				fSnapshot.updateSnapshot(false);
+				if (!takeSnapshot()) {
+					return;
+				}
 				if (fSnapshot.hasTerminalChanged()) {
 					fireTerminalDataChanged();
 				}
@@ -128,6 +130,21 @@ abstract public class AbstractTextCanvasModel implements ITextCanvasModel {
 				fInUpdate = false;
 			}
 		}
+	}
+
+	/** @return whether the snapshot the view paints is behind the terminal text */
+	protected boolean isOutOfDate() {
+		return fSnapshot.isOutOfDate();
+	}
+
+	/**
+	 * Copies the terminal text into the snapshot the view paints.
+	 *
+	 * @return whether it was copied
+	 */
+	protected boolean takeSnapshot() {
+		fSnapshot.updateSnapshot(false);
+		return true;
 	}
 
 	/**

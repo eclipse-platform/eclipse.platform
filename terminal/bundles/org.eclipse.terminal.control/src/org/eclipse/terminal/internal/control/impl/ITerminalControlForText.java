@@ -55,6 +55,15 @@ public interface ITerminalControlForText {
 	}
 
 	/**
+	 * Says a program is drawing a screen and has not finished (DEC mode 2026), so
+	 * that the view does not show it half drawn.
+	 *
+	 * @param redrawing whether a screen is being drawn
+	 */
+	default void enableSynchronizedOutput(boolean redrawing) {
+	}
+
+	/**
 	 * Shows or hides the cursor at the program's request (DEC mode 25).
 	 *
 	 * @param show whether the cursor is to be drawn
