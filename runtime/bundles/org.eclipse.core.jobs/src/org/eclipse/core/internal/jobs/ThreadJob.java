@@ -208,7 +208,7 @@ class ThreadJob extends Job {
 		boolean interruptedDuringWaitForRun;
 		try {
 			// just return if lock listener decided to grant immediate access
-			if (manager.getLockManager().aboutToWait(blocker)) {
+			if (manager.getLockManager().aboutToWait(blocker) || manager.getLockManager().isUI()) {
 				return threadJob;
 			}
 			result = waitForRun(threadJob, monitor, blockingJob);
