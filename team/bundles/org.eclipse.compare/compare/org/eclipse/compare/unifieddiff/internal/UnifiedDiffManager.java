@@ -1447,18 +1447,22 @@ public class UnifiedDiffManager {
 			if (!isReadOnly(diffs)) {
 				var acceptAll = new AcceptAllRunnable(tv, model);
 				addToolbarAction(tm, presentations.text(ToolbarAction.ACCEPT_ALL, acceptAll.getLabel()),
-						presentations.image(ToolbarAction.ACCEPT_ALL, AcceptAllRunnable.getImageDescriptor()), acceptAll);
+						presentations.image(ToolbarAction.ACCEPT_ALL, AcceptAllRunnable.getImageDescriptor()),
+						ACCEPT_ALL_DIFFS_COMMAND_ID, acceptAll);
 			}
 			var hideAll = new HideAllDiffsRunnable(tv, model);
 			addToolbarAction(tm, presentations.text(ToolbarAction.HIDE_ALL, hideAll.getLabel()),
-					presentations.image(ToolbarAction.HIDE_ALL, hideAll.getImageDescriptor()), hideAll);
+					presentations.image(ToolbarAction.HIDE_ALL, hideAll.getImageDescriptor()),
+					HideAllDiffsRunnable.COMMAND_ID, hideAll);
 		} else if (UnifiedDiffMode.REVERT_MODE.equals(mode)) {
 			var revertAll = new AcceptAllRunnable(tv, model, ToolbarAction.REVERT_ALL);
 			addToolbarAction(tm, presentations.text(ToolbarAction.REVERT_ALL, CompareMessages.UnifiedDiff_revert),
-					presentations.image(ToolbarAction.REVERT_ALL, AcceptAllRunnable.getUndoImageDescriptor()), revertAll);
+					presentations.image(ToolbarAction.REVERT_ALL, AcceptAllRunnable.getUndoImageDescriptor()),
+					ACCEPT_ALL_DIFFS_COMMAND_ID, revertAll);
 			var hideAll = new HideAllDiffsRunnable(tv, model);
 			addToolbarAction(tm, presentations.text(ToolbarAction.HIDE_ALL, hideAll.getLabel()),
-					presentations.image(ToolbarAction.HIDE_ALL, hideAll.getImageDescriptor()), hideAll);
+					presentations.image(ToolbarAction.HIDE_ALL, hideAll.getImageDescriptor()),
+					HideAllDiffsRunnable.COMMAND_ID, hideAll);
 		} else {
 			var keepAll = new KeepAllRunnable(tv, model);
 			addToolbarAction(tm, presentations.text(ToolbarAction.KEEP_ALL, keepAll.getLabel()),
@@ -1470,10 +1474,12 @@ public class UnifiedDiffManager {
 
 		var previous = new PreviousRunnable(tv, model, tm);
 		addToolbarAction(tm, presentations.text(ToolbarAction.PREVIOUS, previous.getLabel()),
-				presentations.image(ToolbarAction.PREVIOUS, previous.getImageDescriptor()), previous);
+				presentations.image(ToolbarAction.PREVIOUS, previous.getImageDescriptor()),
+				ActionFactory.PREVIOUS.getCommandId(), previous);
 		var next = new NextRunnable(tv, model, tm);
 		addToolbarAction(tm, presentations.text(ToolbarAction.NEXT, next.getLabel()),
-				presentations.image(ToolbarAction.NEXT, next.getImageDescriptor()), next);
+				presentations.image(ToolbarAction.NEXT, next.getImageDescriptor()),
+				ActionFactory.NEXT.getCommandId(), next);
 		if (additionalActions != null) {
 			for (var additionalAction : additionalActions) {
 				addToolbarAction(tm, additionalAction);
@@ -1778,18 +1784,18 @@ public class UnifiedDiffManager {
 			if (!isReadOnly(diffs)) {
 				addToolbarAction(tm, presentations.text(ToolbarAction.ACCEPT, CompareMessages.UnifiedDiff_accept),
 						presentations.image(ToolbarAction.ACCEPT, AcceptAllRunnable.getImageDescriptor()),
-						() -> applyDiffRightStr(tv, model));
+						ACCEPT_CURRENT_DIFF_COMMAND_ID, () -> applyDiffRightStr(tv, model));
 			}
 			addToolbarAction(tm, presentations.text(ToolbarAction.HIDE, CompareMessages.UnifiedDiff_hideDiff),
 					presentations.image(ToolbarAction.HIDE, HideAllDiffsRunnable.getHideDiffImageDescriptor()),
-					() -> dismissCurrentDiff(tv, model));
+					HIDE_CURRENT_DIFF_COMMAND_ID, () -> dismissCurrentDiff(tv, model));
 		} else if (isRevert(diffs)) {
 			addToolbarAction(tm, presentations.text(ToolbarAction.REVERT, CompareMessages.UnifiedDiff_revert),
 					presentations.image(ToolbarAction.REVERT, AcceptAllRunnable.getUndoImageDescriptor()),
-					() -> applyDiffRightStr(tv, model));
+					ACCEPT_CURRENT_DIFF_COMMAND_ID, () -> applyDiffRightStr(tv, model));
 			addToolbarAction(tm, presentations.text(ToolbarAction.HIDE, CompareMessages.UnifiedDiff_hideDiff),
 					presentations.image(ToolbarAction.HIDE, HideAllDiffsRunnable.getHideDiffImageDescriptor()),
-					() -> dismissCurrentDiff(tv, model));
+					HIDE_CURRENT_DIFF_COMMAND_ID, () -> dismissCurrentDiff(tv, model));
 		} else {
 			addToolbarAction(tm, presentations.text(ToolbarAction.KEEP, CompareMessages.UnifiedDiff_keep),
 					presentations.image(ToolbarAction.KEEP, null), () -> dismissCurrentDiff(tv, model));

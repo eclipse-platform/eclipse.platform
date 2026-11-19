@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -53,6 +54,7 @@ import org.eclipse.compare.unifieddiff.internal.KeepAllRunnable;
 import org.eclipse.compare.unifieddiff.internal.UndoAllRunnable;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffCodeMiningProvider.UnifiedDiffLineHeaderCodeMining;
 import org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager;
+import org.eclipse.core.commands.ParameterizedCommand;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourceAttributes;
@@ -62,9 +64,14 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.eclipse.jface.action.ActionContributionItem;
+import org.eclipse.jface.bindings.Binding;
+import org.eclipse.jface.bindings.keys.KeyBinding;
+import org.eclipse.jface.bindings.keys.KeySequence;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
@@ -72,10 +79,13 @@ import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.codemining.ICodeMining;
 import org.eclipse.jface.text.source.Annotation;
+import org.eclipse.jface.text.source.AnnotationModel;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.IAnnotationModelExtension;
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.jface.text.source.inlined.LineHeaderAnnotation;
+import org.eclipse.jface.text.source.projection.ProjectionAnnotation;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
@@ -89,6 +99,7 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -99,9 +110,12 @@ import org.eclipse.text.undo.IDocumentUndoManager;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
-import org.eclipse.ui.handlers.IHandlerService;
+import org.eclipse.ui.commands.ICommandService;
+import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.editors.text.EditorsUI;
+import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.keys.IBindingService;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.AnnotationPreference;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -139,6 +153,9 @@ public class UnifiedDiffManagerTest {
 			line TWO modified
 			line three
 			""";
+
+	private static final List<UnifiedDiffMode> TOOLBAR_MODES = List.of(UnifiedDiffMode.OVERLAY_MODE,
+			UnifiedDiffMode.OVERLAY_READ_ONLY_MODE, UnifiedDiffMode.REVERT_MODE, UnifiedDiffMode.REPLACE_MODE);
 
 	private IFile file;
 	private ITextEditor editor;
@@ -1531,6 +1548,185 @@ public class UnifiedDiffManagerTest {
 	}
 
 	@Test
+	public void testRevertCurrentAndAllCommandsApplyComparedSource() throws Exception {
+		for (String commandId : List.of("org.eclipse.compare.acceptCurrentDiff",
+				"org.eclipse.compare.acceptAllDiffs")) {
+			setEditorContent(LEFT);
+			assertTrue(UnifiedDiff.create(editor, RIGHT, UnifiedDiffMode.REVERT_MODE).open().isOK());
+			executeEditorCommand(commandId);
+			waitForDocumentContent(RIGHT);
+		}
+	}
+
+	@Test
+	public void testToolbarTooltipsShowActiveShortcutsInAllModes() {
+		for (UnifiedDiffMode mode : TOOLBAR_MODES) {
+			setEditorContent(LEFT);
+			assertTrue(UnifiedDiff.create(editor, RIGHT, mode).open().isOK());
+			processEvents();
+			assertToolbarShortcuts(mode);
+		}
+	}
+
+	@Test
+	public void testToolbarShortcutsWithAndWithoutFolding() {
+		IContextService contexts = PlatformUI.getWorkbench().getService(IContextService.class);
+		var activation = contexts.activateContext("org.eclipse.compare.unifiedDiffScope");
+		try {
+			for (int contextLines : new int[] { -1, 3 }) {
+				for (UnifiedDiffMode mode : TOOLBAR_MODES) {
+					Composite composite = new Composite(viewer().getTextWidget().getParent(), SWT.NONE);
+					try {
+						composite.setLayout(new FillLayout());
+						composite.setBounds(0, 0, 800, 600);
+						composite.moveAbove(null);
+						ProjectionViewer projection = new ProjectionViewer(composite, null, null, false,
+								SWT.V_SCROLL);
+						projection.configure(new SourceViewerConfiguration());
+						String prefix = "unchanged before\n".repeat(15);
+						String suffix = "unchanged after\n".repeat(15);
+						Document document = new Document(prefix + LEFT + suffix);
+						AnnotationModel model = new AnnotationModel();
+						projection.setDocument(document, model);
+						projection.enableProjection();
+						composite.layout();
+						assertTrue(UnifiedDiffManager.open(projection, document, model, null, prefix + RIGHT + suffix,
+								mode, null, null, null, null, 'L', 'R', false, contextLines).isOK());
+						processEvents();
+						boolean collapsed = false;
+						var annotations = projection.getProjectionAnnotationModel().getAnnotationIterator();
+						while (annotations.hasNext()) {
+							collapsed |= ((ProjectionAnnotation) annotations.next()).isCollapsed();
+						}
+						assertEquals(contextLines >= 0, collapsed,
+								"the fixture must exercise the requested folding mode");
+						assertToolbarShortcuts(projection, model, mode);
+					} finally {
+						composite.dispose();
+					}
+				}
+			}
+		} finally {
+			contexts.deactivateContext(activation);
+		}
+	}
+
+	@Test
+	public void testToolbarTooltipsFollowCustomizedAndRemovedBindings() throws Exception {
+		IBindingService bindings = PlatformUI.getWorkbench().getService(IBindingService.class);
+		ICommandService commands = PlatformUI.getWorkbench().getService(ICommandService.class);
+		Binding[] original = bindings.getBindings();
+		var scheme = bindings.getActiveScheme();
+		List<String> commandIds = List.of(ActionFactory.PREVIOUS.getCommandId(), ActionFactory.NEXT.getCommandId(),
+				"org.eclipse.compare.acceptAllDiffs", "org.eclipse.compare.hideAllDiffs",
+				"org.eclipse.compare.acceptCurrentDiff", "org.eclipse.compare.hideCurrentDiff");
+		List<Binding> unbound = new ArrayList<>();
+		for (Binding binding : original) {
+			if (binding.getParameterizedCommand() == null
+					|| !commandIds.contains(binding.getParameterizedCommand().getId())) {
+				unbound.add(binding);
+			}
+		}
+		List<Binding> customized = new ArrayList<>(unbound);
+		for (int i = 0; i < commandIds.size(); i++) {
+			customized.add(new KeyBinding(KeySequence.getInstance("M1+M2+F" + (i + 1)),
+					new ParameterizedCommand(commands.getCommand(commandIds.get(i)), null), scheme.getId(),
+					"org.eclipse.compare.unifiedDiffScope", null, null, null, Binding.USER));
+		}
+		try {
+			for (UnifiedDiffMode mode : TOOLBAR_MODES) {
+				if (mode == UnifiedDiffMode.REPLACE_MODE) {
+					continue; // Keep/Undo have no command bindings to customize.
+				}
+				setEditorContent(LEFT);
+				assertTrue(UnifiedDiff.create(editor, RIGHT, mode).open().isOK());
+				processEvents();
+				assertToolbarShortcuts(mode);
+				bindings.savePreferences(scheme, customized.toArray(Binding[]::new));
+				processEvents();
+				for (String commandId : commandIds) {
+					assertNotNull(bindings.getBestActiveBindingFor(commandId), "custom binding must be active");
+				}
+				assertToolbarShortcuts(mode);
+				String currentCommand = mode == UnifiedDiffMode.OVERLAY_READ_ONLY_MODE
+						? "org.eclipse.compare.hideCurrentDiff" : "org.eclipse.compare.acceptCurrentDiff";
+				var customizedCurrent = bindings.getPerfectMatch(bindings.getBestActiveBindingFor(currentCommand));
+				assertNotNull(customizedCurrent, "the displayed shortcut must resolve to a command");
+				executeEditorCommand(customizedCurrent.getParameterizedCommand().getId());
+				if (mode == UnifiedDiffMode.OVERLAY_READ_ONLY_MODE) {
+					waitForUnifiedDiffCount(0);
+				} else {
+					waitForDocumentContent(RIGHT);
+				}
+				setEditorContent(LEFT);
+				assertTrue(UnifiedDiff.create(editor, RIGHT, mode).open().isOK());
+				processEvents();
+				bindings.savePreferences(scheme, unbound.toArray(Binding[]::new));
+				processEvents();
+				for (String commandId : commandIds) {
+					assertNull(bindings.getBestActiveBindingFor(commandId), "removed binding must be inactive");
+				}
+				assertToolbarShortcuts(mode);
+			}
+		} finally {
+			bindings.savePreferences(scheme, original);
+			processEvents();
+		}
+	}
+
+	private void assertToolbarShortcuts(UnifiedDiffMode mode) {
+		assertToolbarShortcuts(viewer(), annotationModel(), mode);
+	}
+
+	private static void assertToolbarShortcuts(ITextViewer viewer, IAnnotationModel model, UnifiedDiffMode mode) {
+		StyledText tw = viewer.getTextWidget();
+		ToolBar all = toolbar((Composite) tw.getData(TOOLBAR_COMPOSITE_FOR_ALL_DIFFS_KEY));
+		int navigationIndex = mode == UnifiedDiffMode.OVERLAY_READ_ONLY_MODE ? 1 : 2;
+		assertShortcutTooltip(all, navigationIndex, ActionFactory.PREVIOUS.getCommandId());
+		assertShortcutTooltip(all, navigationIndex + 1, ActionFactory.NEXT.getCommandId());
+		// Read-only mode has just Hide All, Previous and Next.
+		if (mode == UnifiedDiffMode.OVERLAY_READ_ONLY_MODE) {
+			assertShortcutTooltip(all, 0, "org.eclipse.compare.hideAllDiffs");
+		} else if (mode != UnifiedDiffMode.REPLACE_MODE) {
+			assertShortcutTooltip(all, 0, "org.eclipse.compare.acceptAllDiffs");
+			assertShortcutTooltip(all, 1, "org.eclipse.compare.hideAllDiffs");
+		} else {
+			assertShortcutTooltip(all, 0, null);
+			assertShortcutTooltip(all, 1, null);
+		}
+		String annotationType = mode == UnifiedDiffMode.OVERLAY_MODE
+				|| mode == UnifiedDiffMode.OVERLAY_READ_ONLY_MODE ? DELETION_ANNO_TYPE : ADDITION_ANNO_TYPE;
+		Position pos = model.getPosition(annotations(model, annotationType).get(0));
+		fireMouseMove(tw, tw.getLinePixel(widgetLineOfModelOffset(viewer, pos.offset)) + 2);
+		processEvents();
+		ToolBar one = toolbar((Composite) tw.getData(TOOLBAR_COMPOSITE_FOR_ONE_DIFF_KEY));
+		if (mode == UnifiedDiffMode.OVERLAY_READ_ONLY_MODE) {
+			assertShortcutTooltip(one, 0, "org.eclipse.compare.hideCurrentDiff");
+		} else if (mode != UnifiedDiffMode.REPLACE_MODE) {
+			assertShortcutTooltip(one, 0, "org.eclipse.compare.acceptCurrentDiff");
+			assertShortcutTooltip(one, 1, "org.eclipse.compare.hideCurrentDiff");
+		} else {
+			assertShortcutTooltip(one, 0, null);
+			assertShortcutTooltip(one, 1, null);
+		}
+	}
+
+	private static void assertShortcutTooltip(ToolBar toolbar, int index, String commandId) {
+		List<ToolItem> items = Arrays.stream(toolbar.getItems())
+				.filter(item -> (item.getStyle() & SWT.SEPARATOR) == 0).toList();
+		ToolItem item = items.get(index);
+		var contribution = (ActionContributionItem) item.getData();
+		assertEquals(commandId, contribution.getAction().getActionDefinitionId());
+		String label = contribution.getAction().getToolTipText();
+		String shortcut = commandId == null ? null : PlatformUI.getWorkbench().getService(IBindingService.class)
+				.getBestActiveBindingFormattedFor(commandId);
+		String tooltip = shortcut == null || shortcut.isEmpty() ? label : label + " (" + shortcut + ")";
+		// JFace omits a redundant tooltip when the name is already shown on the button.
+		assertEquals(tooltip.equals(item.getText()) ? null : tooltip, item.getToolTipText(),
+				"tooltip for " + commandId);
+	}
+
+	@Test
 	public void testToolbarActionPresentationCanOverrideTextAndRemoveImage() throws BadLocationException {
 		setEditorContent(LEFT);
 
@@ -1608,7 +1804,11 @@ public class UnifiedDiffManagerTest {
 		StyledText tw = viewer().getTextWidget();
 		ToolBar toolbar = toolbar((Composite) tw.getData(TOOLBAR_COMPOSITE_FOR_ALL_DIFFS_KEY));
 		// an action with an image shows its text only as the tooltip
-		ToolItem item = findToolbarItem(toolbar, ToolItem::getToolTipText, "My custom label");
+		String shortcut = PlatformUI.getWorkbench().getService(IBindingService.class)
+				.getBestActiveBindingFormattedFor("org.eclipse.compare.acceptAllDiffs");
+		String tooltip = shortcut == null || shortcut.isEmpty() ? "My custom label"
+				: "My custom label (" + shortcut + ")";
+		ToolItem item = findToolbarItem(toolbar, ToolItem::getToolTipText, tooltip);
 		assertNotNull(item, "toolbar item with overridden tooltip must exist");
 		assertNotNull(item.getImage(), "a text-only override must not remove the default image");
 	}
