@@ -833,6 +833,27 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 	}
 
 	/**
+	 * Drops the builder instances of the given project, and with them the last
+	 * built trees they hold. The next build instantiates the builders again from
+	 * the persisted builder state, as after a workspace restart. The project must
+	 * be closed before calling this method.
+	 */
+	public void dropBuilders(IProject project) {
+		if (project.isOpen()) {
+			String message = "Cannot drop builders of open project: " + project.getFullPath(); //$NON-NLS-1$
+			Policy.log(IStatus.ERROR, message, new IllegalStateException(message));
+			return;
+		}
+		ProjectDescription desc = ((Project) project).internalGetDescription();
+		if (desc == null) {
+			return;
+		}
+		for (ICommand command : desc.getBuildSpec(false)) {
+			((BuildCommand) command).setBuilders(null);
+		}
+	}
+
+	/**
 	 * The outermost workspace operation has finished.  Do an autobuild if necessary.
 	 */
 	public void endTopLevel(boolean needsBuild) {
