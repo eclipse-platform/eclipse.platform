@@ -503,8 +503,7 @@ public class ContentDescriptionManager implements IManager, IRegistryChangeListe
 			return ""; //$NON-NLS-1$
 		}
 		String ID = Arrays.stream(bundleContext.getBundles())
-				.map(bundle -> String.format("%d %s %s", bundle.getBundleId(), bundle.getSymbolicName(), //$NON-NLS-1$
-						bundle.getVersion()))
+				.map(bundle -> bundle.getBundleId() + " " + bundle.getSymbolicName() + " " + bundle.getVersion()) //$NON-NLS-1$ //$NON-NLS-2$
 				.sorted().collect(Collectors.joining(System.lineSeparator()));
 		try {
 			MessageDigest digest = MessageDigest.getInstance("SHA-256"); //$NON-NLS-1$
