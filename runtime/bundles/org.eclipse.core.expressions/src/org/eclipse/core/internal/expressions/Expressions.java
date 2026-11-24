@@ -361,18 +361,41 @@ public class Expressions {
 		} else if ("false".equals(arg)) { //$NON-NLS-1$
 			return Boolean.FALSE;
 		} else if (arg.indexOf('.') != -1) {
+			if (!mayBeFloat(arg)) {
+				return arg;
+			}
 			try {
 				return Float.valueOf(arg);
 			} catch (NumberFormatException e) {
 				return arg;
 			}
 		} else {
+			if (!mayBeInteger(arg)) {
+				return arg;
+			}
 			try {
 				return Integer.valueOf(arg);
 			} catch (NumberFormatException e) {
 				return arg;
 			}
 		}
+	}
+
+	// Skips parsing ids and names, a thrown NumberFormatException is costly at startup.
+	private static boolean mayBeFloat(String arg) {
+		int i = 0;
+		while (i < arg.length() && arg.charAt(i) <= ' ') {
+			i++;
+		}
+		return i < arg.length() && (arg.charAt(i) == '.' || mayBeNumber(arg.charAt(i)));
+	}
+
+	private static boolean mayBeInteger(String arg) {
+		return mayBeNumber(arg.charAt(0));
+	}
+
+	private static boolean mayBeNumber(char first) {
+		return first == '+' || first == '-' || Character.isDigit(first);
 	}
 
 	public static String unEscapeString(String str) throws CoreException {
