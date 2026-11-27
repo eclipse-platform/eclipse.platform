@@ -11,7 +11,7 @@
 	<parent>
 		<groupId>eclipse.platform.ua</groupId>
 		<artifactId>eclipse.platform.ua</artifactId>
-		<version>4.42.0-SNAPSHOT</version>
+		<version>4.43.0-SNAPSHOT</version>
 		<relativePath>../..</relativePath>
 	</parent>
 	<groupId>org.eclipse.help</groupId>
