@@ -23,6 +23,7 @@ import org.junit.platform.suite.api.Suite;
 @Suite
 @SelectClasses({
 	TextMergeViewerTest.class,
+	DiffColorsTest.class,
 	LineReaderTest.class,
 	StreamMergerTest.class,
 	DocLineComparatorTest.class,
