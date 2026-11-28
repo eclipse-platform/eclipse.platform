@@ -678,4 +678,25 @@ public class VT100EmulatorTest {
 		assertEquals(start + "[20[201~1~x" + end, VT100TerminalControl.pasteText("\033[20\033[201~1~x", true));
 		assertEquals(start + "201~x" + end, VT100TerminalControl.pasteText("\u009b201~x", true));
 	}
+
+	@Test
+	public void testMouseModes() {
+		// how ncurses turns the mouse on: both modes in one sequence
+		run("\u001b[?1006;1000h");
+		assertAll(() -> assertEquals(1000, control.getMouseMode()), () -> assertTrue(control.isSgrMouseEncoding()));
+		run("\u001b[?1002h");
+		assertEquals(1002, control.getMouseMode());
+		run("\u001b[?1000;1006l");
+		assertAll(() -> assertEquals(0, control.getMouseMode()), () -> assertFalse(control.isSgrMouseEncoding()));
+	}
+
+	@Test
+	public void testResetStateEndsMouseModes() {
+		run("\u001b[?1002;1006h");
+		assertAll(() -> assertEquals(1002, control.getMouseMode()), () -> assertTrue(control.isSgrMouseEncoding()));
+		// a program cut off while listening to the mouse must not leave the next
+		// connection with it
+		emulator.resetState();
+		assertAll(() -> assertEquals(0, control.getMouseMode()), () -> assertFalse(control.isSgrMouseEncoding()));
+	}
 }

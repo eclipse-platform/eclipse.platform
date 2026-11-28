@@ -204,6 +204,11 @@ public class VT100Emulator implements ControlListener {
 		text.setBufferLineLimit(bufferLineLimit);
 	}
 
+	/** @return the lines of the screen, which are the last lines of the text */
+	public int getLines() {
+		return text.getLines();
+	}
+
 	/**
 	 * @see IVT100EmulatorBackend#getBufferLineLimit()
 	 */
@@ -533,6 +538,8 @@ public class VT100Emulator implements ControlListener {
 	private void resetProgramModes() {
 		terminal.showCursor(true);
 		terminal.enableBracketedPaste(false);
+		terminal.enableMouseReporting(0);
+		terminal.enableSgrMouseEncoding(false);
 	}
 
 	/**
@@ -1360,6 +1367,14 @@ public class VT100Emulator implements ControlListener {
 			// Bracketed paste: pasted text is wrapped so a program can tell it from typing.
 			terminal.enableBracketedPaste(true);
 			break;
+		case 1000: // report button press and release
+		case 1002: // also report drag
+		case 1003: // also report every move
+			terminal.enableMouseReporting(param);
+			break;
+		case 1006:
+			terminal.enableSgrMouseEncoding(true);
+			break;
 		default:
 			Logger.log("Unsupported command parameter: CSI ?" + param + 'h'); //$NON-NLS-1$
 			break;
@@ -1399,6 +1414,14 @@ public class VT100Emulator implements ControlListener {
 			break;
 		case 2004:
 			terminal.enableBracketedPaste(false);
+			break;
+		case 1000:
+		case 1002:
+		case 1003:
+			terminal.enableMouseReporting(0);
+			break;
+		case 1006:
+			terminal.enableSgrMouseEncoding(false);
 			break;
 		default:
 			Logger.log("Unsupported command parameter: CSI ?" + param + 'l'); //$NON-NLS-1$
