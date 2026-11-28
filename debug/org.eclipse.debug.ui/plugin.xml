@@ -2012,6 +2012,27 @@ M4 = Platform-specific fourth key
             id="org.eclipse.debug.ui.commands.ProfileLast">
       </command>
       <command
+            name="%ActionDefinition.runAs.name"
+            categoryId="org.eclipse.debug.ui.category.run"
+            description="%ActionDefinition.runAs.description"
+            defaultHandler="org.eclipse.debug.internal.ui.actions.LaunchAsHandler:run"
+            id="org.eclipse.debug.ui.commands.RunAs">
+      </command>
+      <command
+            name="%ActionDefinition.debugAs.name"
+            categoryId="org.eclipse.debug.ui.category.run"
+            description="%ActionDefinition.debugAs.description"
+            defaultHandler="org.eclipse.debug.internal.ui.actions.LaunchAsHandler:debug"
+            id="org.eclipse.debug.ui.commands.DebugAs">
+      </command>
+      <command
+            name="%ActionDefinition.profileAs.name"
+            categoryId="org.eclipse.debug.ui.category.run"
+            description="%ActionDefinition.profileAs.description"
+            defaultHandler="org.eclipse.debug.internal.ui.actions.LaunchAsHandler:profile"
+            id="org.eclipse.debug.ui.commands.ProfileAs">
+      </command>
+      <command
             name="%ActionDefinition.runToLine.name"
             description="%ActionDefinition.runToLine.description"
             categoryId="org.eclipse.debug.ui.category.run"
@@ -2160,6 +2181,14 @@ M4 = Platform-specific fourth key
             sequence="M1+F11"
 
             commandId="org.eclipse.debug.ui.commands.RunLast"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+      <key
+            sequence="M2+F11"
+            commandId="org.eclipse.debug.ui.commands.RunAs"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+      <key
+            sequence="M2+M3+F11"
+            commandId="org.eclipse.debug.ui.commands.DebugAs"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             platform="carbon"

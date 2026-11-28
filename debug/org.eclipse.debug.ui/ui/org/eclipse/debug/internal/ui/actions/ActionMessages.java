@@ -271,5 +271,8 @@ public class ActionMessages extends NLS {
 	public static String LaunchActionToolTip_OneDay;
 	public static String LaunchActionToolTip_Days;
 	public static String AbstractLaunchHistoryAction_running;
+	public static String LaunchAsDialog_filter;
+	public static String LaunchAsDialog_configure;
+	public static String LaunchAsHandler_nothing;
 
 }

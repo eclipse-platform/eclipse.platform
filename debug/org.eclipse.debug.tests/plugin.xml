@@ -183,4 +183,44 @@
 	        type="org.eclipse.debug.ui.tests.launchConfigurationType1">
 	    </launchConfigurationTabGroup>
 	</extension>
+   <extension point="org.eclipse.debug.ui.launchShortcuts">
+      <shortcut
+            class="org.eclipse.debug.tests.launching.TestLaunchShortcut"
+            id="org.eclipse.debug.tests.launchAsShortcut"
+            label="Launch As &amp;Test Shortcut"
+            modes="run">
+         <contextualLaunch>
+            <enablement>
+               <with variable="selection">
+                  <count value="1"/>
+                  <iterate>
+                     <instanceof value="org.eclipse.debug.tests.launching.TestLaunchShortcut$Target"/>
+                  </iterate>
+               </with>
+            </enablement>
+         </contextualLaunch>
+      </shortcut>
+      <!-- Matches the same selection, but its own enablement is false -->
+      <shortcut
+            class="org.eclipse.debug.tests.launching.TestLaunchShortcut"
+            id="org.eclipse.debug.tests.launchAsDisabledShortcut"
+            label="Launch As Disabled Test Shortcut"
+            modes="run">
+         <enablement>
+            <with variable="selection">
+               <count value="2"/>
+            </with>
+         </enablement>
+         <contextualLaunch>
+            <enablement>
+               <with variable="selection">
+                  <count value="1"/>
+                  <iterate>
+                     <instanceof value="org.eclipse.debug.tests.launching.TestLaunchShortcut$Target"/>
+                  </iterate>
+               </with>
+            </enablement>
+         </contextualLaunch>
+      </shortcut>
+   </extension>
 </plugin>
