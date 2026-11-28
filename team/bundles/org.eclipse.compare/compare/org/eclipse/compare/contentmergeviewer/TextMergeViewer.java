@@ -34,7 +34,8 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -473,7 +474,54 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 	// calling w.getLineHeight(line) + w.getLineSpacing() +
 	// w.getLineVerticalIndent(line); again and again for the same line is too slow
 	// we therefore introduce a line height cache by viewer
-	private final Map<MergeSourceViewer, List<Integer>> lineHeightsByViewer = new HashMap<>();
+	private final Map<MergeSourceViewer, LineHeightCache> lineHeightsByViewer = new HashMap<>();
+
+	private static final class LineHeightCache {
+		private final Font font;
+		private final int baseHeight;
+		private final int spacing;
+		private final int[] heights;
+		private final int[] indents;
+		private final int[] cumulativeHeights;
+		private final BitSet populatedLines = new BitSet();
+		private int prefixLines;
+		private int prefixHeight;
+		private boolean usable = true;
+		private int checkpointFrom;
+		private int checkpointTo;
+		private int checkpointHeight;
+
+		private LineHeightCache(StyledText textWidget) {
+			font = textWidget.getFont();
+			baseHeight = textWidget.getLineHeight();
+			spacing = textWidget.getLineSpacing();
+			heights = new int[textWidget.getLineCount()];
+			indents = new int[heights.length];
+			cumulativeHeights = new int[heights.length + 1];
+			Arrays.fill(heights, -1);
+		}
+
+		private boolean matches(StyledText textWidget) {
+			return !font.isDisposed() && font.equals(textWidget.getFont())
+					&& baseHeight == textWidget.getLineHeight() && spacing == textWidget.getLineSpacing()
+					&& heights.length == textWidget.getLineCount();
+		}
+
+		private void invalidateFrom(int line) {
+			Arrays.fill(heights, line, heights.length, -1);
+			prefixLines = Math.min(line, prefixLines);
+			prefixHeight = cumulativeHeights[prefixLines];
+			populatedLines.clear(line, heights.length);
+			usable = true;
+		}
+
+		private void bypass(int fromLine, int toLine, int height) {
+			usable = false;
+			checkpointFrom = fromLine;
+			checkpointTo = toLine;
+			checkpointHeight = height;
+		}
+	}
 
 	/**
 	 * Preference key for highlighting current line.
@@ -2401,6 +2449,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 	}
 
 	private Diff handleMouseInSides(Canvas canvas, MergeSourceViewer tp, int my) {
+		validateLineHeightCache(tp);
 
 		int visibleHeight= tp.getViewportHeight();
 
@@ -2409,8 +2458,6 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		}
 
 		if (fMerger.hasChanges()) {
-			int shift = calculateShift(tp) + (2 - LW);
-
 			Point region= new Point(0, 0);
 			char leg = getLeg(tp);
 			for (Iterator<?> iterator = fMerger.changesIterator(); iterator.hasNext();) {
@@ -2421,7 +2468,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 				tp.getLineRange(diff.getPosition(leg), region);
 				region.x -= tp.getDocumentRegionOffset();
-				int y = getHeightBetweenLines(tp, 0, region.x) + shift;
+				int y = getLineY(tp, region.x) + (2 - LW);
 				int h = getHeightBetweenLines(tp, region.x, region.x + region.y);
 
 				if (y+h < 0) {
@@ -2440,6 +2487,8 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 	}
 
 	private Diff getDiffUnderMouse(Canvas canvas, int mx, int my, Rectangle r) {
+		validateLineHeightCache(fLeft);
+		validateLineHeightCache(fRight);
 
 		if (! fSynchronizedScrolling) {
 			return null;
@@ -2455,9 +2504,6 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		}
 
 		if (fMerger.hasChanges()) {
-			int lshift = calculateShift(fLeft);
-			int rshift = calculateShift(fRight);
-
 			Point region= new Point(0, 0);
 
 			for (Iterator<?> iterator = fMerger.changesIterator(); iterator.hasNext();) {
@@ -2468,12 +2514,12 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 				fLeft.getLineRange(diff.getPosition(LEFT_CONTRIBUTOR), region);
 				region.x -= fLeft.getDocumentRegionOffset();
-				int ly = getHeightBetweenLines(fLeft, 0, region.x) + lshift;
+				int ly = getLineY(fLeft, region.x);
 				int lh = getHeightBetweenLines(fLeft, region.x, region.x + region.y);
 
 				fRight.getLineRange(diff.getPosition(RIGHT_CONTRIBUTOR), region);
 				region.x -= fRight.getDocumentRegionOffset();
-				int ry = getHeightBetweenLines(fRight, 0, region.x) + rshift;
+				int ry = getLineY(fRight, region.x);
 				int rh = getHeightBetweenLines(fRight, region.x, region.x + region.y);
 
 				if (Math.max(ly+lh, ry+rh) < 0) {
@@ -2818,8 +2864,10 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 				createSourceViewer(parent, getDirection()),
 				getResourceBundle(), getCompareConfiguration().getContainer());
 		final StyledText te= viewer.getSourceViewer().getTextWidget();
+		viewer.getSourceViewer().addTextListener(_ -> lineHeightsByViewer.remove(viewer));
+		viewer.getSourceViewer().addTextPresentationListener(_ -> lineHeightsByViewer.remove(viewer));
 		// Clear cached line heights upon zoom changes, as they are no longer valid
-		te.addListener(SWT.ZoomChanged, _ -> resetCachedLineHeights(viewer));
+		te.addListener(SWT.ZoomChanged, _ -> lineHeightsByViewer.remove(viewer));
 		if (!fConfirmSave) {
 			viewer.hideSaveAction();
 		}
@@ -4538,49 +4586,119 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 	 * @param line
 	 * @return
 	 */
-	private int getHeightBetweenLines(MergeSourceViewer tp, int fromLine, int toLine) {
+	int getHeightBetweenLines(MergeSourceViewer tp, int fromLine, int toLine) {
 
 		if (fromLine == toLine) {
 			return 0;
 		}
-		StyledText w = tp.getSourceViewer().getTextWidget();
-		List<Integer> lineHeights = this.lineHeightsByViewer.get(tp);
-		if (lineHeights == null) {
-			lineHeights = new ArrayList<>();
-			lineHeights.addAll(Collections.nCopies(w.getLineCount(), null));
-			this.lineHeightsByViewer.put(tp, lineHeights);
-			tp.getSourceViewer().addTextListener(_ -> resetCachedLineHeights(tp));
-		}
-
-		int lineSpacing = w.getLineSpacing();
-
+		StyledText textWidget = tp.getSourceViewer().getTextWidget();
 		// If the linenumber is higher than the number of lines, we should prevent an
 		// IndexOutOfBoundsException
-		if (toLine > w.getLineCount()){
-			int lineHeight = tp.getSourceViewer().getTextWidget().getLineHeight();
-			return (toLine - fromLine) * (lineHeight + w.getLineVerticalIndent(0)) + lineSpacing;
+		if (toLine > textWidget.getLineCount()) {
+			int lineHeight = textWidget.getLineHeight();
+			return (toLine - fromLine) * (lineHeight + textWidget.getLineVerticalIndent(0))
+					+ textWidget.getLineSpacing();
 		}
-
-		int height = 0;
-		for (int i = fromLine; i < toLine; i++) {
-			Integer heightAtLine = lineHeights.get(i);
-			if (heightAtLine == null) {
-				int lineOffset = w.getOffsetAtLine(i);
-				heightAtLine = w.getLineHeight(lineOffset) + lineSpacing + w.getLineVerticalIndent(i);
-				lineHeights.set(i, heightAtLine);
+		if (canCacheLineHeights(textWidget)) {
+			LineHeightCache cache = lineHeightsByViewer.get(tp);
+			if (cache == null || !cache.matches(textWidget)) {
+				cache = new LineHeightCache(textWidget);
+				lineHeightsByViewer.put(tp, cache);
 			}
-			height += heightAtLine;
+			if (!cache.usable) {
+				return textWidget.getLinePixel(toLine) - textWidget.getLinePixel(fromLine);
+			}
+			if (toLine <= cache.prefixLines && fromLine <= toLine) {
+				return cache.cumulativeHeights[toLine] - cache.cumulativeHeights[fromLine];
+			}
+			int height = 0;
+			boolean populated = false;
+			for (int line = fromLine; line < toLine; line++) {
+				if (cache.heights[line] < 0) {
+					cache.indents[line] = textWidget.getLineVerticalIndent(line);
+					cache.heights[line] = textWidget.getLineHeight(textWidget.getOffsetAtLine(line))
+							+ cache.spacing + cache.indents[line];
+					cache.populatedLines.set(line);
+					populated = true;
+				}
+				height += cache.heights[line];
+			}
+			while (cache.prefixLines < cache.heights.length && cache.heights[cache.prefixLines] >= 0) {
+				cache.prefixHeight += cache.heights[cache.prefixLines++];
+				cache.cumulativeHeights[cache.prefixLines] = cache.prefixHeight;
+			}
+			if (populated) {
+				int widgetHeight = textWidget.getLinePixel(toLine) - textWidget.getLinePixel(fromLine);
+				if (height != widgetHeight) {
+					cache.bypass(fromLine, toLine, height);
+				}
+			}
+			if (cache.matches(textWidget)) {
+				if (cache.usable) {
+					return height;
+				}
+				return textWidget.getLinePixel(toLine) - textWidget.getLinePixel(fromLine);
+			}
 		}
-		return height;
+		lineHeightsByViewer.remove(tp);
+		return textWidget.getLinePixel(toLine) - textWidget.getLinePixel(fromLine);
 	}
 
-	private void resetCachedLineHeights(MergeSourceViewer mergeViewer) {
-		StyledText styledText = mergeViewer.getSourceViewer().getTextWidget();
-		List<Integer> lineHeightsList = lineHeightsByViewer.get(mergeViewer);
-		if (lineHeightsList != null) {
-			lineHeightsList.clear();
-			lineHeightsList.addAll(Collections.nCopies(styledText.getLineCount(), null));
+	private boolean canCacheLineHeights(StyledText textWidget) {
+		return !textWidget.getWordWrap()
+				&& !textWidget.isListening(ST.LineGetStyle);
+	}
+
+	private void validateLineHeightCache(MergeSourceViewer viewer) {
+		LineHeightCache cache = lineHeightsByViewer.get(viewer);
+		if (cache == null) {
+			return;
 		}
+		StyledText textWidget = viewer.getSourceViewer().getTextWidget();
+		if (!canCacheLineHeights(textWidget)) {
+			lineHeightsByViewer.remove(viewer);
+			return;
+		}
+		int widgetPrefixHeight = cache.prefixLines == 0 ? 0
+				: textWidget.getLinePixel(cache.prefixLines) - textWidget.getLinePixel(0);
+		if (!cache.matches(textWidget)) {
+			lineHeightsByViewer.remove(viewer);
+			return;
+		}
+		for (int line = cache.populatedLines.nextSetBit(0); line >= 0;
+				line = cache.populatedLines.nextSetBit(line + 1)) {
+			if (cache.indents[line] != textWidget.getLineVerticalIndent(line)) {
+				cache.invalidateFrom(line);
+				widgetPrefixHeight = cache.prefixLines == 0 ? 0
+						: textWidget.getLinePixel(cache.prefixLines) - textWidget.getLinePixel(0);
+				break;
+			}
+		}
+		if (!cache.usable) {
+			int widgetHeight = textWidget.getLinePixel(cache.checkpointTo)
+					- textWidget.getLinePixel(cache.checkpointFrom);
+			cache.usable = cache.checkpointHeight == widgetHeight;
+		}
+		if (cache.usable && cache.prefixHeight != widgetPrefixHeight) {
+			invalidateLineHeightCache(viewer, cache, cache.prefixLines);
+		}
+	}
+
+	private void invalidateLineHeightCache(MergeSourceViewer viewer, LineHeightCache cache, int toLine) {
+		StyledText textWidget = viewer.getSourceViewer().getTextWidget();
+		int endLine = Math.min(toLine, Math.min(cache.heights.length, textWidget.getLineCount()));
+		for (int line = 0; line < endLine; line++) {
+			if (cache.heights[line] < 0) {
+				continue;
+			}
+			int lineHeight = textWidget.getLineHeight(textWidget.getOffsetAtLine(line))
+					+ cache.spacing + textWidget.getLineVerticalIndent(line);
+			if (cache.heights[line] != lineHeight) {
+				cache.invalidateFrom(line);
+				return;
+			}
+		}
+		cache.bypass(0, cache.prefixLines, cache.prefixHeight);
 	}
 
 	private void invalidateLines() {
@@ -4632,6 +4750,8 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			// simply ignore it in this case.
 			return;
 		}
+		validateLineHeightCache(fLeft);
+		validateLineHeightCache(fRight);
 
 		Display display= canvas.getDisplay();
 
@@ -4660,9 +4780,6 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		}
 
 		if (fMerger.hasChanges()) {
-			int lshift = calculateShift(fLeft);
-			int rshift = calculateShift(fRight);
-
 			Point region= new Point(0, 0);
 
 			boolean allOutgoing = allOutgoing();
@@ -4675,13 +4792,13 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 				fLeft.getLineRange(diff.getPosition(LEFT_CONTRIBUTOR), region);
 				region.x -= fLeft.getDocumentRegionOffset();
 				int diffLines = region.y;
-				int ly = getHeightBetweenLines(fLeft, 0, region.x) + lshift;
+				int ly = getLineY(fLeft, region.x);
 				int lh = getHeightBetweenLines(fLeft, region.x, region.x + region.y);
 
 				fRight.getLineRange(diff.getPosition(RIGHT_CONTRIBUTOR), region);
 				region.x -= fRight.getDocumentRegionOffset();
 				diffLines = Math.max(diffLines, region.y);
-				int ry = getHeightBetweenLines(fRight, 0, region.x) + rshift;
+				int ry = getLineY(fRight, region.x);
 				int rh = getHeightBetweenLines(fRight, region.x, region.x + region.y);
 
 				if (Math.max(ly+lh, ry+rh) < 0) {
@@ -4770,11 +4887,13 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		return curve;
 	}
 
-	private int calculateShift(MergeSourceViewer tp) {
-		return tp.getSourceViewer().getTopInset() - tp.getSourceViewer().getTextWidget().getTopPixel();
+	int getLineY(MergeSourceViewer tp, int line) {
+		StyledText textWidget = tp.getSourceViewer().getTextWidget();
+		return textWidget.getLinePixel(line) - textWidget.getTopMargin() + tp.getSourceViewer().getTopInset();
 	}
 
 	private void paintSides(GC g, MergeSourceViewer tp, Canvas canvas, boolean right) {
+		validateLineHeightCache(tp);
 
 		Display display= canvas.getDisplay();
 
@@ -4802,8 +4921,6 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 		if (fMerger.hasChanges()) {
 			boolean allOutgoing = allOutgoing();
-			int shift = calculateShift(tp) + (2 - LW);
-
 			Point region= new Point(0, 0);
 			char leg = getLeg(tp);
 			for (Iterator<Diff> iterator = fMerger.changesIterator(); iterator.hasNext();) {
@@ -4814,7 +4931,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 				tp.getLineRange(diff.getPosition(leg), region);
 				region.x -= tp.getDocumentRegionOffset();
-				int y = getHeightBetweenLines(tp, 0, region.x) + shift;
+				int y = getLineY(tp, region.x) + (2 - LW);
 				int h = getHeightBetweenLines(tp, region.x, region.x + region.y);
 
 				if (y+h < 0) {
@@ -4852,7 +4969,8 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		return allOutgoing;
 	}
 
-	private void paint(PaintEvent event, MergeSourceViewer tp) {
+	void paint(PaintEvent event, MergeSourceViewer tp) {
+		validateLineHeightCache(tp);
 
 		if (! fHighlightRanges) {
 			return;
@@ -4865,10 +4983,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		GC g= event.gc;
 
 		int w= canvas.getSize().x;
-		int shift = calculateShift(tp) + (2 - LW);
 		int maxh= event.y+event.height; 	// visibleHeight
-
-		shift += fTopInset;
 
 		Point range= new Point(0, 0);
 
@@ -4882,7 +4997,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 			tp.getLineRange(diff.getPosition(leg), range);
 			range.x -= tp.getDocumentRegionOffset();
-			int y = getHeightBetweenLines(tp, 0, range.x) + shift;
+			int y = getLineY(tp, range.x) + (2 - LW) + fTopInset;
 			int h = getHeightBetweenLines(tp, range.x, range.x + range.y);
 
 			if (y+h < event.y) {
@@ -5696,6 +5811,21 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == IMergeViewerTestAdapter.class) {
 			return (T) new IMergeViewerTestAdapter() {
+				@Override
+				public int getLineY(MergeSourceViewer sourceViewer, int line) {
+					return TextMergeViewer.this.getLineY(sourceViewer, line);
+				}
+
+				@Override
+				public int getHeightBetweenLines(MergeSourceViewer sourceViewer, int fromLine, int toLine) {
+					return TextMergeViewer.this.getHeightBetweenLines(sourceViewer, fromLine, toLine);
+				}
+
+				@Override
+				public void paint(PaintEvent event, MergeSourceViewer sourceViewer) {
+					TextMergeViewer.this.paint(event, sourceViewer);
+				}
+
 				@Override
 				public IDocument getDocument(char leg) {
 					switch (leg) {

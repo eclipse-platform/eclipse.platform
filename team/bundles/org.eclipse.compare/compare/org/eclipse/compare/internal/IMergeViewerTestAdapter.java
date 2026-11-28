@@ -14,6 +14,7 @@
 package org.eclipse.compare.internal;
 
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.swt.events.PaintEvent;
 
 /**
  * An interface that provides access to the internals of a merge viewer for the purposes of testing.
@@ -34,4 +35,40 @@ public interface IMergeViewerTestAdapter {
 	 * @return the number of changes
 	 */
 	public int getChangesCount();
+
+	/**
+	 * Returns the vertical position used to draw comparison highlights for a line.
+	 *
+	 * @param viewer the source viewer
+	 * @param line the zero-based line index
+	 * @return the vertical position in pixels
+	 * @throws UnsupportedOperationException if this adapter does not support geometry access
+	 */
+	default int getLineY(MergeSourceViewer viewer, int line) {
+		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * Returns the height of the given line range.
+	 *
+	 * @param viewer the source viewer
+	 * @param fromLine the zero-based start line, inclusive
+	 * @param toLine the zero-based end line, exclusive
+	 * @return the height in pixels
+	 * @throws UnsupportedOperationException if this adapter does not support geometry access
+	 */
+	default int getHeightBetweenLines(MergeSourceViewer viewer, int fromLine, int toLine) {
+		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * Paints comparison highlights for the given source viewer.
+	 *
+	 * @param event the paint event containing the graphics context
+	 * @param viewer the source viewer
+	 * @throws UnsupportedOperationException if this adapter does not support painting access
+	 */
+	default void paint(PaintEvent event, MergeSourceViewer viewer) {
+		throw new UnsupportedOperationException();
+	}
 }
