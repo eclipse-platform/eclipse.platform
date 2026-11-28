@@ -20,8 +20,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.internal.ui.viewers.breadcrumb.AbstractBreadcrumb;
-import org.eclipse.debug.internal.ui.viewers.breadcrumb.BreadcrumbViewer;
-import org.eclipse.debug.internal.ui.viewers.breadcrumb.IBreadcrumbDropDownSite;
 import org.eclipse.debug.internal.ui.viewers.breadcrumb.TreeViewerDropDown;
 import org.eclipse.debug.internal.ui.viewers.model.ILabelUpdateListener;
 import org.eclipse.debug.internal.ui.viewers.model.SubTreeModelViewer;
@@ -36,6 +34,7 @@ import org.eclipse.debug.ui.contexts.DebugContextEvent;
 import org.eclipse.debug.ui.contexts.IDebugContextListener;
 import org.eclipse.debug.ui.contexts.IDebugContextProvider;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.BaseLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
@@ -46,6 +45,8 @@ import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreePath;
+import org.eclipse.jface.viewers.TreePathBreadcrumbDropDownSite;
+import org.eclipse.jface.viewers.TreePathBreadcrumbViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
@@ -55,7 +56,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.UIJob;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * @since 3.5
@@ -181,7 +184,7 @@ public class LaunchViewBreadcrumb extends AbstractBreadcrumb implements IDebugCo
 	private final IDebugContextProvider fTreeViewerContextProvider;
 	private Input fBreadcrumbInput;
 	static final private Object fgEmptyDebugContextElement = new Object();
-	private BreadcrumbViewer fViewer;
+	private TreePathBreadcrumbViewer fViewer;
 	private boolean fRefreshBreadcrumb = false;
 
 	private class BreadcrumbContextProvider extends AbstractDebugContextProvider implements IDebugContextListener, ISelectionChangedListener {
@@ -251,11 +254,18 @@ public class LaunchViewBreadcrumb extends AbstractBreadcrumb implements IDebugCo
 	}
 
 	@Override
-	protected BreadcrumbViewer createViewer(Composite parent) {
-		fViewer = new BreadcrumbViewer(parent, SWT.NONE) {
+	protected TreePathBreadcrumbViewer createViewer(Composite parent) {
+		fViewer = new TreePathBreadcrumbViewer(parent, SWT.NONE) {
 			@Override
-			protected Control createDropDown(Composite dropDownParent, IBreadcrumbDropDownSite site, TreePath path) {
+			protected Control createDropDown(Composite dropDownParent, TreePathBreadcrumbDropDownSite site,
+					TreePath path) {
 				return createDropDownControl(dropDownParent, site, path);
+			}
+
+			@Override
+			protected IDialogSettings getDialogSettings() {
+				return PlatformUI.getDialogSettingsProvider(FrameworkUtil.getBundle(LaunchViewBreadcrumb.class))
+						.getDialogSettings();
 			}
 		};
 
@@ -395,7 +405,8 @@ public class LaunchViewBreadcrumb extends AbstractBreadcrumb implements IDebugCo
 		return null;
 	}
 
-	public Control createDropDownControl(Composite parent, final IBreadcrumbDropDownSite site, TreePath paramPath) {
+	public Control createDropDownControl(Composite parent, final TreePathBreadcrumbDropDownSite site,
+			TreePath paramPath) {
 
 		TreeViewerDropDown dropDownTreeViewer = new TreeViewerDropDown() {
 
