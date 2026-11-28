@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2025 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -29,6 +29,7 @@ import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.internal.core.IInternalDebugCoreConstants;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.IDebugHelpContextIds;
+import org.eclipse.debug.internal.ui.IInternalDebugUIConstants;
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.debug.ui.ILaunchGroup;
@@ -95,10 +96,14 @@ public class AddToFavoritesAction extends SelectionListenerAction {
 						if (favoriteGroups.contains(group.getIdentifier())) {
 							setText(MessageFormat.format(ActionMessages.RemoveFromFavoritesAction,
 									fMode.substring(0, 1).toUpperCase() + fMode.substring(1)));
+							setImageDescriptor(
+									DebugUITools.getImageDescriptor(IInternalDebugUIConstants.IMG_OBJS_RMVE_FRM_FAV));
 						} else {
 							setText(MessageFormat.format(ActionMessages.AddToFavoritesAction_1,
 									DebugUIPlugin.removeAccelerators(
 											fMode.substring(0, 1).toUpperCase() + fMode.substring(1))));
+							setImageDescriptor(
+									DebugUITools.getImageDescriptor(IInternalDebugUIConstants.IMG_OBJS_ADD_TO_FAV));
 						}
 					} catch (CoreException e) {
 						DebugUIPlugin.log(e);
