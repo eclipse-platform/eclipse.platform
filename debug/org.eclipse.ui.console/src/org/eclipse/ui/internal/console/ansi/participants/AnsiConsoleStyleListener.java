@@ -32,6 +32,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GlyphMetrics;
 import org.eclipse.ui.internal.console.ansi.AnsiConsoleUtils;
 import org.eclipse.ui.internal.console.ansi.preferences.AnsiConsolePreferenceUtils;
+import org.eclipse.ui.internal.console.StyleRangeUtil;
 import org.eclipse.ui.internal.console.ansi.utils.AnsiConsoleAttributes;
 import org.eclipse.ui.internal.console.ansi.utils.AnsiConsoleColorPalette;
 
@@ -117,11 +118,6 @@ public class AnsiConsoleStyleListener implements LineStyleListener, IPositionUpd
 
 		final int eventOffset = event.lineOffset;
 		final int eventLength = event.lineText.length();
-		final List<StyleRange> cachedRanges = offsetToStyleRangeCache.get(eventOffset);
-		if (cachedRanges != null) {
-			event.styles = cachedRanges.toArray(new StyleRange[0]);
-			return;
-		}
 		if (event.styles == null) { // It looks that in some cases this comes in as null
 			event.styles = new StyleRange[0];
 		}
@@ -141,17 +137,54 @@ public class AnsiConsoleStyleListener implements LineStyleListener, IPositionUpd
 			return;
 		}
 
-		final Color errorColor = AnsiConsolePreferenceUtils.getDebugConsoleErrorColor();
-		Color foregroundColor = AnsiConsolePreferenceUtils.getDebugConsoleFgColor();
-		if (AnsiConsolePreferenceUtils.tryPreservingStdErrColor()) {
-			for (StyleRange range : event.styles) {
-				if (errorColor.equals(range.foreground)) {
-					foregroundColor = errorColor;
-					break;
+		List<StyleRange> ranges = offsetToStyleRangeCache.get(eventOffset);
+		if (ranges == null) {
+			Color foregroundColor = AnsiConsolePreferenceUtils.getDebugConsoleFgColor();
+			if (AnsiConsolePreferenceUtils.tryPreservingStdErrColor()) {
+				Color errorColor = AnsiConsolePreferenceUtils.getDebugConsoleErrorColor();
+				for (StyleRange range : event.styles) {
+					if (errorColor.equals(range.foreground)) {
+						foregroundColor = errorColor;
+						break;
+					}
 				}
+			}
+			ranges = calculateAnsiRanges(positions, eventOffset, eventLength, foregroundColor);
+			if (!ranges.isEmpty()) {
+				offsetToStyleRangeCache.put(eventOffset, ranges);
 			}
 		}
 
+		if (!ranges.isEmpty()) {
+			// Copy the links that might already exist.
+			List<StyleRange> merged = new ArrayList<>(ranges.size());
+			for (StyleRange range : ranges) {
+				merged.add((StyleRange) range.clone());
+			}
+			for (StyleRange range : event.styles) {
+				if (range.foreground != null) {
+					if (range.foreground.equals(AnsiConsolePreferenceUtils.getHyperlinkColor())) {
+						StyleRangeUtil.overrideStyleRange(merged, range);
+					}
+					// We preserve the C/C++ build console colors (all except regular output)
+					if (isCdtBuildConsole && !range.foreground.equals(AnsiConsolePreferenceUtils.getCdtOutputStreamColor())) {
+						StyleRangeUtil.overrideStyleRange(merged, range);
+					}
+				}
+			}
+			// A hyperlink (or other overriding) range may span escape sequences that
+			// are part of the matched text. Re-apply the zero-width metrics so those
+			// escape sequences stay hidden instead of showing up as raw text.
+			for (StyleRange range : ranges) {
+				if (range.metrics != null) {
+					StyleRangeUtil.overrideStyleRange(merged, (StyleRange) range.clone());
+				}
+			}
+			event.styles = merged.toArray(new StyleRange[0]);
+		}
+	}
+
+	private List<StyleRange> calculateAnsiRanges(Position[] positions, int eventOffset, int eventLength, Color foregroundColor) {
 		final List<StyleRange> ranges = new ArrayList<>();
 		AnsiConsoleAttributes prevAttr = lastVisibleAttribute;
 		int prevPos = eventOffset;
@@ -175,23 +208,7 @@ public class AnsiConsoleStyleListener implements LineStyleListener, IPositionUpd
 			}
 		}
 		addRange(ranges, prevPos, eventOffset + eventLength - prevPos, prevAttr, foregroundColor, false);
-
-		if (!ranges.isEmpty()) {
-			// Copy the links that might already exist
-			for (StyleRange range : event.styles) {
-				if (range.foreground != null) {
-					if (range.foreground.equals(AnsiConsolePreferenceUtils.getHyperlinkColor())) {
-						ranges.add(range);
-					}
-					// We preserve the C/C++ build console colors (all except regular output)
-					if (isCdtBuildConsole && !range.foreground.equals(AnsiConsolePreferenceUtils.getCdtOutputStreamColor())) {
-						ranges.add(range);
-					}
-				}
-			}
-			offsetToStyleRangeCache.put(eventOffset, ranges);
-			event.styles = ranges.toArray(new StyleRange[0]);
-		}
+		return ranges;
 	}
 
 	private static List<AnsiPosition> findPositions(int offset, String currentText) {
