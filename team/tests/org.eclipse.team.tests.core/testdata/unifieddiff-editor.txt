@@ -1,0 +1,45 @@
+@Scope:[#VIEW, #ENTITY, #ELEMENT, #PARAMETER, #ANNOTATE, #ANNOTATION, #ENUM_VALUE, #SIMPLE_TYPE] 
+@CompatibilityContract: { 
+    c0: {
+        usageAllowed: true, 
+        allowedChanges.  annotation: [#ANY]
+    },
+    c1: {
+        usageAllowed: false,
+        allowedChanges: {
+            annotation: [#NONE],
+            value: [#REMOVE]
+        }
+    }
+}
+@MetadataExtension.usageAllowed : true
+@API.state: [ #RELEASED_FOR_KEY_USER_APPS, #RELEASED_FOR_CLOUD_PLATFORM ]
+@ExampleAnnotation.string_default: '❌😀💻❌😀💻'
+@OtherAnnotation.string_default: '😀😀😀❌😀💻'
+  @NestedAnnotation.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a: {
+      a: {
+          a: {
+              ab: [ #LONG_ENUM_NAME_12345 ]
+          }
+      }
+  }
+define annotation NestedAnnotation {    
+    //maximal possible path 😀
+    a { a { a { a { a { a { a { a { a { a { a { a { a { a { a { a { a { a { a { a { 
+    a { a { a { a { a { a { a { a { a { a { a { a { a { a { a { a { a { a { a { a { 
+    a { a { a { a { a { a { a { a { a { a { a { a { a { a { a { a { a { a { a { a { 
+    a { a { a { a { a { a { a { a { a { a { a { a { a { a { a { a { a { a { a { a { 
+    a { a { a { a { a { a { a { a { a { a { a { a { a { a { a { a { a { a { a { a { 
+    a { a { a { a { a { a { a { a { a { a { 
+        @Scope:[#VIEW, #ENTITY, #ELEMENT, #PARAMETER, #ANNOTATE, #ANNOTATION, #ENUM_VALUE, #SIMPLE_TYPE, #SERVICE, #OPERATION]
+        ab : array of String(20) enum { A; B; C; LONG_ENUM_NAME_12345; };  
+    }; }; }; }; }; }; }; }; }; }; }; }; }; }; }; }; }; }; }; };
+    }; }; }; }; }; }; }; }; }; }; }; }; }; }; }; }; }; }; }; };
+    }; }; }; }; }; }; }; }; }; }; }; }; }; }; }; }; }; }; }; };
+    }; }; }; }; }; }; }; }; }; }; }; }; }; }; }; }; }; }; }; };
+    }; }; }; }; }; }; }; }; }; }; }; }; }; }; }; }; }; }; }; };
+    }; }; }; }; }; }; }; }; }; }; 
+    
+    no_scope: Integer ;
+    
+}
