@@ -620,6 +620,71 @@ public class ProcessConsoleTests {
 	}
 
 	/**
+	 * Test that a process reads its standard input from a file set on its launch
+	 * when it has no launch configuration.
+	 */
+	@Test
+	public void testInputFromLaunchAttribute() throws Exception {
+		byte[] input = "from launch\n".getBytes(StandardCharsets.US_ASCII);
+		String consoleEncoding = StandardCharsets.UTF_8.name();
+
+		final File inFile = createTmpFile("testinput-launch.txt");
+		Files.write(inFile.toPath(), input);
+		final MockProcess mockProcess = new MockProcess(MockProcess.RUN_FOREVER);
+		try {
+			final IProcess process = mockProcess.toRuntimeProcess("inputFromLaunch");
+			process.getLaunch().setAttribute(IDebugUIConstants.ATTR_CAPTURE_STDIN_FILE, inFile.getCanonicalPath());
+			final ProcessConsole console = new ProcessConsole(process, new ConsoleColorProvider(), consoleEncoding);
+			try {
+				console.initialize();
+				waitWhile(() -> !mockProcess.isStdinClosed(), () -> "Process stdin was not closed after input file was read.");
+			} finally {
+				console.destroy();
+			}
+		} finally {
+			mockProcess.destroy();
+		}
+
+		assertThat(mockProcess.getReceivedInput()).as("received input").isEqualTo(input);
+	}
+
+	/**
+	 * Test that an input file set on the launch is supplied instead of the input
+	 * file of its launch configuration.
+	 */
+	@Test
+	public void testInputFromLaunchAttributeOverridesConfiguration() throws Exception {
+		byte[] launchInput = "from launch\n".getBytes(StandardCharsets.US_ASCII);
+		byte[] configurationInput = "from configuration\n".getBytes(StandardCharsets.US_ASCII);
+		String consoleEncoding = StandardCharsets.UTF_8.name();
+
+		final File launchFile = createTmpFile("testinput-launch.txt");
+		Files.write(launchFile.toPath(), launchInput);
+		final File configurationFile = createTmpFile("testinput-configuration.txt");
+		Files.write(configurationFile.toPath(), configurationInput);
+		final MockProcess mockProcess = new MockProcess(MockProcess.RUN_FOREVER);
+		try {
+			Map<String, Object> launchConfigAttributes = new HashMap<>();
+			launchConfigAttributes.put(DebugPlugin.ATTR_CONSOLE_ENCODING, consoleEncoding);
+			launchConfigAttributes.put(IDebugUIConstants.ATTR_CAPTURE_STDIN_FILE, configurationFile.getCanonicalPath());
+			launchConfigAttributes.put(IDebugUIConstants.ATTR_CAPTURE_IN_CONSOLE, false);
+			final IProcess process = mockProcess.toRuntimeProcess("inputFromLaunchOverride", launchConfigAttributes);
+			process.getLaunch().setAttribute(IDebugUIConstants.ATTR_CAPTURE_STDIN_FILE, launchFile.getCanonicalPath());
+			final ProcessConsole console = new ProcessConsole(process, new ConsoleColorProvider(), consoleEncoding);
+			try {
+				console.initialize();
+				waitWhile(() -> !mockProcess.isStdinClosed(), () -> "Process stdin was not closed after input file was read.");
+			} finally {
+				console.destroy();
+			}
+		} finally {
+			mockProcess.destroy();
+		}
+
+		assertThat(mockProcess.getReceivedInput()).as("received input").isEqualTo(launchInput);
+	}
+
+	/**
 	 * Test that console name updates (elapsed time) only happen for visible
 	 * consoles. Hidden consoles should not update their name. When a hidden
 	 * console is brought to front, it should start updating. When the console
