@@ -66,6 +66,17 @@ public class MockTerminalControlForText implements ITerminalControlForText {
 		return cursorShown;
 	}
 
+	private boolean synchronizedOutput;
+
+	@Override
+	public void enableSynchronizedOutput(boolean redrawing) {
+		synchronizedOutput = redrawing;
+	}
+
+	public boolean isSynchronizedOutput() {
+		return synchronizedOutput;
+	}
+
 	@Override
 	public void enableBracketedPaste(boolean enable) {
 		bracketedPaste = enable;
