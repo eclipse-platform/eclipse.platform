@@ -54,6 +54,7 @@ import org.eclipse.compare.ISharedDocumentAdapter;
 import org.eclipse.compare.IStreamContentAccessor;
 import org.eclipse.compare.IStreamMerger;
 import org.eclipse.compare.ITypedElement;
+import org.eclipse.compare.IUnifiedDiffInputAdapter;
 import org.eclipse.compare.internal.core.CompareSettings;
 import org.eclipse.compare.internal.merge.DocumentMerger.IDocumentMergerInput;
 import org.eclipse.compare.structuremergeviewer.ICompareInput;
@@ -718,14 +719,22 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 			// no active workbench page; fall back to the classic compare editor path
 			return false;
 		}
+
+		IEditorInput editorInput = source.editorInput();
+		IUnifiedDiffInputAdapter diffAdapter = editorInput.getAdapter(IUnifiedDiffInputAdapter.class);
+		if (diffAdapter != null) {
+			diffAdapter.setCompareInput(editorInput, input);
+		}
+		boolean keepCompareContext = false;
+
 		// Only an editor opened here may be closed again when the diff cannot be
 		// applied after all; one the user already had open stays untouched.
-		IEditorPart editorBefore = wpage.findEditor(source.editorInput());
+		IEditorPart editorBefore = wpage.findEditor(editorInput);
 		IEditorPart openedHere = null;
 		try {
 			IDocumentMergerInput mergerInput = findDocumentMergerInput(input, source.compareInput());
-			IEditorPart editorPart = wpage.openEditor(source.editorInput(),
-					getEditorId(source.editorInput(), source.element()));
+			IEditorPart editorPart = wpage.openEditor(editorInput,
+					getEditorId(editorInput, source.element()));
 			openedHere = editorPart == editorBefore ? null : editorPart;
 			if (editorPart instanceof MultiPageEditorPart mpe && mpe.getSelectedPage() instanceof IEditorPart selected) {
 				editorPart = selected;
@@ -736,7 +745,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 			}
 			// A side that is not a workspace file, the version shown for a deleted file
 			// for example, is only worth overlaying when its content really loaded.
-			if (!(source.editorInput() instanceof IFileEditorInput) && !hasContent(textEditor)) {
+			if (!(editorInput instanceof IFileEditorInput) && !hasContent(textEditor)) {
 				closeIfOpenedHere(wpage, openedHere);
 				return false;
 			}
@@ -757,10 +766,15 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 			// The user canceled the diff, not the open: leave the text editor alone
 			// instead of falling back to the classic compare editor.
 			if (status.isOK() || status == UnifiedDiffManager.CANCELED_BY_USER) {
+				keepCompareContext = true;
 				return true;
 			}
 		} catch (PartInitException e) {
 			CompareUIPlugin.log(e);
+		} finally {
+			if (!keepCompareContext && diffAdapter != null) {
+				diffAdapter.setCompareInput(editorInput, null);
+			}
 		}
 		// The classic compare editor takes over, so the editor opened for the unified
 		// diff would only be a second editor on the same file without a comparison.
