@@ -704,6 +704,10 @@ public class Project extends Container implements IProject {
 		info.clearModificationStamp();
 		info.clearCharsetGenerationCount();
 		info.setSyncInfo(null);
+		// The builders' last built trees pin every later workspace tree layer, and
+		// snapshots never collapse the trees of closed projects. Callers have saved
+		// the project tree with the builder state, which reopening restores.
+		workspace.getBuildManager().dropBuilders(this);
 	}
 
 	protected void internalCopy(IProjectDescription destDesc, int updateFlags, IProgressMonitor monitor) throws CoreException {

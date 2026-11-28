@@ -23,6 +23,8 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonito
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setBuildOrder;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.touchInFilesystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForEncodingRelatedJobs;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,10 +36,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
+import org.eclipse.core.internal.events.BuildCommand;
+import org.eclipse.core.internal.resources.Project;
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -46,6 +52,7 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.IWorkspaceRunnable;
@@ -649,6 +656,94 @@ public class BuilderTest {
 		assertEquals("Build1", args.get(TestBuilder.BUILD_ID));
 		args = commands[1].getArguments();
 		assertEquals("Build2", args.get(TestBuilder.BUILD_ID));
+	}
+
+	/**
+	 * A closed project must not keep its builders: each holds the tree of its
+	 * last build, which keeps every later workspace tree alive.
+	 */
+	@Test
+	public void testCloseProjectDropsBuilders() throws CoreException {
+		IProject project = getWorkspace().getRoot().getProject("PROJECT");
+		createInWorkspace(project);
+		setAutoBuilding(false);
+		IProjectDescription desc = project.getDescription();
+		desc.setBuildSpec(new ICommand[] { createCommand(desc, SortBuilder.BUILDER_NAME, "Build1"),
+				createCommand(desc, SortBuilder.BUILDER_NAME, "Build2") });
+		project.setDescription(desc, createTestMonitor());
+		project.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
+		assertThat(getBuilders(project)).doesNotContainNull();
+
+		project.close(createTestMonitor());
+
+		assertThat(getBuilders(project)).hasSize(2).containsOnlyNulls();
+	}
+
+	/**
+	 * Reopening a closed project restores the builders' last built state, so
+	 * changes made elsewhere while it was closed cause no build.
+	 */
+	@Test
+	public void testCloseOpenProjectKeepsLastBuiltState() throws CoreException {
+		IProject project = getWorkspace().getRoot().getProject("PROJECT");
+		IFile file = project.getFile("file");
+		IProject otherProject = getWorkspace().getRoot().getProject("OTHER");
+		IFile otherFile = otherProject.getFile("file");
+		createInWorkspace(new IResource[] { project, file, otherProject, otherFile });
+		setAutoBuilding(false);
+		IProjectDescription desc = project.getDescription();
+		desc.setBuildSpec(new ICommand[] { createCommand(desc, SortBuilder.BUILDER_NAME, "Build1") });
+		project.setDescription(desc, createTestMonitor());
+		project.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
+		SortBuilder builderBeforeClose = SortBuilder.getInstance();
+
+		project.close(createTestMonitor());
+		dirty(otherFile);
+		project.open(createTestMonitor());
+		project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
+
+		SortBuilder builder = SortBuilder.getInstance();
+		assertThat(builder).isNotSameAs(builderBeforeClose);
+		assertFalse(builder.wasBuilt(), "builder must not run after reopening an unchanged project");
+
+		dirty(file);
+		project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
+		assertThat(SortBuilder.getInstance()).isSameAs(builder);
+		assertTrue(builder.wasIncrementalBuild(), "builder must build incrementally");
+		assertThat(builder.getAffectedResources()).contains(file);
+	}
+
+	/**
+	 * A file changed on disk while its project was closed reaches the builder as
+	 * an incremental delta after the project is reopened and refreshed.
+	 */
+	@Test
+	public void testCloseOpenProjectDeltaOfFileChangedWhileClosed() throws CoreException, IOException {
+		IProject project = getWorkspace().getRoot().getProject("PROJECT");
+		IFile file = project.getFile("file");
+		IFile otherFile = project.getFile("otherFile");
+		createInWorkspace(new IResource[] { project, file, otherFile });
+		setAutoBuilding(false);
+		updateProjectDescription(project).addingCommand(DeltaVerifierBuilder.BUILDER_NAME).apply();
+		project.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
+
+		project.close(createTestMonitor());
+		Files.writeString(file.getLocation().toPath(), createRandomString());
+		project.open(createTestMonitor());
+		touchInFilesystem(file);
+		project.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
+
+		DeltaVerifierBuilder verifier = DeltaVerifierBuilder.getInstance();
+		verifier.addExpectedChange(file, project, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
+		project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
+		verifier = DeltaVerifierBuilder.getInstance();
+		assertTrue(verifier.wasIncrementalBuild(), "builder must build incrementally");
+		assertTrue(verifier.isDeltaValid(), verifier.getMessage());
+	}
+
+	private static Object[] getBuilders(IProject project) {
+		return Arrays.stream(((Project) project).internalGetDescription().getBuildSpec(false))
+				.map(command -> ((BuildCommand) command).getBuilders()).toArray();
 	}
 
 	/**
