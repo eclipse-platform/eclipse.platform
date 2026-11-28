@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2019 IBM Corporation and others.
+ * Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -106,6 +106,11 @@ public class CompareEditor extends EditorPart
 	private Control emptyPage;
 
 	private volatile int state = UNINITIALIZED;
+	/**
+	 * Set when the initialization job is canceled while the contents are being
+	 * created.
+	 */
+	private boolean canceledWhileCreating;
 	private HashSet<Saveable> knownSaveables;
 
 	private final EditorCompareContainer fContainer = new EditorCompareContainer();
@@ -373,6 +378,18 @@ public class CompareEditor extends EditorPart
 						if (hadPreviousInput || (knownSaveables != null && !isAllSaveablesKnown())) {
 							registerSaveable();
 						}
+						// Check if the contents are being created right now, e.g. by the "still
+						// initializing" timer, with this syncExec dispatched by the event loop of
+						// the first diff. Creating them again would leave a second, orphaned
+						// content tree, whose viewer later diffs against a disposed input.
+						if (CompareEditor.this.getState() == CREATING_CONTROL) {
+							// Don't lose a cancellation: it is handled once the
+							// contents being created are complete.
+							if (newState[0] == CANCELED) {
+								canceledWhileCreating = true;
+							}
+							return;
+						}
 						setState(newState[0]);
 						createCompareControl();
 					});
@@ -454,6 +471,7 @@ public class CompareEditor extends EditorPart
 				}
 				// Set the state in case this method gets called again
 				setState(CREATING_CONTROL);
+				canceledWhileCreating = false;
 				if (getSite().getSelectionProvider() == null) {
 					getSite().setSelectionProvider(new CompareEditorSelectionProvider());
 				}
@@ -465,6 +483,17 @@ public class CompareEditor extends EditorPart
 						setState(CANCELED);
 						return;
 					}
+				}
+				if (canceledWhileCreating) {
+					setState(CANCELED);
+					// Close later: this can run while the editor itself is still being created
+					IEditorInput canceledInput = getEditorInput();
+					fPageBook.getDisplay().asyncExec(() -> {
+						if (!fPageBook.isDisposed() && getEditorInput() == canceledInput) {
+							closeEditor();
+						}
+					});
+					return;
 				}
 				fPageBook.showPage(fControl);
 
