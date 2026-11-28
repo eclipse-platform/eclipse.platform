@@ -13,10 +13,12 @@
  *******************************************************************************/
 package org.eclipse.team.tests.ui;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -28,6 +30,7 @@ import org.eclipse.compare.unifieddiff.internal.UnifiedDiffManager.UnifiedDiff;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.AnnotationModel;
@@ -37,6 +40,7 @@ import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.texteditor.ITextEditor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -103,6 +107,34 @@ public class UnifiedDiffShadowedFoldsTest {
 
 		assertTrue(isInModel(projectionModel, foldOfTheEditor),
 				"the fold of the editor must be usable again once nothing hides its first line");
+	}
+
+	@Test
+	public void testDisposeRemovesDiffFoldsAndRestoresEditorFoldsWithoutProviderModel() throws Exception {
+		IDocument document = numberedLines(100);
+		ProjectionAnnotationModel projectionModel = openViewer(document);
+		ProjectionAnnotation foldOfTheEditor = addFoldOfTheEditor(projectionModel, document, 10, 70);
+		UnifiedDiffManager.foldUnchangedRegions(viewer, document, List.of(changeOnLine(document, 60)), MODE, 3);
+		assertFalse(isInModel(projectionModel, foldOfTheEditor));
+		assertTrue(projectionModel.getAnnotationIterator().hasNext());
+		// An editor with no provider model uses the model installed on its viewer.
+		ITextEditor editor = (ITextEditor) Proxy.newProxyInstance(ITextEditor.class.getClassLoader(),
+				new Class<?>[] { ITextEditor.class }, (_, method, args) -> {
+					if (method.getName().equals("getAdapter") && args[0] == ITextViewer.class) { //$NON-NLS-1$
+						return viewer;
+					}
+					return null;
+				});
+		String originalText = document.get();
+
+		org.eclipse.compare.unifieddiff.UnifiedDiff.dispose(editor);
+		waitForPendingWork();
+
+		assertTrue(isInModel(projectionModel, foldOfTheEditor), "disposal must restore the editor's own folds");
+		var remaining = projectionModel.getAnnotationIterator();
+		assertEquals(foldOfTheEditor, remaining.next());
+		assertFalse(remaining.hasNext(), "only the editor's own fold must remain");
+		assertEquals(originalText, document.get());
 	}
 
 	/**
